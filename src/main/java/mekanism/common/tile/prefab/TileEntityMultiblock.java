@@ -83,6 +83,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         super(blockProvider);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
         if (hasComputerSupport()) {
+            //TODO - 10.1: Instead of having a semi disabled capability, do we instead want to have our getComputerMethods
+            // supply any parent ones, and then expose an isFormed method for the multiblocks, and if it is formed allow
+            // access to the other ones on the multiblock, and if it isn't formed don't
             BooleanSupplier requireFormed = () -> !getMultiblock().isFormed();
             if (Mekanism.hooks.CCLoaded) {
                 //If ComputerCraft is loaded mark the capability as only "available" if the multiblock is formed

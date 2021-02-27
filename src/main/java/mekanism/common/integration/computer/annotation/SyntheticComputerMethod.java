@@ -1,4 +1,4 @@
-package mekanism.common.integration.computer;
+package mekanism.common.integration.computer.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,7 +15,17 @@ public @interface SyntheticComputerMethod {
     String getter() default "";
 
     /**
+     * Whether or not the synthetic getter is thread-safe or needs to be queued to run on the main thread.
+     */
+    boolean getterThreadSafe() default false;
+
+    /**
      * Name to use for the synthetic setter.
      */
     String setter() default "";
+
+    /**
+     * Whether or not the synthetic setter is thread-safe or needs to be queued to run on the main thread.
+     */
+    boolean setterThreadSafe() default false;
 }
