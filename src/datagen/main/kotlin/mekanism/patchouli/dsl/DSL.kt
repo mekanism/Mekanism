@@ -818,8 +818,18 @@ class MultiblockPage: EntryPage("multiblock"){
      */
     @SerializedName("multiblock_id")
     var multiblockId: ResourceLocation? = null
+        set(value) {
+            if (multiblock != null && value != null)
+                throw IllegalStateException("can't set both multiblock and multiblock_id")
+            field = value
+        }
 
     private var multiblock: MultiblockInfo? = null
+        set(value) {
+            if (multiblockId != null && value != null)
+                throw IllegalStateException("can't set both multiblock and multiblock_id")
+            field = value
+        }
 
     /**
      * The multiblock object to display. See Using Multiblocks for how to create this object.
@@ -839,9 +849,6 @@ class MultiblockPage: EntryPage("multiblock"){
 
     override fun toJson(): JsonObject {
         return super.toJson().also { json ->
-            if ((multiblock == null && multiblockId == null) || (multiblock != null && multiblockId != null)) {
-                throw IllegalStateException("One of either multiblock or multiblockId needs to be supplied")
-            }
             json.addProperty("name", name)
             multiblockId?.let { json.addProperty("multiblock_id", it) }
             multiblock?.let { json.add("multiblock", it.toJson()) }
