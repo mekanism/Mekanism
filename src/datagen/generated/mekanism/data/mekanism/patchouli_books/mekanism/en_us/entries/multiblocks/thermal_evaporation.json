@@ -32,9 +32,9 @@
           ]
         ],
         "mapping": {
+          "0": "mekanism:thermal_evaporation_block",
           "A": "mekanism:thermal_evaporation_block",
-          "B": "mekanism:thermal_evaporation_controller[active=false,facing=east]",
-          "0": "mekanism:thermal_evaporation_block"
+          "B": "mekanism:thermal_evaporation_controller[active=false,facing=east]"
         }
       }
     }
