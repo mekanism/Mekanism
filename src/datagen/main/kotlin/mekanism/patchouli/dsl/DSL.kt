@@ -17,6 +17,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.CompoundNBT
+import net.minecraft.state.StateHolder
 import net.minecraft.tags.ITag
 import net.minecraft.util.ResourceLocation
 import org.apache.logging.log4j.LogManager
@@ -927,7 +928,11 @@ class MultiblockInfo {
         }
 
         private fun BlockState.toPattern(): String {
-            return this.block.registryName!!.toString()+"["+(this.toString().substringAfter("["))
+            return if (values.isNotEmpty()) {
+                this.block.registryName!!.toString()+values.entries.joinToString(separator = ",", prefix = "[", postfix = "]", transform = StateHolder.field_235890_a_::apply)//+"["+(this.toString().substringAfter("["))
+            } else {
+                this.block.registryName!!.toString()
+            }
         }
 
         private fun <BLOCK: Block> blockStatePattern(registryObject: BlockRegistryObject<BLOCK, out Item>, stateProvider: BLOCK.(defaultState: BlockState)->BlockState): String {
