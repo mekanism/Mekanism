@@ -13,6 +13,12 @@
       "multiblock": {
         "pattern": [
           [
+            " AA ",
+            "A  A",
+            "A  A",
+            " AA "
+          ],
+          [
             "AAAA",
             "A  A",
             "A  B",
@@ -27,7 +33,7 @@
         ],
         "mapping": {
           "A": "mekanism:thermal_evaporation_block",
-          "B": "mekanism:thermal_evaporation_controller[active=false,facing=south]",
+          "B": "mekanism:thermal_evaporation_controller[active=false,facing=east]",
           "0": "mekanism:thermal_evaporation_block"
         }
       }
