@@ -933,7 +933,7 @@ class MultiblockInfo {
         @PatchouliDSL
         infix fun BlockRegistryObject<out Block, out Item>.facing(direction: Direction) {
             column.add(blockStatePattern(this){
-                Attribute.get(block, AttributeStateFacing::class.java).setDirection(it, direction)
+                Attribute.get(this, AttributeStateFacing::class.java).setDirection(it, direction)
             })
         }
 
