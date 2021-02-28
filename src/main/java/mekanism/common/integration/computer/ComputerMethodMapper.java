@@ -14,7 +14,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.BoundComputerMethod.ThreadAwareMethodHandle;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -27,7 +28,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
 
     public static final ComputerMethodMapper INSTANCE = new ComputerMethodMapper();
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
-    private final Map<Class<?>, Map<String, List<ThreadAwareMethodHandle>>> namedMethodHandleCache = new Object2ObjectOpenHashMap<>();
+    private final Map<Class<?>, Map<String, List<MethodHandleInfo>>> namedMethodHandleCache = new Object2ObjectOpenHashMap<>();
 
     private ComputerMethodMapper() {
     }
@@ -66,10 +67,11 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                         Mekanism.logger.error("Field: '{}' in class '{}' is annotated to generate a computer method but does not specify a getter or setter.",
                               fieldName, annotatedClass.getSimpleName());
                     } else {
-                        createSyntheticMethod(methodDetails, annotatedClass, field, fieldName, getterName, true,
-                              getAnnotationValue(data, "getterThreadSafe", false));
-                        createSyntheticMethod(methodDetails, annotatedClass, field, fieldName, setterName, false,
-                              getAnnotationValue(data, "setterThreadSafe", false));
+                        MethodRestriction restriction = getAnnotationValue(data, "restriction", MethodRestriction.NONE);
+                        createSyntheticMethod(methodDetails, annotatedClass, field, fieldName, getterName, true, restriction,
+                              getAnnotationValue(data, "threadSafeGetter", false));
+                        createSyntheticMethod(methodDetails, annotatedClass, field, fieldName, setterName, false, restriction,
+                              getAnnotationValue(data, "threadSafeSetter", false));
                     }
                 } else {//data.getTargetType() == ElementType.METHOD
                     //Note: Signature is methodName followed by the method descriptor
@@ -105,7 +107,8 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                                 }
                                 return false;
                             });
-                            methodDetails.add(new MethodDetails(methodNameOverride, methodHandle, getAnnotationValue(data, "threadSafe", false)));
+                            methodDetails.add(new MethodDetails(methodNameOverride, methodHandle, getAnnotationValue(data, "restriction", MethodRestriction.NONE),
+                                  getAnnotationValue(data, "threadSafe", false)));
                         }
                     }
                 }
@@ -114,25 +117,26 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         List<ClassBasedInfo<MethodDetails>> methodDetails = combineWithParents(rawMethodDetails);
         for (ClassBasedInfo<MethodDetails> details : methodDetails) {
             //Linked map to preserve order
-            Map<String, List<ThreadAwareMethodHandle>> cache = new LinkedHashMap<>();
+            Map<String, List<MethodHandleInfo>> cache = new LinkedHashMap<>();
             details.infoList.sort(Comparator.comparing(info -> info.methodName));
             for (MethodDetails handle : details.infoList) {
                 //Add the method handle to the list of methods with that method name for our computer handler
                 // Note: we construct the list with an initial capacity of one, as that is likely how many we
                 // actually have per methodName, we just support using a list
-                cache.computeIfAbsent(handle.methodName, methodName -> new ArrayList<>(1)).add(new ThreadAwareMethodHandle(handle.method, handle.threadSafe));
+                cache.computeIfAbsent(handle.methodName, methodName -> new ArrayList<>(1))
+                      .add(new MethodHandleInfo(handle.method, handle.restriction, handle.threadSafe));
             }
             namedMethodHandleCache.put(details.clazz, cache);
         }
     }
 
     private static void createSyntheticMethod(List<MethodDetails> methodDetails, Class<?> annotatedClass, Field field, String fieldName, String methodName,
-          boolean isGetter, boolean threadSafe) {
+          boolean isGetter, MethodRestriction restriction, boolean threadSafe) {
         if (!methodName.isEmpty()) {
             if (validMethodName(methodName)) {
                 try {
                     MethodHandle methodHandle = isGetter ? LOOKUP.unreflectGetter(field) : LOOKUP.unreflectSetter(field);
-                    methodDetails.add(new MethodDetails(methodName, methodHandle, threadSafe));
+                    methodDetails.add(new MethodDetails(methodName, methodHandle, restriction, threadSafe));
                 } catch (IllegalAccessException e) {
                     Mekanism.logger.error("Failed to create {} for field '{}' in class '{}'.", isGetter ? "getter" : "setter", fieldName,
                           annotatedClass.getSimpleName());
@@ -149,24 +153,38 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
      * @param boundMethods Map of method name to actual method to add our methods to.
      */
     public void getAndBindToHandler(Object handler, Map<String, BoundComputerMethod> boundMethods) {
-        Map<String, List<ThreadAwareMethodHandle>> namedMethods = namedMethodHandleCache.computeIfAbsent(handler.getClass(),
+        Map<String, List<MethodHandleInfo>> namedMethods = namedMethodHandleCache.computeIfAbsent(handler.getClass(),
               clazz -> getData(namedMethodHandleCache, clazz, Collections.emptyMap()));
         boolean hasMethods = !boundMethods.isEmpty();
-        for (Map.Entry<String, List<ThreadAwareMethodHandle>> entry : namedMethods.entrySet()) {
+        for (Map.Entry<String, List<MethodHandleInfo>> entry : namedMethods.entrySet()) {
             String methodName = entry.getKey();
-            List<ThreadAwareMethodHandle> methods = entry.getValue();
+            List<MethodHandleInfo> methods = entry.getValue();
             //If we have no methods originally none should intersect so we can skip the lookup checks
             BoundComputerMethod boundMethod = hasMethods ? boundMethods.get(methodName) : null;
             if (boundMethod == null) {
                 //Use a list that is the min size we need (this is likely to be one)
-                List<ThreadAwareMethodHandle> boundMethodHandles = methods.stream().map(method -> method.bindTo(handler))
-                      .collect(Collectors.toCollection(() -> new ArrayList<>(methods.size())));
-                boundMethods.put(methodName, new BoundComputerMethod(methodName, boundMethodHandles));
+                // Note: This technically may be less than the number of methods, if there is more than one
+                // if some are restricted and some are not, but it is such a rare case that it shouldn't
+                // matter having such a small amount extra in the backing list
+                List<ThreadAwareMethodHandle> boundMethodHandles = new ArrayList<>(methods.size());
+                for (MethodHandleInfo method : methods) {
+                    if (method.restriction.test(handler)) {
+                        boundMethodHandles.add(new ThreadAwareMethodHandle(method.methodHandle.bindTo(handler), method.threadSafe));
+                    }
+                }
+                if (!boundMethodHandles.isEmpty()) {
+                    //Assuming we actually have some method handles and aren't invalid for all of them
+                    // create a bound method and add it to our list of bound methods.
+                    boundMethods.put(methodName, new BoundComputerMethod(methodName, boundMethodHandles));
+                }
             } else {
                 //This is unlikely to ever actually happen, but if it does, then we want to add
                 // all our methods after binding them to the existing bound computer method
-                for (ThreadAwareMethodHandle method : methods) {
-                    boundMethod.addMethodImplementation(method.bindTo(handler));
+                // but before adding them validate the restrictions on the method are met
+                for (MethodHandleInfo method : methods) {
+                    if (method.restriction.test(handler)) {
+                        boundMethod.addMethodImplementation(new ThreadAwareMethodHandle(method.methodHandle.bindTo(handler), method.threadSafe));
+                    }
                 }
             }
         }
@@ -178,14 +196,52 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
 
     private static class MethodDetails {
 
+        private final MethodRestriction restriction;
         private final MethodHandle method;
         private final String methodName;
         private final boolean threadSafe;
 
-        private MethodDetails(String methodName, MethodHandle method, boolean threadSafe) {
+        private MethodDetails(String methodName, MethodHandle method, MethodRestriction restriction, boolean threadSafe) {
             this.method = method;
             this.methodName = methodName;
+            this.restriction = restriction;
             this.threadSafe = threadSafe;
+        }
+    }
+
+    private static class MethodHandleInfo {
+
+        private final MethodRestriction restriction;
+        private final MethodHandle methodHandle;
+        private final boolean threadSafe;
+
+        public MethodHandleInfo(MethodHandle methodHandle, MethodRestriction restriction, boolean threadSafe) {
+            this.methodHandle = methodHandle;
+            this.restriction = restriction;
+            this.threadSafe = threadSafe;
+        }
+    }
+
+    //TODO - 10.1: Add more restrictions as we implement methods and realize more things types of restrictions that may be of use
+    public enum MethodRestriction implements Predicate<Object> {
+        /**
+         * No restrictions
+         */
+        NONE(handler -> true),
+        /**
+         * Handler is an energy handler that can handle energy.
+         */
+        ENERGY(handler -> handler instanceof IMekanismStrictEnergyHandler && ((IMekanismStrictEnergyHandler) handler).canHandleEnergy());
+
+        private final Predicate<Object> validator;
+
+        MethodRestriction(Predicate<Object> validator) {
+            this.validator = validator;
+        }
+
+        @Override
+        public boolean test(Object handler) {
+            return validator.test(handler);
         }
     }
 }

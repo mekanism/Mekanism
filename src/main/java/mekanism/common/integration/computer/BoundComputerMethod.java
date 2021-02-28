@@ -243,9 +243,5 @@ public class BoundComputerMethod {
             this.methodHandle = methodHandle;
             this.threadSafe = threadSafe;
         }
-
-        public ThreadAwareMethodHandle bindTo(Object handler) {
-            return new ThreadAwareMethodHandle(methodHandle.bindTo(handler), threadSafe);
-        }
     }
 }
