@@ -51,6 +51,12 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
         return output.copy();
     }
 
+    @Nonnull
+    @Override
+    public ItemStack getRecipeOutput() {
+        return output.copy();
+    }
+
     /**
      * For JEI, gets a display stack
      *

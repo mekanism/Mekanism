@@ -3,6 +3,7 @@ package mekanism.api.recipes;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -35,6 +36,12 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
 
     @Contract(value = "_ -> new", pure = true)
     public ItemStack getOutput(BoxedChemicalStack input) {
+        return output.copy();
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack getRecipeOutput() {
         return output.copy();
     }
 
