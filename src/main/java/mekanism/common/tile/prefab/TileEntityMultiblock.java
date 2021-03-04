@@ -17,6 +17,7 @@ import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.ComputerMethodMapper;
+import mekanism.common.integration.computer.ComputerMethodMapper.MethodRestriction;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
@@ -412,26 +413,32 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     //Methods relating to IComputerTile
+    public boolean exposesMultiblockToComputer() {
+        return true;
+    }
+
     @Override
     public boolean isComputerCapabilityPersistent() {
-        //We are not persistent regardless of if our tile has support
-        return false;
+        //We are not persistent regardless of if our tile has support, unless we don't expose the multiblock itself to the computer
+        return !exposesMultiblockToComputer() && super.isComputerCapabilityPersistent();
     }
 
     @Override
     public void getComputerMethods(Map<String, BoundComputerMethod> methods) {
         super.getComputerMethods(methods);
-        T multiblock = getMultiblock();
-        if (multiblock.isFormed()) {
-            //Only expose the multiblock's methods if we are formed, when the formation state changes
-            // our capabilities are invalidated, so should end up getting rechecked and this called by
-            // the various computer integration mods, and allow us to only expose the multiblock's methods
-            // as even existing if the multiblock is complete
-            ComputerMethodMapper.INSTANCE.getAndBindToHandler(multiblock, methods);
+        if (exposesMultiblockToComputer()) {
+            T multiblock = getMultiblock();
+            if (multiblock.isFormed()) {
+                //Only expose the multiblock's methods if we are formed, when the formation state changes
+                // our capabilities are invalidated, so should end up getting rechecked and this called by
+                // the various computer integration mods, and allow us to only expose the multiblock's methods
+                // as even existing if the multiblock is complete
+                ComputerMethodMapper.INSTANCE.getAndBindToHandler(multiblock, methods);
+            }
         }
     }
 
-    @ComputerMethod
+    @ComputerMethod(restriction = MethodRestriction.MULTIBLOCK)
     private boolean isFormed() {
         return getMultiblock().isFormed();
     }

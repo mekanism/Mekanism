@@ -158,7 +158,7 @@ public class GeneratorsBlockTypes {
     // Fission Reactor Port
     public static final BlockTypeTile<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT)
-          .with(new AttributeStateFissionPortMode(), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(new AttributeStateFissionPortMode(), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
@@ -195,7 +195,7 @@ public class GeneratorsBlockTypes {
     // Fusion Reactor Port
     public static final BlockTypeTile<TileEntityFusionReactorPort> FUSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_PORT)
-          .with(Attributes.ACTIVE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.ACTIVE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
           .build();
     // Fusion Reactor Frame
     public static final BlockTypeTile<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = BlockTileBuilder

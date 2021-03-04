@@ -7,6 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.util.NBTUtils;
@@ -46,6 +47,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
+    @ComputerMethod(nameOverride = "getLogicMode")
     public FissionReactorLogic getMode() {
         return logicType;
     }
@@ -55,6 +57,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         return FissionReactorLogic.values();
     }
 
+    @ComputerMethod(nameOverride = "getRedstoneLogicStatus")
     public RedstoneStatus getStatus() {
         if (isRemote()) {
             return prevStatus;
@@ -79,9 +82,12 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         return RedstoneStatus.IDLE;
     }
 
+    @ComputerMethod(nameOverride = "setLogicMode")
     public void setLogicTypeFromPacket(FissionReactorLogic logicType) {
-        this.logicType = logicType;
-        markDirty(false);
+        if (this.logicType != logicType) {
+            this.logicType = logicType;
+            markDirty(false);
+        }
     }
 
     @Override
@@ -114,7 +120,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableEnum.create(FissionReactorLogic::byIndexStatic, FissionReactorLogic.DISABLED, () -> logicType, value -> logicType = value));
+        container.track(SyncableEnum.create(FissionReactorLogic::byIndexStatic, FissionReactorLogic.DISABLED, this::getMode, value -> logicType = value));
         container.track(SyncableEnum.create(RedstoneStatus::byIndexStatic, RedstoneStatus.IDLE, () -> prevStatus, value -> prevStatus = value));
     }
 

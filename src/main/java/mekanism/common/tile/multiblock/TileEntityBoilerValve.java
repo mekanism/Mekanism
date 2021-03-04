@@ -75,7 +75,9 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     @ComputerMethod
     private void setMode(BoilerValveMode mode) {
-        world.setBlockState(pos, getBlockState().with(AttributeStateBoilerValveMode.modeProperty, mode));
+        if (mode != getMode()) {
+            world.setBlockState(pos, getBlockState().with(AttributeStateBoilerValveMode.modeProperty, mode));
+        }
     }
 
     @Override

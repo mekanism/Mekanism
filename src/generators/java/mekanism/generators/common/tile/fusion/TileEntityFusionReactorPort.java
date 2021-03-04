@@ -120,6 +120,11 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     }
 
     //Methods relating to IComputerTile
+    @Override
+    public boolean exposesMultiblockToComputer() {
+        return false;
+    }
+
     @ComputerMethod
     private boolean getMode() {
         return getActive();

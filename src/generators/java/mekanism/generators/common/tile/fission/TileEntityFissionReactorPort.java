@@ -91,7 +91,9 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @ComputerMethod
     private void setMode(FissionPortMode mode) {
-        world.setBlockState(pos, getBlockState().with(AttributeStateFissionPortMode.modeProperty, mode));
+        if (mode != getMode()) {
+            world.setBlockState(pos, getBlockState().with(AttributeStateFissionPortMode.modeProperty, mode));
+        }
     }
 
     @Override
@@ -141,6 +143,11 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     //Methods relating to IComputerTile
+    @Override
+    public boolean exposesMultiblockToComputer() {
+        return false;
+    }
+
     @ComputerMethod
     private void incrementMode() {
         setMode(getMode().getNext());

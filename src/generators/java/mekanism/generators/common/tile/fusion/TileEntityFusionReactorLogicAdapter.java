@@ -6,6 +6,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -27,7 +28,7 @@ import net.minecraft.world.World;
 public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactorBlock implements IReactorLogic<FusionReactorLogic>, IHasMode {
 
     public FusionReactorLogic logicType = FusionReactorLogic.DISABLED;
-    public boolean activeCooled;
+    private boolean activeCooled;
     private boolean prevOutputting;
 
     public TileEntityFusionReactorLogicAdapter() {
@@ -96,7 +97,13 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         markDirty(false);
     }
 
+    @ComputerMethod(nameOverride = "isActiveCooledLogic")
+    public boolean isActiveCooled() {
+        return activeCooled;
+    }
+
     @Override
+    @ComputerMethod(nameOverride = "getLogicMode")
     public FusionReactorLogic getMode() {
         return logicType;
     }
@@ -106,18 +113,30 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         return FusionReactorLogic.values();
     }
 
+    @ComputerMethod(nameOverride = "setLogicMode")
     public void setLogicTypeFromPacket(FusionReactorLogic logicType) {
-        this.logicType = logicType;
-        markDirty(false);
+        if (this.logicType != logicType) {
+            this.logicType = logicType;
+            markDirty(false);
+        }
     }
 
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableEnum.create(FusionReactorLogic::byIndexStatic, FusionReactorLogic.DISABLED, () -> logicType, value -> logicType = value));
-        container.track(SyncableBoolean.create(() -> activeCooled, value -> activeCooled = value));
+        container.track(SyncableEnum.create(FusionReactorLogic::byIndexStatic, FusionReactorLogic.DISABLED, this::getMode, value -> logicType = value));
+        container.track(SyncableBoolean.create(this::isActiveCooled, value -> activeCooled = value));
         container.track(SyncableBoolean.create(() -> prevOutputting, value -> prevOutputting = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void setActiveCooledLogic(boolean active) {
+        if (activeCooled != active) {
+            nextMode();
+        }
+    }
+    //End methods IComputerTile
 
     public enum FusionReactorLogic implements IReactorLogicMode<FusionReactorLogic>, IHasTranslationKey {
         DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, new ItemStack(Items.GUNPOWDER)),

@@ -23,6 +23,7 @@ import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.lib.MekAnnotationScanner.BaseAnnotationScanner;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileRedstone;
+import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
 import org.objectweb.asm.Type;
 
@@ -243,6 +244,10 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
          * Handler is an energy handler that can handle energy.
          */
         ENERGY(handler -> handler instanceof IMekanismStrictEnergyHandler && ((IMekanismStrictEnergyHandler) handler).canHandleEnergy()),
+        /**
+         * Handler is a multiblock that can expose the multiblock.
+         */
+        MULTIBLOCK(handler -> handler instanceof TileEntityMultiblock && ((TileEntityMultiblock<?>) handler).exposesMultiblockToComputer()),
         /**
          * Handler is an directional tile that is actually directional.
          */
