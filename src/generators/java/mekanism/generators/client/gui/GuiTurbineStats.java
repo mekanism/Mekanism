@@ -3,7 +3,6 @@ package mekanism.generators.client.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
@@ -71,13 +70,8 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
             drawString(matrix, GeneratorsLang.TURBINE_PRODUCTION.translate(), 8, 72, subheadingTextColor());
             drawString(matrix, GeneratorsLang.TURBINE_BLADES.translate(blades, coils * 4 > blades ? limiting : ""), 14, 81, titleTextColor());
             drawString(matrix, GeneratorsLang.TURBINE_COILS.translate(coils, coils * 4 < blades ? limiting : ""), 14, 90, titleTextColor());
-            FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
-                  .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-            double rate = lowerVolume * (clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
-            rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
-            drawTextScaledBound(matrix, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(energyMultiplier.multiply(rate))), 8, 104, titleTextColor(), 164);
-            String waterRate = TextUtils.format((long) multiblock.condensers * MekanismGeneratorsConfig.generators.condenserRate.get());
-            drawTextScaledBound(matrix, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(waterRate), 8, 113, titleTextColor(), 164);
+            drawTextScaledBound(matrix, GeneratorsLang.TURBINE_MAX_PRODUCTION.translate(EnergyDisplay.of(multiblock.getMaxProduction())), 8, 104, titleTextColor(), 164);
+            drawTextScaledBound(matrix, GeneratorsLang.TURBINE_MAX_WATER_OUTPUT.translate(TextUtils.format(multiblock.getMaxWaterOutput())), 8, 113, titleTextColor(), 164);
         }
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

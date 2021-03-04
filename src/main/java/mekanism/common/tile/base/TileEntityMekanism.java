@@ -4,8 +4,10 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -65,8 +67,13 @@ import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.BoundComputerMethod;
 import mekanism.common.integration.computer.ComputerCapabilityHelper;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.ComputerMethodMapper;
+import mekanism.common.integration.computer.ComputerMethodMapper.MethodRestriction;
 import mekanism.common.integration.computer.IComputerTile;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -265,13 +272,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         } else {
             soundEvent = null;
         }
-        if (hasComputerSupport()) {
-            if (Mekanism.hooks.CCLoaded) {
-                //If ComputerCraft is loaded add the capability for it
-                addCapabilityResolver(ComputerCapabilityHelper.getComputerCraftCapability(this));
-            }
-            //If OpenComputers loaded, add capability for it
-        }
+        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     private void setSupportedTypes(Block block) {
@@ -760,6 +761,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //Methods for implementing ITileDirectional
     @Nonnull
     @Override
+    @ComputerMethod(restriction = MethodRestriction.DIRECTIONAL)
     public Direction getDirection() {
         if (isDirectional()) {
             BlockState state = getBlockState();
@@ -791,6 +793,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing ITileRedstone
     @Override
+    @ComputerMethod(nameOverride = "getRedstoneMode", restriction = MethodRestriction.REDSTONE_CONTROL)
     public RedstoneControl getControlType() {
         return controlType;
     }
@@ -1079,7 +1082,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods ITileActive
 
     //Methods for implementing ITileSound
-
     /**
      * Used to check if this tile should attempt to play its sound
      */
@@ -1128,4 +1130,71 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return false;
     }
     //End methods ITileSound
+
+    //Methods relating to IComputerTile
+    // Note: Some methods are elsewhere if we are exposing pre-existing implementations
+    public void validateSecurityIsPublic() throws ComputerException {
+        if (hasSecurity() && getSecurityMode() != SecurityMode.PUBLIC) {
+            throw new ComputerException("Setter not available due to machine security not being public.");
+        }
+    }
+
+    @Override
+    public void getComputerMethods(Map<String, BoundComputerMethod> methods) {
+        IComputerTile.super.getComputerMethods(methods);
+        for (ITileComponent component : components) {
+            //Allow any supported components to add their computer methods as well
+            // For example side config, ejector, and upgrade components
+            ComputerMethodMapper.INSTANCE.getAndBindToHandler(component, methods);
+        }
+    }
+
+    //TODO: If we ever end up using the part of our API that allows for multiple energy containers, it may be worth exposing
+    // overloaded versions of these methods that take the container index as a parameter if anyone ends up running into a case
+    // where being able to get a specific container's stored energy would be useful to their program
+    @ComputerMethod(nameOverride = "getEnergy", restriction = MethodRestriction.ENERGY)
+    private FloatingLong getTotalEnergy() {
+        return getTotalEnergy(IEnergyContainer::getEnergy);
+    }
+
+    @ComputerMethod(nameOverride = "getMaxEnergy", restriction = MethodRestriction.ENERGY)
+    private FloatingLong getTotalMaxEnergy() {
+        return getTotalEnergy(IEnergyContainer::getMaxEnergy);
+    }
+
+    @ComputerMethod(nameOverride = "getEnergyNeeded", restriction = MethodRestriction.ENERGY)
+    private FloatingLong getTotalEnergyNeeded() {
+        return getTotalEnergy(IEnergyContainer::getNeeded);
+    }
+
+    private FloatingLong getTotalEnergy(Function<IEnergyContainer, FloatingLong> getter) {
+        FloatingLong total = FloatingLong.ZERO;
+        List<IEnergyContainer> energyContainers = getEnergyContainers(null);
+        for (IEnergyContainer energyContainer : energyContainers) {
+            total = total.plusEqual(getter.apply(energyContainer));
+        }
+        return total;
+    }
+
+    @ComputerMethod(nameOverride = "getEnergyFilledPercentage", restriction = MethodRestriction.ENERGY)
+    private double getTotalEnergyFilledPercentage() {
+        FloatingLong stored = FloatingLong.ZERO;
+        FloatingLong max = FloatingLong.ZERO;
+        List<IEnergyContainer> energyContainers = getEnergyContainers(null);
+        for (IEnergyContainer energyContainer : energyContainers) {
+            stored = stored.plusEqual(energyContainer.getEnergy());
+            max = max.plusEqual(energyContainer.getMaxEnergy());
+        }
+        return stored.divideToLevel(max);
+    }
+
+    @ComputerMethod(restriction = MethodRestriction.REDSTONE_CONTROL)
+    private void setRedstoneMode(RedstoneControl type) throws ComputerException {
+        validateSecurityIsPublic();
+        if (type == RedstoneControl.PULSE && !canPulse()) {
+            throw new ComputerException("Unsupported redstone control mode: %s", RedstoneControl.PULSE);
+        }
+        setControlType(type);
+    }
+    //End methods IComputerTile
 }

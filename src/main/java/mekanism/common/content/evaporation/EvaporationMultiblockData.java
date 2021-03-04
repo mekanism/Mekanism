@@ -20,6 +20,8 @@ import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankMultiblockData;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.FluidInventorySlot;
@@ -33,6 +35,7 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -60,8 +63,10 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
 
     public float prevScale;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getProductionAmount")
     public double lastGain;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
     public double totalLoss;
 
     private CachedRecipe<FluidToFluidRecipe> cachedRecipe;
@@ -158,6 +163,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
         updateHeatCapacitors(null);
     }
 
+    @ComputerMethod(nameOverride = "getTemperature")
     public double getTemp() {
         return heatCapacitor.getTemperature();
     }
@@ -221,6 +227,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
         return getWorld();
     }
 
+    @ComputerMethod
     private int getActiveSolars() {
         int ret = 0;
         for (IEvaporationSolar solar : solars) {
@@ -253,4 +260,56 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     protected int getMultiblockRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getFluidAmount(), inputTank.getCapacity());
     }
+
+    //Computer related methods
+    @ComputerMethod
+    private ItemStack getInputItemInput() {
+        return inputInputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getInputItemOutput() {
+        return outputInputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItemInput() {
+        return inputOutputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItemOutput() {
+        return outputOutputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private FluidStack getInput() {
+        return inputTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getInputCapacity() {
+        return inputTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getInputNeeded() {
+        return inputTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private FluidStack getOutput() {
+        return outputTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getOutputCapacity() {
+        return outputTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getOutputNeeded() {
+        return outputTank.getNeeded();
+    }
+    //End computer related methods
 }

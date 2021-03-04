@@ -5,7 +5,9 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
+import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
@@ -13,12 +15,14 @@ import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.MergedChemicalTank;
+import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalDissolutionCachedRecipe;
@@ -33,6 +37,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -191,7 +196,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
@@ -212,4 +217,66 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     public MachineEnergyContainer<TileEntityChemicalDissolutionChamber> getEnergyContainer() {
         return energyContainer;
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private FloatingLong getEnergyUsage() {
+        return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
+    }
+
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getInputGasItem() {
+        return gasInputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private GasStack getGasInput() {
+        return injectTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getGasInputCapacity() {
+        return injectTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getGasInputNeeded() {
+        return injectTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private ChemicalStack<?> getOutput() {
+        return getOutputTank().getStack();
+    }
+
+    @ComputerMethod
+    private long getOutputCapacity() {
+        return getOutputTank().getCapacity();
+    }
+
+    @ComputerMethod
+    private long getOutputNeeded() {
+        return getOutputTank().getNeeded();
+    }
+
+    private IChemicalTank<?, ?> getOutputTank() {
+        Current current = outputTank.getCurrent();
+        return outputTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);
+    }
+    //End methods IComputerTile
 }

@@ -15,7 +15,6 @@ import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -95,15 +94,12 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
         ResourceLocation filterLocation = new ResourceLocation(modid, newFilter);
         if (filter.hasFilter() && filter.filterMatches(filterLocation)) {
             filterSaveFailed(MekanismLang.TAG_FILTER_SAME_TAG);
+        } else if (TileEntityOredictionificator.isValidTarget(filterLocation)) {
+            filter.setFilter(filterLocation);
+            slotDisplay.updateStackList();
+            text.setText("");
         } else {
-            List<String> possibleFilters = TileEntityOredictionificator.possibleFilters.getOrDefault(modid, Collections.emptyList());
-            if (possibleFilters.stream().anyMatch(newFilter::startsWith) && ItemTags.getCollection().getRegisteredTags().contains(filterLocation)) {
-                filter.setFilter(filterLocation);
-                slotDisplay.updateStackList();
-                text.setText("");
-            } else {
-                filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
-            }
+            filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
         }
     }
 

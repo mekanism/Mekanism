@@ -25,6 +25,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -41,6 +42,7 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -51,7 +53,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     public IGasTank inputTank;
     public IGasTank outputTank;
 
-    public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> inputHandler;
@@ -123,6 +125,12 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     }
 
     @Nonnull
+    @ComputerMethod(nameOverride = "getEnergyUsage")
+    public FloatingLong getEnergyUsed() {
+        return clientEnergyUsed;
+    }
+
+    @Nonnull
     @Override
     public MekanismRecipeType<GasToGasRecipe> getRecipeType() {
         return MekanismRecipeType.CENTRIFUGING;
@@ -187,6 +195,53 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private GasStack getInput() {
+        return inputTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getInputCapacity() {
+        return inputTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getInputNeeded() {
+        return inputTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getOutput() {
+        return outputTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getOutputCapacity() {
+        return outputTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getOutputNeeded() {
+        return outputTank.getNeeded();
+    }
+    //End methods IComputerTile
 }

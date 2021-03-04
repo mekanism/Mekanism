@@ -38,6 +38,8 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -104,33 +106,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
     private int radius;
-
-    public boolean inverse;
-
+    private boolean inverse;
     private int minY;
     private int maxY = 60;
-
-    public boolean doEject = false;
-    public boolean doPull = false;
-
+    private boolean doEject = false;
+    private boolean doPull = false;
     public ItemStack missingStack = ItemStack.EMPTY;
-
     public int delay;
-
     private int delayLength = MekanismConfig.general.minerTicksPerMine.get();
-
     public int cachedToMine;
-
     private boolean silkTouch;
-
-    public boolean running;
-
+    private boolean running;
     private int delayTicks;
-
     private boolean initCalc = false;
-
     private int numPowering;
-
     public boolean clientRendering = false;
 
     private final TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
@@ -310,20 +299,29 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return delayLength;
     }
 
+    @ComputerMethod
     public boolean getSilkTouch() {
         return silkTouch;
     }
 
+    @ComputerMethod
     public int getRadius() {
         return radius;
     }
 
+    @ComputerMethod
     public int getMinY() {
         return minY;
     }
 
+    @ComputerMethod
     public int getMaxY() {
         return maxY;
+    }
+
+    @ComputerMethod(nameOverride = "getInverseMode")
+    public boolean getInverse() {
+        return inverse;
     }
 
     private void setSilkTouch(boolean newSilkTouch) {
@@ -596,11 +594,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (searcher.state == State.SEARCHING) {
             searcher.interrupt();
             reset();
-            return;
         } else if (searcher.state == State.FINISHED) {
             running = false;
+            markDirty(false);
         }
-        markDirty(false);
     }
 
     public void reset() {
@@ -750,6 +747,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public void setConfigurationData(CompoundNBT nbtTags) {
+        //TODO - 10.1: Re-evaluate this stuff, should we force stop reset and start miner again if needed
+        // as otherwise I believe there may end up being a desync in the energy cost
         setRadius(Math.min(nbtTags.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MIN, this::setMinY);
         NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MAX, this::setMaxY);
@@ -772,6 +771,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             // It would be slightly cleaner to also validate the fact the values changed, but it would make the code a decent
             // bit messier as we couldn't use NBTUtils, and it is a rather quick check to update the energy per tick, and in
             // most cases at least one of the settings will not be at the default value
+            //TODO - 10.1: Should this just be moved into the read method then
             energyContainer.updateMinerEnergyPerTick();
         }
     }
@@ -876,35 +876,46 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vector3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            //Input
-            if (offset.equals(new Vector3i(0, 1, 0))) {
-                //If input then disable if wrong face of input
-                return side != Direction.UP;
-            }
-            //Output
-            Direction back = getOppositeDirection();
-            if (offset.equals(new Vector3i(back.getXOffset(), 1, back.getZOffset()))) {
-                //If output then disable if wrong face of output
-                return side != back;
-            }
-            return true;
+            return notItemPort(side, offset);
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
-            if (offset.equals(Vector3i.NULL_VECTOR)) {
-                //Disable if it is the bottom port but wrong side of it
-                return side != Direction.DOWN;
-            }
-            Direction left = getLeftSide();
-            Direction right = getRightSide();
-            if (offset.equals(new Vector3i(left.getXOffset(), 0, left.getZOffset()))) {
-                //Disable if left power port but wrong side of the port
-                return side != left;
-            } else if (offset.equals(new Vector3i(right.getXOffset(), 0, right.getZOffset()))) {
-                //Disable if right power port but wrong side of the port
-                return side != right;
-            }
-            return true;
+            return notEnergyPort(side, offset);
+        } else if (canEverResolve(capability)) {
+            //If we are not an item handler or energy capability and it is a capability that we can support,
+            // for example our fallback to allow access to things like computer integration capabilities,
+            // then we treat the capability as disabled if it is not against one of our ports
+            return notItemPort(side, offset) && notEnergyPort(side, offset);
         }
         return false;
+    }
+
+    private boolean notItemPort(Direction side, Vector3i offset) {
+        if (offset.equals(new Vector3i(0, 1, 0))) {
+            //If input then disable if wrong face of input
+            return side != Direction.UP;
+        }
+        Direction back = getOppositeDirection();
+        if (offset.equals(new Vector3i(back.getXOffset(), 1, back.getZOffset()))) {
+            //If output then disable if wrong face of output
+            return side != back;
+        }
+        return true;
+    }
+
+    private boolean notEnergyPort(Direction side, Vector3i offset) {
+        if (offset.equals(Vector3i.NULL_VECTOR)) {
+            //Disable if it is the bottom port but wrong side of it
+            return side != Direction.DOWN;
+        }
+        Direction left = getLeftSide();
+        Direction right = getRightSide();
+        if (offset.equals(new Vector3i(left.getXOffset(), 0, left.getZOffset()))) {
+            //Disable if left power port but wrong side of the port
+            return side != left;
+        } else if (offset.equals(new Vector3i(right.getXOffset(), 0, right.getZOffset()))) {
+            //Disable if right power port but wrong side of the port
+            return side != right;
+        }
+        return true;
     }
 
     @Override
@@ -928,6 +939,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
+    @ComputerMethod
     public HashList<MinerFilter<?>> getFilters() {
         return filters;
     }
@@ -936,16 +948,36 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return energyContainer;
     }
 
+    @ComputerMethod
+    public int getToMine() {
+        return !isRemote() && searcher.state == State.SEARCHING ? searcher.found : cachedToMine;
+    }
+
+    @ComputerMethod
+    public boolean isRunning() {
+        return running;
+    }
+
+    @ComputerMethod(nameOverride = "getAutoEject")
+    public boolean getDoEject() {
+        return doEject;
+    }
+
+    @ComputerMethod(nameOverride = "getAutoPull")
+    public boolean getDoPull() {
+        return doPull;
+    }
+
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         addConfigContainerTrackers(container);
-        container.track(SyncableBoolean.create(() -> doEject, value -> doEject = value));
-        container.track(SyncableBoolean.create(() -> doPull, value -> doPull = value));
-        container.track(SyncableBoolean.create(() -> running, value -> running = value));
+        container.track(SyncableBoolean.create(this::getDoEject, value -> doEject = value));
+        container.track(SyncableBoolean.create(this::getDoPull, value -> doPull = value));
+        container.track(SyncableBoolean.create(this::isRunning, value -> running = value));
         container.track(SyncableBoolean.create(this::getSilkTouch, this::setSilkTouch));
         container.track(SyncableEnum.create(State::byIndexStatic, State.IDLE, () -> searcher.state, value -> searcher.state = value));
-        container.track(SyncableInt.create(() -> !isRemote() && searcher.state == State.SEARCHING ? searcher.found : cachedToMine, value -> cachedToMine = value));
+        container.track(SyncableInt.create(this::getToMine, value -> cachedToMine = value));
         container.track(SyncableItemStack.create(() -> missingStack, value -> missingStack = value));
     }
 
@@ -953,7 +985,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         container.track(SyncableInt.create(this::getRadius, this::setRadius));
         container.track(SyncableInt.create(this::getMinY, this::setMinY));
         container.track(SyncableInt.create(this::getMaxY, this::setMaxY));
-        container.track(SyncableBoolean.create(() -> inverse, value -> inverse = value));
+        container.track(SyncableBoolean.create(this::getInverse, value -> inverse = value));
         container.track(SyncableFilterList.create(this::getFilters, value -> {
             if (value instanceof HashList) {
                 filters = (HashList<MinerFilter<?>>) value;
@@ -1000,6 +1032,143 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return state.getDrops(lootContextBuilder);
         });
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private FloatingLong getEnergyUsage() {
+        return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
+    }
+
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private int getSlotCount() {
+        return mainSlots.size();
+    }
+
+    @ComputerMethod
+    private ItemStack getItemInSlot(int slot) throws ComputerException {
+        int slots = getSlotCount();
+        if (slot < 0 || slot >= slots) {
+            throw new ComputerException("Slot: '%d' is out of bounds, as this digital miner only has '%d' slots (zero indexed).", slot, slots);
+        }
+        return mainSlots.get(slot).getStack();
+    }
+
+    @ComputerMethod
+    private State getState() {
+        return searcher.state;
+    }
+
+    @ComputerMethod
+    private void setAutoEject(boolean eject) throws ComputerException {
+        validateSecurityIsPublic();
+        if (doEject != eject) {
+            toggleAutoEject();
+        }
+    }
+
+    @ComputerMethod
+    private void setAutoPull(boolean pull) throws ComputerException {
+        validateSecurityIsPublic();
+        if (doPull != pull) {
+            toggleAutoPull();
+        }
+    }
+
+    @ComputerMethod(nameOverride = "setSilkTouch")
+    private void computerSetSilkTouch(boolean silk) throws ComputerException {
+        validateSecurityIsPublic();
+        setSilkTouch(silk);
+    }
+
+    @ComputerMethod(nameOverride = "start")
+    private void computerStart() throws ComputerException {
+        validateSecurityIsPublic();
+        start();
+    }
+
+    @ComputerMethod(nameOverride = "stop")
+    private void computerStop() throws ComputerException {
+        validateSecurityIsPublic();
+        stop();
+    }
+
+    @ComputerMethod(nameOverride = "reset")
+    private void computerReset() throws ComputerException {
+        validateSecurityIsPublic();
+        reset();
+    }
+
+    @ComputerMethod
+    private int getMaxRadius() {
+        return MekanismConfig.general.minerMaxRadius.get();
+    }
+
+    private void validateCanChangeConfiguration() throws ComputerException {
+        validateSecurityIsPublic();
+        //Validate the miner is stopped and reset first
+        if (searcher.state != State.IDLE) {
+            throw new ComputerException("Miner must be stopped and reset before its targeting configuration is changed.");
+        }
+    }
+
+    @ComputerMethod(nameOverride = "setRadius")
+    private void computerSetRadius(int radius) throws ComputerException {
+        validateCanChangeConfiguration();
+        if (radius < 0 || radius > MekanismConfig.general.minerMaxRadius.get()) {
+            //Validate dimensions even though we can clamp
+            throw new ComputerException("Radius '%d' is out of range must be between 0 and %d. (Inclusive)", radius, MekanismConfig.general.minerMaxRadius.get());
+        }
+        setRadiusFromPacket(radius);
+    }
+
+    @ComputerMethod(nameOverride = "setMinY")
+    private void computerSetMinY(int minY) throws ComputerException {
+        validateCanChangeConfiguration();
+        if (minY < 0 || minY > getMaxY()) {
+            //Validate dimensions even though we can clamp
+            throw new ComputerException("Min Y '%d' is out of range must be between 0 and %d. (Inclusive)", minY, getMaxY());
+        }
+        setMinYFromPacket(minY);
+    }
+
+    @ComputerMethod(nameOverride = "setMaxY")
+    private void computerSetMaxY(int maxY) throws ComputerException {
+        validateCanChangeConfiguration();
+        if (world != null) {
+            int max = world.getHeight() - 1;
+            if (maxY < getMinY() || maxY > max) {
+                //Validate dimensions even though we can clamp
+                throw new ComputerException("Max Y '%d' is out of range must be between %d and %d. (Inclusive)", maxY, getMinY(), max);
+            }
+            setMaxYFromPacket(maxY);
+        }
+    }
+
+    @ComputerMethod
+    private void setInverseMode(boolean enabled) throws ComputerException {
+        validateCanChangeConfiguration();
+        if (inverse != enabled) {
+            toggleInverse();
+        }
+    }
+
+    @ComputerMethod
+    private boolean addFilter(MinerFilter<?> filter) throws ComputerException {
+        validateCanChangeConfiguration();
+        return filters.add(filter);
+    }
+
+    @ComputerMethod
+    private boolean removeFilter(MinerFilter<?> filter) throws ComputerException {
+        validateCanChangeConfiguration();
+        return filters.remove(filter);
+    }
+    //End methods IComputerTile
 
     private static class ItemCount {
 

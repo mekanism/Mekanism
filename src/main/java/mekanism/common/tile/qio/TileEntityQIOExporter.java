@@ -1,5 +1,6 @@
 package mekanism.common.tile.qio;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -17,6 +18,8 @@ import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.lib.inventory.HashedItem;
@@ -96,6 +99,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         return map;
     }
 
+    @ComputerMethod
     public boolean getExportWithoutFilter() {
         return exportWithoutFilter;
     }
@@ -143,6 +147,16 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.AUTO, value -> exportWithoutFilter = value);
     }
 
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void setExportsWithoutFilter(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (exportWithoutFilter != value) {
+            toggleExportWithoutFilter();
+        }
+    }
+    //End methods IComputerTile
+
     /**
      * An efficient way to handle large (in item type) item ejections from a QIO frequency. Each eject attempt of a certain item type will use a uniform probability
      * distribution based on a predetermined 'max eject attempt' constant to see if the ejection should take place. This makes sure we will eventually eject each item
@@ -173,7 +187,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             }
             double ejectChance = Math.min(1, (double) MAX_EJECT_ATTEMPTS / ejectMap.size());
             int maxTypes = getMaxTransitTypes(), maxCount = getMaxTransitCount();
-            Map<HashedItem, Integer> removed = new Object2IntOpenHashMap<>();
+            Object2IntMap<HashedItem> removed = new Object2IntOpenHashMap<>();
             int amountRemoved = 0;
 
             Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, getDirection()).resolve();
@@ -211,10 +225,11 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
                 }
             }
             // actually remove the items from the QIO frequency
-            for (Map.Entry<HashedItem, Integer> entry : removed.entrySet()) {
-                ItemStack ret = freq.removeByType(entry.getKey(), entry.getValue());
-                if (ret.getCount() != entry.getValue()) {
-                    Mekanism.logger.error("QIO ejection item removal didn't line up with prediction: removed {}, expected {}", ret.getCount(), entry.getValue());
+            for (Object2IntMap.Entry<HashedItem> entry : removed.object2IntEntrySet()) {
+                int amount = entry.getIntValue();
+                ItemStack ret = freq.removeByType(entry.getKey(), amount);
+                if (ret.getCount() != amount) {
+                    Mekanism.logger.error("QIO ejection item removal didn't line up with prediction: removed {}, expected {}", ret.getCount(), amount);
                 }
             }
         }

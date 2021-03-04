@@ -80,6 +80,8 @@ public class TileComponentFrequency implements ITileComponent {
         freq.update(tile);
         setFrequency(type, freq);
         setNeedsNotify(type);
+        //TODO - 10.1: Re-evaluate this, Some things such as teleporters I am not sure properly mark the tile dirty
+        // so as to save what frequency they have selected.
     }
 
     public void removeFrequencyFromData(FrequencyType<?> type, FrequencyIdentity data) {

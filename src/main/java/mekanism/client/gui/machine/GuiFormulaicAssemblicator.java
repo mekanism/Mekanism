@@ -53,13 +53,13 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 159, 15));
         //Overwrite the output slots with a "combined" slot
         addButton(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
-        addButton(new GuiProgress(() -> tile.operatingTicks / (double) tile.ticksRequired, ProgressType.TALL_RIGHT, this, 86, 43).jeiCrafting());
+        addButton(new GuiProgress(() -> tile.getOperatingTicks() / (double) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).jeiCrafting());
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         addButton(encodeFormulaButton = new MekanismImageButton(this, guiLeft + 7, guiTop + 45, 14, getButtonLocation("encode_formula"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, tile)), getOnHover(MekanismLang.ENCODE_FORMULA)));
         addButton(stockControlButton = new MekanismImageButton(this, guiLeft + 26, guiTop + 75, 16, getButtonLocation("stock_control"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.STOCK_CONTROL_BUTTON, tile)),
-              getOnHover(() -> MekanismLang.STOCK_CONTROL.translate(OnOff.of(tile.stockControl)))));
+              getOnHover(() -> MekanismLang.STOCK_CONTROL.translate(OnOff.of(tile.getStockControl())))));
         addButton(fillEmptyButton = new MekanismImageButton(this, guiLeft + 44, guiTop + 75, 16, getButtonLocation("fill_empty"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_ITEMS, tile)), getOnHover(MekanismLang.FILL_EMPTY)));
         addButton(craftSingleButton = new MekanismImageButton(this, guiLeft + 71, guiTop + 75, 16, getButtonLocation("craft_single"),
@@ -68,7 +68,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_ALL, tile)), getOnHover(MekanismLang.CRAFT_AVAILABLE)));
         addButton(autoModeButton = new MekanismImageButton(this, guiLeft + 107, guiTop + 75, 16, getButtonLocation("auto_toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
-              getOnHover(() -> MekanismLang.AUTO_MODE.translate(OnOff.of(tile.autoMode)))));
+              getOnHover(() -> MekanismLang.AUTO_MODE.translate(OnOff.of(tile.getAutoMode())))));
         updateEnabledButtons();
     }
 
@@ -79,11 +79,11 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     private void updateEnabledButtons() {
-        encodeFormulaButton.active = !tile.autoMode && tile.isRecipe && canEncode();
+        encodeFormulaButton.active = !tile.getAutoMode() && tile.hasRecipe() && canEncode();
         stockControlButton.active = tile.formula != null && tile.formula.isValidFormula();
-        fillEmptyButton.active = !tile.autoMode;
-        craftSingleButton.active = !tile.autoMode && tile.isRecipe;
-        craftAvailableButton.active = !tile.autoMode && tile.isRecipe;
+        fillEmptyButton.active = !tile.getAutoMode();
+        craftSingleButton.active = !tile.getAutoMode() && tile.hasRecipe();
+        craftAvailableButton.active = !tile.getAutoMode() && tile.hasRecipe();
         autoModeButton.active = tile.formula != null && tile.formula.isValidFormula();
     }
 
@@ -114,7 +114,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(matrix, partialTick, mouseX, mouseY);
         //TODO: Gui element
-        SlotOverlay overlay = tile.isRecipe ? SlotOverlay.CHECK : SlotOverlay.X;
+        SlotOverlay overlay = tile.hasRecipe() ? SlotOverlay.CHECK : SlotOverlay.X;
         getMinecraft().textureManager.bindTexture(overlay.getTexture());
         blit(matrix, guiLeft + 88, guiTop + 22, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
     }

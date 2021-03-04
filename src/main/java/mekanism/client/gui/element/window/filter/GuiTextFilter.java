@@ -39,6 +39,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     }
 
     protected CharPredicate getInputValidator() {
+        //TODO - 10.1: Re-evaluate this I am not sure all the extra filter chars are valid for things like tag filters or even really modid filters
         return InputValidator.or(InputValidator.LETTER, InputValidator.DIGIT, InputValidator.FILTER_CHARS);
     }
 

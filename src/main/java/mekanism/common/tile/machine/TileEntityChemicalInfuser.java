@@ -25,6 +25,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -42,6 +43,7 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.ItemStack;
 
 public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> {
 
@@ -50,7 +52,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     public IGasTank rightTank;
     public IGasTank centerTank;
 
-    public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> leftInputHandler;
@@ -172,6 +174,12 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     }
 
     @Nonnull
+    @ComputerMethod(nameOverride = "getEnergyUsage")
+    public FloatingLong getEnergyUsed() {
+        return clientEnergyUsed;
+    }
+
+    @Nonnull
     @Override
     public MekanismRecipeType<ChemicalInfuserRecipe> getRecipeType() {
         return MekanismRecipeType.CHEMICAL_INFUSING;
@@ -215,6 +223,73 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getLeftInputItem() {
+        return leftInputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getRightInputItem() {
+        return rightInputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private GasStack getLeftInput() {
+        return leftTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getLeftInputCapacity() {
+        return leftTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getLeftInputNeeded() {
+        return leftTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getRightInput() {
+        return rightTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getRightInputCapacity() {
+        return rightTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getRightInputNeeded() {
+        return rightTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getOutput() {
+        return centerTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getOutputCapacity() {
+        return centerTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getOutputNeeded() {
+        return centerTank.getNeeded();
+    }
+    //End methods IComputerTile
 }

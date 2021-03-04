@@ -30,6 +30,9 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -53,6 +56,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
@@ -79,12 +83,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     /**
      * The type of gas this block is outputting.
      */
+    @SyntheticComputerMethod(getter = "getLeftOutputDumpingMode")
     public GasMode dumpLeft = GasMode.IDLE;
     /**
      * Type type of gas this block is dumping.
      */
+    @SyntheticComputerMethod(getter = "getRightOutputDumpingMode")
     public GasMode dumpRight = GasMode.IDLE;
-    public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
@@ -218,6 +224,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Nonnull
+    @ComputerMethod(nameOverride = "getEnergyUsage")
+    public FloatingLong getEnergyUsed() {
+        return clientEnergyUsed;
+    }
+
+    @Nonnull
     @Override
     public MekanismRecipeType<ElectrolysisRecipe> getRecipeType() {
         return MekanismRecipeType.SEPARATING;
@@ -291,6 +303,117 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         super.addContainerTrackers(container);
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpLeft, value -> dumpLeft = value));
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumpRight, value -> dumpRight = value));
-        container.track(SyncableFloatingLong.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return fluidSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getLeftOutputItem() {
+        return leftOutputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getRightOutputItem() {
+        return rightOutputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private FluidStack getInput() {
+        return fluidTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getInputCapacity() {
+        return fluidTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getInputNeeded() {
+        return fluidTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getLeftOutput() {
+        return leftTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getLeftOutputCapacity() {
+        return leftTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getLeftOutputNeeded() {
+        return leftTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getRightOutput() {
+        return rightTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getRightOutputCapacity() {
+        return rightTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getRightOutputNeeded() {
+        return rightTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private void setLeftOutputDumpingMode(GasMode mode) throws ComputerException {
+        validateSecurityIsPublic();
+        if (dumpLeft != mode) {
+            dumpLeft = mode;
+            markDirty(false);
+        }
+    }
+
+    @ComputerMethod
+    private void incrementLeftOutputDumpingMode() throws ComputerException {
+        validateSecurityIsPublic();
+        nextMode(0);
+    }
+
+    @ComputerMethod
+    private void decrementLeftOutputDumpingMode() throws ComputerException {
+        validateSecurityIsPublic();
+        dumpLeft = dumpLeft.getPrevious();
+        markDirty(false);
+    }
+
+    @ComputerMethod
+    private void setRightOutputDumpingMode(GasMode mode) throws ComputerException {
+        validateSecurityIsPublic();
+        if (dumpRight != mode) {
+            dumpRight = mode;
+            markDirty(false);
+        }
+    }
+
+    @ComputerMethod
+    private void incrementRightOutputDumpingMode() throws ComputerException {
+        validateSecurityIsPublic();
+        nextMode(1);
+    }
+
+    @ComputerMethod
+    private void decrementRightOutputDumpingMode() throws ComputerException {
+        validateSecurityIsPublic();
+        dumpRight = dumpRight.getPrevious();
+        markDirty(false);
+    }
+    //End methods IComputerTile
 }

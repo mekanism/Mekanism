@@ -57,13 +57,13 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
-        if (tile.time > 0) {
-            drawString(matrix, MekanismLang.DELAY.translate(tile.time), 26, 30, titleTextColor());
+        if (tile.getDelay() > 0) {
+            drawString(matrix, MekanismLang.DELAY.translate(tile.getDelay()), 26, 30, titleTextColor());
         } else {
             drawString(matrix, MekanismLang.NO_DELAY.translate(), 26, 30, titleTextColor());
         }
-        drawString(matrix, MekanismLang.MIN.translate(EnergyDisplay.of(tile.minThreshold)), 26, 45, titleTextColor());
-        drawString(matrix, MekanismLang.MAX.translate(EnergyDisplay.of(tile.maxThreshold)), 26, 60, titleTextColor());
+        drawString(matrix, MekanismLang.MIN.translate(EnergyDisplay.of(tile.getMinThreshold())), 26, 45, titleTextColor());
+        drawString(matrix, MekanismLang.MAX.translate(EnergyDisplay.of(tile.getMaxThreshold())), 26, 60, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

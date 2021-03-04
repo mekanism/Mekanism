@@ -36,7 +36,7 @@ public class GuiWindGenerator extends GuiMekanismTile<TileEntityWindGenerator, M
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 48, 23, 80, 40, () -> {
+        addButton(new GuiInnerScreen(this, 48, 21, 80, 44, () -> {
             List<ITextComponent> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent());
             list.add(GeneratorsLang.POWER.translate(MekanismUtils.convertToDisplay(MekanismGeneratorsConfig.generators.windGenerationMin.get()

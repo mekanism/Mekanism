@@ -3,9 +3,7 @@ package mekanism.common.content.miner;
 import javax.annotation.Nonnull;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IMaterialFilter;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -14,8 +12,11 @@ public class MinerMaterialFilter extends MinerFilter<MinerMaterialFilter> implem
 
     private ItemStack materialItem = ItemStack.EMPTY;
 
-    public Material getMaterial() {
-        return Block.getBlockFromItem(materialItem.getItem()).getDefaultState().getMaterial();
+    public MinerMaterialFilter(ItemStack item) {
+        materialItem = item;
+    }
+
+    public MinerMaterialFilter() {
     }
 
     @Override

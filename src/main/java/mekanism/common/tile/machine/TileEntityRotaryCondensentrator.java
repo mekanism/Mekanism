@@ -33,6 +33,8 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -54,6 +56,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -75,7 +78,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
-    public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private MachineEnergyContainer<TileEntityRotaryCondensentrator> energyContainer;
     private GasInventorySlot gasInputSlot;
@@ -190,6 +193,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         markDirty(false);
     }
 
+    @Nonnull
+    @ComputerMethod(nameOverride = "getEnergyUsage")
+    public FloatingLong getEnergyUsed() {
+        return clientEnergyUsed;
+    }
+
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.read(state, nbtTags);
@@ -267,6 +276,77 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(() -> mode, value -> mode = value));
-        container.track(SyncableFloatingLong.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private boolean isCondensentrating() {
+        return !mode;
+    }
+
+    @ComputerMethod
+    private void setCondensentrating(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (mode != value) {
+            mode = value;
+            markDirty(false);
+        }
+    }
+
+    @ComputerMethod
+    private ItemStack getGasItemInput() {
+        return gasInputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getGasItemOutput() {
+        return gasOutputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getFluidItemInput() {
+        return fluidInputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getFluidItemOutput() {
+        return fluidOutputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private GasStack getGas() {
+        return gasTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getGasCapacity() {
+        return gasTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getGasNeeded() {
+        return gasTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private FluidStack getFluid() {
+        return fluidTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getFluidCapacity() {
+        return fluidTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getFluidNeeded() {
+        return fluidTank.getNeeded();
+    }
+    //End methods IComputerTile
 }

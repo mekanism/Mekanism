@@ -12,10 +12,20 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     private String modID;
 
+    public MinerModIDFilter(String modID) {
+        this.modID = modID;
+    }
+
+    public MinerModIDFilter() {
+    }
+
     @Override
     public boolean canFilter(BlockState state) {
+        if (modID.equals("*")) {
+            return true;
+        }
         String id = state.getBlock().getRegistryName().getNamespace();
-        if (modID.equals(id) || modID.equals("*")) {
+        if (modID.equals(id)) {
             return true;
         } else if (modID.endsWith("*") && !modID.startsWith("*")) {
             return id.startsWith(modID.substring(0, modID.length() - 1));

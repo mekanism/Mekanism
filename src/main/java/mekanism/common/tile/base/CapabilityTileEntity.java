@@ -51,6 +51,10 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
         capabilityCache.addConfigComponent(config);
     }
 
+    protected <T> boolean canEverResolve(Capability<T> capability) {
+        return capabilityCache.canResolve(capability);
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {

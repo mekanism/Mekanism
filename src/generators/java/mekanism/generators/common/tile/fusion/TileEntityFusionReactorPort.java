@@ -16,6 +16,7 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
@@ -117,4 +118,16 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     public int getRedstoneLevel() {
         return getMultiblock().getCurrentRedstoneLevel();
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private boolean getMode() {
+        return getActive();
+    }
+
+    @ComputerMethod
+    private void setMode(boolean output) {
+        setActive(output);
+    }
+    //End methods IComputerTile
 }

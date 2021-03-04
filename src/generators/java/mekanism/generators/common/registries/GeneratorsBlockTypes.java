@@ -118,7 +118,7 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityTurbineValve> TURBINE_VALVE = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VALVE, GeneratorsLang.DESCRIPTION_TURBINE_VALVE)
           .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
-          .with(Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
           .build();
     // Turbine Vent
     public static final BlockTypeTile<TileEntityTurbineVent> TURBINE_VENT = BlockTileBuilder
@@ -167,7 +167,7 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_LOGIC_ADAPTER)
           .with(new AttributeRedstoneEmitter<>(tile -> tile.getStatus() == RedstoneStatus.OUTPUTTING ? 15 : 0))
-          .with(Attributes.REDSTONE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.REDSTONE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
@@ -208,7 +208,7 @@ public class GeneratorsBlockTypes {
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER)
           .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
           .with(new AttributeRedstoneEmitter<>(tile -> tile.checkMode() ? 15 : 0))
-          .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
           .withEmptyContainer(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
           .build();
     // Laser Focus Matrix

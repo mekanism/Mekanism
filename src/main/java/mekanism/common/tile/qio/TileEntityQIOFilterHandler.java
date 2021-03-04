@@ -12,6 +12,8 @@ import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.lib.HashList;
@@ -37,6 +39,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     }
 
     @Override
+    @ComputerMethod
     public HashList<QIOFilter<?>> getFilters() {
         return filters;
     }
@@ -148,4 +151,18 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
         // 1 to 5 types
         return Math.round(1F + upgradeComponent.getUpgrades(Upgrade.SPEED) / 2F);
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private boolean addFilter(QIOFilter<?> filter) throws ComputerException {
+        validateSecurityIsPublic();
+        return filters.add(filter);
+    }
+
+    @ComputerMethod
+    private boolean removeFilter(QIOFilter<?> filter) throws ComputerException {
+        validateSecurityIsPublic();
+        return filters.remove(filter);
+    }
+    //End methods IComputerTile
 }

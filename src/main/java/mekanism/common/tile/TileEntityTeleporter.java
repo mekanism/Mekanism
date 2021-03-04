@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -27,10 +28,13 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.teleporter.TeleporterFrequency;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismBlocks;
@@ -44,6 +48,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.server.MinecraftServer;
@@ -517,4 +522,99 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             color = null;
         }
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private Collection<TeleporterFrequency> getFrequencies() {
+        return FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequencies();
+    }
+
+    @ComputerMethod
+    private boolean hasFrequency() {
+        TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
+        return frequency != null && frequency.isValid();
+    }
+
+    @ComputerMethod
+    private TeleporterFrequency getFrequency() throws ComputerException {
+        TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
+        if (frequency == null || !frequency.isValid()) {
+            throw new ComputerException("No frequency is currently selected.");
+        }
+        return frequency;
+    }
+
+    @ComputerMethod
+    private void setFrequency(String name) throws ComputerException {
+        validateSecurityIsPublic();
+        TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequency(name);
+        if (frequency == null) {
+            throw new ComputerException("No public teleporter frequency with name '%s' found.", name);
+        }
+        setFrequency(FrequencyType.TELEPORTER, frequency.getIdentity());
+    }
+
+    @ComputerMethod
+    private void createFrequency(String name) throws ComputerException {
+        validateSecurityIsPublic();
+        TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequency(name);
+        if (frequency != null) {
+            throw new ComputerException("Unable to create public teleporter frequency with name '%s' as one already exists.", name);
+        }
+        setFrequency(FrequencyType.TELEPORTER, new FrequencyIdentity(name, true));
+    }
+
+    @ComputerMethod
+    private EnumColor getFrequencyColor() throws ComputerException {
+        return getFrequency().getColor();
+    }
+
+    @ComputerMethod
+    private void setFrequencyColor(EnumColor color) throws ComputerException {
+        validateSecurityIsPublic();
+        getFrequency().setColor(color);
+    }
+
+    @ComputerMethod
+    private void incrementFrequencyColor() throws ComputerException {
+        validateSecurityIsPublic();
+        TeleporterFrequency frequency = getFrequency();
+        frequency.setColor(frequency.getColor().getNext());
+    }
+
+    @ComputerMethod
+    private void decrementFrequencyColor() throws ComputerException {
+        validateSecurityIsPublic();
+        TeleporterFrequency frequency = getFrequency();
+        frequency.setColor(frequency.getColor().getPrevious());
+    }
+
+    @ComputerMethod
+    private Set<Coord4D> getActiveTeleporters() throws ComputerException {
+        return getFrequency().getActiveCoords();
+    }
+
+    @ComputerMethod
+    private String getStatus() {
+        if (hasFrequency()) {
+            switch (status) {
+                case 1:
+                    return "ready";
+                case 2:
+                    return "no frame";
+                case 4:
+                    return "needs energy";
+                case 3:
+                default:
+                    return "no link";
+            }
+        }
+        return "no frequency";
+    }
+    //End methods IComputerTile
 }

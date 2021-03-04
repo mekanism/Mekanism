@@ -7,6 +7,7 @@ import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -33,6 +34,9 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -40,14 +44,13 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.ChemicalTankTier;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
-import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.ChemicalTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.ChemicalUtil;
@@ -57,13 +60,11 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 
-public class TileEntityChemicalTank extends TileEntityMekanism implements ISideConfiguration, ISustainedData, IHasGasMode {
+public class TileEntityChemicalTank extends TileEntityConfigurableMachine implements ISustainedData, IHasGasMode {
 
-    public final TileComponentEjector ejectorComponent;
-    public final TileComponentConfig configComponent;
+    @SyntheticComputerMethod(getter = "getDumpingMode")
     public GasMode dumping = GasMode.IDLE;
 
     private MergedChemicalTank chemicalTank;
@@ -229,36 +230,13 @@ public class TileEntityChemicalTank extends TileEntityMekanism implements ISideC
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(getStoredAmount(), tier.getStorage());
+        IChemicalTank<?, ?> currentTank = getCurrentTank();
+        return MekanismUtils.redstoneLevelFromContents(currentTank.getStored(), currentTank.getCapacity());
     }
 
-    private long getStoredAmount() {
-        switch (chemicalTank.getCurrent()) {
-            case GAS:
-                return getGasTank().getStored();
-            case INFUSION:
-                return getInfusionTank().getStored();
-            case PIGMENT:
-                return getPigmentTank().getStored();
-            case SLURRY:
-                return getSlurryTank().getStored();
-        }
-        return 0;
-    }
-
-    @Override
-    public TileComponentEjector getEjector() {
-        return ejectorComponent;
-    }
-
-    @Override
-    public TileComponentConfig getConfig() {
-        return configComponent;
-    }
-
-    @Override
-    public Direction getOrientation() {
-        return getDirection();
+    private IChemicalTank<?, ?> getCurrentTank() {
+        Current current = chemicalTank.getCurrent();
+        return chemicalTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);
     }
 
     public ChemicalTankTier getTier() {
@@ -335,6 +313,61 @@ public class TileEntityChemicalTank extends TileEntityMekanism implements ISideC
         super.addContainerTrackers(container);
         container.track(SyncableEnum.create(GasMode::byIndexStatic, GasMode.IDLE, () -> dumping, value -> dumping = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ChemicalStack<?> getStored() {
+        return getCurrentTank().getStack();
+    }
+
+    @ComputerMethod
+    private long getCapacity() {
+        return getCurrentTank().getCapacity();
+    }
+
+    @ComputerMethod
+    private long getNeeded() {
+        return getCurrentTank().getNeeded();
+    }
+
+    @ComputerMethod
+    public float getFilledPercentage() {
+        IChemicalTank<?, ?> tank = getCurrentTank();
+        return (float) (tank.getStored() / (double) tank.getCapacity());
+    }
+
+    @ComputerMethod
+    private ItemStack getFillItem() {
+        return fillSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getDrainItem() {
+        return drainSlot.getStack();
+    }
+
+    @ComputerMethod
+    private void setDumpingMode(GasMode mode) throws ComputerException {
+        validateSecurityIsPublic();
+        if (dumping != mode) {
+            dumping = mode;
+            markDirty(false);
+        }
+    }
+
+    @ComputerMethod
+    private void incrementDumpingMode() throws ComputerException {
+        validateSecurityIsPublic();
+        nextMode(0);
+    }
+
+    @ComputerMethod
+    private void decrementDumpingMode() throws ComputerException {
+        validateSecurityIsPublic();
+        dumping = dumping.getPrevious();
+        markDirty(false);
+    }
+    //End methods IComputerTile
 
     public enum GasMode implements IIncrementalEnum<GasMode>, IHasTextComponent {
         IDLE(MekanismLang.IDLE),

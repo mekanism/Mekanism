@@ -15,6 +15,8 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.HybridInventorySlot;
@@ -24,8 +26,10 @@ import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -34,6 +38,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @ContainerSync
     public final MergedTank mergedTank;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getContainerEditMode")
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
     private HybridInventorySlot inputSlot, outputSlot;
@@ -120,6 +125,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         return MekanismUtils.getScale(prevScale, 0, getTankCapacity(), true);
     }
 
+    @ComputerMethod
     public int getTankCapacity() {
         return tankCapacity;
     }
@@ -174,4 +180,53 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     public boolean isEmpty() {
         return mergedTank.getCurrentType() == CurrentType.EMPTY;
     }
+
+    //Computer related methods
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private void setContainerEditMode(ContainerEditMode mode) {
+        editMode = mode;
+    }
+
+    @ComputerMethod
+    private void incrementContainerEditMode() {
+        editMode = editMode.getNext();
+    }
+
+    @ComputerMethod
+    private void decrementContainerEditMode() {
+        editMode = editMode.getPrevious();
+    }
+
+    @ComputerMethod
+    private Object getStored() {
+        switch (mergedTank.getCurrentType()) {
+            case FLUID:
+                return getFluidTank().getFluid();
+            case GAS:
+                return getGasTank().getStack();
+            case INFUSION:
+                return getInfusionTank().getStack();
+            case PIGMENT:
+                return getPigmentTank().getStack();
+            case SLURRY:
+                return getSlurryTank().getStack();
+        }
+        return FluidStack.EMPTY;
+    }
+
+    @ComputerMethod
+    private double getFilledPercentage() {
+        return getStoredAmount() / (double) getTankCapacity();
+    }
+    //End computer related methods
 }

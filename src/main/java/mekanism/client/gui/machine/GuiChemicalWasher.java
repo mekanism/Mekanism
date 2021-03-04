@@ -33,6 +33,8 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
     protected void initPreSlots() {
         //Add the side holder before the slots, as it holds a couple of the slots
         addButton(GuiSideHolder.create(this, xSize, 66, 57, false, SpecialColors.TAB_CHEMICAL_WASHER));
+        //TODO - 10.1: Fix this, for some reason the slots are not rendering on top of this properly. We should also check
+        // any other initPreSlots overrides to see if they are also broken
     }
 
     @Override
@@ -43,7 +45,7 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), () -> tile.clientEnergyUsed, this));
+        addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getEnergyUsed, this));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 7, 13));
         addButton(new GuiSlurryGauge(() -> tile.inputTank, () -> tile.getSlurryTanks(null), GaugeType.STANDARD, this, 28, 13));
         addButton(new GuiSlurryGauge(() -> tile.outputTank, () -> tile.getSlurryTanks(null), GaugeType.STANDARD, this, 131, 13));

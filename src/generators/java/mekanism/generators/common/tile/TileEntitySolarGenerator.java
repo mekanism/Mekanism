@@ -8,6 +8,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -16,6 +17,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -48,6 +50,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return builder.build();
     }
 
+    @ComputerMethod
     public boolean canSeeSun() {
         return seesSun;
     }
@@ -136,6 +139,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         return peakOutput;
     }
 
+    @ComputerMethod(nameOverride = "getProductionRate")
     public FloatingLong getLastProductionAmount() {
         return lastProductionAmount;
     }
@@ -147,4 +151,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         container.track(SyncableFloatingLong.create(this::getMaxOutput, value -> peakOutput = value));
         container.track(SyncableFloatingLong.create(this::getLastProductionAmount, value -> lastProductionAmount = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+    //End methods IComputerTile
 }

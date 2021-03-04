@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
@@ -14,6 +15,9 @@ import mekanism.common.capabilities.energy.DynamicStrictEnergyHandler;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.UniversalCable;
+import mekanism.common.integration.computer.ComputerCapabilityHelper;
+import mekanism.common.integration.computer.IComputerTile;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
@@ -22,7 +26,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 
-public class TileEntityUniversalCable extends TileEntityTransmitter {
+public class TileEntityUniversalCable extends TileEntityTransmitter implements IComputerTile {
 
     private final EnergyHandlerManager energyHandlerManager;
 
@@ -36,6 +40,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter {
             }
             return cable.getEnergyContainers(direction);
         }, new DynamicStrictEnergyHandler(this::getEnergyContainers, getExtractPredicate(), getInsertPredicate(), null)));
+        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     @Override
@@ -106,4 +111,26 @@ public class TileEntityUniversalCable extends TileEntityTransmitter {
             WorldUtils.notifyNeighborOfChange(world, side, pos);
         }
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private FloatingLong getBuffer() {
+        return getTransmitter().getBufferWithFallback();
+    }
+
+    @ComputerMethod
+    private FloatingLong getCapacity() {
+        return getTransmitter().getCapacityAsFloatingLong();
+    }
+
+    @ComputerMethod
+    private FloatingLong getNeeded() {
+        return getCapacity().subtract(getBuffer());
+    }
+
+    @ComputerMethod
+    private double getFilledPercentage() {
+        return getBuffer().divideToLevel(getCapacity());
+    }
+    //End methods IComputerTile
 }

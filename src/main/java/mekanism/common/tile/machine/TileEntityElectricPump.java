@@ -29,6 +29,8 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -48,6 +50,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -339,4 +342,42 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     public MachineEnergyContainer<TileEntityElectricPump> getEnergyContainer() {
         return energyContainer;
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private FluidStack getFluid() {
+        return fluidTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getFluidCapacity() {
+        return fluidTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getFluidNeeded() {
+        return fluidTank.getNeeded();
+    }
+
+    @ComputerMethod(nameOverride = "reset")
+    private void resetPump() throws ComputerException {
+        validateSecurityIsPublic();
+        reset();
+    }
+    //End methods IComputerTile
 }

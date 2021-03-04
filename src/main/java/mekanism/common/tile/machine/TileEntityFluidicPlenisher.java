@@ -25,6 +25,8 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -39,6 +41,7 @@ import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -255,11 +258,15 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         }
     }
 
-    @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+    public void reset() {
         activeNodes.clear();
         usedNodes.clear();
         finishedCalc = false;
+    }
+
+    @Override
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+        reset();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.PLENISHER_RESET),
               Util.DUMMY_UUID);
         return ActionResultType.SUCCESS;
@@ -292,4 +299,42 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public MachineEnergyContainer<TileEntityFluidicPlenisher> getEnergyContainer() {
         return energyContainer;
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private FluidStack getFluid() {
+        return fluidTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getFluidCapacity() {
+        return fluidTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getFluidNeeded() {
+        return fluidTank.getNeeded();
+    }
+
+    @ComputerMethod(nameOverride = "reset")
+    private void resetPlenisher() throws ComputerException {
+        validateSecurityIsPublic();
+        reset();
+    }
+    //End methods IComputerTile
 }

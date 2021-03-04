@@ -8,7 +8,6 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
-import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.BlockState;
@@ -41,16 +40,13 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         return (double) Math.round(getMultiblock().getBoilEfficiency() * 1_000) / 1_000;
     }
 
-    public long getMaxBurnRate() {
-        return getMultiblock().fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get();
-    }
-
     public void setReactorActive(boolean active) {
         getMultiblock().setActive(active);
     }
 
     public String getDamageString() {
-        return Math.round((getMultiblock().reactorDamage / FissionReactorMultiblockData.MAX_DAMAGE) * 100) + "%";
+        //TODO - 10.1: Lang string?
+        return getMultiblock().getDamagePercent() + "%";
     }
 
     public EnumColor getDamageColor() {
@@ -65,7 +61,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     public void setRateLimitFromPacket(double rate) {
-        getMultiblock().rateLimit = Math.max(Math.min(getMaxBurnRate(), rate), 0);
+        FissionReactorMultiblockData multiblock = getMultiblock();
+        multiblock.rateLimit = Math.max(Math.min(multiblock.getMaxBurnRate(), rate), 0);
         markDirty(false);
     }
 

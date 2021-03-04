@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -45,14 +44,10 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             List<ITextComponent> list = new ArrayList<>();
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
-                FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
-                      .multiply(Math.min(multiblock.blades, multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-                double rate = multiblock.lowerVolume * (multiblock.clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
-                rate = Math.min(rate, multiblock.vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
-                list.add(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(EnergyDisplay.of(energyMultiplier.multiply(multiblock.clientFlow))));
+                list.add(GeneratorsLang.TURBINE_PRODUCTION_AMOUNT.translate(EnergyDisplay.of(multiblock.getProductionRate())));
                 list.add(GeneratorsLang.TURBINE_FLOW_RATE.translate(TextUtils.format(multiblock.clientFlow)));
                 list.add(GeneratorsLang.TURBINE_CAPACITY.translate(TextUtils.format(multiblock.getSteamCapacity())));
-                list.add(GeneratorsLang.TURBINE_MAX_FLOW.translate(TextUtils.format((long) rate)));
+                list.add(GeneratorsLang.TURBINE_MAX_FLOW.translate(TextUtils.format(multiblock.getMaxFlowRate())));
             }
             return list;
         }));

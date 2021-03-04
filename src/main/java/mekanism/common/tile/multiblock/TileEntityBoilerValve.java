@@ -13,6 +13,7 @@ import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValve
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.content.boiler.BoilerMultiblockData;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
@@ -67,15 +68,21 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         return getMultiblock().getCurrentRedstoneLevel();
     }
 
+    @ComputerMethod
     private BoilerValveMode getMode() {
         return getBlockState().get(AttributeStateBoilerValveMode.modeProperty);
+    }
+
+    @ComputerMethod
+    private void setMode(BoilerValveMode mode) {
+        world.setBlockState(pos, getBlockState().with(AttributeStateBoilerValveMode.modeProperty, mode));
     }
 
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
             BoilerValveMode mode = getMode().getNext();
-            world.setBlockState(pos, getBlockState().with(AttributeStateBoilerValveMode.modeProperty, mode));
+            setMode(mode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
                   MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.DUMMY_UUID);
         }
@@ -111,4 +118,16 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         }
         return super.extractGasCheck(tank, side);
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void incrementMode() {
+        setMode(getMode().getNext());
+    }
+
+    @ComputerMethod
+    private void decrementMode() {
+        setMode(getMode().getPrevious());
+    }
+    //End methods IComputerTile
 }

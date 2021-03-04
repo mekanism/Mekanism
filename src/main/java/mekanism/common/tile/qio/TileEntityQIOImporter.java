@@ -11,6 +11,8 @@ import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.lib.inventory.Finder;
@@ -116,6 +118,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
         return false;
     }
 
+    @ComputerMethod
     public boolean getImportWithoutFilter() {
         return importWithoutFilter;
     }
@@ -162,4 +165,14 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
         super.setConfigurationData(nbtTags);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.AUTO, value -> importWithoutFilter = value);
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void setImportsWithoutFilter(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (importWithoutFilter != value) {
+            toggleImportWithoutFilter();
+        }
+    }
+    //End methods IComputerTile
 }

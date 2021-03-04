@@ -23,6 +23,7 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -56,7 +57,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     private OutputInventorySlot outputSlot;
     private EnergyInventorySlot energySlot;
 
-    public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     public TileEntityAntiprotonicNucleosynthesizer() {
         super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, BASE_TICKS_REQUIRED);
@@ -105,6 +106,12 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         return clientEnergyUsed.divide(energyContainer.getEnergyPerTick()).doubleValue();
     }
 
+    @Nonnull
+    @ComputerMethod(nameOverride = "getEnergyUsage")
+    public FloatingLong getEnergyUsed() {
+        return clientEnergyUsed;
+    }
+
     @Override
     protected void onUpdateServer() {
         energySlot.fillContainerOrConvert();
@@ -150,7 +157,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
@@ -168,6 +175,43 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getInputChemicalItem() {
+        return gasInputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private GasStack getInputChemical() {
+        return gasTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getInputChemicalCapacity() {
+        return gasTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getInputChemicalNeeded() {
+        return gasTank.getNeeded();
+    }
+    //End methods IComputerTile
 }

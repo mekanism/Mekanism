@@ -65,19 +65,19 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             ILangEntry runningType;
             if (tile.getEnergyContainer().getEnergyPerTick().greaterThan(tile.getEnergyContainer().getMaxEnergy())) {
                 runningType = MekanismLang.MINER_LOW_POWER;
-            } else if (tile.running) {
+            } else if (tile.isRunning()) {
                 runningType = MekanismLang.MINER_RUNNING;
             } else {
                 runningType = MekanismLang.IDLE;
             }
             list.add(runningType.translate());
             list.add(tile.searcher.state.getTextComponent());
-            list.add(MekanismLang.MINER_TO_MINE.translate(TextUtils.format(tile.cachedToMine)));
+            list.add(MekanismLang.MINER_TO_MINE.translate(TextUtils.format(tile.getToMine())));
             return list;
         }).spacing(1).clearFormat());
-        addButton(new GuiDigitalSwitch(this, 19, 56, eject, () -> tile.doEject, MekanismLang.AUTO_EJECT.translate(),
+        addButton(new GuiDigitalSwitch(this, 19, 56, eject, tile::getDoEject, MekanismLang.AUTO_EJECT.translate(),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile)), SwitchType.LOWER_ICON));
-        addButton(new GuiDigitalSwitch(this, 38, 56, input, () -> tile.doPull, MekanismLang.AUTO_PULL.translate(),
+        addButton(new GuiDigitalSwitch(this, 38, 56, input, tile::getDoPull, MekanismLang.AUTO_PULL.translate(),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_PULL_BUTTON, tile)), SwitchType.LOWER_ICON));
         addButton(new GuiDigitalSwitch(this, 57, 56, silk, tile::getSilkTouch, MekanismLang.MINER_SILK.translate(),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, tile)), SwitchType.LOWER_ICON));
@@ -121,8 +121,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     }
 
     private void updateEnabledButtons() {
-        startButton.active = tile.searcher.state == State.IDLE || !tile.running;
-        stopButton.active = tile.searcher.state != State.IDLE && tile.running;
+        startButton.active = tile.searcher.state == State.IDLE || !tile.isRunning();
+        stopButton.active = tile.searcher.state != State.IDLE && tile.isRunning();
         configButton.active = tile.searcher.state == State.IDLE;
     }
 

@@ -18,6 +18,8 @@ import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -117,7 +119,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
@@ -137,4 +139,14 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     public SawmillUpgradeData getUpgradeData() {
         return new SawmillUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents());
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getSecondaryOutput(int process) throws ComputerException {
+        validateValidProcess(process);
+        IInventorySlot secondaryOutputSlot = processInfoSlots[process].getSecondaryOutputSlot();
+        //This should never be null, but in case it is handle it
+        return secondaryOutputSlot == null ? ItemStack.EMPTY : secondaryOutputSlot.getStack();
+    }
+    //End methods IComputerTile
 }

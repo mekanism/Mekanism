@@ -30,6 +30,9 @@ import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.Pigm
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.SlurryHandlerManager;
 import mekanism.common.content.network.BoxedChemicalNetwork;
 import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
+import mekanism.common.integration.computer.ComputerCapabilityHelper;
+import mekanism.common.integration.computer.IComputerTile;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
@@ -37,7 +40,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter {
+public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile {
 
     private final GasHandlerManager gasHandlerManager;
     private final InfusionHandlerManager infusionHandlerManager;
@@ -56,6 +59,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter {
               new DynamicPigmentHandler(this::getPigmentTanks, canExtract, canInsert, null)));
         addCapabilityResolver(slurryHandlerManager = new SlurryHandlerManager(getHolder(BoxedPressurizedTube::getSlurryTanks),
               new DynamicSlurryHandler(this::getSlurryTanks, canExtract, canInsert, null)));
+        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     @Override
@@ -153,4 +157,26 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter {
             WorldUtils.notifyNeighborOfChange(world, side, pos);
         }
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ChemicalStack<?> getBuffer() {
+        return getTransmitter().getBufferWithFallback().getChemicalStack();
+    }
+
+    @ComputerMethod
+    private long getCapacity() {
+        return getTransmitter().getCapacity();
+    }
+
+    @ComputerMethod
+    private long getNeeded() {
+        return getCapacity() - getBuffer().getAmount();
+    }
+
+    @ComputerMethod
+    private double getFilledPercentage() {
+        return getBuffer().getAmount() / (double) getCapacity();
+    }
+    //End methods IComputerTile
 }

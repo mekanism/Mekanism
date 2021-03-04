@@ -31,6 +31,8 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.blocktype.FactoryType;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -40,25 +42,23 @@ import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import org.jetbrains.annotations.Contract;
 
-public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityMekanism implements ISideConfiguration, ISpecialConfigData,
+public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements ISpecialConfigData,
       ITileCachedRecipeHolder<RECIPE> {
 
     /**
@@ -80,13 +80,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     /**
      * How many ticks it takes, with upgrades, to run an operation
      */
-    public int ticksRequired = 200;
+    private int ticksRequired = 200;
     private boolean sorting;
     private boolean sortingNeeded = true;
-    public FloatingLong lastUsage = FloatingLong.ZERO;
+    private FloatingLong lastUsage = FloatingLong.ZERO;
 
-    public final TileComponentEjector ejectorComponent;
-    public final TileComponentConfig configComponent;
     /**
      * This machine's factory type.
      */
@@ -128,7 +126,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         progress = new int[tier.processes];
         cachedRecipes = new CachedRecipe[tier.processes];
         activeStates = new boolean[cachedRecipes.length];
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
@@ -324,8 +321,19 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         markDirty(false);
     }
 
+    @ComputerMethod(nameOverride = "isAutoSortEnabled")
     public boolean isSorting() {
         return sorting;
+    }
+
+    @ComputerMethod(nameOverride = "getEnergyUsage")
+    public FloatingLong getLastUsage() {
+        return lastUsage;
+    }
+
+    @ComputerMethod
+    public int getTicksRequired() {
+        return ticksRequired;
     }
 
     @Override
@@ -346,21 +354,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             nbtTags.putInt(NBTConstants.PROGRESS + i, getProgress(i));
         }
         return nbtTags;
-    }
-
-    @Override
-    public TileComponentConfig getConfig() {
-        return configComponent;
-    }
-
-    @Override
-    public Direction getOrientation() {
-        return getDirection();
-    }
-
-    @Override
-    public TileComponentEjector getEjector() {
-        return ejectorComponent;
     }
 
     @Override
@@ -409,9 +402,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.trackArray(progress);
-        container.track(SyncableFloatingLong.create(() -> lastUsage, value -> lastUsage = value));
+        container.track(SyncableFloatingLong.create(this::getLastUsage, value -> lastUsage = value));
         container.track(SyncableBoolean.create(this::isSorting, value -> sorting = value));
-        container.track(SyncableInt.create(() -> ticksRequired, value -> ticksRequired = value));
+        container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
     }
 
     @Override
@@ -438,6 +431,46 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             super.parseUpgradeData(upgradeData);
         }
     }
+
+    //Methods relating to IComputerTile
+    protected void validateValidProcess(int process) throws ComputerException {
+        if (process < 0 || process >= progress.length) {
+            throw new ComputerException("Process: '%d' is out of bounds, as this factory only has '%d' processes (zero indexed).", process, progress.length);
+        }
+    }
+
+    @ComputerMethod
+    private void setAutoSort(boolean enabled) throws ComputerException {
+        validateSecurityIsPublic();
+        if (sorting != enabled) {
+            sorting = enabled;
+            markDirty(false);
+        }
+    }
+
+    @ComputerMethod
+    private int getRecipeProgress(int process) throws ComputerException {
+        validateValidProcess(process);
+        return getProgress(process);
+    }
+
+    @ComputerMethod
+    private ItemStack getInput(int process) throws ComputerException {
+        validateValidProcess(process);
+        return processInfoSlots[process].getInputSlot().getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutput(int process) throws ComputerException {
+        validateValidProcess(process);
+        return processInfoSlots[process].getOutputSlot().getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+    //End methods IComputerTile
 
     private void sortInventory() {
         Map<HashedItem, RecipeProcessInfo> processes = new HashMap<>();

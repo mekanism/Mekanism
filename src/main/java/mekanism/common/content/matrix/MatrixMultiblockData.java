@@ -2,6 +2,7 @@ package mekanism.common.content.matrix;
 
 import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -11,6 +12,7 @@ import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class MatrixMultiblockData extends MultiblockData {
@@ -104,23 +106,41 @@ public class MatrixMultiblockData extends MultiblockData {
         return isRemote() ? clientMaxEnergy : energyContainer.getMaxEnergy();
     }
 
+    @ComputerMethod
     public FloatingLong getTransferCap() {
         return isRemote() ? clientMaxTransfer : energyContainer.getMaxTransfer();
     }
 
+    @ComputerMethod
     public FloatingLong getLastInput() {
         return isRemote() ? clientLastInput : energyContainer.getLastInput();
     }
 
+    @ComputerMethod
     public FloatingLong getLastOutput() {
         return isRemote() ? clientLastOutput : energyContainer.getLastOutput();
     }
 
+    @ComputerMethod(nameOverride = "getInstalledCells")
     public int getCellCount() {
         return isRemote() ? clientCells : energyContainer.getCells();
     }
 
+    @ComputerMethod(nameOverride = "getInstalledProviders")
     public int getProviderCount() {
         return isRemote() ? clientProviders : energyContainer.getProviders();
     }
+
+    //Computer related methods
+    //Note: Above methods are just methods we also expose, but are not computer specific
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return energyInputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return energyOutputSlot.getStack();
+    }
+    //End computer related methods
 }

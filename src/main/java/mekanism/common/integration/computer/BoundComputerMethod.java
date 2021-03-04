@@ -168,8 +168,9 @@ public class BoundComputerMethod {
             // - Throwable anything thrown by the underlying method propagates unchanged through the method handle call
             // In theory none of these should actually happen given we do parameter validation, but just in case one does
             // we wrap the message into an error message that can be displayed by our handler
-            //TODO: Do we want to make some sort of "ComputerException" that then we just wrap the message that we just basically
-            // wrap the error into this (such as for when inputs are out of the valid range)
+            // Note: If the throwable is a computer exception we won't have a stacktrace. We don't use it anywhere here
+            // so it shouldn't matter but it is something to keep in mind if we ever change this catch block, as then
+            // we should extract the computer exception case to an earlier catch block
             throw argumentHandler.error(e.getMessage());
         }
         Class<?> returnType = methodType.returnType();

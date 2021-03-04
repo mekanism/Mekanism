@@ -1,46 +1,41 @@
 package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
-import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.EnergyCubeEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.EnergyCubeUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 
-public class TileEntityEnergyCube extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
+public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     /**
      * This Energy Cube's tier.
      */
     private EnergyCubeTier tier;
     private float prevScale;
-    public final TileComponentEjector ejectorComponent;
-    public final TileComponentConfig configComponent;
 
     private EnergyCubeEnergyContainer energyContainer;
     private EnergyInventorySlot chargeSlot;
@@ -51,15 +46,12 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
      */
     public TileEntityEnergyCube(IBlockProvider blockProvider) {
         super(blockProvider);
-
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
         configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, RelativeSide.FRONT, true)
               .setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer, energyContainer, RelativeSide.FRONT)
               .setEjecting(true);
-
         ejectorComponent = new TileComponentEjector(this);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Override
@@ -115,21 +107,6 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
     }
 
     @Override
-    public TileComponentEjector getEjector() {
-        return ejectorComponent;
-    }
-
-    @Override
-    public TileComponentConfig getConfig() {
-        return configComponent;
-    }
-
-    @Override
-    public Direction getOrientation() {
-        return getDirection();
-    }
-
-    @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
         if (upgradeData instanceof EnergyCubeUpgradeData) {
             EnergyCubeUpgradeData data = (EnergyCubeUpgradeData) upgradeData;
@@ -174,4 +151,16 @@ public class TileEntityEnergyCube extends TileEntityMekanism implements ISideCon
         super.handleUpdateTag(state, tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getChargeItem() {
+        return chargeSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getDischargeItem() {
+        return dischargeSlot.getStack();
+    }
+    //End methods IComputerTile
 }

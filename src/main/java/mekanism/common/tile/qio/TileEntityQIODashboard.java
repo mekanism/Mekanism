@@ -8,7 +8,10 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQIOCraftingWindowHolder {
@@ -79,4 +82,27 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     public QIOFrequency getFrequency() {
         return getQIOFrequency();
     }
+
+    //Methods relating to IComputerTile
+    private void validateWindow(int window) throws ComputerException {
+        if (window < 0 || window >= craftingWindows.length) {
+            throw new ComputerException("Window '%d' is out of bounds, must be between 0 and %d.", window, craftingWindows.length);
+        }
+    }
+
+    @ComputerMethod
+    private ItemStack getCraftingInput(int window, int slot) throws ComputerException {
+        validateWindow(window);
+        if (slot < 0 || slot >= 9) {
+            throw new ComputerException("Slot '%d' is out of bounds, must be between 0 and 9.", slot);
+        }
+        return craftingWindows[window].getInputSlot(slot).getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getCraftingOutput(int window) throws ComputerException {
+        validateWindow(window);
+        return craftingWindows[window].getOutputSlot().getStack();
+    }
+    //End methods IComputerTile
 }

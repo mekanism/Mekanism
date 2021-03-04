@@ -72,6 +72,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
                 ConfigInfo info = config.getConfig().getConfig(transmission);
                 if (info != null) {
                     info.setEjecting(!info.isEjecting());
+                    WorldUtils.saveChunk(tile);
                 }
             } else if (packetType == ConfigurationPacket.SIDE_DATA) {
                 TileComponentConfig configComponent = config.getConfig();

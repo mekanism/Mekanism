@@ -8,6 +8,7 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
@@ -22,6 +23,8 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -145,7 +148,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
@@ -165,4 +168,52 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     public void dump() {
         infusionTank.setEmpty();
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private FloatingLong getEnergyUsage() {
+        return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
+    }
+
+    @ComputerMethod
+    private ItemStack getInput() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutput() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private InfusionStack getInfuseType() {
+        return infusionTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getInfuseTypeCapacity() {
+        return infusionTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getInfuseTypeNeeded() {
+        return infusionTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private ItemStack getInfuseTypeItem() {
+        return infusionSlot.getStack();
+    }
+
+    @ComputerMethod
+    private void dumpInfuseType() throws ComputerException {
+        validateSecurityIsPublic();
+        dump();
+    }
+    //End methods IComputerTile
 }

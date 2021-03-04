@@ -10,6 +10,7 @@ import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.PressurizedReactionCachedRecipe;
@@ -27,6 +28,7 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -166,7 +168,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
@@ -174,4 +176,71 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     public PRCEnergyContainer getEnergyContainer() {
         return energyContainer;
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private FloatingLong getEnergyUsage() {
+        return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
+    }
+
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private GasStack getInputGas() {
+        return inputGasTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getInputGasCapacity() {
+        return inputGasTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getInputGasNeeded() {
+        return inputGasTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private FluidStack getInputFluid() {
+        return inputFluidTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getInputFluidCapacity() {
+        return inputFluidTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getInputFluidNeeded() {
+        return inputFluidTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getOutputGas() {
+        return outputGasTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getOutputGasCapacity() {
+        return outputGasTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getOutputGasNeeded() {
+        return outputGasTank.getNeeded();
+    }
+    //End methods IComputerTile
 }

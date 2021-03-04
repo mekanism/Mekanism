@@ -61,7 +61,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
         return filter;
     }
 
-    private static IFilter<?> fromType(FilterType filterType) {
+    public static IFilter<?> fromType(FilterType filterType) {
         switch (filterType) {
             case MINER_ITEMSTACK_FILTER:
                 return new MinerItemStackFilter();

@@ -21,6 +21,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -144,7 +146,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
@@ -174,4 +176,32 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     public void dump() {
         infusionTank.setEmpty();
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private InfusionStack getInfuseType() {
+        return infusionTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getInfuseTypeCapacity() {
+        return infusionTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getInfuseTypeNeeded() {
+        return infusionTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private ItemStack getInfuseTypeItem() {
+        return extraSlot.getStack();
+    }
+
+    @ComputerMethod
+    private void dumpInfuseType() throws ComputerException {
+        validateSecurityIsPublic();
+        dump();
+    }
+    //End methods IComputerTile
 }

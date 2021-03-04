@@ -19,6 +19,10 @@ import mekanism.common.integration.computer.BoundComputerMethod.SelectedMethodIn
 import mekanism.common.integration.computer.IComputerTile;
 import net.minecraft.tileentity.TileEntity;
 
+//TODO - 10.1: Try to find a way to expose a utility class to allow for converting between Joules and things like FE
+// based on the set config values so that people can use that and have their script still work properly if the configs
+// get changed to adjust the rates. It is possible to define things in a data pack https://github.com/SquidDev-CC/datapack-example
+// to do this, but I am not sure we would be able to have them be modifiable via the configs at which point it may not be worthwhile
 public class MekanismPeripheral<TILE extends TileEntity & IComputerTile> implements IDynamicPeripheral {
 
     private final BoundComputerMethod[] methods;
@@ -33,10 +37,6 @@ public class MekanismPeripheral<TILE extends TileEntity & IComputerTile> impleme
         //Linked map to ensure that the order is persisted
         Map<String, BoundComputerMethod> boundMethods = new LinkedHashMap<>();
         tile.getComputerMethods(boundMethods);
-        //TODO - 10.1: Add methods to all the various classes and tiles we want methods in
-        // We also probably want to try and expose a utility class to allow for converting between Joules and things like FE
-        // based on the set config values so that people can use that and have their script still work properly if the configs
-        // get changed to adjust the rates
         this.methods = new BoundComputerMethod[boundMethods.size()];
         this.methodNames = new String[this.methods.length];
         int i = 0;
@@ -50,9 +50,6 @@ public class MekanismPeripheral<TILE extends TileEntity & IComputerTile> impleme
     @Nonnull
     @Override
     public String getType() {
-        //TODO - 10.1: Test this and if it makes sense or if we need to have our tile implement a class and return something like
-        // digitalMiner or energyCube. We could do this via the attributes system and have the string defined there so as to not require
-        // each block to override a method
         return tile.getType().getRegistryName().toString();
     }
 
@@ -63,8 +60,10 @@ public class MekanismPeripheral<TILE extends TileEntity & IComputerTile> impleme
 
     @Override
     public boolean equals(@Nullable IPeripheral other) {
-        //Consider to peripherals equal if they are backed by the same tile
-        return other == this || other != null && getClass() == other.getClass() && tile == ((MekanismPeripheral<?>) other).tile;
+        //Note: Check if we are the same object as the other one, otherwise consider us to not be equal as we
+        // only will really be creating a single instance of this, and other instances of the same tile may
+        // be invalid if it is not persistent such as for multiblocks
+        return other == this;
     }
 
     @Nonnull

@@ -38,13 +38,15 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
         return tileEntityRegistrar.get().getTileEntityType();
     }
 
-    public static class BlockTileBuilder<BLOCK extends BlockTypeTile<TILE>, TILE extends TileEntityMekanism, T extends BlockTileBuilder<BLOCK, TILE, T>> extends BlockTypeBuilder<BLOCK, T> {
+    public static class BlockTileBuilder<BLOCK extends BlockTypeTile<TILE>, TILE extends TileEntityMekanism, T extends BlockTileBuilder<BLOCK, TILE, T>>
+          extends BlockTypeBuilder<BLOCK, T> {
 
         protected BlockTileBuilder(BLOCK holder) {
             super(holder);
         }
 
-        public static <TILE extends TileEntityMekanism> BlockTileBuilder<BlockTypeTile<TILE>, TILE, ?> createBlock(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
+        public static <TILE extends TileEntityMekanism> BlockTileBuilder<BlockTypeTile<TILE>, TILE, ?> createBlock(
+              Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
             return new BlockTileBuilder<>(new BlockTypeTile<>(tileEntityRegistrar, description));
         }
 
@@ -79,7 +81,8 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
         }
 
         public T withCustomContainerProvider(Function<TileEntityMekanism, IContainerProvider> providerFunction) {
-            return withNamedContainerProvider(tile -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()), providerFunction.apply(tile)));
+            return withNamedContainerProvider(tile -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()),
+                  providerFunction.apply(tile)));
         }
 
         public T withEmptyContainer(ContainerTypeRegistryObject<?> container) {

@@ -4,8 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.lib.inventory.Finder;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -13,10 +11,6 @@ import net.minecraft.network.PacketBuffer;
 public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> implements IMaterialFilter<SorterMaterialFilter> {
 
     private ItemStack materialItem = ItemStack.EMPTY;
-
-    public Material getMaterial() {
-        return Block.getBlockFromItem(materialItem.getItem()).getDefaultState().getMaterial();
-    }
 
     @Override
     public Finder getFinder() {

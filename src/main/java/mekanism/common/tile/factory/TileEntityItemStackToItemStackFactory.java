@@ -74,7 +74,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }

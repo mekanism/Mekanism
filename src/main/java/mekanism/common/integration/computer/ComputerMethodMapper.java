@@ -21,9 +21,17 @@ import mekanism.common.integration.computer.BoundComputerMethod.ThreadAwareMetho
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.lib.MekAnnotationScanner.BaseAnnotationScanner;
+import mekanism.common.tile.interfaces.ITileDirectional;
+import mekanism.common.tile.interfaces.ITileRedstone;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
 import org.objectweb.asm.Type;
 
+//TODO - 10.1: Creating a wrapper based system similar to sync mapper's that lets us say:
+// Use this method's return result or field's value as the input to create a set of synthetic methods based on a given naming scheme.
+// This would for example allow us to be more strictly annotation based for things like getting the item in a given slot, or for the
+// cases where we have getters for the substance in a tank, the capacity, the needed amount, the filled percentage. Potentially the
+// way we could even do the naming scheme is just relying on a string list as an input and the names to match up with what methods
+// a passed in class represents will be created. Another good target case for this would probably be for frequencies
 public class ComputerMethodMapper extends BaseAnnotationScanner {
 
     public static final ComputerMethodMapper INSTANCE = new ComputerMethodMapper();
@@ -222,16 +230,23 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         }
     }
 
-    //TODO - 10.1: Add more restrictions as we implement methods and realize more things types of restrictions that may be of use
     public enum MethodRestriction implements Predicate<Object> {
         /**
          * No restrictions
          */
         NONE(handler -> true),
         /**
+         * Handler is an directional tile that is actually directional.
+         */
+        DIRECTIONAL(handler -> handler instanceof ITileDirectional && ((ITileDirectional) handler).isDirectional()),
+        /**
          * Handler is an energy handler that can handle energy.
          */
-        ENERGY(handler -> handler instanceof IMekanismStrictEnergyHandler && ((IMekanismStrictEnergyHandler) handler).canHandleEnergy());
+        ENERGY(handler -> handler instanceof IMekanismStrictEnergyHandler && ((IMekanismStrictEnergyHandler) handler).canHandleEnergy()),
+        /**
+         * Handler is an directional tile that is actually directional.
+         */
+        REDSTONE_CONTROL(handler -> handler instanceof ITileRedstone && ((ITileRedstone) handler).supportsRedstone());
 
         private final Predicate<Object> validator;
 

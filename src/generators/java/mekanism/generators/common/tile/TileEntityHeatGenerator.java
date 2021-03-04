@@ -20,6 +20,7 @@ import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -33,6 +34,7 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -166,14 +168,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         return null;
     }
 
+    @ComputerMethod(nameOverride = "getProductionRate")
     public FloatingLong getProducingEnergy() {
         return producingEnergy;
     }
 
+    @ComputerMethod(nameOverride = "getTransferLoss")
     public double getLastTransferLoss() {
         return lastTransferLoss;
     }
 
+    @ComputerMethod(nameOverride = "getEnvironmentalLoss")
     public double getLastEnvironmentLoss() {
         return lastEnvironmentLoss;
     }
@@ -190,4 +195,36 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getFuelItem() {
+        return fuelSlot.getStack();
+    }
+
+    @ComputerMethod
+    private int getLava() {
+        return lavaTank.getFluidAmount();
+    }
+
+    @ComputerMethod
+    private int getLavaCapacity() {
+        return lavaTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getLavaNeeded() {
+        return lavaTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private double getTemperature() {
+        return getTotalTemperature();
+    }
+    //End methods IComputerTile
 }

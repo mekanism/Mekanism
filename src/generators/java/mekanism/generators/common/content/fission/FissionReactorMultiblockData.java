@@ -20,6 +20,9 @@ import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBu
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -57,7 +60,11 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
     @ContainerSync
-    public int fuelAssemblies = 1, surfaceArea;
+    @SyntheticComputerMethod(getter = "getFuelAssemblies")
+    public int fuelAssemblies = 1;
+    @ContainerSync
+    @SyntheticComputerMethod(getter = "getFuelSurfaceArea")
+    public int surfaceArea;
 
     @ContainerSync
     public IGasTank gasCoolantTank;
@@ -74,15 +81,19 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public MultiblockHeatCapacitor<FissionReactorMultiblockData> heatCapacitor;
 
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
     public double lastEnvironmentLoss = 0;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getHeatingRate")
     public long lastBoilRate = 0;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getActualBurnRate")
     public double lastBurnRate = 0;
     public boolean clientBurning;
     @ContainerSync
     public double reactorDamage = 0;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getBurnRate")
     public double rateLimit = MekanismGeneratorsConfig.generators.defaultBurnRate.get();
     public double burnRemaining = 0, partialWaste = 0;
     @ContainerSync
@@ -302,6 +313,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
+    @ComputerMethod(nameOverride = "getStatus")
     public boolean isActive() {
         return active;
     }
@@ -318,13 +330,133 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         return getBounds().isOnCorner(tile.getPos());
     }
 
+    @ComputerMethod
     public double getBoilEfficiency() {
         double avgSurfaceArea = (double) surfaceArea / (double) fuelAssemblies;
         return Math.min(1, avgSurfaceArea / MekanismGeneratorsConfig.generators.fissionSurfaceAreaTarget.get());
+    }
+
+    @ComputerMethod
+    public long getMaxBurnRate() {
+        return fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get();
+    }
+
+    @ComputerMethod
+    public long getDamagePercent() {
+        return Math.round(reactorDamage / FissionReactorMultiblockData.MAX_DAMAGE) * 100;
     }
 
     @Override
     protected int getMultiblockRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
     }
+
+    //Computer related methods
+    @ComputerMethod
+    private void activate() throws ComputerException {
+        if (isActive()) {
+            throw new ComputerException("Reactor is already active.");
+        }
+        setActive(true);
+    }
+
+    @ComputerMethod
+    private void scram() throws ComputerException {
+        if (!isActive()) {
+            throw new ComputerException("Scram requires the reactor to be active.");
+        }
+        setActive(false);
+    }
+
+    @ComputerMethod
+    private void setBurnRate(double rate) throws ComputerException {
+        //Round to two decimal places
+        rate = (double) Math.round(rate * 100) / 100;
+        long max = getMaxBurnRate();
+        if (rate < 0 || rate > max) {
+            //Validate bounds even though we can clamp
+            throw new ComputerException("Burn Rate '%d' is out of range must be between 0 and %d. (Inclusive)", rate, max);
+        }
+        rateLimit = Math.max(Math.min(getMaxBurnRate(), rate), 0);
+    }
+
+    @ComputerMethod
+    private Object getCoolant() {
+        if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
+            return gasCoolantTank.getStack();
+        }
+        return fluidCoolantTank.getFluid();
+    }
+
+    @ComputerMethod
+    private long getCoolantCapacity() {
+        if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
+            return gasCoolantTank.getCapacity();
+        }
+        return fluidCoolantTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getCoolantNeeded() {
+        if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
+            return gasCoolantTank.getNeeded();
+        }
+        return fluidCoolantTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getFuel() {
+        return fuelTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getFuelCapacity() {
+        return fuelTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getFuelNeeded() {
+        return fuelTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getHeatedCoolant() {
+        return heatedCoolantTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getHeatedCoolantCapacity() {
+        return heatedCoolantTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getHeatedCoolantNeeded() {
+        return heatedCoolantTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getWaste() {
+        return wasteTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getWasteCapacity() {
+        return wasteTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getWasteNeeded() {
+        return wasteTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private double getHeatCapacity() {
+        return heatCapacitor.getHeatCapacity();
+    }
+
+    @ComputerMethod
+    private double getTemperature() {
+        return heatCapacitor.getTemperature();
+    }
+    //End computer related methods
 }

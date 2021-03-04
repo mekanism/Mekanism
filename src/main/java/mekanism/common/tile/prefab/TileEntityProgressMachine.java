@@ -6,6 +6,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.util.MekanismUtils;
@@ -35,8 +36,14 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
         this.operatingTicks = ticks;
     }
 
+    @ComputerMethod(nameOverride = "getRecipeProgress")
     public int getOperatingTicks() {
         return operatingTicks;
+    }
+
+    @ComputerMethod
+    public int getTicksRequired() {
+        return ticksRequired;
     }
 
     @Override
@@ -74,7 +81,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableInt.create(() -> operatingTicks, this::setOperatingTicks));
-        container.track(SyncableInt.create(() -> ticksRequired, value -> ticksRequired = value));
+        container.track(SyncableInt.create(this::getOperatingTicks, this::setOperatingTicks));
+        container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
     }
 }

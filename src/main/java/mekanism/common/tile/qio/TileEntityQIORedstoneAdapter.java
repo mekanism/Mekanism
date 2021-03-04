@@ -3,6 +3,8 @@ package mekanism.common.tile.qio;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
@@ -11,12 +13,16 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
@@ -48,9 +54,11 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         markDirty(false);
     }
 
-    public void handleCountChange(int count) {
-        this.count = count;
-        markDirty(false);
+    public void handleCountChange(long count) {
+        if (this.count != count) {
+            this.count = count;
+            markDirty(false);
+        }
     }
 
     @Override
@@ -111,10 +119,12 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         return nbtTags;
     }
 
+    @ComputerMethod(nameOverride = "getTargetItem")
     public ItemStack getItemType() {
         return itemType != null ? itemType.getStack() : ItemStack.EMPTY;
     }
 
+    @ComputerMethod(nameOverride = "getTriggerAmount")
     public long getCount() {
         return count;
     }
@@ -144,4 +154,31 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             return freq != null && itemType != null ? freq.getStored(itemType) : 0;
         }, value -> clientStoredCount = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void clearTargetItem() throws ComputerException {
+        validateSecurityIsPublic();
+        handleStackChange(ItemStack.EMPTY);
+    }
+
+    @ComputerMethod
+    private void setTargetItem(ResourceLocation itemName) throws ComputerException {
+        validateSecurityIsPublic();
+        Item item = ForgeRegistries.ITEMS.getValue(itemName);
+        if (item == null || item == Items.AIR) {
+            throw new ComputerException("Target item '%s' could not be found. If you are trying to clear it consider using clearTargetItem instead.", itemName);
+        }
+        handleStackChange(new ItemStack(item));
+    }
+
+    @ComputerMethod
+    private void setTriggerAmount(long amount) throws ComputerException {
+        validateSecurityIsPublic();
+        if (amount < 0) {
+            throw new ComputerException("Trigger amount cannot be negative. Received: %d", amount);
+        }
+        handleCountChange(amount);
+    }
+    //End methods IComputerTile
 }

@@ -17,6 +17,9 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -51,10 +54,11 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     private HashList<SorterFilter<?>> filters = new HashList<>();
     private final Finder strictFinder = stack -> filters.stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().modifies(stack));
 
+    @SyntheticComputerMethod(getter = "getDefaultColor")
     public EnumColor color;
-    public boolean autoEject;
-    public boolean roundRobin;
-    public boolean singleItem;
+    private boolean autoEject;
+    private boolean roundRobin;
+    private boolean singleItem;
     public int rrIndex = 0;
     private int delayTicks;
 
@@ -160,6 +164,21 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         markDirty(false);
     }
 
+    @ComputerMethod(nameOverride = "getAutoMode")
+    public boolean getAutoEject() {
+        return autoEject;
+    }
+
+    @ComputerMethod(nameOverride = "isRoundRobin")
+    public boolean getRoundRobin() {
+        return roundRobin;
+    }
+
+    @ComputerMethod(nameOverride = "isSingle")
+    public boolean getSingleItem() {
+        return singleItem;
+    }
+
     public void toggleAutoEject() {
         autoEject = !autoEject;
         markDirty(false);
@@ -177,8 +196,10 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     public void changeColor(@Nullable EnumColor color) {
-        this.color = color;
-        markDirty(false);
+        if (this.color != color) {
+            this.color = color;
+            markDirty(false);
+        }
     }
 
     public boolean canSendHome(ItemStack stack) {
@@ -304,6 +325,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
+    @ComputerMethod
     public HashList<SorterFilter<?>> getFilters() {
         return filters;
     }
@@ -311,9 +333,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableBoolean.create(() -> autoEject, value -> autoEject = value));
-        container.track(SyncableBoolean.create(() -> roundRobin, value -> roundRobin = value));
-        container.track(SyncableBoolean.create(() -> singleItem, value -> singleItem = value));
+        container.track(SyncableBoolean.create(this::getAutoEject, value -> autoEject = value));
+        container.track(SyncableBoolean.create(this::getRoundRobin, value -> roundRobin = value));
+        container.track(SyncableBoolean.create(this::getSingleItem, value -> singleItem = value));
         container.track(SyncableInt.create(() -> TransporterUtils.getColorIndex(color), value -> color = TransporterUtils.readColor(value)));
         container.track(SyncableFilterList.create(this::getFilters, value -> {
             if (value instanceof HashList) {
@@ -323,4 +345,71 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             }
         }));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void setSingle(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (singleItem != value) {
+            toggleSingleItem();
+        }
+    }
+
+    @ComputerMethod
+    private void setRoundRobin(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (roundRobin != value) {
+            toggleRoundRobin();
+        }
+    }
+
+    @ComputerMethod
+    private void setAutoMode(boolean value) throws ComputerException {
+        validateSecurityIsPublic();
+        if (autoEject != value) {
+            toggleAutoEject();
+        }
+    }
+
+    @ComputerMethod
+    private void clearDefaultColor() throws ComputerException {
+        validateSecurityIsPublic();
+        changeColor(null);
+    }
+
+    @ComputerMethod
+    private void incrementDefaultColor() throws ComputerException {
+        validateSecurityIsPublic();
+        color = TransporterUtils.increment(color);
+        markDirty(false);
+    }
+
+    @ComputerMethod
+    private void decrementDefaultColor() throws ComputerException {
+        validateSecurityIsPublic();
+        color = TransporterUtils.decrement(color);
+        markDirty(false);
+    }
+
+    @ComputerMethod
+    private void setDefaultColor(EnumColor color) throws ComputerException {
+        validateSecurityIsPublic();
+        if (!TransporterUtils.colors.contains(color)) {
+            throw new ComputerException("Color '%s' is not a supported transporter color.", color);
+        }
+        changeColor(color);
+    }
+
+    @ComputerMethod
+    private boolean addFilter(SorterFilter<?> filter) throws ComputerException {
+        validateSecurityIsPublic();
+        return filters.add(filter);
+    }
+
+    @ComputerMethod
+    private boolean removeFilter(SorterFilter<?> filter) throws ComputerException {
+        validateSecurityIsPublic();
+        return filters.remove(filter);
+    }
+    //End methods IComputerTile
 }

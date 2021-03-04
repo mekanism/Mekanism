@@ -14,15 +14,25 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
 
     private String tagName;
 
+    public MinerTagFilter(String tagName) {
+        this.tagName = tagName;
+    }
+
+    public MinerTagFilter() {
+    }
+
     @Override
     public boolean canFilter(BlockState state) {
         Set<ResourceLocation> tags = state.getBlock().getTags();
         if (tags.isEmpty()) {
             return false;
+        } else if (tagName.equals("*")) {
+            //If we have any tags and our filter is everything, allow it to filter it
+            return true;
         }
         for (ResourceLocation tag : tags) {
             String tagAsString = tag.toString();
-            if (tagName.equals(tagAsString) || tagName.equals("*")) {
+            if (tagName.equals(tagAsString)) {
                 return true;
             } else if (tagName.endsWith("*") && !tagName.startsWith("*")) {
                 if (tagAsString.startsWith(tagName.substring(0, tagName.length() - 1))) {

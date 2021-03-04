@@ -99,7 +99,7 @@ public final class TransporterUtils {
         if (!force && tile instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tile;
             if (config.getEjector().hasStrictInput()) {
-                Direction tileSide = config.getOrientation();
+                Direction tileSide = config.getDirection();
                 EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(tileSide, side.getOpposite()));
                 if (configColor != null && configColor != color) {
                     return false;

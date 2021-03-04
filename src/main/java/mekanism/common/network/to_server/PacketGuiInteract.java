@@ -355,7 +355,7 @@ public class PacketGuiInteract implements IMekanismPacket {
 
         SET_TIME((tile, player, extra) -> {
             if (tile instanceof TileEntityLaserAmplifier) {
-                ((TileEntityLaserAmplifier) tile).setTime(extra);
+                ((TileEntityLaserAmplifier) tile).setDelay(extra);
             }
         }),
 

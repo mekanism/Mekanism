@@ -45,7 +45,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), () -> tile.clientEnergyUsed, this));
+        addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getEnergyUsed, this));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 133, 13));
         addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 25, 13));
         addButton(new GuiProgress(new IBooleanProgressInfoHandler() {

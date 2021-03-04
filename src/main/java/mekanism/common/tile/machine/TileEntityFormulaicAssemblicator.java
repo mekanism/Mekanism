@@ -10,7 +10,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
@@ -18,14 +17,15 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.assemblicator.RecipeFormula;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -39,11 +39,10 @@ import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasMode;
-import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.block.BlockState;
@@ -52,11 +51,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityFormulaicAssemblicator extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess, IHasMode {
+public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
 
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
@@ -64,30 +62,24 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
     private final CraftingInventory dummyInv = MekanismUtils.getDummyCraftingInv();
 
-    public int ticksRequired = BASE_TICKS_REQUIRED;
-
-    public int operatingTicks;
-
-    public boolean autoMode = false;
-
-    public boolean isRecipe = false;
-
-    public boolean stockControl = false;
-    public boolean needsOrganize = true; //organize on load
+    private int ticksRequired = BASE_TICKS_REQUIRED;
+    private int operatingTicks;
+    private boolean autoMode = false;
+    private boolean isRecipe = false;
+    private boolean stockControl = false;
+    private boolean needsOrganize = true; //organize on load
     private final HashedItem[] stockControlMap = new HashedItem[18];
 
-    public int pulseOperations;
+    private int pulseOperations;
 
     public RecipeFormula formula;
     @Nullable
     private ICraftingRecipe cachedRecipe = null;
+    @SyntheticComputerMethod(getter = "getExcessRemainingItems")
     private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
-    public final TileComponentEjector ejectorComponent;
-    public final TileComponentConfig configComponent;
-
-    public ItemStack lastFormulaStack = ItemStack.EMPTY;
-    public ItemStack lastOutputStack = ItemStack.EMPTY;
+    private ItemStack lastFormulaStack = ItemStack.EMPTY;
+    private ItemStack lastOutputStack = ItemStack.EMPTY;
 
     private MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer;
     private List<IInventorySlot> craftingGridSlots;
@@ -104,8 +96,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
-
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Nonnull
@@ -148,7 +138,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 3; slotX++) {
-                IInventorySlot craftingSlot = FormulaicCraftingSlot.at(() -> autoMode, this, 26 + slotX * 18, 17 + slotY * 18);
+                IInventorySlot craftingSlot = FormulaicCraftingSlot.at(this::getAutoMode, this, 26 + slotX * 18, 17 + slotY * 18);
                 builder.addSlot(craftingSlot);
                 craftingGridSlots.add(craftingSlot);
             }
@@ -427,11 +417,35 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
         if (autoMode) {
             operatingTicks = 0;
             autoMode = false;
+            markDirty(false);
         } else if (formula != null) {
             moveItemsToInput(false);
             autoMode = true;
+            markDirty(false);
         }
-        markDirty(false);
+    }
+
+    @ComputerMethod
+    public boolean hasRecipe() {
+        return isRecipe;
+    }
+
+    @ComputerMethod(nameOverride = "getRecipeProgress")
+    public int getOperatingTicks() {
+        return operatingTicks;
+    }
+
+    @ComputerMethod
+    public int getTicksRequired() {
+        return ticksRequired;
+    }
+
+    public boolean getStockControl() {
+        return stockControl;
+    }
+
+    public boolean getAutoMode() {
+        return autoMode;
     }
 
     public void toggleStockControl() {
@@ -625,21 +639,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     }
 
     @Override
-    public TileComponentConfig getConfig() {
-        return configComponent;
-    }
-
-    @Override
-    public Direction getOrientation() {
-        return getDirection();
-    }
-
-    @Override
-    public TileComponentEjector getEjector() {
-        return ejectorComponent;
-    }
-
-    @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
@@ -654,11 +653,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableBoolean.create(() -> autoMode, value -> autoMode = value));
-        container.track(SyncableInt.create(() -> operatingTicks, value -> operatingTicks = value));
-        container.track(SyncableInt.create(() -> ticksRequired, value -> ticksRequired = value));
-        container.track(SyncableBoolean.create(() -> isRecipe, value -> isRecipe = value));
-        container.track(SyncableBoolean.create(() -> stockControl, value -> stockControl = value));
+        container.track(SyncableBoolean.create(this::getAutoMode, value -> autoMode = value));
+        container.track(SyncableInt.create(this::getOperatingTicks, value -> operatingTicks = value));
+        container.track(SyncableInt.create(this::getTicksRequired, value -> ticksRequired = value));
+        container.track(SyncableBoolean.create(this::hasRecipe, value -> isRecipe = value));
+        container.track(SyncableBoolean.create(this::getStockControl, value -> stockControl = value));
         container.track(SyncableBoolean.create(() -> formula != null, hasFormula -> {
             if (hasFormula) {
                 if (formula == null && isRemote()) {
@@ -684,4 +683,136 @@ public class TileEntityFormulaicAssemblicator extends TileEntityMekanism impleme
             }));
         }
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getCraftingInputSlot(int slot) throws ComputerException {
+        if (slot < 0 || slot >= craftingGridSlots.size()) {
+            throw new ComputerException("Crafting Input Slot '%d' is out of bounds, must be between 0 and %d.", slot, craftingGridSlots.size());
+        }
+        return craftingGridSlots.get(slot).getStack();
+    }
+
+    @ComputerMethod
+    private int getCraftingOutputSlots() {
+        return outputSlots.size();
+    }
+
+    @ComputerMethod
+    private ItemStack getCraftingOutputSlot(int slot) throws ComputerException {
+        int size = getCraftingOutputSlots();
+        if (slot < 0 || slot >= size) {
+            throw new ComputerException("Crafting Output Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
+        }
+        return outputSlots.get(slot).getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getFormulaItem() {
+        return formulaSlot.getStack();
+    }
+
+    @ComputerMethod
+    private boolean hasValidFormula() {
+        return formula != null && formula.isValidFormula();
+    }
+
+    @ComputerMethod(nameOverride = "getSlots")
+    private int computerGetSlots() {
+        return inputSlots.size();
+    }
+
+    @ComputerMethod
+    private ItemStack getItemInSlot(int slot) throws ComputerException {
+        int size = computerGetSlots();
+        if (slot < 0 || slot >= size) {
+            throw new ComputerException("Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
+        }
+        return inputSlots.get(slot).getStack();
+    }
+
+    @ComputerMethod(nameOverride = "encodeFormula")
+    private void computerEncodeFormula() throws ComputerException {
+        validateSecurityIsPublic();
+        ItemStack formulaStack = formulaSlot.getStack();
+        if (formulaStack.isEmpty() || !(formulaStack.getItem() instanceof ItemCraftingFormula)) {
+            throw new ComputerException("No formula found.");
+        } else if (formula != null && formula.isValidFormula() || ((ItemCraftingFormula) formulaStack.getItem()).getInventory(formulaStack) != null) {
+            throw new ComputerException("Formula has already been encoded.");
+        } else if (!hasRecipe()) {
+            throw new ComputerException("Encoding formulas require that there is a valid recipe to actually encode.");
+        }
+        encodeFormula();
+    }
+
+    @ComputerMethod
+    private void fillOrEmptyGrid() throws ComputerException {
+        validateSecurityIsPublic();
+        if (autoMode) {
+            throw new ComputerException("Filling/Emptying the grid requires Auto-Mode to be disabled.");
+        }
+        moveItems();
+    }
+
+    private void validateCanCraft() throws ComputerException {
+        validateSecurityIsPublic();
+        if (!hasRecipe()) {
+            throw new ComputerException("Unable to perform craft as there is currently no matching recipe in the grid.");
+        } else if (autoMode) {
+            throw new ComputerException("Unable to perform craft as Auto-Mode is enabled.");
+        }
+    }
+
+    @ComputerMethod
+    private void craftSingleItem() throws ComputerException {
+        validateCanCraft();
+        craftSingle();
+    }
+
+    @ComputerMethod
+    private void craftAvailableItems() throws ComputerException {
+        validateCanCraft();
+        craftAll();
+    }
+
+    private void validateHasValidFormula(String operation) throws ComputerException {
+        validateSecurityIsPublic();
+        if (!hasValidFormula()) {
+            throw new ComputerException("%s requires a valid formula.", operation);
+        }
+    }
+
+    @ComputerMethod(nameOverride = "getStockControl")
+    private boolean computerGetStockControl() throws ComputerException {
+        validateHasValidFormula("Stock Control");
+        return getStockControl();
+    }
+
+    @ComputerMethod
+    private void setStockControl(boolean mode) throws ComputerException {
+        validateHasValidFormula("Stock Control");
+        if (stockControl != mode) {
+            toggleStockControl();
+        }
+    }
+
+    @ComputerMethod(nameOverride = "getAutoMode")
+    private boolean computerGetAutoMode() throws ComputerException {
+        validateHasValidFormula("Auto-Mode");
+        return getAutoMode();
+    }
+
+    @ComputerMethod
+    private void setAutoMode(boolean mode) throws ComputerException {
+        validateHasValidFormula("Auto-Mode");
+        if (autoMode != mode) {
+            nextMode();
+        }
+    }
+    //End methods IComputerTile
 }

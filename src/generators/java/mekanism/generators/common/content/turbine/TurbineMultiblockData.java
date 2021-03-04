@@ -8,6 +8,7 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -20,6 +21,8 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankMultiblockData;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
@@ -50,23 +53,36 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     public IEnergyContainer energyContainer;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getDumpingMode")
     public GasMode dumpMode = GasMode.IDLE;
     private FloatingLong energyCapacity = FloatingLong.ZERO;
 
     @ContainerSync
-    public int blades, vents, coils, condensers;
+    @SyntheticComputerMethod(getter = "getBlades")
+    public int blades;
+    @ContainerSync
+    @SyntheticComputerMethod(getter = "getVents")
+    public int vents;
+    @ContainerSync
+    @SyntheticComputerMethod(getter = "getCoils")
+    public int coils;
+    @ContainerSync
+    @SyntheticComputerMethod(getter = "getCondensers")
+    public int condensers;
     @ContainerSync
     public int lowerVolume;
 
     public BlockPos complex;
 
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getLastSteamInputRate")
     public long lastSteamInput;
     public long newSteamInput;
 
     @ContainerSync(getter = "getDispersers")
     public int clientDispersers;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getFlowRate")
     public long clientFlow;
 
     public float clientRotation;
@@ -173,10 +189,12 @@ public class TurbineMultiblockData extends MultiblockData {
         tag.putFloat(NBTConstants.ROTATION, clientRotation);
     }
 
+    @ComputerMethod
     public int getDispersers() {
         return (length() - 2) * (width() - 2) - 1;
     }
 
+    @ComputerMethod
     public long getSteamCapacity() {
         return lowerVolume * GAS_PER_TANK;
     }
@@ -196,4 +214,59 @@ public class TurbineMultiblockData extends MultiblockData {
     protected int getMultiblockRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getCapacity());
     }
+
+    @ComputerMethod
+    public FloatingLong getProductionRate() {
+        FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
+              .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
+        return energyMultiplier.multiply(clientFlow);
+    }
+
+    @ComputerMethod
+    public FloatingLong getMaxProduction() {
+        FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
+              .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
+        double rate = lowerVolume * (clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+        rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+        return energyMultiplier.multiply(rate);
+    }
+
+    @ComputerMethod
+    public long getMaxFlowRate() {
+        double rate = lowerVolume * (clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+        rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+        return MathUtils.clampToLong(rate);
+    }
+
+    @ComputerMethod
+    public long getMaxWaterOutput() {
+        return (long) condensers * MekanismGeneratorsConfig.generators.condenserRate.get();
+    }
+
+    //Computer related methods
+    @ComputerMethod
+    private GasStack getSteam() {
+        return gasTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getSteamNeeded() {
+        return gasTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private void setDumpingMode(GasMode mode) {
+        dumpMode = mode;
+    }
+
+    @ComputerMethod
+    private void incrementDumpingMode() {
+        dumpMode = dumpMode.getNext();
+    }
+
+    @ComputerMethod
+    private void decrementDumpingMode() {
+        dumpMode = dumpMode.getPrevious();
+    }
+    //End computer related methods
 }

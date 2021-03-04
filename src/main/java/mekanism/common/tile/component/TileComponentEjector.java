@@ -13,6 +13,8 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -162,29 +164,39 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return request;
     }
 
+    @ComputerMethod
     public boolean hasStrictInput() {
         return strictInput;
     }
 
     public void setStrictInput(boolean strict) {
-        strictInput = strict;
-        WorldUtils.saveChunk(tile);
+        if (strictInput != strict) {
+            strictInput = strict;
+            WorldUtils.saveChunk(tile);
+        }
     }
 
+    @ComputerMethod
     public EnumColor getOutputColor() {
         return outputColor;
     }
 
     public void setOutputColor(EnumColor color) {
-        outputColor = color;
-        WorldUtils.saveChunk(tile);
+        if (outputColor != color) {
+            outputColor = color;
+            WorldUtils.saveChunk(tile);
+        }
     }
 
     public void setInputColor(RelativeSide side, EnumColor color) {
-        inputColors[side.ordinal()] = color;
-        WorldUtils.saveChunk(tile);
+        int ordinal = side.ordinal();
+        if (inputColors[ordinal] != color) {
+            inputColors[ordinal] = color;
+            WorldUtils.saveChunk(tile);
+        }
     }
 
+    @ComputerMethod
     public EnumColor getInputColor(RelativeSide side) {
         return inputColors[side.ordinal()];
     }
@@ -236,4 +248,72 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
         return list;
     }
+
+    //Computer related methods
+    @ComputerMethod(nameOverride = "setStrictInput")
+    private void computerSetStrictInput(boolean strict) throws ComputerException {
+        tile.validateSecurityIsPublic();
+        setStrictInput(strict);
+    }
+
+    @ComputerMethod
+    private void clearInputColor(RelativeSide side) throws ComputerException {
+        tile.validateSecurityIsPublic();
+        setInputColor(side, null);
+    }
+
+    @ComputerMethod
+    private void incrementInputColor(RelativeSide side) throws ComputerException {
+        tile.validateSecurityIsPublic();
+        int ordinal = side.ordinal();
+        inputColors[ordinal] = TransporterUtils.increment(inputColors[ordinal]);
+        WorldUtils.saveChunk(tile);
+    }
+
+    @ComputerMethod
+    private void decrementInputColor(RelativeSide side) throws ComputerException {
+        tile.validateSecurityIsPublic();
+        int ordinal = side.ordinal();
+        inputColors[ordinal] = TransporterUtils.decrement(inputColors[ordinal]);
+        WorldUtils.saveChunk(tile);
+    }
+
+    @ComputerMethod(nameOverride = "setInputColor")
+    private void computerSetInputColor(RelativeSide side, EnumColor color) throws ComputerException {
+        tile.validateSecurityIsPublic();
+        if (!TransporterUtils.colors.contains(color)) {
+            throw new ComputerException("Color '%s' is not a supported transporter color.", color);
+        }
+        setInputColor(side, color);
+    }
+
+    @ComputerMethod
+    private void clearOutputColor() throws ComputerException {
+        tile.validateSecurityIsPublic();
+        setOutputColor(null);
+    }
+
+    @ComputerMethod
+    private void incrementOutputColor() throws ComputerException {
+        tile.validateSecurityIsPublic();
+        outputColor = TransporterUtils.increment(outputColor);
+        WorldUtils.saveChunk(tile);
+    }
+
+    @ComputerMethod
+    private void decrementOutputColor() throws ComputerException {
+        tile.validateSecurityIsPublic();
+        outputColor = TransporterUtils.decrement(outputColor);
+        WorldUtils.saveChunk(tile);
+    }
+
+    @ComputerMethod(nameOverride = "setOutputColor")
+    private void computerSetOutputColor(EnumColor color) throws ComputerException {
+        tile.validateSecurityIsPublic();
+        if (!TransporterUtils.colors.contains(color)) {
+            throw new ComputerException("Color '%s' is not a supported transporter color.", color);
+        }
+        setOutputColor(color);
+    }
+    //End computer related methods
 }

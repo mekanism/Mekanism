@@ -17,6 +17,8 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -25,12 +27,13 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     private float soundScale = 1;
-    public double lastEnvironmentLoss;
+    private double lastEnvironmentLoss;
 
     private ResistiveHeaterEnergyContainer energyContainer;
     private BasicHeatCapacitor heatCapacitor;
@@ -86,6 +89,11 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         }
     }
 
+    @ComputerMethod(nameOverride = "getEnvironmentalLoss")
+    public double getLastEnvironmentLoss() {
+        return lastEnvironmentLoss;
+    }
+
     public void setEnergyUsageFromPacket(FloatingLong floatingLong) {
         energyContainer.updateEnergyUsage(floatingLong);
         markDirty(false);
@@ -113,7 +121,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableDouble.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
 
     @Nonnull
@@ -129,4 +137,27 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         super.handleUpdateTag(state, tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SOUND_SCALE, value -> soundScale = value);
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod(nameOverride = "getTemperature")
+    private double computerGetTemperature() {
+        return getTotalTemperature();
+    }
+
+    @ComputerMethod
+    private FloatingLong getEnergyUsage() {
+        return energyContainer.getEnergyPerTick();
+    }
+
+    @ComputerMethod
+    private void setEnergyUsage(FloatingLong usage) throws ComputerException {
+        validateSecurityIsPublic();
+        setEnergyUsageFromPacket(usage);
+    }
+    //End methods IComputerTile
 }

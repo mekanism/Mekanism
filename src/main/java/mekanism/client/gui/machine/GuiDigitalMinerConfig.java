@@ -75,7 +75,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         drawTitleText(matrix, MekanismLang.MINER_CONFIG.translate(), titleY);
         drawTextWithScale(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 0.8F);
-        drawTextWithScale(matrix, MekanismLang.MINER_IS_INVERSE.translate(OnOff.of(tile.inverse)), 14, 131, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, MekanismLang.MINER_IS_INVERSE.translate(OnOff.of(tile.getInverse())), 14, 131, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 58, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.MIN.translate(tile.getMinY()), 14, 83, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.MAX.translate(tile.getMaxY()), 14, 108, screenTextColor(), 0.8F);

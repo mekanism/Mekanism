@@ -35,7 +35,7 @@ public interface ISideConfiguration {
      *
      * @return machine's current orientation
      */
-    Direction getOrientation();
+    Direction getDirection();
 
     /**
      * Gets this machine's ejector.

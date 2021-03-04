@@ -22,6 +22,8 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
@@ -34,6 +36,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -48,7 +51,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     private CachedRecipe<GasToGasRecipe> cachedRecipe;
 
+    @SyntheticComputerMethod(getter = "getPeakProductionRate")
     private float peakProductionRate;
+    @SyntheticComputerMethod(getter = "getProductionRate")
     private float productionRate;
     private boolean settingsChecked;
     private boolean needsRainCheck;
@@ -213,4 +218,46 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private GasStack getInput() {
+        return inputTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getInputCapacity() {
+        return inputTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getInputNeeded() {
+        return inputTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getOutput() {
+        return outputTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getOutputCapacity() {
+        return outputTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getOutputNeeded() {
+        return outputTank.getNeeded();
+    }
+    //End methods IComputerTile
 }

@@ -14,15 +14,19 @@ import mekanism.common.capabilities.fluid.DynamicFluidHandler;
 import mekanism.common.capabilities.resolver.manager.FluidHandlerManager;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
+import mekanism.common.integration.computer.ComputerCapabilityHelper;
+import mekanism.common.integration.computer.IComputerTile;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-public class TileEntityMechanicalPipe extends TileEntityTransmitter {
+public class TileEntityMechanicalPipe extends TileEntityTransmitter implements IComputerTile {
 
     private final FluidHandlerManager fluidHandlerManager;
 
@@ -36,6 +40,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter {
             }
             return pipe.getFluidTanks(direction);
         }, new DynamicFluidHandler(this::getFluidTanks, getExtractPredicate(), getInsertPredicate(), null)));
+        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     @Override
@@ -106,4 +111,26 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter {
             WorldUtils.notifyNeighborOfChange(world, side, pos);
         }
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private FluidStack getBuffer() {
+        return getTransmitter().getBufferWithFallback();
+    }
+
+    @ComputerMethod
+    private long getCapacity() {
+        return getTransmitter().getCapacity();
+    }
+
+    @ComputerMethod
+    private long getNeeded() {
+        return getCapacity() - getBuffer().getAmount();
+    }
+
+    @ComputerMethod
+    private double getFilledPercentage() {
+        return getBuffer().getAmount() / (double) getCapacity();
+    }
+    //End methods IComputerTile
 }

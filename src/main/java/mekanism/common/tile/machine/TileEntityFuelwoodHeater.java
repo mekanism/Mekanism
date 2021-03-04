@@ -9,6 +9,7 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -16,6 +17,7 @@ import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -24,7 +26,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     public int burnTime;
     public int maxBurnTime;
 
-    public double lastEnvironmentLoss;
+    private double lastEnvironmentLoss;
 
     private FuelInventorySlot fuelSlot;
     private BasicHeatCapacitor heatCapacitor;
@@ -70,6 +72,11 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
         setActive(burning);
     }
 
+    @ComputerMethod(nameOverride = "getEnvironmentalLoss")
+    public double getLastEnvironmentLoss() {
+        return lastEnvironmentLoss;
+    }
+
     @Override
     public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.read(state, nbtTags);
@@ -96,6 +103,18 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
         super.addContainerTrackers(container);
         container.track(SyncableInt.create(() -> burnTime, value -> burnTime = value));
         container.track(SyncableInt.create(() -> maxBurnTime, value -> maxBurnTime = value));
-        container.track(SyncableDouble.create(() -> lastEnvironmentLoss, value -> lastEnvironmentLoss = value));
+        container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getFuelItem() {
+        return fuelSlot.getStack();
+    }
+
+    @ComputerMethod(nameOverride = "getTemperature")
+    private double computerGetTemperature() {
+        return getTotalTemperature();
+    }
+    //End methods IComputerTile
 }

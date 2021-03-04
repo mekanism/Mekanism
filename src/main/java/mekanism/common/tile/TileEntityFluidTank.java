@@ -15,6 +15,8 @@ import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -32,6 +34,7 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -194,6 +197,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
+    @ComputerMethod
     public ContainerEditMode getContainerEditMode() {
         return editMode;
     }
@@ -253,4 +257,58 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
         updateClientLight = true;
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private FluidStack getStored() {
+        return fluidTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getCapacity() {
+        return fluidTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getNeeded() {
+        return fluidTank.getNeeded();
+    }
+
+    @ComputerMethod
+    public float getFilledPercentage() {
+        return fluidTank.getFluidAmount() / (float) fluidTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private void setContainerEditMode(ContainerEditMode mode) throws ComputerException {
+        validateSecurityIsPublic();
+        if (editMode != mode) {
+            editMode = mode;
+            markDirty(false);
+        }
+    }
+
+    @ComputerMethod
+    private void incrementContainerEditMode() throws ComputerException {
+        validateSecurityIsPublic();
+        nextMode();
+    }
+
+    @ComputerMethod
+    private void decrementContainerEditMode() throws ComputerException {
+        validateSecurityIsPublic();
+        editMode = editMode.getPrevious();
+        markDirty(false);
+    }
+    //End methods IComputerTile
 }

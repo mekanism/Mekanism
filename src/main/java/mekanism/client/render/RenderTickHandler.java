@@ -392,7 +392,7 @@ public class RenderTickHandler {
                     TileComponentConfig config = configurable.getConfig();
                     if (config.supports(type)) {
                         Direction face = rayTraceResult.getFace();
-                        DataType dataType = config.getDataType(type, RelativeSide.fromDirections(configurable.getOrientation(), face));
+                        DataType dataType = config.getDataType(type, RelativeSide.fromDirections(configurable.getDirection(), face));
                         if (dataType != null) {
                             Vector3d viewPosition = info.getProjectedView();
                             matrix.push();

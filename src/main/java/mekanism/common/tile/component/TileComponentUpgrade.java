@@ -8,6 +8,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -36,6 +38,7 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
      * TileEntity implementing this component.
      */
     private final TileEntityMekanism tile;
+    @SyntheticComputerMethod(getter = "getInstalledUpgrades")
     private Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
     private final Set<Upgrade> supported = EnumSet.noneOf(Upgrade.class);
     /**
@@ -128,6 +131,7 @@ public class TileComponentUpgrade implements ITileComponent, ITrackableContainer
         return upgrades.keySet();
     }
 
+    @ComputerMethod(nameOverride = "getSupportedUpgrades")
     public Set<Upgrade> getSupportedTypes() {
         return supported;
     }

@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
@@ -20,6 +21,8 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
 import mekanism.common.inventory.container.sync.ISyncableData;
@@ -64,7 +67,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public void sideChanged(TransmissionType transmissionType, RelativeSide side) {
-        //TODO: Instead of getDirection this should use ISideConfiguration#getOrientation
         Direction direction = side.getDirection(tile.getDirection());
         switch (transmissionType) {
             case ENERGY:
@@ -99,17 +101,16 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     private RelativeSide getSide(Direction direction) {
-        //TODO: Instead of getDirection this should use ISideConfiguration#getOrientation
         return RelativeSide.fromDirections(tile.getDirection(), direction);
     }
 
+    @ComputerMethod(nameOverride = "getConfigurableTypes")
     public List<TransmissionType> getTransmissions() {
         return transmissionTypes;
     }
 
     public void addSupported(TransmissionType type) {
         if (!configInfo.containsKey(type)) {
-            //TODO: ISideConfiguration#getOrientation?
             configInfo.put(type, new ConfigInfo(tile::getDirection));
             transmissionTypes.add(type);
         }
@@ -352,4 +353,78 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
         return null;
     }
+
+    //Computer related methods
+    private void validateSupportedTransmissionType(TransmissionType type) throws ComputerException {
+        if (!supports(type)) {
+            throw new ComputerException("This machine does not support configuring transmission type '%s'.", type);
+        }
+    }
+
+    @ComputerMethod
+    private boolean canEject(TransmissionType type) throws ComputerException {
+        validateSupportedTransmissionType(type);
+        return configInfo.get(type).canEject();
+    }
+
+    @ComputerMethod
+    private boolean isEjecting(TransmissionType type) throws ComputerException {
+        validateSupportedTransmissionType(type);
+        return configInfo.get(type).isEjecting();
+    }
+
+    @ComputerMethod
+    private void setEjecting(TransmissionType type, boolean ejecting) throws ComputerException {
+        tile.validateSecurityIsPublic();
+        validateSupportedTransmissionType(type);
+        ConfigInfo config = configInfo.get(type);
+        if (!config.canEject()) {
+            throw new ComputerException("This machine does not support auto-ejecting for transmission type '%s'.", type);
+        }
+        if (config.isEjecting() != ejecting) {
+            config.setEjecting(ejecting);
+            tile.markDirty(false);
+        }
+    }
+
+    @ComputerMethod
+    private Set<DataType> getSupportedModes(TransmissionType type) throws ComputerException {
+        validateSupportedTransmissionType(type);
+        return configInfo.get(type).getSupportedDataTypes();
+    }
+
+    @ComputerMethod
+    private DataType getMode(TransmissionType type, RelativeSide side) throws ComputerException {
+        validateSupportedTransmissionType(type);
+        return configInfo.get(type).getDataType(side);
+    }
+
+    @ComputerMethod
+    private void setMode(TransmissionType type, RelativeSide side, DataType mode) throws ComputerException {
+        tile.validateSecurityIsPublic();
+        validateSupportedTransmissionType(type);
+        ConfigInfo config = configInfo.get(type);
+        if (!config.getSupportedDataTypes().contains(mode)) {
+            throw new ComputerException("This machine does not support mode '%s' for transmission type '%s'.", mode, type);
+        }
+        config.setDataType(mode, side);
+        sideChanged(type, side);
+    }
+
+    @ComputerMethod
+    private void incrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
+        tile.validateSecurityIsPublic();
+        validateSupportedTransmissionType(type);
+        configInfo.get(type).incrementDataType(side);
+        sideChanged(type, side);
+    }
+
+    @ComputerMethod
+    private void decrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
+        tile.validateSecurityIsPublic();
+        validateSupportedTransmissionType(type);
+        configInfo.get(type).decrementDataType(side);
+        sideChanged(type, side);
+    }
+    //End computer related methods
 }

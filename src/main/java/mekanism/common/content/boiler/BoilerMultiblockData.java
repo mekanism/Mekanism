@@ -19,6 +19,8 @@ import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBu
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -32,22 +34,23 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
 
     public static final Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
-    public static final double CASING_HEAT_CAPACITY = 50;
-    public static final double CASING_INVERSE_INSULATION_COEFFICIENT = 100_000;
-    public static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
+    private static final double CASING_HEAT_CAPACITY = 50;
+    private static final double CASING_INVERSE_INSULATION_COEFFICIENT = 100_000;
+    private static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
 
-    public static final int WATER_PER_VOLUME = 16_000;
-    public static final long STEAM_PER_VOLUME = 160_000;
+    private static final int WATER_PER_VOLUME = 16_000;
+    private static final long STEAM_PER_VOLUME = 160_000;
 
-    public static final int SUPERHEATED_COOLANT_PER_VOLUME = 256_000;
-    public static final int COOLED_COOLANT_PER_VOLUME = 256_000;
+    private static final int SUPERHEATED_COOLANT_PER_VOLUME = 256_000;
+    private static final int COOLED_COOLANT_PER_VOLUME = 256_000;
 
-    public static final double COOLANT_COOLING_EFFICIENCY = 0.4;
+    private static final double COOLANT_COOLING_EFFICIENCY = 0.4;
 
     @ContainerSync
     public IGasTank superheatedCoolantTank, cooledCoolantTank;
@@ -59,12 +62,18 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     public MultiblockHeatCapacitor<BoilerMultiblockData> heatCapacitor;
 
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
     public double lastEnvironmentLoss;
     @ContainerSync
-    public int lastBoilRate, lastMaxBoil;
-
-    public boolean clientHot;
+    @SyntheticComputerMethod(getter = "getBoilRate")
+    public int lastBoilRate;
     @ContainerSync
+    @SyntheticComputerMethod(getter = "getMaxBoilRate")
+    public int lastMaxBoil;
+
+    private boolean clientHot;
+    @ContainerSync
+    @SyntheticComputerMethod(getter = "getSuperheaters")
     public int superheatingElements;
 
     @ContainerSync(setter = "setWaterVolume")
@@ -257,4 +266,77 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         steamTankCapacity = getSteamVolume() * BoilerMultiblockData.STEAM_PER_VOLUME;
         cooledCoolantCapacity = (long) getSteamVolume() * BoilerMultiblockData.COOLED_COOLANT_PER_VOLUME;
     }
+
+    @ComputerMethod
+    public long getBoilCapacity() {
+        double boilCapacity = MekanismConfig.general.superheatingHeatTransfer.get() * superheatingElements / HeatUtils.getWaterThermalEnthalpy();
+        return MathUtils.clampToLong(boilCapacity * HeatUtils.getSteamEnergyEfficiency());
+    }
+
+    //Computer related methods
+    @ComputerMethod
+    private FluidStack getWater() {
+        return waterTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getWaterCapacity() {
+        return waterTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getWaterNeeded() {
+        return waterTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getHeatedCoolant() {
+        return superheatedCoolantTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getHeatedCoolantCapacity() {
+        return superheatedCoolantTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getHeatedCoolantNeeded() {
+        return superheatedCoolantTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getSteam() {
+        return steamTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getSteamCapacity() {
+        return steamTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getSteamNeeded() {
+        return steamTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getCooledCoolant() {
+        return cooledCoolantTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getCooledCoolantCapacity() {
+        return cooledCoolantTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getCooledCoolantNeeded() {
+        return cooledCoolantTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private double getTemperature() {
+        return getTotalTemperature();
+    }
+    //End computer related methods
 }

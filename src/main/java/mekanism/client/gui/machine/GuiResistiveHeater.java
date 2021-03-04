@@ -48,7 +48,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         addButton(new GuiHeatTab(() -> {
-            ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
+            ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));
 

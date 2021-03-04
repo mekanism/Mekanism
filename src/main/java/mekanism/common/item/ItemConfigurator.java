@@ -99,7 +99,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     ISideConfiguration config = (ISideConfiguration) tile;
                     ConfigInfo info = config.getConfig().getConfig(transmissionType);
                     if (info != null) {
-                        RelativeSide relativeSide = RelativeSide.fromDirections(config.getOrientation(), side);
+                        RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
                         DataType dataType = info.getDataType(relativeSide);
                         if (!player.isSneaking()) {
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,

@@ -84,16 +84,22 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         readModes(tag);
     }
 
+    public void updateMode(Direction side, DiversionControl mode) {
+        int ordinal = side.ordinal();
+        if (modes[ordinal] != mode) {
+            modes[ordinal] = mode;
+            refreshConnections();
+            notifyTileChange();
+            getTransmitterTile().sendUpdatePacket();
+        }
+    }
+
     @Override
     public ActionResultType onConfigure(PlayerEntity player, Direction side) {
-        int index = side.ordinal();
-        DiversionControl newMode = modes[index].getNext();
-        modes[index] = newMode;
-        refreshConnections();
-        notifyTileChange();
+        DiversionControl newMode = modes[side.ordinal()].getNext();
+        updateMode(side, newMode);
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
               MekanismLang.TOGGLE_DIVERTER.translate(EnumColor.RED, newMode)), Util.DUMMY_UUID);
-        getTransmitterTile().sendUpdatePacket();
         return ActionResultType.SUCCESS;
     }
 

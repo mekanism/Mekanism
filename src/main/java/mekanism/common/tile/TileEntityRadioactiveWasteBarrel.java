@@ -15,6 +15,7 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -80,10 +81,12 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
         return gasTank;
     }
 
+    @ComputerMethod(nameOverride = "getFilledPercentage")
     public float getGasScale() {
         return (float) (gasTank.getStored() / (double) gasTank.getCapacity());
     }
 
+    @ComputerMethod(nameOverride = "getStored")
     public GasStack getGas() {
         return gasTank.getStack();
     }
@@ -135,4 +138,16 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getCapacity());
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private long getCapacity() {
+        return gasTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getNeeded() {
+        return gasTank.getNeeded();
+    }
+    //End methods IComputerTile
 }

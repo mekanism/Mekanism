@@ -7,6 +7,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.energy.ProxiedEnergyContainerHolder;
 import mekanism.common.content.matrix.MatrixMultiblockData;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
@@ -67,4 +68,16 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     public int getRedstoneLevel() {
         return getMultiblock().getCurrentRedstoneLevel();
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private boolean getMode() {
+        return getActive();
+    }
+
+    @ComputerMethod
+    private void setMode(boolean output) {
+        setActive(output);
+    }
+    //End methods IComputerTile
 }

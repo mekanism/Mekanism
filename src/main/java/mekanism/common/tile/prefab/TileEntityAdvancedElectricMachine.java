@@ -9,6 +9,7 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
@@ -26,6 +27,8 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -145,7 +148,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
     }
@@ -168,4 +171,52 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     public MachineEnergyContainer<TileEntityAdvancedElectricMachine> getEnergyContainer() {
         return energyContainer;
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private FloatingLong getEnergyUsage() {
+        return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
+    }
+
+    @ComputerMethod
+    private ItemStack getInput() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutput() {
+        return outputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private GasStack getChemical() {
+        return gasTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getChemicalCapacity() {
+        return gasTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getChemicalNeeded() {
+        return gasTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private ItemStack getChemicalItem() {
+        return secondarySlot.getStack();
+    }
+
+    @ComputerMethod
+    private void dumpChemical() throws ComputerException {
+        validateSecurityIsPublic();
+        gasTank.setEmpty();
+    }
+    //End methods IComputerTile
 }

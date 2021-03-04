@@ -13,6 +13,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -170,17 +171,18 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         coilData.coilMap.get(tile.getPos()).receiveEnergy(energy);
     }
 
-    public boolean canOperate() {
+    private boolean canOperate() {
         return !inputTank.isEmpty() && outputTank.getNeeded() > 0;
     }
 
-    public static int getCoilLevel(FloatingLong energy) {
+    private static int getCoilLevel(FloatingLong energy) {
         if (energy.isZero()) {
             return 0;
         }
         return 1 + Math.max(0, (int) ((Math.log10(energy.doubleValue()) - 3) * 1.8));
     }
 
+    @ComputerMethod
     public double getProcessRate() {
         return Math.round((lastProcessed / MekanismConfig.general.spsInputPerAntimatter.get()) * 1_000) / 1_000D;
     }
@@ -192,6 +194,43 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public boolean handlesSound(TileEntitySPSCasing tile) {
         return tile.getPos().equals(getMinPos().add(3, 0, 0)) || tile.getPos().equals(getMaxPos().add(3, 0, 7));
     }
+
+    //Computer related methods
+    @ComputerMethod
+    private GasStack getInput() {
+        return inputTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getInputCapacity() {
+        return inputTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getInputNeeded() {
+        return inputTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private GasStack getOutput() {
+        return outputTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getOutputCapacity() {
+        return outputTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getOutputNeeded() {
+        return outputTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private int getCoils() {
+        return coilData.coilMap.size();
+    }
+    //End computer related methods
 
     public static class SyncableCoilData {
 

@@ -3,7 +3,6 @@ package mekanism.common.tile.prefab;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IConfigurable;
@@ -11,15 +10,14 @@ import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.BoundComputerMethod;
-import mekanism.common.integration.computer.ComputerCapabilityHelper;
 import mekanism.common.integration.computer.ComputerMethodMapper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
@@ -82,17 +80,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
-        if (hasComputerSupport()) {
-            //TODO - 10.1: Instead of having a semi disabled capability, do we instead want to have our getComputerMethods
-            // supply any parent ones, and then expose an isFormed method for the multiblocks, and if it is formed allow
-            // access to the other ones on the multiblock, and if it isn't formed don't
-            BooleanSupplier requireFormed = () -> !getMultiblock().isFormed();
-            if (Mekanism.hooks.CCLoaded) {
-                //If ComputerCraft is loaded mark the capability as only "available" if the multiblock is formed
-                addSemiDisabledCapability(ComputerCapabilityHelper.COMPUTER_CRAFT_CAPABILITY, requireFormed);
-            }
-            //If OpenComputers is loaded, mark it's capability as well
-        }
     }
 
     @Override
@@ -344,18 +331,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public boolean isComputerCapabilityPersistent() {
-        //We are not persistent regardless of if our tile has support
-        return false;
-    }
-
-    @Override
-    public void getComputerMethods(Map<String, BoundComputerMethod> methods) {
-        super.getComputerMethods(methods);
-        ComputerMethodMapper.INSTANCE.getAndBindToHandler(getMultiblock(), methods);
-    }
-
-    @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         SyncMapper.INSTANCE.setup(container, getMultiblock().getClass(), this::getMultiblock);
@@ -435,4 +410,30 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         return ActionResultType.PASS;
     }
+
+    //Methods relating to IComputerTile
+    @Override
+    public boolean isComputerCapabilityPersistent() {
+        //We are not persistent regardless of if our tile has support
+        return false;
+    }
+
+    @Override
+    public void getComputerMethods(Map<String, BoundComputerMethod> methods) {
+        super.getComputerMethods(methods);
+        T multiblock = getMultiblock();
+        if (multiblock.isFormed()) {
+            //Only expose the multiblock's methods if we are formed, when the formation state changes
+            // our capabilities are invalidated, so should end up getting rechecked and this called by
+            // the various computer integration mods, and allow us to only expose the multiblock's methods
+            // as even existing if the multiblock is complete
+            ComputerMethodMapper.INSTANCE.getAndBindToHandler(multiblock, methods);
+        }
+    }
+
+    @ComputerMethod
+    private boolean isFormed() {
+        return getMultiblock().isFormed();
+    }
+    //End methods IComputerTile
 }

@@ -49,7 +49,7 @@ public class ThreadMinerSearch extends Thread {
     public void run() {
         state = State.SEARCHING;
         List<MinerFilter<?>> filters = tile.getFilters();
-        if (!tile.inverse && filters.isEmpty()) {
+        if (!tile.getInverse() && filters.isEmpty()) {
             state = State.FINISHED;
             return;
         }
@@ -94,7 +94,7 @@ public class ThreadMinerSearch extends Thread {
                 }
                 acceptedItems.put(info, filterFound);
             }
-            if (tile.inverse == (filterFound == null)) {
+            if (tile.getInverse() == (filterFound == null)) {
                 set(i, testPos);
                 replaceMap.put(i, filterFound);
                 found++;

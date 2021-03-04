@@ -8,7 +8,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import net.minecraft.util.Direction;
 
 public abstract class TileEntityConfigurableMachine extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
@@ -23,11 +22,6 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
     @Override
     public TileComponentConfig getConfig() {
         return configComponent;
-    }
-
-    @Override
-    public Direction getOrientation() {
-        return getDirection();
     }
 
     @Override

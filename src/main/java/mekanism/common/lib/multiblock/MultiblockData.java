@@ -30,6 +30,7 @@ import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.math.voxel.IShape;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
@@ -49,6 +50,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+//TODO - 10.1: Look into how we mark multiblock data as requiring saving as I am not sure we actually are doing that currently
+// which could maybe be why some people randomly have issues that contents reset?
 public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker, IInfusionTracker,
       IPigmentTracker, ISlurryTracker {
 
@@ -212,22 +215,27 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         }
     }
 
+    @ComputerMethod(nameOverride = "getLength")
     public int length() {
         return bounds.length();
     }
 
+    @ComputerMethod(nameOverride = "getWidth")
     public int width() {
         return bounds.width();
     }
 
+    @ComputerMethod(nameOverride = "getHeight")
     public int height() {
         return bounds.height();
     }
 
+    @ComputerMethod
     public BlockPos getMinPos() {
         return bounds.getMinPos();
     }
 
+    @ComputerMethod
     public BlockPos getMaxPos() {
         return bounds.getMaxPos();
     }

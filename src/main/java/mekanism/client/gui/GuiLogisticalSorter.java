@@ -78,11 +78,11 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
         drawTextWithScale(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.SORTER_SINGLE_ITEM.translate(), 14, 48, screenTextColor(), 0.8F);
-        drawTextWithScale(matrix, OnOff.of(tile.singleItem).getTextComponent(), 27, 60, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, OnOff.of(tile.getSingleItem()).getTextComponent(), 27, 60, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.SORTER_ROUND_ROBIN.translate(), 14, 74, screenTextColor(), 0.8F);
-        drawTextWithScale(matrix, OnOff.of(tile.roundRobin).getTextComponent(), 27, 86, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, OnOff.of(tile.getRoundRobin()).getTextComponent(), 27, 86, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.SORTER_AUTO_EJECT.translate(), 14, 100, screenTextColor(), 0.8F);
-        drawTextWithScale(matrix, OnOff.of(tile.autoEject).getTextComponent(), 27, 112, screenTextColor(), 0.8F);
+        drawTextWithScale(matrix, OnOff.of(tile.getAutoEject()).getTextComponent(), 27, 112, screenTextColor(), 0.8F);
         drawTextWithScale(matrix, MekanismLang.SORTER_DEFAULT.translate(), 14, 126, screenTextColor(), 0.8F);
     }
 

@@ -10,6 +10,8 @@ import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
@@ -83,4 +85,20 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
         }
         return true;
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private int getSlotCount() {
+        return getSlots();
+    }
+
+    @ComputerMethod
+    private ItemStack getItemInSlot(int slot) throws ComputerException {
+        int slots = getSlotCount();
+        if (slot < 0 || slot >= slots) {
+            throw new ComputerException("Slot: '%d' is out of bounds, as this laser amplifier only has '%d' slots (zero indexed).", slot, slots);
+        }
+        return getStackInSlot(slot);
+    }
+    //End methods IComputerTile
 }

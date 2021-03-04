@@ -14,6 +14,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -106,7 +107,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
@@ -129,4 +130,11 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     public CombinerUpgradeData getUpgradeData() {
         return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, extraSlot, inputSlots, outputSlots, isSorting(), getComponents());
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getSecondaryInput() {
+        return extraSlot.getStack();
+    }
+    //End methods IComputerTile
 }

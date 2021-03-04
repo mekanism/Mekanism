@@ -22,6 +22,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -161,7 +163,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
-              .setRequiredTicks(() -> ticksRequired)
+              .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(operatingTicks -> progress[cacheIndex] = operatingTicks);
     }
@@ -204,4 +206,32 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     public void dump() {
         gasTank.setEmpty();
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private GasStack getChemical() {
+        return gasTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getChemicalCapacity() {
+        return gasTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getChemicalNeeded() {
+        return gasTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private ItemStack getChemicalItem() {
+        return extraSlot.getStack();
+    }
+
+    @ComputerMethod
+    private void dumpChemical() throws ComputerException {
+        validateSecurityIsPublic();
+        dump();
+    }
+    //End methods IComputerTile
 }

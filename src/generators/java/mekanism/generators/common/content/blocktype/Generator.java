@@ -12,7 +12,8 @@ public class Generator<TILE extends TileEntityMekanism> extends BlockTypeTile<TI
 
     public Generator(Supplier<TileEntityTypeRegistryObject<TILE>> tileEntityRegistrar, ILangEntry description) {
         super(tileEntityRegistrar, description);
-        add(Attributes.ACTIVE, new AttributeStateFacing(), Attributes.SECURITY, Attributes.INVENTORY, Attributes.REDSTONE, Attributes.COMPARATOR);
+        add(Attributes.ACTIVE, new AttributeStateFacing(), Attributes.SECURITY, Attributes.INVENTORY, Attributes.REDSTONE, Attributes.COMPARATOR,
+              Attributes.COMPUTER_INTEGRATION);
     }
 
     public static class GeneratorBuilder<GENERATOR extends Generator<TILE>, TILE extends TileEntityMekanism, T extends GeneratorBuilder<GENERATOR, TILE, T>> extends BlockTileBuilder<GENERATOR, TILE, T> {

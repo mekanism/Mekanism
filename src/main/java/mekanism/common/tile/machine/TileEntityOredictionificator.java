@@ -20,6 +20,8 @@ import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IFilter;
+import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
@@ -58,7 +60,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     public static final Map<String, List<String>> possibleFilters = new Object2ObjectOpenHashMap<>();
 
     static {
-        //TODO: Make this configurable
+        //TODO - 10.1: Make this configurable and figure out how to handle it changing while it is running
         possibleFilters.put("forge", Arrays.asList("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/"));
     }
 
@@ -127,6 +129,12 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
             }
         }
         return null;
+    }
+
+    public static boolean isValidTarget(ResourceLocation tag) {
+        String path = tag.getPath();
+        List<String> filters = possibleFilters.getOrDefault(tag.getNamespace(), Collections.emptyList());
+        return filters.stream().anyMatch(path::startsWith) && ItemTags.getCollection().getRegisteredTags().contains(tag);
     }
 
     public ItemStack getResult(ItemStack stack) {
@@ -223,6 +231,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
+    @ComputerMethod
     public HashList<OredictionificatorFilter> getFilters() {
         return filters;
     }
@@ -239,6 +248,30 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
             }
         }));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getInputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return inputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private boolean addFilter(OredictionificatorFilter filter) throws ComputerException {
+        validateSecurityIsPublic();
+        return filters.add(filter);
+    }
+
+    @ComputerMethod
+    private boolean removeFilter(OredictionificatorFilter filter) throws ComputerException {
+        validateSecurityIsPublic();
+        return filters.remove(filter);
+    }
+    //End methods IComputerTile
 
     //TODO - V11: Rewrite this to be more efficient and also cache various values, with support for tags for fluids and other types
     public static class OredictionificatorFilter extends BaseFilter<OredictionificatorFilter> {
@@ -260,6 +293,13 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
             } else {
                 selectedOutput = matchingItems.get(0);
             }
+        }
+
+        /**
+         * Only exposed for creating via ComputerCraft
+         */
+        public void setSelectedOutput(Item output) {
+            this.selectedOutput = output;
         }
 
         private void setFilterLocation(ResourceLocation location) {

@@ -13,6 +13,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.WorldUtils;
@@ -83,15 +84,21 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         return super.persists(type);
     }
 
+    @ComputerMethod
     private FissionPortMode getMode() {
         return getBlockState().get(AttributeStateFissionPortMode.modeProperty);
+    }
+
+    @ComputerMethod
+    private void setMode(FissionPortMode mode) {
+        world.setBlockState(pos, getBlockState().with(AttributeStateFissionPortMode.modeProperty, mode));
     }
 
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
             FissionPortMode mode = getMode().getNext();
-            world.setBlockState(pos, getBlockState().with(AttributeStateFissionPortMode.modeProperty, mode));
+            setMode(mode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
                   MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.DUMMY_UUID);
         }
@@ -132,4 +139,16 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     public int getRedstoneLevel() {
         return getMultiblock().getCurrentRedstoneLevel();
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private void incrementMode() {
+        setMode(getMode().getNext());
+    }
+
+    @ComputerMethod
+    private void decrementMode() {
+        setMode(getMode().getPrevious());
+    }
+    //End methods IComputerTile
 }

@@ -29,6 +29,7 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -44,6 +45,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurryToSlurryRecipe> {
@@ -54,7 +56,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     public ISlurryTank inputTank;
     public ISlurryTank outputTank;
 
-    public FloatingLong clientEnergyUsed = FloatingLong.ZERO;
+    private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private final IOutputHandler<@NonNull SlurryStack> outputHandler;
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
@@ -137,6 +139,12 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     }
 
     @Nonnull
+    @ComputerMethod(nameOverride = "getEnergyUsage")
+    public FloatingLong getEnergyUsed() {
+        return clientEnergyUsed;
+    }
+
+    @Nonnull
     @Override
     public MekanismRecipeType<FluidSlurryToSlurryRecipe> getRecipeType() {
         return MekanismRecipeType.WASHING;
@@ -185,6 +193,73 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        container.track(SyncableFloatingLong.create(() -> clientEnergyUsed, value -> clientEnergyUsed = value));
+        container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getOutputItem() {
+        return slurryOutputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getFluidItemInput() {
+        return fluidSlot.getStack();
+    }
+
+    @ComputerMethod
+    private ItemStack getFluidItemOutput() {
+        return fluidOutputSlot.getStack();
+    }
+
+    @ComputerMethod
+    private FluidStack getFluid() {
+        return fluidTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getFluidCapacity() {
+        return fluidTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getFluidNeeded() {
+        return fluidTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private SlurryStack getSlurryInput() {
+        return inputTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getSlurryInputCapacity() {
+        return inputTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getSlurryInputNeeded() {
+        return inputTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private SlurryStack getSlurryOutput() {
+        return outputTank.getStack();
+    }
+
+    @ComputerMethod
+    private long getSlurryOutputCapacity() {
+        return outputTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private long getSlurryOutputNeeded() {
+        return outputTank.getNeeded();
+    }
+    //End methods IComputerTile
 }

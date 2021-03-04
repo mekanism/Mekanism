@@ -5,11 +5,13 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
@@ -20,7 +22,9 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
 
@@ -88,4 +92,36 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         super.handleUpdateTag(state, tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> bioFuelTank.deserializeNBT(nbt));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private FloatingLong getProductionRate() {
+        return getActive() ? MekanismGeneratorsConfig.generators.bioGeneration.get() : FloatingLong.ZERO;
+    }
+
+    @ComputerMethod
+    private ItemStack getFuelItem() {
+        return fuelSlot.getStack();
+    }
+
+    @ComputerMethod
+    private FluidStack getBioFuel() {
+        return bioFuelTank.getFluid();
+    }
+
+    @ComputerMethod
+    private int getBioFuelCapacity() {
+        return bioFuelTank.getCapacity();
+    }
+
+    @ComputerMethod
+    private int getBioFuelNeeded() {
+        return bioFuelTank.getNeeded();
+    }
+    //End methods IComputerTile
 }

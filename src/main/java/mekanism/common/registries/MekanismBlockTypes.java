@@ -322,28 +322,33 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityChargepad> CHARGEPAD = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.CHARGEPAD, MekanismLang.DESCRIPTION_CHARGEPAD)
           .withEnergyConfig(() -> TWENTY_FIVE, MekanismConfig.storage.chargePad)
-          .withSound(MekanismSounds.CHARGEPAD).with(Attributes.ACTIVE, new AttributeStateFacing())
+          .withSound(MekanismSounds.CHARGEPAD)
+          .with(Attributes.ACTIVE, new AttributeStateFacing(), Attributes.COMPUTER_INTEGRATION)
           .withCustomShape(BlockShapes.CHARGEPAD)
           .build();
     // Laser
     public static final BlockTypeTile<TileEntityLaser> LASER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.LASER, MekanismLang.DESCRIPTION_LASER)
           .withEnergyConfig(MekanismConfig.usage.laser, MekanismConfig.storage.laser)
-          .withSound(MekanismSounds.LASER).with(Attributes.ACTIVE, new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY)
+          .withSound(MekanismSounds.LASER)
+          .with(Attributes.ACTIVE, new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY,
+                Attributes.COMPUTER_INTEGRATION)
           .withCustomShape(BlockShapes.LASER)
           .build();
     // Laser Amplifier
     public static final BlockTypeTile<TileEntityLaserAmplifier> LASER_AMPLIFIER = BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.LASER_AMPLIFIER, MekanismLang.DESCRIPTION_LASER_AMPLIFIER)
           .withGui(() -> MekanismContainerTypes.LASER_AMPLIFIER).withEnergyConfig(null, () -> LARGE_LASER)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE),
-                new AttributeRedstoneEmitter<>(TileEntityMekanism::getRedstoneLevel), Attributes.REDSTONE, Attributes.COMPARATOR, Attributes.SECURITY)
+                new AttributeRedstoneEmitter<>(TileEntityMekanism::getRedstoneLevel), Attributes.REDSTONE, Attributes.COMPARATOR, Attributes.SECURITY,
+                Attributes.COMPUTER_INTEGRATION)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER).build();
     // Laser Tractor Beam
     public static final BlockTypeTile<TileEntityLaserTractorBeam> LASER_TRACTOR_BEAM = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.LASER_TRACTOR_BEAM, MekanismLang.DESCRIPTION_LASER_TRACTOR_BEAM)
           .withGui(() -> MekanismContainerTypes.LASER_TRACTOR_BEAM)
           .withEnergyConfig(null, () -> LARGE_LASER)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.COMPARATOR, Attributes.SECURITY, Attributes.INVENTORY)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.COMPARATOR, Attributes.SECURITY, Attributes.INVENTORY,
+                Attributes.COMPUTER_INTEGRATION)
           .withCustomShape(BlockShapes.LASER_AMPLIFIER)
           .build();
     // Resistive Heater
@@ -374,7 +379,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityFuelwoodHeater> FUELWOOD_HEATER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.FUELWOOD_HEATER, MekanismLang.DESCRIPTION_FUELWOOD_HEATER)
           .withGui(() -> MekanismContainerTypes.FUELWOOD_HEATER)
-          .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), new AttributeParticleFX()
+          .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), Attributes.COMPUTER_INTEGRATION, new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
                 .add(RedstoneParticleData.REDSTONE_DUST, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
           .build();
@@ -382,7 +387,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityOredictionificator> OREDICTIONIFICATOR = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.OREDICTIONIFICATOR, MekanismLang.DESCRIPTION_OREDICTIONIFICATOR)
           .withGui(() -> MekanismContainerTypes.OREDICTIONIFICATOR)
-          .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), Attributes.REDSTONE)
+          .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), Attributes.REDSTONE, Attributes.COMPUTER_INTEGRATION)
           .build();
     // Quantum Entangloporter
     public static final Machine<TileEntityQuantumEntangloporter> QUANTUM_ENTANGLOPORTER = MachineBuilder
@@ -417,7 +422,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.MODIFICATION_STATION)
           .withEnergyConfig(MekanismConfig.usage.modificationStation, MekanismConfig.storage.modificationStation)
           .withCustomContainerProvider(tile -> (i, inv, player) -> new ModificationStationContainer(i, inv, (TileEntityModificationStation) tile))
-          .with(Attributes.INVENTORY, new AttributeStateFacing(false), Attributes.REDSTONE, Attributes.SECURITY)
+          .with(Attributes.INVENTORY, new AttributeStateFacing(false), Attributes.REDSTONE, Attributes.SECURITY, Attributes.COMPUTER_INTEGRATION)
           .withCustomShape(BlockShapes.MODIFICATION_STATION)
           .with(AttributeCustomSelectionBox.JSON)
           .build();
@@ -451,14 +456,15 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.QIO_DRIVE_ARRAY, MekanismLang.DESCRIPTION_QIO_DRIVE_ARRAY)
           .withGui(() -> MekanismContainerTypes.QIO_DRIVE_ARRAY)
           .withCustomShape(BlockShapes.QIO_DRIVE_ARRAY)
-          .with(new AttributeStateFacing(), Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE)
+          .with(new AttributeStateFacing(), Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE, Attributes.COMPUTER_INTEGRATION)
           .build();
     // QIO Dashboard
     public static final BlockTypeTile<TileEntityQIODashboard> QIO_DASHBOARD = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.QIO_DASHBOARD, MekanismLang.DESCRIPTION_QIO_DASHBOARD)
           .withGui(() -> MekanismContainerTypes.QIO_DASHBOARD)
           .withCustomShape(BlockShapes.QIO_DASHBOARD)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.ACTIVE, Attributes.INVENTORY)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.ACTIVE, Attributes.INVENTORY,
+                Attributes.COMPUTER_INTEGRATION)
           .withCustomContainerProvider(tile -> (i, inv, player) -> new QIODashboardContainer(i, inv, (TileEntityQIODashboard) tile))
           .build();
     // QIO Importer
@@ -466,7 +472,8 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.QIO_IMPORTER, MekanismLang.DESCRIPTION_QIO_IMPORTER)
           .withGui(() -> MekanismContainerTypes.QIO_IMPORTER)
           .withCustomShape(BlockShapes.QIO_IMPORTER)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.REDSTONE, Attributes.ACTIVE)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.REDSTONE, Attributes.ACTIVE,
+                Attributes.COMPUTER_INTEGRATION)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
           .build();
     // QIO Exporter
@@ -474,7 +481,8 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.QIO_EXPORTER, MekanismLang.DESCRIPTION_QIO_EXPORTER)
           .withGui(() -> MekanismContainerTypes.QIO_EXPORTER)
           .withCustomShape(BlockShapes.QIO_EXPORTER)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.REDSTONE, Attributes.ACTIVE)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.REDSTONE, Attributes.ACTIVE,
+                Attributes.COMPUTER_INTEGRATION)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED))
           .build();
     // QIO Redstone Adapter
@@ -482,7 +490,8 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.QIO_REDSTONE_ADAPTER, MekanismLang.DESCRIPTION_QIO_REDSTONE_ADAPTER)
           .withGui(() -> MekanismContainerTypes.QIO_REDSTONE_ADAPTER)
           .withCustomShape(BlockShapes.QIO_REDSTONE_ADAPTER)
-          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.ACTIVE)
+          .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.ACTIVE,
+                Attributes.COMPUTER_INTEGRATION)
           .with(new AttributeRedstoneEmitter<>(tile -> tile.isPowering() ? 15 : 0))
           .build();
 
@@ -498,7 +507,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_VALVE, MekanismLang.DESCRIPTION_DYNAMIC_VALVE)
           .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
           .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
-          .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
           .build();
     // Boiler Casing
     public static final BlockTypeTile<TileEntityBoilerCasing> BOILER_CASING = BlockTileBuilder
@@ -512,7 +521,8 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.BOILER_VALVE, MekanismLang.DESCRIPTION_BOILER_VALVE)
           .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
           .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, (TileEntityBoilerCasing) tile)))
-          .with(Attributes.INVENTORY, Attributes.COMPARATOR, new AttributeStateBoilerValveMode(), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.INVENTORY, Attributes.COMPARATOR, new AttributeStateBoilerValveMode(), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED,
+                Attributes.COMPUTER_INTEGRATION)
           .build();
     // Pressure Disperser
     public static final BlockTypeTile<TileEntityPressureDisperser> PRESSURE_DISPERSER =
@@ -536,18 +546,19 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.INDUCTION_PORT, MekanismLang.DESCRIPTION_INDUCTION_PORT)
           .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
           .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
-          .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.ACTIVE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.ACTIVE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
           .build();
     // Thermal Evaporation Controller
     public static final BlockTypeTile<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
           .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER)
-          .with(Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), new AttributeCustomResistance(9), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), new AttributeCustomResistance(9), Attributes.MULTIBLOCK,
+                AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
           .build();
     // Thermal Evaporation Valve
     public static final BlockTypeTile<TileEntityThermalEvaporationValve> THERMAL_EVAPORATION_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_VALVE)
-          .with(Attributes.COMPARATOR, new AttributeCustomResistance(9), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .with(Attributes.COMPARATOR, new AttributeCustomResistance(9), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
           .build();
     // Thermal Evaporation Block
     public static final BlockTypeTile<TileEntityThermalEvaporationBlock> THERMAL_EVAPORATION_BLOCK = BlockTileBuilder
@@ -589,7 +600,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.SPS)
           .withSound(MekanismSounds.SPS)
           .withEnergyConfig(() -> FloatingLong.ZERO, MekanismConfig.storage.spsPort)
-          .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.ACTIVE)
+          .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.ACTIVE, Attributes.COMPUTER_INTEGRATION)
           .build();
     // Supercharged Coil
     public static final BlockTypeTile<TileEntitySuperchargedCoil> SUPERCHARGED_COIL = BlockTileBuilder

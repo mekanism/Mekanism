@@ -19,6 +19,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.ComputerMethodMapper;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
 import org.objectweb.asm.Type;
@@ -53,7 +54,12 @@ public class MekAnnotationScanner {
         for (Map.Entry<BaseAnnotationScanner, ScanData> entry : scanners.entrySet()) {
             Map<Class<?>, List<AnnotationData>> knownClasses = entry.getValue().knownClasses;
             if (!knownClasses.isEmpty()) {
-                entry.getKey().collectScanData(knownClasses);
+                try {
+                    entry.getKey().collectScanData(knownClasses);
+                } catch (Throwable throwable) {
+                    //Should never really happen unless something goes drastically wrong
+                    Mekanism.logger.info("Failed to collect scan data", throwable);
+                }
             }
         }
     }
@@ -116,6 +122,30 @@ public class MekAnnotationScanner {
         }
 
         /**
+         * Gets the value of an annotation or falls back to the default if the key isn't present. Enum version
+         */
+        protected static <T extends Enum<T>> T getAnnotationValue(AnnotationData data, String key, T defaultValue) {
+            Map<String, Object> annotationData = data.getAnnotationData();
+            if (annotationData.containsKey(key)) {
+                Object value = annotationData.get(key);
+                if (value instanceof ModAnnotation.EnumHolder) {
+                    //This should always be an enum holder, but check just in case
+                    ModAnnotation.EnumHolder enumHolder = (ModAnnotation.EnumHolder) value;
+                    //Note: We ignore the description on the enumHolder, as we can just grab the enum's class
+                    // directly from the default value
+                    try {
+                        return Enum.valueOf(defaultValue.getDeclaringClass(), enumHolder.getValue());
+                    } catch (IllegalArgumentException e) {
+                        Mekanism.logger.error("Could not find enum value of: {}. Defaulting.", enumHolder.getValue());
+                    }
+                } else {
+                    Mekanism.logger.warn("Unknown property value for enum should have been an enum holder. Defaulting.");
+                }
+            }
+            return defaultValue;
+        }
+
+        /**
          * Gets the value of an annotation or falls back to the default if the key isn't present, or the set value is not valid
          */
         protected static <T> T getAnnotationValue(AnnotationData data, String key, T defaultValue, Predicate<T> validator) {
@@ -124,6 +154,33 @@ public class MekAnnotationScanner {
                 T value = (T) annotationData.get(key);
                 if (validator.test(value)) {
                     return value;
+                }
+            }
+            return defaultValue;
+        }
+
+        /**
+         * Gets the value of an annotation or falls back to the default if the key isn't present, or the set value is not valid. Enum version
+         */
+        protected static <T extends Enum<T>> T getAnnotationValue(AnnotationData data, String key, T defaultValue, Predicate<T> validator) {
+            Map<String, Object> annotationData = data.getAnnotationData();
+            if (annotationData.containsKey(key)) {
+                Object value = annotationData.get(key);
+                if (value instanceof ModAnnotation.EnumHolder) {
+                    //This should always be an enum holder, but check just in case
+                    ModAnnotation.EnumHolder enumHolder = (ModAnnotation.EnumHolder) value;
+                    //Note: We ignore the description on the enumHolder, as we can just grab the enum's class
+                    // directly from the default value
+                    try {
+                        T returnValue = Enum.valueOf(defaultValue.getDeclaringClass(), enumHolder.getValue());
+                        if (validator.test(returnValue)) {
+                            return returnValue;
+                        }
+                    } catch (IllegalArgumentException e) {
+                        Mekanism.logger.error("Could not find enum value of: {}. Defaulting.", enumHolder.getValue());
+                    }
+                } else {
+                    Mekanism.logger.warn("Unknown property value for enum should have been an enum holder. Defaulting.");
                 }
             }
             return defaultValue;

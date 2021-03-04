@@ -17,6 +17,7 @@ import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.network.to_client.PacketLaserHitBlock;
 import mekanism.common.particle.LaserParticleData;
@@ -57,6 +58,7 @@ import net.minecraftforge.event.world.BlockEvent;
 public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     protected LaserEnergyContainer energyContainer;
+    @SyntheticComputerMethod(getter = "getDiggingPos")
     private BlockPos digging;
     private FloatingLong diggingProgress = FloatingLong.ZERO;
     private FloatingLong lastFired = FloatingLong.ZERO;

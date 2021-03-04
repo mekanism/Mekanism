@@ -13,6 +13,7 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.content.sps.SPSMultiblockData;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
@@ -77,4 +78,16 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         }
         return ActionResultType.SUCCESS;
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private boolean getMode() {
+        return getActive();
+    }
+
+    @ComputerMethod
+    private void setMode(boolean output) {
+        setActive(output);
+    }
+    //End methods IComputerTile
 }

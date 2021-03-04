@@ -10,6 +10,7 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
@@ -61,6 +62,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
         return 8;
     }
 
+    @ComputerMethod
     public FloatingLong getMaxOutput() {
         return output;
     }

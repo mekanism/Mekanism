@@ -7,6 +7,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -17,6 +18,7 @@ import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -137,6 +139,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         return angle;
     }
 
+    @ComputerMethod(nameOverride = "isBlacklistedDimension")
     public boolean isBlacklistDimension() {
         return isBlacklistDimension;
     }
@@ -164,4 +167,16 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
         //Note: we just extend it to the max size it could be ignoring what direction it is actually facing
         return new AxisAlignedBB(pos.add(-2, 0, -2), pos.add(3, 7, 3));
     }
+
+    //Methods relating to IComputerTile
+    @ComputerMethod
+    private ItemStack getEnergyItem() {
+        return energySlot.getStack();
+    }
+
+    @ComputerMethod
+    private FloatingLong getProductionRate() {
+        return getActive() ? MekanismGeneratorsConfig.generators.windGenerationMin.get().multiply(getCurrentMultiplier()) : FloatingLong.ZERO;
+    }
+    //End methods IComputerTile
 }
