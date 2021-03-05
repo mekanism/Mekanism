@@ -26,4 +26,6 @@ public interface IComputerTile {
     default void getComputerMethods(Map<String, BoundComputerMethod> methods) {
         ComputerMethodMapper.INSTANCE.getAndBindToHandler(this, methods);
     }
+
+    String getComputerName();
 }

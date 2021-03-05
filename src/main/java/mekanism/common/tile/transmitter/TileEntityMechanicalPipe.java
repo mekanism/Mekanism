@@ -113,6 +113,11 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
     }
 
     //Methods relating to IComputerTile
+    @Override
+    public String getComputerName() {
+        return getTransmitter().getTier().getBaseTier().getLowerName() + "MechanicalPipe";
+    }
+
     @ComputerMethod
     private FluidStack getBuffer() {
         return getTransmitter().getBufferWithFallback();

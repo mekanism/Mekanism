@@ -113,6 +113,11 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     }
 
     //Methods relating to IComputerTile
+    @Override
+    public String getComputerName() {
+        return getTransmitter().getTier().getBaseTier().getLowerName() + "UniversalCable";
+    }
+
     @ComputerMethod
     private FloatingLong getBuffer() {
         return getTransmitter().getBufferWithFallback();

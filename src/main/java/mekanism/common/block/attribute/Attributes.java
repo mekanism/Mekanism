@@ -16,7 +16,6 @@ public class Attributes {
 
     public static final Attribute ACTIVE = new AttributeStateActive();
     public static final Attribute COMPARATOR = new AttributeComparator();
-    public static final Attribute COMPUTER_INTEGRATION = new AttributeComputerIntegration();
     public static final Attribute INVENTORY = new AttributeInventory();
     public static final Attribute MULTIBLOCK = new AttributeMultiblock();
     public static final Attribute REDSTONE = new AttributeRedstone();
@@ -49,7 +48,10 @@ public class Attributes {
     /** If a block supports integration with computers. */
     public static class AttributeComputerIntegration implements Attribute {
 
-        private AttributeComputerIntegration() {
+        public final String name;
+
+        public AttributeComputerIntegration(String name) {
+            this.name = name;
         }
     }
 

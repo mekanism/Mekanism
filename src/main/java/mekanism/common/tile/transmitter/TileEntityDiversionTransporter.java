@@ -41,6 +41,11 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
     }
 
     //Methods relating to IComputerTile
+    @Override
+    public String getComputerName() {
+        return "diversionTransporter";
+    }
+
     @ComputerMethod
     private DiversionControl getMode(Direction side) {
         return getTransmitter().modes[side.ordinal()];

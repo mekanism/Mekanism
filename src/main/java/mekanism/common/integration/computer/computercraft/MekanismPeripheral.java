@@ -27,6 +27,7 @@ public class MekanismPeripheral<TILE extends TileEntity & IComputerTile> impleme
 
     private final BoundComputerMethod[] methods;
     private final String[] methodNames;
+    private final String name;
     private final TILE tile;
 
     /**
@@ -45,12 +46,13 @@ public class MekanismPeripheral<TILE extends TileEntity & IComputerTile> impleme
             this.methods[i] = entry.getValue();
             i++;
         }
+        this.name = this.tile.getComputerName();
     }
 
     @Nonnull
     @Override
     public String getType() {
-        return tile.getType().getRegistryName().toString();
+        return name;
     }
 
     @Override

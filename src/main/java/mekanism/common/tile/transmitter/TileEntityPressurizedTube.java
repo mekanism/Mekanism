@@ -159,6 +159,11 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     }
 
     //Methods relating to IComputerTile
+    @Override
+    public String getComputerName() {
+        return getTransmitter().getTier().getBaseTier().getLowerName() + "PressurizedTube";
+    }
+
     @ComputerMethod
     private ChemicalStack<?> getBuffer() {
         return getTransmitter().getBufferWithFallback().getChemicalStack();

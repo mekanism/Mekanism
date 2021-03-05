@@ -1133,6 +1133,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods relating to IComputerTile
     // Note: Some methods are elsewhere if we are exposing pre-existing implementations
+    @Override
+    public String getComputerName() {
+        if (hasComputerSupport()) {
+            return Attribute.get(getBlockType(), AttributeComputerIntegration.class).name;
+        }
+        return "";
+    }
+
     public void validateSecurityIsPublic() throws ComputerException {
         if (hasSecurity() && getSecurityMode() != SecurityMode.PUBLIC) {
             throw new ComputerException("Setter not available due to machine security not being public.");

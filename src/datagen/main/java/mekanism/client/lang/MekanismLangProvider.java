@@ -297,7 +297,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Factories
         for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
             for (FactoryType type : EnumUtils.FACTORY_TYPES) {
-                add(MekanismBlocks.getFactory(tier, type), tier.getBaseTier().getSimpleName() + " " + capitalize(type.getRegistryNameComponent()) + " Factory");
+                add(MekanismBlocks.getFactory(tier, type), tier.getBaseTier().getSimpleName() + " " + type.getRegistryNameComponentCapitalized() + " Factory");
             }
         }
         //Transmitters

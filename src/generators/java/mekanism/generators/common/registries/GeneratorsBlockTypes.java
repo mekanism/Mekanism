@@ -59,6 +59,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(() -> STORAGE)
           .withCustomShape(BlockShapes.HEAT_GENERATOR)
           .withSound(GeneratorsSounds.HEAT_GENERATOR)
+          .withComputerSupport("heatGenerator")
           .with(new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
                 .add(ParticleTypes.FLAME, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
@@ -70,6 +71,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(() -> STORAGE)
           .withCustomShape(BlockShapes.BIO_GENERATOR)
           .withSound(GeneratorsSounds.BIO_GENERATOR)
+          .withComputerSupport("bioGenerator")
           .with(new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(0, 0.3, -0.25)))
           .build();
@@ -80,6 +82,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(() -> SOLAR_STORAGE)
           .withCustomShape(BlockShapes.SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
+          .withComputerSupport("solarGenerator")
           .build();
     // Wind Generator
     public static final Generator<TileEntityWindGenerator> WIND_GENERATOR = GeneratorBuilder
@@ -89,6 +92,7 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.WIND_GENERATOR)
           .with(AttributeCustomSelectionBox.JAVA)
           .withSound(GeneratorsSounds.WIND_GENERATOR)
+          .withComputerSupport("windGenerator")
           .build();
     // Gas Burning Generator
     public static final Generator<TileEntityGasGenerator> GAS_BURNING_GENERATOR = GeneratorBuilder
@@ -98,6 +102,7 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.GAS_BURNING_GENERATOR)
           .with(AttributeCustomSelectionBox.JSON)
           .withSound(GeneratorsSounds.GAS_BURNING_GENERATOR)
+          .withComputerSupport("gasBurningGenerator")
           .build();
     // Advanced Solar Generator
     public static final Generator<TileEntityAdvancedSolarGenerator> ADVANCED_SOLAR_GENERATOR = GeneratorBuilder
@@ -106,6 +111,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(() -> STORAGE2)
           .withCustomShape(BlockShapes.ADVANCED_SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
+          .withComputerSupport("advancedSolarGenerator")
           .build();
 
     // Turbine Casing
@@ -118,7 +124,8 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityTurbineValve> TURBINE_VALVE = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VALVE, GeneratorsLang.DESCRIPTION_TURBINE_VALVE)
           .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
-          .with(Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
+          .with(Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .withComputerSupport("turbineValve")
           .build();
     // Turbine Vent
     public static final BlockTypeTile<TileEntityTurbineVent> TURBINE_VENT = BlockTileBuilder
@@ -158,19 +165,21 @@ public class GeneratorsBlockTypes {
     // Fission Reactor Port
     public static final BlockTypeTile<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT)
-          .with(new AttributeStateFissionPortMode(), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
+          .with(new AttributeStateFissionPortMode(), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
+          .withComputerSupport("fissionReactorPort")
           .build();
     // Fission Reactor Logic Adapter
     public static final BlockTypeTile<TileEntityFissionReactorLogicAdapter> FISSION_REACTOR_LOGIC_ADAPTER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_LOGIC_ADAPTER)
           .with(new AttributeRedstoneEmitter<>(tile -> tile.getStatus() == RedstoneStatus.OUTPUTTING ? 15 : 0))
-          .with(Attributes.REDSTONE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
+          .with(Attributes.REDSTONE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
+          .withComputerSupport("fissionReactorLogicAdapter")
           .build();
     // Fission Fuel Assembly
     public static final BlockTypeTile<TileEntityFissionFuelAssembly> FISSION_FUEL_ASSEMBLY = BlockTileBuilder
@@ -195,7 +204,8 @@ public class GeneratorsBlockTypes {
     // Fusion Reactor Port
     public static final BlockTypeTile<TileEntityFusionReactorPort> FUSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_PORT)
-          .with(Attributes.ACTIVE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
+          .with(Attributes.ACTIVE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
+          .withComputerSupport("fusionReactorPort")
           .build();
     // Fusion Reactor Frame
     public static final BlockTypeTile<TileEntityFusionReactorBlock> FUSION_REACTOR_FRAME = BlockTileBuilder
@@ -208,8 +218,9 @@ public class GeneratorsBlockTypes {
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_LOGIC_ADAPTER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_LOGIC_ADAPTER)
           .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
           .with(new AttributeRedstoneEmitter<>(tile -> tile.checkMode() ? 15 : 0))
-          .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.COMPUTER_INTEGRATION)
+          .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .withEmptyContainer(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
+          .withComputerSupport("fusionReactorLogicAdapter")
           .build();
     // Laser Focus Matrix
     public static final BlockTypeTile<TileEntityLaserFocusMatrix> LASER_FOCUS_MATRIX = BlockTileBuilder
