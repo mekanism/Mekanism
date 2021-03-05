@@ -96,12 +96,12 @@ public class SyncMapper extends BaseAnnotationScanner {
     }
 
     @Override
-    protected Map<ElementType, Type> getSupportedTypes() {
-        return Collections.singletonMap(ElementType.FIELD, Type.getType(ContainerSync.class));
+    protected Map<ElementType, Type[]> getSupportedTypes() {
+        return Collections.singletonMap(ElementType.FIELD, new Type[]{Type.getType(ContainerSync.class)});
     }
 
     @Override
-    protected void collectScanData(Map<Class<?>, List<AnnotationData>> knownClasses) {
+    protected void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses) {
         Map<Class<?>, List<PropertyFieldInfo>> rawPropertyMap = new Object2ObjectOpenHashMap<>();
         //Only create the list once for the default fallback
         List<String> fallbackTagsList = Collections.singletonList(DEFAULT_TAG);

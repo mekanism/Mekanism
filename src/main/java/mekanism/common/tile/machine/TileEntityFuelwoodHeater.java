@@ -9,7 +9,10 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -17,7 +20,6 @@ import mekanism.common.inventory.slot.FuelInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -28,7 +30,9 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
 
     private double lastEnvironmentLoss;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
     private FuelInventorySlot fuelSlot;
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
     private BasicHeatCapacitor heatCapacitor;
 
     public TileEntityFuelwoodHeater() {
@@ -105,16 +109,4 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
         container.track(SyncableInt.create(() -> maxBurnTime, value -> maxBurnTime = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
     }
-
-    //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getFuelItem() {
-        return fuelSlot.getStack();
-    }
-
-    @ComputerMethod(nameOverride = "getTemperature")
-    private double computerGetTemperature() {
-        return getTotalTemperature();
-    }
-    //End methods IComputerTile
 }

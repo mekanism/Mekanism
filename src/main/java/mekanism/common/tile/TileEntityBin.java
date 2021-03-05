@@ -10,7 +10,9 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
@@ -24,7 +26,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -41,6 +42,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     private BinTier tier;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getStored")
     private BinInventorySlot binSlot;
 
     public TileEntityBin(IBlockProvider blockProvider) {
@@ -166,11 +168,6 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getStored() {
-        return binSlot.getStack();
-    }
-
     @ComputerMethod
     private int getCapacity() {
         return binSlot.getLimit(binSlot.getStack());

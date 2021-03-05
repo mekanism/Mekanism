@@ -21,8 +21,11 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -71,13 +74,17 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     public MultiblockFluidTank<FissionReactorMultiblockData> fluidCoolantTank;
     @ContainerSync
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded"})
     public IGasTank fuelTank;
 
     @ContainerSync
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getHeatedCoolant", "getHeatedCoolantCapacity", "getHeatedCoolantNeeded"})
     public IGasTank heatedCoolantTank;
     @ContainerSync
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getWaste", "getWasteCapacity", "getWasteNeeded"})
     public IGasTank wasteTank;
     @ContainerSync
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
     public MultiblockHeatCapacitor<FissionReactorMultiblockData> heatCapacitor;
 
     @ContainerSync
@@ -405,58 +412,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @ComputerMethod
-    private GasStack getFuel() {
-        return fuelTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getFuelCapacity() {
-        return fuelTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getFuelNeeded() {
-        return fuelTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getHeatedCoolant() {
-        return heatedCoolantTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getHeatedCoolantCapacity() {
-        return heatedCoolantTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getHeatedCoolantNeeded() {
-        return heatedCoolantTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getWaste() {
-        return wasteTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getWasteCapacity() {
-        return wasteTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getWasteNeeded() {
-        return wasteTank.getNeeded();
-    }
-
-    @ComputerMethod
     private double getHeatCapacity() {
         return heatCapacitor.getHeatCapacity();
-    }
-
-    @ComputerMethod
-    private double getTemperature() {
-        return heatCapacitor.getTemperature();
     }
     //End computer related methods
 }

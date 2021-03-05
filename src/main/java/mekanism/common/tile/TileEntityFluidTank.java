@@ -16,7 +16,10 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerPercentageFluidTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -34,7 +37,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -45,6 +47,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager {
 
+    @WrappingComputerMethod(wrapper = ComputerPercentageFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
     public FluidTankFluidTank fluidTank;
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;
@@ -59,7 +62,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     private boolean needsPacket;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private FluidInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private OutputInventorySlot outputSlot;
 
     private boolean updateClientLight = false;
@@ -259,36 +264,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private FluidStack getStored() {
-        return fluidTank.getFluid();
-    }
-
-    @ComputerMethod
-    private int getCapacity() {
-        return fluidTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private int getNeeded() {
-        return fluidTank.getNeeded();
-    }
-
-    @ComputerMethod
-    public float getFilledPercentage() {
-        return fluidTank.getFluidAmount() / (float) fluidTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return outputSlot.getStack();
-    }
-
     @ComputerMethod
     private void setContainerEditMode(ContainerEditMode mode) throws ComputerException {
         validateSecurityIsPublic();

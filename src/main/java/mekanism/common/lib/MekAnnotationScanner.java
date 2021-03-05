@@ -34,31 +34,37 @@ public class MekAnnotationScanner {
         for (ModFileScanData scanData : ModList.get().getAllScanData()) {
             for (AnnotationData data : scanData.getAnnotations()) {
                 //If the annotation is on a field, and is the sync type
-                ElementType targetType = data.getTargetType();
-                List<ScanData> elementScanData = elementBasedScanData.get(targetType);
-                if (elementScanData != null) {
-                    for (ScanData scannerData : elementScanData) {
-                        if (scannerData.supportedTypes.get(targetType).equals(data.getAnnotationType())) {
-                            Class<?> clazz = getClassForName(classNameCache, data.getClassType().getClassName());
-                            if (clazz != null) {
-                                //If the class was successfully found, add it to the known classes
-                                scannerData.knownClasses.computeIfAbsent(clazz, c -> new ArrayList<>()).add(data);
-                            }
-                            //Annotations should be unique so if we found one match the other scanners shouldn't match that same annotation data
-                            break;
-                        }
-                    }
-                }
+                gatherScanData(elementBasedScanData, classNameCache, data);
             }
         }
         for (Map.Entry<BaseAnnotationScanner, ScanData> entry : scanners.entrySet()) {
             Map<Class<?>, List<AnnotationData>> knownClasses = entry.getValue().knownClasses;
             if (!knownClasses.isEmpty()) {
                 try {
-                    entry.getKey().collectScanData(knownClasses);
+                    entry.getKey().collectScanData(classNameCache, knownClasses);
                 } catch (Throwable throwable) {
                     //Should never really happen unless something goes drastically wrong
                     Mekanism.logger.info("Failed to collect scan data", throwable);
+                }
+            }
+        }
+    }
+
+    private static void gatherScanData(Map<ElementType, List<ScanData>> elementBasedScanData, Map<String, Class<?>> classNameCache, AnnotationData data) {
+        ElementType targetType = data.getTargetType();
+        List<ScanData> elementScanData = elementBasedScanData.get(targetType);
+        if (elementScanData != null) {
+            for (ScanData scannerData : elementScanData) {
+                for (Type type : scannerData.supportedTypes.get(targetType)) {
+                    if (type.equals(data.getAnnotationType())) {
+                        Class<?> clazz = getClassForName(classNameCache, data.getClassType().getClassName());
+                        if (clazz != null) {
+                            //If the class was successfully found, add it to the known classes
+                            scannerData.knownClasses.computeIfAbsent(clazz, c -> new ArrayList<>()).add(data);
+                        }
+                        //Annotations should be unique so if we found one match the other scanners shouldn't match that same annotation data
+                        return;
+                    }
                 }
             }
         }
@@ -97,7 +103,7 @@ public class MekAnnotationScanner {
     private static class ScanData {
 
         private final Map<Class<?>, List<AnnotationData>> knownClasses = new Object2ObjectOpenHashMap<>();
-        private final Map<ElementType, Type> supportedTypes;
+        private final Map<ElementType, Type[]> supportedTypes;
 
         public ScanData(BaseAnnotationScanner scanner) {
             supportedTypes = scanner.getSupportedTypes();
@@ -110,9 +116,18 @@ public class MekAnnotationScanner {
             return true;
         }
 
-        protected abstract Map<ElementType, Type> getSupportedTypes();
+        protected abstract Map<ElementType, Type[]> getSupportedTypes();
 
-        protected abstract void collectScanData(Map<Class<?>, List<AnnotationData>> knownClasses);
+        protected abstract void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses);
+
+        /**
+         * Gets the value of an annotation or null if it is not present. Used for getting classes
+         */
+        @Nullable
+        protected static Class<?> getAnnotationValue(Map<String, Class<?>> classNameCache, AnnotationData data, String key) {
+            Type type = (Type) data.getAnnotationData().get(key);
+            return type == null ? null : getClassForName(classNameCache, type.getClassName());
+        }
 
         /**
          * Gets the value of an annotation or falls back to the default if the key isn't present.

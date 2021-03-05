@@ -23,7 +23,10 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -42,7 +45,9 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
     private double secondaryEnergyPerTickMultiplier = 1;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem")
     private GasInventorySlot extraSlot;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded"})
     private IGasTank gasTank;
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {
@@ -208,26 +213,6 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private GasStack getChemical() {
-        return gasTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getChemicalCapacity() {
-        return gasTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getChemicalNeeded() {
-        return gasTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private ItemStack getChemicalItem() {
-        return extraSlot.getStack();
-    }
-
     @ComputerMethod
     private void dumpChemical() throws ComputerException {
         validateSecurityIsPublic();

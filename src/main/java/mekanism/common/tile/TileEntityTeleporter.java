@@ -29,7 +29,9 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableByte;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -48,7 +50,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.server.MinecraftServer;
@@ -85,6 +86,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     private final TileComponentChunkLoader<TileEntityTeleporter> chunkLoaderComponent;
 
     private MachineEnergyContainer<TileEntityTeleporter> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityTeleporter() {
@@ -524,11 +526,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
     @ComputerMethod
     private Collection<TeleporterFrequency> getFrequencies() {
         return FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequencies();

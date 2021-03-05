@@ -14,7 +14,8 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -28,6 +29,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     private final IInputHandler<@NonNull ItemStack> extraInputHandler;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getSecondaryInput")
     private InputInventorySlot extraSlot;
 
     public TileEntityCombiningFactory(IBlockProvider blockProvider) {
@@ -130,11 +132,4 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     public CombinerUpgradeData getUpgradeData() {
         return new CombinerUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, energySlot, extraSlot, inputSlots, outputSlots, isSorting(), getComponents());
     }
-
-    //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getSecondaryInput() {
-        return extraSlot.getStack();
-    }
-    //End methods IComputerTile
 }

@@ -24,7 +24,10 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -45,14 +48,18 @@ import net.minecraft.item.ItemStack;
 public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
     public IGasTank gasTank;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityNutritionalLiquifier> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
     private InputInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private GasInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityNutritionalLiquifier() {
@@ -165,36 +172,6 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @ComputerMethod
     private FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
-    }
-
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getInput() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private GasStack getOutput() {
-        return gasTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getOutputCapacity() {
-        return gasTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getOutputNeeded() {
-        return gasTank.getNeeded();
     }
     //End methods IComputerTile
 }

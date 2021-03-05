@@ -18,7 +18,10 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -27,7 +30,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
@@ -36,7 +38,9 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     private double lastEnvironmentLoss;
 
     private ResistiveHeaterEnergyContainer energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
     private BasicHeatCapacitor heatCapacitor;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityResistiveHeater() {
@@ -139,16 +143,6 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod(nameOverride = "getTemperature")
-    private double computerGetTemperature() {
-        return getTotalTemperature();
-    }
-
     @ComputerMethod
     private FloatingLong getEnergyUsage() {
         return energyContainer.getEnergyPerTick();

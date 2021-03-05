@@ -7,7 +7,6 @@ import mekanism.api.Action;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -35,8 +34,11 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerPercentageChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -70,7 +72,9 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     private MergedChemicalTank chemicalTank;
     private ChemicalTankTier tier;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrainItem")
     private MergedChemicalInventorySlot<MergedChemicalTank> drainSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFillItem")
     private MergedChemicalInventorySlot<MergedChemicalTank> fillSlot;
 
     public TileEntityChemicalTank(IBlockProvider blockProvider) {
@@ -234,6 +238,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         return MekanismUtils.redstoneLevelFromContents(currentTank.getStored(), currentTank.getCapacity());
     }
 
+    @WrappingComputerMethod(wrapper = ComputerPercentageChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
     private IChemicalTank<?, ?> getCurrentTank() {
         Current current = chemicalTank.getCurrent();
         return chemicalTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);
@@ -315,37 +320,6 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private ChemicalStack<?> getStored() {
-        return getCurrentTank().getStack();
-    }
-
-    @ComputerMethod
-    private long getCapacity() {
-        return getCurrentTank().getCapacity();
-    }
-
-    @ComputerMethod
-    private long getNeeded() {
-        return getCurrentTank().getNeeded();
-    }
-
-    @ComputerMethod
-    public float getFilledPercentage() {
-        IChemicalTank<?, ?> tank = getCurrentTank();
-        return (float) (tank.getStored() / (double) tank.getCapacity());
-    }
-
-    @ComputerMethod
-    private ItemStack getFillItem() {
-        return fillSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getDrainItem() {
-        return drainSlot.getStack();
-    }
-
     @ComputerMethod
     private void setDumpingMode(GasMode mode) throws ComputerException {
         validateSecurityIsPublic();

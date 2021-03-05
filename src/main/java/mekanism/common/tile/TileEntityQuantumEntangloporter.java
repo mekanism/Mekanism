@@ -24,6 +24,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
@@ -41,7 +42,10 @@ import mekanism.common.capabilities.holder.slot.QuantumEntangloporterInventorySl
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.lib.chunkloading.IChunkLoader;
@@ -350,80 +354,29 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return getFrequency().getInventorySlots(null).get(0).getStack();
     }
 
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBufferFluid", "getBufferFluidCapacity", "getBufferFluidNeeded"})
+    private IExtendedFluidTank getBufferFluidTank() throws ComputerException {
+        return getFrequency().getFluidTanks(null).get(0);
+    }
+
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferGas", "getBufferGasCapacity", "getBufferGasNeeded"})
     private IGasTank getBufferGasTank() throws ComputerException {
         return getFrequency().getGasTanks(null).get(0);
     }
 
-    @ComputerMethod
-    private GasStack getBufferGas() throws ComputerException {
-        return getBufferGasTank().getStack();
-    }
-
-    @ComputerMethod
-    private long getBufferGasCapacity() throws ComputerException {
-        return getBufferGasTank().getCapacity();
-    }
-
-    @ComputerMethod
-    private long getBufferGasNeeded() throws ComputerException {
-        return getBufferGasTank().getNeeded();
-    }
-
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferInfuseType", "getBufferInfuseTypeCapacity", "getBufferInfuseTypeNeeded"})
     private IInfusionTank getBufferInfuseTypeTank() throws ComputerException {
         return getFrequency().getInfusionTanks(null).get(0);
     }
 
-    @ComputerMethod
-    private InfusionStack getBufferInfuseType() throws ComputerException {
-        return getBufferInfuseTypeTank().getStack();
-    }
-
-    @ComputerMethod
-    private long getBufferInfuseTypeCapacity() throws ComputerException {
-        return getBufferInfuseTypeTank().getCapacity();
-    }
-
-    @ComputerMethod
-    private long getBufferInfuseTypeNeeded() throws ComputerException {
-        return getBufferInfuseTypeTank().getNeeded();
-    }
-
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferPigment", "getBufferPigmentCapacity", "getBufferPigmentNeeded"})
     private IPigmentTank getBufferPigmentTank() throws ComputerException {
         return getFrequency().getPigmentTanks(null).get(0);
     }
 
-    @ComputerMethod
-    private PigmentStack getBufferPigment() throws ComputerException {
-        return getBufferPigmentTank().getStack();
-    }
-
-    @ComputerMethod
-    private long getBufferPigmentCapacity() throws ComputerException {
-        return getBufferPigmentTank().getCapacity();
-    }
-
-    @ComputerMethod
-    private long getBufferPigmentNeeded() throws ComputerException {
-        return getBufferPigmentTank().getNeeded();
-    }
-
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferSlurry", "getBufferSlurryCapacity", "getBufferSlurryNeeded"})
     private ISlurryTank getBufferSlurryTank() throws ComputerException {
         return getFrequency().getSlurryTanks(null).get(0);
-    }
-
-    @ComputerMethod
-    private SlurryStack getBufferSlurry() throws ComputerException {
-        return getBufferSlurryTank().getStack();
-    }
-
-    @ComputerMethod
-    private long getBufferSlurryCapacity() throws ComputerException {
-        return getBufferSlurryTank().getCapacity();
-    }
-
-    @ComputerMethod
-    private long getBufferSlurryNeeded() throws ComputerException {
-        return getBufferSlurryTank().getNeeded();
     }
 
     @ComputerMethod

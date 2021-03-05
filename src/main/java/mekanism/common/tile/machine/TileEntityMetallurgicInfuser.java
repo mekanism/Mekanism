@@ -24,7 +24,10 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -43,6 +46,7 @@ import net.minecraft.item.ItemStack;
 public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<MetallurgicInfuserRecipe> implements IHasDumpButton {
 
     public static final long MAX_INFUSE = 1_000;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded"})
     public IInfusionTank infusionTank;
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
@@ -50,9 +54,13 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
 
     private MachineEnergyContainer<TileEntityMetallurgicInfuser> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem")
     private InfusionInventorySlot infusionSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
     private InputInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
     private OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityMetallurgicInfuser() {
@@ -173,41 +181,6 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     @ComputerMethod
     private FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
-    }
-
-    @ComputerMethod
-    private ItemStack getInput() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutput() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private InfusionStack getInfuseType() {
-        return infusionTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getInfuseTypeCapacity() {
-        return infusionTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getInfuseTypeNeeded() {
-        return infusionTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private ItemStack getInfuseTypeItem() {
-        return infusionSlot.getStack();
     }
 
     @ComputerMethod

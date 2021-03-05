@@ -25,7 +25,10 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -42,7 +45,6 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -50,7 +52,9 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
 
     public static final int MAX_GAS = 10_000;
 
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded"})
     public IGasTank inputTank;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
     public IGasTank outputTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
@@ -59,8 +63,11 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     private final IInputHandler<@NonNull GasStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityIsotopicCentrifuge> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private GasInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private GasInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityIsotopicCentrifuge() {
@@ -197,51 +204,4 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         super.addContainerTrackers(container);
         container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
-
-    //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private GasStack getInput() {
-        return inputTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getInputCapacity() {
-        return inputTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getInputNeeded() {
-        return inputTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getOutput() {
-        return outputTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getOutputCapacity() {
-        return outputTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getOutputNeeded() {
-        return outputTank.getNeeded();
-    }
-    //End methods IComputerTile
 }

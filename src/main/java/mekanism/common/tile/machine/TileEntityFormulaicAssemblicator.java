@@ -24,8 +24,10 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -85,7 +87,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private List<IInventorySlot> craftingGridSlots;
     private List<IInventorySlot> inputSlots;
     private List<IInventorySlot> outputSlots;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFormulaItem")
     private FormulaInventorySlot formulaSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityFormulaicAssemblicator() {
@@ -686,11 +690,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
     private ItemStack getCraftingInputSlot(int slot) throws ComputerException {
         if (slot < 0 || slot >= craftingGridSlots.size()) {
             throw new ComputerException("Crafting Input Slot '%d' is out of bounds, must be between 0 and %d.", slot, craftingGridSlots.size());
@@ -710,11 +709,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             throw new ComputerException("Crafting Output Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
         }
         return outputSlots.get(slot).getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getFormulaItem() {
-        return formulaSlot.getStack();
     }
 
     @ComputerMethod

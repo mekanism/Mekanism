@@ -26,7 +26,10 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -41,7 +44,6 @@ import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -70,9 +72,13 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public int operatingTicks;
 
     private MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded"})
     public BasicFluidTank fluidTank;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private FluidInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityFluidicPlenisher() {
@@ -301,36 +307,6 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private FluidStack getFluid() {
-        return fluidTank.getFluid();
-    }
-
-    @ComputerMethod
-    private int getFluidCapacity() {
-        return fluidTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private int getFluidNeeded() {
-        return fluidTank.getNeeded();
-    }
-
     @ComputerMethod(nameOverride = "reset")
     private void resetPlenisher() throws ComputerException {
         validateSecurityIsPublic();

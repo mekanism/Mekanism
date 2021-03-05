@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
@@ -37,7 +36,10 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -58,6 +60,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     private static final long MAX_CHEMICAL = 10_000;
     public static final int BASE_TICKS_REQUIRED = 100;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGasInput", "getGasInputCapacity", "getGasInputNeeded"})
     public IGasTank injectTank;
     public MergedChemicalTank outputTank;
     public double injectUsage = 1;
@@ -67,9 +70,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputGasItem")
     private GasInventorySlot gasInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private InputInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private MergedChemicalInventorySlot<MergedChemicalTank> outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalDissolutionChamber() {
@@ -224,56 +231,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getInputGasItem() {
-        return gasInputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private GasStack getGasInput() {
-        return injectTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getGasInputCapacity() {
-        return injectTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getGasInputNeeded() {
-        return injectTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private ChemicalStack<?> getOutput() {
-        return getOutputTank().getStack();
-    }
-
-    @ComputerMethod
-    private long getOutputCapacity() {
-        return getOutputTank().getCapacity();
-    }
-
-    @ComputerMethod
-    private long getOutputNeeded() {
-        return getOutputTank().getNeeded();
-    }
-
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
     private IChemicalTank<?, ?> getOutputTank() {
         Current current = outputTank.getCurrent();
         return outputTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);

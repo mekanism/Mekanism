@@ -20,6 +20,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.BoundComputerMethod.ThreadAwareMethodHandle;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.lib.MekAnnotationScanner.BaseAnnotationScanner;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileRedstone;
@@ -27,16 +28,11 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
 import org.objectweb.asm.Type;
 
-//TODO - 10.1: Creating a wrapper based system similar to sync mapper's that lets us say:
-// Use this method's return result or field's value as the input to create a set of synthetic methods based on a given naming scheme.
-// This would for example allow us to be more strictly annotation based for things like getting the item in a given slot, or for the
-// cases where we have getters for the substance in a tank, the capacity, the needed amount, the filled percentage. Potentially the
-// way we could even do the naming scheme is just relying on a string list as an input and the names to match up with what methods
-// a passed in class represents will be created. Another good target case for this would probably be for frequencies
 public class ComputerMethodMapper extends BaseAnnotationScanner {
 
     public static final ComputerMethodMapper INSTANCE = new ComputerMethodMapper();
     private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
+    private static final MethodHandles.Lookup PUBLIC_LOOKUP = MethodHandles.publicLookup();
     private final Map<Class<?>, Map<String, List<MethodHandleInfo>>> namedMethodHandleCache = new Object2ObjectOpenHashMap<>();
 
     private ComputerMethodMapper() {
@@ -48,15 +44,18 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
     }
 
     @Override
-    protected Map<ElementType, Type> getSupportedTypes() {
-        Map<ElementType, Type> supportedTypes = new EnumMap<>(ElementType.class);
-        supportedTypes.put(ElementType.FIELD, Type.getType(SyntheticComputerMethod.class));
-        supportedTypes.put(ElementType.METHOD, Type.getType(ComputerMethod.class));
+    protected Map<ElementType, Type[]> getSupportedTypes() {
+        Map<ElementType, Type[]> supportedTypes = new EnumMap<>(ElementType.class);
+        Type wrappingType = Type.getType(WrappingComputerMethod.class);
+        supportedTypes.put(ElementType.FIELD, new Type[]{Type.getType(SyntheticComputerMethod.class), wrappingType});
+        supportedTypes.put(ElementType.METHOD, new Type[]{Type.getType(ComputerMethod.class), wrappingType});
         return supportedTypes;
     }
 
     @Override
-    protected void collectScanData(Map<Class<?>, List<AnnotationData>> knownClasses) {
+    protected void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses) {
+        Type wrappingType = Type.getType(WrappingComputerMethod.class);
+        Map<Class<?>, List<WrappingMethodHelper>> cachedWrappers = new Object2ObjectOpenHashMap<>();
         Map<Class<?>, List<MethodDetails>> rawMethodDetails = new Object2ObjectOpenHashMap<>();
         for (Entry<Class<?>, List<AnnotationData>> entry : knownClasses.entrySet()) {
             Class<?> annotatedClass = entry.getKey();
@@ -70,17 +69,27 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                     if (field == null) {
                         continue;
                     }
-                    String getterName = getAnnotationValue(data, "getter", "");
-                    String setterName = getAnnotationValue(data, "setter", "");
-                    if (getterName.isEmpty() && setterName.isEmpty()) {
-                        Mekanism.logger.error("Field: '{}' in class '{}' is annotated to generate a computer method but does not specify a getter or setter.",
-                              fieldName, annotatedClass.getSimpleName());
+                    if (data.getAnnotationType().equals(wrappingType)) {
+                        //Wrapping computer method
+                        try {
+                            MethodHandle methodHandle = LOOKUP.unreflectGetter(field);
+                            wrapMethodHandle(classNameCache, methodHandle, data, methodDetails, cachedWrappers, annotatedClass, fieldName);
+                        } catch (IllegalAccessException e) {
+                            Mekanism.logger.error("Failed to create getter for field '{}' in class '{}'.", fieldName, annotatedClass.getSimpleName());
+                        }
                     } else {
-                        MethodRestriction restriction = getAnnotationValue(data, "restriction", MethodRestriction.NONE);
-                        createSyntheticMethod(methodDetails, annotatedClass, field, fieldName, getterName, true, restriction,
-                              getAnnotationValue(data, "threadSafeGetter", false));
-                        createSyntheticMethod(methodDetails, annotatedClass, field, fieldName, setterName, false, restriction,
-                              getAnnotationValue(data, "threadSafeSetter", false));
+                        String getterName = getAnnotationValue(data, "getter", "");
+                        String setterName = getAnnotationValue(data, "setter", "");
+                        if (getterName.isEmpty() && setterName.isEmpty()) {
+                            Mekanism.logger.error("Field: '{}' in class '{}' is annotated to generate a computer method but does not specify a getter or setter.",
+                                  fieldName, annotatedClass.getSimpleName());
+                        } else {
+                            MethodRestriction restriction = getAnnotationValue(data, "restriction", MethodRestriction.NONE);
+                            createSyntheticMethod(methodDetails, annotatedClass, field, fieldName, getterName, true, restriction,
+                                  getAnnotationValue(data, "threadSafeGetter", false));
+                            createSyntheticMethod(methodDetails, annotatedClass, field, fieldName, setterName, false, restriction,
+                                  getAnnotationValue(data, "threadSafeSetter", false));
+                        }
                     }
                 } else {//data.getTargetType() == ElementType.METHOD
                     //Note: Signature is methodName followed by the method descriptor
@@ -103,21 +112,26 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                                       annotatedClass.getSimpleName());
                                 continue;
                             }
-                            //See if there is a name override defined for the method, or fallback
-                            String methodNameOverride = getAnnotationValue(data, "nameOverride", methodName, name -> {
-                                if (name.isEmpty()) {
-                                    Mekanism.logger.warn("Specified name override for method '{}' in class '{}' is explicitly set to empty and "
-                                                         + "will not be used.", methodName, annotatedClass.getSimpleName());
-                                } else if (validMethodName(name)) {
-                                    return true;
-                                } else {
-                                    Mekanism.logger.error("Specified name override '{}' for method '{}' in class '{}' is not a valid method name and "
-                                                          + "will not be used.", name, methodName, annotatedClass.getSimpleName());
-                                }
-                                return false;
-                            });
-                            methodDetails.add(new MethodDetails(methodNameOverride, methodHandle, getAnnotationValue(data, "restriction", MethodRestriction.NONE),
-                                  getAnnotationValue(data, "threadSafe", false)));
+                            if (data.getAnnotationType().equals(wrappingType)) {
+                                //Wrapping computer method
+                                wrapMethodHandle(classNameCache, methodHandle, data, methodDetails, cachedWrappers, annotatedClass, methodName);
+                            } else {//ComputerMethod
+                                //See if there is a name override defined for the method, or fallback
+                                String methodNameOverride = getAnnotationValue(data, "nameOverride", methodName, name -> {
+                                    if (name.isEmpty()) {
+                                        Mekanism.logger.warn("Specified name override for method '{}' in class '{}' is explicitly set to empty and "
+                                                             + "will not be used.", methodName, annotatedClass.getSimpleName());
+                                    } else if (validMethodName(name)) {
+                                        return true;
+                                    } else {
+                                        Mekanism.logger.error("Specified name override '{}' for method '{}' in class '{}' is not a valid method name and "
+                                                              + "will not be used.", name, methodName, annotatedClass.getSimpleName());
+                                    }
+                                    return false;
+                                });
+                                methodDetails.add(new MethodDetails(methodNameOverride, methodHandle, getAnnotationValue(data, "restriction", MethodRestriction.NONE),
+                                      getAnnotationValue(data, "threadSafe", false)));
+                            }
                         }
                     }
                 }
@@ -153,6 +167,47 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
             } else {
                 Mekanism.logger.error("Specified {} name '{}' for field '{}' in class '{}' is not a valid method name.", isGetter ? "getter" : "setter",
                       methodName, fieldName, annotatedClass.getSimpleName());
+            }
+        }
+    }
+
+    private static void wrapMethodHandle(Map<String, Class<?>> classNameCache, MethodHandle methodHandle, AnnotationData data, List<MethodDetails> methodDetails,
+          Map<Class<?>, List<WrappingMethodHelper>> cachedWrappers, Class<?> annotatedClass, String identifier) {
+        Class<?> wrapperClass = getAnnotationValue(classNameCache, data, "wrapper");
+        if (wrapperClass != null) {
+            List<String> methodNames = getAnnotationValue(data, "methodNames", Collections.emptyList());
+            int methodNameCount = methodNames.size();
+            if (methodNameCount == 0) {
+                Mekanism.logger.warn("No method names on wrapper for {} in class '{}', so the WrappingComputerMethod annotation should probably be removed.",
+                      identifier, annotatedClass.getSimpleName());
+            } else {
+                List<WrappingMethodHelper> wrapperHandles = cachedWrappers.computeIfAbsent(wrapperClass, clazz -> {
+                    List<WrappingMethodHelper> helpers = new ArrayList<>();
+                    try {
+                        Method[] methods = clazz.getDeclaredMethods();
+                        for (Method method : methods) {
+                            helpers.add(new WrappingMethodHelper(PUBLIC_LOOKUP.unreflect(method)));
+                        }
+                    } catch (IllegalAccessException e) {
+                        Mekanism.logger.error("Failed to retrieve method handle for methods in class '{}'.", clazz.getSimpleName());
+                    }
+                    return helpers;
+                });
+                //Note: While technically recalculating the method handles above is slightly wasteful if they don't match up
+                // below in size, this is something that should be ran into at dev time as an error, and shouldn't make it
+                // into an actual environment so shouldn't really matter too much
+                if (wrapperHandles.size() != methodNameCount) {
+                    Mekanism.logger.warn("Mismatch in count of method names ({}) for generated methods and methods to generate ({}).", methodNameCount,
+                          wrapperHandles.size());
+                } else {
+                    MethodRestriction restriction = getAnnotationValue(data, "restriction", MethodRestriction.NONE);
+                    boolean threadSafe = getAnnotationValue(data, "threadSafe", false);
+                    for (int index = 0; index < methodNameCount; index++) {
+                        //If there is an error at dev time it should crash with an IllegalArgumentException
+                        MethodHandle newHandle = MethodHandles.filterReturnValue(methodHandle, wrapperHandles.get(index).asType(methodHandle.type().returnType()));
+                        methodDetails.add(new MethodDetails(methodNames.get(index), newHandle, restriction, threadSafe));
+                    }
+                }
             }
         }
     }
@@ -201,6 +256,26 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
 
     private static boolean validMethodName(String name) {
         return name.matches("^([a-zA-Z_$][a-zA-Z\\d_$]*)$");
+    }
+
+    private static class WrappingMethodHelper {
+
+        private final Map<Class<?>, MethodHandle> mappedHandles = new Object2ObjectOpenHashMap<>();
+        private final MethodHandle methodHandle;
+
+        private WrappingMethodHelper(MethodHandle methodHandle) {
+            this.methodHandle = methodHandle;
+        }
+
+        /**
+         * Creates a method handle with the parameter being of the corresponding type instead. Useful to go from interface to concrete type.
+         */
+        public MethodHandle asType(Class<?> type) {
+            if (type == methodHandle.type().parameterType(0)) {
+                return methodHandle;
+            }
+            return mappedHandles.computeIfAbsent(type, clazz -> MethodHandles.explicitCastArguments(methodHandle, methodHandle.type().changeParameterType(0, clazz)));
+        }
     }
 
     private static class MethodDetails {

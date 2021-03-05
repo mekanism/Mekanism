@@ -34,7 +34,11 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -56,7 +60,6 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -64,7 +67,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     private static final int CAPACITY = 10_000;
 
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGas", "getGasCapacity", "getGasNeeded"})
     public IGasTank gasTank;
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded"})
     public BasicFluidTank fluidTank;
     /**
      * True: fluid -> gas
@@ -81,10 +86,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
     private MachineEnergyContainer<TileEntityRotaryCondensentrator> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getGasItemInput")
     private GasInventorySlot gasInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getGasItemOutput")
     private GasInventorySlot gasOutputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemInput")
     private FluidInventorySlot fluidInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemOutput")
     private OutputInventorySlot fluidOutputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityRotaryCondensentrator() {
@@ -292,61 +302,6 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
             mode = value;
             markDirty(false);
         }
-    }
-
-    @ComputerMethod
-    private ItemStack getGasItemInput() {
-        return gasInputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getGasItemOutput() {
-        return gasOutputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getFluidItemInput() {
-        return fluidInputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getFluidItemOutput() {
-        return fluidOutputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private GasStack getGas() {
-        return gasTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getGasCapacity() {
-        return gasTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getGasNeeded() {
-        return gasTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private FluidStack getFluid() {
-        return fluidTank.getFluid();
-    }
-
-    @ComputerMethod
-    private int getFluidCapacity() {
-        return fluidTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private int getFluidNeeded() {
-        return fluidTank.getNeeded();
     }
     //End methods IComputerTile
 }

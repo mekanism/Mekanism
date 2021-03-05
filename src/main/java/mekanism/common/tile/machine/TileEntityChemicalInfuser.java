@@ -25,7 +25,10 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -43,13 +46,15 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
 
 public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> {
 
     public static final long MAX_GAS = 10_000;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftInput", "getLeftInputCapacity", "getLeftInputNeeded"})
     public IGasTank leftTank;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightInput", "getRightInputCapacity", "getRightInputNeeded"})
     public IGasTank rightTank;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
     public IGasTank centerTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
@@ -59,9 +64,13 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     private final IInputHandler<@NonNull GasStack> rightInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalInfuser> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftInputItem")
     private GasInventorySlot leftInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private GasInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightInputItem")
     private GasInventorySlot rightInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalInfuser() {
@@ -225,71 +234,4 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         super.addContainerTrackers(container);
         container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
-
-    //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getLeftInputItem() {
-        return leftInputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getRightInputItem() {
-        return rightInputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private GasStack getLeftInput() {
-        return leftTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getLeftInputCapacity() {
-        return leftTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getLeftInputNeeded() {
-        return leftTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getRightInput() {
-        return rightTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getRightInputCapacity() {
-        return rightTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getRightInputNeeded() {
-        return rightTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getOutput() {
-        return centerTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getOutputCapacity() {
-        return centerTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getOutputNeeded() {
-        return centerTank.getNeeded();
-    }
-    //End methods IComputerTile
 }

@@ -22,8 +22,10 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
@@ -36,7 +38,6 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -46,7 +47,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     public static final long MAX_GAS = 10_000;
 
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded"})
     public IGasTank inputTank;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
     public IGasTank outputTank;
 
     private CachedRecipe<GasToGasRecipe> cachedRecipe;
@@ -61,7 +64,9 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     private final IOutputHandler<@NonNull GasStack> outputHandler;
     private final IInputHandler<@NonNull GasStack> inputHandler;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private GasInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private GasInventorySlot outputSlot;
 
     public TileEntitySolarNeutronActivator() {
@@ -218,46 +223,4 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     public int getRedstoneLevel() {
         return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
     }
-
-    //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private GasStack getInput() {
-        return inputTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getInputCapacity() {
-        return inputTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getInputNeeded() {
-        return inputTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getOutput() {
-        return outputTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getOutputCapacity() {
-        return outputTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getOutputNeeded() {
-        return outputTank.getNeeded();
-    }
-    //End methods IComputerTile
 }

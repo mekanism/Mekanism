@@ -10,7 +10,8 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -26,7 +27,6 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
@@ -38,7 +38,9 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     private float prevScale;
 
     private EnergyCubeEnergyContainer energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChargeItem")
     private EnergyInventorySlot chargeSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDischargeItem")
     private EnergyInventorySlot dischargeSlot;
 
     /**
@@ -151,16 +153,4 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         super.handleUpdateTag(state, tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
     }
-
-    //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getChargeItem() {
-        return chargeSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getDischargeItem() {
-        return dischargeSlot.getStack();
-    }
-    //End methods IComputerTile
 }

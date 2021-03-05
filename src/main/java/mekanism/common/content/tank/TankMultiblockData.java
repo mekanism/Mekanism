@@ -15,8 +15,10 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.inventory.slot.HybridInventorySlot;
@@ -26,7 +28,6 @@ import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,7 +42,10 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @SyntheticComputerMethod(getter = "getContainerEditMode")
     public ContainerEditMode editMode = ContainerEditMode.BOTH;
 
-    private HybridInventorySlot inputSlot, outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
+    private HybridInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
+    private HybridInventorySlot outputSlot;
     private int tankCapacity;
     public float prevScale;
 
@@ -182,16 +186,6 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     //Computer related methods
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return outputSlot.getStack();
-    }
-
     @ComputerMethod
     private void setContainerEditMode(ContainerEditMode mode) {
         editMode = mode;

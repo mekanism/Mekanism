@@ -16,7 +16,9 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
@@ -38,9 +40,13 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     private final IInputHandler<@NonNull ItemStack> extraInputHandler;
 
     private MachineEnergyContainer<TileEntityCombiner> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getMainInput")
     private InputInventorySlot mainInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getSecondaryInput")
     private InputInventorySlot extraInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
     private OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityCombiner() {
@@ -134,26 +140,6 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     @ComputerMethod
     private FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
-    }
-
-    @ComputerMethod
-    private ItemStack getMainInput() {
-        return mainInputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutput() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getSecondaryInput() {
-        return extraInputSlot.getStack();
     }
     //End methods IComputerTile
 }

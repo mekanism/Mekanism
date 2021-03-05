@@ -22,7 +22,10 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -38,7 +41,9 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     private final IInputHandler<@NonNull InfusionStack> infusionInputHandler;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem")
     private InfusionInventorySlot extraSlot;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded"})
     private IInfusionTank infusionTank;
 
     public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider) {
@@ -178,26 +183,6 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private InfusionStack getInfuseType() {
-        return infusionTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getInfuseTypeCapacity() {
-        return infusionTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getInfuseTypeNeeded() {
-        return infusionTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private ItemStack getInfuseTypeItem() {
-        return extraSlot.getStack();
-    }
-
     @ComputerMethod
     private void dumpInfuseType() throws ComputerException {
         validateSecurityIsPublic();

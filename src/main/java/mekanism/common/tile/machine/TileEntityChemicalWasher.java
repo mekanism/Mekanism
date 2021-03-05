@@ -29,7 +29,11 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -45,15 +49,17 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurryToSlurryRecipe> {
 
     public static final long MAX_SLURRY = 10_000;
     public static final int MAX_FLUID = 10_000;
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded"})
     public BasicFluidTank fluidTank;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryInput", "getSlurryInputCapacity", "getSlurryInputNeeded"})
     public ISlurryTank inputTank;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryOutput", "getSlurryOutputCapacity", "getSlurryOutputNeeded"})
     public ISlurryTank outputTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
@@ -63,9 +69,13 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     private final IInputHandler<@NonNull SlurryStack> slurryInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalWasher> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemInput")
     private FluidInventorySlot fluidSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFluidItemOutput")
     private OutputInventorySlot fluidOutputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private SlurryInventorySlot slurryOutputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalWasher() {
@@ -195,71 +205,4 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
         super.addContainerTrackers(container);
         container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
-
-    //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return slurryOutputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getFluidItemInput() {
-        return fluidSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getFluidItemOutput() {
-        return fluidOutputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private FluidStack getFluid() {
-        return fluidTank.getFluid();
-    }
-
-    @ComputerMethod
-    private int getFluidCapacity() {
-        return fluidTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private int getFluidNeeded() {
-        return fluidTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private SlurryStack getSlurryInput() {
-        return inputTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getSlurryInputCapacity() {
-        return inputTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getSlurryInputNeeded() {
-        return inputTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private SlurryStack getSlurryOutput() {
-        return outputTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getSlurryOutputCapacity() {
-        return outputTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getSlurryOutputNeeded() {
-        return outputTank.getNeeded();
-    }
-    //End methods IComputerTile
 }

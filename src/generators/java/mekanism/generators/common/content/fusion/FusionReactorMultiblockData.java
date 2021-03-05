@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -23,8 +22,12 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -49,7 +52,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
 
 public class FusionReactorMultiblockData extends MultiblockData {
 
@@ -79,8 +81,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public IHeatCapacitor heatCapacitor;
 
     @ContainerSync(tags = "heat")
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded"})
     public IExtendedFluidTank waterTank;
     @ContainerSync(tags = "heat")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded"})
     public IGasTank steamTank;
 
     @ContainerSync(tags = "heat")
@@ -91,16 +95,20 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private double lastCaseTemperature = HeatAPI.AMBIENT_TEMP;
 
     @ContainerSync(tags = "fuel")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded"})
     public IGasTank deuteriumTank;
     @ContainerSync(tags = "fuel")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getTritium", "getTritiumCapacity", "getTritiumNeeded"})
     public IGasTank tritiumTank;
     @ContainerSync(tags = "fuel")
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded"})
     public IGasTank fuelTank;
     @ContainerSync(tags = {"fuel", "heat"}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;
 
     public double plasmaTemperature = HeatAPI.AMBIENT_TEMP;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum")
     private final ReactorInventorySlot reactorSlot;
 
     private boolean clientBurning;
@@ -401,86 +409,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     //Computer related methods
-    @ComputerMethod
-    private ItemStack getHohlraum() {
-        return reactorSlot.getStack();
-    }
-
-    @ComputerMethod
-    private FluidStack getWater() {
-        return waterTank.getFluid();
-    }
-
-    @ComputerMethod
-    private int getWaterCapacity() {
-        return waterTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private int getWaterNeeded() {
-        return waterTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getSteam() {
-        return steamTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getSteamCapacity() {
-        return steamTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getSteamNeeded() {
-        return steamTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getTritium() {
-        return tritiumTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getTritiumCapacity() {
-        return tritiumTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getTritiumNeeded() {
-        return tritiumTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getDeuterium() {
-        return deuteriumTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getDeuteriumCapacity() {
-        return deuteriumTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getDeuteriumNeeded() {
-        return deuteriumTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getDTFuel() {
-        return fuelTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getDTFuelCapacity() {
-        return fuelTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getDTFuelNeeded() {
-        return fuelTank.getNeeded();
-    }
-
     @ComputerMethod(nameOverride = "setInjectionRate")
     private void computerSetInjectionRate(int rate) throws ComputerException {
         if (rate < 0 || rate > MAX_INJECTION) {

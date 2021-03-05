@@ -8,7 +8,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -21,8 +20,10 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.tank.TankMultiblockData;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
@@ -46,6 +47,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public static final Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
 
     @ContainerSync
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded"})
     public IGasTank gasTank;
     @ContainerSync
     public IExtendedFluidTank ventTank;
@@ -194,7 +196,6 @@ public class TurbineMultiblockData extends MultiblockData {
         return (length() - 2) * (width() - 2) - 1;
     }
 
-    @ComputerMethod
     public long getSteamCapacity() {
         return lowerVolume * GAS_PER_TANK;
     }
@@ -244,16 +245,6 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     //Computer related methods
-    @ComputerMethod
-    private GasStack getSteam() {
-        return gasTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getSteamNeeded() {
-        return gasTank.getNeeded();
-    }
-
     @ComputerMethod
     private void setDumpingMode(GasMode mode) {
         dumpMode = mode;

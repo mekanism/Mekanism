@@ -21,7 +21,9 @@ import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
@@ -67,7 +69,9 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     private HashList<OredictionificatorFilter> filters = new HashList<>();
     public boolean didProcess;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private InputInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private OutputInventorySlot outputSlot;
 
     public TileEntityOredictionificator() {
@@ -250,16 +254,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return inputSlot.getStack();
-    }
-
     @ComputerMethod
     private boolean addFilter(OredictionificatorFilter filter) throws ComputerException {
         validateSecurityIsPublic();

@@ -23,7 +23,10 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -45,6 +48,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     public static final int BASE_TICKS_REQUIRED = 400;
     public static final long MAX_GAS = 10_000;
 
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputChemical", "getInputChemicalCapacity", "getInputChemicalNeeded"})
     public IGasTank gasTank;
 
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
@@ -52,9 +56,13 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     protected final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputChemicalItem")
     private GasInventorySlot gasInputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private InputInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
@@ -177,41 +185,4 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
         super.addContainerTrackers(container);
         container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
-
-    //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getInputChemicalItem() {
-        return gasInputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private GasStack getInputChemical() {
-        return gasTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getInputChemicalCapacity() {
-        return gasTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getInputChemicalNeeded() {
-        return gasTank.getNeeded();
-    }
-    //End methods IComputerTile
 }

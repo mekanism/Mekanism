@@ -31,8 +31,12 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.sync.SyncableEnum;
@@ -56,7 +60,6 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
@@ -67,6 +70,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     /**
      * This separator's water slot.
      */
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded"})
     public BasicFluidTank fluidTank;
     /**
      * The maximum amount of gas this block can store.
@@ -75,10 +79,12 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     /**
      * The amount of oxygen this block is storing.
      */
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftOutput", "getLeftOutputCapacity", "getLeftOutputNeeded"})
     public IGasTank leftTank;
     /**
      * The amount of hydrogen this block is storing.
      */
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightOutput", "getRightOutputCapacity", "getRightOutputNeeded"})
     public IGasTank rightTank;
     /**
      * The type of gas this block is outputting.
@@ -96,9 +102,13 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
     private ElectrolyticSeparatorEnergyContainer energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private FluidInventorySlot fluidSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftOutputItem")
     private GasInventorySlot leftOutputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getRightOutputItem")
     private GasInventorySlot rightOutputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityElectrolyticSeparator() {
@@ -307,71 +317,6 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return fluidSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getLeftOutputItem() {
-        return leftOutputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getRightOutputItem() {
-        return rightOutputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private FluidStack getInput() {
-        return fluidTank.getFluid();
-    }
-
-    @ComputerMethod
-    private int getInputCapacity() {
-        return fluidTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private int getInputNeeded() {
-        return fluidTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getLeftOutput() {
-        return leftTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getLeftOutputCapacity() {
-        return leftTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getLeftOutputNeeded() {
-        return leftTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getRightOutput() {
-        return rightTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getRightOutputCapacity() {
-        return rightTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getRightOutputNeeded() {
-        return rightTank.getNeeded();
-    }
-
     @ComputerMethod
     private void setLeftOutputDumpingMode(GasMode mode) throws ComputerException {
         validateSecurityIsPublic();

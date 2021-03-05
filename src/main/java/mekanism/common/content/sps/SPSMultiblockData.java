@@ -13,7 +13,9 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -36,8 +38,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     private static final long MAX_OUTPUT_GAS = 1_000;
 
     @ContainerSync
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded"})
     public IGasTank inputTank;
     @ContainerSync
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
     public IGasTank outputTank;
 
     public final SyncableCoilData coilData = new SyncableCoilData();
@@ -196,36 +200,6 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     //Computer related methods
-    @ComputerMethod
-    private GasStack getInput() {
-        return inputTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getInputCapacity() {
-        return inputTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getInputNeeded() {
-        return inputTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getOutput() {
-        return outputTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getOutputCapacity() {
-        return outputTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getOutputNeeded() {
-        return outputTank.getNeeded();
-    }
-
     @ComputerMethod
     private int getCoils() {
         return coilData.coilMap.size();

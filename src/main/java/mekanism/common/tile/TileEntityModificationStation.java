@@ -15,7 +15,8 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.Modules.ModuleData;
-import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -41,8 +42,11 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     public int ticksRequired = BASE_TICKS_REQUIRED;
     public int operatingTicks;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getModuleItem")
     private InputInventorySlot moduleSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getContainerItem")
     public InputInventorySlot containerSlot;
     private MachineEnergyContainer<TileEntityModificationStation> energyContainer;
 
@@ -171,21 +175,4 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
             world.removeBlock(getPos().offset(side), false);
         }
     }
-
-    //Methods relating to IComputerTile
-    @ComputerMethod
-    private ItemStack getModuleItem() {
-        return moduleSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getContainerItem() {
-        return containerSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-    //End methods IComputerTile
 }

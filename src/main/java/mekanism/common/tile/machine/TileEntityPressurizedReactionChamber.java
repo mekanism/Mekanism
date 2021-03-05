@@ -28,7 +28,11 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -47,8 +51,11 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
 
     private static final int BASE_DURATION = 100;
     private static final long MAX_GAS = 10_000;
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInputFluid", "getInputFluidCapacity", "getInputFluidNeeded"})
     public BasicFluidTank inputFluidTank;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputGas", "getInputGasCapacity", "getInputGasNeeded"})
     public IGasTank inputGasTank;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutputGas", "getOutputGasCapacity", "getOutputGasNeeded"})
     public IGasTank outputGasTank;
 
     private final IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> outputHandler;
@@ -57,8 +64,11 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
     private PRCEnergyContainer energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private InputInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityPressurizedReactionChamber() {
@@ -181,66 +191,6 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @ComputerMethod
     private FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
-    }
-
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutputItem() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private GasStack getInputGas() {
-        return inputGasTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getInputGasCapacity() {
-        return inputGasTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getInputGasNeeded() {
-        return inputGasTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private FluidStack getInputFluid() {
-        return inputFluidTank.getFluid();
-    }
-
-    @ComputerMethod
-    private int getInputFluidCapacity() {
-        return inputFluidTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private int getInputFluidNeeded() {
-        return inputFluidTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private GasStack getOutputGas() {
-        return outputGasTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getOutputGasCapacity() {
-        return outputGasTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getOutputGasNeeded() {
-        return outputGasTank.getNeeded();
     }
     //End methods IComputerTile
 }

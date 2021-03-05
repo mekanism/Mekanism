@@ -28,7 +28,10 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -47,6 +50,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     public static final long MAX_GAS = 210;
 
     private double gasUsage = 1;
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded"})
     public IGasTank gasTank;
 
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
@@ -54,9 +58,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     protected final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput")
     private InputInventorySlot inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
     private OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem")
     private GasInventorySlot secondarySlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
@@ -176,41 +184,6 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @ComputerMethod
     private FloatingLong getEnergyUsage() {
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
-    }
-
-    @ComputerMethod
-    private ItemStack getInput() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutput() {
-        return outputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private GasStack getChemical() {
-        return gasTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getChemicalCapacity() {
-        return gasTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getChemicalNeeded() {
-        return gasTank.getNeeded();
-    }
-
-    @ComputerMethod
-    private ItemStack getChemicalItem() {
-        return secondarySlot.getStack();
     }
 
     @ComputerMethod

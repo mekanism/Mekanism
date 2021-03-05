@@ -18,7 +18,10 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -28,7 +31,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.item.ItemStack;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
@@ -39,13 +41,16 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     /**
      * The tank this block is storing fuel in.
      */
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded"})
     public FuelTank fuelTank;
     private long burnTicks;
     private int maxBurnTicks;
     private FloatingLong generationRate = FloatingLong.ZERO;
     private double gasUsedLastTick;
 
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
     private GasInventorySlot fuelSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityGasGenerator() {
@@ -154,33 +159,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     //Methods relating to IComputerTile
     @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
     private FloatingLong getProductionRate() {
         return getGenerationRate().multiply(getUsed()).multiply(getMaxBurnTicks());
-    }
-
-    @ComputerMethod
-    private ItemStack getFuelItem() {
-        return fuelSlot.getStack();
-    }
-
-    @ComputerMethod
-    private GasStack getFuel() {
-        return fuelTank.getStack();
-    }
-
-    @ComputerMethod
-    private long getFuelCapacity() {
-        return fuelTank.getCapacity();
-    }
-
-    @ComputerMethod
-    private long getFuelNeeded() {
-        return fuelTank.getNeeded();
     }
     //End methods IComputerTile
 

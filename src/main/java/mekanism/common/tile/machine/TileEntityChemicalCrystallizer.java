@@ -3,7 +3,6 @@ package mekanism.common.tile.machine;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.Gas;
@@ -40,7 +39,10 @@ import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -64,8 +66,11 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     private final BoxedChemicalInputHandler inputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalCrystallizer> energyContainer;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private MergedChemicalInventorySlot<MergedChemicalTank> inputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
     private OutputInventorySlot outputSlot;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
     public TileEntityChemicalCrystallizer() {
@@ -208,36 +213,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getInputItem() {
-        return inputSlot.getStack();
-    }
-
-    @ComputerMethod
-    private ChemicalStack<?> getInput() {
-        return getInputTank().getStack();
-    }
-
-    @ComputerMethod
-    private long getInputCapacity() {
-        return getInputTank().getCapacity();
-    }
-
-    @ComputerMethod
-    private long getInputNeeded() {
-        return getInputTank().getNeeded();
-    }
-
-    @ComputerMethod
-    private ItemStack getOutput() {
-        return outputSlot.getStack();
-    }
-
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded"})
     private IChemicalTank<?, ?> getInputTank() {
         Current current = inputTank.getCurrent();
         return inputTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);

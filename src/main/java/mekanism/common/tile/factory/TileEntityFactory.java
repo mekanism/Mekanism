@@ -32,7 +32,9 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
@@ -94,6 +96,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected MachineEnergyContainer<TileEntityFactory<?>> energyContainer;
     protected final List<IInventorySlot> inputSlots;
     protected final List<IInventorySlot> outputSlots;
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     protected EnergyInventorySlot energySlot;
 
     protected TileEntityFactory(IBlockProvider blockProvider) {
@@ -464,11 +467,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     private ItemStack getOutput(int process) throws ComputerException {
         validateValidProcess(process);
         return processInfoSlots[process].getOutputSlot().getStack();
-    }
-
-    @ComputerMethod
-    private ItemStack getEnergyItem() {
-        return energySlot.getStack();
     }
     //End methods IComputerTile
 
