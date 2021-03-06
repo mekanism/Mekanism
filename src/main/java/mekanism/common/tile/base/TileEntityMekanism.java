@@ -272,7 +272,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         } else {
             soundEvent = null;
         }
-        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
+        if (Mekanism.hooks.computerCompatEnabled()) {
+            ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
+        }
     }
 
     private void setSupportedTypes(Block block) {

@@ -15,6 +15,7 @@ import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
+import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -59,7 +60,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
               new DynamicPigmentHandler(this::getPigmentTanks, canExtract, canInsert, null)));
         addCapabilityResolver(slurryHandlerManager = new SlurryHandlerManager(getHolder(BoxedPressurizedTube::getSlurryTanks),
               new DynamicSlurryHandler(this::getSlurryTanks, canExtract, canInsert, null)));
-        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
+        if (Mekanism.hooks.computerCompatEnabled()) {
+            ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
+        }
     }
 
     @Override

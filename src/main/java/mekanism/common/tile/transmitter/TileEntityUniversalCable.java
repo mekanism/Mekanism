@@ -9,6 +9,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
+import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.energy.DynamicStrictEnergyHandler;
@@ -40,7 +41,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
             }
             return cable.getEnergyContainers(direction);
         }, new DynamicStrictEnergyHandler(this::getEnergyContainers, getExtractPredicate(), getInsertPredicate(), null)));
-        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
+        if (Mekanism.hooks.computerCompatEnabled()) {
+            ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
+        }
     }
 
     @Override
