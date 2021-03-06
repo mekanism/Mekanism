@@ -73,7 +73,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(InternalInventorySlot.create(this), RelativeSide.FRONT, RelativeSide.BACK);
+        builder.addSlot(InternalInventorySlot.create(this), RelativeSide.FRONT);
         return builder.build();
     }
 
