@@ -39,7 +39,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     public void init() {
         super.init();
         addButton(new GuiSecurityTab(this, robit, 120));
-        addButton(GuiSideHolder.create(this, 176, 6, 106, false, SpecialColors.TAB_ROBIT_MENU));
+        addButton(GuiSideHolder.create(this, 176, 6, 106, false, false, SpecialColors.TAB_ROBIT_MENU));
         addButton(new GuiInnerScreen(this, 27, 16, 122, 56));
         addButton(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
         addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 16, 18, getButtonLocation("home"), () -> {

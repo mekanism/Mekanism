@@ -14,7 +14,7 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
     protected final ResourceLocation overlay;
 
     public GuiInsetElement(ResourceLocation overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerSize, boolean left) {
-        super(gui, x, y, height, left);
+        super(gui, x, y, height, left, false);
         this.overlay = overlay;
         this.dataSource = dataSource;
         this.innerWidth = innerSize;

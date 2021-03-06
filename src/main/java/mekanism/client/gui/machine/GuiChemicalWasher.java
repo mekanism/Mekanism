@@ -32,9 +32,7 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
     @Override
     protected void initPreSlots() {
         //Add the side holder before the slots, as it holds a couple of the slots
-        addButton(GuiSideHolder.create(this, xSize, 66, 57, false, SpecialColors.TAB_CHEMICAL_WASHER));
-        //TODO - 10.1: Fix this, for some reason the slots are not rendering on top of this properly. We should also check
-        // any other initPreSlots overrides to see if they are also broken
+        addButton(GuiSideHolder.create(this, xSize, 66, 57, false, true, SpecialColors.TAB_CHEMICAL_WASHER));
     }
 
     @Override

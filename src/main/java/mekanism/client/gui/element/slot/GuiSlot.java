@@ -148,7 +148,6 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
             fill(matrix, xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
-            matrix.translate(0, 0, -10);
             matrix.pop();
             MekanismRenderer.resetColor();
         }

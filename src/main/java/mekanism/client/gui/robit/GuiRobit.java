@@ -28,7 +28,7 @@ public abstract class GuiRobit<CONTAINER extends Container & IEntityContainer<En
     public void init() {
         super.init();
         addButton(new GuiSecurityTab(this, robit, 120));
-        addButton(GuiSideHolder.create(this, 176, 6, 106, false, SpecialColors.TAB_ROBIT_MENU));
+        addButton(GuiSideHolder.create(this, 176, 6, 106, false, false, SpecialColors.TAB_ROBIT_MENU));
         addButton(new MekanismImageButton(this, guiLeft + 179, guiTop + 10, 18, getButtonLocation("main"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_MAIN, robit.getEntityId())),
               getOnHover(MekanismLang.ROBIT)));

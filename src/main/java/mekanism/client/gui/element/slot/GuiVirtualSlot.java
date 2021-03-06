@@ -13,6 +13,8 @@ public class GuiVirtualSlot extends GuiSlot {
 
     public GuiVirtualSlot(SlotType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y);
+        //Virtual slots need to render the hovered overlay as they don't let vanilla render it
+        setRenderHover(true);
     }
 
     public boolean isElementForSlot(IVirtualSlot virtualSlot) {

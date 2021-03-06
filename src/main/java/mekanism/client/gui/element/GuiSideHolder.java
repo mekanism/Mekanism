@@ -11,8 +11,8 @@ import net.minecraft.util.ResourceLocation;
 
 public abstract class GuiSideHolder extends GuiTexturedElement {
 
-    public static GuiSideHolder create(IGuiWrapper gui, int x, int y, int height, boolean left, ColorRegistryObject tabColor) {
-        return new GuiSideHolder(gui, x, y, height, left) {
+    public static GuiSideHolder create(IGuiWrapper gui, int x, int y, int height, boolean left, boolean slotHolder, ColorRegistryObject tabColor) {
+        return new GuiSideHolder(gui, x, y, height, left, slotHolder) {
             @Override
             protected void colorTab() {
                 MekanismRenderer.color(tabColor);
@@ -26,19 +26,38 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     private static final int TEXTURE_HEIGHT = 9;
 
     protected final boolean left;
+    private final boolean slotHolder;
 
-    protected GuiSideHolder(IGuiWrapper gui, int x, int y, int height, boolean left) {
+    protected GuiSideHolder(IGuiWrapper gui, int x, int y, int height, boolean left, boolean slotHolder) {
         super(left ? HOLDER_LEFT : HOLDER_RIGHT, gui, x, y, TEXTURE_WIDTH, height);
         this.left = left;
+        this.slotHolder = slotHolder;
         active = false;
-        setButtonBackground(ButtonBackground.DEFAULT);
+        if (!this.slotHolder) {
+            setButtonBackground(ButtonBackground.DEFAULT);
+        }
     }
 
     protected abstract void colorTab();
 
     @Override
+    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.renderButton(matrix, mouseX, mouseY, partialTicks);
+        if (this.slotHolder) {
+            //Slot holders need to draw here to render behind the slots instead of in front of them
+            draw(matrix, mouseX, mouseY, partialTicks);
+        }
+    }
+
+    @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
+        if (!this.slotHolder) {
+            draw(matrix, mouseX, mouseY, partialTicks);
+        }
+    }
+
+    private void draw(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         minecraft.textureManager.bindTexture(getResource());
         colorTab();
         //Top
