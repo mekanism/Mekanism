@@ -348,13 +348,6 @@ repositories {
         }
     }
     maven {
-        name 'HWYLA'
-        url "https://maven.tehnut.info"
-        content {
-            includeGroup 'mcp.mobius.waila'
-        }
-    }
-    maven {
         url 'https://maven.blamejared.com'
         content {
             includeGroup 'vazkii.patchouli'
@@ -384,8 +377,8 @@ dependencies {
     compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
     runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
 
-    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}:api")
-    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:${hwyla_version}")
+    compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
+    runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
@@ -777,6 +770,9 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "flux-networks"
                     optionalDependency "hwyla"
                     optionalDependency "i-like-wood"
+                    optionalDependency "i-like-wood-biomes-o-plenty-plugin"
+                    optionalDependency "jade"
+                    optionalDependency "jei"
                     optionalDependency "projecte"
                     optionalDependency "the-one-probe"
                 }
