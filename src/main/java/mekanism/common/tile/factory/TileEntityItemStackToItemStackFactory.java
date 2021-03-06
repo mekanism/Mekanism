@@ -12,6 +12,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
 //Smelting, enriching, crushing
@@ -61,11 +62,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     @Nullable
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandlers[cacheIndex].getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(stack));
+        return RecipeLookupUtil.findItemStackRecipe(this, inputHandlers[cacheIndex]);
     }
 
     @Override

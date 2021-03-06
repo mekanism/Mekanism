@@ -41,6 +41,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 
@@ -132,15 +133,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Nullable
     @Override
     public ItemStackGasToItemStackRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = itemInputHandler.getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        GasStack gasStack = gasInputHandler.getInput();
-        if (gasStack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(stack, gasStack));
+        return RecipeLookupUtil.findItemStackChemicalRecipe(this, itemInputHandler, gasInputHandler);
     }
 
     @Nullable

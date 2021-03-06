@@ -28,6 +28,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
 public abstract class TileEntityElectricMachine extends TileEntityProgressMachine<ItemStackToItemStackRecipe> {
@@ -92,8 +93,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
     @Nullable
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandler.getInput();
-        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
+        return RecipeLookupUtil.findItemStackRecipe(this, inputHandler);
     }
 
     @Nullable

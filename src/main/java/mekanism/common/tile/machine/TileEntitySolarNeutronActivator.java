@@ -36,6 +36,7 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -151,11 +152,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @Nullable
     @Override
     public GasToGasRecipe getRecipe(int cacheIndex) {
-        GasStack gas = inputHandler.getInput();
-        if (gas.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(gas));
+        return RecipeLookupUtil.findChemicalRecipe(this, inputHandler);
     }
 
     private boolean canFunction() {

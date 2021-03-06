@@ -41,6 +41,7 @@ import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
 public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<MetallurgicInfuserRecipe> implements IHasDumpButton {
@@ -138,15 +139,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     @Nullable
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = itemInputHandler.getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        InfusionStack infusionStack = infusionInputHandler.getInput();
-        if (infusionStack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(infusionStack, stack));
+        return RecipeLookupUtil.findMetallurgicInfuserRecipe(this, itemInputHandler, infusionInputHandler);
     }
 
     @Nullable

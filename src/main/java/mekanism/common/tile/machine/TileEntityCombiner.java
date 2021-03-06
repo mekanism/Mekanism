@@ -31,6 +31,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
 public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe> {
@@ -103,15 +104,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     @Nullable
     @Override
     public CombinerRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandler.getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        ItemStack extraStack = extraInputHandler.getInput();
-        if (extraStack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(stack, extraStack));
+        return RecipeLookupUtil.findCombinerRecipe(this, inputHandler, extraInputHandler);
     }
 
     @Nullable

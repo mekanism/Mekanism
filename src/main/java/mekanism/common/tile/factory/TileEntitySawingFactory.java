@@ -28,6 +28,7 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -106,11 +107,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> {
     @Nullable
     @Override
     public SawmillRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandlers[cacheIndex].getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(stack));
+        return RecipeLookupUtil.findItemStackRecipe(this, inputHandlers[cacheIndex]);
     }
 
     @Override

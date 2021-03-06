@@ -43,6 +43,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -146,11 +147,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     @Nullable
     @Override
     public GasToGasRecipe getRecipe(int cacheIndex) {
-        GasStack gas = inputHandler.getInput();
-        if (gas.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(gas));
+        return RecipeLookupUtil.findChemicalRecipe(this, inputHandler);
     }
 
     @Nullable

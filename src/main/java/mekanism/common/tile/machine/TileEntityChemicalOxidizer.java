@@ -38,6 +38,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
 public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemStackToGasRecipe> {
@@ -118,11 +119,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     @Nullable
     @Override
     public ItemStackToGasRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandler.getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(stack));
+        return RecipeLookupUtil.findItemStackRecipe(this, inputHandler);
     }
 
     @Nullable

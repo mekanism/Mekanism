@@ -41,6 +41,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
 public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressMachine<NucleosynthesizingRecipe> {
@@ -147,15 +148,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @Nullable
     @Override
     public NucleosynthesizingRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = itemInputHandler.getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        GasStack gasStack = gasInputHandler.getInput();
-        if (gasStack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(stack, gasStack));
+        return RecipeLookupUtil.findItemStackChemicalRecipe(this, itemInputHandler, gasInputHandler);
     }
 
     @Nullable

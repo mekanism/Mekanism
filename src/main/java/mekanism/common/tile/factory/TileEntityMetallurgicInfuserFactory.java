@@ -35,6 +35,7 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
 public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> implements IHasDumpButton {
@@ -134,15 +135,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Nullable
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandlers[cacheIndex].getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        InfusionStack infusionStack = infusionInputHandler.getInput();
-        if (infusionStack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(infusionStack, stack));
+        return RecipeLookupUtil.findMetallurgicInfuserRecipe(this, inputHandlers[cacheIndex], infusionInputHandler);
     }
 
     @Override

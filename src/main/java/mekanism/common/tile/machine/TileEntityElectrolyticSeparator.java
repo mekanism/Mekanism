@@ -59,6 +59,7 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -248,11 +249,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Nullable
     @Override
     public ElectrolysisRecipe getRecipe(int cacheIndex) {
-        FluidStack fluid = inputHandler.getInput();
-        if (fluid.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(fluid));
+        return RecipeLookupUtil.findFluidRecipe(this, inputHandler);
     }
 
     @Nullable

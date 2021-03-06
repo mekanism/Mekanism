@@ -37,6 +37,7 @@ import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -195,11 +196,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     @Nullable
     @Override
     public FluidToFluidRecipe getRecipe(int cacheIndex) {
-        FluidStack fluid = inputHandler.getInput();
-        if (fluid.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(fluid));
+        return RecipeLookupUtil.findFluidRecipe(this, inputHandler);
     }
 
     @Nullable

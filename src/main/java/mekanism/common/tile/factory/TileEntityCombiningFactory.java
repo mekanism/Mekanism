@@ -23,6 +23,7 @@ import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
 public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> {
@@ -92,15 +93,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Nullable
     @Override
     public CombinerRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandlers[cacheIndex].getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        ItemStack extra = extraInputHandler.getInput();
-        if (extra.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(stack, extra));
+        return RecipeLookupUtil.findCombinerRecipe(this, inputHandlers[cacheIndex], extraInputHandler);
     }
 
     @Override

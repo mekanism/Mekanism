@@ -53,6 +53,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 
@@ -185,15 +186,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Nullable
     @Override
     public ChemicalDissolutionRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = itemInputHandler.getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        GasStack gasStack = gasInputHandler.getInput();
-        if (gasStack.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(stack, gasStack));
+        return RecipeLookupUtil.findItemStackChemicalRecipe(this, itemInputHandler, gasInputHandler);
     }
 
     @Nullable
