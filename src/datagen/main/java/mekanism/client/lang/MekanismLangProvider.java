@@ -1211,6 +1211,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_PURIFICATION_BENEFICIAL, "Remove Beneficial");
         add(MekanismLang.MODULE_PURIFICATION_NEUTRAL, "Remove Neutral");
         add(MekanismLang.MODULE_PURIFICATION_HARMFUL, "Remove Harmful");
+        add(MekanismLang.MODULE_TELEPORT_REQUIRES_BLOCK, "Requires Block Target");
 
         add(MekanismLang.MODULE_ENERGY_UNIT, "Energy Unit");
 

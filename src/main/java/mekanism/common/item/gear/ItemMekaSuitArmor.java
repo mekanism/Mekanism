@@ -104,7 +104,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @OnlyIn(Dist.CLIENT)
     public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
-            for (Module module : Modules.loadAll(stack)) {
+            for (Module module : getModules(stack)) {
                 ILangEntry langEntry = module.getData().getLangEntry();
                 if (module.getInstalledCount() > 1) {
                     ITextComponent amount = MekanismLang.GENERIC_FRACTION.translate(module.getInstalledCount(), module.getData().getMaxStackSize());
@@ -160,7 +160,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
         super.onArmorTick(stack, world, player);
-        for (Module module : Modules.loadAll(stack)) {
+        for (Module module : getModules(stack)) {
             module.tick(player);
         }
     }
@@ -208,7 +208,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
-        for (Module module : Modules.loadAll(stack)) {
+        for (Module module : getModules(stack)) {
             if (module.handlesModeChange()) {
                 module.changeMode(player, stack, shift, displayChangeMessage);
                 return;
@@ -218,7 +218,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
-        return slotType == getEquipmentSlot() && Modules.loadAll(stack).stream().anyMatch(Module::handlesModeChange);
+        return slotType == getEquipmentSlot() && getModules(stack).stream().anyMatch(Module::handlesModeChange);
     }
 
     @Nonnull
@@ -238,12 +238,12 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     private FloatingLong getMaxEnergy(ItemStack stack) {
-        ModuleEnergyUnit module = Modules.load(stack, Modules.ENERGY_UNIT);
+        ModuleEnergyUnit module = getModule(stack, Modules.ENERGY_UNIT);
         return module != null ? module.getEnergyCapacity() : MekanismConfig.gear.mekaToolBaseEnergyCapacity.get();
     }
 
     private FloatingLong getChargeRate(ItemStack stack) {
-        ModuleEnergyUnit module = Modules.load(stack, Modules.ENERGY_UNIT);
+        ModuleEnergyUnit module = getModule(stack, Modules.ENERGY_UNIT);
         return module != null ? module.getChargeRate() : MekanismConfig.gear.mekaToolBaseChargeRate.get();
     }
 
@@ -272,7 +272,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     public List<HUDElement> getHUDElements(ItemStack stack) {
         List<HUDElement> ret = new ArrayList<>();
-        for (Module module : Modules.loadAll(stack)) {
+        for (Module module : getModules(stack)) {
             if (module.renderHUD()) {
                 module.addHUDElements(ret);
             }

@@ -752,6 +752,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_PURIFICATION_BENEFICIAL("module", "purification.beneficial"),
     MODULE_PURIFICATION_NEUTRAL("module", "purification.neutral"),
     MODULE_PURIFICATION_HARMFUL("module", "purification.harmful"),
+    MODULE_TELEPORT_REQUIRES_BLOCK("module", "teleportation_requires_block"),
 
     MODULE_ENERGY_UNIT("module", "energy_unit"),
     MODULE_EXCAVATION_ESCALATION_UNIT("module", "excavation_escalation"),
