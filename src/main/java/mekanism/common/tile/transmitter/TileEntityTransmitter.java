@@ -103,7 +103,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         super.handleUpdatePacket(tag);
         //Delay requesting the model data update and actually updating the packet until we have finished parsing the update tag
         requestModelDataUpdate();
-        WorldUtils.updateBlock(getWorld(), getPos(), this);
+        WorldUtils.updateBlock(getWorld(), getPos(), getBlockState());
     }
 
     @Override

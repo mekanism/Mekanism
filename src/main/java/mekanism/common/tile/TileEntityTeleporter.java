@@ -20,7 +20,6 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.block.basic.BlockTeleporterFrame;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -416,7 +415,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     private boolean isFrame(Long2ObjectMap<IChunk> chunkMap, int xOffset, int yOffset, int zOffset) {
         Optional<BlockState> state = WorldUtils.getBlockState(world, chunkMap, pos.add(xOffset, yOffset, zOffset));
-        return state.filter(blockState -> blockState.getBlock() instanceof BlockTeleporterFrame).isPresent();
+        return state.filter(blockState -> blockState.isIn(MekanismBlocks.TELEPORTER_FRAME.getBlock())).isPresent();
     }
 
     /**

@@ -15,9 +15,4 @@ public class TileEntityThermalEvaporationController extends TileEntityThermalEva
         super.onUpdateServer(multiblock);
         setActive(multiblock.isFormed());
     }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
 }

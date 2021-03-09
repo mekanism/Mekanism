@@ -1,18 +1,25 @@
 package mekanism.common.tile.interfaces;
 
-public interface ITileActive extends IActiveState {
+/**
+ * Implement this if your machine/generator has some form of active state.
+ */
+public interface ITileActive {
 
     default boolean isActivatable() {
         return true;
     }
 
-    @Override
-    default boolean renderUpdate() {
-        return false;
-    }
+    /**
+     * Gets the active state as a boolean.
+     *
+     * @return active state
+     */
+    boolean getActive();
 
-    @Override
-    default boolean lightUpdate() {
-        return false;
-    }
+    /**
+     * Sets the active state to a new value.
+     *
+     * @param active - new active state
+     */
+    void setActive(boolean active);
 }

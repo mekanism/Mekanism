@@ -59,7 +59,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         } else {
             lastColor = null;
         }
-        WorldUtils.updateBlock(getWorld(), getPos(), this);
+        WorldUtils.updateBlock(getWorld(), getPos(), getBlockState());
     }
 
     //Methods relating to IComputerTile

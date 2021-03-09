@@ -73,8 +73,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
         TileEntityRadioactiveWasteBarrel tile = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        }
-        if (!world.isRemote()) {
+        } else if (!world.isRemote()) {
             GasStack stored = tile.getGas();
             ITextComponent text;
             if (stored.isEmpty()) {

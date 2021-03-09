@@ -57,24 +57,9 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
         }
     }
 
-    @Override
-    public int getActiveLightValue() {
-        return 8;
-    }
-
     @ComputerMethod
     public FloatingLong getMaxOutput() {
         return output;
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
     }
 
     public BasicEnergyContainer getEnergyContainer() {

@@ -30,8 +30,7 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
         TileEntityStructuralMultiblock tile = WorldUtils.getTileEntity(TileEntityStructuralMultiblock.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        }
-        if (world.isRemote) {
+        } else if (world.isRemote) {
             ItemStack stack = player.getHeldItem(hand);
             if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
                 if (!tile.structuralGuiAccessAllowed() || !tile.hasFormedMultiblock()) {

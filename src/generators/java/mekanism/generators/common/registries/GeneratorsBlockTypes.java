@@ -83,6 +83,7 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
           .withComputerSupport("solarGenerator")
+          .replace(Attributes.ACTIVE)
           .build();
     // Wind Generator
     public static final Generator<TileEntityWindGenerator> WIND_GENERATOR = GeneratorBuilder
@@ -112,6 +113,7 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.ADVANCED_SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
           .withComputerSupport("advancedSolarGenerator")
+          .replace(Attributes.ACTIVE)
           .build();
 
     // Turbine Casing

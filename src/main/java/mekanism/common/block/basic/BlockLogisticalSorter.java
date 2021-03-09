@@ -57,8 +57,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         TileEntityLogisticalSorter tile = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        }
-        if (world.isRemote) {
+        } else if (world.isRemote) {
             return genericClientActivated(player, hand, hit);
         }
         //TODO: Make this be moved into the logistical sorter tile

@@ -8,7 +8,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeParticleFX.Particle;
-import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.IStateFluidLoggable;
@@ -16,7 +15,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.WrenchResult;
-import mekanism.common.tile.interfaces.IActiveState;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
@@ -58,29 +56,12 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        }
-        if (world.isRemote) {
+        } else if (world.isRemote) {
             return genericClientActivated(player, hand, hit);
-        }
-        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+        } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
         }
         return type.has(AttributeGui.class) ? tile.openGui(player) : ActionResultType.PASS;
-    }
-
-    @Override
-    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
-        return Math.max(super.getLightValue(state, world, pos), getTileLight(world, pos));
-    }
-
-    protected int getTileLight(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        if (MekanismConfig.client.enableAmbientLighting.get() && type.has(AttributeStateActive.class)) {
-            TileEntity tile = WorldUtils.getTileEntity(world, pos);
-            if (tile instanceof IActiveState && ((IActiveState) tile).lightUpdate() && ((IActiveState) tile).getActive()) {
-                return ((IActiveState) tile).getActiveLightValue();
-            }
-        }
-        return 0;
     }
 
     @Override
@@ -92,22 +73,20 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Override
     public void animateTick(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Random random) {
         super.animateTick(state, world, pos, random);
-        if (Attribute.has(state.getBlock(), AttributeParticleFX.class)) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
-            if (tile != null && tile.getActive()) {
-                for (Function<Random, Particle> particleFunction : type.get(AttributeParticleFX.class).getParticleFunctions()) {
-                    Particle particle = particleFunction.apply(random);
-                    Vector3d particlePos = particle.getPos();
-                    if (tile.getDirection() == Direction.WEST) {
-                        particlePos = particlePos.rotateYaw(90);
-                    } else if (tile.getDirection() == Direction.EAST) {
-                        particlePos = particlePos.rotateYaw(270);
-                    } else if (tile.getDirection() == Direction.NORTH) {
-                        particlePos = particlePos.rotateYaw(180);
-                    }
-                    particlePos = particlePos.add(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-                    world.addParticle(particle.getType(), particlePos.x, particlePos.y, particlePos.z, 0.0D, 0.0D, 0.0D);
+        if (MekanismConfig.client.machineEffects.get() && type.has(AttributeParticleFX.class) && Attribute.isActive(state)) {
+            Direction facing = Attribute.getFacing(state);
+            for (Function<Random, Particle> particleFunction : type.get(AttributeParticleFX.class).getParticleFunctions()) {
+                Particle particle = particleFunction.apply(random);
+                Vector3d particlePos = particle.getPos();
+                if (facing == Direction.WEST) {
+                    particlePos = particlePos.rotateYaw(90);
+                } else if (facing == Direction.EAST) {
+                    particlePos = particlePos.rotateYaw(270);
+                } else if (facing == Direction.NORTH) {
+                    particlePos = particlePos.rotateYaw(180);
                 }
+                particlePos = particlePos.add(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+                world.addParticle(particle.getType(), particlePos.x, particlePos.y, particlePos.z, 0.0D, 0.0D, 0.0D);
             }
         }
     }

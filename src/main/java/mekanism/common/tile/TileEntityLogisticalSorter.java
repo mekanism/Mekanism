@@ -224,11 +224,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
     public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
         nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
         nbtTags.putBoolean(NBTConstants.EJECT, autoEject);

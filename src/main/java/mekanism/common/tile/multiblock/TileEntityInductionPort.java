@@ -60,11 +60,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
     public int getRedstoneLevel() {
         return getMultiblock().getCurrentRedstoneLevel();
     }

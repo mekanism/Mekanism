@@ -122,7 +122,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         T multiblock = getMultiblock();
         if (multiblock.isFormed()) {
             if (!prevStructure) {
-                structureChanged();
+                structureChanged(multiblock);
                 prevStructure = true;
             }
             if (multiblock.inventoryID != null) {
@@ -142,7 +142,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 getManager().updateCache(this, multiblock);
             }
             if (prevStructure) {
-                structureChanged();
+                structureChanged(multiblock);
                 prevStructure = false;
             }
             isMaster = false;
@@ -153,9 +153,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     protected void onUpdateServer(T multiblock) {
     }
 
-    private void structureChanged() {
+    private void structureChanged(T multiblock) {
         invalidateCachedCapabilities();
-        T multiblock = getMultiblock();
         if (multiblock.isFormed() && !multiblock.hasMaster && canBeMaster()) {
             multiblock.hasMaster = true;
             isMaster = true;

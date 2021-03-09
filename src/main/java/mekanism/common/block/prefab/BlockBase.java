@@ -1,5 +1,6 @@
 package mekanism.common.block.prefab;
 
+import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.block.BlockMekanism;
@@ -25,8 +26,8 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     protected final TYPE type;
 
-    public BlockBase(TYPE type) {
-        this(type, AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 9).setRequiresTool());
+    public BlockBase(TYPE type, UnaryOperator<AbstractBlock.Properties> propertyModifier) {
+        this(type, propertyModifier.apply(AbstractBlock.Properties.create(Material.IRON).setRequiresTool()));
     }
 
     public BlockBase(TYPE type, AbstractBlock.Properties properties) {
@@ -82,8 +83,8 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     public static class BlockBaseModel<BLOCK extends BlockType> extends BlockBase<BLOCK> implements IStateFluidLoggable {
 
-        public BlockBaseModel(BLOCK blockType) {
-            super(blockType);
+        public BlockBaseModel(BLOCK blockType, UnaryOperator<AbstractBlock.Properties> propertyModifier) {
+            super(blockType, propertyModifier);
         }
 
         public BlockBaseModel(BLOCK blockType, AbstractBlock.Properties properties) {

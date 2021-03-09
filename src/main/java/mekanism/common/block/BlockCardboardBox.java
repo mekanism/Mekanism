@@ -68,8 +68,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         TileEntityCardboardBox tile = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
         if (tile == null) {
             return itemStack;
-        }
-        if (tile.storedData != null) {
+        } else if (tile.storedData != null) {
             ((ItemBlockCardboardBox) itemStack.getItem()).setBlockData(itemStack, tile.storedData);
         }
         return itemStack;

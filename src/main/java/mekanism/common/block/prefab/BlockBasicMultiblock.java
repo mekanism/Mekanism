@@ -37,8 +37,7 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
         TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        }
-        if (world.isRemote) {
+        } else if (world.isRemote) {
             ItemStack stack = player.getHeldItem(hand);
             if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
                 if (!tile.hasGui() || !tile.getMultiblock().isFormed()) {
@@ -47,8 +46,7 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
                 }
             }
             return ActionResultType.SUCCESS;
-        }
-        if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+        } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
         }
         return tile.onActivate(player, hand, player.getHeldItem(hand));

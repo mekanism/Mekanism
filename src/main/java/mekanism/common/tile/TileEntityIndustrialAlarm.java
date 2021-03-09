@@ -18,9 +18,4 @@ public class TileEntityIndustrialAlarm extends TileEntityMekanism {
             setActive(isPowered());
         }
     }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
-    }
 }

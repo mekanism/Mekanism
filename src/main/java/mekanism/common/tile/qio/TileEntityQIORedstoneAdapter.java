@@ -98,7 +98,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         super.handleUpdateTag(state, tag);
         prevPowering = tag.getBoolean(NBTConstants.ACTIVE);
         requestModelDataUpdate();
-        WorldUtils.updateBlock(getWorld(), getPos(), this);
+        WorldUtils.updateBlock(getWorld(), getPos(), getBlockState());
     }
 
     @Override
@@ -131,11 +131,6 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     public long getStoredCount() {
         return clientStoredCount;
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
     }
 
     @Override

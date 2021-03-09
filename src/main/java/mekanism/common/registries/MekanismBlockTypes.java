@@ -294,6 +294,7 @@ public class MekanismBlockTypes {
           .withCustomShape(BlockShapes.DIGITAL_MINER)
           .with(AttributeCustomSelectionBox.JSON)
           .withComputerSupport("digitalMiner")
+          .replace(Attributes.ACTIVE)
           .build();
     // Formulaic Assemblicator
     public static final Machine<TileEntityFormulaicAssemblicator> FORMULAIC_ASSEMBLICATOR = MachineBuilder
@@ -312,6 +313,7 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.FILTER))
           .withCustomShape(BlockShapes.ELECTRIC_PUMP)
           .withComputerSupport("electricPump")
+          .replace(Attributes.ACTIVE)
           .build();
     // Fluidic Plenisher
     public static final Machine<TileEntityFluidicPlenisher> FLUIDIC_PLENISHER = MachineBuilder
@@ -321,6 +323,7 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY))
           .withCustomShape(BlockShapes.FLUIDIC_PLENISHER)
           .withComputerSupport("fluidicPlenisher")
+          .replace(Attributes.ACTIVE)
           .build();
     // Solar Neutron Activator
     public static final Machine<TileEntitySolarNeutronActivator> SOLAR_NEUTRON_ACTIVATOR = MachineBuilder
@@ -330,6 +333,7 @@ public class MekanismBlockTypes {
           .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
           .with(AttributeCustomSelectionBox.JAVA)
           .withComputerSupport("solarNeutronActivator")
+          .replace(Attributes.ACTIVE)
           .build();
     // Teleporter
     public static final Machine<TileEntityTeleporter> TELEPORTER = MachineBuilder
@@ -346,7 +350,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.CHARGEPAD, MekanismLang.DESCRIPTION_CHARGEPAD)
           .withEnergyConfig(() -> TWENTY_FIVE, MekanismConfig.storage.chargePad)
           .withSound(MekanismSounds.CHARGEPAD)
-          .with(Attributes.ACTIVE, new AttributeStateFacing())
+          .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing())
           .withCustomShape(BlockShapes.CHARGEPAD)
           .withComputerSupport("chargepad")
           .build();
@@ -380,7 +384,8 @@ public class MekanismBlockTypes {
     public static final Machine<TileEntityResistiveHeater> RESISTIVE_HEATER = MachineBuilder
           .createMachine(() -> MekanismTileEntityTypes.RESISTIVE_HEATER, MekanismLang.DESCRIPTION_RESISTIVE_HEATER)
           .withGui(() -> MekanismContainerTypes.RESISTIVE_HEATER)
-          .withEnergyConfig(() -> HUNDRED, null).without(AttributeComparator.class, AttributeUpgradeSupport.class)
+          .withEnergyConfig(() -> HUNDRED, null)
+          .without(AttributeComparator.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.RESISTIVE_HEATER)
           .withSound(MekanismSounds.RESISTIVE_HEATER)
           .withComputerSupport("resistiveHeater")
@@ -406,7 +411,7 @@ public class MekanismBlockTypes {
     public static final BlockTypeTile<TileEntityFuelwoodHeater> FUELWOOD_HEATER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.FUELWOOD_HEATER, MekanismLang.DESCRIPTION_FUELWOOD_HEATER)
           .withGui(() -> MekanismContainerTypes.FUELWOOD_HEATER)
-          .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), new AttributeParticleFX()
+          .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
                 .add(RedstoneParticleData.REDSTONE_DUST, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
           .withComputerSupport("fuelwoodHeater")
@@ -438,6 +443,7 @@ public class MekanismBlockTypes {
           .withCustomShape(BlockShapes.LOGISTICAL_SORTER)
           .withSound(MekanismSounds.LOGISTICAL_SORTER)
           .withComputerSupport("logisticalSorter")
+          .replace(Attributes.ACTIVE)
           .build();
     // Security Desk
     public static final BlockTypeTile<TileEntitySecurityDesk> SECURITY_DESK = BlockTileBuilder
@@ -569,7 +575,7 @@ public class MekanismBlockTypes {
     // Superheating Element
     public static final BlockTypeTile<TileEntitySuperheatingElement> SUPERHEATING_ELEMENT =
           BlockTileBuilder.createBlock(() -> MekanismTileEntityTypes.SUPERHEATING_ELEMENT, MekanismLang.DESCRIPTION_SUPERHEATING_ELEMENT)
-                .with(Attributes.ACTIVE, Attributes.MULTIBLOCK, AttributeMobSpawn.NEVER)
+                .with(Attributes.ACTIVE_LIGHT, Attributes.MULTIBLOCK, AttributeMobSpawn.NEVER)
                 .build();
     // Induction Casing
     public static final BlockTypeTile<TileEntityInductionCasing> INDUCTION_CASING = BlockTileBuilder
@@ -605,6 +611,11 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_BLOCK)
           .with(new AttributeCustomResistance(9), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
+    // Teleporter Frame
+    public static final BlockType TELEPORTER_FRAME = BlockTypeBuilder
+          .createBlock(MekanismLang.DESCRIPTION_TELEPORTER_FRAME)
+          .withLight(10)
+          .build();
     // Steel Casing
     public static final BlockType STEEL_CASING = BlockTypeBuilder
           .createBlock(MekanismLang.DESCRIPTION_STEEL_CASING)
@@ -612,7 +623,7 @@ public class MekanismBlockTypes {
     // Radioactive Waste Barrel
     public static final BlockTypeTile<TileEntityRadioactiveWasteBarrel> RADIOACTIVE_WASTE_BARREL = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.RADIOACTIVE_WASTE_BARREL, MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL)
-          .with(Attributes.ACTIVE, new AttributeStateFacing(), Attributes.COMPARATOR)
+          .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), Attributes.COMPARATOR)
           .withCustomShape(BlockShapes.RADIOACTIVE_WASTE_BARREL)
           .build();
     // Industrial Alarm
@@ -620,7 +631,7 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.INDUSTRIAL_ALARM, MekanismLang.DESCRIPTION_INDUSTRIAL_ALARM)
           .withSound(MekanismSounds.INDUSTRIAL_ALARM)
           .withCustomShape(BlockShapes.INDUSTRIAL_ALARM)
-          .with(Attributes.ACTIVE, new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.REDSTONE)
+          .with(Attributes.ACTIVE_FULL_LIGHT, new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.REDSTONE)
           .build();
     // Structural Glass
     public static final BlockTypeTile<TileEntityStructuralGlass> STRUCTURAL_GLASS = BlockTileBuilder

@@ -124,8 +124,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             if (prevScale == 0 || scale == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                 // as the fluid may have changed and have a light value
-                //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
-                //TODO: Do we even need this on the sever side of things
                 WorldUtils.recheckLighting(world, pos);
             }
             prevScale = scale;
@@ -172,16 +170,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             valveFluid = new FluidStack(stack, 1);
         }
         return remainder;
-    }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
     }
 
     @Override
@@ -257,10 +245,16 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         super.handleUpdateTag(state, tag);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> fluidTank.setStack(fluid));
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.VALVE, fluid -> valveFluid = fluid);
-        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
-        //Set the client's light to update just in case the value changed
-        //TODO: Do we want to only bother doing this if the fluid *does* have a light value attached?
-        updateClientLight = true;
+        NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> {
+            if (prevScale != scale) {
+                if (prevScale == 0 || scale == 0) {
+                    //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
+                    // as the fluid may have changed and have a light value, mark that the client should update the light value
+                    updateClientLight = true;
+                }
+                prevScale = scale;
+            }
+        });
     }
 
     //Methods relating to IComputerTile

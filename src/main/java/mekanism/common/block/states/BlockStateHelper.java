@@ -73,17 +73,24 @@ public class BlockStateHelper {
      * fluid a block may be fluid logged with and then use that light level instead if it is higher.
      */
     public static AbstractBlock.Properties applyLightLevelAdjustments(AbstractBlock.Properties properties) {
+        return applyLightLevelAdjustments(properties, state -> {
+            Block block = state.getBlock();
+            if (block instanceof IStateFluidLoggable) {
+                return ((IStateFluidLoggable) block).getFluid(state).getFluid().getAttributes().getLuminosity();
+            }
+            return 0;
+        });
+    }
+
+    /**
+     * Helper to "hack" in and modify the light value precalculator for states to be able to use as a base level the value already set, but also modify it based on
+     * another function to allow for compounding the light values and then using that light level instead if it is higher.
+     */
+    public static AbstractBlock.Properties applyLightLevelAdjustments(AbstractBlock.Properties properties, ToIntFunction<BlockState> toApply) {
         //Cache what the current light level function is
         ToIntFunction<BlockState> existingLightLevelFunction = properties.lightLevel;
         //And override the one in the properties in a way that we can modify if we have state information that should adjust it
-        return properties.setLightLevel(state -> {
-            int light = existingLightLevelFunction.applyAsInt(state);
-            Block block = state.getBlock();
-            if (block instanceof IStateFluidLoggable) {
-                light = Math.max(light, ((IStateFluidLoggable) block).getFluid(state).getFluid().getAttributes().getLuminosity());
-            }
-            return light;
-        });
+        return properties.setLightLevel(state -> Math.max(existingLightLevelFunction.applyAsInt(state), toApply.applyAsInt(state)));
     }
 
     @Contract("_, null, _ -> null")

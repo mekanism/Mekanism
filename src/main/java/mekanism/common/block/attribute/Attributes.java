@@ -2,6 +2,7 @@ package mekanism.common.block.attribute;
 
 import java.util.function.ToIntFunction;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
+import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.WorldUtils;
@@ -14,9 +15,12 @@ import net.minecraft.world.IWorldReader;
 
 public class Attributes {
 
-    public static final Attribute ACTIVE = new AttributeStateActive();
+    public static final Attribute ACTIVE = new AttributeStateActive(0);
+    public static final Attribute ACTIVE_LIGHT = new AttributeStateActive(8);
+    public static final Attribute ACTIVE_FULL_LIGHT = new AttributeStateActive(15);
     public static final Attribute COMPARATOR = new AttributeComparator();
     public static final Attribute INVENTORY = new AttributeInventory();
+    //TODO - 10.1: Re-evaluate this attribute, it seems to be currently unused?
     public static final Attribute MULTIBLOCK = new AttributeMultiblock();
     public static final Attribute REDSTONE = new AttributeRedstone();
     public static final Attribute SECURITY = new AttributeSecurity();
@@ -147,7 +151,7 @@ public class Attributes {
 
         @Override
         public void adjustProperties(AbstractBlock.Properties props) {
-            props.setLightLevel(state -> light);
+            BlockStateHelper.applyLightLevelAdjustments(props, state -> light);
         }
     }
 }

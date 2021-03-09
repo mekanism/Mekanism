@@ -94,11 +94,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     }
 
     @Override
-    public boolean lightUpdate() {
-        return true;
-    }
-
-    @Override
     public void onPlace() {
         WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
     }

@@ -387,16 +387,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return false;
     }
 
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
-    }
-
     public MachineEnergyContainer<TileEntityFactory<?>> getEnergyContainer() {
         return energyContainer;
     }

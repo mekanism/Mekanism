@@ -501,11 +501,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             if (hasSound()) {
                 updateSound();
             }
-            if (isActivatable()) {
-                if (ticker == 0) {
-                    WorldUtils.updateBlock(getWorld(), getPos(), this);
-                }
-            }
             onUpdateClient();
         } else {
             if (isActivatable()) {

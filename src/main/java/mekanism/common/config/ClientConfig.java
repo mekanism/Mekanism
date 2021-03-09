@@ -22,8 +22,6 @@ public class ClientConfig extends BaseMekanismConfig {
     public final CachedBooleanValue holidays;
     public final CachedFloatValue baseSoundVolume;
     public final CachedBooleanValue machineEffects;
-    public final CachedBooleanValue enableAmbientLighting;
-    public final CachedIntValue ambientLightingLevel;
     public final CachedBooleanValue opaqueTransmitters;
     public final CachedBooleanValue allowModeScroll;
     public final CachedBooleanValue enableMultiblockFormationParticles;
@@ -61,10 +59,6 @@ public class ClientConfig extends BaseMekanismConfig {
               .defineInRange("baseSoundVolume", 1, 0, Float.MAX_VALUE));
         machineEffects = CachedBooleanValue.wrap(this, builder.comment("Show particles when machines active.")
               .define("machineEffects", true));
-        enableAmbientLighting = CachedBooleanValue.wrap(this, builder.comment("Should active machines produce block light.")
-              .define("enableAmbientLighting", true));
-        ambientLightingLevel = CachedIntValue.wrap(this, builder.comment("How much light to produce if ambient lighting is enabled.")
-              .defineInRange("ambientLightingLevel", 15, 1, 15));
         opaqueTransmitters = CachedBooleanValue.wrap(this, builder.comment("If true, don't render Cables/Pipes/Tubes as transparent and don't render their contents.")
               .define("opaqueTransmitters", false));
         allowModeScroll = CachedBooleanValue.wrap(this, builder.comment("Allow sneak + scroll to change item modes.")

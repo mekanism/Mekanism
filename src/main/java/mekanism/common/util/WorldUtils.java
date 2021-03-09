@@ -10,14 +10,11 @@ import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import mekanism.common.tile.interfaces.IActiveState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
@@ -573,40 +570,28 @@ public class WorldUtils {
     }
 
     /**
-     * Updates a block's light value and marks it for a render update.
+     * Marks a block for a render update if loaded.
      *
      * @param world world the block is in
      * @param pos   Position of the block
-     * @param tile  The tile entity at the position
+     * @param state The block state at the position
      */
-    public static void updateBlock(@Nullable World world, BlockPos pos, TileEntity tile) {
-        if (!isBlockLoaded(world, pos)) {
-            return;
-        }
-        //Schedule a render update regardless of it is an IActiveState with IActiveState#renderUpdate() as true
-        // This is because that is mainly used for rendering machine effects, but we need to run a render update
-        // anyways here in case IActiveState#renderUpdate() is false and we just had the block rotate.
-        // For example the laser, or charge pad.
-        //TODO: Render update
-        //world.markBlockRangeForRenderUpdate(pos, pos);
-        BlockState blockState = world.getBlockState(pos);
-        //TODO: Fix this as it is not ideal to just pretend the block was previously air to force it to update
-        // Maybe should use notifyUpdate
-        world.markBlockRangeForRenderUpdate(pos, Blocks.AIR.getDefaultState(), blockState);
-        if (!(tile instanceof IActiveState) || ((IActiveState) tile).lightUpdate() && MekanismConfig.client.machineEffects.get()) {
-            //Update all light types at the position
-            recheckLighting(world, pos);
+    public static void updateBlock(@Nullable World world, @Nonnull BlockPos pos, BlockState state) {
+        if (isBlockLoaded(world, pos)) {
+            world.notifyBlockUpdate(pos, state, state, BlockFlags.DEFAULT);
         }
     }
 
     /**
-     * Rechecks the lighting at a specific block's position
+     * Rechecks the lighting at a specific block's position if the block is loaded.
      *
      * @param world world the block is in
      * @param pos   coordinates
      */
-    public static void recheckLighting(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos) {
-        world.getLightManager().checkBlock(pos);
+    public static void recheckLighting(@Nullable IBlockDisplayReader world, @Nonnull BlockPos pos) {
+        if (isBlockLoaded(world, pos)) {
+            world.getLightManager().checkBlock(pos);
+        }
     }
 
     /**

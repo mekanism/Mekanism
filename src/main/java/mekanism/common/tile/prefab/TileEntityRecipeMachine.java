@@ -19,14 +19,4 @@ public abstract class TileEntityRecipeMachine<RECIPE extends MekanismRecipe> ext
     public CachedRecipe<RECIPE> getCachedRecipe(int cacheIndex) {
         return cachedRecipe;
     }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
-    }
 }

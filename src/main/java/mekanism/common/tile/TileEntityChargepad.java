@@ -127,9 +127,4 @@ public class TileEntityChargepad extends TileEntityMekanism {
             world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5, sound, SoundCategory.BLOCKS, 0.3F, pitch);
         }
     }
-
-    @Override
-    public boolean lightUpdate() {
-        return true;
-    }
 }

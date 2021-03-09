@@ -79,11 +79,9 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
         TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             return ActionResultType.PASS;
-        }
-        if (bin.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
+        } else if (bin.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
-        }
-        if (!world.isRemote) {
+        } else if (!world.isRemote) {
             BinInventorySlot binSlot = bin.getBinSlot();
             int binMaxSize = binSlot.getLimit(binSlot.getStack());
             if (binSlot.getCount() < binMaxSize) {

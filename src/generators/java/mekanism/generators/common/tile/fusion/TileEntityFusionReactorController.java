@@ -43,9 +43,4 @@ public class TileEntityFusionReactorController extends TileEntityFusionReactorBl
         }
         return super.handles(type);
     }
-
-    @Override
-    public boolean renderUpdate() {
-        return true;
-    }
 }
