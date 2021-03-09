@@ -90,7 +90,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (!renderAboveSlots) {
             draw(matrix);
         }

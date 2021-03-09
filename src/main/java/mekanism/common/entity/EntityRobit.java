@@ -270,34 +270,37 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         }
     }
 
+    public boolean isItemValid(ItemEntity item) {
+        return item.isAlive() && !item.cannotPickup() && !(item.getItem().getItem() instanceof ItemRobit);
+    }
+
     private void collectItems() {
         List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, getBoundingBox().grow(1.5, 1.5, 1.5));
         if (!items.isEmpty()) {
             for (ItemEntity item : items) {
-                if (item.cannotPickup() || item.getItem().getItem() instanceof ItemRobit || !item.isAlive()) {
-                    continue;
-                }
-                for (IInventorySlot slot : inventoryContainerSlots) {
-                    if (slot.isEmpty()) {
-                        slot.setStack(item.getItem());
-                        onItemPickup(item, item.getItem().getCount());
-                        item.remove();
-                        playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                        break;
-                    }
-                    ItemStack itemStack = slot.getStack();
-                    int maxSize = slot.getLimit(itemStack);
-                    if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxSize) {
-                        int needed = maxSize - itemStack.getCount();
-                        int toAdd = Math.min(needed, item.getItem().getCount());
-                        MekanismUtils.logMismatchedStackSize(slot.growStack(toAdd, Action.EXECUTE), toAdd);
-                        item.getItem().shrink(toAdd);
-                        onItemPickup(item, toAdd);
-                        if (item.getItem().isEmpty()) {
+                if (isItemValid(item)) {
+                    for (IInventorySlot slot : inventoryContainerSlots) {
+                        if (slot.isEmpty()) {
+                            slot.setStack(item.getItem());
+                            onItemPickup(item, item.getItem().getCount());
                             item.remove();
+                            playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            break;
                         }
-                        playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                        break;
+                        ItemStack itemStack = slot.getStack();
+                        int maxSize = slot.getLimit(itemStack);
+                        if (ItemHandlerHelper.canItemStacksStack(itemStack, item.getItem()) && itemStack.getCount() < maxSize) {
+                            int needed = maxSize - itemStack.getCount();
+                            int toAdd = Math.min(needed, item.getItem().getCount());
+                            MekanismUtils.logMismatchedStackSize(slot.growStack(toAdd, Action.EXECUTE), toAdd);
+                            item.getItem().shrink(toAdd);
+                            onItemPickup(item, toAdd);
+                            if (item.getItem().isEmpty()) {
+                                item.remove();
+                            }
+                            playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            break;
+                        }
                     }
                 }
             }

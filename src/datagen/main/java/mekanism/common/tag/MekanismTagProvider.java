@@ -24,15 +24,19 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class MekanismTagProvider extends BaseTagProvider {
+
+    public static final INamedTag<EntityType<?>> PVI_COMPAT = EntityTypeTags.getTagById("per-viam-invenire:replace_vanilla_navigator");
 
     public MekanismTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
         super(gen, Mekanism.MODID, existingFileHelper);
@@ -68,7 +72,12 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(BlockTags.GUARDED_BY_PIGLINS, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_CHEST);
         addToTag(BlockTags.HOGLIN_REPELLENTS, MekanismBlocks.TELEPORTER, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
         addToTag(ItemTags.PIGLIN_LOVED, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismItems.REFINED_GLOWSTONE_INGOT);
+        addEntities();
+    }
+
+    private void addEntities() {
         addToTag(EntityTypeTags.IMPACT_PROJECTILES, MekanismEntityTypes.FLAME);
+        addToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
     }
 
     private void addProcessedResources() {

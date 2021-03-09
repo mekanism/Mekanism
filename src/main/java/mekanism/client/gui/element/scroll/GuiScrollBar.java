@@ -31,7 +31,7 @@ public class GuiScrollBar extends GuiScrollableElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw background and border
-        holder.renderButton(matrix, mouseX, mouseY, partialTicks);
+        holder.renderWidget(matrix, mouseX, mouseY, partialTicks);
         holder.drawBackground(matrix, mouseX, mouseY, partialTicks);
         GuiElement.minecraft.textureManager.bindTexture(getResource());
         blit(matrix, barX, barY + getScroll(), needsScrollBars() ? 0 : barWidth, 0, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);

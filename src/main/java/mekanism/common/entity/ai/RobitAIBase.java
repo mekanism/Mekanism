@@ -17,32 +17,27 @@ public abstract class RobitAIBase extends Goal {
     protected final EntityRobit theRobit;
 
     /**
-     * The world the robit is located in.
-     */
-    protected final World world;
-
-    /**
      * How fast the robit can travel.
      */
     protected final float moveSpeed;
 
     /**
-     * The robit's pathfinder.
-     */
-    protected final PathNavigator thePathfinder;
-
-    /**
      * The ticker for updates.
      */
-    protected int timeToRecalcPath;
-
-    protected float oldWaterCost;
+    private int timeToRecalcPath;
+    private float oldWaterCost;
 
     protected RobitAIBase(EntityRobit entityRobit, float speed) {
         theRobit = entityRobit;
-        world = entityRobit.world;
         moveSpeed = speed;
-        thePathfinder = entityRobit.getNavigator();
+    }
+
+    protected PathNavigator getNavigator() {
+        return theRobit.getNavigator();
+    }
+
+    protected World getWorld() {
+        return theRobit.getEntityWorld();
     }
 
     @Override
@@ -54,7 +49,7 @@ public abstract class RobitAIBase extends Goal {
 
     @Override
     public void resetTask() {
-        thePathfinder.clearPath();
+        getNavigator().clearPath();
         theRobit.setPathPriority(PathNodeType.WATER, oldWaterCost);
     }
 
@@ -71,7 +66,7 @@ public abstract class RobitAIBase extends Goal {
                         }
                     }
                 } else {
-                    thePathfinder.tryMoveToEntityLiving(target, moveSpeed);
+                    getNavigator().tryMoveToEntityLiving(target, moveSpeed);
                 }
             }
         }
@@ -86,15 +81,15 @@ public abstract class RobitAIBase extends Goal {
             return false;
         }
         theRobit.setLocationAndAngles(x + 0.5, y, z + 0.5, theRobit.rotationYaw, theRobit.rotationPitch);
-        thePathfinder.clearPath();
+        getNavigator().clearPath();
         return true;
     }
 
     private boolean canNavigate(BlockPos pos) {
-        PathNodeType pathnodetype = WalkNodeProcessor.func_237231_a_(this.world, pos.toMutable());
+        PathNodeType pathnodetype = WalkNodeProcessor.getFloorNodeType(getWorld(), pos.toMutable());
         if (pathnodetype == PathNodeType.WALKABLE) {
             BlockPos blockpos = pos.subtract(theRobit.getPosition());
-            return world.hasNoCollisions(theRobit, theRobit.getBoundingBox().offset(blockpos));
+            return getWorld().hasNoCollisions(theRobit, theRobit.getBoundingBox().offset(blockpos));
         }
         return false;
     }

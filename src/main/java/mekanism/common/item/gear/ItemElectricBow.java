@@ -90,7 +90,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                     ArrowItem arrowitem = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
                     AbstractArrowEntity arrowEntity = arrowitem.createArrow(world, ammo, player);
                     arrowEntity = customArrow(arrowEntity);
-                    arrowEntity.func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 3 * velocity, 1);
+                    arrowEntity.setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, 0, 3 * velocity, 1);
                     if (velocity == 1) {
                         arrowEntity.setIsCritical(true);
                     }

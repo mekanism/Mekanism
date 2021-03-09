@@ -13,7 +13,7 @@ import net.minecraft.world.gen.feature.template.RuleTest;
 public class ResizableOreFeatureConfig implements IFeatureConfig {
 
     public static final Codec<ResizableOreFeatureConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-          RuleTest.field_237127_c_.fieldOf("target").forGetter(config -> config.target),
+          RuleTest.CODEC.fieldOf("target").forGetter(config -> config.target),
           OreType.CODEC.fieldOf("oreType").forGetter(config -> config.oreType)
     ).apply(builder, ResizableOreFeatureConfig::create));
 

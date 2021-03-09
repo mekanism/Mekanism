@@ -415,7 +415,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     private boolean isFrame(Long2ObjectMap<IChunk> chunkMap, int xOffset, int yOffset, int zOffset) {
         Optional<BlockState> state = WorldUtils.getBlockState(world, chunkMap, pos.add(xOffset, yOffset, zOffset));
-        return state.filter(blockState -> blockState.isIn(MekanismBlocks.TELEPORTER_FRAME.getBlock())).isPresent();
+        return state.filter(blockState -> blockState.matchesBlock(MekanismBlocks.TELEPORTER_FRAME.getBlock())).isPresent();
     }
 
     /**

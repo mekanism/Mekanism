@@ -78,7 +78,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         setPosition(mergedVec.x, mergedVec.y, mergedVec.z);
         setShooter(player);
         mode = ((ItemFlamethrower) player.inventory.getCurrentItem().getItem()).getMode(player.inventory.getCurrentItem());
-        func_234612_a_(player, player.rotationPitch, player.rotationYaw, 0, 0.5F, 1);
+        setDirectionAndMovement(player, player.rotationPitch, player.rotationYaw, 0, 0.5F, 1);
     }
 
     @Override
@@ -126,7 +126,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         Entity entity = entityResult.getEntity();
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity.getEntity();
-            Entity owner = func_234616_v_();
+            Entity owner = getShooter();
             if (player.abilities.disableDamage || owner instanceof PlayerEntity && !((PlayerEntity) owner).canAttackPlayer(player)) {
                 return;
             }
@@ -152,12 +152,12 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         boolean hitFluid = !hitState.getFluidState().isEmpty();
         if (!world.isRemote && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
             if (mode == FlamethrowerMode.HEAT) {
-                Entity owner = func_234616_v_();
+                Entity owner = getShooter();
                 if (owner instanceof PlayerEntity) {
                     smeltBlock((PlayerEntity) owner, hitState, hitPos, hitSide);
                 }
             } else if (mode == FlamethrowerMode.INFERNO) {
-                Entity owner = func_234616_v_();
+                Entity owner = getShooter();
                 BlockPos sidePos = hitPos.offset(hitSide);
                 if (CampfireBlock.canBeLit(hitState)) {
                     tryPlace(owner, hitPos, hitSide, hitState.with(BlockStateProperties.LIT, true));
@@ -239,7 +239,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
 
     private void burn(Entity entity) {
         entity.setFire(20);
-        entity.attackEntityFrom(DamageSource.causeThrownDamage(this, func_234616_v_()), DAMAGE);
+        entity.attackEntityFrom(DamageSource.causeThrownDamage(this, getShooter()), DAMAGE);
     }
 
     private void spawnParticlesAt(BlockPos pos) {

@@ -16,7 +16,7 @@ public class GuiElementHolder extends GuiScalableElement {
     }
 
     @Override
-    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         renderBackgroundTexture(matrix, getResource(), sideWidth, sideHeight);
     }
 

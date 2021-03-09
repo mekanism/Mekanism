@@ -152,7 +152,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             int width = font.getStringPropertyWidth(type.getShortText());
             matrix.translate(x, y, 0);
             matrix.scale(0.6F, 0.6F, 0.6F);
-            font.func_243248_b(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);
+            font.drawText(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);
             matrix.pop();
             position++;
         }

@@ -10,7 +10,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.0.23', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
     }
 }
 
@@ -756,6 +756,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "i-like-wood-biomes-o-plenty-plugin"
                     optionalDependency "jade"
                     optionalDependency "jei"
+                    optionalDependency "perviaminvenire"
                     optionalDependency "projecte"
                     optionalDependency "the-one-probe"
                 }

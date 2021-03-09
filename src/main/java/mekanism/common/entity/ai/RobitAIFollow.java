@@ -6,7 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RobitAIFollow extends RobitAIBase {
 
     /**
-     * The robit's owner.
+     * The Robit's owner.
      */
     private PlayerEntity theOwner;
     /**
@@ -46,7 +46,7 @@ public class RobitAIFollow extends RobitAIBase {
 
     @Override
     public boolean shouldContinueExecuting() {
-        return !thePathfinder.noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() &&
+        return !getNavigator().noPath() && theRobit.getDistanceSq(theOwner) > (maxDist * maxDist) && theRobit.getFollowing() &&
                !theRobit.getEnergyContainer().isEmpty() && theOwner.world.getDimensionKey() == theRobit.world.getDimensionKey();
     }
 

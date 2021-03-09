@@ -41,8 +41,8 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     protected abstract void colorTab();
 
     @Override
-    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.renderButton(matrix, mouseX, mouseY, partialTicks);
+    public void renderWidget(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.renderWidget(matrix, mouseX, mouseY, partialTicks);
         if (this.slotHolder) {
             //Slot holders need to draw here to render behind the slots instead of in front of them
             draw(matrix, mouseX, mouseY, partialTicks);

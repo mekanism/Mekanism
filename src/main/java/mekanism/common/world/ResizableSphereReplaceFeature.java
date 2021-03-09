@@ -34,7 +34,7 @@ public class ResizableSphereReplaceFeature extends Feature<ResizableSphereReplac
                             BlockPos blockpos = new BlockPos(j, j1, k);
                             Block block = reader.getBlockState(blockpos).getBlock();
                             for (BlockState blockstate : config.targets) {
-                                if (blockstate.isIn(block)) {
+                                if (blockstate.matchesBlock(block)) {
                                     reader.setBlockState(blockpos, config.state, 2);
                                     flag = true;
                                     break;

@@ -120,7 +120,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
                 return true;
             }
         }
-        if (state.isIn(Blocks.SNOW) || state.isIn(Blocks.SNOW_BLOCK)) {
+        if (state.matchesBlock(Blocks.SNOW) || state.matchesBlock(Blocks.SNOW_BLOCK)) {
             //Extra hardcoded shovel checks
             return true;
         }

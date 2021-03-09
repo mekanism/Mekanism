@@ -41,8 +41,8 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
             if (hasTargets) {
                 //If we have at least one layer with targets grab the intersection information for this window's layer
                 List<Rectangle2d> areas = new ArrayList<>();
-                areas.add(new Rectangle2d(window.x, window.y, window.getWidth(), window.getHeightRealms()));
-                areas.addAll(GuiElementHandler.getAreasFor(window.x, window.y, window.getWidth(), window.getHeightRealms(), window.children()));
+                areas.add(new Rectangle2d(window.x, window.y, window.getWidth(), window.getHeight()));
+                areas.addAll(GuiElementHandler.getAreasFor(window.x, window.y, window.getWidth(), window.getHeight(), window.children()));
                 layerIntersections.put(depth, areas);
             }
             ghostTargets = getTargets(window.children(), ingredient);
@@ -83,7 +83,7 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
                 IGhostIngredientConsumer ghostHandler = ghostTarget.getGhostHandler();
                 if (ghostHandler != null && ghostHandler.supportsIngredient(ingredient)) {
                     Widget element = (Widget) child;
-                    ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, element.x, element.y, element.getWidth(), element.getHeightRealms()));
+                    ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, element.x, element.y, element.getWidth(), element.getHeight()));
                 }
             }
         }

@@ -85,7 +85,7 @@ public class TextComponentUtil {
             if (result == null) {
                 result = current;
             } else {
-                result.append(current);
+                result.appendSibling(current);
             }
         }
         //TODO: Make this more like smartTranslate? Including back to back formatting where we already have that type of formatting set

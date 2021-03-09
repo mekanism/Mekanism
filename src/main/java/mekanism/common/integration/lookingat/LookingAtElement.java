@@ -65,14 +65,14 @@ public abstract class LookingAtElement {
     public static void renderScaledText(Minecraft mc, @Nonnull MatrixStack matrix, int x, int y, int color, int maxWidth, ITextComponent component) {
         int length = mc.fontRenderer.getStringPropertyWidth(component);
         if (length <= maxWidth) {
-            mc.fontRenderer.func_243248_b(matrix, component, x, y, color);
+            mc.fontRenderer.drawText(matrix, component, x, y, color);
         } else {
             float scale = (float) maxWidth / length;
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
             matrix.push();
             matrix.scale(scale, scale, scale);
-            mc.fontRenderer.func_243248_b(matrix, component, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
+            mc.fontRenderer.drawText(matrix, component, (int) (x * reverse), (int) ((y * reverse) + yAdd), color);
             matrix.pop();
         }
         //Make sure the color does not leak from having drawn the string

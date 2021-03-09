@@ -1,8 +1,6 @@
 package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
@@ -284,7 +282,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     /**
-     * Override this if you do not want renderButton to reset the color before drawing
+     * Override this if you do not want {@link #drawButton(MatrixStack, int, int)} to reset the color before drawing.
      */
     protected boolean resetColorBeforeRender() {
         return true;
@@ -330,7 +328,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
     }
 
     protected void drawButtonText(MatrixStack matrix) {
@@ -344,7 +342,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         }
     }
 
-    //This method exists so that we don't have to rely on having a path to super.renderButton if we want to draw a background button
+    //This method exists so that we don't have to rely on having a path to super.renderWidget if we want to draw a background button
     protected void drawButton(MatrixStack matrix, int mouseX, int mouseY) {
         if (resetColorBeforeRender()) {
             //TODO: Support alpha like super? Is there a point
@@ -355,8 +353,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         MekanismRenderer.bindTexture(buttonBackground.getTexture());
         int i = getYImage(isMouseOverCheckWindows(mouseX, mouseY));
         RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
-        RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.enableDepthTest();
 
         int width = getButtonWidth();
         int height = getButtonHeight();
@@ -381,7 +379,10 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         // Can use a lot of the same logic as GuiMekanism does for its background
 
         renderBg(matrix, minecraft, mouseX, mouseY);
+        //TODO - 10.1: Re-evaluate this and FilterSelectButton#drawBackground as vanilla doesn't disable these after
+        // it draws a button but I am not sure if that is intentional or causes issues
         RenderSystem.disableBlend();
+        RenderSystem.disableDepthTest();
     }
 
     protected void renderExtendedTexture(MatrixStack matrix, ResourceLocation resource, int sideWidth, int sideHeight) {

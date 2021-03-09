@@ -1028,7 +1028,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             fakePlayer.setEmulatingUUID(getOwnerUUID());
             LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld) getWorldNN())
                   .withRandom(getWorldNN().rand)
-                  .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(pos))
+                  .withParameter(LootParameters.ORIGIN, Vector3d.copyCentered(pos))
                   .withParameter(LootParameters.TOOL, stack)
                   .withNullableParameter(LootParameters.THIS_ENTITY, fakePlayer)
                   .withNullableParameter(LootParameters.BLOCK_ENTITY, WorldUtils.getTileEntity(getWorldNN(), pos));

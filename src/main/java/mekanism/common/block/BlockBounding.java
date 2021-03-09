@@ -113,7 +113,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     public void onReplaced(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         //Remove the main block if a bounding block gets broken by being directly replaced
         // Note: We only do this if we don't go from bounding block to bounding block
-        if (!state.isIn(newState.getBlock())) {
+        if (!state.matchesBlock(newState.getBlock())) {
             BlockPos mainPos = getMainBlockPos(world, pos);
             if (mainPos != null) {
                 BlockState mainState = world.getBlockState(mainPos);
@@ -166,7 +166,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                 //Proxy the explosion to the main block which, will set it to air causing it to invalidate the rest of the bounding blocks
                 LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld) world)
                       .withRandom(world.rand)
-                      .withParameter(LootParameters.field_237457_g_, Vector3d.copyCentered(mainPos))
+                      .withParameter(LootParameters.ORIGIN, Vector3d.copyCentered(mainPos))
                       .withParameter(LootParameters.TOOL, ItemStack.EMPTY)
                       .withNullableParameter(LootParameters.BLOCK_ENTITY, mainState.hasTileEntity() ? WorldUtils.getTileEntity(world, mainPos) : null)
                       .withNullableParameter(LootParameters.THIS_ENTITY, explosion.getExploder());

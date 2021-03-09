@@ -466,7 +466,7 @@ public class RenderTickHandler {
                         int x = minecraft.getMainWindow().getScaledWidth();
                         int y = minecraft.getMainWindow().getScaledHeight();
                         int color = Color.rgbad(1, 1, 1, modeSwitchTimer / 100F).argb();
-                        minecraft.fontRenderer.func_243248_b(matrix, scrollTextComponent, (x - minecraft.fontRenderer.getStringPropertyWidth(scrollTextComponent)) / 2, y - 60, color);
+                        minecraft.fontRenderer.drawText(matrix, scrollTextComponent, (x - minecraft.fontRenderer.getStringPropertyWidth(scrollTextComponent)) / 2, y - 60, color);
                     }
                 }
             }
@@ -483,10 +483,10 @@ public class RenderTickHandler {
         FontRenderer font = minecraft.fontRenderer;
         // Note that we always offset by 2 pixels when left or right aligned
         if (leftSide) {
-            font.func_243246_a(matrix, text, 2, y, color);
+            font.drawTextWithShadow(matrix, text, 2, y, color);
         } else {
             int width = font.getStringPropertyWidth(text) + 2;
-            font.func_243246_a(matrix, text, window.getScaledWidth() - width, y, color);
+            font.drawTextWithShadow(matrix, text, window.getScaledWidth() - width, y, color);
         }
     }
 
