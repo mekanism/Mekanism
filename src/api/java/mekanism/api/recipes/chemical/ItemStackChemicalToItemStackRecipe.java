@@ -3,6 +3,7 @@ package mekanism.api.recipes.chemical;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiPredicate;
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -44,6 +45,12 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
 
     @Contract(value = "_, _ -> new", pure = true)
     public ItemStack getOutput(ItemStack inputItem, STACK inputChemical) {
+        return output.copy();
+    }
+
+    @Nonnull
+    @Override
+    public ItemStack getRecipeOutput() {
         return output.copy();
     }
 
