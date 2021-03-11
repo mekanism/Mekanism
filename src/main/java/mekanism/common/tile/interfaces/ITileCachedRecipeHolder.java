@@ -18,7 +18,7 @@ public interface ITileCachedRecipeHolder<RECIPE extends MekanismRecipe> extends 
     @Nullable
     default World getTileWorld() {
         if (this instanceof TileEntity) {
-            return ((TileEntity) this).getWorld();
+            return ((TileEntity) this).getLevel();
         }
         return null;
     }

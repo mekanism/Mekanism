@@ -48,18 +48,18 @@ public class PacketRadiationData implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(type);
+        buffer.writeEnum(type);
         if (type == RadiationPacketType.SCALE) {
-            buffer.writeEnumValue(scale);
+            buffer.writeEnum(scale);
         } else if (type == RadiationPacketType.PLAYER) {
             buffer.writeDouble(radiation);
         }
     }
 
     public static PacketRadiationData decode(PacketBuffer buffer) {
-        RadiationPacketType type = buffer.readEnumValue(RadiationPacketType.class);
+        RadiationPacketType type = buffer.readEnum(RadiationPacketType.class);
         if (type == RadiationPacketType.SCALE) {
-            return new PacketRadiationData(buffer.readEnumValue(RadiationScale.class));
+            return new PacketRadiationData(buffer.readEnum(RadiationScale.class));
         } else if (type == RadiationPacketType.PLAYER) {
             return new PacketRadiationData(buffer.readDouble());
         }

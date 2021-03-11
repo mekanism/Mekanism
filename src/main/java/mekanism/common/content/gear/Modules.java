@@ -175,7 +175,7 @@ public class Modules {
         }
 
         CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
-        return modulesTag.keySet().stream().map(name -> load(container, MODULES.get(name), modulesTag)).collect(Collectors.toList());
+        return modulesTag.getAllKeys().stream().map(name -> load(container, MODULES.get(name), modulesTag)).collect(Collectors.toList());
     }
 
     private static <M extends Module> ModuleData<M> register(String name, ILangEntry langEntry, ILangEntry description, Supplier<M> moduleSupplier) {

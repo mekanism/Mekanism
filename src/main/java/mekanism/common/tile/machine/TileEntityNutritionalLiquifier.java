@@ -98,15 +98,15 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             Item item = stack.getItem();
-            if (item.isFood()) {//Double check the stack is food
-                Food food = item.getFood();
+            if (item.isEdible()) {//Double check the stack is food
+                Food food = item.getFoodProperties();
                 //And only allow inserting foods that actually would provide paste
-                return food != null && food.getHealing() > 0;
+                return food != null && food.getNutrition() > 0;
             }
             return false;
         }, this, 26, 36));
         builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, this, 155, 25));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 155, 5));
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }
@@ -139,17 +139,17 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Override
     public ItemStackToGasRecipe getRecipe(int cacheIndex) {
         ItemStack stack = inputHandler.getInput();
-        if (stack.isEmpty() || !stack.getItem().isFood()) {
+        if (stack.isEmpty() || !stack.getItem().isEdible()) {
             return null;
         }
-        Food food = stack.getItem().getFood();
-        if (food == null || food.getHealing() == 0) {
+        Food food = stack.getItem().getFoodProperties();
+        if (food == null || food.getNutrition() == 0) {
             //If the food provides no healing don't allow consuming it as it won't provide any paste
             return null;
         }
         //TODO: If food eventually becomes stack sensitive make this use stack instead of stack.getItem as the ingredient
         return new NutritionalLiquifierIRecipe(stack.getItem(), ItemStackIngredient.from(stack.getItem()),
-              MekanismGases.NUTRITIONAL_PASTE.getStack(food.getHealing() * 50L));
+              MekanismGases.NUTRITIONAL_PASTE.getStack(food.getNutrition() * 50L));
     }
 
     @Nullable

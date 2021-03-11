@@ -14,7 +14,7 @@ public class TileEntityIndustrialAlarm extends TileEntityMekanism {
     @Override
     public void onPowerChange() {
         super.onPowerChange();
-        if (getWorld() != null && !getWorld().isRemote()) {
+        if (getLevel() != null && !getLevel().isClientSide()) {
             setActive(isPowered());
         }
     }

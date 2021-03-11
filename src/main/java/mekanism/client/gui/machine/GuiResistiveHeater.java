@@ -32,7 +32,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
 
     public GuiResistiveHeater(MekanismTileContainer<TileEntityResistiveHeater> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        playerInventoryTitleY += 2;
+        inventoryLabelY += 2;
         dynamicSlots = true;
     }
 
@@ -63,14 +63,14 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     private void setEnergyUsage() {
         if (!energyUsageField.getText().isEmpty()) {
             try {
-                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.ENERGY_USAGE, tile.getPos(),
+                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.ENERGY_USAGE, tile.getBlockPos(),
                       MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(energyUsageField.getText()))));
             } catch (NumberFormatException ignored) {
             }

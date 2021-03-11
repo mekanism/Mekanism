@@ -117,7 +117,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         if (type.isEmptyType()) {
             return Collections.emptyList();
         }
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
         if (world == null) {
             return Collections.emptyList();
         }

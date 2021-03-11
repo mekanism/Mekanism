@@ -40,27 +40,27 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
-        tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getName(stack)));
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
+        tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getRobitName(stack)));
         SecurityUtils.addSecurityTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (player == null) {
             return ActionResultType.PASS;
         }
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
         TileEntityMekanism chargepad = WorldUtils.getTileEntity(TileEntityChargepad.class, world, pos);
         if (chargepad != null) {
             if (!chargepad.getActive()) {
-                if (!world.isRemote) {
-                    ItemStack stack = context.getItem();
+                if (!world.isClientSide) {
+                    ItemStack stack = context.getItemInHand();
                     EntityRobit robit = new EntityRobit(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                     robit.setHome(Coord4D.get(chargepad));
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
@@ -69,16 +69,16 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
                     }
                     UUID ownerUUID = getOwnerUUID(stack);
                     if (ownerUUID == null) {
-                        robit.setOwnerUUID(player.getUniqueID());
+                        robit.setOwnerUUID(player.getUUID());
                         //If the robit doesn't already have an owner, make sure we portray this
-                        Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
+                        Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
                     } else {
                         robit.setOwnerUUID(ownerUUID);
                     }
                     robit.setInventory(getInventory(stack));
-                    robit.setCustomName(getName(stack));
+                    robit.setCustomName(getRobitName(stack));
                     robit.setSecurityMode(getSecurity(stack));
-                    world.addEntity(robit);
+                    world.addFreshEntity(robit);
                     stack.shrink(1);
                 }
                 return ActionResultType.SUCCESS;
@@ -91,8 +91,8 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
         ItemDataUtils.setString(stack, NBTConstants.NAME, ITextComponent.Serializer.toJson(name));
     }
 
-    public ITextComponent getName(ItemStack stack) {
+    private ITextComponent getRobitName(ItemStack stack) {
         String name = ItemDataUtils.getString(stack, NBTConstants.NAME);
-        return name.isEmpty() ? MekanismLang.ROBIT.translate() : ITextComponent.Serializer.getComponentFromJson(name);
+        return name.isEmpty() ? MekanismLang.ROBIT.translate() : ITextComponent.Serializer.fromJson(name);
     }
 }

@@ -34,7 +34,7 @@ public class CommonWorldTickHandler {
         if (chunkRegenMap == null) {
             chunkRegenMap = new Object2ObjectArrayMap<>();
         }
-        ResourceLocation dimensionName = dimension.getLocation();
+        ResourceLocation dimensionName = dimension.location();
         if (!chunkRegenMap.containsKey(dimensionName)) {
             LinkedList<ChunkPos> list = new LinkedList<>();
             list.add(chunkCoord);
@@ -55,7 +55,7 @@ public class CommonWorldTickHandler {
 
     @SubscribeEvent
     public void worldLoadEvent(WorldEvent.Load event) {
-        if (!event.getWorld().isRemote()) {
+        if (!event.getWorld().isClientSide()) {
             FrequencyManager.load();
             Mekanism.radiationManager.createOrLoad();
             if (event.getWorld() instanceof ServerWorld) {
@@ -84,13 +84,13 @@ public class CommonWorldTickHandler {
     }
 
     private void tickEnd(ServerWorld world) {
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             Mekanism.radiationManager.tickServerWorld(world);
             if (flushTagAndRecipeCaches) {
                 //Loop all open containers and if it is a portable qio dashboard force refresh the window's recipes
-                for (ServerPlayerEntity player : world.getPlayers()) {
-                    if (player.openContainer instanceof PortableQIODashboardContainer) {
-                        PortableQIODashboardContainer qioDashboard = (PortableQIODashboardContainer) player.openContainer;
+                for (ServerPlayerEntity player : world.players()) {
+                    if (player.containerMenu instanceof PortableQIODashboardContainer) {
+                        PortableQIODashboardContainer qioDashboard = (PortableQIODashboardContainer) player.containerMenu;
                         for (byte index = 0; index < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS; index++) {
                             qioDashboard.getCraftingWindow(index).invalidateRecipe();
                         }
@@ -102,7 +102,7 @@ public class CommonWorldTickHandler {
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;
             }
-            ResourceLocation dimensionName = world.getDimensionKey().getLocation();
+            ResourceLocation dimensionName = world.dimension().location();
             //Credit to E. Beef
             if (chunkRegenMap.containsKey(dimensionName)) {
                 Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionName);

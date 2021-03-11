@@ -56,7 +56,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
 
     @Nullable
     public TileEntity getMainTile() {
-        return receivedCoords ? WorldUtils.getTileEntity(world, getMainPos()) : null;
+        return receivedCoords ? WorldUtils.getTileEntity(level, getMainPos()) : null;
     }
 
     protected IBoundingBlock getInv() {
@@ -76,7 +76,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     public void onNeighborChange(BlockState state) {
         final TileEntity tile = getMainTile();
         if (tile instanceof TileEntityMekanism) {
-            int power = world.getRedstonePowerFromNeighbors(getPos());
+            int power = level.getBestNeighborSignal(getBlockPos());
             if (currentRedstoneLevel != power) {
                 if (power > 0) {
                     onPower();
@@ -125,8 +125,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = nbtTags.getInt(NBTConstants.REDSTONE);
         receivedCoords = nbtTags.getBoolean(NBTConstants.RECEIVED_COORDS);
@@ -134,8 +134,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.put(NBTConstants.MAIN, NBTUtil.writeBlockPos(getMainPos()));
         nbtTags.putInt(NBTConstants.REDSTONE, currentRedstoneLevel);
         nbtTags.putBoolean(NBTConstants.RECEIVED_COORDS, receivedCoords);

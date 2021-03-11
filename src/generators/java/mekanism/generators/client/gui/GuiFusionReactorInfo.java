@@ -14,13 +14,13 @@ public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFus
 
     protected GuiFusionReactorInfo(EmptyTileContainer<TileEntityFusionReactorController> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        titleY = 5;
+        titleLabelY = 5;
     }
 
     @Override
     public void init() {
         super.init();
-        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, leftPos + 6, topPos + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
     }
 }

@@ -70,7 +70,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         BlockPos pos = new BlockPos(structure.renderLocation.getX(), initDisperser.getY(), structure.renderLocation.getZ());
         for (int x = 1; x < structure.length() - 1; x++) {
             for (int z = 1; z < structure.width() - 1; z++) {
-                BlockPos shifted = pos.add(x, 0, z);
+                BlockPos shifted = pos.offset(x, 0, z);
                 TileEntityPressureDisperser tile = WorldUtils.getTileEntity(TileEntityPressureDisperser.class, world, chunkMap, shifted);
                 if (tile == null) {
                     return FormationResult.fail(MekanismLang.BOILER_INVALID_MISSING_DISPERSER, shifted);

@@ -23,15 +23,15 @@ public class ChunkMultimap extends Long2ObjectOpenHashMap<Set<BlockPos>> impleme
     }
 
     public boolean add(ChunkPos key, BlockPos value) {
-        return computeIfAbsent(key.asLong(), k -> new ObjectOpenHashSet<>()).add(value);
+        return computeIfAbsent(key.toLong(), k -> new ObjectOpenHashSet<>()).add(value);
     }
 
     public void remove(ChunkPos key, BlockPos value) {
-        Set<BlockPos> chunkEntries = this.get(key.asLong());
+        Set<BlockPos> chunkEntries = this.get(key.toLong());
         if (chunkEntries != null) {
             chunkEntries.remove(value);
             if (chunkEntries.isEmpty()) {
-                this.remove(key.asLong());
+                this.remove(key.toLong());
             }
         }
     }

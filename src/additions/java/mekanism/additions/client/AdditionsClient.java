@@ -24,7 +24,7 @@ public class AdditionsClient {
 
     public static void launch() {
         if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
-            SocketAddress address = Minecraft.getInstance().getConnection().getNetworkManager().getRemoteAddress();
+            SocketAddress address = Minecraft.getInstance().getConnection().getConnection().getRemoteAddress();
             //local connection
             if (address instanceof LocalAddress) {
                 voiceClient = new VoiceClient("127.0.0.1");

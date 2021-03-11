@@ -54,11 +54,11 @@ public class PacketGuiButtonPress implements IMekanismPacket {
     private BlockPos tilePosition;
 
     public PacketGuiButtonPress(ClickedTileButton buttonClicked, TileEntity tile) {
-        this(buttonClicked, tile.getPos());
+        this(buttonClicked, tile.getBlockPos());
     }
 
     public PacketGuiButtonPress(ClickedTileButton buttonClicked, TileEntity tile, int extra) {
-        this(buttonClicked, tile.getPos(), extra);
+        this(buttonClicked, tile.getBlockPos(), extra);
     }
 
     public PacketGuiButtonPress(ClickedTileButton buttonClicked, BlockPos tilePosition) {
@@ -91,7 +91,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
             return;
         }
         if (type == Type.ENTITY) {
-            Entity entity = player.world.getEntityByID(entityID);
+            Entity entity = player.level.getEntity(entityID);
             if (entity != null) {
                 INamedContainerProvider provider = entityButton.getProvider(entity);
                 if (provider != null) {
@@ -100,7 +100,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
                 }
             }
         } else if (type == Type.TILE) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, tilePosition);
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
             if (tile != null) {
                 INamedContainerProvider provider = tileButton.getProvider(tile, extra);
                 if (provider != null) {
@@ -112,13 +112,13 @@ public class PacketGuiButtonPress implements IMekanismPacket {
                 }
             }
         } else if (type == Type.ITEM) {
-            ItemStack stack = player.getHeldItem(hand);
+            ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem() instanceof IGuiItem) {
                 INamedContainerProvider provider = itemButton.getProvider(stack, hand);
                 if (provider != null) {
                     NetworkHooks.openGui(player, provider, buf -> {
-                        buf.writeEnumValue(hand);
-                        buf.writeItemStack(stack);
+                        buf.writeEnum(hand);
+                        buf.writeItem(stack);
                     });
                 }
             }
@@ -127,29 +127,29 @@ public class PacketGuiButtonPress implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(type);
+        buffer.writeEnum(type);
         if (type == Type.ENTITY) {
-            buffer.writeEnumValue(entityButton);
+            buffer.writeEnum(entityButton);
             buffer.writeVarInt(entityID);
         } else if (type == Type.TILE) {
-            buffer.writeEnumValue(tileButton);
+            buffer.writeEnum(tileButton);
             buffer.writeBlockPos(tilePosition);
             buffer.writeVarInt(extra);
         } else if (type == Type.ITEM) {
-            buffer.writeEnumValue(itemButton);
-            buffer.writeEnumValue(hand);
+            buffer.writeEnum(itemButton);
+            buffer.writeEnum(hand);
         }
     }
 
     public static PacketGuiButtonPress decode(PacketBuffer buffer) {
-        Type type = buffer.readEnumValue(Type.class);
+        Type type = buffer.readEnum(Type.class);
         switch (type) {
             case ENTITY:
-                return new PacketGuiButtonPress(buffer.readEnumValue(ClickedEntityButton.class), buffer.readVarInt());
+                return new PacketGuiButtonPress(buffer.readEnum(ClickedEntityButton.class), buffer.readVarInt());
             case TILE:
-                return new PacketGuiButtonPress(buffer.readEnumValue(ClickedTileButton.class), buffer.readBlockPos(), buffer.readVarInt());
+                return new PacketGuiButtonPress(buffer.readEnum(ClickedTileButton.class), buffer.readBlockPos(), buffer.readVarInt());
             case ITEM:
-                return new PacketGuiButtonPress(buffer.readEnumValue(ClickedItemButton.class), buffer.readEnumValue(Hand.class));
+                return new PacketGuiButtonPress(buffer.readEnum(ClickedItemButton.class), buffer.readEnum(Hand.class));
             default:
                 return null;
         }

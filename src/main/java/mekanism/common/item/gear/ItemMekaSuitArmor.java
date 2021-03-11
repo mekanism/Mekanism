@@ -60,7 +60,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     // TODO separate these into individual modules maybe (specifically fire-related - on_fire, in_fire, lava)
     private static final Set<DamageSource> ALWAYS_SUPPORTED_SOURCES = new HashSet<>(Arrays.asList(
-          DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRYOUT,
+          DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRY_OUT,
           DamageSource.FALL, DamageSource.FALLING_BLOCK, DamageSource.FLY_INTO_WALL, DamageSource.GENERIC,
           DamageSource.HOT_FLOOR, DamageSource.IN_FIRE, DamageSource.IN_WALL, DamageSource.LAVA, DamageSource.LIGHTNING_BOLT,
           DamageSource.ON_FIRE, DamageSource.SWEET_BERRY_BUSH, DamageSource.WITHER));
@@ -71,7 +71,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     private float absorption;
 
     public ItemMekaSuitArmor(EquipmentSlotType slot, Properties properties) {
-        super(MEKASUIT_MATERIAL, slot, properties.rarity(Rarity.EPIC).setNoRepair().maxStackSize(1));
+        super(MEKASUIT_MATERIAL, slot, properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1));
         Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.RADIATION_SHIELDING_UNIT);
 
         if (slot == EquipmentSlotType.HEAD) {
@@ -102,7 +102,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
             for (Module module : getModules(stack)) {
                 ILangEntry langEntry = module.getData().getLangEntry();
@@ -118,7 +118,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             if (!gasTankSpecs.isEmpty()) {
                 StorageUtils.addStoredGas(stack, tooltip, true, false);
             }
-            tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.func_238171_j_()));
+            tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
     }
 
@@ -129,7 +129,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean isEnderMask(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nonnull EndermanEntity enderman) {
-        return getEquipmentSlot() == EquipmentSlotType.HEAD;
+        return getSlot() == EquipmentSlotType.HEAD;
     }
 
     @Override
@@ -149,9 +149,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
-        if (isInGroup(group)) {
+    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
+        if (allowdedIn(group)) {
             ItemStack stack = new ItemStack(this);
             items.add(StorageUtils.getFilledEnergyVariant(stack, getMaxEnergy(stack)));
         }
@@ -218,14 +218,14 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
-        return slotType == getEquipmentSlot() && getModules(stack).stream().anyMatch(Module::handlesModeChange);
+        return slotType == getSlot() && getModules(stack).stream().anyMatch(Module::handlesModeChange);
     }
 
     @Nonnull
     @Override
     @OnlyIn(Dist.CLIENT)
     public CustomArmor getGearModel() {
-        switch (getEquipmentSlot()) {
+        switch (getSlot()) {
             case HEAD:
                 return MekaSuitArmor.HELMET;
             case CHEST:
@@ -251,7 +251,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         // don't handle magic as it's handled by inhalation purification
         // don't handle starving as player should have nutritional injection
         // don't handle out of world (ever)
-        if (!ALWAYS_SUPPORTED_SOURCES.contains(source) && source.isUnblockable()) {
+        if (!ALWAYS_SUPPORTED_SOURCES.contains(source) && source.isBypassArmor()) {
             return 0;
         }
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);

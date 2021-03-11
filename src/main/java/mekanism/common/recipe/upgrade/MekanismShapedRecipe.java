@@ -43,18 +43,18 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
     public boolean matches(CraftingInventory inv, World world) {
         //Note: We do not override the matches method if it matches ignoring NBT,
         // to ensure that we return the proper value for if there is a match that gives a proper output
-        return internal.matches(inv, world) && !getCraftingResult(inv).isEmpty();
+        return internal.matches(inv, world) && !assemble(inv).isEmpty();
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
-        if (getRecipeOutput().isEmpty()) {
+    public ItemStack assemble(CraftingInventory inv) {
+        if (getResultItem().isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemStack toReturn = getRecipeOutput().copy();
+        ItemStack toReturn = getResultItem().copy();
         List<ItemStack> nbtInputs = new ArrayList<>();
-        for (int i = 0; i < inv.getSizeInventory(); i++) {
-            ItemStack stack = inv.getStackInSlot(i);
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            ItemStack stack = inv.getItem(i);
             if (!stack.isEmpty() && stack.hasTag()) {
                 nbtInputs.add(stack);
             }
@@ -97,13 +97,13 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
     }
 
     @Override
-    public boolean canFit(int width, int height) {
-        return internal.canFit(width, height);
+    public boolean canCraftInDimensions(int width, int height) {
+        return internal.canCraftInDimensions(width, height);
     }
 
     @Override
-    public ItemStack getRecipeOutput() {
-        return internal.getRecipeOutput();
+    public ItemStack getResultItem() {
+        return internal.getResultItem();
     }
 
     @Override
@@ -117,8 +117,8 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
     }
 
     @Override
-    public boolean isDynamic() {
-        return internal.isDynamic();
+    public boolean isSpecial() {
+        return internal.isSpecial();
     }
 
     @Override
@@ -127,8 +127,8 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
     }
 
     @Override
-    public ItemStack getIcon() {
-        return internal.getIcon();
+    public ItemStack getToastSymbol() {
+        return internal.getToastSymbol();
     }
 
     @Override

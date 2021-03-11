@@ -88,7 +88,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     public final INGREDIENT read(PacketBuffer buffer) {
-        IngredientType type = buffer.readEnumValue(IngredientType.class);
+        IngredientType type = buffer.readEnum(IngredientType.class);
         if (type == IngredientType.SINGLE) {
             return stackToIngredient.apply(fromPacket.apply(buffer));
         } else if (type == IngredientType.TAGGED) {
@@ -135,15 +135,15 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
                 throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
             }
             JsonElement count = jsonObject.get(JsonConstants.AMOUNT);
-            if (!JSONUtils.isNumber(count)) {
+            if (!JSONUtils.isNumberValue(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
             }
             long amount = count.getAsJsonPrimitive().getAsLong();
             if (amount < 1) {
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
-            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            ITag<CHEMICAL> tag = tags.getCollection().get(resourceLocation);
+            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(jsonObject, JsonConstants.TAG));
+            ITag<CHEMICAL> tag = tags.getCollection().getTag(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown " + name + " tag '" + resourceLocation + "'");
             }
@@ -178,14 +178,14 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
         JsonElement count = json.get(JsonConstants.AMOUNT);
-        if (!JSONUtils.isNumber(count)) {
+        if (!JSONUtils.isNumberValue(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
         long amount = count.getAsJsonPrimitive().getAsLong();
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, info.getSerializationKey()));
+        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(json, info.getSerializationKey()));
         CHEMICAL chemical = fromRegistry.apply(resourceLocation);
         if (chemical.isEmptyType()) {
             throw new JsonSyntaxException("Invalid " + name + " type '" + resourceLocation + "'");

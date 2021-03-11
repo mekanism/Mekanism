@@ -47,19 +47,19 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeItem, IGasItem {
 
     public ItemFlamethrower(Properties properties) {
-        super(properties.maxStackSize(1).rarity(Rarity.RARE).setNoRepair().setISTER(ISTERProvider::flamethrower));
+        super(properties.stacksTo(1).rarity(Rarity.RARE).setNoRepair().setISTER(ISTERProvider::flamethrower));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         StorageUtils.addStoredGas(stack, tooltip, true, false);
         tooltip.add(MekanismLang.MODE.translateColored(EnumColor.GRAY, getMode(stack)));
     }
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
-        return slotChanged || !ItemStack.areItemsEqual(oldStack, newStack);
+        return slotChanged || !ItemStack.isSame(oldStack, newStack);
     }
 
     @Override
@@ -78,9 +78,9 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
     }
 
     @Override
-    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
-        if (isInGroup(group)) {
+    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
+        if (allowdedIn(group)) {
             items.add(ChemicalUtil.getFilledVariant(new ItemStack(this), MekanismConfig.gear.flamethrowerMaxGas.get(), MekanismGases.HYDROGEN));
         }
     }
@@ -129,7 +129,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
             setMode(stack, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                      MekanismLang.FLAMETHROWER_MODE_CHANGE.translate(newMode)), Util.DUMMY_UUID);
+                      MekanismLang.FLAMETHROWER_MODE_CHANGE.translate(newMode)), Util.NIL_UUID);
             }
         }
     }

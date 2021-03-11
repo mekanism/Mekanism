@@ -67,7 +67,7 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeString(tagName);
+        buffer.writeUtf(tagName);
     }
 
     @Override

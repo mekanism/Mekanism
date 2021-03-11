@@ -46,10 +46,10 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
 
     protected GuiQIOItemViewer(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        xSize = 16 + MekanismConfig.client.qioItemViewerSlotsX.get() * 18 + 18;
-        ySize = QIOItemViewerContainer.SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 96;
-        playerInventoryTitleY = ySize - 94;
-        titleY = 5;
+        imageWidth = 16 + MekanismConfig.client.qioItemViewerSlotsX.get() * 18 + 18;
+        imageHeight = QIOItemViewerContainer.SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 96;
+        inventoryLabelY = imageHeight - 94;
+        titleLabelY = 5;
         dynamicSlots = true;
     }
 
@@ -57,8 +57,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     public void init() {
         super.init();
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
-        getMinecraft().keyboardListener.enableRepeatEvents(true);
-        addButton(new GuiInnerScreen(this, 7, 15, xSize - 16, 12, () -> {
+        getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
+        addButton(new GuiInnerScreen(this, 7, 15, imageWidth - 16, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
             if (freq != null) {
@@ -71,45 +71,45 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             List<ITextComponent> list = new ArrayList<>();
             if (getFrequency() != null) {
                 list.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      TextUtils.format(container.getTotalItems()), TextUtils.format(container.getCountCapacity())));
+                      TextUtils.format(menu.getTotalItems()), TextUtils.format(menu.getCountCapacity())));
                 list.add(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                      TextUtils.format(container.getTotalTypes()), TextUtils.format(container.getTypeCapacity())));
+                      TextUtils.format(menu.getTotalTypes()), TextUtils.format(menu.getTypeCapacity())));
             }
             return list;
         }));
-        addButton(searchField = new GuiTextField(this, 50, 15 + 12 + 3, xSize - 50 - 10, 10));
+        addButton(searchField = new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10));
         searchField.setOffset(0, -1);
         searchField.setInputValidator(this::isValidSearchChar);
-        searchField.setResponder(container::updateSearch);
+        searchField.setResponder(menu::updateSearch);
         searchField.setMaxStringLength(50);
         searchField.setBackground(BackgroundType.ELEMENT_HOLDER);
         searchField.setVisible(true);
         searchField.setTextColor(0xFFFFFF);
         searchField.setFocused(true);
         addButton(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
-              container::getQIOItemList, container));
-        addButton(new GuiDropdown<>(this, xSize - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
-              41, ListSortType.class, container::getSortType, container::setSortType));
-        addButton(new GuiDigitalIconToggle<>(this, xSize - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
-              12, 12, SortDirection.class, container::getSortDirection, container::setSortDirection));
-        addButton(new GuiResizeControls(this, (getMinecraft().getMainWindow().getScaledHeight() / 2) - 20 - guiTop, this::resize));
-        addButton(craftingWindowTab = new GuiCraftingWindowTab(this, () -> craftingWindowTab, container));
+              menu::getQIOItemList, menu));
+        addButton(new GuiDropdown<>(this, imageWidth - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+              41, ListSortType.class, menu::getSortType, menu::setSortType));
+        addButton(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+              12, 12, SortDirection.class, menu::getSortDirection, menu::setSortDirection));
+        addButton(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - 20 - topPos, this::resize));
+        addButton(craftingWindowTab = new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         drawString(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor());
         ITextComponent text = MekanismLang.LIST_SORT.translate();
         int width = getStringWidth(text);
-        drawString(matrix, text, xSize - 66 - width, ySize - 92, titleTextColor());
+        drawString(matrix, text, imageWidth - 66 - width, imageHeight - 92, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override
     public void init(@Nonnull Minecraft minecraft, int sizeX, int sizeY) {
         super.init(minecraft, sizeX, sizeY);
-        container.updateSearch(searchField.getText());
+        menu.updateSearch(searchField.getText());
         //Validate the height is still valid, and if it isn't recreate it
         int maxY = QIOItemViewerContainer.getSlotsYMax();
         if (MekanismConfig.client.qioItemViewerSlotsY.get() > maxY) {
@@ -122,16 +122,16 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
-        getMinecraft().keyboardListener.enableRepeatEvents(false);
+    public void removed() {
+        super.removed();
+        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
     protected void lastWindowRemoved() {
         super.lastWindowRemoved();
         //Mark that no crafting grids are now selected
-        container.setSelectedCraftingGrid((byte) -1);
+        menu.setSelectedCraftingGrid((byte) -1);
     }
 
     private boolean isValidSearchChar(char c) {
@@ -167,11 +167,11 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     private void recreateViewer() {
         // here we subtly recreate the entire interface + container, maintaining the same window ID
         @SuppressWarnings("unchecked")
-        CONTAINER c = (CONTAINER) container.recreate();
+        CONTAINER c = (CONTAINER) menu.recreate();
         GuiQIOItemViewer<CONTAINER> s = recreate(c);
-        getMinecraft().currentScreen = null;
-        getMinecraft().player.openContainer = s.getContainer();
-        getMinecraft().displayGuiScreen(s);
+        getMinecraft().screen = null;
+        getMinecraft().player.containerMenu = s.getMenu();
+        getMinecraft().setScreen(s);
         s.searchField.setText(searchField.getText());
         c.updateSearch(searchField.getText());
         //Transfer all the windows to the new GUI
@@ -184,7 +184,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             if (window instanceof GuiCraftingWindow) {
                 //Updating the references for listeners and the like for crafting windows
                 craftingWindowTab.adoptWindows(window);
-                ((GuiCraftingWindow) window).updateContainer(container);
+                ((GuiCraftingWindow) window).updateContainer(menu);
             }
             addWindow(window);
             window.transferToNewGui(this);

@@ -55,11 +55,11 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public void onLoad() {
         super.onLoad();
-        if (world != null) {
+        if (level != null) {
             // Check the blacklist and force an update if we're in the blacklist. Otherwise, we'll never send
             // an initial activity status and the client (in MP) will show the windmills turning while not
             // generating any power
-            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimensionKey().getLocation());
+            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(level.dimension().location());
             if (isBlacklistDimension) {
                 setActive(false);
             }
@@ -87,7 +87,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     protected void onUpdateClient() {
         if (getActive()) {
-            angle = (angle + (getPos().getY() + 4F) / SPEED_SCALED) % 360;
+            angle = (angle + (getBlockPos().getY() + 4F) / SPEED_SCALED) % 360;
         }
     }
 
@@ -95,10 +95,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
     private FloatingLong getMultiplier() {
-        if (world != null && world.canBlockSeeSky(getPos().up(4))) {
+        if (level != null && level.canSeeSkyFromBelowWater(getBlockPos().above(4))) {
             int minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
             int maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
-            float clampedY = Math.min(maxY, Math.max(minY, getPos().getY() + 4));
+            float clampedY = Math.min(maxY, Math.max(minY, getBlockPos().getY() + 4));
             FloatingLong minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
             FloatingLong maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
             FloatingLong slope = maxG.subtract(minG).divide(maxY - minY);
@@ -110,25 +110,25 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     public void onPlace() {
-        if (world != null) {
-            BlockPos pos = getPos();
-            WorldUtils.makeBoundingBlock(world, pos.up(), pos);
-            WorldUtils.makeBoundingBlock(world, pos.up(2), pos);
-            WorldUtils.makeBoundingBlock(world, pos.up(3), pos);
-            WorldUtils.makeBoundingBlock(world, pos.up(4), pos);
+        if (level != null) {
+            BlockPos pos = getBlockPos();
+            WorldUtils.makeBoundingBlock(level, pos.above(), pos);
+            WorldUtils.makeBoundingBlock(level, pos.above(2), pos);
+            WorldUtils.makeBoundingBlock(level, pos.above(3), pos);
+            WorldUtils.makeBoundingBlock(level, pos.above(4), pos);
             // Check to see if the placement is happening in a blacklisted dimension
-            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(world.getDimensionKey().getLocation());
+            isBlacklistDimension = MekanismGeneratorsConfig.generators.windGenerationDimBlacklist.get().contains(level.dimension().location());
         }
     }
 
     @Override
     public void onBreak(BlockState oldState) {
-        if (world != null) {
-            world.removeBlock(getPos().add(0, 1, 0), false);
-            world.removeBlock(getPos().add(0, 2, 0), false);
-            world.removeBlock(getPos().add(0, 3, 0), false);
-            world.removeBlock(getPos().add(0, 4, 0), false);
-            world.removeBlock(getPos(), false);
+        if (level != null) {
+            level.removeBlock(getBlockPos().offset(0, 1, 0), false);
+            level.removeBlock(getBlockPos().offset(0, 2, 0), false);
+            level.removeBlock(getBlockPos().offset(0, 3, 0), false);
+            level.removeBlock(getBlockPos().offset(0, 4, 0), false);
+            level.removeBlock(getBlockPos(), false);
         }
     }
 
@@ -152,7 +152,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     public BlockPos getSoundPos() {
-        return super.getSoundPos().up(4);
+        return super.getSoundPos().above(4);
     }
 
     @Override
@@ -166,7 +166,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         //Note: we just extend it to the max size it could be ignoring what direction it is actually facing
-        return new AxisAlignedBB(pos.add(-2, 0, -2), pos.add(3, 7, 3));
+        return new AxisAlignedBB(worldPosition.offset(-2, 0, -2), worldPosition.offset(3, 7, 3));
     }
 
     //Methods relating to IComputerTile

@@ -38,7 +38,7 @@ public abstract class MekKeyHandler {
     }
 
     public static boolean getIsKeyPressed(KeyBinding keyBinding) {
-        if (keyBinding.isKeyDown()) {
+        if (keyBinding.isDown()) {
             return true;
         }
         if (keyBinding.getKeyConflictContext().isActive() && keyBinding.getKeyModifier().isActive(keyBinding.getKeyConflictContext())) {
@@ -51,9 +51,9 @@ public abstract class MekKeyHandler {
 
     public static boolean isKeyDown(KeyBinding keyBinding) {
         InputMappings.Input key = keyBinding.getKey();
-        int keyCode = key.getKeyCode();
-        if (keyCode != InputMappings.INPUT_INVALID.getKeyCode()) {
-            long windowHandle = Minecraft.getInstance().getMainWindow().getHandle();
+        int keyCode = key.getValue();
+        if (keyCode != InputMappings.UNKNOWN.getValue()) {
+            long windowHandle = Minecraft.getInstance().getWindow().getWindow();
             try {
                 if (key.getType() == InputMappings.Type.KEYSYM) {
                     return InputMappings.isKeyDown(windowHandle, keyCode);
@@ -69,7 +69,7 @@ public abstract class MekKeyHandler {
     public void keyTick() {
         for (int i = 0; i < keyBindings.length; i++) {
             KeyBinding keyBinding = keyBindings[i];
-            boolean state = keyBinding.isKeyDown();
+            boolean state = keyBinding.isDown();
             boolean lastState = keyDown.get(i);
             if (state != lastState || (state && repeatings.get(i))) {
                 if (state) {

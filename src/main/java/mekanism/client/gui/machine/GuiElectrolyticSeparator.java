@@ -38,8 +38,8 @@ public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElec
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiProgress(tile::getActive, ProgressType.BI, this, 80, 30).jeiCategory(tile));
-        addButton(new GuiGasMode(this, guiLeft + 7, guiTop + 72, false, () -> tile.dumpLeft, tile.getPos(), 0));
-        addButton(new GuiGasMode(this, guiLeft + 159, guiTop + 72, true, () -> tile.dumpRight, tile.getPos(), 1));
+        addButton(new GuiGasMode(this, leftPos + 7, topPos + 72, false, () -> tile.dumpLeft, tile.getBlockPos(), 0));
+        addButton(new GuiGasMode(this, leftPos + 159, topPos + 72, true, () -> tile.dumpRight, tile.getBlockPos(), 1));
     }
 
     @Override

@@ -42,7 +42,7 @@ public final class SecurityUtils {
     public static boolean isOp(PlayerEntity p) {
         if (p instanceof ServerPlayerEntity) {
             ServerPlayerEntity player = (ServerPlayerEntity) p;
-            return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().canSendCommands(player.getGameProfile());
+            return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().isOp(player.getGameProfile());
         }
         return false;
     }
@@ -58,7 +58,7 @@ public final class SecurityUtils {
                     return true;
                 }
                 UUID owner = ((IOwnerItem) stack.getItem()).getOwnerUUID(stack);
-                return owner == null || owner.equals(player.getUniqueID());
+                return owner == null || owner.equals(player.getUUID());
             }
             security = wrapSecurityItem(stack);
         } else if (object instanceof ISecurityObject) {
@@ -75,7 +75,7 @@ public final class SecurityUtils {
             //If protection is disabled or the player is an op and bypass restrictions are enabled, access is always granted
             return true;
         }
-        if (owner == null || player.getUniqueID().equals(owner)) {
+        if (owner == null || player.getUUID().equals(owner)) {
             return true;
         }
         SecurityFrequency freq = getFrequency(owner);
@@ -88,7 +88,7 @@ public final class SecurityUtils {
         if (mode == SecurityMode.PUBLIC) {
             return true;
         } else if (mode == SecurityMode.TRUSTED) {
-            return freq.getTrustedUUIDs().contains(player.getUniqueID());
+            return freq.getTrustedUUIDs().contains(player.getUUID());
         }
         return false;
     }
@@ -98,7 +98,7 @@ public final class SecurityUtils {
     }
 
     public static void displayNoAccess(PlayerEntity player) {
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED, MekanismLang.NO_ACCESS), Util.DUMMY_UUID);
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED, MekanismLang.NO_ACCESS), Util.NIL_UUID);
     }
 
     public static SecurityMode getSecurity(ISecurityObject security, Dist side) {
@@ -138,10 +138,10 @@ public final class SecurityUtils {
 
     public static void claimItem(PlayerEntity player, ItemStack stack) {
         if (stack.getItem() instanceof IOwnerItem) {
-            ((IOwnerItem) stack.getItem()).setOwnerUUID(stack, player.getUniqueID());
-            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUniqueID(), null));
+            ((IOwnerItem) stack.getItem()).setOwnerUUID(stack, player.getUUID());
+            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.NOW_OWN),
-                  Util.DUMMY_UUID);
+                  Util.NIL_UUID);
         }
     }
 

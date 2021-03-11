@@ -36,8 +36,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
 
     public GuiFilterHolder(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ySize += 86;
-        playerInventoryTitleY = ySize - 92;
+        imageHeight += 86;
+        inventoryLabelY = imageHeight - 92;
         dynamicSlots = true;
     }
 
@@ -94,6 +94,6 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         super.drawForegroundText(matrix, mouseX, mouseY);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
     }
 }

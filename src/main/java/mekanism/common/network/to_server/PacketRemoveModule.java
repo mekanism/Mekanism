@@ -25,7 +25,7 @@ public class PacketRemoveModule implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender();
         if (player != null) {
-            TileEntityModificationStation tile = WorldUtils.getTileEntity(TileEntityModificationStation.class, player.world, pos);
+            TileEntityModificationStation tile = WorldUtils.getTileEntity(TileEntityModificationStation.class, player.level, pos);
             if (tile != null) {
                 tile.removeModule(player, moduleType);
             }
@@ -35,7 +35,7 @@ public class PacketRemoveModule implements IMekanismPacket {
     @Override
     public void encode(PacketBuffer buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeString(moduleType.getName());
+        buffer.writeUtf(moduleType.getName());
     }
 
     public static PacketRemoveModule decode(PacketBuffer buffer) {

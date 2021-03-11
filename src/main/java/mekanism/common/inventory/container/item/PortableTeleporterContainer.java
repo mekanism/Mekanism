@@ -21,7 +21,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
     }
 
     public PortableTeleporterContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, buf.readEnumValue(Hand.class), getStackFromBuffer(buf, ItemPortableTeleporter.class));
+        this(id, inv, buf.readEnum(Hand.class), getStackFromBuffer(buf, ItemPortableTeleporter.class));
     }
 
     public Hand getHand() {
@@ -40,7 +40,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
     @Override
     public void handleCacheUpdate(List<TeleporterFrequency> publicCache, List<TeleporterFrequency> privateCache, TeleporterFrequency frequency) {
         super.handleCacheUpdate(publicCache, privateCache, frequency);
-        if (inv.player.world.isRemote()) {
+        if (inv.player.level.isClientSide()) {
             //Request a data update if the frequency changed
             Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.DATA_REQUEST, getHand(), getFrequency()));
         }

@@ -43,9 +43,9 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
         addButton(new GuiElementHolder(this, 24, 56, 125, 14));
         addButton(new GuiInnerScreen(this, 90, 6, 59, 50));
         addButton(new GuiProgress(() -> tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, this, 154, 26));
-        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, leftPos + 6, topPos + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
-        addButton(removeButton = new MekanismImageButton(this, guiLeft + 136, guiTop + 57, 12, getButtonLocation("remove_upgrade"), () -> {
+        addButton(removeButton = new MekanismImageButton(this, leftPos + 136, topPos + 57, 12, getButtonLocation("remove_upgrade"), () -> {
             if (scrollList.hasSelection()) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_UPGRADE, tile, scrollList.getSelection().ordinal()));
             }
@@ -71,7 +71,7 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         drawString(matrix, MekanismLang.UPGRADES_SUPPORTED.translate(), 26, 59, titleTextColor());
         if (scrollList.hasSelection()) {
             Upgrade selectedType = scrollList.getSelection();
@@ -98,10 +98,10 @@ public class GuiUpgradeManagement extends GuiMekanismTile<TileEntityMekanism, Me
     }
 
     private void renderText(MatrixStack matrix, ITextComponent component, int x, int y, float size) {
-        matrix.push();
+        matrix.pushPose();
         matrix.scale(size, size, size);
         drawString(matrix, component, (int) ((1F / size) * x), (int) ((1F / size) * y), screenTextColor());
-        matrix.pop();
+        matrix.popPose();
     }
 
     private void renderUpgrade(MatrixStack matrix, Upgrade type, int x, int y, float size) {

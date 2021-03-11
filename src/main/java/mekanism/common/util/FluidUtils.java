@@ -57,7 +57,7 @@ public final class FluidUtils {
         //Fake that we have one target given we know that no sides will overlap
         // This allows us to have slightly better performance
         FluidHandlerTarget target = new FluidHandlerTarget(stack);
-        EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
+        EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
             //Insert to access side
             Direction accessSide = side.getOpposite();
             //Collect cap
@@ -102,11 +102,11 @@ public final class FluidUtils {
                     ItemStack container = handler.getContainer();
                     if (filled > 0) {
                         if (itemStack.getCount() == 1) {
-                            player.setHeldItem(hand, container);
-                        } else if (itemStack.getCount() > 1 && player.inventory.addItemStackToInventory(container)) {
+                            player.setItemInHand(hand, container);
+                        } else if (itemStack.getCount() > 1 && player.inventory.add(container)) {
                             itemStack.shrink(1);
                         } else {
-                            player.dropItem(container, false, true);
+                            player.drop(container, false, true);
                             itemStack.shrink(1);
                         }
                         fluidTank.extract(filled, Action.EXECUTE, AutomationType.MANUAL);
@@ -126,16 +126,16 @@ public final class FluidUtils {
                             filled = true;
                         } else if (!container.isEmpty()) {
                             if (container.getCount() == 1) {
-                                player.setHeldItem(hand, container);
+                                player.setItemInHand(hand, container);
                                 filled = true;
-                            } else if (player.inventory.addItemStackToInventory(container)) {
+                            } else if (player.inventory.add(container)) {
                                 itemStack.shrink(1);
                                 filled = true;
                             }
                         } else {
                             itemStack.shrink(1);
                             if (itemStack.isEmpty()) {
-                                player.setHeldItem(hand, ItemStack.EMPTY);
+                                player.setItemInHand(hand, ItemStack.EMPTY);
                             }
                             filled = true;
                         }

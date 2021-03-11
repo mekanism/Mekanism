@@ -62,7 +62,7 @@ public class GuiWindow extends GuiTexturedElement {
             }
         } else if (!ret && interactionStrategy.allowContainer()) {
             if (gui() instanceof GuiMekanism) {
-                Container c = ((GuiMekanism<?>) gui()).getContainer();
+                Container c = ((GuiMekanism<?>) gui()).getMenu();
                 if (!(c instanceof IEmptyContainer)) {
                     // allow interaction with slots
                     if (mouseX >= getGuiLeft() && mouseX < getGuiLeft() + getGuiWidth() && mouseY >= getGuiTop() + getGuiHeight() - 90) {
@@ -80,8 +80,8 @@ public class GuiWindow extends GuiTexturedElement {
         super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
         if (dragging) {
             int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
-            int changeX = Math.max(-x, Math.min(minecraft.getMainWindow().getScaledWidth() - (x + width), newDX - prevDX));
-            int changeY = Math.max(-y, Math.min(minecraft.getMainWindow().getScaledHeight() - (y + height), newDY - prevDY));
+            int changeX = Math.max(-x, Math.min(minecraft.getWindow().getGuiScaledWidth() - (x + width), newDX - prevDX));
+            int changeY = Math.max(-y, Math.min(minecraft.getWindow().getGuiScaledHeight() - (y + height), newDY - prevDY));
             prevDX = newDX;
             prevDY = newDY;
             move(changeX, changeY);
@@ -97,7 +97,7 @@ public class GuiWindow extends GuiTexturedElement {
     @Override
     public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
-            MekanismRenderer.renderColorOverlay(matrix, 0, 0, minecraft.getMainWindow().getScaledWidth(), minecraft.getMainWindow().getScaledHeight(), OVERLAY_COLOR.rgba());
+            MekanismRenderer.renderColorOverlay(matrix, 0, 0, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight(), OVERLAY_COLOR.rgba());
         } else {
             RenderSystem.color4f(1, 1, 1, 0.75F);
             RenderSystem.enableBlend();
@@ -105,7 +105,7 @@ public class GuiWindow extends GuiTexturedElement {
             GuiUtils.renderBackgroundTexture(matrix, GuiMekanism.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
             MekanismRenderer.resetColor();
         }
-        minecraft.textureManager.bindTexture(getResource());
+        minecraft.textureManager.bind(getResource());
         renderBackgroundTexture(matrix, getResource(), 4, 4);
     }
 

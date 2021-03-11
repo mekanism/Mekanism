@@ -31,11 +31,11 @@ public class PacketOpenGui implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(type);
+        buffer.writeEnum(type);
     }
 
     public static PacketOpenGui decode(PacketBuffer buffer) {
-        return new PacketOpenGui(buffer.readEnumValue(GuiType.class));
+        return new PacketOpenGui(buffer.readEnum(GuiType.class));
     }
 
     public enum GuiType {

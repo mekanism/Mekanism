@@ -29,9 +29,9 @@ public class MekanismClient {
     public static long ticksPassed = 0;
 
     public static void updateKey(KeyBinding key, int type) {
-        boolean down = Minecraft.getInstance().currentScreen == null && key.isKeyDown();
+        boolean down = Minecraft.getInstance().screen == null && key.isDown();
         if (Minecraft.getInstance().player != null) {
-            UUID playerUUID = Minecraft.getInstance().player.getUniqueID();
+            UUID playerUUID = Minecraft.getInstance().player.getUUID();
             if (down != Mekanism.keyMap.has(playerUUID, type)) {
                 Mekanism.packetHandler.sendToServer(new PacketKey(type, down));
                 Mekanism.keyMap.update(playerUUID, type, down);
@@ -68,7 +68,7 @@ public class MekanismClient {
 
     @Nullable
     public static World tryGetClientWorld() {
-        return Minecraft.getInstance().world;
+        return Minecraft.getInstance().level;
     }
 
     @Nullable

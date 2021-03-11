@@ -51,11 +51,11 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static SpriteInfo torchOnIcon;
     private final ModelTransporterBox modelBox = new ModelTransporterBox();
     private final ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
-    private final EntityRenderer<? super ItemEntity> renderer = Minecraft.getInstance().getRenderManager().getRenderer(entityItem);
+    private final EntityRenderer<? super ItemEntity> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem);
 
     public RenderLogisticalTransporter(TileEntityRendererDispatcher renderer) {
         super(renderer);
-        entityItem.setNoDespawn();
+        entityItem.setExtendedLifetime();
     }
 
     public static void onStitch(AtlasTexture map) {
@@ -70,40 +70,40 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
           IProfiler profiler) {
         LogisticalTransporterBase transporter = tile.getTransmitter();
         Collection<TransporterStack> inTransit = transporter.getTransit();
-        BlockPos pos = tile.getPos();
+        BlockPos pos = tile.getBlockPos();
         if (!inTransit.isEmpty()) {
-            matrix.push();
-            entityItem.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
-            entityItem.world = tile.getWorld();
+            matrix.pushPose();
+            entityItem.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+            entityItem.level = tile.getLevel();
 
             float partial = partialTick * transporter.tier.getSpeed();
             Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
             for (TransporterStack stack : reducedTransit) {
                 entityItem.setItem(stack.itemStack);
                 float[] stackPos = TransporterUtils.getStackPosition(transporter, stack, partial);
-                matrix.push();
+                matrix.pushPose();
                 matrix.translate(stackPos[0], stackPos[1], stackPos[2]);
                 matrix.scale(0.75F, 0.75F, 0.75F);
                 this.renderer.render(entityItem, 0, 0, matrix, renderer, MekanismRenderer.FULL_LIGHT);
-                matrix.pop();
+                matrix.popPose();
                 if (stack.color != null) {
                     modelBox.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
                 }
             }
-            matrix.pop();
+            matrix.popPose();
         }
         if (transporter instanceof DiversionTransporter) {
-            ItemStack itemStack = Minecraft.getInstance().player.inventory.getCurrentItem();
+            ItemStack itemStack = Minecraft.getInstance().player.inventory.getSelected();
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
                 BlockRayTraceResult rayTraceResult = MekanismUtils.rayTrace(Minecraft.getInstance().player);
-                if (!rayTraceResult.getType().equals(Type.MISS) && rayTraceResult.getPos().equals(pos)) {
-                    matrix.push();
+                if (!rayTraceResult.getType().equals(Type.MISS) && rayTraceResult.getBlockPos().equals(pos)) {
+                    matrix.pushPose();
                     matrix.scale(0.5F, 0.5F, 0.5F);
                     matrix.translate(0.5, 0.5, 0.5);
-                    DiversionControl mode = ((DiversionTransporter) transporter).modes[rayTraceResult.getFace().ordinal()];
-                    MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getFace(), mode), matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
+                    DiversionControl mode = ((DiversionTransporter) transporter).modes[rayTraceResult.getDirection().ordinal()];
+                    MekanismRenderer.renderObject(getOverlayModel(rayTraceResult.getDirection(), mode), matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()),
                           MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
-                    matrix.pop();
+                    matrix.popPose();
                 }
             }
         }

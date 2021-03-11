@@ -36,7 +36,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
-    public static final INamedTag<EntityType<?>> PVI_COMPAT = EntityTypeTags.getTagById("per-viam-invenire:replace_vanilla_navigator");
+    public static final INamedTag<EntityType<?>> PVI_COMPAT = EntityTypeTags.bind("per-viam-invenire:replace_vanilla_navigator");
 
     public MekanismTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
         super(gen, Mekanism.MODID, existingFileHelper);

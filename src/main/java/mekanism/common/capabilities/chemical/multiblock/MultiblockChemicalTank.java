@@ -37,9 +37,9 @@ public abstract class MultiblockChemicalTank<CHEMICAL extends Chemical<CHEMICAL>
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
-        if (tile.hasWorld() && !tile.isRemote()) {
+        if (tile.hasLevel() && !tile.isRemote()) {
             tile.markDirty(false);
-            multiblock.markDirtyComparator(tile.getWorld());
+            multiblock.markDirtyComparator(tile.getLevel());
         }
     }
 }

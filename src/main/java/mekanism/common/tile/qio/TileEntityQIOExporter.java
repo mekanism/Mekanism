@@ -63,7 +63,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             delay = MAX_DELAY;
         }
 
-        if (world.getGameTime() % 10 == 0) {
+        if (level.getGameTime() % 10 == 0) {
             QIOFrequency frequency = getQIOFrequency();
             setActive(frequency != null);
         }
@@ -71,7 +71,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
     private void tryEject() {
         QIOFrequency freq = getQIOFrequency();
-        TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
         if (freq == null || !InventoryUtils.isItemHandler(back, getDirection())) {
             return;
         }
@@ -200,7 +200,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
                         break;
                     }
                     // skip randomly based on our eject chance
-                    if (getWorld().getRandom().nextDouble() > ejectChance) {
+                    if (getLevel().getRandom().nextDouble() > ejectChance) {
                         continue;
                     }
                     HashedItem type = typeSupplier.apply(obj);

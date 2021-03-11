@@ -43,7 +43,7 @@ public class EntityTypeDeferredRegister extends WrappedDeferredRegister<EntityTy
         } else {
             //Register our living entity attributes
             for (Map.Entry<EntityTypeRegistryObject<? extends LivingEntity>, Supplier<MutableAttribute>> entry : livingEntityAttributes.entrySet()) {
-                event.put(entry.getKey().get(), entry.getValue().get().create());
+                event.put(entry.getKey().get(), entry.getValue().get().build());
             }
             //And set the map to null to allow it to be garbage collected
             livingEntityAttributes = null;

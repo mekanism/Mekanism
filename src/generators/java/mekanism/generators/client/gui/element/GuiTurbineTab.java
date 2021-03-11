@@ -47,7 +47,7 @@ public class GuiTurbineTab extends GuiTabElementType<TileEntityTurbineCasing, Tu
 
         @Override
         public void onClick(TileEntityTurbineCasing tile) {
-            MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getPos()));
+            MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getBlockPos()));
         }
 
         @Override

@@ -799,7 +799,7 @@ public enum MekanismLang implements ILangEntry {
     private final String key;
 
     MekanismLang(String type, String path) {
-        this(Util.makeTranslationKey(type, Mekanism.rl(path)));
+        this(Util.makeDescriptionId(type, Mekanism.rl(path)));
     }
 
     MekanismLang(String key) {

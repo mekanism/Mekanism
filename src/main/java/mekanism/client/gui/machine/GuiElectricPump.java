@@ -27,7 +27,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
 
     public GuiElectricPump(MekanismTileContainer<TileEntityElectricPump> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        playerInventoryTitleY += 2;
+        inventoryLabelY += 2;
         dynamicSlots = true;
     }
 
@@ -57,7 +57,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

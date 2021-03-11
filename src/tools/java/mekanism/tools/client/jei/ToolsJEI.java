@@ -33,21 +33,21 @@ public class ToolsJEI implements IModPlugin {
         for (IItemProvider toolsItem : ToolsItems.ITEMS.getAllItems()) {
             //Based off of how JEI adds for Vanilla items
             ItemStack damaged2 = toolsItem.getItemStack();
-            damaged2.setDamage(damaged2.getMaxDamage() * 3 / 4);
+            damaged2.setDamageValue(damaged2.getMaxDamage() * 3 / 4);
             ItemStack damaged3 = toolsItem.getItemStack();
-            damaged3.setDamage(damaged3.getMaxDamage() * 2 / 4);
+            damaged3.setDamageValue(damaged3.getMaxDamage() * 2 / 4);
 
             //Two damaged items combine to undamaged
             registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged2, Collections.singletonList(damaged2), Collections.singletonList(damaged3))), VanillaRecipeCategoryUid.ANVIL);
 
             Item item = toolsItem.getItem();
             if (item instanceof IHasRepairType) {
-                ItemStack[] repairStacks = ((IHasRepairType) item).getRepairMaterial().getMatchingStacks();
+                ItemStack[] repairStacks = ((IHasRepairType) item).getRepairMaterial().getItems();
                 //Damaged item + the repair material
                 if (repairStacks.length > 0) {
                     //While this is damaged1 it is down here as we don't need to bother creating the reference if we don't have a repair material
                     ItemStack damaged1 = toolsItem.getItemStack();
-                    damaged1.setDamage(damaged1.getMaxDamage());
+                    damaged1.setDamageValue(damaged1.getMaxDamage());
                     registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged1, Arrays.asList(repairStacks), Collections.singletonList(damaged2))), VanillaRecipeCategoryUid.ANVIL);
                 }
             }

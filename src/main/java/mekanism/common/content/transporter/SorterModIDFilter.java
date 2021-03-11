@@ -33,7 +33,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeString(modID);
+        buffer.writeUtf(modID);
     }
 
     @Override

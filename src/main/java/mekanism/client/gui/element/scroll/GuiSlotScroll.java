@@ -44,7 +44,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getSlotList() == null ? SLOTS_DARK : SLOTS);
+        minecraft.textureManager.bind(getSlotList() == null ? SLOTS_DARK : SLOTS);
         blit(matrix, x, y, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
 
         List<IScrollableSlot> list = getSlotList();
@@ -93,7 +93,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
         super.mouseReleased(mouseX, mouseY, button);
         IScrollableSlot slot = getSlot(mouseX, mouseY, x, y);
-        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.inventory.getItemStack());
+        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.inventory.getCarried());
         return true;
     }
 
@@ -152,18 +152,18 @@ public class GuiSlotScroll extends GuiRelativeElement {
     }
 
     private void renderSlotText(MatrixStack matrix, String text, int x, int y) {
-        matrix.push();
+        matrix.pushPose();
         MekanismRenderer.resetColor();
         float scale = 0.6F;
-        int width = getFont().getStringWidth(text);
+        int width = getFont().width(text);
         //If we need a lower scale due to having a lot of text, calculate it
         scale = Math.min(1, 16F / (width * scale)) * scale;
         float yAdd = 4 - (scale * 8) / 2F;
         matrix.translate(x + 16 - width * scale, y + 9 + yAdd, 200F);
         matrix.scale(scale, scale, scale);
 
-        getFont().drawStringWithShadow(matrix, text, 0, 0, 0xFFFFFF);
-        matrix.pop();
+        getFont().drawShadow(matrix, text, 0, 0, 0xFFFFFF);
+        matrix.popPose();
     }
 
     private String getCountText(long count) {

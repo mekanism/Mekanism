@@ -256,9 +256,9 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     public void updateSolars(World world) {
         solars = new IEvaporationSolar[4];
         addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos()), 0);
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().add(-3, 0, 0)), 1);
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().add(0, 0, -3)), 2);
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().add(-3, 0, -3)), 3);
+        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().offset(-3, 0, 0)), 1);
+        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().offset(0, 0, -3)), 2);
+        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().offset(-3, 0, -3)), 3);
     }
 
     @Override

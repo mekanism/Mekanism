@@ -372,7 +372,7 @@ public class Mekanism {
 
     private static void registerDispenseBehavior(IDispenseItemBehavior behavior, IItemProvider... itemProviders) {
         for (IItemProvider itemProvider : itemProviders) {
-            DispenserBlock.registerDispenseBehavior(itemProvider.getItem(), behavior);
+            DispenserBlock.registerBehavior(itemProvider.getItem(), behavior);
         }
     }
 
@@ -389,7 +389,7 @@ public class Mekanism {
     }
 
     private void chunkSave(ChunkDataEvent.Save event) {
-        if (event.getWorld() != null && !event.getWorld().isRemote()) {
+        if (event.getWorld() != null && !event.getWorld().isClientSide()) {
             //TODO - 1.17: Make both this and load write to the main tag instead of the level sub tag. For now we are using the level tag
             // in both spots to have proper backwards compatibility with earlier mek release versions from 1.16
             CompoundNBT levelTag = event.getData().getCompound(NBTConstants.CHUNK_DATA_LEVEL);
@@ -399,10 +399,10 @@ public class Mekanism {
 
     private synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         IWorld world = event.getWorld();
-        if (world instanceof World && !world.isRemote() && MekanismConfig.world.enableRegeneration.get()) {
+        if (world instanceof World && !world.isClientSide() && MekanismConfig.world.enableRegeneration.get()) {
             CompoundNBT levelTag = event.getData().getCompound(NBTConstants.CHUNK_DATA_LEVEL);
             if (levelTag.getInt(NBTConstants.WORLD_GEN_VERSION) < MekanismConfig.world.userGenVersion.get()) {
-                worldTickHandler.addRegenChunk(((World) world).getDimensionKey(), event.getChunk().getPos());
+                worldTickHandler.addRegenChunk(((World) world).dimension(), event.getChunk().getPos());
             }
         }
     }

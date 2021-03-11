@@ -37,7 +37,7 @@ public final class ItemDataUtils {
     }
 
     public static boolean hasUUID(ItemStack stack, String key) {
-        return hasDataTag(stack) && getDataMap(stack).hasUniqueId(key);
+        return hasDataTag(stack) && getDataMap(stack).hasUUID(key);
     }
 
     public static void removeData(ItemStack stack, String key) {
@@ -78,7 +78,7 @@ public final class ItemDataUtils {
 
     @Nullable
     public static UUID getUniqueID(ItemStack stack, String key) {
-        return hasDataTag(stack) ? getDataMap(stack).getUniqueId(key) : null;
+        return hasDataTag(stack) ? getDataMap(stack).getUUID(key) : null;
     }
 
     public static ListNBT getList(ItemStack stack, String key) {
@@ -117,7 +117,7 @@ public final class ItemDataUtils {
 
     public static void setUUID(ItemStack stack, String key, UUID uuid) {
         initStack(stack);
-        getDataMap(stack).putUniqueId(key, uuid);
+        getDataMap(stack).putUUID(key, uuid);
     }
 
     public static void setList(ItemStack stack, String key, ListNBT tag) {

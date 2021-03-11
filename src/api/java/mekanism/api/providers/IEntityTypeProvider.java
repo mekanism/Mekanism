@@ -17,11 +17,11 @@ public interface IEntityTypeProvider extends IBaseProvider {
 
     @Override
     default ITextComponent getTextComponent() {
-        return getEntityType().getName();
+        return getEntityType().getDescription();
     }
 
     @Override
     default String getTranslationKey() {
-        return getEntityType().getTranslationKey();
+        return getEntityType().getDescriptionId();
     }
 }

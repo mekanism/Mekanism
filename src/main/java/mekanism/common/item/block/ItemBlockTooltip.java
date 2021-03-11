@@ -31,7 +31,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltip.add(getBlock().getDescription().translate());
         } else if (hasDetails && MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
@@ -39,9 +39,9 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         } else {
             addStats(stack, world, tooltip, flag.isAdvanced());
             if (hasDetails) {
-                tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.func_238171_j_()));
+                tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
             }
-            tooltip.add(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.func_238171_j_()));
+            tooltip.add(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
         }
     }
 

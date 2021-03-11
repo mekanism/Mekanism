@@ -69,7 +69,7 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             if (direction.hasFluidToGas) {
                 json.add(JsonConstants.FLUID_INPUT, fluidInput.serialize());
                 json.add(JsonConstants.GAS_OUTPUT, SerializerHelper.serializeGasStack(gasOutput));

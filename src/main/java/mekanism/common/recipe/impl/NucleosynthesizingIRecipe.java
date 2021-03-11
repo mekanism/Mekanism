@@ -38,7 +38,7 @@ public class NucleosynthesizingIRecipe extends NucleosynthesizingRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER.getItemStack();
     }
 }

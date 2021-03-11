@@ -73,7 +73,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
         super.addSlots(builder, updateSortingListener);
         //Note: We care about the gas tank not the slot when it comes to recipes and updating sorting
-        builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::getWorld, this, 7, 57));
+        builder.addSlot(extraSlot = GasInventorySlot.fillOrConvert(gasTank, this::getLevel, this, 7, 57));
     }
 
     public IGasTank getGasTank() {

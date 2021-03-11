@@ -26,7 +26,7 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeString(tagName);
+        buffer.writeUtf(tagName);
     }
 
     @Override

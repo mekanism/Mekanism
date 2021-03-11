@@ -23,6 +23,6 @@ public class ItemStackPropertyData extends PropertyData {
     @Override
     public void writeToPacket(PacketBuffer buffer) {
         super.writeToPacket(buffer);
-        buffer.writeItemStack(value);
+        buffer.writeItem(value);
     }
 }

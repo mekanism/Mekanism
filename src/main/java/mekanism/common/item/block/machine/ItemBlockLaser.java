@@ -22,7 +22,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockLaser extends ItemBlockTooltip<BlockTileModel<?, ?>> implements ISecurityItem {
 
     public ItemBlockLaser(BlockTileModel<?, ?> block) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1));
     }
 
     @Override

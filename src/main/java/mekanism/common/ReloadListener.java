@@ -19,6 +19,6 @@ public class ReloadListener implements IFutureReloadListener {
             MekanismRecipeType.clearCache();
             Mekanism.packetHandler.sendToAllIfLoaded(new PacketClearRecipeCache());
             CommonWorldTickHandler.flushTagAndRecipeCaches = true;
-        }, gameExecutor).thenCompose(stage::markCompleteAwaitingOthers);
+        }, gameExecutor).thenCompose(stage::wait);
     }
 }

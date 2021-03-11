@@ -59,13 +59,13 @@ public final class TagCache {
         if (block instanceof IHasTileEntity) {
             //If it is one of our blocks, short circuit and just lookup the tile's type directly
             tagsAsString = getTagsAsStrings(((IHasTileEntity<?>) block).getTileType().getTags());
-        } else if (block.hasTileEntity(block.getDefaultState())) {
+        } else if (block.hasTileEntity(block.defaultBlockState())) {
             //Otherwise check if the block has a tile entity and if it does, gather all the tile types the block
             // is valid for as we don't want to risk initializing a tile for another mod as it may have side effects
             // that we don't know about and don't handle properly
             Set<ResourceLocation> tileEntityTags = new HashSet<>();
             for (TileEntityType<?> tileEntityType : ForgeRegistries.TILE_ENTITIES) {
-                if (tileEntityType.isValidBlock(block)) {
+                if (tileEntityType.isValid(block)) {
                     tileEntityTags.addAll(tileEntityType.getTags());
                 }
             }
@@ -92,13 +92,13 @@ public final class TagCache {
         if (itemTagStacks.containsKey(oreName)) {
             return itemTagStacks.get(oreName);
         }
-        ITagCollection<Item> tagCollection = ItemTags.getCollection();
-        List<ResourceLocation> keys = tagCollection.getRegisteredTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
+        ITagCollection<Item> tagCollection = ItemTags.getAllTags();
+        List<ResourceLocation> keys = tagCollection.getAvailableTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
         Set<Item> items = new HashSet<>();
         for (ResourceLocation key : keys) {
-            ITag<Item> itemTag = tagCollection.get(key);
+            ITag<Item> itemTag = tagCollection.getTag(key);
             if (itemTag != null) {
-                items.addAll(itemTag.getAllElements());
+                items.addAll(itemTag.getValues());
             }
         }
         List<ItemStack> stacks = items.stream().map(ItemStack::new).collect(Collectors.toList());
@@ -110,13 +110,13 @@ public final class TagCache {
         if (blockTagStacks.containsKey(oreName)) {
             return blockTagStacks.get(oreName);
         }
-        ITagCollection<Block> tagCollection = BlockTags.getCollection();
-        List<ResourceLocation> keys = tagCollection.getRegisteredTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
+        ITagCollection<Block> tagCollection = BlockTags.getAllTags();
+        List<ResourceLocation> keys = tagCollection.getAvailableTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
         Set<Block> blocks = new HashSet<>();
         for (ResourceLocation key : keys) {
-            ITag<Block> blockTag = tagCollection.get(key);
+            ITag<Block> blockTag = tagCollection.getTag(key);
             if (blockTag != null) {
-                blocks.addAll(blockTag.getAllElements());
+                blocks.addAll(blockTag.getValues());
             }
         }
         List<ItemStack> stacks = blocks.stream().map(ItemStack::new).collect(Collectors.toList());
@@ -148,7 +148,7 @@ public final class TagCache {
     }
 
     public static List<ItemStack> getMaterialStacks(@Nonnull ItemStack stack) {
-        return getMaterialStacks(Block.getBlockFromItem(stack.getItem()).getDefaultState().getMaterial());
+        return getMaterialStacks(Block.byItem(stack.getItem()).defaultBlockState().getMaterial());
     }
 
     public static List<ItemStack> getMaterialStacks(@Nonnull Material material) {
@@ -164,7 +164,7 @@ public final class TagCache {
                 if (block == null || block instanceof BlockBounding) {
                     continue;
                 }
-                if (block.getDefaultState().getMaterial() == material) {
+                if (block.defaultBlockState().getMaterial() == material) {
                     stacks.add(new ItemStack(item));
                 }
             }

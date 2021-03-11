@@ -102,19 +102,19 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @Override
     public String getDataType() {
-        return getBlockType().getTranslationKey();
+        return getBlockType().getDescriptionId();
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         return getConfigurationData(nbtTags);
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         setConfigurationData(nbtTags);
     }
 

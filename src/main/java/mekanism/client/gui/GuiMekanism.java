@@ -64,12 +64,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     @Override
-    public void onClose() {
+    public void removed() {
         if (!switchingToJEI) {
             //If we are not switching to JEI then run the super close method
             // which will exit the container. We don't want to mark the
             // container as exited if it will be revived when leaving JEI
-            super.onClose();
+            super.removed();
         }
     }
 
@@ -152,11 +152,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         }
         // flush the focus listeners list unless it's an overlay
         focusListeners.removeIf(element -> !element.isOverlay);
-        int prevLeft = guiLeft, prevTop = guiTop;
+        int prevLeft = leftPos, prevTop = topPos;
         super.init(minecraft, width, height);
 
         windows.forEach(window -> {
-            window.resize(prevLeft, prevTop, guiLeft, guiTop);
+            window.resize(prevLeft, prevTop, leftPos, topPos);
             children.add(window);
         });
 
@@ -175,22 +175,22 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void renderLabels(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         matrix.translate(0, 0, 300);
-        RenderSystem.translatef(-guiLeft, -guiTop, 0);
+        RenderSystem.translatef(-leftPos, -topPos, 0);
         children().stream().filter(c -> c instanceof GuiElement).forEach(c -> ((GuiElement) c).onDrawBackground(matrix, mouseX, mouseY, MekanismRenderer.getPartialTick()));
-        RenderSystem.translatef(guiLeft, guiTop, 0);
+        RenderSystem.translatef(leftPos, topPos, 0);
         drawForegroundText(matrix, mouseX, mouseY);
-        int xAxis = mouseX - guiLeft;
-        int yAxis = mouseY - guiTop;
+        int xAxis = mouseX - leftPos;
+        int yAxis = mouseY - topPos;
         // first render general foregrounds
         maxZOffset = 200;
         int zOffset = 200;
         for (Widget widget : this.buttons) {
             if (widget instanceof GuiElement) {
-                matrix.push();
+                matrix.pushPose();
                 ((GuiElement) widget).onRenderForeground(matrix, mouseX, mouseY, zOffset, zOffset);
-                matrix.pop();
+                matrix.popPose();
             }
         }
 
@@ -199,13 +199,13 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         for (LRU<GuiWindow>.LRUIterator iter = getWindowsDescendingIterator(); iter.hasNext(); ) {
             GuiWindow overlay = iter.next();
             zOffset += 150;
-            matrix.push();
+            matrix.pushPose();
             overlay.onRenderForeground(matrix, mouseX, mouseY, zOffset, zOffset);
             if (iter.hasNext()) {
                 // if this isn't the focused window, render a 'blur' effect over it
                 overlay.renderBlur(matrix);
             }
-            matrix.pop();
+            matrix.popPose();
         }
         // then render tooltips, translating above max z offset to prevent clashing
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
@@ -229,9 +229,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         }
 
         // render item tooltips
-        RenderSystem.translatef(-guiLeft, -guiTop, 0);
-        renderHoveredTooltip(matrix, mouseX, mouseY);
-        RenderSystem.translatef(guiLeft, guiTop, 0);
+        RenderSystem.translatef(-leftPos, -topPos, 0);
+        renderTooltip(matrix, mouseX, mouseY);
+        RenderSystem.translatef(leftPos, topPos, 0);
 
         // IMPORTANT: additional hacky translation so held items render okay. re-evaluate as discussed above
         RenderSystem.translatef(0, 0, 200);
@@ -242,9 +242,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
 
     @Nonnull
     @Override
-    public Optional<IGuiEventListener> getEventListenerForPos(double mouseX, double mouseY) {
+    public Optional<IGuiEventListener> getChildAt(double mouseX, double mouseY) {
         GuiWindow window = getWindowHovering(mouseX, mouseY);
-        return window != null ? Optional.of(window) : super.getEventListenerForPos(mouseX, mouseY);
+        return window != null ? Optional.of(window) : super.getChildAt(mouseX, mouseY);
     }
 
     @Override
@@ -258,7 +258,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
                 //Validate that the focused window is still one of our windows, as if it wasn't focused/on top and
                 // it is being closed, we don't want to update and mark it as focused, as our defocusing code won't
                 // run as we ran it when we pressed the button
-                setListener(focused);
+                setFocused(focused);
                 if (button == 0) {
                     setDragging(true);
                 }
@@ -275,7 +275,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         for (int i = buttons.size() - 1; i >= 0; i--) {
             IGuiEventListener listener = buttons.get(i);
             if (listener.mouseClicked(mouseX, mouseY, button)) {
-                setListener(listener);
+                setFocused(listener);
                 if (button == 0) {
                     setDragging(true);
                 }
@@ -313,36 +313,36 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
-        return getListener() != null && isDragging() && button == 0 && getListener().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+        return getFocused() != null && isDragging() && button == 0 && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }
 
     @Nullable
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected Slot getSelectedSlot(double mouseX, double mouseY) {
+    protected Slot findSlot(double mouseX, double mouseY) {
         //We override the implementation we have in VirtualSlotContainerScreen so that we can cache getting our window
         // and have some general performance improvements given we can batch a bunch of lookups together
         boolean checkedWindow = false;
         boolean overNoButtons = false;
         GuiWindow window = null;
-        for (Slot slot : container.inventorySlots) {
+        for (Slot slot : menu.slots) {
             boolean virtual = slot instanceof IVirtualSlot;
-            int xPos = slot.xPos;
-            int yPos = slot.yPos;
+            int xPos = slot.x;
+            int yPos = slot.y;
             if (virtual) {
                 //Virtual slots need special handling to allow for matching them to the window they may be attached to
                 IVirtualSlot virtualSlot = (IVirtualSlot) slot;
                 xPos = virtualSlot.getActualX();
                 yPos = virtualSlot.getActualY();
             }
-            if (super.isPointInRegion(xPos, yPos, 16, 16, mouseX, mouseY)) {
+            if (super.isHovering(xPos, yPos, 16, 16, mouseX, mouseY)) {
                 if (!checkedWindow) {
                     //Only lookup the window once
                     checkedWindow = true;
                     window = getWindowHovering(mouseX, mouseY);
                     overNoButtons = overNoButtons(window, mouseX, mouseY);
                 }
-                if (overNoButtons && slot.isEnabled()) {
+                if (overNoButtons && slot.isActive()) {
                     if (window == null) {
                         return slot;
                     } else if (virtual && window.childrenContainsElement(element ->
@@ -362,7 +362,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
             IVirtualSlot virtualSlot = (IVirtualSlot) slot;
             int xPos = virtualSlot.getActualX();
             int yPos = virtualSlot.getActualY();
-            if (super.isPointInRegion(xPos, yPos, 16, 16, mouseX, mouseY)) {
+            if (super.isHovering(xPos, yPos, 16, 16, mouseX, mouseY)) {
                 GuiWindow window = getWindowHovering(mouseX, mouseY);
                 //If we are hovering over a window, check if the virtual slot is a child of the window
                 if (window == null || window.childrenContainsElement(element -> element instanceof GuiVirtualSlot && ((GuiVirtualSlot) element).isElementForSlot(virtualSlot))) {
@@ -371,7 +371,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
             }
             return false;
         }
-        return isPointInRegion(slot.xPos, slot.yPos, 16, 16, mouseX, mouseY);
+        return isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY);
     }
 
     private boolean overNoButtons(@Nullable GuiWindow window, double mouseX, double mouseY) {
@@ -382,16 +382,16 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     @Override
-    protected boolean isPointInRegion(int x, int y, int width, int height, double mouseX, double mouseY) {
+    protected boolean isHovering(int x, int y, int width, int height, double mouseX, double mouseY) {
         // overridden to prevent slot interactions when a GuiElement is blocking
-        return super.isPointInRegion(x, y, width, height, mouseX, mouseY) && getWindowHovering(mouseX, mouseY) == null &&
+        return super.isHovering(x, y, width, height, mouseX, mouseY) && getWindowHovering(mouseX, mouseY) == null &&
                overNoButtons(null, mouseX, mouseY);
     }
 
     protected void addSlots() {
-        int size = container.inventorySlots.size();
+        int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
-            Slot slot = container.inventorySlots.get(i);
+            Slot slot = menu.slots.get(i);
             if (slot instanceof InventoryContainerSlot) {
                 InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
                 ContainerSlotType slotType = containerSlot.getSlotType();
@@ -409,7 +409,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
                 } else {//slotType == ContainerSlotType.IGNORED: don't do anything
                     continue;
                 }
-                GuiSlot guiSlot = new GuiSlot(type, this, slot.xPos - 1, slot.yPos - 1);
+                GuiSlot guiSlot = new GuiSlot(type, this, slot.x - 1, slot.y - 1);
                 SlotOverlay slotOverlay = containerSlot.getSlotOverlay();
                 if (slotOverlay != null) {
                     guiSlot.with(slotOverlay);
@@ -420,15 +420,15 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
                 }
                 addButton(guiSlot);
             } else {
-                addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1));
+                addButton(new GuiSlot(SlotType.NORMAL, this, slot.x - 1, slot.y - 1));
             }
         }
     }
 
     @Nullable
     protected DataType findDataType(InventoryContainerSlot slot) {
-        if (container instanceof MekanismTileContainer) {
-            TileEntityMekanism tileEntity = ((MekanismTileContainer<?>) container).getTileEntity();
+        if (menu instanceof MekanismTileContainer) {
+            TileEntityMekanism tileEntity = ((MekanismTileContainer<?>) menu).getTileEntity();
             if (tileEntity instanceof ISideConfiguration) {
                 return ((ISideConfiguration) tileEntity).getActiveDataType(slot.getInventorySlot());
             }
@@ -441,7 +441,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
@@ -449,7 +449,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
         }
-        GuiUtils.renderBackgroundTexture(matrix, BASE_BACKGROUND, 4, 4, guiLeft, guiTop, xSize, ySize, 256, 256);
+        GuiUtils.renderBackgroundTexture(matrix, BASE_BACKGROUND, 4, 4, leftPos, topPos, imageWidth, imageHeight, 256, 256);
     }
 
     @Override
@@ -461,13 +461,13 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         // shift back a whole lot so we can stack more windows
         RenderSystem.translated(0, 0, -500);
-        matrix.push();
+        matrix.pushPose();
         renderBackground(matrix);
         //Apply our matrix stack to the render system and pass an unmodified one to the super method
         // Vanilla still renders the items into the GUI using render system transformations so this
         // is required to not have tooltips of GuiElements rendering behind the items
         super.render(matrix, mouseX, mouseY, partialTicks);
-        matrix.pop();
+        matrix.popPose();
         RenderSystem.translated(0, 0, 500);
     }
 
@@ -524,7 +524,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
                     newTop.onFocused();
                 }
                 //Update the listener to being the window that is now selected or null if none are
-                setListener(newTop);
+                setFocused(newTop);
             }
         }
     }
@@ -542,21 +542,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         return windows;
     }
 
-    public List<IGuiEventListener> children() {
-        return children;
-    }
-
     public LRU<GuiWindow>.LRUIterator getWindowsDescendingIterator() {
         return windows.descendingIterator();
     }
-
-    //Some blit param namings
-    //blit(matrix, int x, int y, int textureX, int textureY, int width, int height);
-    //blit(matrix, int x, int y, TextureAtlasSprite icon, int width, int height);
-    //blit(matrix, int x, int y, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
-    //blit(matrix, int x, int y, int zLevel, float textureX, float textureY, int width, int height, int textureWidth, int textureHeight);
-    //blit(matrix, int x, int y, int desiredWidth, int desiredHeight, int textureX, int textureY, int width, int height, int textureWidth, int textureHeight);
-    //innerblit(matrix, int x, int endX, int y, int endY, int zLevel, int width, int height, float textureX, float textureY, int textureWidth, int textureHeight);
-    //    * calls innerblit(matrix, x, endX, y, endY, zLevel, (textureX + 0.0F) / textureWidth, (textureX + width) / textureWidth, (textureY + 0.0F) / textureHeight, (textureY + height) / textureHeight);
-    //innerblit(matrix, int x, int endX, int y, int endY, int zLevel, float uMin, float uMax, float vMin, float vMax);
 }

@@ -36,12 +36,12 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
     public ItemBlockCardboardBox(BlockCardboardBox block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(16));
+        super(block, ItemDeferredRegister.getMekBaseProperties().stacksTo(16));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(getBlockData(stack) != null)));
         BlockData data = getBlockData(stack);
         if (data != null) {
@@ -62,12 +62,12 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         if (stack.isEmpty() || player == null) {
             return ActionResultType.PASS;
         }
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        if (getBlockData(stack) == null && !player.isSneaking()) {
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        if (getBlockData(stack) == null && !player.isShiftKeyDown()) {
             BlockState state = world.getBlockState(pos);
-            if (!state.isAir(world, pos) && state.getBlockHardness(world, pos) != -1) {
-                if (state.isIn(MekanismTags.Blocks.CARDBOARD_BLACKLIST) || MekanismConfig.general.cardboardModBlacklist.get().contains(state.getBlock().getRegistryName().getNamespace())) {
+            if (!state.isAir(world, pos) && state.getDestroySpeed(world, pos) != -1) {
+                if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST) || MekanismConfig.general.cardboardModBlacklist.get().contains(state.getBlock().getRegistryName().getNamespace())) {
                     return ActionResultType.FAIL;
                 }
                 TileEntity tile = WorldUtils.getTileEntity(world, pos);
@@ -78,12 +78,12 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                         return ActionResultType.FAIL;
                     }
                 }
-                if (!world.isRemote) {
+                if (!world.isClientSide) {
                     BlockData data = new BlockData(state);
                     if (tile != null) {
                         //Note: We check security access above
                         CompoundNBT tag = new CompoundNBT();
-                        tile.write(tag);
+                        tile.save(tag);
                         data.tileTag = tag;
                     }
                     if (!player.isCreative()) {
@@ -95,7 +95,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     // double updates, but if the block we are wrapping has multiple stacked blocks,
                     // we need to make sure it has a chance to update.
                     //world.removeBlock(pos, false);
-                    world.setBlockState(pos, getBlock().getDefaultState().with(BlockStateHelper.storageProperty, true));
+                    world.setBlockAndUpdate(pos, getBlock().defaultBlockState().setValue(BlockStateHelper.storageProperty, true));
                     CommonPlayerTracker.monitoringCardboardBox = false;
                     TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
                     if (box != null) {
@@ -110,14 +110,14 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        World world = context.getWorld();
-        if (world.isRemote) {
+        World world = context.getLevel();
+        if (world.isClientSide) {
             return true;
         }
         if (super.placeBlock(context, state)) {
-            TileEntityCardboardBox tile = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, context.getPos());
+            TileEntityCardboardBox tile = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, context.getClickedPos());
             if (tile != null) {
-                tile.storedData = getBlockData(context.getItem());
+                tile.storedData = getBlockData(context.getItemInHand());
             }
             return true;
         }

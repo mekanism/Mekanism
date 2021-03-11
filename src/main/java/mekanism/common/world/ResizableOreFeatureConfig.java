@@ -30,6 +30,6 @@ public class ResizableOreFeatureConfig implements IFeatureConfig {
         this.target = target;
         this.oreType = oreType;
         this.size = size;
-        this.state = MekanismBlocks.ORES.get(oreType).getBlock().getDefaultState();
+        this.state = MekanismBlocks.ORES.get(oreType).getBlock().defaultBlockState();
     }
 }

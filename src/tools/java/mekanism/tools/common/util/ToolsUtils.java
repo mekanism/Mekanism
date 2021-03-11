@@ -16,7 +16,7 @@ public class ToolsUtils {
      */
     public static void addDurability(@Nonnull List<ITextComponent> tooltip, @Nonnull ItemStack stack) {
         if (MekanismToolsConfig.toolsClient.displayDurabilityTooltips.get()) {
-            tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamage()));
+            tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamageValue()));
         }
     }
 }

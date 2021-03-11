@@ -33,7 +33,7 @@ public class PacketLightningRender implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(preset);
+        buffer.writeEnum(preset);
         buffer.writeVarInt(renderer);
         BasePacketHandler.writeVector3d(buffer, start);
         BasePacketHandler.writeVector3d(buffer, end);
@@ -41,7 +41,7 @@ public class PacketLightningRender implements IMekanismPacket {
     }
 
     public static PacketLightningRender decode(PacketBuffer buffer) {
-        LightningPreset preset = buffer.readEnumValue(LightningPreset.class);
+        LightningPreset preset = buffer.readEnum(LightningPreset.class);
         int renderer = buffer.readVarInt();
         Vector3d start = BasePacketHandler.readVector3d(buffer);
         Vector3d end = BasePacketHandler.readVector3d(buffer);

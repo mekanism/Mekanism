@@ -72,8 +72,8 @@ public class MekanismTools implements IModule {
     }
 
     private void setStackIfEmpty(LivingEntity entity, EquipmentSlotType slot, ItemStack item) {
-        if (entity.getItemStackFromSlot(slot).isEmpty()) {
-            entity.setItemStackToSlot(slot, item);
+        if (entity.getItemBySlot(slot).isEmpty()) {
+            entity.setItemSlot(slot, item);
         }
     }
 

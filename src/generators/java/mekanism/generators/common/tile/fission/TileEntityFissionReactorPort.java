@@ -39,9 +39,9 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         if (multiblock.isFormed()) {
             FissionPortMode mode = getMode();
             if (mode == FissionPortMode.OUTPUT_COOLANT) {
-                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.heatedCoolantTank, this);
+                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.heatedCoolantTank, this);
             } else if (mode == FissionPortMode.OUTPUT_WASTE) {
-                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.wasteTank, this);
+                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.wasteTank, this);
             }
         }
     }
@@ -51,7 +51,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     public IHeatHandler getAdjacent(Direction side) {
         IHeatHandler handler = super.getAdjacent(side);
         if (handler != null) {
-            if (WorldUtils.getTileEntity(getWorld(), getPos().offset(side)) instanceof TileEntityFissionReactorPort) {
+            if (WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side)) instanceof TileEntityFissionReactorPort) {
                 return null;
             }
         }
@@ -86,13 +86,13 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @ComputerMethod
     private FissionPortMode getMode() {
-        return getBlockState().get(AttributeStateFissionPortMode.modeProperty);
+        return getBlockState().getValue(AttributeStateFissionPortMode.modeProperty);
     }
 
     @ComputerMethod
     private void setMode(FissionPortMode mode) {
         if (mode != getMode()) {
-            world.setBlockState(pos, getBlockState().with(AttributeStateFissionPortMode.modeProperty, mode));
+            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AttributeStateFissionPortMode.modeProperty, mode));
         }
     }
 
@@ -102,7 +102,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
             FissionPortMode mode = getMode().getNext();
             setMode(mode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.DUMMY_UUID);
+                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }

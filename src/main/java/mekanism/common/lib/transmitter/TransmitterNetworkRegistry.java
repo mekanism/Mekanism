@@ -240,7 +240,7 @@ public class TransmitterNetworkRegistry {
                             connectedTransmitters.add((TRANSMITTER) transmitter);
                             transmitter.setOrphan(false);
                             for (Direction direction : EnumUtils.DIRECTIONS) {
-                                if (!direction.getAxis().isHorizontal() || WorldUtils.isBlockLoaded(world, from.offset(direction))) {
+                                if (!direction.getAxis().isHorizontal() || WorldUtils.isBlockLoaded(world, from.relative(direction))) {
                                     BlockPos directionPos = transmitter.getAdjacentConnectableTransmitterPos(direction);
                                     if (directionPos != null && !iterated.contains(directionPos)) {
                                         queue.addLast(directionPos);

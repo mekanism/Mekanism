@@ -48,7 +48,7 @@ public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements
 
     @Nonnull
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return output.copy();
     }
 
@@ -64,6 +64,6 @@ public abstract class MetallurgicInfuserRecipe extends MekanismRecipe implements
     public void write(PacketBuffer buffer) {
         itemInput.write(buffer);
         infusionInput.write(buffer);
-        buffer.writeItemStack(output);
+        buffer.writeItem(output);
     }
 }

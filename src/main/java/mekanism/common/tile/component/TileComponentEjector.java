@@ -121,7 +121,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo, outputs.iterator().next());
                 if (!ejectMap.isEmpty()) {
                     for (Direction side : outputs) {
-                        TileEntity tile = WorldUtils.getTileEntity(this.tile.getWorld(), this.tile.getPos().offset(side));
+                        TileEntity tile = WorldUtils.getTileEntity(this.tile.getLevel(), this.tile.getBlockPos().relative(side));
                         if (tile == null) {
                             //If the spot is not loaded just skip trying to eject to it
                             continue;

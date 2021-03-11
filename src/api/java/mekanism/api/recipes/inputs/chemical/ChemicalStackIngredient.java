@@ -68,7 +68,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
 
         @Override
         public void write(PacketBuffer buffer) {
-            buffer.writeEnumValue(IngredientType.SINGLE);
+            buffer.writeEnum(IngredientType.SINGLE);
             chemicalInstance.writeToPacket(buffer);
         }
 
@@ -137,7 +137,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
 
         @Override
         public void write(PacketBuffer buffer) {
-            buffer.writeEnumValue(IngredientType.TAGGED);
+            buffer.writeEnum(IngredientType.TAGGED);
             buffer.writeResourceLocation(getIngredientInfo().getTagLocation(tag));
             buffer.writeVarLong(amount);
         }
@@ -219,7 +219,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
 
         @Override
         public void write(PacketBuffer buffer) {
-            buffer.writeEnumValue(IngredientType.MULTI);
+            buffer.writeEnum(IngredientType.MULTI);
             buffer.writeVarInt(ingredients.length);
             for (INGREDIENT ingredient : ingredients) {
                 ingredient.write(buffer);

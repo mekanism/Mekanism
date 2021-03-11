@@ -75,7 +75,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         moduleSlot.setSlotType(ContainerSlotType.NORMAL);
         moduleSlot.setSlotOverlay(SlotOverlay.MODULE);
         containerSlot.setSlotType(ContainerSlotType.NORMAL);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 149, 21));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 149, 21));
         return builder.build();
     }
 
@@ -118,7 +118,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         ItemStack stack = containerSlot.getStack();
         if (!stack.isEmpty()) {
             IModuleContainerItem container = (IModuleContainerItem) stack.getItem();
-            if (container.hasModule(stack, type) && player.inventory.addItemStackToInventory(type.getStack().copy())) {
+            if (container.hasModule(stack, type) && player.inventory.add(type.getStack().copy())) {
                 container.removeModule(stack, type);
                 containerSlot.setStack(stack);
             }
@@ -130,15 +130,15 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         return nbtTags;
     }
@@ -153,26 +153,26 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         // not exact, but doesn't matter that much
-        return new AxisAlignedBB(pos.add(-1, 0, -1), pos.add(2, 2, 2));
+        return new AxisAlignedBB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
     }
 
     @Override
     public void onPlace() {
-        WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
         Direction side = getRightSide();
-        WorldUtils.makeBoundingBlock(getWorld(), getPos().offset(side), getPos());
-        WorldUtils.makeBoundingBlock(getWorld(), getPos().offset(side).up(), getPos());
+        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().relative(side), getBlockPos());
+        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().relative(side).above(), getBlockPos());
     }
 
     @Override
     public void onBreak(BlockState oldState) {
-        World world = getWorld();
+        World world = getLevel();
         if (world != null) {
             Direction side = MekanismUtils.getRight(Attribute.getFacing(oldState));
-            world.removeBlock(getPos().up(), false);
-            world.removeBlock(getPos(), false);
-            world.removeBlock(getPos().offset(side).up(), false);
-            world.removeBlock(getPos().offset(side), false);
+            world.removeBlock(getBlockPos().above(), false);
+            world.removeBlock(getBlockPos(), false);
+            world.removeBlock(getBlockPos().relative(side).above(), false);
+            world.removeBlock(getBlockPos().relative(side), false);
         }
     }
 }

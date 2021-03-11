@@ -27,11 +27,11 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
     private final double extra;
 
     public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, TileEntity tile) {
-        this(interaction, tile.getPos());
+        this(interaction, tile.getBlockPos());
     }
 
     public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, TileEntity tile, double extra) {
-        this(interaction, tile.getPos(), extra);
+        this(interaction, tile.getBlockPos(), extra);
     }
 
     public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockPos tilePosition) {
@@ -48,7 +48,7 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender();
         if (player != null) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, tilePosition);
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
             if (tile != null) {
                 interaction.consume(tile, player, extra);
             }
@@ -57,13 +57,13 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(interaction);
+        buffer.writeEnum(interaction);
         buffer.writeBlockPos(tilePosition);
         buffer.writeDouble(extra);
     }
 
     public static PacketGeneratorsGuiInteract decode(PacketBuffer buffer) {
-        return new PacketGeneratorsGuiInteract(buffer.readEnumValue(GeneratorsGuiInteraction.class), buffer.readBlockPos(), buffer.readDouble());
+        return new PacketGeneratorsGuiInteract(buffer.readEnum(GeneratorsGuiInteraction.class), buffer.readBlockPos(), buffer.readDouble());
     }
 
     public enum GeneratorsGuiInteraction {

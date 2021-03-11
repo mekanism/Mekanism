@@ -38,7 +38,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     private final boolean horizontal;
 
     public GuiChemicalBar(IGuiWrapper gui, ChemicalInfoProvider<STACK> infoProvider, int x, int y, int width, int height, boolean horizontal) {
-        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, infoProvider, x, y, width, height);
+        super(AtlasTexture.LOCATION_BLOCKS, gui, infoProvider, x, y, width, height);
         this.horizontal = horizontal;
     }
 
@@ -80,7 +80,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY)) {
-            ItemStack stack = Minecraft.getInstance().player.inventory.getItemStack();
+            ItemStack stack = Minecraft.getInstance().player.inventory.getCarried();
             if (gui() instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TankType tankType = null;
                 CHEMICAL type = getHandler().getStack().getType();
@@ -102,7 +102,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
                         } else {
                             action = DropperAction.DRAIN_DROPPER;
                         }
-                        Mekanism.packetHandler.sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) gui()).getTileEntity().getPos(), action, tankType, index));
+                        Mekanism.packetHandler.sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) gui()).getTileEntity().getBlockPos(), action, tankType, index));
                     }
                     return true;
                 }

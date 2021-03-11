@@ -24,7 +24,7 @@ public class GuiSecurityLight extends GuiTexturedElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         screen.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getResource());
+        minecraft.textureManager.bind(getResource());
         blit(matrix, x + 1, y + 1, 6 * lightSupplier.getAsInt(), 0, width - 2, height - 2, 18, 6);
     }
 }

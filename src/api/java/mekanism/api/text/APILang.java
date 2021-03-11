@@ -67,7 +67,7 @@ public enum APILang implements ILangEntry {
     private final String key;
 
     APILang(String type, String path) {
-        this(Util.makeTranslationKey(type, new ResourceLocation(MekanismAPI.MEKANISM_MODID, path)));
+        this(Util.makeDescriptionId(type, new ResourceLocation(MekanismAPI.MEKANISM_MODID, path)));
     }
 
     APILang(String key) {

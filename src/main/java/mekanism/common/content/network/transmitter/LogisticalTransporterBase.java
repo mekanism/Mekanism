@@ -110,7 +110,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 delay = 3;
                 //Attempt to pull
                 for (Direction side : getConnections(ConnectionType.PULL)) {
-                    TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().offset(side));
+                    TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().relative(side));
                     if (tile != null) {
                         TransitRequest request = TransitRequest.anyItem(tile, side.getOpposite(), tier.getPullAmount());
                         //There's a stack available to insert into the network...
@@ -381,7 +381,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        BlockPos outputterPos = outputter.getPos();
+        BlockPos outputterPos = outputter.getBlockPos();
         Direction from = WorldUtils.sideDifference(getTilePos(), outputterPos);
         TransporterStack stack = insertStack(outputterPos, color);
         if (!stack.canInsertToTransporterNN(this, from, outputter)) {
@@ -391,7 +391,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        BlockPos outputterPos = outputter.getPos();
+        BlockPos outputterPos = outputter.getBlockPos();
         Direction from = WorldUtils.sideDifference(getTilePos(), outputterPos);
         TransporterStack stack = insertStack(outputterPos, color);
         if (!canReceiveFrom(from.getOpposite()) || !stack.canInsertToTransporterNN(this, from, outputter)) {

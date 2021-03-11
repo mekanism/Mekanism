@@ -17,7 +17,7 @@ public class PacketUpdateTile implements IMekanismPacket {
     private final BlockPos pos;
 
     public PacketUpdateTile(TileEntityUpdateable tile) {
-        this(tile.getPos(), tile.getReducedUpdateTag());
+        this(tile.getBlockPos(), tile.getReducedUpdateTag());
     }
 
     private PacketUpdateTile(BlockPos pos, CompoundNBT updateTag) {
@@ -27,12 +27,12 @@ public class PacketUpdateTile implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ClientWorld world = Minecraft.getInstance().world;
+        ClientWorld world = Minecraft.getInstance().level;
         if (world != null) {
             TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos, true);
             if (tile == null) {
                 Mekanism.logger.info("Update tile packet received for position: {} in world: {}, but no valid tile was found.", pos,
-                      world.getDimensionKey().getLocation());
+                      world.dimension().location());
             } else {
                 tile.handleUpdatePacket(updateTag);
             }
@@ -42,10 +42,10 @@ public class PacketUpdateTile implements IMekanismPacket {
     @Override
     public void encode(PacketBuffer buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeCompoundTag(updateTag);
+        buffer.writeNbt(updateTag);
     }
 
     public static PacketUpdateTile decode(PacketBuffer buffer) {
-        return new PacketUpdateTile(buffer.readBlockPos(), buffer.readCompoundTag());
+        return new PacketUpdateTile(buffer.readBlockPos(), buffer.readNbt());
     }
 }

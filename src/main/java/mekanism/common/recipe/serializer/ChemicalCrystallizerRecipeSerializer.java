@@ -28,10 +28,10 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         ChemicalType chemicalType = SerializerHelper.getChemicalType(json);
-        JsonElement input = JSONUtils.isJsonArray(json, JsonConstants.INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INPUT) :
-                            JSONUtils.getJsonObject(json, JsonConstants.INPUT);
+        JsonElement input = JSONUtils.isArrayNode(json, JsonConstants.INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.INPUT) :
+                            JSONUtils.getAsJsonObject(json, JsonConstants.INPUT);
         ChemicalStackIngredient<?, ?> inputIngredient = (ChemicalStackIngredient<?, ?>) SerializerHelper.getDeserializerForType(chemicalType).deserialize(input);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
@@ -41,11 +41,11 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
-            ChemicalType chemicalType = buffer.readEnumValue(ChemicalType.class);
+            ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
             ChemicalStackIngredient<?, ?> inputIngredient = (ChemicalStackIngredient<?, ?>) SerializerHelper.getDeserializerForType(chemicalType).read(buffer);
-            ItemStack output = buffer.readItemStack();
+            ItemStack output = buffer.readItem();
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading boxed chemical to itemstack recipe from packet.", e);
@@ -54,7 +54,7 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

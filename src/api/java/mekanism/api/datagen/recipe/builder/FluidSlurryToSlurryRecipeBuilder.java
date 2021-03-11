@@ -48,7 +48,7 @@ public class FluidSlurryToSlurryRecipeBuilder extends MekanismRecipeBuilder<Flui
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.FLUID_INPUT, fluidInput.serialize());
             json.add(JsonConstants.SLURRY_INPUT, slurryInput.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeSlurryStack(output));

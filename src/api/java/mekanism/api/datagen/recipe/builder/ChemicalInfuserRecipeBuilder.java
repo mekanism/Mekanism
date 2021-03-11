@@ -47,7 +47,7 @@ public class ChemicalInfuserRecipeBuilder extends MekanismRecipeBuilder<Chemical
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.LEFT_INPUT, leftInput.serialize());
             json.add(JsonConstants.RIGHT_INPUT, rightInput.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeGasStack(output));

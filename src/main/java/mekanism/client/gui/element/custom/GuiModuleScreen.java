@@ -175,7 +175,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
         @Override
         public void renderBackground(MatrixStack matrix, int mouseX, int mouseY) {
-            minecraft.textureManager.bindTexture(RADIO);
+            minecraft.textureManager.bind(RADIO);
 
             boolean hover = mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19;
             if (data.get()) {
@@ -202,12 +202,12 @@ public class GuiModuleScreen extends GuiRelativeElement {
         public void click(double mouseX, double mouseY) {
             if (!data.get() && mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19) {
                 data.set(true, callback);
-                minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
+                minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
             }
 
             if (data.get() && mouseX >= getX() + 50 && mouseX < getX() + 58 && mouseY >= getY() + 11 && mouseY < getY() + 19) {
                 data.set(false, callback);
-                minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
+                minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
             }
         }
     }
@@ -227,7 +227,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
         @Override
         public void renderBackground(MatrixStack matrix, int mouseX, int mouseY) {
-            minecraft.textureManager.bindTexture(SLIDER);
+            minecraft.textureManager.bind(SLIDER);
             int count = ((EnumData<?>) data.getData()).getSelectableCount();
             int center = (BAR_LENGTH / (count - 1)) * data.get().ordinal();
             blit(matrix, getX() + BAR_START + center - 2, getY() + 11, 0, 0, 5, 6, 8, 8);

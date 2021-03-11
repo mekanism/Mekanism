@@ -39,7 +39,7 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
 
     @Override
     public QIODashboardContainer recreate() {
-        QIODashboardContainer container = new QIODashboardContainer(windowId, inv, tile);
+        QIODashboardContainer container = new QIODashboardContainer(containerId, inv, tile);
         sync(container);
         return container;
     }
@@ -61,12 +61,12 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull PlayerEntity player) {
         if (tile == null) {
             return true;
         }
         //prevent Containers from remaining valid after the chunk has unloaded;
-        return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getWorld(), tile.getPos());
+        return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getLevel(), tile.getBlockPos());
     }
 
     public TileEntityQIODashboard getTileEntity() {

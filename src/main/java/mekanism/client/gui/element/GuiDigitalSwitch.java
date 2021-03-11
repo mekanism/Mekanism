@@ -42,11 +42,11 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getResource());
+        minecraft.textureManager.bind(getResource());
         blit(matrix, x + type.switchX, y + type.switchY, 0, stateSupplier.getAsBoolean() ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
         blit(matrix, x + type.switchX, y + type.switchY + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
 
-        minecraft.textureManager.bindTexture(icon);
+        minecraft.textureManager.bind(icon);
         blit(matrix, x + 6, y + 21, 0, 0, 5, 5, 5, 5);
     }
 
@@ -59,7 +59,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
+        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
         onToggle.run();
     }
 

@@ -69,7 +69,7 @@ import net.minecraftforge.items.IItemHandler;
  */
 public final class MekanismUtils {
 
-    public static final Codec<Direction> DIRECTION_CODEC = IStringSerializable.createEnumCodec(Direction::values, Direction::byName);
+    public static final Codec<Direction> DIRECTION_CODEC = IStringSerializable.fromEnum(Direction::values, Direction::byName);
 
     public static final float ONE_OVER_ROOT_TWO = (float) (1 / Math.sqrt(2));
 
@@ -120,7 +120,7 @@ public final class MekanismUtils {
      * @return left side
      */
     public static Direction getLeft(Direction orientation) {
-        return orientation.rotateY();
+        return orientation.getClockWise();
     }
 
     /**
@@ -131,7 +131,7 @@ public final class MekanismUtils {
      * @return right side
      */
     public static Direction getRight(Direction orientation) {
-        return orientation.rotateYCCW();
+        return orientation.getCounterClockWise();
     }
 
     public static float fractionUpgrades(IUpgradeTile tile, Upgrade type) {
@@ -329,9 +329,9 @@ public final class MekanismUtils {
 
     public static BlockRayTraceResult rayTrace(PlayerEntity player, double reach, FluidMode fluidMode) {
         Vector3d headVec = getHeadVec(player);
-        Vector3d lookVec = player.getLook(1);
+        Vector3d lookVec = player.getViewVector(1);
         Vector3d endVec = headVec.add(lookVec.x * reach, lookVec.y * reach, lookVec.z * reach);
-        return player.getEntityWorld().rayTraceBlocks(new RayTraceContext(headVec, endVec, BlockMode.OUTLINE, fluidMode, player));
+        return player.getCommandSenderWorld().clip(new RayTraceContext(headVec, endVec, BlockMode.OUTLINE, fluidMode, player));
     }
 
     /**
@@ -342,11 +342,11 @@ public final class MekanismUtils {
      * @return head location
      */
     private static Vector3d getHeadVec(PlayerEntity player) {
-        double posY = player.getPosY() + player.getEyeHeight();
+        double posY = player.getY() + player.getEyeHeight();
         if (player.isCrouching()) {
             posY -= 0.08;
         }
-        return new Vector3d(player.getPosX(), posY, player.getPosZ());
+        return new Vector3d(player.getX(), posY, player.getZ());
     }
 
     public static void addUpgradesToTooltip(ItemStack stack, List<ITextComponent> tooltip) {
@@ -433,7 +433,7 @@ public final class MekanismUtils {
     public static CraftingInventory getDummyCraftingInv() {
         Container tempContainer = new Container(ContainerType.CRAFTING, 1) {
             @Override
-            public boolean canInteractWith(@Nonnull PlayerEntity player) {
+            public boolean stillValid(@Nonnull PlayerEntity player) {
                 return false;
             }
         };
@@ -451,12 +451,12 @@ public final class MekanismUtils {
     public static ItemStack findRepairRecipe(CraftingInventory inv, World world) {
         NonNullList<ItemStack> dmgItems = NonNullList.withSize(2, ItemStack.EMPTY);
         ItemStack leftStack = dmgItems.get(0);
-        for (int i = 0; i < inv.getSizeInventory(); i++) {
-            if (!inv.getStackInSlot(i).isEmpty()) {
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            if (!inv.getItem(i).isEmpty()) {
                 if (leftStack.isEmpty()) {
-                    dmgItems.set(0, leftStack = inv.getStackInSlot(i));
+                    dmgItems.set(0, leftStack = inv.getItem(i));
                 } else {
-                    dmgItems.set(1, inv.getStackInSlot(i));
+                    dmgItems.set(1, inv.getItem(i));
                     break;
                 }
             }
@@ -470,12 +470,12 @@ public final class MekanismUtils {
         if (!rightStack.isEmpty() && leftStack.getItem() == rightStack.getItem() && leftStack.getCount() == 1 && rightStack.getCount() == 1 &&
             leftStack.getItem().isRepairable(leftStack)) {
             Item theItem = leftStack.getItem();
-            int dmgDiff0 = theItem.getMaxDamage(leftStack) - leftStack.getDamage();
-            int dmgDiff1 = theItem.getMaxDamage(leftStack) - rightStack.getDamage();
+            int dmgDiff0 = theItem.getMaxDamage(leftStack) - leftStack.getDamageValue();
+            int dmgDiff1 = theItem.getMaxDamage(leftStack) - rightStack.getDamageValue();
             int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage(leftStack) * 5 / 100;
             int solve = Math.max(0, theItem.getMaxDamage(leftStack) - value);
             ItemStack repaired = new ItemStack(leftStack.getItem());
-            repaired.setDamage(solve);
+            repaired.setDamageValue(solve);
             return repaired;
         }
         return ItemStack.EMPTY;
@@ -489,7 +489,7 @@ public final class MekanismUtils {
         Item item = it.getItem();
         if (item instanceof IMekWrench) {
             return (IMekWrench) item;
-        } else if (item.isIn(MekanismTags.Items.CONFIGURATORS)) {
+        } else if (item.is(MekanismTags.Items.CONFIGURATORS)) {
             return GenericWrench.INSTANCE;
         }
         return null;
@@ -502,7 +502,7 @@ public final class MekanismUtils {
         }
         String ret = UsernameCache.getLastKnownUsername(uuid);
         if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get().isServer()) { // see if MC/Yggdrasil knows about it?!
-            GameProfile gp = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getProfileByUUID(uuid);
+            GameProfile gp = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(uuid);
             if (gp != null) {
                 ret = gp.getName();
             }
@@ -518,14 +518,14 @@ public final class MekanismUtils {
      * Copy of LivingEntity#onChangedPotionEffect(EffectInstance, boolean) due to not being able to AT the method as it is protected.
      */
     public static void onChangedPotionEffect(LivingEntity entity, EffectInstance id, boolean reapply) {
-        entity.potionsNeedUpdate = true;
-        if (reapply && !entity.world.isRemote) {
-            Effect effect = id.getPotion();
-            effect.removeAttributesModifiersFromEntity(entity, entity.getAttributeManager(), id.getAmplifier());
-            effect.applyAttributesModifiersToEntity(entity, entity.getAttributeManager(), id.getAmplifier());
+        entity.effectsDirty = true;
+        if (reapply && !entity.level.isClientSide) {
+            Effect effect = id.getEffect();
+            effect.removeAttributeModifiers(entity, entity.getAttributes(), id.getAmplifier());
+            effect.addAttributeModifiers(entity, entity.getAttributes(), id.getAmplifier());
         }
         if (entity instanceof ServerPlayerEntity) {
-            ((ServerPlayerEntity) entity).connection.sendPacket(new SPlayEntityEffectPacket(entity.getEntityId(), id));
+            ((ServerPlayerEntity) entity).connection.send(new SPlayEntityEffectPacket(entity.getId(), id));
             CriteriaTriggers.EFFECTS_CHANGED.trigger(((ServerPlayerEntity) entity));
         }
     }

@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class BabyEndermanEyesLayer extends AbstractEyesLayer<EntityBabyEnderman, ModelBabyEnderman> {
 
-    private static final RenderType RENDER_TYPE = RenderType.getEyes(new ResourceLocation("textures/entity/enderman/enderman_eyes.png"));
+    private static final RenderType RENDER_TYPE = RenderType.eyes(new ResourceLocation("textures/entity/enderman/enderman_eyes.png"));
 
     public BabyEndermanEyesLayer(IEntityRenderer<EntityBabyEnderman, ModelBabyEnderman> renderer) {
         super(renderer);
@@ -18,7 +18,7 @@ public class BabyEndermanEyesLayer extends AbstractEyesLayer<EntityBabyEnderman,
 
     @Nonnull
     @Override
-    public RenderType getRenderType() {
+    public RenderType renderType() {
         return RENDER_TYPE;
     }
 }

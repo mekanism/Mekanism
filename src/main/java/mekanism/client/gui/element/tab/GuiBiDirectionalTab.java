@@ -22,7 +22,7 @@ public abstract class GuiBiDirectionalTab extends GuiTexturedElement {
         if (this.active && this.visible && isHovered()) {
             if (button == 1) {
                 //Right clicked
-                playDownSound(Minecraft.getInstance().getSoundHandler());
+                playDownSound(Minecraft.getInstance().getSoundManager());
                 onRightClick(mouseX, mouseY);
                 return true;
             }

@@ -59,11 +59,11 @@ public class RecipeRegistryHelper {
     public static void registerNutritionalLiquifier(IRecipeRegistration registry) {
         List<NutritionalLiquifierIRecipe> list = new ArrayList<>();
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
-            if (item.isFood()) {
-                Food food = item.getFood();
+            if (item.isEdible()) {
+                Food food = item.getFoodProperties();
                 //Only display consuming foods that provide healing as otherwise no paste will be made
-                if (food != null && food.getHealing() > 0) {
-                    list.add(new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(food.getHealing() * 50L)));
+                if (food != null && food.getNutrition() > 0) {
+                    list.add(new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(food.getNutrition() * 50L)));
                 }
             }
         }
@@ -90,6 +90,6 @@ public class RecipeRegistryHelper {
     }
 
     private static ClientWorld getWorld() {
-        return Minecraft.getInstance().world;
+        return Minecraft.getInstance().level;
     }
 }

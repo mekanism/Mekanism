@@ -36,8 +36,8 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     public GuiQIORedstoneAdapter(MekanismTileContainer<TileEntityQIORedstoneAdapter> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        ySize += 16;
-        playerInventoryTitleY = ySize - 94;
+        imageHeight += 16;
+        inventoryLabelY = imageHeight - 94;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
         addButton(new GuiQIOFrequencyTab(this, tile));
         addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true));
-        addButton(new GuiInnerScreen(this, 7, 16, xSize - 15, 12, () -> {
+        addButton(new GuiInnerScreen(this, 7, 16, imageWidth - 15, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             QIOFrequency freq = tile.getQIOFrequency();
             if (freq == null) {
@@ -66,16 +66,16 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             }
             return list;
         }));
-        addButton(new GuiInnerScreen(this, 27, 30, xSize - 27 - 8, 54, () -> {
+        addButton(new GuiInnerScreen(this, 27, 30, imageWidth - 27 - 8, 54, () -> {
             List<ITextComponent> list = new ArrayList<>();
-            list.add(!tile.getItemType().isEmpty() ? tile.getItemType().getStack().getDisplayName() : MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate());
+            list.add(!tile.getItemType().isEmpty() ? tile.getItemType().getStack().getHoverName() : MekanismLang.QIO_ITEM_TYPE_UNDEFINED.translate());
             list.add(MekanismLang.QIO_TRIGGER_COUNT.translate(TextUtils.format(tile.getCount())));
             if (!tile.getItemType().isEmpty() && tile.getQIOFrequency() != null) {
                 list.add(MekanismLang.QIO_STORED_COUNT.translate(TextUtils.format(tile.getStoredCount())));
             }
             return list;
         }).clearFormat());
-        addButton(text = new GuiTextField(this, 29, 70, xSize - 39, 12));
+        addButton(text = new GuiTextField(this, 29, 70, imageWidth - 39, 12));
         text.setMaxStringLength(10);
         text.setInputValidator(InputValidator.DIGIT);
         text.setFocused(true);
@@ -93,7 +93,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         if (tile.getItemType() != null) {
             renderItem(matrix, tile.getItemType(), 8, 31);
         }
@@ -104,16 +104,16 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         super.mouseClicked(mouseX, mouseY, button);
         if (button == 0) {
-            double xAxis = mouseX - guiLeft;
-            double yAxis = mouseY - guiTop;
+            double xAxis = mouseX - leftPos;
+            double yAxis = mouseY - topPos;
             if (xAxis >= 8 && xAxis < 24 && yAxis >= 31 && yAxis < 47) {
-                ItemStack stack = getMinecraft().player.inventory.getItemStack();
+                ItemStack stack = getMinecraft().player.inventory.getCarried();
                 if (!stack.isEmpty() && !hasShiftDown()) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, StackUtils.size(stack, 1)));
                 } else if (stack.isEmpty() && hasShiftDown()) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, ItemStack.EMPTY));
                 }
-                minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
+                minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
             }
         }
         return true;

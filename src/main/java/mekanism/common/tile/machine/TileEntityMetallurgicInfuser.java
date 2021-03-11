@@ -106,7 +106,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(infusionSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getWorld, this, 17, 35));
+        builder.addSlot(infusionSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getLevel, this, 17, 35));
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             if (!infusionTank.isEmpty()) {
                 return containsRecipe(recipe -> recipe.getInfusionInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(stack));
@@ -115,7 +115,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
             return true;
         }, stack -> containsRecipe(recipe -> recipe.getItemInput().testType(stack)), this, 51, 43));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 109, 43));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 143, 35));
         return builder.build();
     }
 

@@ -98,7 +98,7 @@ public class Structure {
     }
 
     public <TILE extends TileEntity & IMultiblockBase> void tick(TILE tile) {
-        if (!didUpdate && updateTimestamp == tile.getWorld().getGameTime() - 1) {
+        if (!didUpdate && updateTimestamp == tile.getLevel().getGameTime() - 1) {
             didUpdate = true;
             runUpdate(tile);
         }
@@ -111,7 +111,7 @@ public class Structure {
         if (getController() != null && multiblockData == null) {
             return getController().createFormationProtocol().doUpdate();
         }
-        removeMultiblock(tile.getWorld());
+        removeMultiblock(tile.getLevel());
         return FormationResult.FAIL;
     }
 

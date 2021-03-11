@@ -44,9 +44,9 @@ public class HUDRenderer {
         if (MekanismConfig.client.hudOpacity.get() < 0.05F) {
             return;
         }
-        matrix.push();
-        float yawJitter = -absSqrt(minecraft.player.rotationYawHead - prevRotationYaw);
-        float pitchJitter = -absSqrt(minecraft.player.rotationPitch - prevRotationPitch);
+        matrix.pushPose();
+        float yawJitter = -absSqrt(minecraft.player.yHeadRot - prevRotationYaw);
+        float pitchJitter = -absSqrt(minecraft.player.xRot - prevRotationPitch);
         matrix.translate(yawJitter, pitchJitter, 0);
         if (MekanismConfig.client.hudCompassEnabled.get()) {
             renderCompass(matrix, partialTick, color);
@@ -55,18 +55,18 @@ public class HUDRenderer {
         renderMekaSuitEnergyIcons(matrix, partialTick, color);
         renderMekaSuitModuleIcons(matrix, partialTick, color);
 
-        matrix.pop();
+        matrix.popPose();
     }
 
     private void update() {
         // if we're just now rendering the HUD after a pause, reset the pitch/yaw trackers
-        if (lastTick == -1 || minecraft.world.getGameTime() - lastTick > 1) {
-            prevRotationYaw = minecraft.player.rotationYaw;
-            prevRotationPitch = minecraft.player.rotationPitch;
+        if (lastTick == -1 || minecraft.level.getGameTime() - lastTick > 1) {
+            prevRotationYaw = minecraft.player.yRot;
+            prevRotationPitch = minecraft.player.xRot;
         }
-        lastTick = minecraft.world.getGameTime();
-        float yawDiff = (minecraft.player.rotationYawHead - prevRotationYaw);
-        float pitchDiff = (minecraft.player.rotationPitch - prevRotationPitch);
+        lastTick = minecraft.level.getGameTime();
+        float yawDiff = (minecraft.player.yHeadRot - prevRotationYaw);
+        float pitchDiff = (minecraft.player.xRot - prevRotationPitch);
         prevRotationYaw += yawDiff / MekanismConfig.client.hudJitter.get();
         prevRotationPitch += pitchDiff / MekanismConfig.client.hudJitter.get();
     }
@@ -77,7 +77,7 @@ public class HUDRenderer {
     }
 
     private void renderMekaSuitEnergyIcons(MatrixStack matrix, float partialTick, int color) {
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(10, 10, 0);
         int posX = 0;
         if (getStack(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
@@ -95,7 +95,7 @@ public class HUDRenderer {
         if (getStack(EquipmentSlotType.FEET).getItem() instanceof ItemMekaSuitArmor) {
             renderHUDElement(matrix, posX, 0, HUDElement.energyPercent(BOOTS_ICON, getStack(EquipmentSlotType.FEET)), color, false);
         }
-        matrix.pop();
+        matrix.popPose();
     }
 
     private void renderMekaSuitModuleIcons(MatrixStack matrix, float partialTick, int color) {
@@ -108,49 +108,49 @@ public class HUDRenderer {
             }
         }
 
-        int startX = minecraft.getMainWindow().getScaledWidth() - 10;
-        int curY = minecraft.getMainWindow().getScaledHeight() - 10;
+        int startX = minecraft.getWindow().getGuiScaledWidth() - 10;
+        int curY = minecraft.getWindow().getGuiScaledHeight() - 10;
 
-        matrix.push();
+        matrix.pushPose();
         for (HUDElement element : elements) {
-            int elementWidth = 24 + minecraft.fontRenderer.getStringPropertyWidth(element.getText());
+            int elementWidth = 24 + minecraft.font.width(element.getText());
             curY -= 18;
             renderHUDElement(matrix, startX - elementWidth, curY, element, color, true);
         }
-        matrix.pop();
+        matrix.popPose();
     }
 
     private void renderHUDElement(MatrixStack matrix, int x, int y, HUDElement element, int color, boolean iconRight) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         MekanismRenderer.color(color);
-        minecraft.getTextureManager().bindTexture(element.getIcon());
+        minecraft.getTextureManager().bind(element.getIcon());
         if (!iconRight) {
             AbstractGui.blit(matrix, x, y, 0, 0, 16, 16, 16, 16);
             MekanismRenderer.resetColor();
-            minecraft.fontRenderer.drawText(matrix, element.getText(), x + 18, y + 5, element.getColor());
+            minecraft.font.draw(matrix, element.getText(), x + 18, y + 5, element.getColor());
         } else {
-            AbstractGui.blit(matrix, x + minecraft.fontRenderer.getStringPropertyWidth(element.getText()) + 2, y, 0, 0, 16, 16, 16, 16);
+            AbstractGui.blit(matrix, x + minecraft.font.width(element.getText()) + 2, y, 0, 0, 16, 16, 16, 16);
             MekanismRenderer.resetColor();
-            minecraft.fontRenderer.drawText(matrix, element.getText(), x, y + 5, element.getColor());
+            minecraft.font.draw(matrix, element.getText(), x, y + 5, element.getColor());
         }
     }
 
     private void renderCompass(MatrixStack matrix, float partialTick, int color) {
-        matrix.push();
+        matrix.pushPose();
         int posX = 25;
-        int posY = minecraft.getMainWindow().getScaledHeight() - 100;
+        int posY = minecraft.getWindow().getGuiScaledHeight() - 100;
         matrix.translate(posX + 50, posY + 50, 0);
-        matrix.push();
-        float angle = 180 - MathHelper.lerp(partialTick, minecraft.player.prevRotationYawHead, minecraft.player.rotationYawHead);
-        matrix.push();
+        matrix.pushPose();
+        float angle = 180 - MathHelper.lerp(partialTick, minecraft.player.yHeadRotO, minecraft.player.yHeadRot);
+        matrix.pushPose();
         matrix.scale(0.7F, 0.7F, 0.7F);
-        ITextComponent coords = MekanismLang.GENERIC_BLOCK_POS.translate((int) minecraft.player.getPosX(), (int) minecraft.player.getPosY(), (int) minecraft.player.getPosZ());
-        minecraft.fontRenderer.drawText(matrix, coords, -minecraft.fontRenderer.getStringPropertyWidth(coords) / 2F, -4, color);
-        matrix.pop();
-        matrix.rotate(Vector3f.XP.rotationDegrees(-60));
-        matrix.rotate(Vector3f.ZP.rotationDegrees(angle));
-        minecraft.getTextureManager().bindTexture(COMPASS);
+        ITextComponent coords = MekanismLang.GENERIC_BLOCK_POS.translate((int) minecraft.player.getX(), (int) minecraft.player.getY(), (int) minecraft.player.getZ());
+        minecraft.font.draw(matrix, coords, -minecraft.font.width(coords) / 2F, -4, color);
+        matrix.popPose();
+        matrix.mulPose(Vector3f.XP.rotationDegrees(-60));
+        matrix.mulPose(Vector3f.ZP.rotationDegrees(angle));
+        minecraft.getTextureManager().bind(COMPASS);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         MekanismRenderer.color(color);
@@ -160,20 +160,20 @@ public class HUDRenderer {
         rotateStr(matrix, MekanismLang.SOUTH_SHORT, angle, 180, color);
         rotateStr(matrix, MekanismLang.WEST_SHORT, angle, 270, color);
         MekanismRenderer.resetColor();
-        matrix.pop();
-        matrix.pop();
+        matrix.popPose();
+        matrix.popPose();
     }
 
     private void rotateStr(MatrixStack matrix, ILangEntry langEntry, float rotation, float shift, int color) {
-        matrix.push();
-        matrix.rotate(Vector3f.ZP.rotationDegrees(shift));
+        matrix.pushPose();
+        matrix.mulPose(Vector3f.ZP.rotationDegrees(shift));
         matrix.translate(0, -50, 0);
-        matrix.rotate(Vector3f.ZP.rotationDegrees(-rotation - shift));
-        minecraft.fontRenderer.drawText(matrix, langEntry.translate(), -2.5F, -4, color);
-        matrix.pop();
+        matrix.mulPose(Vector3f.ZP.rotationDegrees(-rotation - shift));
+        minecraft.font.draw(matrix, langEntry.translate(), -2.5F, -4, color);
+        matrix.popPose();
     }
 
     private ItemStack getStack(EquipmentSlotType type) {
-        return minecraft.player.getItemStackFromSlot(type);
+        return minecraft.player.getItemBySlot(type);
     }
 }

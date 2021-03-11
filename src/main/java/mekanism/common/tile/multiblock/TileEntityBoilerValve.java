@@ -47,9 +47,9 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         if (multiblock.isFormed()) {
             BoilerValveMode mode = getMode();
             if (mode == BoilerValveMode.OUTPUT_STEAM) {
-                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.steamTank, this);
+                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.steamTank, this);
             } else if (mode == BoilerValveMode.OUTPUT_COOLANT) {
-                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.cooledCoolantTank, this);
+                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.cooledCoolantTank, this);
             }
         }
     }
@@ -70,13 +70,13 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     @ComputerMethod
     private BoilerValveMode getMode() {
-        return getBlockState().get(AttributeStateBoilerValveMode.modeProperty);
+        return getBlockState().getValue(AttributeStateBoilerValveMode.modeProperty);
     }
 
     @ComputerMethod
     private void setMode(BoilerValveMode mode) {
         if (mode != getMode()) {
-            world.setBlockState(pos, getBlockState().with(AttributeStateBoilerValveMode.modeProperty, mode));
+            level.setBlockAndUpdate(worldPosition, getBlockState().setValue(AttributeStateBoilerValveMode.modeProperty, mode));
         }
     }
 
@@ -86,7 +86,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
             BoilerValveMode mode = getMode().getNext();
             setMode(mode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.DUMMY_UUID);
+                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }

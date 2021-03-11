@@ -74,7 +74,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSide(this::getDirection);
-        builder.addTank(lavaTank = BasicFluidTank.create(MAX_FLUID, fluidStack -> fluidStack.getFluid().isIn(FluidTags.LAVA), this), RelativeSide.LEFT,
+        builder.addTank(lavaTank = BasicFluidTank.create(MAX_FLUID, fluidStack -> fluidStack.getFluid().is(FluidTags.LAVA), this), RelativeSide.LEFT,
               RelativeSide.RIGHT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         return builder.build();
     }
@@ -121,7 +121,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     }
 
     private FloatingLong getBoost() {
-        if (world == null) {
+        if (level == null) {
             return FloatingLong.ZERO;
         }
         FloatingLong boost;
@@ -133,16 +133,16 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
             //Otherwise, calculate boost to apply from lava
             long lavaSides = Arrays.stream(EnumUtils.DIRECTIONS).filter(side -> {
                 //Only check and add loaded neighbors to the which sides have lava on them
-                Optional<FluidState> fluidState = WorldUtils.getFluidState(world, pos.offset(side));
-                return fluidState.isPresent() && fluidState.get().isTagged(FluidTags.LAVA);
+                Optional<FluidState> fluidState = WorldUtils.getFluidState(level, worldPosition.relative(side));
+                return fluidState.isPresent() && fluidState.get().is(FluidTags.LAVA);
             }).count();
-            if (getBlockState().getFluidState().isTagged(FluidTags.LAVA)) {
+            if (getBlockState().getFluidState().is(FluidTags.LAVA)) {
                 //If the heat generator is lava-logged then add it as another side that is adjacent to lava for the heat calculations
                 lavaSides++;
             }
             boost = passiveLavaAmount.multiply(lavaSides);
         }
-        if (world.getDimensionType().isUltrawarm()) {
+        if (level.dimensionType().ultraWarm()) {
             boost = boost.plusEqual(MekanismGeneratorsConfig.generators.heatGenerationNether.get());
         }
         return boost;
@@ -169,7 +169,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     public IHeatHandler getAdjacent(Direction side) {
         if (side == Direction.DOWN) {
-            TileEntity adj = WorldUtils.getTileEntity(getWorld(), pos.down());
+            TileEntity adj = WorldUtils.getTileEntity(getLevel(), worldPosition.below());
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
         }
         return null;

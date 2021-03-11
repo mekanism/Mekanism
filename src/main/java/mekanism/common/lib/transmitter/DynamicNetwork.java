@@ -85,7 +85,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     }
 
     public boolean isRemote() {
-        return world == null ? EffectiveSide.get().isClient() : world.isRemote;
+        return world == null ? EffectiveSide.get().isClient() : world.isClientSide;
     }
 
     public void invalidate(@Nullable TRANSMITTER triggerTransmitter) {

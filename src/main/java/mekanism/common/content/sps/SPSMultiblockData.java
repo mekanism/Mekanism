@@ -153,9 +153,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     private void kill(World world) {
         if (!lastReceivedEnergy.isZero() && couldOperate && world.getRandom().nextInt() % 20 == 0) {
-            List<Entity> entitiesToDie = getWorld().getEntitiesWithinAABB(Entity.class, deathZone);
+            List<Entity> entitiesToDie = getWorld().getEntitiesOfClass(Entity.class, deathZone);
             for (Entity entity : entitiesToDie) {
-                entity.attackEntityFrom(DamageSource.MAGIC, lastReceivedEnergy.floatValue() / 1_000F);
+                entity.hurt(DamageSource.MAGIC, lastReceivedEnergy.floatValue() / 1_000F);
             }
         }
     }
@@ -163,7 +163,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public boolean canSupplyCoilEnergy(TileEntitySPSPort tile) {
         //We allow supplying coil energy for one tick more than the structure "canOperate" so that tick order does not
         // make it so that some coils are unable to supply energy
-        return (couldOperate || canOperate()) && coilData.coilMap.containsKey(tile.getPos());
+        return (couldOperate || canOperate()) && coilData.coilMap.containsKey(tile.getBlockPos());
     }
 
     public void addCoil(BlockPos portPos, Direction side) {
@@ -172,7 +172,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     public void supplyCoilEnergy(TileEntitySPSPort tile, FloatingLong energy) {
         receivedEnergy = receivedEnergy.plusEqual(energy);
-        coilData.coilMap.get(tile.getPos()).receiveEnergy(energy);
+        coilData.coilMap.get(tile.getBlockPos()).receiveEnergy(energy);
     }
 
     private boolean canOperate() {
@@ -196,7 +196,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     public boolean handlesSound(TileEntitySPSCasing tile) {
-        return tile.getPos().equals(getMinPos().add(3, 0, 0)) || tile.getPos().equals(getMaxPos().add(3, 0, 7));
+        return tile.getBlockPos().equals(getMinPos().offset(3, 0, 0)) || tile.getBlockPos().equals(getMaxPos().offset(3, 0, 7));
     }
 
     //Computer related methods
@@ -241,7 +241,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             for (int i = 0; i < list.size(); i++) {
                 CompoundNBT tag = list.getCompound(i);
                 BlockPos pos = NBTUtil.readBlockPos(tag.getCompound(NBTConstants.POSITION));
-                Direction side = Direction.byIndex(tag.getInt(NBTConstants.SIDE));
+                Direction side = Direction.from3DDataValue(tag.getInt(NBTConstants.SIDE));
                 CoilData data = new CoilData(pos, side);
                 data.prevLevel = tag.getInt(NBTConstants.LEVEL);
                 coilMap.put(data.coilPos, data);

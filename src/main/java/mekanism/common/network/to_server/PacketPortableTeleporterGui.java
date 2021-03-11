@@ -48,19 +48,19 @@ public class PacketPortableTeleporterGui implements IMekanismPacket {
         if (player == null) {
             return;
         }
-        ItemStack stack = player.getHeldItem(currentHand);
+        ItemStack stack = player.getItemInHand(currentHand);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
             if (packetType == PortableTeleporterPacketType.DATA_REQUEST) {
                 sendDataResponse(frequency, player, stack);
             } else if (packetType == PortableTeleporterPacketType.TELEPORT) {
-                FrequencyManager<TeleporterFrequency> manager2 = FrequencyType.TELEPORTER.getManager(frequency.isPublic() ? null : player.getUniqueID());
+                FrequencyManager<TeleporterFrequency> manager2 = FrequencyType.TELEPORTER.getManager(frequency.isPublic() ? null : player.getUUID());
                 TeleporterFrequency found = manager2.getFrequency(frequency.getName());
                 if (found == null) {
                     return;
                 }
                 Coord4D coords = found.getClosestCoords(new Coord4D(player));
                 if (coords != null) {
-                    World teleWorld = ServerLifecycleHooks.getCurrentServer().getWorld(coords.dimension);
+                    World teleWorld = ServerLifecycleHooks.getCurrentServer().getLevel(coords.dimension);
                     TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.getPos());
                     if (teleporter != null) {
                         try {
@@ -72,11 +72,11 @@ public class PacketPortableTeleporterGui implements IMekanismPacket {
                                 }
                                 energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
                             }
-                            teleporter.didTeleport.add(player.getUniqueID());
+                            teleporter.didTeleport.add(player.getUUID());
                             teleporter.teleDelay = 5;
-                            player.connection.floatingTickCount = 0;
-                            player.closeScreen();
-                            Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.getPosition()), player.world, coords.getPos());
+                            player.connection.aboveGroundTickCount = 0;
+                            player.closeContainer();
+                            Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level, coords.getPos());
                             if (player.isPassenger()) {
                                 player.stopRiding();
                             }
@@ -84,10 +84,10 @@ public class PacketPortableTeleporterGui implements IMekanismPacket {
                             BlockPos coordsPos = coords.getPos();
                             Direction frameDirection = teleporter.frameDirection();
                             if (frameDirection != null) {
-                                coordsPos = coordsPos.down().offset(frameDirection);
+                                coordsPos = coordsPos.below().relative(frameDirection);
                             }
                             TileEntityTeleporter.alignPlayer(player, coordsPos);
-                            player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                             Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), teleWorld, coordsPos);
                         } catch (Exception ignored) {
                         }
@@ -99,21 +99,21 @@ public class PacketPortableTeleporterGui implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(packetType);
-        buffer.writeEnumValue(currentHand);
+        buffer.writeEnum(packetType);
+        buffer.writeEnum(currentHand);
         if (frequency == null) {
             buffer.writeBoolean(false);
         } else {
             buffer.writeBoolean(true);
-            buffer.writeString(frequency.getName());
+            buffer.writeUtf(frequency.getName());
             buffer.writeBoolean(frequency.isPublic());
         }
 
     }
 
     public static PacketPortableTeleporterGui decode(PacketBuffer buffer) {
-        PortableTeleporterPacketType packetType = buffer.readEnumValue(PortableTeleporterPacketType.class);
-        Hand currentHand = buffer.readEnumValue(Hand.class);
+        PortableTeleporterPacketType packetType = buffer.readEnum(PortableTeleporterPacketType.class);
+        Hand currentHand = buffer.readEnum(Hand.class);
         TeleporterFrequency frequency = null;
         if (buffer.readBoolean()) {
             frequency = new TeleporterFrequency(BasePacketHandler.readString(buffer), null);
@@ -125,7 +125,7 @@ public class PacketPortableTeleporterGui implements IMekanismPacket {
     private static void sendDataResponse(TeleporterFrequency given, PlayerEntity player, ItemStack stack) {
         byte status = 3;
         if (given != null) {
-            FrequencyManager<TeleporterFrequency> manager = FrequencyType.TELEPORTER.getManager(given.isPublic() ? null : player.getUniqueID());
+            FrequencyManager<TeleporterFrequency> manager = FrequencyType.TELEPORTER.getManager(given.isPublic() ? null : player.getUUID());
             TeleporterFrequency freq = manager.getFrequency(given.getName());
             if (freq != null && !freq.getActiveCoords().isEmpty()) {
                 status = 1;

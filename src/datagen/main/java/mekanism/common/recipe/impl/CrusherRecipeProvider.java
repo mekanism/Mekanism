@@ -204,7 +204,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
 
     private void addCrusherBioFuelRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Generate baseline recipes from Composter recipe set
-        for (Entry<IItemProvider> chance : ComposterBlock.CHANCES.object2FloatEntrySet()) {
+        for (Entry<IItemProvider> chance : ComposterBlock.COMPOSTABLES.object2FloatEntrySet()) {
             ItemStackToItemStackRecipeBuilder.crushing(
                   ItemStackIngredient.from(chance.getKey().asItem()),
                   MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue() * 8))

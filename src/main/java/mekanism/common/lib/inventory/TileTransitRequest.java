@@ -70,7 +70,7 @@ public class TileTransitRequest extends TransitRequest {
                     if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
                         Mekanism.logger.warn("An inventory's returned content {} does not line up with TileTransitRequest's prediction.", !stackable ? "type" : "count");
                         Mekanism.logger.warn("TileTransitRequest item: {}, toUse: {}, ret: {}", getItemType().getStack(), toUse, ret);
-                        Mekanism.logger.warn("Tile: {} {}", tile.getType().getRegistryName(), tile.getPos());
+                        Mekanism.logger.warn("Tile: {} {}", tile.getType().getRegistryName(), tile.getBlockPos());
                     }
                     amount -= toUse;
                     totalCount -= toUse;

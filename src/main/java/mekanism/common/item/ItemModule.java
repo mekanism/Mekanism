@@ -23,7 +23,7 @@ public class ItemModule extends Item implements IModuleItem {
     private final ModuleData<?> moduleData;
 
     public ItemModule(ModuleData<?> moduleData, Properties properties) {
-        super(properties.maxStackSize(moduleData.getMaxStackSize()).rarity(Rarity.UNCOMMON));
+        super(properties.stacksTo(moduleData.getMaxStackSize()).rarity(Rarity.UNCOMMON));
         moduleData.setStack(this);
         this.moduleData = moduleData;
     }
@@ -41,21 +41,21 @@ public class ItemModule extends Item implements IModuleItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
             for (Item item : Modules.getSupported(getModuleData())) {
-                tooltip.add(item.getDisplayName(new ItemStack(item)));
+                tooltip.add(item.getName(new ItemStack(item)));
             }
         } else {
             tooltip.add(moduleData.getDescription());
             tooltip.add(MekanismLang.MODULE_STACKABLE.translateColored(EnumColor.GRAY, EnumColor.AQUA, moduleData.getMaxStackSize()));
-            tooltip.add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.func_238171_j_()));
+            tooltip.add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
     }
 
     @Nonnull
     @Override
-    public String getTranslationKey() {
+    public String getDescriptionId() {
         return moduleData.getTranslationKey();
     }
 }

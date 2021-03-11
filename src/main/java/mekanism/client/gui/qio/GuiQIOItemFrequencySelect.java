@@ -26,51 +26,51 @@ public class GuiQIOItemFrequencySelect extends GuiQIOFrequencySelect<QIOFrequenc
     @Override
     public void init() {
         super.init();
-        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedItemButton.BACK_BUTTON, container.getHand()))));
+        addButton(new MekanismImageButton(this, leftPos + 6, topPos + 6, 14, getButtonLocation("back"),
+              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedItemButton.BACK_BUTTON, menu.getHand()))));
     }
 
     @Override
     public void sendSetFrequency(FrequencyIdentity identity) {
-        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_ITEM, FrequencyType.QIO, identity, container.getHand()));
+        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_ITEM, FrequencyType.QIO, identity, menu.getHand()));
     }
 
     @Override
     public void sendRemoveFrequency(FrequencyIdentity identity) {
-        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_ITEM, FrequencyType.QIO, identity, container.getHand()));
+        Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_ITEM, FrequencyType.QIO, identity, menu.getHand()));
     }
 
     @Override
     public void sendColorUpdate(int extra) {
         QIOFrequency freq = getFrequency();
         if (freq != null) {
-            Mekanism.packetHandler.sendToServer(PacketQIOSetColor.create(container.getHand(), freq, extra));
+            Mekanism.packetHandler.sendToServer(PacketQIOSetColor.create(menu.getHand(), freq, extra));
         }
     }
 
     @Nullable
     @Override
     public QIOFrequency getFrequency() {
-        return container.getFrequency();
+        return menu.getFrequency();
     }
 
     @Override
     public String getOwnerUsername() {
-        return container.getOwnerUsername();
+        return menu.getOwnerUsername();
     }
 
     @Override
     public UUID getOwnerUUID() {
-        return container.getOwnerUUID();
+        return menu.getOwnerUUID();
     }
 
     @Override
     public List<QIOFrequency> getPublicFrequencies() {
-        return container.getPublicCache();
+        return menu.getPublicCache();
     }
 
     @Override
     public List<QIOFrequency> getPrivateFrequencies() {
-        return container.getPrivateCache();
+        return menu.getPrivateCache();
     }
 }

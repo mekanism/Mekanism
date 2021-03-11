@@ -29,10 +29,10 @@ public class Meltdown {
     public boolean update() {
         ticksExisted++;
 
-        if (world.rand.nextInt() % 10 == 0 && world.rand.nextDouble() < magnitude * chance) {
-            int x = minPos.getX() + world.rand.nextInt(maxPos.getX() - minPos.getX());
-            int y = minPos.getY() + world.rand.nextInt(maxPos.getY() - minPos.getY());
-            int z = minPos.getZ() + world.rand.nextInt(maxPos.getZ() - minPos.getZ());
+        if (world.random.nextInt() % 10 == 0 && world.random.nextDouble() < magnitude * chance) {
+            int x = minPos.getX() + world.random.nextInt(maxPos.getX() - minPos.getX());
+            int y = minPos.getY() + world.random.nextInt(maxPos.getY() - minPos.getY());
+            int z = minPos.getZ() + world.random.nextInt(maxPos.getZ() - minPos.getZ());
             List<BlockPos> needsRemoval = createExplosion(world, x, y, z, 8, true, Explosion.Mode.DESTROY);
             //If the explosion has blocks that should be removed (aka it got canceled)
             for (BlockPos pos : needsRemoval) {
@@ -57,10 +57,10 @@ public class Meltdown {
     private static List<BlockPos> createExplosion(World worldIn, double x, double y, double z, float size, boolean causesFire, Explosion.Mode mode) {
         Explosion explosion = new Explosion(worldIn, null, null, null, x, y, z, size, causesFire, mode);
         if (ForgeEventFactory.onExplosionStart(worldIn, explosion)) {
-            return explosion.getAffectedBlockPositions();
+            return explosion.getToBlow();
         }
-        explosion.doExplosionA();
-        explosion.doExplosionB(true);
+        explosion.explode();
+        explosion.finalizeExplosion(true);
         return Collections.emptyList();
     }
 }

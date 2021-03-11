@@ -101,16 +101,16 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     }
 
     private void recheckSettings() {
-        World world = getWorld();
+        World world = getLevel();
         if (world == null) {
             return;
         }
-        Biome b = world.getBiomeManager().getBiome(getPos());
+        Biome b = world.getBiomeManager().getBiome(getBlockPos());
         needsRainCheck = b.getPrecipitation() != RainType.NONE;
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
         // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
-        float tempEff = 0.3F * (0.8F - b.getTemperature(getPos()));
+        float tempEff = 0.3F * (0.8F - b.getTemperature(getBlockPos()));
 
         // Treat rainfall as a proxy for humidity; any humidity works as a drag on overall efficiency.
         // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
@@ -158,11 +158,11 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     private boolean canFunction() {
         // Sort out if the solar neutron activator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still function when it's raining, albeit at a significant penalty.
-        return MekanismUtils.canFunction(this) && WorldUtils.canSeeSun(world, pos.up());
+        return MekanismUtils.canFunction(this) && WorldUtils.canSeeSun(level, worldPosition.above());
     }
 
     private float recalculateProductionRate() {
-        World world = getWorld();
+        World world = getLevel();
         if (world == null || !canFunction()) {
             return 0;
         }
@@ -198,22 +198,22 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     @Override
     public void onPlace() {
-        WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
     }
 
     @Override
     public void onBreak(BlockState oldState) {
-        World world = getWorld();
+        World world = getLevel();
         if (world != null) {
-            world.removeBlock(getPos().up(), false);
-            world.removeBlock(getPos(), false);
+            world.removeBlock(getBlockPos().above(), false);
+            world.removeBlock(getBlockPos(), false);
         }
     }
 
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos, pos.add(1, 2, 1));
+        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     @Override

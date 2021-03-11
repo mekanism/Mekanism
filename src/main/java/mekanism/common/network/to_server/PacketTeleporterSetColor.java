@@ -40,11 +40,11 @@ public class PacketTeleporterSetColor implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         ServerPlayerEntity player = context.getSender();
         if (player != null) {
-            TeleporterFrequency freq = FrequencyType.TELEPORTER.getFrequency(identity, player.getUniqueID());
-            if (freq != null && freq.ownerMatches(player.getUniqueID())) {
+            TeleporterFrequency freq = FrequencyType.TELEPORTER.getFrequency(identity, player.getUUID());
+            if (freq != null && freq.ownerMatches(player.getUUID())) {
                 freq.setColor(extra == 0 ? freq.getColor().getNext() : freq.getColor().getPrevious());
                 if (type == Type.ITEM) {
-                    Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(currentHand, FrequencyType.TELEPORTER, player.getUniqueID(), freq), player);
+                    Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(currentHand, FrequencyType.TELEPORTER, player.getUUID(), freq), player);
                 }
             }
         }
@@ -52,22 +52,22 @@ public class PacketTeleporterSetColor implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(type);
+        buffer.writeEnum(type);
         buffer.writeVarInt(extra);
         FrequencyType.TELEPORTER.getIdentitySerializer().write(buffer, identity);
         if (type == Type.TILE) {
             buffer.writeBlockPos(tilePosition);
         } else {
-            buffer.writeEnumValue(currentHand);
+            buffer.writeEnum(currentHand);
         }
     }
 
     public static PacketTeleporterSetColor decode(PacketBuffer buffer) {
-        Type type = buffer.readEnumValue(Type.class);
+        Type type = buffer.readEnum(Type.class);
         int extra = buffer.readVarInt();
         FrequencyIdentity identity = FrequencyType.TELEPORTER.getIdentitySerializer().read(buffer);
         BlockPos pos = type == Type.TILE ? buffer.readBlockPos() : null;
-        Hand hand = type == Type.ITEM ? buffer.readEnumValue(Hand.class) : null;
+        Hand hand = type == Type.ITEM ? buffer.readEnum(Hand.class) : null;
         return new PacketTeleporterSetColor(type, extra, identity, pos, hand);
     }
 

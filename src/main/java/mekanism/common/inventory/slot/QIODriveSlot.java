@@ -83,10 +83,10 @@ public class QIODriveSlot extends BasicInventorySlot {
     }
 
     private boolean isRemote() {
-        World world = ((TileEntity) driveHolder).getWorld();
+        World world = ((TileEntity) driveHolder).getLevel();
         //Treat world as remote if it is null (hasn't been assigned yet)
         // which may happen when loading the drives from memory
-        return world == null || world.isRemote();
+        return world == null || world.isClientSide();
     }
 
     private void addDrive(ItemStack stack) {

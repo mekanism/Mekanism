@@ -90,7 +90,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.ITEM_INPUT, inputSolid.serialize());
             json.add(JsonConstants.FLUID_INPUT, inputFluid.serialize());
             json.add(JsonConstants.GAS_INPUT, inputGas.serialize());

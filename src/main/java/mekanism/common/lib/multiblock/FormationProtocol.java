@@ -128,7 +128,7 @@ public class FormationProtocol<T extends MultiblockData> {
                 return traversedSize;
             }
             for (Direction side : EnumUtils.DIRECTIONS) {
-                BlockPos offset = ptr.offset(side);
+                BlockPos offset = ptr.relative(side);
                 if (!traversed.contains(offset) && checker.test(offset)) {
                     openSet.add(offset);
                     traversed.add(offset);

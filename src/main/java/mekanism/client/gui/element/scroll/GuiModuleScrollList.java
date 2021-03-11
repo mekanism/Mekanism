@@ -97,7 +97,7 @@ public class GuiModuleScrollList extends GuiScrollList {
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         ItemStack stack = itemSupplier.get();
-        if (!ItemStack.areItemStacksEqual(currentItem, stack)) {
+        if (!ItemStack.matches(currentItem, stack)) {
             updateList(stack, false);
         }
         for (int i = 0; i < getFocusedElements(); i++) {
@@ -137,7 +137,7 @@ public class GuiModuleScrollList extends GuiScrollList {
     @Override
     public void renderElements(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Draw elements
-        minecraft.textureManager.bindTexture(MODULE_SELECTION);
+        minecraft.textureManager.bind(MODULE_SELECTION);
         for (int i = 0; i < getFocusedElements(); i++) {
             int index = getCurrentSelection() + i;
             if (index > currentList.size() - 1) {

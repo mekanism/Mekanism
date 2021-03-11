@@ -46,22 +46,22 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getMaxUses() {
+    public int getUses() {
         return 200;
     }
 
     @Override
-    public float getEfficiency() {
+    public float getSpeed() {
         return 5;
     }
 
     @Override
-    public float getAttackDamage() {
+    public float getAttackDamageBonus() {
         return 2;
     }
 
     @Override
-    public int getHarvestLevel() {
+    public int getLevel() {
         return 2;
     }
 
@@ -76,7 +76,7 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurability(@Nonnull EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
                 return 169;
@@ -91,7 +91,7 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
+    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
                 return 2;
@@ -118,14 +118,14 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
 
     @Nonnull
     @Override
-    public SoundEvent getSoundEvent() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_DIAMOND;
+    public SoundEvent getEquipSound() {
+        return SoundEvents.ARMOR_EQUIP_DIAMOND;
     }
 
     @Nonnull
     @Override
     public Ingredient getCommonRepairMaterial() {
-        return Ingredient.fromTag(Tags.Items.GEMS_LAPIS);
+        return Ingredient.of(Tags.Items.GEMS_LAPIS);
     }
 
     @Override

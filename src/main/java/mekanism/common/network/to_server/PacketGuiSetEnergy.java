@@ -28,7 +28,7 @@ public class PacketGuiSetEnergy implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender();
         if (player != null) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, tilePosition);
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
             if (tile != null) {
                 interaction.consume(tile, value);
             }
@@ -37,13 +37,13 @@ public class PacketGuiSetEnergy implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(interaction);
+        buffer.writeEnum(interaction);
         buffer.writeBlockPos(tilePosition);
         value.writeToBuffer(buffer);
     }
 
     public static PacketGuiSetEnergy decode(PacketBuffer buffer) {
-        return new PacketGuiSetEnergy(buffer.readEnumValue(GuiEnergyValue.class), buffer.readBlockPos(), FloatingLong.readFromBuffer(buffer));
+        return new PacketGuiSetEnergy(buffer.readEnum(GuiEnergyValue.class), buffer.readBlockPos(), FloatingLong.readFromBuffer(buffer));
     }
 
     public enum GuiEnergyValue {

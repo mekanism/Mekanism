@@ -23,12 +23,12 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
 
     @Override
     public boolean shouldRender(EntityFlame flame, @Nonnull ClippingHelper camera, double camX, double camY, double camZ) {
-        return flame.ticksExisted > 0 && super.shouldRender(flame, camera, camX, camY, camZ);
+        return flame.tickCount > 0 && super.shouldRender(flame, camera, camX, camY, camZ);
     }
 
     @Override
     public void render(@Nonnull EntityFlame flame, float entityYaw, float partialTick, @Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light) {
-        float alpha = (flame.ticksExisted + partialTick) / EntityFlame.LIFESPAN;
+        float alpha = (flame.tickCount + partialTick) / EntityFlame.LIFESPAN;
         float actualAlpha = 1 - alpha;
         if (actualAlpha <= 0) {
             return;
@@ -36,28 +36,28 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
         float size = (float) Math.pow(2 * alpha, 2);
         float f5 = 5 / 32F;
         float scale = 0.05625F * (0.8F + size);
-        matrix.push();
-        matrix.rotate(Vector3f.YP.rotationDegrees((flame.prevRotationYaw + (flame.rotationYaw - flame.prevRotationYaw) * partialTick) - 90F));
-        matrix.rotate(Vector3f.ZP.rotationDegrees(flame.prevRotationPitch + (flame.rotationPitch - flame.prevRotationPitch) * partialTick));
-        matrix.rotate(Vector3f.XP.rotationDegrees(45));
+        matrix.pushPose();
+        matrix.mulPose(Vector3f.YP.rotationDegrees((flame.yRotO + (flame.yRot - flame.yRotO) * partialTick) - 90F));
+        matrix.mulPose(Vector3f.ZP.rotationDegrees(flame.xRotO + (flame.xRot - flame.xRotO) * partialTick));
+        matrix.mulPose(Vector3f.XP.rotationDegrees(45));
         matrix.scale(scale, scale, scale);
         matrix.translate(-4, 0, 0);
-        IVertexBuilder builder = renderer.getBuffer(MekanismRenderType.renderFlame(getEntityTexture(flame)));
+        IVertexBuilder builder = renderer.getBuffer(MekanismRenderType.renderFlame(getTextureLocation(flame)));
         for (int j = 0; j < 4; j++) {
-            matrix.rotate(Vector3f.XP.rotationDegrees(90));
-            builder.normal(matrix.getLast().getNormal(), 0, 0, scale);
-            Matrix4f matrix4f = matrix.getLast().getMatrix();
-            builder.pos(matrix4f, -8, -2, 0).color(1, 1, 1, actualAlpha).tex(0, 0).endVertex();
-            builder.pos(matrix4f, 8, -2, 0).color(1, 1, 1, actualAlpha).tex(0.5F, 0).endVertex();
-            builder.pos(matrix4f, 8, 2, 0).color(1, 1, 1, actualAlpha).tex(0.5F, f5).endVertex();
-            builder.pos(matrix4f, -8, 2, 0).color(1, 1, 1, actualAlpha).tex(0, f5).endVertex();
+            matrix.mulPose(Vector3f.XP.rotationDegrees(90));
+            builder.normal(matrix.last().normal(), 0, 0, scale);
+            Matrix4f matrix4f = matrix.last().pose();
+            builder.vertex(matrix4f, -8, -2, 0).color(1, 1, 1, actualAlpha).uv(0, 0).endVertex();
+            builder.vertex(matrix4f, 8, -2, 0).color(1, 1, 1, actualAlpha).uv(0.5F, 0).endVertex();
+            builder.vertex(matrix4f, 8, 2, 0).color(1, 1, 1, actualAlpha).uv(0.5F, f5).endVertex();
+            builder.vertex(matrix4f, -8, 2, 0).color(1, 1, 1, actualAlpha).uv(0, f5).endVertex();
         }
-        matrix.pop();
+        matrix.popPose();
     }
 
     @Nonnull
     @Override
-    public ResourceLocation getEntityTexture(@Nonnull EntityFlame entity) {
+    public ResourceLocation getTextureLocation(@Nonnull EntityFlame entity) {
         return MekanismUtils.getResource(ResourceType.RENDER, "flame.png");
     }
 }

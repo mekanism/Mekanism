@@ -36,7 +36,7 @@ import net.minecraft.world.World;
 public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockBase<TYPE> implements IHasTileEntity<TILE> {
 
     public BlockTile(TYPE type) {//TODO - 10.1: Figure out what the resistance should be (it used to be different in 1.12)
-        this(type, AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(3.5F, 16).setRequiresTool());
+        this(type, AbstractBlock.Properties.of(Material.METAL).strength(3.5F, 16).requiresCorrectToolForDrops());
     }
 
     public BlockTile(TYPE type, AbstractBlock.Properties properties) {
@@ -51,12 +51,12 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        } else if (world.isRemote) {
+        } else if (world.isClientSide) {
             return genericClientActivated(player, hand, hit);
         } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
@@ -65,9 +65,9 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     @Override
-    protected float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
+    protected float getDestroyProgress(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
           @Nullable TileEntity tile) {
-        return SecurityUtils.canAccess(player, tile) ? super.getPlayerRelativeBlockHardness(state, player, world, pos, tile) : 0.0F;
+        return SecurityUtils.canAccess(player, tile) ? super.getDestroyProgress(state, player, world, pos, tile) : 0.0F;
     }
 
     @Override
@@ -79,11 +79,11 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
                 Particle particle = particleFunction.apply(random);
                 Vector3d particlePos = particle.getPos();
                 if (facing == Direction.WEST) {
-                    particlePos = particlePos.rotateYaw(90);
+                    particlePos = particlePos.yRot(90);
                 } else if (facing == Direction.EAST) {
-                    particlePos = particlePos.rotateYaw(270);
+                    particlePos = particlePos.yRot(270);
                 } else if (facing == Direction.NORTH) {
-                    particlePos = particlePos.rotateYaw(180);
+                    particlePos = particlePos.yRot(180);
                 }
                 particlePos = particlePos.add(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
                 world.addParticle(particle.getType(), particlePos.x, particlePos.y, particlePos.z, 0.0D, 0.0D, 0.0D);
@@ -95,7 +95,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Deprecated
     public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
           boolean isMoving) {
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
                 tile.onNeighborChange(neighborBlock, neighborPos);
@@ -105,7 +105,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
 
     @Override
     @Deprecated
-    public boolean canProvidePower(@Nonnull BlockState state) {
+    public boolean isSignalSource(@Nonnull BlockState state) {
         return type.has(AttributeRedstoneEmitter.class);
     }
 
@@ -116,12 +116,12 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
 
     @Override
     @Deprecated
-    public int getWeakPower(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull Direction side) {
+    public int getSignal(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull Direction side) {
         if (type.has(AttributeRedstoneEmitter.class)) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             return type.get(AttributeRedstoneEmitter.class).getRedstoneLevel(tile);
         }
-        return super.getWeakPower(state, world, pos, side);
+        return super.getSignal(state, world, pos, side);
     }
 
     public static class BlockTileModel<TILE extends TileEntityMekanism, BLOCK extends BlockTypeTile<TILE>> extends BlockTile<TILE, BLOCK> implements IStateFluidLoggable {

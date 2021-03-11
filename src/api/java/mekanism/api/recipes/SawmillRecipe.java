@@ -64,8 +64,8 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     @Override
     public void write(PacketBuffer buffer) {
         input.write(buffer);
-        buffer.writeItemStack(mainOutput);
-        buffer.writeItemStack(secondaryOutput);
+        buffer.writeItem(mainOutput);
+        buffer.writeItem(secondaryOutput);
         buffer.writeDouble(secondaryChance);
     }
 

@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTile<?, ?>> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockQuantumEntangloporter(BlockTile<?, ?> block) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(ISTERProvider::entangloporter));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1).setISTER(ISTERProvider::entangloporter));
     }
 
     @Override

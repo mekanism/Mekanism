@@ -27,12 +27,12 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
         if (tube.hasTransmitterNetwork()) {
             BoxedChemicalNetwork network = tube.getTransmitterNetwork();
             if (!network.lastChemical.isEmpty() && !network.isTankEmpty() && network.currentScale > 0) {
-                matrix.push();
+                matrix.pushPose();
                 matrix.translate(0.5, 0.5, 0.5);
                 Chemical<?> chemical = network.lastChemical.getChemical();
-                renderModel(tile, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()), chemical.getTint(), Math.max(0.2F, network.currentScale),
+                renderModel(tile, matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()), chemical.getTint(), Math.max(0.2F, network.currentScale),
                       MekanismRenderer.FULL_LIGHT, overlayLight, MekanismRenderer.getChemicalTexture(chemical));
-                matrix.pop();
+                matrix.popPose();
             }
         }
     }

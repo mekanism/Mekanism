@@ -17,7 +17,7 @@ public class DictionaryContainer extends MekanismItemContainer {
     }
 
     public DictionaryContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, buf.readEnumValue(Hand.class), getStackFromBuffer(buf, ItemDictionary.class));
+        this(id, inv, buf.readEnum(Hand.class), getStackFromBuffer(buf, ItemDictionary.class));
     }
 
     @Override
@@ -27,8 +27,8 @@ public class DictionaryContainer extends MekanismItemContainer {
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotID) {
-        Slot slot = inventorySlots.get(slotID);
-        return slot == null ? ItemStack.EMPTY : slot.getStack();
+    public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotID) {
+        Slot slot = slots.get(slotID);
+        return slot == null ? ItemStack.EMPTY : slot.getItem();
     }
 }

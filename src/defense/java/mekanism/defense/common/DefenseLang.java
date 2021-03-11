@@ -9,7 +9,7 @@ public enum DefenseLang implements ILangEntry {
     private final String key;
 
     DefenseLang(String type, String path) {
-        this(Util.makeTranslationKey(type, MekanismDefense.rl(path)));
+        this(Util.makeDescriptionId(type, MekanismDefense.rl(path)));
     }
 
     DefenseLang(String key) {

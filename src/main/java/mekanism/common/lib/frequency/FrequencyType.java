@@ -110,7 +110,7 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     public void write(PacketBuffer buf) {
-        buf.writeString(name);
+        buf.writeUtf(name);
     }
 
     public static <FREQ extends Frequency> FrequencyType<FREQ> load(PacketBuffer buf) {

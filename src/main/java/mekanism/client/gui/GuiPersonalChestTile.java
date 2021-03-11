@@ -12,8 +12,8 @@ public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChes
 
     public GuiPersonalChestTile(MekanismTileContainer<TileEntityPersonalChest> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ySize += 64;
-        playerInventoryTitleY = ySize - 94;
+        imageHeight += 64;
+        inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }
 
@@ -26,7 +26,7 @@ public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChes
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

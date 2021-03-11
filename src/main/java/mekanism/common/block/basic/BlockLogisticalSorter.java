@@ -37,9 +37,9 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         if (tile instanceof TileEntityLogisticalSorter) {
             TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tile;
             if (!transporter.hasConnectedInventory()) {
-                BlockPos tilePos = tile.getPos();
+                BlockPos tilePos = tile.getBlockPos();
                 for (Direction dir : EnumUtils.DIRECTIONS) {
-                    TileEntity tileEntity = WorldUtils.getTileEntity(world, tilePos.offset(dir));
+                    TileEntity tileEntity = WorldUtils.getTileEntity(world, tilePos.relative(dir));
                     if (InventoryUtils.isItemHandler(tileEntity, dir)) {
                         transporter.setFacing(dir.getOpposite());
                         break;
@@ -52,29 +52,29 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         TileEntityLogisticalSorter tile = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        } else if (world.isRemote) {
+        } else if (world.isClientSide) {
             return genericClientActivated(player, hand, hit);
         }
         //TODO: Make this be moved into the logistical sorter tile
-        ItemStack stack = player.getHeldItem(hand);
+        ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);
             if (wrenchHandler != null) {
-                if (wrenchHandler.canUseWrench(stack, player, hit.getPos())) {
+                if (wrenchHandler.canUseWrench(stack, player, hit.getBlockPos())) {
                     if (SecurityUtils.canAccess(player, tile)) {
-                        if (player.isSneaking()) {
+                        if (player.isShiftKeyDown()) {
                             WorldUtils.dismantleBlock(state, world, pos);
                             return ActionResultType.SUCCESS;
                         }
-                        Direction change = tile.getDirection().rotateY();
+                        Direction change = tile.getDirection().getClockWise();
                         if (!tile.hasConnectedInventory()) {
                             for (Direction dir : EnumUtils.DIRECTIONS) {
-                                TileEntity tileEntity = WorldUtils.getTileEntity(world, pos.offset(dir));
+                                TileEntity tileEntity = WorldUtils.getTileEntity(world, pos.relative(dir));
                                 if (InventoryUtils.isItemHandler(tileEntity, dir)) {
                                     change = dir.getOpposite();
                                     break;
@@ -82,7 +82,7 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
                             }
                         }
                         tile.setFacing(change);
-                        world.notifyNeighborsOfStateChange(pos, this);
+                        world.updateNeighborsAt(pos, this);
                     } else {
                         SecurityUtils.displayNoAccess(player);
                     }
@@ -96,9 +96,9 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
     @Nonnull
     @Override
     @Deprecated
-    public BlockState updatePostPlacement(BlockState state, @Nonnull Direction dir, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos pos,
+    public BlockState updateShape(BlockState state, @Nonnull Direction dir, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos pos,
           @Nonnull BlockPos neighborPos) {
-        if (!world.isRemote()) {
+        if (!world.isClientSide()) {
             TileEntityLogisticalSorter sorter = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
             if (sorter != null && !sorter.hasConnectedInventory()) {
                 TileEntity tileEntity = WorldUtils.getTileEntity(world, neighborPos);
@@ -108,6 +108,6 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
                 }
             }
         }
-        return super.updatePostPlacement(state, dir, facingState, world, pos, neighborPos);
+        return super.updateShape(state, dir, facingState, world, pos, neighborPos);
     }
 }

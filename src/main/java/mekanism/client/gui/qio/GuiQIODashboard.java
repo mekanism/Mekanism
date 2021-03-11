@@ -28,12 +28,12 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
 
     @Override
     public GuiQIOItemViewer<QIODashboardContainer> recreate(QIODashboardContainer container) {
-        return new GuiQIODashboard(container, playerInventory, title);
+        return new GuiQIODashboard(container, inventory, title);
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, tile.getName(), titleY);
+        drawTitleText(matrix, tile.getName(), titleLabelY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

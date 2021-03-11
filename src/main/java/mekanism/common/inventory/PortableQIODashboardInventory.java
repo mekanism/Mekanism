@@ -32,8 +32,8 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
             this.world = null;
             this.playerUUID = null;
         } else {
-            this.world = inv.player.getEntityWorld();
-            this.playerUUID = inv.player.getUniqueID();
+            this.world = inv.player.getCommandSenderWorld();
+            this.playerUUID = inv.player.getUUID();
             for (QIOCraftingWindow craftingWindow : craftingWindows) {
                 //Force refresh the recipe now that we have a world set and can actually calculate it
                 craftingWindow.invalidateRecipe();
@@ -70,7 +70,7 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
     @Nullable
     @Override
     public QIOFrequency getFrequency() {
-        if (world != null && !world.isRemote()) {
+        if (world != null && !world.isClientSide()) {
             FrequencyIdentity identity = ((IFrequencyItem) stack.getItem()).getFrequency(stack);
             if (identity == null) {
                 return null;

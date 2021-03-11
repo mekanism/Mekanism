@@ -101,15 +101,15 @@ public class GuiColorWindow extends GuiWindow {
         RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
         RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        Matrix4f matrix4f = matrix.getLast().getMatrix();
+        BufferBuilder buffer = Tessellator.getInstance().getBuilder();
+        Matrix4f matrix4f = matrix.last().pose();
         buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(matrix4f, x, y + height, 0).color(bl.rf(), bl.gf(), bl.bf(), bl.af()).endVertex();
-        buffer.pos(matrix4f, x + width, y + height, 0).color(br.rf(), br.gf(), br.bf(), br.af()).endVertex();
-        buffer.pos(matrix4f, x + width, y, 0).color(tr.rf(), tr.gf(), tr.bf(), tr.af()).endVertex();
-        buffer.pos(matrix4f, x, y, 0).color(tl.rf(), tl.gf(), tl.bf(), tl.af()).endVertex();
-        buffer.finishDrawing();
-        WorldVertexBufferUploader.draw(buffer);
+        buffer.vertex(matrix4f, x, y + height, 0).color(bl.rf(), bl.gf(), bl.bf(), bl.af()).endVertex();
+        buffer.vertex(matrix4f, x + width, y + height, 0).color(br.rf(), br.gf(), br.bf(), br.af()).endVertex();
+        buffer.vertex(matrix4f, x + width, y, 0).color(tr.rf(), tr.gf(), tr.bf(), tr.af()).endVertex();
+        buffer.vertex(matrix4f, x, y, 0).color(tl.rf(), tl.gf(), tl.bf(), tl.af()).endVertex();
+        buffer.end();
+        WorldVertexBufferUploader.end(buffer);
         RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
@@ -245,7 +245,7 @@ public class GuiColorWindow extends GuiWindow {
         public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
             super.renderBackgroundOverlay(matrix, mouseX, mouseY);
             drawColorBar(matrix, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-            minecraft.textureManager.bindTexture(HUE_PICKER);
+            minecraft.textureManager.bind(HUE_PICKER);
             int posX = Math.round((hue / 360F) * (getButtonWidth() - 3));
             blit(matrix, getButtonX() - 2 + posX, getButtonY() - 2, 0, 0, 7, 12, 12, 12);
             GuiUtils.fill(matrix, getButtonX() + posX, getButtonY(), 3, 8, Color.hsv(hue, 1, 1).argb());

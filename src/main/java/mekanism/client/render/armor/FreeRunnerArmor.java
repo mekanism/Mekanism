@@ -19,14 +19,14 @@ public class FreeRunnerArmor extends CustomArmor {
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
           LivingEntity entity, ItemStack stack) {
-        if (isChild) {
-            matrix.push();
-            float f1 = 1.0F / childBodyScale;
+        if (young) {
+            matrix.pushPose();
+            float f1 = 1.0F / babyBodyScale;
             matrix.scale(f1, f1, f1);
-            matrix.translate(0.0D, childBodyOffsetY / 16.0F, 0.0D);
+            matrix.translate(0.0D, bodyYOffset / 16.0F, 0.0D);
             renderLeg(matrix, renderer, light, overlayLight, hasEffect, true);
             renderLeg(matrix, renderer, light, overlayLight, hasEffect, false);
-            matrix.pop();
+            matrix.popPose();
         } else {
             renderLeg(matrix, renderer, light, overlayLight, hasEffect, true);
             renderLeg(matrix, renderer, light, overlayLight, hasEffect, false);
@@ -34,20 +34,20 @@ public class FreeRunnerArmor extends CustomArmor {
     }
 
     private void renderLeg(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, boolean left) {
-        if (left && !bipedLeftLeg.showModel || !left && !bipedRightLeg.showModel) {
+        if (left && !leftLeg.visible || !left && !rightLeg.visible) {
             //If the model isn't meant to be shown don't bother rendering it
             return;
         }
-        matrix.push();
+        matrix.pushPose();
         if (left) {
-            bipedLeftLeg.translateRotate(matrix);
+            leftLeg.translateAndRotate(matrix);
         } else {
-            bipedRightLeg.translateRotate(matrix);
+            rightLeg.translateAndRotate(matrix);
         }
         matrix.translate(0, 0, 0.06);
         matrix.scale(1.02F, 1.02F, 1.02F);
         matrix.translate(left ? -0.1375 : 0.1375, -0.75, -0.0625);
         model.renderLeg(matrix, renderer, light, overlayLight, hasEffect, left);
-        matrix.pop();
+        matrix.popPose();
     }
 }

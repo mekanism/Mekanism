@@ -83,7 +83,7 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
                 // This happens because we are no longer an orphan and want to tell the neighboring tiles about it
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     if (connectionMapContainsSide(changedTransmitters, side)) {
-                        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().offset(side));
+                        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().relative(side));
                         if (tile != null) {
                             tile.getTransmitter().refreshConnections(side.getOpposite());
                         }
@@ -121,7 +121,7 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
     }
 
     private void recheckConnectionPrechecked(Direction side) {
-        TileEntityTransmitter otherTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().offset(side));
+        TileEntityTransmitter otherTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().relative(side));
         if (otherTile != null) {
             NETWORK network = getTransmitterNetwork();
             //The other one should always have the same incompatible networks state as us

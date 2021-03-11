@@ -303,7 +303,7 @@ public class BasicInventorySlot implements IInventorySlot {
     public CompoundNBT serializeNBT() {
         CompoundNBT nbt = new CompoundNBT();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.ITEM, current.write(new CompoundNBT()));
+            nbt.put(NBTConstants.ITEM, current.save(new CompoundNBT()));
             if (getCount() > current.getMaxStackSize()) {
                 nbt.putInt(NBTConstants.SIZE_OVERRIDE, getCount());
             }
@@ -315,7 +315,7 @@ public class BasicInventorySlot implements IInventorySlot {
     public void deserializeNBT(CompoundNBT nbt) {
         ItemStack stack = ItemStack.EMPTY;
         if (nbt.contains(NBTConstants.ITEM, NBT.TAG_COMPOUND)) {
-            stack = ItemStack.read(nbt.getCompound(NBTConstants.ITEM));
+            stack = ItemStack.of(nbt.getCompound(NBTConstants.ITEM));
             NBTUtils.setIntIfPresent(nbt, NBTConstants.SIZE_OVERRIDE, stack::setCount);
         }
         //Set the stack in an unchecked way so that if it is no longer valid, we don't end up

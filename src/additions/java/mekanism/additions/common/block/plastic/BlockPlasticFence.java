@@ -24,10 +24,10 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, ISta
     private final EnumColor color;
 
     public BlockPlasticFence(EnumColor color) {
-        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.create(BlockPlastic.PLASTIC, color.getMapColor())
-              .hardnessAndResistance(5, 6).harvestTool(ToolType.PICKAXE)));
+        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.of(BlockPlastic.PLASTIC, color.getMapColor())
+              .strength(5, 6).harvestTool(ToolType.PICKAXE)));
         this.color = color;
-        this.setDefaultState(getDefaultState().with(getFluidLoggedProperty(), 0));
+        this.registerDefaultState(defaultBlockState().setValue(getFluidLoggedProperty(), 0));
     }
 
     @Override
@@ -36,8 +36,8 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, ISta
     }
 
     @Override
-    protected void fillStateContainer(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
-        super.fillStateContainer(builder);
+    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 
@@ -54,28 +54,28 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, ISta
     }
 
     @Override
-    public boolean receiveFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
-        return IStateExtendedFluidLoggable.super.receiveFluid(world, pos, state, fluidState);
+    public boolean placeLiquid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull FluidState fluidState) {
+        return IStateExtendedFluidLoggable.super.placeLiquid(world, pos, state, fluidState);
     }
 
     @Override
-    public boolean canContainFluid(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
-        return IStateExtendedFluidLoggable.super.canContainFluid(world, pos, state, fluid);
+    public boolean canPlaceLiquid(@Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull Fluid fluid) {
+        return IStateExtendedFluidLoggable.super.canPlaceLiquid(world, pos, state, fluid);
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public BlockState updatePostPlacement(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
-        return super.updatePostPlacement(state, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
     }
 
     @Nonnull
     @Override
-    public Fluid pickupFluid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
+    public Fluid takeLiquid(@Nonnull IWorld world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
         //Manually declare which pickupFluidMethod we want to be using
-        return IStateExtendedFluidLoggable.super.pickupFluid(world, pos, state);
+        return IStateExtendedFluidLoggable.super.takeLiquid(world, pos, state);
     }
 }

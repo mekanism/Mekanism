@@ -181,7 +181,7 @@ archivesBaseName = "Mekanism"
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
-    mappings channel: "snapshot", version: "${mappings_version}"
+    mappings channel: "${mappings_channel}", version: "${mappings_version}"
 
     accessTransformers(file('src/main/resources/META-INF/accesstransformer.cfg'),
             file('src/additions/resources/META-INF/accesstransformer.cfg'),
@@ -191,7 +191,8 @@ minecraft {
         client {
             workingDirectory file("run")
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property "mixin.env.disableRefMap", "true"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             //The below if statements are to add args to your gradle.properties file in user home
             // (DO NOT add them directly to the gradle.properties file for this project)
@@ -231,7 +232,9 @@ minecraft {
         server {
             workingDirectory file("run")
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property "mixin.env.disableRefMap", "true"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             if (project.hasProperty('forge_force_ansi')) {
                 //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
                 // or eclipse's plugin that adds support for ansi escape in console
@@ -251,7 +254,9 @@ minecraft {
             workingDirectory file("run")
             environment 'target', 'fmluserdevdata'
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
-            property "mixin.env.disableRefMap", "true"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             if (project.hasProperty('forge_force_ansi')) {
                 //Force ansi if declared as a gradle variable, as the auto detection doesn't detect IntelliJ properly
                 // or eclipse's plugin that adds support for ansi escape in console
@@ -282,6 +287,14 @@ minecraft {
 }
 
 repositories {
+    maven {
+        name 'thiakil'
+        url 'https://maven.thiakil.com'
+        content {
+            includeGroup 'de.oceanlabs.mcp'
+            includeGroup 'net.minecraft'//custom mappings
+        }
+    }
     maven {
         name 'ForgeFS'
         url 'https://files.minecraftforge.net/maven'
@@ -381,6 +394,26 @@ dependencies {
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
+}
+
+if (project.hasProperty('UPDATE_MAPPINGS')) {
+    //If the project has the update mappings property, configure it to be able to target all our extra sourceSets as well
+    // so that whenever we need to update mappings it is quick and easy to do so.
+    // Note: This needs to be below the dependencies and minecraft blocks so that it can properly read the mappings value
+    // and also read and find the minecraft dep
+    def extraSourceSets = [sourceSets.api, sourceSets.additions, sourceSets.generators, sourceSets.defense, sourceSets.tools, sourceSets.test,
+                           sourceSets.datagenmain, sourceSets.datagenadditions, sourceSets.datagengenerators, sourceSets.datagendefense, sourceSets.datagentools]
+    Set<File> allExtraDirs = new HashSet<>()
+    for (def sourceSet : extraSourceSets) {
+        allExtraDirs.addAll(sourceSet.java.srcDirs)
+    }
+    extractRangeMap {
+        sources allExtraDirs
+    }
+    applyRangeMap {
+        sources allExtraDirs
+    }
+    allExtraDirs.each { extractMappedNew.addTarget it }
 }
 
 processResources {

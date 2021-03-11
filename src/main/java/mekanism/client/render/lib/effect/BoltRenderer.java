@@ -39,8 +39,8 @@ public class BoltRenderer {
 
     public void render(float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn) {
         IVertexBuilder buffer = bufferIn.getBuffer(MekanismRenderType.MEK_LIGHTNING);
-        Matrix4f matrix = matrixStack.getLast().getMatrix();
-        Timestamp timestamp = new Timestamp(minecraft.world.getGameTime(), partialTicks);
+        Matrix4f matrix = matrixStack.last().pose();
+        Timestamp timestamp = new Timestamp(minecraft.level.getGameTime(), partialTicks);
         boolean refresh = timestamp.isPassed(refreshTimestamp, (1 / REFRESH_TIME));
         if (refresh) {
             refreshTimestamp = timestamp;
@@ -66,13 +66,13 @@ public class BoltRenderer {
     }
 
     public void update(Object owner, BoltEffect newBoltData, float partialTicks) {
-        if (minecraft.world == null) {
+        if (minecraft.level == null) {
             return;
         }
         synchronized (boltOwners) {
             BoltOwnerData data = boltOwners.computeIfAbsent(owner, o -> new BoltOwnerData());
             data.lastBolt = newBoltData;
-            Timestamp timestamp = new Timestamp(minecraft.world.getGameTime(), partialTicks);
+            Timestamp timestamp = new Timestamp(minecraft.level.getGameTime(), partialTicks);
             if ((!data.lastBolt.getSpawnFunction().isConsecutive() || data.bolts.isEmpty()) && timestamp.isPassed(data.lastBoltTimestamp, data.lastBoltDelay)) {
                 data.addBolt(new BoltInstance(newBoltData, timestamp), timestamp);
             }
@@ -111,7 +111,7 @@ public class BoltRenderer {
             float lifeScale = timestamp.subtract(createdTimestamp).value() / bolt.getLifespan();
             Pair<Integer, Integer> bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
             for (int i = bounds.getLeft(); i < bounds.getRight(); i++) {
-                renderQuads.get(i).getVecs().forEach(v -> buffer.pos(matrix, (float) v.x, (float) v.y, (float) v.z)
+                renderQuads.get(i).getVecs().forEach(v -> buffer.vertex(matrix, (float) v.x, (float) v.y, (float) v.z)
                       .color(bolt.getColor().r(), bolt.getColor().g(), bolt.getColor().b(), bolt.getColor().a())
                       .endVertex());
             }

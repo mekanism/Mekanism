@@ -59,11 +59,11 @@ public class PacketGuiInteract implements IMekanismPacket {
     }
 
     public PacketGuiInteract(GuiInteraction interaction, TileEntity tile) {
-        this(interaction, tile.getPos());
+        this(interaction, tile.getBlockPos());
     }
 
     public PacketGuiInteract(GuiInteraction interaction, TileEntity tile, int extra) {
-        this(interaction, tile.getPos(), extra);
+        this(interaction, tile.getBlockPos(), extra);
     }
 
     public PacketGuiInteract(GuiInteraction interaction, BlockPos tilePosition) {
@@ -78,7 +78,7 @@ public class PacketGuiInteract implements IMekanismPacket {
     }
 
     public PacketGuiInteract(GuiInteractionItem interaction, TileEntity tile, ItemStack stack) {
-        this(interaction, tile.getPos(), stack);
+        this(interaction, tile.getBlockPos(), stack);
     }
 
     public PacketGuiInteract(GuiInteractionItem interaction, BlockPos tilePosition, ItemStack stack) {
@@ -93,12 +93,12 @@ public class PacketGuiInteract implements IMekanismPacket {
         PlayerEntity player = context.getSender();
         if (player != null) {
             if (interactionType == Type.ENTITY) {
-                Entity entity = player.world.getEntityByID(entityID);
+                Entity entity = player.level.getEntity(entityID);
                 if (entity != null) {
                     entityInteraction.consume(entity, player);
                 }
             } else {
-                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, tilePosition);
+                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
                 if (tile != null) {
                     if (interactionType == Type.INT) {
                         interaction.consume(tile, player, extra);
@@ -112,29 +112,29 @@ public class PacketGuiInteract implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(interactionType);
+        buffer.writeEnum(interactionType);
         if (interactionType == Type.ENTITY) {
-            buffer.writeEnumValue(entityInteraction);
+            buffer.writeEnum(entityInteraction);
             buffer.writeVarInt(entityID);
         } else if (interactionType == Type.INT) {
-            buffer.writeEnumValue(interaction);
+            buffer.writeEnum(interaction);
             buffer.writeBlockPos(tilePosition);
             buffer.writeVarInt(extra);
         } else if (interactionType == Type.ITEM) {
-            buffer.writeEnumValue(itemInteraction);
+            buffer.writeEnum(itemInteraction);
             buffer.writeBlockPos(tilePosition);
-            buffer.writeItemStack(extraItem);
+            buffer.writeItem(extraItem);
         }
     }
 
     public static PacketGuiInteract decode(PacketBuffer buffer) {
-        Type type = buffer.readEnumValue(Type.class);
+        Type type = buffer.readEnum(Type.class);
         if (type == Type.ENTITY) {
-            return new PacketGuiInteract(buffer.readEnumValue(GuiInteractionEntity.class), buffer.readVarInt());
+            return new PacketGuiInteract(buffer.readEnum(GuiInteractionEntity.class), buffer.readVarInt());
         } else if (type == Type.INT) {
-            return new PacketGuiInteract(buffer.readEnumValue(GuiInteraction.class), buffer.readBlockPos(), buffer.readVarInt());
+            return new PacketGuiInteract(buffer.readEnum(GuiInteraction.class), buffer.readBlockPos(), buffer.readVarInt());
         } else if (type == Type.ITEM) {
-            return new PacketGuiInteract(buffer.readEnumValue(GuiInteractionItem.class), buffer.readBlockPos(), buffer.readItemStack());
+            return new PacketGuiInteract(buffer.readEnum(GuiInteractionItem.class), buffer.readBlockPos(), buffer.readItem());
         }
         Mekanism.logger.error("Received malformed GUI interaction packet.");
         return null;
@@ -160,18 +160,18 @@ public class PacketGuiInteract implements IMekanismPacket {
 
     public enum GuiInteraction {//TODO: Cleanup this enum/the elements in it as it is rather disorganized order wise currently
         CONTAINER_STOP_TRACKING((tile, player, extra) -> {
-            if (player.openContainer instanceof MekanismContainer) {
-                ((MekanismContainer) player.openContainer).stopTracking(extra);
+            if (player.containerMenu instanceof MekanismContainer) {
+                ((MekanismContainer) player.containerMenu).stopTracking(extra);
             }
         }),
         CONTAINER_TRACK_EJECTOR((tile, player, extra) -> {
-            if (player.openContainer instanceof MekanismContainer && tile instanceof ISideConfiguration) {
-                ((MekanismContainer) player.openContainer).startTracking(extra, ((ISideConfiguration) tile).getEjector());
+            if (player.containerMenu instanceof MekanismContainer && tile instanceof ISideConfiguration) {
+                ((MekanismContainer) player.containerMenu).startTracking(extra, ((ISideConfiguration) tile).getEjector());
             }
         }),
         CONTAINER_TRACK_SIDE_CONFIG((tile, player, extra) -> {
-            if (player.openContainer instanceof MekanismContainer && tile instanceof ISideConfiguration) {
-                ((MekanismContainer) player.openContainer).startTracking(extra, ((ISideConfiguration) tile).getConfig());
+            if (player.containerMenu instanceof MekanismContainer && tile instanceof ISideConfiguration) {
+                ((MekanismContainer) player.containerMenu).startTracking(extra, ((ISideConfiguration) tile).getConfig());
             }
         }),
         QIO_REDSTONE_ADAPTER_COUNT((tile, player, extra) -> {
@@ -273,7 +273,7 @@ public class PacketGuiInteract implements IMekanismPacket {
             if (tile.supportsUpgrades()) {
                 TileComponentUpgrade componentUpgrade = tile.getComponent();
                 Upgrade upgradeType = Upgrade.byIndexStatic(extra);
-                if (componentUpgrade.getUpgrades(upgradeType) > 0 && player.inventory.addItemStackToInventory(UpgradeUtils.getStack(upgradeType))) {
+                if (componentUpgrade.getUpgrades(upgradeType) > 0 && player.inventory.add(UpgradeUtils.getStack(upgradeType))) {
                     componentUpgrade.removeUpgrade(upgradeType);
                 }
             }
@@ -282,7 +282,7 @@ public class PacketGuiInteract implements IMekanismPacket {
         NEXT_SECURITY_MODE((tile, player, extra) -> {
             if (tile.hasSecurity()) {
                 UUID owner = tile.getOwnerUUID();
-                if (owner != null && player.getUniqueID().equals(owner)) {
+                if (owner != null && player.getUUID().equals(owner)) {
                     tile.setSecurityMode(tile.getSecurityMode().getNext());
                 }
             }
@@ -378,7 +378,7 @@ public class PacketGuiInteract implements IMekanismPacket {
                 ISecurityObject security = (ISecurityObject) entity;
                 if (security.hasSecurity()) {
                     UUID owner = security.getOwnerUUID();
-                    if (owner != null && player.getUniqueID().equals(owner)) {
+                    if (owner != null && player.getUUID().equals(owner)) {
                         security.setSecurityMode(security.getSecurityMode().getNext());
                     }
                 }

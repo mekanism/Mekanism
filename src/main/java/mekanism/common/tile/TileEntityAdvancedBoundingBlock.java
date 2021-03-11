@@ -79,6 +79,6 @@ public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock imp
         if (inv == null) {
             return super.getCapability(capability, side);
         }
-        return inv.getOffsetCapability(capability, side, pos.subtract(getMainPos()));
+        return inv.getOffsetCapability(capability, side, worldPosition.subtract(getMainPos()));
     }
 }

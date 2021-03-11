@@ -34,7 +34,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         renderExtendedTexture(matrix, BAR, 2, 2);
         //If there are any contents render them
         if (handler.getLevel() > 0) {
-            minecraft.textureManager.bindTexture(getResource());
+            minecraft.textureManager.bind(getResource());
             renderBarOverlay(matrix, mouseX, mouseY, partialTicks);
         }
     }

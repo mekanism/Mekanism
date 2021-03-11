@@ -93,7 +93,7 @@ public class TileComponentSecurity implements ITileComponent {
         CompoundNBT securityNBT = new CompoundNBT();
         securityNBT.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
         if (ownerUUID != null) {
-            securityNBT.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            securityNBT.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
         }
         nbtTags.put(NBTConstants.COMPONENT_SECURITY, securityNBT);
     }
@@ -106,7 +106,7 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void addToUpdateTag(CompoundNBT updateTag) {
         if (ownerUUID != null) {
-            updateTag.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            updateTag.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
             updateTag.putString(NBTConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
         }
     }

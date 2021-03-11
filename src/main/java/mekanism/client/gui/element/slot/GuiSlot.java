@@ -90,7 +90,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void renderWidget(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (!renderAboveSlots) {
             draw(matrix);
         }
@@ -104,14 +104,14 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     private void draw(@Nonnull MatrixStack matrix) {
-        minecraft.textureManager.bindTexture(getResource());
+        minecraft.textureManager.bind(getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
         drawContents(matrix);
         if (overlaySupplier != null) {
             overlay = overlaySupplier.get();
         }
         if (overlay != null) {
-            minecraft.textureManager.bindTexture(overlay.getTexture());
+            minecraft.textureManager.bind(overlay.getTexture());
             blit(matrix, x, y, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }
     }
@@ -143,12 +143,12 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
             MekanismRenderer.resetColor();
         }
         if (overlayColorSupplier != null) {
-            matrix.push();
+            matrix.pushPose();
             matrix.translate(0, 0, 10);
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
             fill(matrix, xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
-            matrix.pop();
+            matrix.popPose();
             MekanismRenderer.resetColor();
         }
         if (isHovered()) {
@@ -169,7 +169,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
         if (onClick != null && isValidClickButton(button)) {
             if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height) {
                 onClick.onClick(this, (int) mouseX, (int) mouseY);
-                playDownSound(Minecraft.getInstance().getSoundHandler());
+                playDownSound(Minecraft.getInstance().getSoundManager());
                 return true;
             }
         }

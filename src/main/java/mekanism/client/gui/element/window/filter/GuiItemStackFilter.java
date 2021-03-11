@@ -26,7 +26,7 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
     protected List<ITextComponent> getScreenText() {
         List<ITextComponent> list = super.getScreenText();
         if (filter.hasFilter()) {
-            list.add(filter.getItemStack().getDisplayName());
+            list.add(filter.getItemStack().getHoverName());
         }
         return list;
     }

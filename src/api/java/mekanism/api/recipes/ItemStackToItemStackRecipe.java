@@ -47,7 +47,7 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
 
     @Nonnull
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return output.copy();
     }
 
@@ -63,6 +63,6 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe implemen
     @Override
     public void write(PacketBuffer buffer) {
         input.write(buffer);
-        buffer.writeItemStack(output);
+        buffer.writeItem(output);
     }
 }

@@ -41,8 +41,8 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     protected abstract void colorTab();
 
     @Override
-    public void renderWidget(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        super.renderWidget(matrix, mouseX, mouseY, partialTicks);
+    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        super.renderButton(matrix, mouseX, mouseY, partialTicks);
         if (this.slotHolder) {
             //Slot holders need to draw here to render behind the slots instead of in front of them
             draw(matrix, mouseX, mouseY, partialTicks);
@@ -58,7 +58,7 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     }
 
     private void draw(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        minecraft.textureManager.bindTexture(getResource());
+        minecraft.textureManager.bind(getResource());
         colorTab();
         //Top
         blit(matrix, x, y, 0, 0, width, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT);

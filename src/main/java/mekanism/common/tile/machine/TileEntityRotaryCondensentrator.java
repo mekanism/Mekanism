@@ -158,7 +158,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         builder.addSlot(gasOutputSlot = GasInventorySlot.rotaryFill(gasTank, modeSupplier, this, 5, 56));
         builder.addSlot(fluidInputSlot = FluidInventorySlot.rotary(fluidTank, modeSupplier, this, 155, 25));
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 155, 56));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 155, 5));
         gasInputSlot.setSlotType(ContainerSlotType.INPUT);
         gasInputSlot.setSlotOverlay(SlotOverlay.PLUS);
         gasOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -210,15 +210,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         mode = nbtTags.getBoolean(NBTConstants.MODE);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putBoolean(NBTConstants.MODE, mode);
         return nbtTags;
     }

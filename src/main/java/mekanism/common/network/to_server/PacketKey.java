@@ -21,9 +21,9 @@ public class PacketKey implements IMekanismPacket {
         PlayerEntity player = context.getSender();
         if (player != null) {
             if (add) {
-                Mekanism.keyMap.add(player.getUniqueID(), key);
+                Mekanism.keyMap.add(player.getUUID(), key);
             } else {
-                Mekanism.keyMap.remove(player.getUniqueID(), key);
+                Mekanism.keyMap.remove(player.getUUID(), key);
             }
         }
     }

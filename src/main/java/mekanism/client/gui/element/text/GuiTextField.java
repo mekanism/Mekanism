@@ -45,13 +45,13 @@ public class GuiTextField extends GuiRelativeElement {
         super(gui, x, y, width, height);
 
         textField = new TextFieldWidget(getFont(), this.x, this.y, width, height, StringTextComponent.EMPTY);
-        textField.setEnableBackgroundDrawing(false);
+        textField.setBordered(false);
         textField.setResponder(s -> {
             if (responder != null) {
                 responder.accept(s);
             }
             if (checkmarkButton != null) {
-                checkmarkButton.active = !textField.getText().isEmpty();
+                checkmarkButton.active = !textField.getValue().isEmpty();
             }
         });
         gui().addFocusListener(this);
@@ -185,17 +185,17 @@ public class GuiTextField extends GuiRelativeElement {
             // hacky. we should write our own renderer at some point.
             float reverse = (1 / textScale) - 1;
             float yAdd = 4 - (textScale * 8) / 2F;
-            matrix.push();
+            matrix.pushPose();
             matrix.scale(textScale, textScale, textScale);
             matrix.translate(textField.x * reverse, (textField.y) * reverse + yAdd * (1 / textScale), 0);
             textField.render(matrix, mouseX, mouseY, 0);
-            matrix.pop();
+            matrix.popPose();
         } else {
             textField.render(matrix, mouseX, mouseY, 0);
         }
         MekanismRenderer.resetColor();
         if (iconType != null) {
-            minecraft.textureManager.bindTexture(iconType.getIcon());
+            minecraft.textureManager.bind(iconType.getIcon());
             blit(matrix, x + 2, y + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }
     }
@@ -208,7 +208,7 @@ public class GuiTextField extends GuiRelativeElement {
     @Override
     public void syncFrom(GuiElement element) {
         super.syncFrom(element);
-        textField.setText(((GuiTextField) element).getText());
+        textField.setValue(((GuiTextField) element).getText());
         setFocused(element.isFocused());
     }
 
@@ -246,7 +246,7 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     public String getText() {
-        return textField.getText();
+        return textField.getValue();
     }
 
     public void setVisible(boolean visible) {
@@ -254,7 +254,7 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     public void setMaxStringLength(int length) {
-        textField.setMaxStringLength(length);
+        textField.setMaxLength(length);
     }
 
     public void setTextColor(int color) {
@@ -262,24 +262,24 @@ public class GuiTextField extends GuiRelativeElement {
     }
 
     public void setEnabled(boolean enabled) {
-        textField.setEnabled(enabled);
+        textField.setEditable(enabled);
     }
 
     @Override
     public void setFocused(boolean focused) {
         super.setFocused(focused);
-        textField.setFocused2(focused);
+        textField.setFocus(focused);
         if (focused) {
             gui().focusChange(this);
         }
     }
 
     public boolean canWrite() {
-        return textField.canWrite();
+        return textField.canConsumeInput();
     }
 
     public void setText(String text) {
-        textField.setText(text);
+        textField.setValue(text);
     }
 
     public void setResponder(Consumer<String> responder) {

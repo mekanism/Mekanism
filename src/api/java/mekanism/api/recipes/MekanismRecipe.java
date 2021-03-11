@@ -36,7 +36,7 @@ public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {
     }
 
     @Override
-    public boolean isDynamic() {
+    public boolean isSpecial() {
         //Note: If we make this non dynamic, we can make it show in vanilla's crafting book and also then obey the recipe locking.
         // For now none of that works/makes sense in our concept so don't lock it
         return true;
@@ -44,18 +44,18 @@ public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {
 
     @Nonnull
     @Override
-    public ItemStack getCraftingResult(@Nonnull IgnoredIInventory inv) {
+    public ItemStack assemble(@Nonnull IgnoredIInventory inv) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height) {
+    public boolean canCraftInDimensions(int width, int height) {
         return true;
     }
 
     @Nonnull
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return ItemStack.EMPTY;
     }
 }

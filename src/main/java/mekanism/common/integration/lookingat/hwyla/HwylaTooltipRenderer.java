@@ -61,7 +61,7 @@ public class HwylaTooltipRenderer implements IComponentProvider, ITooltipRendere
             CompoundNBT elementData = list.getCompound(i);
             LookingAtElement element;
             if (elementData.contains(MekanismHwylaPlugin.TEXT, NBT.TAG_STRING)) {
-                ITextComponent text = ITextComponent.Serializer.getComponentFromJson(elementData.getString(MekanismHwylaPlugin.TEXT));
+                ITextComponent text = ITextComponent.Serializer.fromJson(elementData.getString(MekanismHwylaPlugin.TEXT));
                 if (text != null) {
                     LookingAtElement.renderScaledText(Minecraft.getInstance(), matrix, currentX + 4, currentY + 3, 0xFFFFFF, 92, text);
                     currentY += 15;

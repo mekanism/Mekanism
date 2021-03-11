@@ -26,12 +26,12 @@ public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> extends For
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement mainInput = JSONUtils.isJsonArray(json, JsonConstants.MAIN_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.MAIN_INPUT) :
-                                JSONUtils.getJsonObject(json, JsonConstants.MAIN_INPUT);
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        JsonElement mainInput = JSONUtils.isArrayNode(json, JsonConstants.MAIN_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.MAIN_INPUT) :
+                                JSONUtils.getAsJsonObject(json, JsonConstants.MAIN_INPUT);
         ItemStackIngredient mainIngredient = ItemStackIngredient.deserialize(mainInput);
-        JsonElement extraInput = JSONUtils.isJsonArray(json, JsonConstants.EXTRA_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.EXTRA_INPUT) :
-                                 JSONUtils.getJsonObject(json, JsonConstants.EXTRA_INPUT);
+        JsonElement extraInput = JSONUtils.isArrayNode(json, JsonConstants.EXTRA_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.EXTRA_INPUT) :
+                                 JSONUtils.getAsJsonObject(json, JsonConstants.EXTRA_INPUT);
         ItemStackIngredient extraIngredient = ItemStackIngredient.deserialize(extraInput);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
@@ -41,11 +41,11 @@ public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> extends For
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient mainInput = ItemStackIngredient.read(buffer);
             ItemStackIngredient extraInput = ItemStackIngredient.read(buffer);
-            ItemStack output = buffer.readItemStack();
+            ItemStack output = buffer.readItem();
             return this.factory.create(recipeId, mainInput, extraInput, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading combiner recipe from packet.", e);
@@ -54,7 +54,7 @@ public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> extends For
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

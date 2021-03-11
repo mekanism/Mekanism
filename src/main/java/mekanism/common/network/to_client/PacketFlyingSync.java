@@ -20,8 +20,8 @@ public class PacketFlyingSync implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
-            player.abilities.allowFlying = allowFlying;
-            player.abilities.isFlying = isFlying;
+            player.abilities.mayfly = allowFlying;
+            player.abilities.flying = isFlying;
         }
     }
 

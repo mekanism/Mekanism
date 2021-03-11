@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 public interface IMaterialFilter<FILTER extends IMaterialFilter<FILTER>> extends IFilter<FILTER> {
 
     default Material getMaterial() {
-        return Block.getBlockFromItem(getMaterialItem().getItem()).getDefaultState().getMaterial();
+        return Block.byItem(getMaterialItem().getItem()).defaultBlockState().getMaterial();
     }
 
     @Nonnull

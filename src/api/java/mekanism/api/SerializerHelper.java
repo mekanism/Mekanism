@@ -80,17 +80,17 @@ public class SerializerHelper {
 
     public static ItemStack getItemStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, key));
+        return ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, key));
     }
 
     public static FluidStack getFluidStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return deserializeFluid(JSONUtils.getJsonObject(json, key));
+        return deserializeFluid(JSONUtils.getAsJsonObject(json, key));
     }
 
     public static ChemicalStack<?> getBoxedChemicalStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        JsonObject jsonObject = JSONUtils.getJsonObject(json, key);
+        JsonObject jsonObject = JSONUtils.getAsJsonObject(json, key);
         ChemicalType chemicalType = getChemicalType(jsonObject);
         if (chemicalType == ChemicalType.GAS) {
             return deserializeGas(jsonObject);
@@ -107,22 +107,22 @@ public class SerializerHelper {
 
     public static GasStack getGasStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return deserializeGas(JSONUtils.getJsonObject(json, key));
+        return deserializeGas(JSONUtils.getAsJsonObject(json, key));
     }
 
     public static InfusionStack getInfusionStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return deserializeInfuseType(JSONUtils.getJsonObject(json, key));
+        return deserializeInfuseType(JSONUtils.getAsJsonObject(json, key));
     }
 
     public static PigmentStack getPigmentStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return deserializePigment(JSONUtils.getJsonObject(json, key));
+        return deserializePigment(JSONUtils.getAsJsonObject(json, key));
     }
 
     public static SlurryStack getSlurryStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return deserializeSlurry(JSONUtils.getJsonObject(json, key));
+        return deserializeSlurry(JSONUtils.getAsJsonObject(json, key));
     }
 
     public static GasStack deserializeGas(@Nonnull JsonObject json) {
@@ -134,14 +134,14 @@ public class SerializerHelper {
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
         JsonElement count = json.get(JsonConstants.AMOUNT);
-        if (!JSONUtils.isNumber(count)) {
+        if (!JSONUtils.isNumberValue(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
         int amount = count.getAsJsonPrimitive().getAsInt();
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(json, JsonConstants.FLUID));
+        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(json, JsonConstants.FLUID));
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourceLocation);
         if (fluid == null || fluid == Fluids.EMPTY) {
             throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
@@ -151,9 +151,9 @@ public class SerializerHelper {
             JsonElement jsonNBT = json.get(JsonConstants.NBT);
             try {
                 if (jsonNBT.isJsonObject()) {
-                    nbt = JsonToNBT.getTagFromJson(GSON.toJson(jsonNBT));
+                    nbt = JsonToNBT.parseTag(GSON.toJson(jsonNBT));
                 } else {
-                    nbt = JsonToNBT.getTagFromJson(JSONUtils.getString(jsonNBT, JsonConstants.NBT));
+                    nbt = JsonToNBT.parseTag(JSONUtils.convertToString(jsonNBT, JsonConstants.NBT));
                 }
             } catch (CommandSyntaxException e) {
                 throw new JsonSyntaxException("Invalid NBT entry for fluid '" + resourceLocation + "'");
@@ -210,7 +210,7 @@ public class SerializerHelper {
         } else {
             throw new IllegalStateException("Unknown chemical type");
         }
-        json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.getString());
+        json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.getSerializedName());
         return json;
     }
 

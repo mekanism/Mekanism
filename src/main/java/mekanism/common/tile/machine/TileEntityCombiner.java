@@ -80,7 +80,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
         builder.addSlot(mainInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getMainInput().testType(item)), this, 64, 17));
         builder.addSlot(extraInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getExtraInput().testType(item)), this, 64, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 39, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 39, 35));
         extraInputSlot.setSlotType(ContainerSlotType.EXTRA);
         return builder.build();
     }

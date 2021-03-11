@@ -59,7 +59,7 @@ public class PlayerState {
         activeFlamethrowers.remove(uuid);
         if (isRemote) {
             SoundHandler.clearPlayerSounds(uuid);
-            if (Minecraft.getInstance().player == null || Minecraft.getInstance().player.getUniqueID().equals(uuid)) {
+            if (Minecraft.getInstance().player == null || Minecraft.getInstance().player.getUUID().equals(uuid)) {
                 SoundHandler.radiationSoundMap.clear();
             }
         }
@@ -76,7 +76,7 @@ public class PlayerState {
 
     public void reapplyServerSideOnly(PlayerEntity player) {
         //For when the dimension changes/we need to reapply the step assist/flight info values to the client
-        UUID uuid = player.getUniqueID();
+        UUID uuid = player.getUUID();
         if (stepAssistedPlayers.containsKey(uuid)) {
             updateClientServerStepHeight(player, stepAssistedPlayers.getFloat(uuid));
         }
@@ -110,7 +110,7 @@ public class PlayerState {
         }
 
         // If something changed and we're in a remote world, take appropriate action
-        if (changed && world.isRemote()) {
+        if (changed && world.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
                 Mekanism.packetHandler.sendToServer(new PacketGearStateUpdate(GearType.JETPACK, uuid, isActive));
@@ -124,7 +124,7 @@ public class PlayerState {
     }
 
     public boolean isJetpackOn(PlayerEntity p) {
-        return activeJetpacks.contains(p.getUniqueID());
+        return activeJetpacks.contains(p.getUUID());
     }
 
     public Set<UUID> getActiveJetpacks() {
@@ -147,7 +147,7 @@ public class PlayerState {
         }
 
         // If something changed and we're in a remote world, take appropriate action
-        if (changed && world.isRemote()) {
+        if (changed && world.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
                 Mekanism.packetHandler.sendToServer(new PacketGearStateUpdate(GearType.SCUBA_MASK, uuid, isActive));
@@ -161,7 +161,7 @@ public class PlayerState {
     }
 
     public boolean isScubaMaskOn(PlayerEntity p) {
-        return activeScubaMasks.contains(p.getUniqueID());
+        return activeScubaMasks.contains(p.getUUID());
     }
 
     public Set<UUID> getActiveScubaMasks() {
@@ -175,7 +175,7 @@ public class PlayerState {
     // ----------------------
 
     public void updateStepAssist(PlayerEntity player) {
-        UUID uuid = player.getUniqueID();
+        UUID uuid = player.getUUID();
         float additionalHeight = CommonPlayerTickHandler.getStepBoost(player);
         if (additionalHeight == 0) {
             if (stepAssistedPlayers.containsKey(uuid)) {
@@ -194,7 +194,7 @@ public class PlayerState {
     }
 
     private void updateClientServerStepHeight(PlayerEntity player, float value) {
-        player.stepHeight = value;
+        player.maxUpStep = value;
         Mekanism.packetHandler.sendTo(new PacketStepHeightSync(value), (ServerPlayerEntity) player);
     }
 
@@ -214,7 +214,7 @@ public class PlayerState {
         }
 
         // If something changed and we're in a remote world, take appropriate action
-        if (changed && world.isRemote()) {
+        if (changed && world.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
                 Mekanism.packetHandler.sendToServer(new PacketGearStateUpdate(GearType.GRAVITATIONAL_MODULATOR, uuid, isActive));
@@ -228,7 +228,7 @@ public class PlayerState {
     }
 
     public boolean isGravitationalModulationOn(PlayerEntity p) {
-        return activeGravitationalModulators.contains(p.getUniqueID());
+        return activeGravitationalModulators.contains(p.getUUID());
     }
 
     public Set<UUID> getActiveGravitationalModulators() {
@@ -238,12 +238,12 @@ public class PlayerState {
     public void updateFlightInfo(PlayerEntity player) {
         boolean isFlyingGameMode = !MekanismUtils.isPlayingMode(player);
         boolean hasGravitationalModulator = CommonPlayerTickHandler.isGravitationalModulationReady(player);
-        FlightInfo flightInfo = flightInfoMap.computeIfAbsent(player.getUniqueID(), uuid -> new FlightInfo());
+        FlightInfo flightInfo = flightInfoMap.computeIfAbsent(player.getUUID(), uuid -> new FlightInfo());
         if (isFlyingGameMode || hasGravitationalModulator) {
             //The player can fly
             if (!flightInfo.hadFlightItem) {
                 //If they did not have a flight item
-                if (!player.abilities.allowFlying) {
+                if (!player.abilities.mayfly) {
                     //and they are not already allowed to fly, then enable it
                     updateClientServerFlight(player, true);
                 }
@@ -254,20 +254,20 @@ public class PlayerState {
                 //Sync the fact to the client. Also passes wasFlying so that if they were flying previously,
                 //and are still allowed to the game mode change doesn't force them out of it
                 updateClientServerFlight(player, true, flightInfo.wasFlying);
-            } else if (flightInfo.wasFlyingAllowed && !player.abilities.allowFlying) {
+            } else if (flightInfo.wasFlyingAllowed && !player.abilities.mayfly) {
                 //If we were allowed to fly but something changed that state (such as another mod)
                 // Re-enable flying and set the player back into flying if they were flying
                 updateClientServerFlight(player, true, flightInfo.wasFlying);
             }
             //Update flight info states
             flightInfo.wasFlyingGameMode = isFlyingGameMode;
-            flightInfo.wasFlying = player.abilities.isFlying;
-            flightInfo.wasFlyingAllowed = player.abilities.allowFlying;
-            if (player.abilities.isFlying && hasGravitationalModulator) {
+            flightInfo.wasFlying = player.abilities.flying;
+            flightInfo.wasFlyingAllowed = player.abilities.mayfly;
+            if (player.abilities.flying && hasGravitationalModulator) {
                 //If the player is actively flying (not just allowed to), and has the gravitational modulator ready then apply movement boost if active, and use energy
                 FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-                boolean boostKey = Mekanism.keyMap.has(player.getUniqueID(), KeySync.BOOST);
-                ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
+                boolean boostKey = Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST);
+                ModuleGravitationalModulatingUnit module = Modules.load(player.getItemBySlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
                 player.setSprinting(false);
                 if (boostKey) {
                     player.moveRelative(module.getBoost(), new Vector3d(0, 0, 1));
@@ -276,25 +276,25 @@ public class PlayerState {
             }
         } else {
             if (flightInfo.hadFlightItem) {
-                if (player.abilities.allowFlying) {
+                if (player.abilities.mayfly) {
                     updateClientServerFlight(player, false);
                 }
                 flightInfo.hadFlightItem = false;
             }
             flightInfo.wasFlyingGameMode = false;
-            flightInfo.wasFlying = player.abilities.isFlying;
-            flightInfo.wasFlyingAllowed = player.abilities.allowFlying;
+            flightInfo.wasFlying = player.abilities.flying;
+            flightInfo.wasFlyingAllowed = player.abilities.mayfly;
         }
     }
 
     private void updateClientServerFlight(PlayerEntity player, boolean allowFlying) {
-        updateClientServerFlight(player, allowFlying, allowFlying && player.abilities.isFlying);
+        updateClientServerFlight(player, allowFlying, allowFlying && player.abilities.flying);
     }
 
     private void updateClientServerFlight(PlayerEntity player, boolean allowFlying, boolean isFlying) {
         Mekanism.packetHandler.sendTo(new PacketFlyingSync(allowFlying, isFlying), (ServerPlayerEntity) player);
-        player.abilities.allowFlying = allowFlying;
-        player.abilities.isFlying = isFlying;
+        player.abilities.mayfly = allowFlying;
+        player.abilities.flying = isFlying;
     }
 
     // ----------------------
@@ -321,7 +321,7 @@ public class PlayerState {
             throw new NullPointerException("mekanism.common.base.PlayerState#world is null. This should not happen. Optifine is known to cause this on client side.");
         }
 
-        if (world.isRemote()) {
+        if (world.isClientSide()) {
             boolean startSound;
             // If something changed and we're in a remote world, take appropriate action
             if (changed) {
@@ -350,7 +350,7 @@ public class PlayerState {
     }
 
     public boolean isFlamethrowerOn(PlayerEntity p) {
-        return activeFlamethrowers.contains(p.getUniqueID());
+        return activeFlamethrowers.contains(p.getUUID());
     }
 
     public Set<UUID> getActiveFlamethrowers() {

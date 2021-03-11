@@ -28,7 +28,7 @@ public class CraftingRobitContainer extends WorkbenchContainer implements IEntit
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull PlayerEntity player) {
         return entity.isAlive();
     }
 
@@ -44,8 +44,8 @@ public class CraftingRobitContainer extends WorkbenchContainer implements IEntit
     }
 
     @Override
-    public void onContainerClosed(@Nonnull PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(@Nonnull PlayerEntity player) {
+        super.removed(player);
         entity.close(player);
     }
 

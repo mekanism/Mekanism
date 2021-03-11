@@ -12,7 +12,7 @@ import net.minecraft.util.math.vector.Vector3d;
 public class MekanismDamageSource extends DamageSource implements IHasTranslationKey {
 
     public static final MekanismDamageSource LASER = new MekanismDamageSource("laser");
-    public static final MekanismDamageSource RADIATION = new MekanismDamageSource("radiation").setDamageBypassesArmor();
+    public static final MekanismDamageSource RADIATION = new MekanismDamageSource("radiation").bypassArmor();
 
     private final String translationKey;
 
@@ -25,7 +25,7 @@ public class MekanismDamageSource extends DamageSource implements IHasTranslatio
 
     private MekanismDamageSource(@Nonnull String damageType, @Nullable Vector3d damageLocation) {
         super(damageType);
-        this.translationKey = "death.attack." + getDamageType();
+        this.translationKey = "death.attack." + getMsgId();
         this.damageLocation = damageLocation;
     }
 
@@ -33,7 +33,7 @@ public class MekanismDamageSource extends DamageSource implements IHasTranslatio
      * Gets a new instance of this damage source, that is positioned at the given location.
      */
     public MekanismDamageSource fromPosition(@Nonnull Vector3d damageLocation) {
-        return new MekanismDamageSource(getDamageType(), damageLocation);
+        return new MekanismDamageSource(getMsgId(), damageLocation);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class MekanismDamageSource extends DamageSource implements IHasTranslatio
 
     @Nullable
     @Override
-    public Vector3d getDamageLocation() {
+    public Vector3d getSourcePosition() {
         return damageLocation;
     }
 
@@ -60,38 +60,38 @@ public class MekanismDamageSource extends DamageSource implements IHasTranslatio
     }
 
     @Override
-    public MekanismDamageSource setDamageBypassesArmor() {
-        super.setDamageBypassesArmor();
+    public MekanismDamageSource bypassArmor() {
+        super.bypassArmor();
         return this;
     }
 
     @Override
-    public MekanismDamageSource setDamageAllowedInCreativeMode() {
-        super.setDamageAllowedInCreativeMode();
+    public MekanismDamageSource bypassInvul() {
+        super.bypassInvul();
         return this;
     }
 
     @Override
-    public MekanismDamageSource setDamageIsAbsolute() {
-        super.setDamageIsAbsolute();
+    public MekanismDamageSource bypassMagic() {
+        super.bypassMagic();
         return this;
     }
 
     @Override
-    public MekanismDamageSource setFireDamage() {
-        super.setFireDamage();
+    public MekanismDamageSource setIsFire() {
+        super.setIsFire();
         return this;
     }
 
     @Override
-    public MekanismDamageSource setDifficultyScaled() {
-        super.setDifficultyScaled();
+    public MekanismDamageSource setScalesWithDifficulty() {
+        super.setScalesWithDifficulty();
         return this;
     }
 
     @Override
-    public MekanismDamageSource setMagicDamage() {
-        super.setMagicDamage();
+    public MekanismDamageSource setMagic() {
+        super.setMagic();
         return this;
     }
 }

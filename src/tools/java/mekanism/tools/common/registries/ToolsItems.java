@@ -165,7 +165,7 @@ public class ToolsItems {
     private static Item.Properties getBaseProperties(BaseMekanismMaterial material) {
         Item.Properties properties = ItemDeferredRegister.getMekBaseProperties();
         if (!material.burnsInFire()) {
-            properties = properties.isImmuneToFire();
+            properties = properties.fireResistant();
         }
         return properties;
     }

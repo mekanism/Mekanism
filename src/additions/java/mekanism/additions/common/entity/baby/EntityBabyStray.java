@@ -22,58 +22,58 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityBabyStray extends StrayEntity implements IBabyEntity {
 
-    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.createKey(EntityBabyStray.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_CHILD = EntityDataManager.defineId(EntityBabyStray.class, DataSerializers.BOOLEAN);
 
     //Copy of stray spawn restrictions
     public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, IServerWorld world, SpawnReason reason, BlockPos pos, Random random) {
-        return canMonsterSpawnInLight(type, world, reason, pos, random) && (reason == SpawnReason.SPAWNER || world.canSeeSky(pos));
+        return checkMonsterSpawnRules(type, world, reason, pos, random) && (reason == SpawnReason.SPAWNER || world.canSeeSky(pos));
     }
 
     public EntityBabyStray(EntityType<EntityBabyStray> type, World world) {
         super(type, world);
-        setChild(true);
+        setBaby(true);
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        getDataManager().register(IS_CHILD, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        getEntityData().define(IS_CHILD, false);
     }
 
     @Override
-    public boolean isChild() {
-        return getDataManager().get(IS_CHILD);
+    public boolean isBaby() {
+        return getEntityData().get(IS_CHILD);
     }
 
     @Override
-    public void setChild(boolean child) {
+    public void setBaby(boolean child) {
         setChild(IS_CHILD, child);
     }
 
     @Override
-    public void notifyDataManagerChange(@Nonnull DataParameter<?> key) {
+    public void onSyncedDataUpdated(@Nonnull DataParameter<?> key) {
         if (IS_CHILD.equals(key)) {
-            recalculateSize();
+            refreshDimensions();
         }
-        super.notifyDataManagerChange(key);
+        super.onSyncedDataUpdated(key);
     }
 
     @Override
-    protected int getExperiencePoints(@Nonnull PlayerEntity player) {
-        if (isChild()) {
-            experienceValue = (int) (experienceValue * 2.5F);
+    protected int getExperienceReward(@Nonnull PlayerEntity player) {
+        if (isBaby()) {
+            xpReward = (int) (xpReward * 2.5F);
         }
-        return super.getExperiencePoints(player);
+        return super.getExperienceReward(player);
     }
 
     @Override
-    public double getYOffset() {
-        return isChild() ? 0 : super.getYOffset();
+    public double getMyRidingOffset() {
+        return isBaby() ? 0 : super.getMyRidingOffset();
     }
 
     @Override
     protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
-        return this.isChild() ? 0.93F : super.getStandingEyeHeight(pose, size);
+        return this.isBaby() ? 0.93F : super.getStandingEyeHeight(pose, size);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class EntityBabyStray extends StrayEntity implements IBabyEntity {
 
     @Nonnull
     @Override
-    public IPacket<?> createSpawnPacket() {
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

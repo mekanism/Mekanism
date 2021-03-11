@@ -36,11 +36,11 @@ public abstract class PlayerSound extends TickableSound {
         super(sound, SoundCategory.PLAYERS);
         this.playerReference = new WeakReference<>(player);
         this.subtitleFrequency = subtitleFrequency;
-        this.lastX = (float) player.getPosX();
-        this.lastY = (float) player.getPosY();
-        this.lastZ = (float) player.getPosZ();
-        this.repeat = true;
-        this.repeatDelay = 0;
+        this.lastX = (float) player.getX();
+        this.lastY = (float) player.getY();
+        this.lastZ = (float) player.getZ();
+        this.looping = true;
+        this.delay = 0;
 
         // N.B. the volume must be > 0 on first time it's processed by sound system or else it will not
         // get registered for tick events.
@@ -62,7 +62,7 @@ public abstract class PlayerSound extends TickableSound {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
-            this.lastX = (float) player.getPosX();
+            this.lastX = (float) player.getX();
         }
         return this.lastX;
     }
@@ -72,7 +72,7 @@ public abstract class PlayerSound extends TickableSound {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
-            this.lastY = (float) player.getPosY();
+            this.lastY = (float) player.getY();
         }
         return this.lastY;
     }
@@ -82,7 +82,7 @@ public abstract class PlayerSound extends TickableSound {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
         PlayerEntity player = getPlayer();
         if (player != null) {
-            this.lastZ = (float) player.getPosZ();
+            this.lastZ = (float) player.getZ();
         }
         return this.lastZ;
     }
@@ -91,7 +91,7 @@ public abstract class PlayerSound extends TickableSound {
     public void tick() {
         PlayerEntity player = getPlayer();
         if (player == null || !player.isAlive()) {
-            finishPlaying();
+            stop();
             volume = 0.0F;
             consecutiveTicks = 0;
             return;
@@ -103,9 +103,9 @@ public abstract class PlayerSound extends TickableSound {
                 volume = Math.min(1.0F, volume + fadeUpStep);
             }
             if (consecutiveTicks % subtitleFrequency == 0) {
-                SoundHandler soundHandler = Minecraft.getInstance().getSoundHandler();
-                for (ISoundEventListener soundEventListener : soundHandler.sndManager.listeners) {
-                    SoundEventAccessor soundEventAccessor = createAccessor(soundHandler);
+                SoundHandler soundHandler = Minecraft.getInstance().getSoundManager();
+                for (ISoundEventListener soundEventListener : soundHandler.soundEngine.listeners) {
+                    SoundEventAccessor soundEventAccessor = resolve(soundHandler);
                     if (soundEventAccessor != null) {
                         soundEventListener.onPlaySound(this, soundEventAccessor);
                     }
@@ -129,15 +129,15 @@ public abstract class PlayerSound extends TickableSound {
     }
 
     @Override
-    public boolean canBeSilent() {
+    public boolean canStartSilent() {
         return true;
     }
 
     @Override
-    public boolean shouldPlaySound() {
+    public boolean canPlaySound() {
         PlayerEntity player = getPlayer();
         if (player == null) {
-            return super.shouldPlaySound();
+            return super.canPlaySound();
         }
         return !player.isSilent();
     }

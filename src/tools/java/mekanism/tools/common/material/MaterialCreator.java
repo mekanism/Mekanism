@@ -56,7 +56,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
         String toolKey = materialDefaults.getRegistryPrefix();
         builder.comment(" Material Settings for " + toolKey).push(toolKey);
         attackDamage = CachedFloatValue.wrap(config, builder.comment("Base attack damage of " + toolKey + " items.")
-              .defineInRange(toolKey + "AttackDamage", materialDefaults.getAttackDamage(), 0, Float.MAX_VALUE));
+              .defineInRange(toolKey + "AttackDamage", materialDefaults.getAttackDamageBonus(), 0, Float.MAX_VALUE));
         //Note: Damage predicate to allow for tools to go negative to the value of the base tier so that a tool
         // can effectively have zero damage for things like the hoe
         Predicate<Object> damageModifierPredicate = value -> {
@@ -100,9 +100,9 @@ public class MaterialCreator extends BaseMekanismMaterial {
         hoeAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + toolKey + " hoes.")
               .define(toolKey + "HoeAtkSpeed", (double) materialDefaults.getHoeAtkSpeed()));
         toolMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " tools.")
-              .defineInRange(toolKey + "ToolMaxUses", materialDefaults.getMaxUses(), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ToolMaxUses", materialDefaults.getUses(), 1, Integer.MAX_VALUE));
         efficiency = CachedFloatValue.wrap(config, builder.comment("Efficiency of " + toolKey + " tools.")
-              .define(toolKey + "Efficiency", (double) materialDefaults.getEfficiency()));
+              .define(toolKey + "Efficiency", (double) materialDefaults.getSpeed()));
         paxelHarvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + toolKey + " paxels.")
               .defineInRange(toolKey + "PaxelHarvestLevel", materialDefaults.getPaxelHarvestLevel(), 0, Integer.MAX_VALUE));
         paxelDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + toolKey + " paxels.")
@@ -116,7 +116,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
         paxelMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " paxels.")
               .defineInRange(toolKey + "PaxelMaxUses", materialDefaults.getPaxelMaxUses(), 1, Integer.MAX_VALUE));
         harvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + toolKey + " tools.")
-              .defineInRange(toolKey + "HarvestLevel", materialDefaults.getHarvestLevel(), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "HarvestLevel", materialDefaults.getLevel(), 0, Integer.MAX_VALUE));
         enchantability = CachedIntValue.wrap(config, builder.comment("Natural enchantability factor of " + toolKey + " items.")
               .defineInRange(toolKey + "Enchantability", materialDefaults.getCommonEnchantability(), 0, Integer.MAX_VALUE));
         toughness = CachedFloatValue.wrap(config, builder.comment("Base armor toughness value of " + toolKey + " armor.")
@@ -124,21 +124,21 @@ public class MaterialCreator extends BaseMekanismMaterial {
         knockbackResistance = CachedFloatValue.wrap(config, builder.comment("Base armor knockback resistance value of " + toolKey + " armor.")
               .defineInRange(toolKey + "KnockbackResistance", materialDefaults.getKnockbackResistance(), 0, Float.MAX_VALUE));
         bootDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " boots.")
-              .defineInRange(toolKey + "BootDurability", materialDefaults.getDurability(EquipmentSlotType.FEET), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "BootDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.FEET), 1, Integer.MAX_VALUE));
         leggingDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " leggings.")
-              .defineInRange(toolKey + "LeggingDurability", materialDefaults.getDurability(EquipmentSlotType.LEGS), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "LeggingDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.LEGS), 1, Integer.MAX_VALUE));
         chestplateDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " chestplates.")
-              .defineInRange(toolKey + "ChestplateDurability", materialDefaults.getDurability(EquipmentSlotType.CHEST), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ChestplateDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.CHEST), 1, Integer.MAX_VALUE));
         helmetDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + toolKey + " helmets.")
-              .defineInRange(toolKey + "HelmetDurability", materialDefaults.getDurability(EquipmentSlotType.HEAD), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "HelmetDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.HEAD), 1, Integer.MAX_VALUE));
         bootArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + toolKey + " boots.")
-              .defineInRange(toolKey + "BootArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.FEET), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "BootArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.FEET), 0, Integer.MAX_VALUE));
         leggingArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + toolKey + " leggings.")
-              .defineInRange(toolKey + "LeggingArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.LEGS), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "LeggingArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.LEGS), 0, Integer.MAX_VALUE));
         chestplateArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + toolKey + " chestplates.")
-              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.CHEST), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.CHEST), 0, Integer.MAX_VALUE));
         helmetArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + toolKey + " helmets.")
-              .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDamageReductionAmount(EquipmentSlotType.HEAD), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.HEAD), 0, Integer.MAX_VALUE));
         builder.pop();
     }
 
@@ -223,27 +223,27 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getMaxUses() {
+    public int getUses() {
         return toolMaxUses.get();
     }
 
     @Override
-    public float getEfficiency() {
+    public float getSpeed() {
         return efficiency.get();
     }
 
     @Override
-    public float getAttackDamage() {
+    public float getAttackDamageBonus() {
         return attackDamage.get();
     }
 
     @Override
-    public int getHarvestLevel() {
+    public int getLevel() {
         return harvestLevel.get();
     }
 
     @Override
-    public int getDurability(EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
                 return bootDurability.get();
@@ -254,11 +254,11 @@ public class MaterialCreator extends BaseMekanismMaterial {
             case HEAD:
                 return helmetDurability.get();
         }
-        return fallBack.getDurability(slotType);
+        return fallBack.getDurabilityForSlot(slotType);
     }
 
     @Override
-    public int getDamageReductionAmount(EquipmentSlotType slotType) {
+    public int getDefenseForSlot(EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
                 return bootArmor.get();
@@ -269,7 +269,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
             case HEAD:
                 return helmetArmor.get();
         }
-        return fallBack.getDamageReductionAmount(slotType);
+        return fallBack.getDefenseForSlot(slotType);
     }
 
     @Override
@@ -289,8 +289,8 @@ public class MaterialCreator extends BaseMekanismMaterial {
 
     @Nonnull
     @Override
-    public SoundEvent getSoundEvent() {
-        return fallBack.getSoundEvent();
+    public SoundEvent getEquipSound() {
+        return fallBack.getEquipSound();
     }
 
     @Nonnull

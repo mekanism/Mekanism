@@ -13,8 +13,9 @@ public class TagResolverHelper {
     }
 
     public static <TYPE> List<TYPE> getRepresentations(ITag<TYPE> tag) {
+        //TODO - 10.1: Can we remove this and then just force a JEI version that gets tags at the correct time?
         try {
-            return tag.getAllElements();
+            return tag.getValues();
         } catch (IllegalStateException e) {
             //Why do tags have to be such an annoyance in 1.16
             // This is needed so that we can ensure we give JEI an empty list of representations

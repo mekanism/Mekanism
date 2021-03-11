@@ -227,7 +227,7 @@ public class QIOFrequency extends Frequency {
                 map.put(type, data == null ? 0 : data.count);
             });
             // flush players that somehow didn't send a container close packet
-            playersViewingItems.removeIf(player -> !(player.openContainer instanceof QIOItemViewerContainer));
+            playersViewingItems.removeIf(player -> !(player.containerMenu instanceof QIOItemViewerContainer));
             playersViewingItems.forEach(player -> Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity), player));
             updatedItems.clear();
             needsUpdate = false;
@@ -301,7 +301,7 @@ public class QIOFrequency extends Frequency {
         buf.writeVarLong(totalCountCapacity);
         buf.writeVarInt(itemDataMap.size());
         buf.writeVarInt(totalTypeCapacity);
-        buf.writeEnumValue(color);
+        buf.writeEnum(color);
     }
 
     @Override
@@ -311,7 +311,7 @@ public class QIOFrequency extends Frequency {
         totalCountCapacity = buf.readVarLong();
         clientTypes = buf.readVarInt();
         totalTypeCapacity = buf.readVarInt();
-        color = buf.readEnumValue(EnumColor.class);
+        color = buf.readEnum(EnumColor.class);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
-            minecraft.textureManager.bindTexture(getResource());
+            minecraft.textureManager.bind(getResource());
             blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             if (type.isVertical()) {
                 int displayInt = (int) (getProgress() * height);

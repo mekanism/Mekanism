@@ -58,8 +58,8 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
 
@@ -81,43 +81,43 @@ public class ItemMekanismArmor extends ArmorItem implements IHasRepairType, IAtt
     @Nonnull
     @Override
     public Ingredient getRepairMaterial() {
-        return getArmorMaterial().getRepairMaterial();
+        return getMaterial().getRepairIngredient();
     }
 
     @Override
-    public int getDamageReduceAmount() {
-        return getArmorMaterial().getDamageReductionAmount(getEquipmentSlot());
+    public int getDefense() {
+        return getMaterial().getDefenseForSlot(getSlot());
     }
 
     @Override
     public float getToughness() {
-        return getArmorMaterial().getToughness();
+        return getMaterial().getToughness();
     }
 
     public float getKnockbackResistance() {
-        return getArmorMaterial().getKnockbackResistance();
+        return getMaterial().getKnockbackResistance();
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return material.getDurability(getEquipmentSlot());
+        return material.getDurabilityForSlot(getSlot());
     }
 
     @Override
-    public boolean isDamageable() {
-        return material.getDurability(getEquipmentSlot()) > 0;
+    public boolean canBeDepleted() {
+        return material.getDurabilityForSlot(getSlot()) > 0;
     }
 
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {
-        return slot == getEquipmentSlot() ? attributeCache.getAttributes() : ImmutableMultimap.of();
+        return slot == getSlot() ? attributeCache.getAttributes() : ImmutableMultimap.of();
     }
 
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
-        UUID modifier = ARMOR_MODIFIERS[getEquipmentSlot().getIndex()];
-        builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDamageReduceAmount(), Operation.ADDITION));
+        UUID modifier = ARMOR_MODIFIER_UUID_PER_SLOT[getSlot().getIndex()];
+        builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
         builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifier, "Armor knockback resistance", getKnockbackResistance(), Operation.ADDITION));
     }

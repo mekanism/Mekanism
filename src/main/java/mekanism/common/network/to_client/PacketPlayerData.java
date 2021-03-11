@@ -40,7 +40,7 @@ public class PacketPlayerData implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeUniqueId(uuid);
+        buffer.writeUUID(uuid);
         buffer.writeBoolean(activeFlamethrower);
         buffer.writeBoolean(activeJetpack);
         buffer.writeBoolean(activeScubaMask);
@@ -48,6 +48,6 @@ public class PacketPlayerData implements IMekanismPacket {
     }
 
     public static PacketPlayerData decode(PacketBuffer buffer) {
-        return new PacketPlayerData(buffer.readUniqueId(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean());
+        return new PacketPlayerData(buffer.readUUID(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean());
     }
 }

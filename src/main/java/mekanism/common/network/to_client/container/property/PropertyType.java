@@ -55,7 +55,7 @@ public enum PropertyType {
     SHORT(Short.TYPE, (short) 0, (getter, setter) -> SyncableShort.create(() -> (short) getter.get(), setter::accept),
           (property, buffer) -> new ShortPropertyData(property, buffer.readShort())),
     ITEM_STACK(ItemStack.class, ItemStack.EMPTY, (getter, setter) -> SyncableItemStack.create(() -> (ItemStack) getter.get(), setter::accept),
-          (property, buffer) -> new ItemStackPropertyData(property, buffer.readItemStack())),
+          (property, buffer) -> new ItemStackPropertyData(property, buffer.readItem())),
     FLUID_STACK(FluidStack.class, FluidStack.EMPTY, (getter, setter) -> SyncableFluidStack.create(() -> (FluidStack) getter.get(), setter::accept),
           (property, buffer) -> new FluidStackPropertyData(property, buffer.readFluidStack())),
     GAS_STACK(GasStack.class, GasStack.EMPTY, (getter, setter) -> SyncableGasStack.create(() -> (GasStack) getter.get(), setter::accept),

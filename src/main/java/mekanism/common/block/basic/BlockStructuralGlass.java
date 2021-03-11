@@ -25,13 +25,13 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         TileEntityStructuralMultiblock tile = WorldUtils.getTileEntity(TileEntityStructuralMultiblock.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        } else if (world.isRemote) {
-            ItemStack stack = player.getHeldItem(hand);
+        } else if (world.isClientSide) {
+            ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
                 if (!tile.structuralGuiAccessAllowed() || !tile.hasFormedMultiblock()) {
                     //If the block's multiblock doesn't allow gui access via structural multiblocks (for example the evaporation plant),
@@ -41,6 +41,6 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
             }
             return ActionResultType.SUCCESS;
         }
-        return tile.onActivate(player, hand, player.getHeldItem(hand));
+        return tile.onActivate(player, hand, player.getItemInHand(hand));
     }
 }

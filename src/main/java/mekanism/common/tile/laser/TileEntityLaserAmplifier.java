@@ -82,7 +82,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     protected void notifyComparatorChange() {
         //Notify neighbors instead of just comparators as we also allow for direct redstone levels
-        world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+        level.updateNeighborsAt(getBlockPos(), getBlockType());
     }
 
     public void setDelay(int delay) {
@@ -118,8 +118,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.MIN, value -> minThreshold = value);
         NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.MAX, value -> maxThreshold = value);
         NBTUtils.setIntIfPresent(nbtTags, NBTConstants.TIME, value -> delay = value);
@@ -128,8 +128,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putString(NBTConstants.MIN, minThreshold.toString());
         nbtTags.putString(NBTConstants.MAX, maxThreshold.toString());
         nbtTags.putInt(NBTConstants.TIME, delay);

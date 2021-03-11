@@ -28,11 +28,11 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
     @Nullable
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected Slot getSelectedSlot(double mouseX, double mouseY) {
-        for (Slot slot : container.inventorySlots) {
+    protected Slot findSlot(double mouseX, double mouseY) {
+        for (Slot slot : menu.slots) {
             //Like super.getSelectedSlot except uses our isMouseOverSlot so
             // that our redirection doesn't break this
-            if (isMouseOverSlot(slot, mouseX, mouseY) && slot.isEnabled()) {
+            if (isMouseOverSlot(slot, mouseX, mouseY) && slot.isActive()) {
                 return slot;
             }
         }
@@ -41,12 +41,12 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final boolean isSlotSelected(@Nonnull Slot slot, double mouseX, double mouseY) {
+    protected final boolean isHovering(@Nonnull Slot slot, double mouseX, double mouseY) {
         boolean mouseOver = isMouseOverSlot(slot, mouseX, mouseY);
         if (mouseOver && slot instanceof IVirtualSlot) {
             //Fake that the slot is "not" selected so that when this is called by render
             // we don't render hover mask as it will be in the incorrect position
-            if (hoveredSlot == null && slot.isEnabled()) {
+            if (hoveredSlot == null && slot.isActive()) {
                 //If needed though we do make sure to update the hovered slot for use elsewhere
                 hoveredSlot = slot;
             }
@@ -57,65 +57,65 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final void drawItemStack(@Nonnull ItemStack stack, int x, int y, @Nullable String altText) {
+    protected final void renderFloatingItem(@Nonnull ItemStack stack, int x, int y, @Nullable String altText) {
         if (!stack.isEmpty()) {
-            if (stack == this.returningStack && this.returningStackDestSlot instanceof IVirtualSlot) {
+            if (stack == this.snapbackItem && this.snapbackEnd instanceof IVirtualSlot) {
                 //Use an instance equality check to see if we are rendering the returning stack (used in touch screens)
                 // if we are and the slot we are returning to is a virtual one, so the position may be changing
                 // then recalculate where the stack actually is/should be to send it to the correct position
-                float f = (float) (Util.milliTime() - this.returningStackTime) / 100.0F;
+                float f = (float) (Util.getMillis() - this.snapbackTime) / 100.0F;
                 if (f >= 1.0F) {
                     //I don't think this should ever happen given we validated it isn't the case before entering
                     // drawItemStack, but just in case it is, update the returningStack and exit
-                    this.returningStack = ItemStack.EMPTY;
+                    this.snapbackItem = ItemStack.EMPTY;
                     return;
                 }
                 //Recalculate the x and y values to make sure they are the correct values
-                IVirtualSlot returningVirtualSlot = (IVirtualSlot) this.returningStackDestSlot;
-                int xOffset = returningVirtualSlot.getActualX() - this.touchUpX;
-                int yOffset = returningVirtualSlot.getActualY() - this.touchUpY;
-                x = this.touchUpX + (int) (xOffset * f);
-                y = this.touchUpY + (int) (yOffset * f);
+                IVirtualSlot returningVirtualSlot = (IVirtualSlot) this.snapbackEnd;
+                int xOffset = returningVirtualSlot.getActualX() - this.snapbackStartX;
+                int yOffset = returningVirtualSlot.getActualY() - this.snapbackStartY;
+                x = this.snapbackStartX + (int) (xOffset * f);
+                y = this.snapbackStartY + (int) (yOffset * f);
             }
             //noinspection ConstantConditions, altText can be null, just is marked as caught as nonnull by mojang's class level stuff
-            super.drawItemStack(stack, x, y, altText);
+            super.renderFloatingItem(stack, x, y, altText);
         }
     }
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final void moveItems(@Nonnull MatrixStack matrixStack, @Nonnull Slot slot) {
+    protected final void renderSlot(@Nonnull MatrixStack matrixStack, @Nonnull Slot slot) {
         if (!(slot instanceof IVirtualSlot)) {
             //If we are not a virtual slot, the super method is good enough
-            super.moveItems(matrixStack, slot);
+            super.renderSlot(matrixStack, slot);
             return;
         }
         //Basically a copy of super.moveItems, except with the rendering at the bottom adjusted
         // for if we are a virtual slot
-        ItemStack currentStack = slot.getStack();
+        ItemStack currentStack = slot.getItem();
         boolean shouldDrawOverlay = false;
-        boolean skipStackRendering = slot == this.clickedSlot && !this.draggedStack.isEmpty() && !this.isRightMouseClick;
-        ItemStack heldStack = minecraft.player.inventory.getItemStack();
+        boolean skipStackRendering = slot == this.clickedSlot && !this.draggingItem.isEmpty() && !this.isSplittingStack;
+        ItemStack heldStack = minecraft.player.inventory.getCarried();
         String s = null;
-        if (slot == this.clickedSlot && !this.draggedStack.isEmpty() && this.isRightMouseClick && !currentStack.isEmpty()) {
+        if (slot == this.clickedSlot && !this.draggingItem.isEmpty() && this.isSplittingStack && !currentStack.isEmpty()) {
             currentStack = currentStack.copy();
             currentStack.setCount(currentStack.getCount() / 2);
-        } else if (dragSplitting && dragSplittingSlots.contains(slot) && !heldStack.isEmpty()) {
-            if (dragSplittingSlots.size() == 1) {
+        } else if (isQuickCrafting && quickCraftSlots.contains(slot) && !heldStack.isEmpty()) {
+            if (quickCraftSlots.size() == 1) {
                 return;
             }
-            if (Container.canAddItemToSlot(slot, heldStack, true) && this.container.canDragIntoSlot(slot)) {
+            if (Container.canItemQuickReplace(slot, heldStack, true) && this.menu.canDragTo(slot)) {
                 currentStack = heldStack.copy();
                 shouldDrawOverlay = true;
-                Container.computeStackSize(dragSplittingSlots, this.dragSplittingLimit, currentStack, slot.getStack().isEmpty() ? 0 : slot.getStack().getCount());
-                int k = Math.min(currentStack.getMaxStackSize(), slot.getItemStackLimit(currentStack));
+                Container.getQuickCraftSlotCount(quickCraftSlots, this.quickCraftingType, currentStack, slot.getItem().isEmpty() ? 0 : slot.getItem().getCount());
+                int k = Math.min(currentStack.getMaxStackSize(), slot.getMaxStackSize(currentStack));
                 if (currentStack.getCount() > k) {
                     s = TextFormatting.YELLOW.toString() + k;
                     currentStack.setCount(k);
                 }
             } else {
-                dragSplittingSlots.remove(slot);
-                updateDragSplitting();
+                quickCraftSlots.remove(slot);
+                recalculateQuickCraftRemaining();
             }
         }
         //If the slot is a virtual slot, have the GuiSlot that corresponds to it handle the rendering
@@ -124,45 +124,45 @@ public abstract class VirtualSlotContainerScreen<T extends Container> extends Co
 
     public boolean slotClicked(@Nonnull Slot slot, int button) {
         //Copy of super.mouseClicked, minus the call to all the sub elements as we know how we are interacting with it
-        InputMappings.Input mouseKey = InputMappings.Type.MOUSE.getOrMakeInput(button);
-        boolean pickBlockButton = minecraft.gameSettings.keyBindPickBlock.isActiveAndMatches(mouseKey);
-        long time = Util.milliTime();
-        this.doubleClick = this.lastClickSlot == slot && time - this.lastClickTime < 250L && this.lastClickButton == button;
-        this.ignoreMouseUp = false;
+        InputMappings.Input mouseKey = InputMappings.Type.MOUSE.getOrCreate(button);
+        boolean pickBlockButton = minecraft.options.keyPickItem.isActiveAndMatches(mouseKey);
+        long time = Util.getMillis();
+        this.doubleclick = this.lastClickSlot == slot && time - this.lastClickTime < 250L && this.lastClickButton == button;
+        this.skipNextRelease = false;
         if (button != 0 && button != 1 && !pickBlockButton) {
-            hotkeySwapItems(button);
-        } else if (slot.slotNumber != -1) {
-            if (minecraft.gameSettings.touchscreen) {
-                if (slot.getHasStack()) {
+            checkHotbarMouseClicked(button);
+        } else if (slot.index != -1) {
+            if (minecraft.options.touchscreen) {
+                if (slot.hasItem()) {
                     this.clickedSlot = slot;
-                    this.draggedStack = ItemStack.EMPTY;
-                    this.isRightMouseClick = button == 1;
+                    this.draggingItem = ItemStack.EMPTY;
+                    this.isSplittingStack = button == 1;
                 } else {
                     this.clickedSlot = null;
                 }
-            } else if (!this.dragSplitting) {
-                if (minecraft.player.inventory.getItemStack().isEmpty()) {
+            } else if (!this.isQuickCrafting) {
+                if (minecraft.player.inventory.getCarried().isEmpty()) {
                     if (pickBlockButton) {
-                        this.handleMouseClick(slot, slot.slotNumber, button, ClickType.CLONE);
+                        this.slotClicked(slot, slot.index, button, ClickType.CLONE);
                     } else {
                         ClickType clicktype = ClickType.PICKUP;
                         if (Screen.hasShiftDown()) {
-                            this.shiftClickedSlot = slot.getHasStack() ? slot.getStack().copy() : ItemStack.EMPTY;
+                            this.lastQuickMoved = slot.hasItem() ? slot.getItem().copy() : ItemStack.EMPTY;
                             clicktype = ClickType.QUICK_MOVE;
                         }
-                        this.handleMouseClick(slot, slot.slotNumber, button, clicktype);
+                        this.slotClicked(slot, slot.index, button, clicktype);
                     }
-                    this.ignoreMouseUp = true;
+                    this.skipNextRelease = true;
                 } else {
-                    this.dragSplitting = true;
-                    this.dragSplittingButton = button;
-                    this.dragSplittingSlots.clear();
+                    this.isQuickCrafting = true;
+                    this.quickCraftingButton = button;
+                    this.quickCraftSlots.clear();
                     if (button == 0) {
-                        this.dragSplittingLimit = 0;
+                        this.quickCraftingType = 0;
                     } else if (button == 1) {
-                        this.dragSplittingLimit = 1;
+                        this.quickCraftingType = 1;
                     } else if (pickBlockButton) {
-                        this.dragSplittingLimit = 2;
+                        this.quickCraftingType = 2;
                     }
                 }
             }

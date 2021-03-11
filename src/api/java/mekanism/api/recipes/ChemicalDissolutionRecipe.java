@@ -64,7 +64,7 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
     public void write(PacketBuffer buffer) {
         itemInput.write(buffer);
         gasInput.write(buffer);
-        buffer.writeEnumValue(output.getChemicalType());
+        buffer.writeEnum(output.getChemicalType());
         output.getChemicalStack().writeToPacket(buffer);
     }
 }

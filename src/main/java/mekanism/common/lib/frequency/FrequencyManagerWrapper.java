@@ -60,11 +60,11 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
     }
 
     public List<FREQ> getPublicFrequencies(TileEntity tile, List<FREQ> cache) {
-        return tile.getWorld().isRemote() ? cache : new ArrayList<>(getPublicManager().getFrequencies());
+        return tile.getLevel().isClientSide() ? cache : new ArrayList<>(getPublicManager().getFrequencies());
     }
 
     public <TILE extends TileEntity & ISecurityTile> List<FREQ> getPrivateFrequencies(TILE tile, List<FREQ> cache) {
-        if (tile.getWorld().isRemote()) {
+        if (tile.getLevel().isClientSide()) {
             return cache;
         }
         UUID ownerUUID = tile.getOwnerUUID();

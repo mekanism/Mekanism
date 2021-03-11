@@ -51,8 +51,8 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
         if (frequency != null) {
             privateMode = frequency.isPrivate();
         }
-        ySize += 64;
-        titleY = 4;
+        imageHeight += 64;
+        titleLabelY = 4;
         dynamicSlots = true;
     }
 
@@ -63,15 +63,15 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSecurityTab(this, tile));
 
-        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, MekanismLang.PUBLIC, () -> {
+        addButton(publicButton = new TranslationButton(this, leftPos + 27, topPos + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, MekanismLang.PRIVATE, () -> {
+        addButton(privateButton = new TranslationButton(this, leftPos + 89, topPos + 14, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
+        addButton(setButton = new TranslationButton(this, leftPos + 27, topPos + 116, 60, 20, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(selection) : tile.getPublicCache(FrequencyType.INVENTORY).get(selection);
@@ -79,11 +79,11 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 89, guiTop + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
+        addButton(deleteButton = new TranslationButton(this, leftPos + 89, topPos + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(selection) : tile.getPublicCache(FrequencyType.INVENTORY).get(selection);
-                Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.INVENTORY, freq.getIdentity(), tile.getPos()));
+                Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.INVENTORY, freq.getIdentity(), tile.getBlockPos()));
                 scrollList.clearSelection();
             }
             updateButtons();
@@ -110,7 +110,7 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
 
     public void setFrequency(String freq) {
         if (!freq.isEmpty()) {
-            Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_TILE, FrequencyType.INVENTORY, new FrequencyIdentity(freq, !privateMode), tile.getPos()));
+            Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_TILE, FrequencyType.INVENTORY, new FrequencyIdentity(freq, !privateMode), tile.getBlockPos()));
         }
     }
 
@@ -177,7 +177,7 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, OwnerDisplay.of(tile.getOwnerUUID(), tile.getOwnerName()).getTextComponent(), 8, ySize - 96 + 4, titleTextColor());
+        drawString(matrix, OwnerDisplay.of(tile.getOwnerUUID(), tile.getOwnerName()).getTextComponent(), 8, imageHeight - 96 + 4, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(matrix, frequencyComponent, 32, 81, titleTextColor());
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
@@ -188,7 +188,7 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
             drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, subheadingTextColor());
             drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, subheadingTextColor());
         } else {
-            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 81, subheadingTextColor(), xSize - 32 - frequencyOffset - 4);
+            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 81, subheadingTextColor(), imageWidth - 32 - frequencyOffset - 4);
             drawString(matrix, getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, subheadingTextColor());
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);

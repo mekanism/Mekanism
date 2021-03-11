@@ -54,22 +54,22 @@ public class CommonPlayerTickHandler {
         if (player.isSleeping()) {
             return true;
         }
-        int x = MathHelper.floor(player.getPosX());
-        int y = MathHelper.floor(player.getPosY() - 0.01);
-        int z = MathHelper.floor(player.getPosZ());
+        int x = MathHelper.floor(player.getX());
+        int y = MathHelper.floor(player.getY() - 0.01);
+        int z = MathHelper.floor(player.getZ());
         BlockPos pos = new BlockPos(x, y, z);
-        BlockState s = player.world.getBlockState(pos);
-        VoxelShape shape = s.getShape(player.world, pos);
+        BlockState s = player.level.getBlockState(pos);
+        VoxelShape shape = s.getShape(player.level, pos);
         if (shape.isEmpty()) {
             return false;
         }
         AxisAlignedBB playerBox = player.getBoundingBox();
-        return !s.isAir(player.world, pos) && playerBox.offset(0, -0.01, 0).intersects(shape.getBoundingBox().offset(pos));
+        return !s.isAir(player.level, pos) && playerBox.move(0, -0.01, 0).intersects(shape.bounds().move(pos));
 
     }
 
     public static boolean isScubaMaskOn(PlayerEntity player, ItemStack tank) {
-        ItemStack mask = player.getItemStackFromSlot(EquipmentSlotType.HEAD);
+        ItemStack mask = player.getItemBySlot(EquipmentSlotType.HEAD);
         return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemScubaMask && ChemicalUtil.hasGas(tank) &&
                ((ItemScubaTank) tank.getItem()).getFlowing(tank);
     }
@@ -79,8 +79,8 @@ public class CommonPlayerTickHandler {
     }
 
     public static float getStepBoost(PlayerEntity player) {
-        ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.FEET);
-        if (!stack.isEmpty() && !player.isSneaking()) {
+        ItemStack stack = player.getItemBySlot(EquipmentSlotType.FEET);
+        if (!stack.isEmpty() && !player.isShiftKeyDown()) {
             if (stack.getItem() instanceof ItemFreeRunners) {
                 ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
                 if (freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL) {
@@ -108,40 +108,40 @@ public class CommonPlayerTickHandler {
             Mekanism.radiationManager.tickServer((ServerPlayerEntity) player);
         }
 
-        ItemStack currentItem = player.inventory.getCurrentItem();
+        ItemStack currentItem = player.inventory.getSelected();
         if (isFlamethrowerOn(player, currentItem)) {
-            player.world.addEntity(new EntityFlame(player));
+            player.level.addFreshEntity(new EntityFlame(player));
             if (MekanismUtils.isPlayingMode(player)) {
                 ((ItemFlamethrower) currentItem.getItem()).useGas(currentItem, 1);
             }
         }
 
-        ItemStack chest = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+        ItemStack chest = player.getItemBySlot(EquipmentSlotType.CHEST);
         if (isJetpackOn(player, chest)) {
             JetpackMode mode = getJetpackMode(chest);
-            Vector3d motion = player.getMotion();
+            Vector3d motion = player.getDeltaMovement();
             if (mode == JetpackMode.NORMAL) {
-                player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.5D), motion.getZ());
+                player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.5D), motion.z());
             } else if (mode == JetpackMode.HOVER) {
-                boolean ascending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
-                boolean descending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.DESCEND);
+                boolean ascending = Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
+                boolean descending = Mekanism.keyMap.has(player.getUUID(), KeySync.DESCEND);
                 if ((!ascending && !descending) || (ascending && descending)) {
-                    if (motion.getY() > 0) {
-                        player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, 0), motion.getZ());
-                    } else if (motion.getY() < 0) {
+                    if (motion.y() > 0) {
+                        player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, 0), motion.z());
+                    } else if (motion.y() < 0) {
                         if (!isOnGroundOrSleeping(player)) {
-                            player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0), motion.getZ());
+                            player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0), motion.z());
                         }
                     }
                 } else if (ascending) {
-                    player.setMotion(motion.getX(), Math.min(motion.getY() + 0.15D, 0.2D), motion.getZ());
+                    player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.2D), motion.z());
                 } else if (!isOnGroundOrSleeping(player)) {
-                    player.setMotion(motion.getX(), Math.max(motion.getY() - 0.15D, -0.2D), motion.getZ());
+                    player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, -0.2D), motion.z());
                 }
             }
             player.fallDistance = 0.0F;
             if (player instanceof ServerPlayerEntity) {
-                ((ServerPlayerEntity) player).connection.floatingTickCount = 0;
+                ((ServerPlayerEntity) player).connection.aboveGroundTickCount = 0;
             }
             if (chest.getItem() instanceof ItemJetpack) {
                 ((ItemJetpack) chest.getItem()).useGas(chest, 1);
@@ -154,12 +154,12 @@ public class CommonPlayerTickHandler {
             ItemScubaTank tank = (ItemScubaTank) chest.getItem();
             final int max = 300;
             tank.useGas(chest, 1);
-            GasStack received = tank.useGas(chest, max - player.getAir());
+            GasStack received = tank.useGas(chest, max - player.getAirSupply());
             if (!received.isEmpty()) {
-                player.setAir(player.getAir() + (int) received.getAmount());
+                player.setAirSupply(player.getAirSupply() + (int) received.getAmount());
             }
-            if (player.getAir() == max) {
-                for (EffectInstance effect : player.getActivePotionEffects()) {
+            if (player.getAirSupply() == max) {
+                for (EffectInstance effect : player.getActiveEffects()) {
                     for (int i = 0; i < 9; i++) {
                         effect.tick(player, () -> MekanismUtils.onChangedPotionEffect(player, effect, true));
                     }
@@ -174,10 +174,10 @@ public class CommonPlayerTickHandler {
         if (MekanismUtils.isPlayingMode(player) && !chest.isEmpty()) {
             JetpackMode mode = getJetpackMode(chest);
             if (mode == JetpackMode.NORMAL) {
-                return Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
+                return Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
             } else if (mode == JetpackMode.HOVER) {
-                boolean ascending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.ASCEND);
-                boolean descending = Mekanism.keyMap.has(player.getUniqueID(), KeySync.DESCEND);
+                boolean ascending = Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
+                boolean descending = Mekanism.keyMap.has(player.getUUID(), KeySync.DESCEND);
                 if (!ascending || descending) {
                     return !isOnGroundOrSleeping(player);
                 }
@@ -188,13 +188,13 @@ public class CommonPlayerTickHandler {
     }
 
     public static boolean isGravitationalModulationReady(PlayerEntity player) {
-        ModuleGravitationalModulatingUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
+        ModuleGravitationalModulatingUnit module = Modules.load(player.getItemBySlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
         return MekanismUtils.isPlayingMode(player) && module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(usage);
     }
 
     public static boolean isGravitationalModulationOn(PlayerEntity player) {
-        return isGravitationalModulationReady(player) && player.abilities.isFlying;
+        return isGravitationalModulationReady(player) && player.abilities.flying;
     }
 
     /** Will return null if jetpack mode is not active */
@@ -214,11 +214,11 @@ public class CommonPlayerTickHandler {
     public void onEntityAttacked(LivingAttackEvent event) {
         LivingEntity base = event.getEntityLiving();
         //Gas Mask checks
-        if (event.getSource().isMagicDamage()) {
-            ItemStack headStack = base.getItemStackFromSlot(EquipmentSlotType.HEAD);
+        if (event.getSource().isMagic()) {
+            ItemStack headStack = base.getItemBySlot(EquipmentSlotType.HEAD);
             if (!headStack.isEmpty()) {
                 if (headStack.getItem() instanceof ItemScubaMask) {
-                    ItemStack chestStack = base.getItemStackFromSlot(EquipmentSlotType.CHEST);
+                    ItemStack chestStack = base.getItemBySlot(EquipmentSlotType.CHEST);
                     if (!chestStack.isEmpty()) {
                         if (chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
                             ChemicalUtil.hasGas(chestStack)) {
@@ -287,8 +287,8 @@ public class CommonPlayerTickHandler {
                     }
                 }
             }
-        } else if (event.getSource().isMagicDamage()) {
-            ItemStack headStack = entity.getItemStackFromSlot(EquipmentSlotType.HEAD);
+        } else if (event.getSource().isMagic()) {
+            ItemStack headStack = entity.getItemBySlot(EquipmentSlotType.HEAD);
             if (!headStack.isEmpty()) {
                 ModuleInhalationPurificationUnit module = Modules.load(headStack, Modules.INHALATION_PURIFICATION_UNIT);
                 if (module != null && module.isEnabled()) {
@@ -319,7 +319,7 @@ public class CommonPlayerTickHandler {
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             float ratioAbsorbed = 0;
-            for (ItemStack stack : player.inventory.armorInventory) {
+            for (ItemStack stack : player.inventory.armor) {
                 if (stack.getItem() instanceof ItemMekaSuitArmor) {
                     ratioAbsorbed += ((ItemMekaSuitArmor) stack.getItem()).getDamageAbsorbed(stack, event.getSource(), event.getAmount());
                 }
@@ -339,17 +339,17 @@ public class CommonPlayerTickHandler {
     public void onLivingJump(LivingJumpEvent event) {
         if (event.getEntityLiving() instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-            ModuleHydraulicPropulsionUnit module = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.FEET), Modules.HYDRAULIC_PROPULSION_UNIT);
-            if (module != null && module.isEnabled() && Mekanism.keyMap.has(player.getUniqueID(), KeySync.BOOST)) {
+            ModuleHydraulicPropulsionUnit module = Modules.load(player.getItemBySlot(EquipmentSlotType.FEET), Modules.HYDRAULIC_PROPULSION_UNIT);
+            if (module != null && module.isEnabled() && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get().multiply(module.getBoost() / 0.1F);
                 if (module.getContainerEnergy().greaterOrEqual(usage)) {
                     float boost = module.getBoost();
                     // if we're sprinting with the boost module, limit the height
-                    ModuleLocomotiveBoostingUnit boostModule = Modules.load(player.getItemStackFromSlot(EquipmentSlotType.LEGS), Modules.LOCOMOTIVE_BOOSTING_UNIT);
+                    ModuleLocomotiveBoostingUnit boostModule = Modules.load(player.getItemBySlot(EquipmentSlotType.LEGS), Modules.LOCOMOTIVE_BOOSTING_UNIT);
                     if (boostModule != null && boostModule.isEnabled() && boostModule.canFunction(player)) {
                         boost = (float) Math.sqrt(boost);
                     }
-                    player.setMotion(player.getMotion().add(0, boost, 0));
+                    player.setDeltaMovement(player.getDeltaMovement().add(0, boost, 0));
                     module.useEnergy(player, usage);
                 }
             }
@@ -361,7 +361,7 @@ public class CommonPlayerTickHandler {
      */
     @Nullable
     private IEnergyContainer getFallAbsorptionEnergyContainer(LivingEntity base) {
-        ItemStack feetStack = base.getItemStackFromSlot(EquipmentSlotType.FEET);
+        ItemStack feetStack = base.getItemBySlot(EquipmentSlotType.FEET);
         if (!feetStack.isEmpty()) {
             if (feetStack.getItem() instanceof ItemFreeRunners) {
                 ItemFreeRunners boots = (ItemFreeRunners) feetStack.getItem();

@@ -26,19 +26,19 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
     public GuiChemicalWasher(MekanismTileContainer<TileEntityChemicalWasher> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        titleY = 4;
+        titleLabelY = 4;
     }
 
     @Override
     protected void initPreSlots() {
         //Add the side holder before the slots, as it holds a couple of the slots
-        addButton(GuiSideHolder.create(this, xSize, 66, 57, false, true, SpecialColors.TAB_CHEMICAL_WASHER));
+        addButton(GuiSideHolder.create(this, imageWidth, 66, 57, false, true, SpecialColors.TAB_CHEMICAL_WASHER));
     }
 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiDownArrow(this, xSize + 8, 91));
+        addButton(new GuiDownArrow(this, imageWidth + 8, 91));
         addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));

@@ -53,7 +53,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeString(modID);
+        buffer.writeUtf(modID);
     }
 
     @Override

@@ -57,16 +57,16 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     protected void recheckSettings() {
-        World world = getWorld();
+        World world = getLevel();
         if (world == null) {
             return;
         }
-        Biome b = world.getBiomeManager().getBiome(getPos());
+        Biome b = world.getBiomeManager().getBiome(getBlockPos());
         needsRainCheck = b.getPrecipitation() != RainType.NONE;
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
         // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
-        float tempEff = 0.3F * (0.8F - b.getTemperature(getPos()));
+        float tempEff = 0.3F * (0.8F - b.getTemperature(getBlockPos()));
 
         // Treat rainfall as a proxy for humidity; any humidity works as a drag on overall efficiency.
         // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
@@ -87,7 +87,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // Sort out if the generator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still generate power when it's raining, albeit at a
         // significant penalty.
-        seesSun = WorldUtils.canSeeSun(world, getSkyCheckPos());
+        seesSun = WorldUtils.canSeeSun(level, getSkyCheckPos());
         if (seesSun && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {
             setActive(true);
             FloatingLong production = getProduction();
@@ -99,11 +99,11 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     protected BlockPos getSkyCheckPos() {
-        return pos;
+        return worldPosition;
     }
 
     public FloatingLong getProduction() {
-        World world = getWorld();
+        World world = getLevel();
         if (world == null) {
             return FloatingLong.ZERO;
         }

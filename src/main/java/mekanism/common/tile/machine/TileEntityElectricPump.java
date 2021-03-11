@@ -128,7 +128,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(inputSlot = FluidInventorySlot.drain(fluidTank, this, 28, 20), RelativeSide.TOP);
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 28, 51), RelativeSide.BOTTOM);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 143, 35), RelativeSide.BACK);
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 143, 35), RelativeSide.BACK);
         return builder.build();
     }
 
@@ -173,7 +173,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         boolean hasFilter = hasFilter();
         //First see if there are any fluid blocks touching the pump - if so, sucks and adds the location to the recurring list
         for (Direction orientation : EnumUtils.DIRECTIONS) {
-            if (suck(pos.offset(orientation), hasFilter, true)) {
+            if (suck(worldPosition.relative(orientation), hasFilter, true)) {
                 return true;
             }
         }
@@ -188,8 +188,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             }
             //Add all the blocks surrounding this recurring node to the recurring node list
             for (Direction orientation : EnumUtils.DIRECTIONS) {
-                BlockPos side = tempPumpPos.offset(orientation);
-                if (WorldUtils.distanceBetween(pos, side) <= MekanismConfig.general.maxPumpRange.get()) {
+                BlockPos side = tempPumpPos.relative(orientation);
+                if (WorldUtils.distanceBetween(worldPosition, side) <= MekanismConfig.general.maxPumpRange.get()) {
                     if (suck(side, hasFilter, true)) {
                         return true;
                     }
@@ -202,24 +202,24 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     private boolean suck(BlockPos pos, boolean hasFilter, boolean addRecurring) {
         //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
-        Optional<BlockState> state = WorldUtils.getBlockState(world, pos);
+        Optional<BlockState> state = WorldUtils.getBlockState(level, pos);
         if (state.isPresent()) {
             BlockState blockState = state.get();
             FluidState fluidState = blockState.getFluidState();
             if (!fluidState.isEmpty() && fluidState.isSource()) {
                 //Just in case someone does weird things and has a fluid state that is empty and a source
                 // only allow collecting from non empty sources
-                Fluid sourceFluid = fluidState.getFluid();
+                Fluid sourceFluid = fluidState.getType();
                 FluidStack fluidStack = new FluidStack(sourceFluid, FluidAttributes.BUCKET_VOLUME);
                 if (hasFilter && sourceFluid == Fluids.WATER) {
                     fluidStack = MekanismFluids.HEAVY_WATER.getFluidStack(10);
                 }
                 Block block = blockState.getBlock();
                 if (block instanceof IFluidBlock) {
-                    fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);
+                    fluidStack = ((IFluidBlock) block).drain(level, pos, FluidAction.SIMULATE);
                     if (validFluid(fluidStack, true)) {
                         //Actually drain it
-                        fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
+                        fluidStack = ((IFluidBlock) block).drain(level, pos, FluidAction.EXECUTE);
                         suck(fluidStack, pos, addRecurring);
                         return true;
                     }
@@ -228,7 +228,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                     if (sourceFluid != Fluids.WATER || MekanismConfig.general.pumpWaterSources.get()) {
                         //Note we only attempt taking if it is not water, or we want to pump water sources
                         // otherwise we assume the type from the fluid state is correct
-                        sourceFluid = ((IBucketPickupHandler) block).pickupFluid(world, pos, blockState);
+                        sourceFluid = ((IBucketPickupHandler) block).takeLiquid(level, pos, blockState);
                         //Update the fluid stack in case something somehow changed about the type
                         // making sure that we replace to heavy water if we got heavy water
                         if (hasFilter && sourceFluid == Fluids.WATER) {
@@ -238,7 +238,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                         }
                         if (!validFluid(fluidStack, false)) {
                             Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                                  fluidState.getFluid(), pos, world, sourceFluid);
+                                  fluidState.getType(), pos, level, sourceFluid);
                             return false;
                         }
                     }
@@ -279,8 +279,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         nbtTags.putBoolean(NBTConstants.SUCKED_LAST_OPERATION, suckedLastOperation);
         if (!activeType.isEmpty()) {
@@ -297,8 +297,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
         suckedLastOperation = nbtTags.getBoolean(NBTConstants.SUCKED_LAST_OPERATION);
         NBTUtils.setFluidStackIfPresent(nbtTags, NBTConstants.FLUID_STORED, fluid -> activeType = fluid);
@@ -313,7 +313,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.PUMP_RESET), Util.DUMMY_UUID);
+        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.PUMP_RESET), Util.NIL_UUID);
         return ActionResultType.SUCCESS;
     }
 

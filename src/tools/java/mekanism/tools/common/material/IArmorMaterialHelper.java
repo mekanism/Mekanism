@@ -16,7 +16,7 @@ interface IArmorMaterialHelper extends IArmorMaterial {
      * BaseMekanismMaterial}
      */
     @Override
-    default int getEnchantability() {
+    default int getEnchantmentValue() {
         return getArmorEnchantability();
     }
 
@@ -32,7 +32,7 @@ interface IArmorMaterialHelper extends IArmorMaterial {
      */
     @Nonnull
     @Override
-    default Ingredient getRepairMaterial() {
+    default Ingredient getRepairIngredient() {
         return getArmorRepairMaterial();
     }
 }

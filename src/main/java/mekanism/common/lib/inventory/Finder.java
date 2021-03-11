@@ -13,7 +13,7 @@ public interface Finder {
     Finder ANY = stack -> true;
 
     static Finder item(ItemStack itemType) {
-        return stack -> ItemStack.areItemsEqual(itemType, stack);
+        return stack -> ItemStack.isSame(itemType, stack);
     }
 
     static Finder strict(ItemStack itemType) {
@@ -33,7 +33,7 @@ public interface Finder {
             if (stack.isEmpty() || !(stack.getItem() instanceof BlockItem)) {
                 return false;
             }
-            return Block.getBlockFromItem(stack.getItem()).getDefaultState().getMaterial() == materialType;
+            return Block.byItem(stack.getItem()).defaultBlockState().getMaterial() == materialType;
         };
     }
 

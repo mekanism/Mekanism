@@ -35,11 +35,11 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
      */
     @Nonnull
     protected World getWorldNN() {
-        return Objects.requireNonNull(getWorld(), "getWorldNN called before world set");
+        return Objects.requireNonNull(getLevel(), "getWorldNN called before world set");
     }
 
     public boolean isRemote() {
-        return getWorldNN().isRemote();
+        return getWorldNN().isClientSide();
     }
 
     /**
@@ -49,18 +49,18 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
     }
 
     @Override
-    public void markDirty() {
+    public void setChanged() {
         markDirty(true);
     }
 
     public void markDirty(boolean recheckBlockState) {
         //Copy of the base impl of markDirty in TileEntity, except only updates comparator state when something changed
         // and if our block supports having a comparator signal, instead of always doing it
-        if (world != null) {
+        if (level != null) {
             if (recheckBlockState) {
-                cachedBlockState = world.getBlockState(pos);
+                blockState = level.getBlockState(worldPosition);
             }
-            WorldUtils.markChunkDirty(world, pos);
+            WorldUtils.markChunkDirty(level, worldPosition);
             if (!isRemote()) {
                 markDirtyComparator();
             }
@@ -70,14 +70,14 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getPos(), 0, getUpdateTag());
+        return new SUpdateTileEntityPacket(getBlockPos(), 0, getUpdateTag());
     }
 
     @Override
     public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
         //We don't want to do a full read from NBT so simply call the super's read method to let Forge do whatever
         // it wants, but don't treat this as if it was the full saved NBT data as not everything has to be synced to the client
-        super.read(state, tag);
+        super.load(state, tag);
     }
 
     @Nonnull
@@ -99,7 +99,7 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         if (isRemote() && net.getDirection() == PacketDirection.CLIENTBOUND) {
             //Handle the update tag when we are on the client
-            handleUpdatePacket(pkt.getNbtCompound());
+            handleUpdatePacket(pkt.getTag());
         }
     }
 
@@ -126,16 +126,16 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
 
     @Override
     public World getTileWorld() {
-        return getWorld();
+        return getLevel();
     }
 
     @Override
     public BlockPos getTilePos() {
-        return getPos();
+        return getBlockPos();
     }
 
     @Override
-    public double getMaxRenderDistanceSquared() {
+    public double getViewDistance() {
         //Override and change the default range for TERs for mekanism tiles to the value defined in the config
         return MekanismConfig.client.terRange.get();
     }

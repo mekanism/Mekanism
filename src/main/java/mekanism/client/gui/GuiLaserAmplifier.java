@@ -56,7 +56,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         if (tile.getDelay() > 0) {
             drawString(matrix, MekanismLang.DELAY.translate(tile.getDelay()), 26, 30, titleTextColor());
         } else {
@@ -70,7 +70,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     private void setMinThreshold() {
         if (!minField.getText().isEmpty()) {
             try {
-                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MIN_THRESHOLD, tile.getPos(),
+                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MIN_THRESHOLD, tile.getBlockPos(),
                       MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(minField.getText()))));
             } catch (Exception ignored) {
             }
@@ -81,7 +81,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     private void setMaxThreshold() {
         if (!maxField.getText().isEmpty()) {
             try {
-                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MAX_THRESHOLD, tile.getPos(),
+                Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MAX_THRESHOLD, tile.getBlockPos(),
                       MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(maxField.getText()))));
             } catch (NumberFormatException ignored) {
             }

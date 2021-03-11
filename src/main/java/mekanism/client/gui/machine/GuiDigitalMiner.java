@@ -52,8 +52,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
 
     public GuiDigitalMiner(MekanismTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ySize += 76;
-        playerInventoryTitleY = ySize - 94;
+        imageHeight += 76;
+        inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }
 
@@ -102,14 +102,14 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             return ret;
         }, this));
 
-        int buttonStart = guiTop + 19;
-        addButton(startButton = new TranslationButton(this, guiLeft + 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,
+        int buttonStart = topPos + 19;
+        addButton(startButton = new TranslationButton(this, leftPos + 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.START_BUTTON, tile))));
-        addButton(stopButton = new TranslationButton(this, guiLeft + 87, buttonStart + 17, 61, 18, MekanismLang.BUTTON_STOP,
+        addButton(stopButton = new TranslationButton(this, leftPos + 87, buttonStart + 17, 61, 18, MekanismLang.BUTTON_STOP,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.STOP_BUTTON, tile))));
-        addButton(configButton = new TranslationButton(this, guiLeft + 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
+        addButton(configButton = new TranslationButton(this, leftPos + 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tile))));
-        addButton(new TranslationButton(this, guiLeft + 87, buttonStart + 51, 61, 18, MekanismLang.MINER_RESET,
+        addButton(new TranslationButton(this, leftPos + 87, buttonStart + 51, 61, 18, MekanismLang.MINER_RESET,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, tile))));
         updateEnabledButtons();
     }
@@ -129,7 +129,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

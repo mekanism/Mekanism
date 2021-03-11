@@ -54,8 +54,8 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
-            json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.getString());
+        public void serializeRecipeData(@Nonnull JsonObject json) {
+            json.addProperty(JsonConstants.CHEMICAL_TYPE, chemicalType.getSerializedName());
             json.add(JsonConstants.INPUT, input.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));
         }

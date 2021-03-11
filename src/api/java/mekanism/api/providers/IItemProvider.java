@@ -41,6 +41,6 @@ public interface IItemProvider extends IBaseProvider, net.minecraft.util.IItemPr
 
     @Override
     default String getTranslationKey() {
-        return getItem().getTranslationKey();
+        return getItem().getDescriptionId();
     }
 }

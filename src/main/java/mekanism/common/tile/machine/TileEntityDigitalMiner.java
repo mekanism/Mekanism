@@ -164,15 +164,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 mainSlots.add(slot);
             }
         }
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 20));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 20));
         return builder.build();
     }
 
     private void closeInvalidScreens() {
         if (getActive() && !playersUsing.isEmpty()) {
             for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
-                if (player.openContainer instanceof DigitalMinerConfigContainer) {
-                    player.closeScreen();
+                if (player.containerMenu instanceof DigitalMinerConfigContainer) {
+                    player.closeContainer();
                 }
             }
         }
@@ -221,8 +221,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                                 it.remove();
                                 break;
                             }
-                            Optional<BlockState> blockState = WorldUtils.getBlockState(world, pos);
-                            if (!blockState.isPresent() || blockState.get().isAir(world, pos)) {
+                            Optional<BlockState> blockState = WorldUtils.getBlockState(level, pos);
+                            if (!blockState.isPresent() || blockState.get().isAir(level, pos)) {
                                 set.clear(index);
                                 if (set.cardinality() == 0) {
                                     it.remove();
@@ -258,7 +258,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                                 if (set.cardinality() == 0) {
                                     it.remove();
                                 }
-                                world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getStateId(state));
+                                level.levelEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getId(state));
                                 missingStack = ItemStack.EMPTY;
                             }
                             break;
@@ -330,7 +330,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private void setSilkTouch(boolean newSilkTouch) {
         boolean changed = silkTouch != newSilkTouch;
         silkTouch = newSilkTouch;
-        if (changed && (hasWorld() && !isRemote())) {
+        if (changed && (hasLevel() && !isRemote())) {
             energyContainer.updateMinerEnergyPerTick();
         }
     }
@@ -366,7 +366,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private void setRadius(int newRadius) {
         boolean changed = radius != newRadius;
         radius = newRadius;
-        if (changed && (hasWorld() && !isRemote())) {
+        if (changed && (hasLevel() && !isRemote())) {
             energyContainer.updateMinerEnergyPerTick();
             // If the radius changed and we're on the server, go ahead and refresh the chunk set
             getChunkLoader().refreshChunkTickets();
@@ -384,14 +384,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private void setMinY(int newMinY) {
         boolean changed = minY != newMinY;
         minY = newMinY;
-        if (changed && (hasWorld() && !isRemote())) {
+        if (changed && (hasLevel() && !isRemote())) {
             energyContainer.updateMinerEnergyPerTick();
         }
     }
 
     public void setMaxYFromPacket(int newMaxY) {
-        if (world != null) {
-            setMaxY(Math.max(Math.min(newMaxY, world.getHeight() - 1), getMinY()));
+        if (level != null) {
+            setMaxY(Math.max(Math.min(newMaxY, level.getMaxBuildHeight() - 1), getMinY()));
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();
@@ -402,7 +402,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private void setMaxY(int newMaxY) {
         boolean changed = maxY != newMaxY;
         maxY = newMaxY;
-        if (changed && (hasWorld() && !isRemote())) {
+        if (changed && (hasLevel() && !isRemote())) {
             energyContainer.updateMinerEnergyPerTick();
         }
     }
@@ -423,38 +423,38 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
      * @return false if unsuccessful
      */
     private boolean setReplace(BlockPos pos, int index) {
-        if (world == null) {
+        if (level == null) {
             return false;
         }
         MinerFilter<?> filter = replaceMap.get(index);
         ItemStack stack = getReplace(filter);
         if (stack.isEmpty()) {
             if (filter == null || filter.replaceStack.isEmpty() || !filter.requireStack) {
-                world.removeBlock(pos, false);
+                level.removeBlock(pos, false);
                 return true;
             }
             missingStack = filter.replaceStack;
             return false;
         }
-        BlockState newState = MekFakePlayer.withFakePlayer((ServerWorld) world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), fakePlayer ->
+        BlockState newState = MekFakePlayer.withFakePlayer((ServerWorld) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), fakePlayer ->
               StackUtils.getStateForPlacement(stack, pos, fakePlayer)
         );
-        if (newState == null || !newState.isValidPosition(world, pos)) {
+        if (newState == null || !newState.canSurvive(level, pos)) {
             //If the spot is not a valid position for the block, then we return that we were unsuccessful
             return false;
         }
-        world.setBlockState(pos, newState);
+        level.setBlockAndUpdate(pos, newState);
         return true;
     }
 
     private boolean canMine(BlockPos pos) {
-        if (world == null) {
+        if (level == null) {
             return false;
         }
-        BlockState state = world.getBlockState(pos);
-        return MekFakePlayer.withFakePlayer((ServerWorld) world, this.pos.getX(), this.pos.getY(), this.pos.getZ(), dummy -> {
+        BlockState state = level.getBlockState(pos);
+        return MekFakePlayer.withFakePlayer((ServerWorld) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), dummy -> {
             dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
-            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, dummy);
+            BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, state, dummy);
             return !MinecraftForge.EVENT_BUS.post(event);
         });
     }
@@ -558,11 +558,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private TileEntity getPullInv() {
-        return WorldUtils.getTileEntity(getWorld(), getPos().up(2));
+        return WorldUtils.getTileEntity(getLevel(), getBlockPos().above(2));
     }
 
     private TileEntity getEjectInv() {
-        return WorldUtils.getTileEntity(world, getPos().up().offset(getOppositeDirection(), 2));
+        return WorldUtils.getTileEntity(level, getBlockPos().above().relative(getOppositeDirection(), 2));
     }
 
     private void add(List<ItemStack> stacks) {
@@ -581,12 +581,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public void start() {
-        if (getWorld() == null) {
+        if (getLevel() == null) {
             return;
         }
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
-            searcher.setChunkCache(new Region(getWorld(), startingPos, startingPos.add(getDiameter(), getMaxY() - getMinY() + 1, getDiameter())));
+            searcher.setChunkCache(new Region(getLevel(), startingPos, startingPos.offset(getDiameter(), getMaxY() - getMinY() + 1, getDiameter())));
             searcher.start();
         }
         running = true;
@@ -628,8 +628,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         running = nbtTags.getBoolean(NBTConstants.RUNNING);
         delay = nbtTags.getInt(NBTConstants.DELAY);
         numPowering = nbtTags.getInt(NBTConstants.NUM_POWERING);
@@ -639,8 +639,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         if (searcher.state == State.SEARCHING) {
             reset();
         }
@@ -660,13 +660,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public BlockPos getStartingPos() {
-        return new BlockPos(getPos().getX() - radius, getMinY(), getPos().getZ() - radius);
+        return new BlockPos(getBlockPos().getX() - radius, getMinY(), getBlockPos().getZ() - radius);
     }
 
     private BlockPos getPosFromIndex(int index) {
         int diameter = getDiameter();
         BlockPos start = getStartingPos();
-        return start.add(index % diameter, index / diameter / diameter, (index / diameter) % diameter);
+        return start.offset(index % diameter, index / diameter / diameter, (index / diameter) % diameter);
     }
 
     @Override
@@ -681,20 +681,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             //TODO: Improve on this to use the max that we actually need to do the rendering
             return INFINITE_EXTENT_AABB;
         }
-        return new AxisAlignedBB(pos.add(-1, 0, -1), pos.add(2, 2, 2));
+        return new AxisAlignedBB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
     }
 
     @Override
     public void onPlace() {
-        if (world != null) {
-            BlockPos pos = getPos();
+        if (level != null) {
+            BlockPos pos = getBlockPos();
             for (int x = -1; x <= +1; x++) {
                 for (int y = 0; y <= +1; y++) {
                     for (int z = -1; z <= +1; z++) {
                         if (x != 0 || y != 0 || z != 0) {
-                            BlockPos boundingPos = pos.add(x, y, z);
-                            WorldUtils.makeAdvancedBoundingBlock(world, boundingPos, pos);
-                            world.notifyNeighborsOfStateChange(boundingPos, getBlockType());
+                            BlockPos boundingPos = pos.offset(x, y, z);
+                            WorldUtils.makeAdvancedBoundingBlock(level, boundingPos, pos);
+                            level.updateNeighborsAt(boundingPos, getBlockType());
                         }
                     }
                 }
@@ -704,11 +704,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public void onBreak(BlockState oldState) {
-        if (world != null) {
+        if (level != null) {
             for (int x = -1; x <= +1; x++) {
                 for (int y = 0; y <= +1; y++) {
                     for (int z = -1; z <= +1; z++) {
-                        world.removeBlock(getPos().add(x, y, z), false);
+                        level.removeBlock(getBlockPos().offset(x, y, z), false);
                     }
                 }
             }
@@ -716,7 +716,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private TileEntity getEjectTile() {
-        return WorldUtils.getTileEntity(getWorld(), getPos().up().offset(getOppositeDirection()));
+        return WorldUtils.getTileEntity(getLevel(), getBlockPos().above().relative(getOppositeDirection()));
     }
 
     @Override
@@ -769,7 +769,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 }
             }
         }
-        if (!hasWorld()) {
+        if (!hasLevel()) {
             //If we don't have a world yet (reading from save), update the energy per tick in case any of the values changed.
             // It would be slightly cleaner to also validate the fact the values changed, but it would make the code a decent
             // bit messier as we couldn't use NBTUtils, and it is a rather quick check to update the energy per tick, and in
@@ -781,7 +781,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public String getDataType() {
-        return getBlockType().getTranslationKey();
+        return getBlockType().getDescriptionId();
     }
 
     @Override
@@ -897,7 +897,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return side != Direction.UP;
         }
         Direction back = getOppositeDirection();
-        if (offset.equals(new Vector3i(back.getXOffset(), 1, back.getZOffset()))) {
+        if (offset.equals(new Vector3i(back.getStepX(), 1, back.getStepZ()))) {
             //If output then disable if wrong face of output
             return side != back;
         }
@@ -905,16 +905,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private boolean notEnergyPort(Direction side, Vector3i offset) {
-        if (offset.equals(Vector3i.NULL_VECTOR)) {
+        if (offset.equals(Vector3i.ZERO)) {
             //Disable if it is the bottom port but wrong side of it
             return side != Direction.DOWN;
         }
         Direction left = getLeftSide();
         Direction right = getRightSide();
-        if (offset.equals(new Vector3i(left.getXOffset(), 0, left.getZOffset()))) {
+        if (offset.equals(new Vector3i(left.getStepX(), 0, left.getStepZ()))) {
             //Disable if left power port but wrong side of the port
             return side != left;
-        } else if (offset.equals(new Vector3i(right.getXOffset(), 0, right.getZOffset()))) {
+        } else if (offset.equals(new Vector3i(right.getStepX(), 0, right.getStepZ()))) {
             //Disable if right power port but wrong side of the port
             return side != right;
         }
@@ -928,10 +928,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        int chunkXMin = (pos.getX() - radius) >> 4;
-        int chunkXMax = (pos.getX() + radius) >> 4;
-        int chunkZMin = (pos.getZ() - radius) >> 4;
-        int chunkZMax = (pos.getZ() + radius) >> 4;
+        int chunkXMin = (worldPosition.getX() - radius) >> 4;
+        int chunkXMax = (worldPosition.getX() + radius) >> 4;
+        int chunkZMin = (worldPosition.getZ() - radius) >> 4;
+        int chunkZMax = (worldPosition.getZ() + radius) >> 4;
         Set<ChunkPos> set = new ObjectOpenHashSet<>();
         for (int chunkX = chunkXMin; chunkX <= chunkXMax; chunkX++) {
             for (int chunkZ = chunkZMin; chunkZ <= chunkZMax; chunkZ++) {
@@ -1022,16 +1022,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         ItemStack stack = MekanismItems.ATOMIC_DISASSEMBLER.getItemStack();
         if (getSilkTouch()) {
-            stack.addEnchantment(Enchantments.SILK_TOUCH, 1);
+            stack.enchant(Enchantments.SILK_TOUCH, 1);
         }
-        return MekFakePlayer.withFakePlayer((ServerWorld) getWorldNN(), this.pos.getX(), this.pos.getY(), this.pos.getZ(), fakePlayer -> {
+        return MekFakePlayer.withFakePlayer((ServerWorld) getWorldNN(), this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), fakePlayer -> {
             fakePlayer.setEmulatingUUID(getOwnerUUID());
             LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld) getWorldNN())
-                  .withRandom(getWorldNN().rand)
-                  .withParameter(LootParameters.ORIGIN, Vector3d.copyCentered(pos))
+                  .withRandom(getWorldNN().random)
+                  .withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(pos))
                   .withParameter(LootParameters.TOOL, stack)
-                  .withNullableParameter(LootParameters.THIS_ENTITY, fakePlayer)
-                  .withNullableParameter(LootParameters.BLOCK_ENTITY, WorldUtils.getTileEntity(getWorldNN(), pos));
+                  .withOptionalParameter(LootParameters.THIS_ENTITY, fakePlayer)
+                  .withOptionalParameter(LootParameters.BLOCK_ENTITY, WorldUtils.getTileEntity(getWorldNN(), pos));
             return state.getDrops(lootContextBuilder);
         });
     }
@@ -1137,8 +1137,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @ComputerMethod(nameOverride = "setMaxY")
     private void computerSetMaxY(int maxY) throws ComputerException {
         validateCanChangeConfiguration();
-        if (world != null) {
-            int max = world.getHeight() - 1;
+        if (level != null) {
+            int max = level.getMaxBuildHeight() - 1;
             if (maxY < getMinY() || maxY > max) {
                 //Validate dimensions even though we can clamp
                 throw new ComputerException("Max Y '%d' is out of range must be between %d and %d. (Inclusive)", maxY, getMinY(), max);

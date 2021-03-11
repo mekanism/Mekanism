@@ -109,7 +109,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this, 5, 56));
         builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 56));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 155, 5));
         inputSlot.setSlotType(ContainerSlotType.INPUT);
         inputSlot.setSlotOverlay(SlotOverlay.MINUS);
         outputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -178,22 +178,22 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
 
     @Override
     public void onPlace() {
-        WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
     }
 
     @Override
     public void onBreak(BlockState oldState) {
-        World world = getWorld();
+        World world = getLevel();
         if (world != null) {
-            world.removeBlock(getPos().up(), false);
-            world.removeBlock(getPos(), false);
+            world.removeBlock(getBlockPos().above(), false);
+            world.removeBlock(getBlockPos(), false);
         }
     }
 
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos, pos.add(1, 2, 1));
+        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     @Override

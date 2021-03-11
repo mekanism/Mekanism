@@ -49,7 +49,7 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
             return;
         }
         if (updateType.isTile()) {
-            TileEntity tile = WorldUtils.getTileEntity(player.world, tilePosition);
+            TileEntity tile = WorldUtils.getTileEntity(player.level, tilePosition);
             if (tile instanceof IFrequencyHandler) {
                 if (updateType == FrequencyUpdate.SET_TILE) {
                     ((IFrequencyHandler) tile).setFrequency(type, data);
@@ -58,16 +58,16 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
                 }
             }
         } else {
-            FrequencyManager<FREQ> manager = type.getManager(data.isPublic() ? null : player.getUniqueID());
-            ItemStack stack = player.getHeldItem(currentHand);
+            FrequencyManager<FREQ> manager = type.getManager(data.isPublic() ? null : player.getUUID());
+            ItemStack stack = player.getItemInHand(currentHand);
             if (stack.getItem() instanceof IFrequencyItem) {
                 IFrequencyItem item = (IFrequencyItem) stack.getItem();
                 FREQ toUse = null;
                 if (updateType == FrequencyUpdate.SET_ITEM) {
-                    toUse = manager.getOrCreateFrequency(data, player.getUniqueID());
+                    toUse = manager.getOrCreateFrequency(data, player.getUUID());
                     item.setFrequency(stack, toUse);
                 } else if (updateType == FrequencyUpdate.REMOVE_ITEM) {
-                    manager.remove(data.getKey(), player.getUniqueID());
+                    manager.remove(data.getKey(), player.getUUID());
                     FrequencyIdentity current = item.getFrequency(stack);
                     if (current != null) {
                         if (current.equals(data)) {
@@ -78,35 +78,35 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
                             FrequencyManager<FREQ> currentManager = manager;
                             if (data.isPublic() != current.isPublic()) {
                                 //Update the manager if it is the wrong one for getting our actual current frequency
-                                currentManager = type.getManager(current.isPublic() ? null : player.getUniqueID());
+                                currentManager = type.getManager(current.isPublic() ? null : player.getUUID());
                             }
                             toUse = currentManager.getFrequency(current.getKey());
                         }
                     }
                 }
-                Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(currentHand, type, player.getUniqueID(), toUse), player);
+                Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(currentHand, type, player.getUUID(), toUse), player);
             }
         }
     }
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(updateType);
+        buffer.writeEnum(updateType);
         type.write(buffer);
         type.getIdentitySerializer().write(buffer, data);
         if (updateType.isTile()) {
             buffer.writeBlockPos(tilePosition);
         } else {
-            buffer.writeEnumValue(currentHand);
+            buffer.writeEnum(currentHand);
         }
     }
 
     public static <FREQ extends Frequency> PacketGuiSetFrequency<FREQ> decode(PacketBuffer buffer) {
-        FrequencyUpdate updateType = buffer.readEnumValue(FrequencyUpdate.class);
+        FrequencyUpdate updateType = buffer.readEnum(FrequencyUpdate.class);
         FrequencyType<FREQ> type = FrequencyType.load(buffer);
         FrequencyIdentity data = type.getIdentitySerializer().read(buffer);
         BlockPos pos = updateType.isTile() ? buffer.readBlockPos() : null;
-        Hand hand = !updateType.isTile() ? buffer.readEnumValue(Hand.class) : null;
+        Hand hand = !updateType.isTile() ? buffer.readEnum(Hand.class) : null;
         return new PacketGuiSetFrequency<>(updateType, type, data, pos, hand);
     }
 

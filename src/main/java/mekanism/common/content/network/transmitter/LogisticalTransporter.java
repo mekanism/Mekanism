@@ -49,7 +49,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
         getTransmitterTile().sendUpdatePacket();
         EnumColor color = getColor();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-              MekanismLang.TOGGLE_COLOR.translate(color == null ? MekanismLang.NONE : color.getColoredName())), Util.DUMMY_UUID);
+              MekanismLang.TOGGLE_COLOR.translate(color == null ? MekanismLang.NONE : color.getColoredName())), Util.NIL_UUID);
         return ActionResultType.SUCCESS;
     }
 
@@ -57,7 +57,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         EnumColor color = getColor();
         player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-              MekanismLang.CURRENT_COLOR.translate(color == null ? MekanismLang.NONE : color.getColoredName())), Util.DUMMY_UUID);
+              MekanismLang.CURRENT_COLOR.translate(color == null ? MekanismLang.NONE : color.getColoredName())), Util.NIL_UUID);
         return super.onRightClick(player, side);
     }
 

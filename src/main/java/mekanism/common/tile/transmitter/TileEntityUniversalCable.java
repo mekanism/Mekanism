@@ -74,13 +74,13 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
         switch (tier) {
             case BASIC:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_UNIVERSAL_CABLE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_UNIVERSAL_CABLE.getBlock().defaultBlockState());
             case ADVANCED:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE.getBlock().defaultBlockState());
             case ELITE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_UNIVERSAL_CABLE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_UNIVERSAL_CABLE.getBlock().defaultBlockState());
             case ULTIMATE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE.getBlock().getDefaultState());
+                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE.getBlock().defaultBlockState());
         }
         return current;
     }
@@ -108,10 +108,10 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         if (type == ConnectionType.NONE) {
             invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), side);
             //Notify the neighbor on that side our state changed and we no longer have a capability
-            WorldUtils.notifyNeighborOfChange(world, side, pos);
+            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {
             //Notify the neighbor on that side our state changed and we now do have a capability
-            WorldUtils.notifyNeighborOfChange(world, side, pos);
+            WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         }
     }
 

@@ -38,7 +38,7 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>,
         ITag<CHEMICAL> internal = getInternal(to);
         List<CHEMICAL> itemsFromDefinitions = getChemicals(toAdd);
         if (internal == null) {
-            Tag<CHEMICAL> tagFromContents = Tag.getTagFromContents(Sets.newHashSet(itemsFromDefinitions));
+            Tag<CHEMICAL> tagFromContents = Tag.create(Sets.newHashSet(itemsFromDefinitions));
             CraftTweakerAPI.apply(new ActionTagCreate<>(getTagCollection(), tagFromContents, to));
         } else {
             CraftTweakerAPI.apply(new ActionTagAdd<>(internal, itemsFromDefinitions, to));
@@ -62,7 +62,7 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>,
         if (internal == null) {
             return Collections.emptyList();
         }
-        return internal.getAllElements().stream().map(this::fromChemical).collect(Collectors.toList());
+        return internal.getValues().stream().map(this::fromChemical).collect(Collectors.toList());
     }
 
     protected abstract CRT_CHEMICAL fromChemical(CHEMICAL chemical);
@@ -75,6 +75,6 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>,
     @Nullable
     @Override
     public ITag<CHEMICAL> getInternal(MCTag<CRT_CHEMICAL> theTag) {
-        return getTagCollection().get(theTag.getIdInternal());
+        return getTagCollection().getTag(theTag.getIdInternal());
     }
 }

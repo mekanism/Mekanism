@@ -23,7 +23,7 @@ public class PacketSecurityMode implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender();
         if (player != null) {
-            ItemStack stack = player.getHeldItem(currentHand);
+            ItemStack stack = player.getItemInHand(currentHand);
             if (stack.getItem() instanceof ISecurityItem) {
                 ((ISecurityItem) stack.getItem()).setSecurity(stack, value);
             }
@@ -32,11 +32,11 @@ public class PacketSecurityMode implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(currentHand);
-        buffer.writeEnumValue(value);
+        buffer.writeEnum(currentHand);
+        buffer.writeEnum(value);
     }
 
     public static PacketSecurityMode decode(PacketBuffer buffer) {
-        return new PacketSecurityMode(buffer.readEnumValue(Hand.class), buffer.readEnumValue(SecurityMode.class));
+        return new PacketSecurityMode(buffer.readEnum(Hand.class), buffer.readEnum(SecurityMode.class));
     }
 }

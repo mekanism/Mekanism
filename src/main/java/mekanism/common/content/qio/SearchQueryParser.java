@@ -164,9 +164,9 @@ public class SearchQueryParser {
 
     public enum QueryType {
         // ~ is a dummy char, not actually used by parser
-        NAME('~', (key, stack) -> stack.getDisplayName().getString().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
+        NAME('~', (key, stack) -> stack.getHoverName().getString().toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
         MOD_ID('@', (key, stack) -> MekanismUtils.getModId(stack).toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))),
-        TOOLTIP('$', (key, stack) -> stack.getTooltip(null, ITooltipFlag.TooltipFlags.NORMAL).stream().map(t -> t.getString().toLowerCase(Locale.ROOT))
+        TOOLTIP('$', (key, stack) -> stack.getTooltipLines(null, ITooltipFlag.TooltipFlags.NORMAL).stream().map(t -> t.getString().toLowerCase(Locale.ROOT))
               .anyMatch(tooltip -> tooltip.contains(key.toLowerCase(Locale.ROOT)))),
         TAG('#', (key, stack) -> TagCache.getItemTags(stack).stream().anyMatch(itemTag -> itemTag.toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))));
 

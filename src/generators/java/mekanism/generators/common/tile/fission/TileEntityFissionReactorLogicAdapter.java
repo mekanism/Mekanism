@@ -38,9 +38,9 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         super.onUpdateServer(multiblock);
         RedstoneStatus status = getStatus();
         if (status != prevStatus) {
-            World world = getWorld();
+            World world = getLevel();
             if (world != null) {
-                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+                world.updateNeighborsAt(getBlockPos(), getBlockType());
             }
         }
         prevStatus = status;
@@ -104,15 +104,15 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.LOGIC_TYPE, FissionReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putInt(NBTConstants.LOGIC_TYPE, logicType.ordinal());
         return nbtTags;
     }

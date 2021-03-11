@@ -46,7 +46,7 @@ public class ModuleChargeDistributionUnit extends ModuleMekaSuit {
     private void chargeSuit(PlayerEntity player) {
         Set<EnergySaveTarget> saveTargets = new ObjectOpenHashSet<>();
         FloatingLong total = FloatingLong.ZERO;
-        for (ItemStack stack : player.inventory.armorInventory) {
+        for (ItemStack stack : player.inventory.armor) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
             if (energyContainer != null) {
                 EnergySaveTarget saveTarget = new EnergySaveTarget();
@@ -64,11 +64,11 @@ public class ModuleChargeDistributionUnit extends ModuleMekaSuit {
     private void chargeInventory(PlayerEntity player) {
         FloatingLong toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get();
         // first try to charge mainhand/offhand item
-        toCharge = charge(player, player.getHeldItemMainhand(), toCharge);
-        toCharge = charge(player, player.getHeldItemOffhand(), toCharge);
+        toCharge = charge(player, player.getMainHandItem(), toCharge);
+        toCharge = charge(player, player.getOffhandItem(), toCharge);
 
-        for (ItemStack stack : player.inventory.mainInventory) {
-            if (stack == player.getHeldItemMainhand() || stack == player.getHeldItemOffhand()) {
+        for (ItemStack stack : player.inventory.items) {
+            if (stack == player.getMainHandItem() || stack == player.getOffhandItem()) {
                 continue;
             }
             if (toCharge.isZero()) {

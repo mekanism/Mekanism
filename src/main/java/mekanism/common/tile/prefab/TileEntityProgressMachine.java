@@ -52,15 +52,15 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
         return nbtTags;
     }

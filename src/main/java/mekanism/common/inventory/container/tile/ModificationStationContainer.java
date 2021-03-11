@@ -24,9 +24,9 @@ public class ModificationStationContainer extends MekanismTileContainer<TileEnti
     protected void addInventorySlots(@Nonnull PlayerInventory inv) {
         super.addInventorySlots(inv);
 
-        for (int index = 0; index < inv.armorInventory.size(); index++) {
-            final EquipmentSlotType slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + inv.armorInventory.size() - index - 1];
-            addSlot(new ArmorSlot(inv, 36 + inv.armorInventory.size() - index - 1, 8, 8 + index * 18, slotType));
+        for (int index = 0; index < inv.armor.size(); index++) {
+            final EquipmentSlotType slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + inv.armor.size() - index - 1];
+            addSlot(new ArmorSlot(inv, 36 + inv.armor.size() - index - 1, 8, 8 + index * 18, slotType));
         }
         // offhand
         addSlot(new OffhandSlot(inv, 40, 8, 16 + 18 * 4));

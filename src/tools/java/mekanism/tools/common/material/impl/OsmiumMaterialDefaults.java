@@ -48,22 +48,22 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getMaxUses() {
+    public int getUses() {
         return 500;
     }
 
     @Override
-    public float getEfficiency() {
+    public float getSpeed() {
         return 10;
     }
 
     @Override
-    public float getAttackDamage() {
+    public float getAttackDamageBonus() {
         return 4;
     }
 
     @Override
-    public int getHarvestLevel() {
+    public int getLevel() {
         return 2;
     }
 
@@ -78,7 +78,7 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurability(@Nonnull EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
                 return 390;
@@ -93,7 +93,7 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
+    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
                 return 3;
@@ -120,14 +120,14 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @Nonnull
     @Override
-    public SoundEvent getSoundEvent() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_IRON;
+    public SoundEvent getEquipSound() {
+        return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
     @Nonnull
     @Override
     public Ingredient getCommonRepairMaterial() {
-        return Ingredient.fromTag(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
+        return Ingredient.of(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
     }
 
     @Override

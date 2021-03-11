@@ -56,7 +56,7 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
 
     @Override
     protected String getDefaultTranslationKey() {
-        return Util.makeTranslationKey("slurry", getRegistryName());
+        return Util.makeDescriptionId("slurry", getRegistryName());
     }
 
     /**

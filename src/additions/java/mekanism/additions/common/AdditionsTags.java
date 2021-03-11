@@ -40,11 +40,11 @@ public class AdditionsTags {
         public static final INamedTag<Item> PLASTIC_BLOCKS_TRANSPARENT = tag("plastic_blocks/transparent");
 
         private static INamedTag<Item> forgeTag(String name) {
-            return ItemTags.makeWrapperTag("forge:" + name);
+            return ItemTags.bind("forge:" + name);
         }
 
         private static INamedTag<Item> tag(String name) {
-            return ItemTags.makeWrapperTag(MekanismAdditions.rl(name).toString());
+            return ItemTags.bind(MekanismAdditions.rl(name).toString());
         }
     }
 
@@ -73,11 +73,11 @@ public class AdditionsTags {
         public static final INamedTag<Block> PLASTIC_BLOCKS_TRANSPARENT = tag("plastic_blocks/transparent");
 
         private static INamedTag<Block> forgeTag(String name) {
-            return BlockTags.makeWrapperTag("forge:" + name);
+            return BlockTags.bind("forge:" + name);
         }
 
         private static INamedTag<Block> tag(String name) {
-            return BlockTags.makeWrapperTag(MekanismAdditions.rl(name).toString());
+            return BlockTags.bind(MekanismAdditions.rl(name).toString());
         }
     }
 
@@ -90,7 +90,7 @@ public class AdditionsTags {
         public static final INamedTag<EntityType<?>> ENDERMEN = forgeTag("endermen");
 
         private static INamedTag<EntityType<?>> forgeTag(String name) {
-            return EntityTypeTags.getTagById("forge:" + name);
+            return EntityTypeTags.bind("forge:" + name);
         }
     }
 }

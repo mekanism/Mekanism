@@ -103,7 +103,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     protected void onUpdateClient() {
         super.onUpdateClient();
         if (updateClientLight) {
-            WorldUtils.recheckLighting(world, pos);
+            WorldUtils.recheckLighting(level, worldPosition);
             updateClientLight = false;
         }
     }
@@ -124,7 +124,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             if (prevScale == 0 || scale == 0) {
                 //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
                 // as the fluid may have changed and have a light value
-                WorldUtils.recheckLighting(world, pos);
+                WorldUtils.recheckLighting(level, worldPosition);
             }
             prevScale = scale;
             needsPacket = true;
@@ -141,15 +141,15 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
         return nbtTags;
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
     }
 
@@ -176,9 +176,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
             setActive(!getActive());
-            World world = getWorld();
+            World world = getLevel();
             if (world != null) {
-                world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+                world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
             }
         }
         return ActionResultType.SUCCESS;

@@ -45,7 +45,7 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeFluidStack(output));
         }

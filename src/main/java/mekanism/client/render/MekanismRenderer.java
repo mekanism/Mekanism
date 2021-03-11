@@ -67,7 +67,7 @@ public class MekanismRenderer {
     //TODO: Replace various usages of this with the getter for calculating glow light, at least if we end up making it only
     // effect block light for the glow rather than having it actually become full light
     public static final int FULL_LIGHT = 0xF000F0;
-    public static final int FULL_SKY_LIGHT = LightTexture.packLight(0, 15);
+    public static final int FULL_SKY_LIGHT = LightTexture.pack(0, 15);
 
     public static OBJModel contentsModel;
     public static TextureAtlasSprite energyIcon;
@@ -112,7 +112,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getSprite(ResourceLocation spriteLocation) {
-        return Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(spriteLocation);
+        return Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(spriteLocation);
     }
 
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
@@ -201,16 +201,16 @@ public class MekanismRenderer {
             // if we aren't in the multiblock though we can just get away with only rendering the front faces
             faceDisplay = inMultiblock.getAsBoolean() ? FaceDisplay.BOTH : FaceDisplay.FRONT;
             for (ValveData valveData : valves) {
-                matrix.push();
+                matrix.pushPose();
                 matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
                 renderObject(ModelRenderer.getValveModel(ValveRenderData.get(data, valveData)), matrix, buffer, data.getColorARGB(), glow, overlay, faceDisplay);
-                matrix.pop();
+                matrix.popPose();
             }
         }
     }
 
     public static void bindTexture(ResourceLocation texture) {
-        Minecraft.getInstance().textureManager.bindTexture(texture);
+        Minecraft.getInstance().textureManager.bind(texture);
     }
 
     //Color
@@ -348,14 +348,14 @@ public class MekanismRenderer {
         RenderSystem.defaultBlendFunc();
         RenderSystem.shadeModel(GL11.GL_SMOOTH);
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        Matrix4f matrix4f = matrix.getLast().getMatrix();
-        bufferbuilder.pos(matrix4f, width, y, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.pos(matrix4f, x, y, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.pos(matrix4f, x, height, 0).color(r, g, b, a).endVertex();
-        bufferbuilder.pos(matrix4f, width, height, 0).color(r, g, b, a).endVertex();
-        tessellator.draw();
+        Matrix4f matrix4f = matrix.last().pose();
+        bufferbuilder.vertex(matrix4f, width, y, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.vertex(matrix4f, x, y, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.vertex(matrix4f, x, height, 0).color(r, g, b, a).endVertex();
+        bufferbuilder.vertex(matrix4f, width, height, 0).color(r, g, b, a).endVertex();
+        tessellator.end();
         RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
@@ -363,22 +363,22 @@ public class MekanismRenderer {
     }
 
     public static float getPartialTick() {
-        return Minecraft.getInstance().getRenderPartialTicks();
+        return Minecraft.getInstance().getFrameTime();
     }
 
     public static void rotate(MatrixStack matrix, Direction facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
-                matrix.rotate(Vector3f.YP.rotationDegrees(north));
+                matrix.mulPose(Vector3f.YP.rotationDegrees(north));
                 break;
             case SOUTH:
-                matrix.rotate(Vector3f.YP.rotationDegrees(south));
+                matrix.mulPose(Vector3f.YP.rotationDegrees(south));
                 break;
             case WEST:
-                matrix.rotate(Vector3f.YP.rotationDegrees(west));
+                matrix.mulPose(Vector3f.YP.rotationDegrees(west));
                 break;
             case EAST:
-                matrix.rotate(Vector3f.YP.rotationDegrees(east));
+                matrix.mulPose(Vector3f.YP.rotationDegrees(east));
                 break;
         }
     }
@@ -394,7 +394,7 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+        if (!event.getMap().location().equals(AtlasTexture.LOCATION_BLOCKS)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
@@ -458,7 +458,7 @@ public class MekanismRenderer {
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Post event) {
         AtlasTexture map = event.getMap();
-        if (!map.getTextureLocation().equals(AtlasTexture.LOCATION_BLOCKS_TEXTURE)) {
+        if (!map.location().equals(AtlasTexture.LOCATION_BLOCKS)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {

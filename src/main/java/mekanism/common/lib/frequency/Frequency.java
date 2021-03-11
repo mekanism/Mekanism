@@ -98,7 +98,7 @@ public abstract class Frequency {
     public void write(CompoundNBT nbtTags) {
         nbtTags.putString(NBTConstants.NAME, name);
         if (ownerUUID != null) {
-            nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
         }
         nbtTags.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
     }
@@ -111,21 +111,21 @@ public abstract class Frequency {
 
     public void write(PacketBuffer buffer) {
         getType().write(buffer);
-        buffer.writeString(name);
+        buffer.writeUtf(name);
         if (ownerUUID == null) {
             buffer.writeBoolean(false);
         } else {
             buffer.writeBoolean(true);
-            buffer.writeUniqueId(ownerUUID);
+            buffer.writeUUID(ownerUUID);
         }
-        buffer.writeString(MekanismUtils.getLastKnownUsername(ownerUUID));
+        buffer.writeUtf(MekanismUtils.getLastKnownUsername(ownerUUID));
         buffer.writeBoolean(publicFreq);
     }
 
     protected void read(PacketBuffer dataStream) {
         name = BasePacketHandler.readString(dataStream);
         if (dataStream.readBoolean()) {
-            ownerUUID = dataStream.readUniqueId();
+            ownerUUID = dataStream.readUUID();
         } else {
             ownerUUID = null;
         }

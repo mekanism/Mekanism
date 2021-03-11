@@ -33,63 +33,63 @@ public abstract class RobitAIBase extends Goal {
     }
 
     protected PathNavigator getNavigator() {
-        return theRobit.getNavigator();
+        return theRobit.getNavigation();
     }
 
     protected World getWorld() {
-        return theRobit.getEntityWorld();
+        return theRobit.getCommandSenderWorld();
     }
 
     @Override
-    public void startExecuting() {
+    public void start() {
         timeToRecalcPath = 0;
-        oldWaterCost = theRobit.getPathPriority(PathNodeType.WATER);
-        theRobit.setPathPriority(PathNodeType.WATER, 0);
+        oldWaterCost = theRobit.getPathfindingMalus(PathNodeType.WATER);
+        theRobit.setPathfindingMalus(PathNodeType.WATER, 0);
     }
 
     @Override
-    public void resetTask() {
-        getNavigator().clearPath();
-        theRobit.setPathPriority(PathNodeType.WATER, oldWaterCost);
+    public void stop() {
+        getNavigator().stop();
+        theRobit.setPathfindingMalus(PathNodeType.WATER, oldWaterCost);
     }
 
     protected void updateTask(Entity target) {
-        theRobit.getLookController().setLookPositionWithEntity(target, 6, theRobit.getVerticalFaceSpeed() / 10F);
+        theRobit.getLookControl().setLookAt(target, 6, theRobit.getMaxHeadXRot() / 10F);
         if (--timeToRecalcPath <= 0) {
             timeToRecalcPath = 10;
             if (!theRobit.isPassenger()) {
-                if (theRobit.getDistanceSq(target) >= 144.0) {
-                    BlockPos targetPos = target.getPosition();
+                if (theRobit.distanceToSqr(target) >= 144.0) {
+                    BlockPos targetPos = target.blockPosition();
                     for (int i = 0; i < 10; i++) {
                         if (tryPathTo(target, targetPos.getX() + randomize(-3, 3), targetPos.getY() + randomize(-1, 1), targetPos.getZ() + randomize(-3, 3))) {
                             return;
                         }
                     }
                 } else {
-                    getNavigator().tryMoveToEntityLiving(target, moveSpeed);
+                    getNavigator().moveTo(target, moveSpeed);
                 }
             }
         }
     }
 
     private int randomize(int min, int max) {
-        return theRobit.getRNG().nextInt(max - min + 1) + min;
+        return theRobit.getRandom().nextInt(max - min + 1) + min;
     }
 
     private boolean tryPathTo(Entity target, int x, int y, int z) {
-        if (Math.abs(x - target.getPosX()) < 2 && Math.abs(z - target.getPosZ()) < 2 || !canNavigate(new BlockPos(x, y, z))) {
+        if (Math.abs(x - target.getX()) < 2 && Math.abs(z - target.getZ()) < 2 || !canNavigate(new BlockPos(x, y, z))) {
             return false;
         }
-        theRobit.setLocationAndAngles(x + 0.5, y, z + 0.5, theRobit.rotationYaw, theRobit.rotationPitch);
-        getNavigator().clearPath();
+        theRobit.moveTo(x + 0.5, y, z + 0.5, theRobit.yRot, theRobit.xRot);
+        getNavigator().stop();
         return true;
     }
 
     private boolean canNavigate(BlockPos pos) {
-        PathNodeType pathnodetype = WalkNodeProcessor.getFloorNodeType(getWorld(), pos.toMutable());
+        PathNodeType pathnodetype = WalkNodeProcessor.getBlockPathTypeStatic(getWorld(), pos.mutable());
         if (pathnodetype == PathNodeType.WALKABLE) {
-            BlockPos blockpos = pos.subtract(theRobit.getPosition());
-            return getWorld().hasNoCollisions(theRobit, theRobit.getBoundingBox().offset(blockpos));
+            BlockPos blockpos = pos.subtract(theRobit.blockPosition());
+            return getWorld().noCollision(theRobit, theRobit.getBoundingBox().move(blockpos));
         }
         return false;
     }

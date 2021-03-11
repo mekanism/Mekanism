@@ -64,7 +64,7 @@ public class PacketTransporterUpdate implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, Minecraft.getInstance().world, pos);
+        TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, Minecraft.getInstance().level, pos);
         if (tile != null) {
             LogisticalTransporterBase transporter = tile.getTransmitter();
             if (isSync) {
@@ -107,7 +107,7 @@ public class PacketTransporterUpdate implements IMekanismPacket {
         }
         if (isDiversion) {
             for (DiversionControl mode : modes) {
-                buffer.writeEnumValue(mode);
+                buffer.writeEnum(mode);
             }
         }
     }
@@ -134,7 +134,7 @@ public class PacketTransporterUpdate implements IMekanismPacket {
         if (packet.isDiversion) {
             packet.modes = new DiversionControl[EnumUtils.DIRECTIONS.length];
             for (int i = 0; i < packet.modes.length; i++) {
-                packet.modes[i] = buffer.readEnumValue(DiversionControl.class);
+                packet.modes[i] = buffer.readEnum(DiversionControl.class);
             }
         }
         return packet;

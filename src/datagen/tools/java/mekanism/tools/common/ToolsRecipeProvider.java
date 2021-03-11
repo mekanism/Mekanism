@@ -79,8 +79,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        super.registerRecipes(consumer);
+    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
+        super.buildShapelessRecipes(consumer);
         registerRecipeSet(consumer, "bronze", ToolsItems.BRONZE_HELMET, ToolsItems.BRONZE_CHESTPLATE, ToolsItems.BRONZE_LEGGINGS, ToolsItems.BRONZE_BOOTS,
               ToolsItems.BRONZE_SWORD, ToolsItems.BRONZE_PICKAXE, ToolsItems.BRONZE_AXE, ToolsItems.BRONZE_SHOVEL, ToolsItems.BRONZE_HOE, ToolsItems.BRONZE_PAXEL,
               ToolsItems.BRONZE_SHIELD, MekanismTags.Items.INGOTS_BRONZE, Tags.Items.RODS_WOODEN, MekanismItems.BRONZE_NUGGET);
@@ -135,7 +135,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = name + "/nugget_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromItems(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel),
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(helmet, chestplate, leggings, boots, sword, pickaxe, axe, shovel, hoe, paxel),
                   nugget, 0.1F, 200, MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }
@@ -160,7 +160,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
             String baseNuggetFrom = nugget.getRegistryName().getPath() + "_from_";
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.fromItems(paxel), nugget, 0.1F, 200,
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(paxel), nugget, 0.1F, 200,
                   MekanismTools.rl(baseNuggetFrom + "blasting"), MekanismTools.rl(baseNuggetFrom + "smelting"));
         }
     }

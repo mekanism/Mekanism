@@ -84,10 +84,10 @@ public class MekanismKeyHandler extends MekKeyHandler {
         }
         if (kb == handModeSwitchKey) {
             if (IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND, false)) {
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isSneaking()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isShiftKeyDown()));
             } else if (!IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND) && IModeItem.isModeItem(player, EquipmentSlotType.OFFHAND)) {
                 //Otherwise try their offhand
-                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isSneaking()));
+                Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isShiftKeyDown()));
             }
         } else if (kb == headModeSwitchKey) {
             handlePotentialModeItem(player, EquipmentSlotType.HEAD);
@@ -110,7 +110,7 @@ public class MekanismKeyHandler extends MekKeyHandler {
 
     private void handlePotentialModeItem(PlayerEntity player, EquipmentSlotType slot) {
         if (IModeItem.isModeItem(player, slot)) {
-            Mekanism.packetHandler.sendToServer(new PacketModeChange(slot, player.isSneaking()));
+            Mekanism.packetHandler.sendToServer(new PacketModeChange(slot, player.isShiftKeyDown()));
             SoundHandler.playSound(MekanismSounds.HYDRAULIC);
         }
     }

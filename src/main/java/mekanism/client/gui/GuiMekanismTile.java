@@ -37,14 +37,14 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         super.drawForegroundText(matrix, mouseX, mouseY);
         if (tile instanceof ISideConfiguration) {
-            ItemStack stack = getMinecraft().player.inventory.getItemStack();
+            ItemStack stack = getMinecraft().player.inventory.getCarried();
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
-                for (int i = 0; i < container.inventorySlots.size(); i++) {
-                    Slot slot = container.inventorySlots.get(i);
+                for (int i = 0; i < menu.slots.size(); i++) {
+                    Slot slot = menu.slots.get(i);
                     if (isMouseOverSlot(slot, mouseX, mouseY)) {
                         DataType data = getFromSlot(slot);
                         if (data != null) {
-                            displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(data.getColor(), data.getColor().getName()), mouseX - guiLeft, mouseY - guiTop);
+                            displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(data.getColor(), data.getColor().getName()), mouseX - leftPos, mouseY - topPos);
                         }
                         break;
                     }
@@ -54,11 +54,11 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     }
 
     public void renderTitleText(MatrixStack matrix) {
-        drawTitleText(matrix, tile.getName(), titleY);
+        drawTitleText(matrix, tile.getName(), titleLabelY);
     }
 
     private DataType getFromSlot(Slot slot) {
-        if (slot.slotNumber < tile.getSlots() && slot instanceof InventoryContainerSlot) {
+        if (slot.index < tile.getSlots() && slot instanceof InventoryContainerSlot) {
             ISideConfiguration config = (ISideConfiguration) tile;
             ConfigInfo info = config.getConfig().getConfig(TransmissionType.ITEM);
             if (info != null) {

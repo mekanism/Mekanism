@@ -328,7 +328,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    public void renderWidget(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
     }
 
     protected void drawButtonText(MatrixStack matrix) {
@@ -401,7 +401,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     protected void playClickSound() {
-        super.playDownSound(minecraft.getSoundHandler());
+        super.playDownSound(minecraft.getSoundManager());
     }
 
     protected void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,

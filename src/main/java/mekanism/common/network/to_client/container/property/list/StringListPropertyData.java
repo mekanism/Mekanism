@@ -24,7 +24,7 @@ public class StringListPropertyData extends ListPropertyData<String> {
     @Override
     protected void writeListElements(PacketBuffer buffer) {
         for (String value : values) {
-            buffer.writeString(value);
+            buffer.writeUtf(value);
         }
     }
 }

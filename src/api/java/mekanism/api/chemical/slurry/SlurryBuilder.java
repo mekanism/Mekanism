@@ -57,7 +57,7 @@ public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
      * @param oreTagLocation {@link ResourceLocation} of the item tag representing the ore.
      */
     public SlurryBuilder ore(ResourceLocation oreTagLocation) {
-        return ore(ItemTags.makeWrapperTag(Objects.requireNonNull(oreTagLocation).toString()));
+        return ore(ItemTags.bind(Objects.requireNonNull(oreTagLocation).toString()));
     }
 
     /**

@@ -25,9 +25,9 @@ public class PacketUpdateContainer implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         //Ensure that the container is one of ours and that the window id is the same as we expect it to be
-        if (player != null && player.openContainer instanceof MekanismContainer && player.openContainer.windowId == windowId) {
+        if (player != null && player.containerMenu instanceof MekanismContainer && player.containerMenu.containerId == windowId) {
             //If so then handle the packet
-            data.forEach(data -> data.handleWindowProperty((MekanismContainer) player.openContainer));
+            data.forEach(data -> data.handleWindowProperty((MekanismContainer) player.containerMenu));
         }
     }
 

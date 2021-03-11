@@ -50,7 +50,7 @@ public class RenderResizableCuboid {
         float xShift = MathHelper.floor(cube.minX);
         float yShift = MathHelper.floor(cube.minY);
         float zShift = MathHelper.floor(cube.minZ);
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(xShift, yShift, zShift);
         float minX = cube.minX - xShift;
         float minY = cube.minY - yShift;
@@ -64,9 +64,9 @@ public class RenderResizableCuboid {
         float[] xBounds = getBlockBounds(xDelta, minX, maxX);
         float[] yBounds = getBlockBounds(yDelta, minY, maxY);
         float[] zBounds = getBlockBounds(zDelta, minZ, maxZ);
-        MatrixStack.Entry lastMatrix = matrix.getLast();
-        Matrix4f matrix4f = lastMatrix.getMatrix();
-        Matrix3f normalMatrix = lastMatrix.getNormal();
+        MatrixStack.Entry lastMatrix = matrix.last();
+        Matrix4f matrix4f = lastMatrix.pose();
+        Matrix3f normalMatrix = lastMatrix.normal();
         Vector3f normal = fakeDisableDiffuse ? NORMAL : Vector3f.YP;
         Vector3f from = new Vector3f();
         Vector3f to = new Vector3f();
@@ -96,7 +96,7 @@ public class RenderResizableCuboid {
                 }
             }
         }
-        matrix.pop();
+        matrix.popPose();
     }
 
     /**
@@ -138,8 +138,8 @@ public class RenderResizableCuboid {
             return;
         }
         // start with texture coordinates
-        float x1 = from.getX(), y1 = from.getY(), z1 = from.getZ();
-        float x2 = to.getX(), y2 = to.getY(), z2 = to.getZ();
+        float x1 = from.x(), y1 = from.y(), z1 = from.z();
+        float x2 = to.x(), y2 = to.y(), z2 = to.z();
         // choose UV based on opposite two axis
         float u1, u2, v1, v2;
         switch (face.getAxis()) {
@@ -192,10 +192,10 @@ public class RenderResizableCuboid {
         v1 = 1f - v2;
         v2 = 1f - temp;
 
-        float minU = spriteInfo.sprite.getInterpolatedU(u1 * spriteInfo.size);
-        float maxU = spriteInfo.sprite.getInterpolatedU(u2 * spriteInfo.size);
-        float minV = spriteInfo.sprite.getInterpolatedV(v1 * spriteInfo.size);
-        float maxV = spriteInfo.sprite.getInterpolatedV(v2 * spriteInfo.size);
+        float minU = spriteInfo.sprite.getU(u1 * spriteInfo.size);
+        float maxU = spriteInfo.sprite.getU(u2 * spriteInfo.size);
+        float minV = spriteInfo.sprite.getV(v1 * spriteInfo.size);
+        float maxV = spriteInfo.sprite.getV(v2 * spriteInfo.size);
         int argb = colors[face.ordinal()];
         float red = MekanismRenderer.getRed(argb);
         float green = MekanismRenderer.getGreen(argb);
@@ -255,16 +255,16 @@ public class RenderResizableCuboid {
           float x3, float y3, float z3,
           float x4, float y4, float z4) {
         if (faceDisplay.front) {
-            buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normalMatrix, normal.getX(), normal.getY(), normal.getZ()).endVertex();
-            buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normalMatrix, normal.getX(), normal.getY(), normal.getZ()).endVertex();
-            buffer.pos(matrix, x3, y3, z3).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normalMatrix, normal.getX(), normal.getY(), normal.getZ()).endVertex();
-            buffer.pos(matrix, x4, y4, z4).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normalMatrix, normal.getX(), normal.getY(), normal.getZ()).endVertex();
+            buffer.vertex(matrix, x1, y1, z1).color(red, green, blue, alpha).uv(minU, maxV).overlayCoords(overlay).uv2(light).normal(normalMatrix, normal.x(), normal.y(), normal.z()).endVertex();
+            buffer.vertex(matrix, x2, y2, z2).color(red, green, blue, alpha).uv(minU, minV).overlayCoords(overlay).uv2(light).normal(normalMatrix, normal.x(), normal.y(), normal.z()).endVertex();
+            buffer.vertex(matrix, x3, y3, z3).color(red, green, blue, alpha).uv(maxU, minV).overlayCoords(overlay).uv2(light).normal(normalMatrix, normal.x(), normal.y(), normal.z()).endVertex();
+            buffer.vertex(matrix, x4, y4, z4).color(red, green, blue, alpha).uv(maxU, maxV).overlayCoords(overlay).uv2(light).normal(normalMatrix, normal.x(), normal.y(), normal.z()).endVertex();
         }
         if (faceDisplay.back) {
-            buffer.pos(matrix, x4, y4, z4).color(red, green, blue, alpha).tex(maxU, maxV).overlay(overlay).lightmap(light).normal(normalMatrix, 0, -1, 0).endVertex();
-            buffer.pos(matrix, x3, y3, z3).color(red, green, blue, alpha).tex(maxU, minV).overlay(overlay).lightmap(light).normal(normalMatrix, 0, -1, 0).endVertex();
-            buffer.pos(matrix, x2, y2, z2).color(red, green, blue, alpha).tex(minU, minV).overlay(overlay).lightmap(light).normal(normalMatrix, 0, -1, 0).endVertex();
-            buffer.pos(matrix, x1, y1, z1).color(red, green, blue, alpha).tex(minU, maxV).overlay(overlay).lightmap(light).normal(normalMatrix, 0, -1, 0).endVertex();
+            buffer.vertex(matrix, x4, y4, z4).color(red, green, blue, alpha).uv(maxU, maxV).overlayCoords(overlay).uv2(light).normal(normalMatrix, 0, -1, 0).endVertex();
+            buffer.vertex(matrix, x3, y3, z3).color(red, green, blue, alpha).uv(maxU, minV).overlayCoords(overlay).uv2(light).normal(normalMatrix, 0, -1, 0).endVertex();
+            buffer.vertex(matrix, x2, y2, z2).color(red, green, blue, alpha).uv(minU, minV).overlayCoords(overlay).uv2(light).normal(normalMatrix, 0, -1, 0).endVertex();
+            buffer.vertex(matrix, x1, y1, z1).color(red, green, blue, alpha).uv(minU, maxV).overlayCoords(overlay).uv2(light).normal(normalMatrix, 0, -1, 0).endVertex();
         }
     }
 

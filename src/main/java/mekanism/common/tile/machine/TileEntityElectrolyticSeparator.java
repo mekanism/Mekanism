@@ -181,7 +181,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         builder.addSlot(fluidSlot = FluidInventorySlot.fill(fluidTank, this, 26, 35));
         builder.addSlot(leftOutputSlot = GasInventorySlot.drain(leftTank, this, 59, 52));
         builder.addSlot(rightOutputSlot = GasInventorySlot.drain(rightTank, this, 101, 52));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 143, 35));
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
         leftOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
         rightOutputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -285,16 +285,16 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putInt(NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
         nbtTags.putInt(NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
         return nbtTags;

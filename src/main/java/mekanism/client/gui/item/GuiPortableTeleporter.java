@@ -60,8 +60,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         super(container, inv, title);
         currentHand = container.getHand();
         itemStack = container.getStack();
-        ySize = 175;
-        titleY = 4;
+        imageHeight = 175;
+        titleLabelY = 4;
     }
 
     @Override
@@ -86,15 +86,15 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }, 158, 26));
         addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
 
-        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 14, 60, 20, MekanismLang.PUBLIC, () -> {
+        addButton(publicButton = new TranslationButton(this, leftPos + 27, topPos + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 14, 60, 20, MekanismLang.PRIVATE, () -> {
+        addButton(privateButton = new TranslationButton(this, leftPos + 89, topPos + 14, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
+        addButton(setButton = new TranslationButton(this, leftPos + 27, topPos + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 TeleporterFrequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
@@ -102,24 +102,24 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 79, guiTop + 120, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
+        addButton(deleteButton = new TranslationButton(this, leftPos + 79, topPos + 120, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 TeleporterFrequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
-                Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_ITEM, FrequencyType.TELEPORTER, freq.getIdentity(), container.getHand()));
+                Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_ITEM, FrequencyType.TELEPORTER, freq.getIdentity(), menu.getHand()));
                 scrollList.clearSelection();
             }
             updateButtons();
         }));
         addButton(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
-        addButton(new ColorButton(this, guiLeft + 132, guiTop + 121, 16, 16,
+        addButton(new ColorButton(this, leftPos + 132, topPos + 121, 16, 16,
               () -> getFrequency() == null ? null : getFrequency().getColor(),
               () -> sendColorUpdate(0),
               () -> sendColorUpdate(1)));
-        addButton(teleportButton = new TranslationButton(this, guiLeft + 42, guiTop + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
+        addButton(teleportButton = new TranslationButton(this, leftPos + 42, topPos + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             if (getFrequency() != null && clientStatus == 1) {
                 ClientTickHandler.portableTeleport(getMinecraft().player, currentHand, getFrequency());
-                getMinecraft().player.closeScreen();
+                getMinecraft().player.closeContainer();
             }
             updateButtons();
         }));
@@ -129,7 +129,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         frequencyField.setEnterHandler(this::setFrequency);
         frequencyField.setInputValidator(InputValidator.or(InputValidator.DIGIT, InputValidator.LETTER, InputValidator.FREQUENCY_CHARS));
         frequencyField.addCheckmarkButton(this::setFrequency);
-        addButton(new MekanismImageButton(this, guiLeft + 137, guiTop + 103, 11, 12, getButtonLocation("checkmark"), this::setFrequency));
+        addButton(new MekanismImageButton(this, leftPos + 137, topPos + 103, 11, 12, getButtonLocation("checkmark"), this::setFrequency));
         updateButtons();
     }
 
@@ -205,8 +205,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, getName(), titleY);
-        drawString(matrix, OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, !itemStack.isEmpty() ? ySize - 12 : ySize - 96 + 4, titleTextColor());
+        drawTitleText(matrix, getName(), titleLabelY);
+        drawString(matrix, OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, !itemStack.isEmpty() ? imageHeight - 12 : imageHeight - 96 + 4, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(matrix, frequencyComponent, 32, 81, titleTextColor());
         ITextComponent securityComponent = MekanismLang.SECURITY.translate("");
@@ -217,7 +217,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 81, subheadingTextColor());
             drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 91, subheadingTextColor());
         } else {
-            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 81, subheadingTextColor(), xSize - 32 - frequencyOffset - 4);
+            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 81, subheadingTextColor(), imageWidth - 32 - frequencyOffset - 4);
             drawString(matrix, getSecurity(frequency), 32 + getStringWidth(securityComponent), 91, subheadingTextColor());
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 104, titleTextColor(), 20);
@@ -225,40 +225,40 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     private UUID getOwnerUUID() {
-        return container.getOwnerUUID();
+        return menu.getOwnerUUID();
     }
 
     private String getOwnerUsername() {
-        return container.getOwnerUsername();
+        return menu.getOwnerUsername();
     }
 
     private void setFrequencyFromName(String name) {
         if (!name.isEmpty()) {
             Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.SET_ITEM, FrequencyType.TELEPORTER,
-                  new FrequencyIdentity(name, !privateMode), container.getHand()));
+                  new FrequencyIdentity(name, !privateMode), menu.getHand()));
         }
     }
 
     private ITextComponent getName() {
-        return itemStack.getDisplayName();
+        return itemStack.getHoverName();
     }
 
     public TeleporterFrequency getFrequency() {
-        return container.getFrequency();
+        return menu.getFrequency();
     }
 
     private List<TeleporterFrequency> getPublicFrequencies() {
-        return container.getPublicCache();
+        return menu.getPublicCache();
     }
 
     private List<TeleporterFrequency> getPrivateFrequencies() {
-        return container.getPrivateCache();
+        return menu.getPrivateCache();
     }
 
     private void sendColorUpdate(int extra) {
         TeleporterFrequency freq = getFrequency();
         if (freq != null) {
-            Mekanism.packetHandler.sendToServer(PacketTeleporterSetColor.create(container.getHand(), freq, extra));
+            Mekanism.packetHandler.sendToServer(PacketTeleporterSetColor.create(menu.getHand(), freq, extra));
         }
     }
 }

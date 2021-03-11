@@ -23,7 +23,7 @@ public class PacketRadialModeChange implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender();
         if (player != null) {
-            ItemStack stack = player.getItemStackFromSlot(slot);
+            ItemStack stack = player.getItemBySlot(slot);
             if (!stack.isEmpty() && stack.getItem() instanceof IRadialModeItem) {
                 setMode(stack, (IRadialModeItem<?>) stack.getItem(), player);
             }
@@ -36,11 +36,11 @@ public class PacketRadialModeChange implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(slot);
+        buffer.writeEnum(slot);
         buffer.writeVarInt(change);
     }
 
     public static PacketRadialModeChange decode(PacketBuffer buffer) {
-        return new PacketRadialModeChange(buffer.readEnumValue(EquipmentSlotType.class), buffer.readVarInt());
+        return new PacketRadialModeChange(buffer.readEnum(EquipmentSlotType.class), buffer.readVarInt());
     }
 }

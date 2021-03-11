@@ -41,11 +41,11 @@ public abstract class BasePacketHandler {
     }
 
     /**
-     * Helper for reading strings to make sure we don't accidentally call PacketBuffer#readString on the server
+     * Helper for reading strings to make sure we don't accidentally call {@link PacketBuffer#readUtf()} on the server
      */
     public static String readString(PacketBuffer buffer) {
-        //TODO: Evaluate usages and potentially move some things to more strict string length checks
-        return buffer.readString(Short.MAX_VALUE);
+        //TODO - 10.1: Evaluate usages and potentially move some things to more strict string length checks
+        return buffer.readUtf(Short.MAX_VALUE);
     }
 
     public static Vector3d readVector3d(PacketBuffer buffer) {
@@ -53,9 +53,9 @@ public abstract class BasePacketHandler {
     }
 
     public static void writeVector3d(PacketBuffer buffer, Vector3d vector) {
-        buffer.writeDouble(vector.getX());
-        buffer.writeDouble(vector.getY());
-        buffer.writeDouble(vector.getZ());
+        buffer.writeDouble(vector.x());
+        buffer.writeDouble(vector.y());
+        buffer.writeDouble(vector.z());
     }
 
     public static void log(String logFormat, Object... params) {
@@ -92,7 +92,7 @@ public abstract class BasePacketHandler {
     public <MSG> void sendTo(MSG message, ServerPlayerEntity player) {
         //Validate it is not a fake player, even though none of our code should call this with a fake player
         if (!(player instanceof FakePlayer)) {
-            getChannel().sendTo(message, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+            getChannel().sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
         }
     }
 
@@ -147,14 +147,14 @@ public abstract class BasePacketHandler {
     }
 
     public <MSG> void sendToAllTracking(MSG message, TileEntity tile) {
-        sendToAllTracking(message, tile.getWorld(), tile.getPos());
+        sendToAllTracking(message, tile.getLevel(), tile.getBlockPos());
     }
 
     public <MSG> void sendToAllTracking(MSG message, World world, BlockPos pos) {
         if (world instanceof ServerWorld) {
             //If we have a ServerWorld just directly figure out the ChunkPos so as to not require looking up the chunk
             // This provides a decent performance boost over using the packet distributor
-            ((ServerWorld) world).getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
+            ((ServerWorld) world).getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
         } else {
             //Otherwise fallback to entities tracking the chunk if some mod did something odd and our world is not a ServerWorld
             getChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos.getX() >> 4, pos.getZ() >> 4)), message);
@@ -173,8 +173,8 @@ public abstract class BasePacketHandler {
                 //Ignore height for partial Cubic chunks support as range comparison gets used ignoring player height normally anyways
                 int radius = playerList.getViewDistance() * 16;
                 for (ServerPlayerEntity player : playerList.getPlayers()) {
-                    if (range.dimension == player.func_241141_L_()) {
-                        BlockPos playerPosition = player.getPosition();
+                    if (range.dimension == player.getLevel().dimension()) {
+                        BlockPos playerPosition = player.blockPosition();
                         int playerX = playerPosition.getX();
                         int playerZ = playerPosition.getZ();
                         //playerX/Z + radius is the max, so to stay in line with how it was before, it has an extra + 1 added to it

@@ -95,7 +95,7 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
         if (Screen.hasShiftDown()) {
             setTargetSlot(null, false);
         } else {
-            ItemStack stack = minecraft.player.inventory.getItemStack();
+            ItemStack stack = minecraft.player.inventory.getCarried();
             if (!stack.isEmpty()) {
                 setTargetSlot(stack, false);
             }
@@ -123,7 +123,7 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
                 if (item instanceof BlockItem) {
                     Block block = ((BlockItem) item).getBlock();
                     tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(block.getTags()));
-                    if (block instanceof IHasTileEntity || block.hasTileEntity(block.getDefaultState())) {
+                    if (block instanceof IHasTileEntity || block.hasTileEntity(block.defaultBlockState())) {
                         tags.put(DictionaryTagType.TILE_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
                     }
                 }
@@ -141,7 +141,7 @@ public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhost
                     tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantmentTags));
                 }
                 //Get any potion tags
-                Potion potion = PotionUtils.getPotionFromItem(itemStack);
+                Potion potion = PotionUtils.getPotion(itemStack);
                 if (potion != Potions.EMPTY) {
                     tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potion.getTags()));
                 }

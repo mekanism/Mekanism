@@ -44,11 +44,11 @@ import net.minecraftforge.fluids.FluidStack;
 public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockMachine(BlockTile<?, ?> block) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1));
     }
 
     public ItemBlockMachine(BlockTile<?, ?> block, Supplier<Callable<ItemStackTileEntityRenderer>> renderer) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setISTER(renderer));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1).setISTER(renderer));
     }
 
     @Override

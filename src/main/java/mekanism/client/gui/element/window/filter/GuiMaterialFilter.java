@@ -31,7 +31,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
         List<ITextComponent> list = super.getScreenText();
         if (filter.hasFilter()) {
             list.add(MekanismLang.MATERIAL_FILTER_DETAILS.translate());
-            list.add(filter.getMaterialItem().getDisplayName());
+            list.add(filter.getMaterialItem().getHoverName());
         }
         return list;
     }

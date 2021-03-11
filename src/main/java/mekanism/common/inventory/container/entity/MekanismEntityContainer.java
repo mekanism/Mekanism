@@ -28,7 +28,7 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull PlayerEntity player) {
         return entity.isAlive();
     }
 
@@ -42,7 +42,7 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
             return null;
         }
         return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> {
-            Entity entity = Minecraft.getInstance().world.getEntityByID(buf.readVarInt());
+            Entity entity = Minecraft.getInstance().level.getEntity(buf.readVarInt());
             if (type.isInstance(entity)) {
                 return (ENTITY) entity;
             }

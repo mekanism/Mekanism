@@ -120,7 +120,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     return string.charAt(0);
                 }
             } else if (expectedType == ResourceLocation.class) {
-                ResourceLocation rl = ResourceLocation.tryCreate((String) argument);
+                ResourceLocation rl = ResourceLocation.tryParse((String) argument);
                 if (rl != null) {
                     return rl;
                 }
@@ -193,7 +193,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             wrapped.put("x", coord.getX());
             wrapped.put("y", coord.getY());
             wrapped.put("z", coord.getZ());
-            wrapped.put("dimension", wrapReturnType(coord.dimension.getLocation()));
+            wrapped.put("dimension", wrapReturnType(coord.dimension.location()));
             return wrapped;
         } else if (result instanceof Frequency) {
             FrequencyIdentity identity = ((Frequency) result).getIdentity();
@@ -276,7 +276,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
 
     private static ItemStack tryCreateFilterItem(@Nullable Object rawName) {
         if (rawName instanceof String) {
-            ResourceLocation itemName = ResourceLocation.tryCreate((String) rawName);
+            ResourceLocation itemName = ResourceLocation.tryParse((String) rawName);
             if (itemName != null) {
                 Item item = ForgeRegistries.ITEMS.getValue(itemName);
                 if (item != null && item != Items.AIR) {
@@ -396,7 +396,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                         if (tag.isEmpty()) {
                             return null;
                         }
-                        ResourceLocation rl = ResourceLocation.tryCreate(tag);
+                        ResourceLocation rl = ResourceLocation.tryParse(tag);
                         if (rl == null || !TileEntityOredictionificator.isValidTarget(rl)) {
                             return null;
                         }

@@ -35,12 +35,12 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     public GuiSeismicReader(SeismicReaderContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        xSize = 147;
-        ySize = 182;
-        BlockPos pos = inv.player.getPosition();
+        imageWidth = 147;
+        imageHeight = 182;
+        BlockPos pos = inv.player.blockPosition();
         //Calculate all the blocks in the column
-        for (BlockPos p : BlockPos.getAllInBoxMutable(new BlockPos(pos.getX(), 0, pos.getZ()), pos)) {
-            blockList.add(inv.player.world.getBlockState(p));
+        for (BlockPos p : BlockPos.betweenClosed(new BlockPos(pos.getX(), 0, pos.getZ()), pos)) {
+            blockList.add(inv.player.level.getBlockState(p));
         }
     }
 
@@ -53,13 +53,13 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         addButton(new GuiArrowSelection(this, 76, 81, () -> {
             int currentLayer = scrollBar.getCurrentSelection();
             if (currentLayer >= 0) {
-                return blockList.get(blockList.size() - 1 - currentLayer).getBlock().getTranslatedName();
+                return blockList.get(blockList.size() - 1 - currentLayer).getBlock().getName();
             }
             return null;
         }));
-        addButton(upButton = new MekanismImageButton(this, guiLeft + 126, guiTop + 11, 14,
+        addButton(upButton = new MekanismImageButton(this, leftPos + 126, topPos + 11, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), () -> scrollBar.adjustScroll(1)));
-        addButton(downButton = new MekanismImageButton(this, guiLeft + 126, guiTop + 156, 14,
+        addButton(downButton = new MekanismImageButton(this, leftPos + 126, topPos + 156, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), () -> scrollBar.adjustScroll(-1)));
         updateEnabledButtons();
     }
@@ -94,7 +94,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 if (i == 4) {
                     renderItem(matrix, stack, renderX, renderY);
                 } else {
-                    matrix.push();
+                    matrix.pushPose();
                     matrix.translate(renderX, renderY, 0);
                     if (i < 4) {
                         matrix.translate(1.7F, 2.5F, 0);
@@ -103,7 +103,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                     }
                     matrix.scale(0.8F, 0.8F, 0.8F);
                     renderItem(matrix, stack, 0, 0);
-                    matrix.pop();
+                    matrix.popPose();
                 }
             }
         }
@@ -111,7 +111,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         // Get the name from the stack and render it
         if (currentLayer >= 0) {
             Block block = blockList.get(currentLayer).getBlock();
-            ITextComponent displayName = block.getTranslatedName();
+            ITextComponent displayName = block.getName();
             drawTextScaledBound(matrix, displayName, 10, 16, screenTextColor(), 57);
             frequency = frequencies.computeIntIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
         }

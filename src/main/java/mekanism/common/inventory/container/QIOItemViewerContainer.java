@@ -55,7 +55,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private static final int DOUBLE_CLICK_TRANSFER_DURATION = 20;
 
     public static int getSlotsYMax() {
-        int maxY = (int) Math.ceil(Minecraft.getInstance().getMainWindow().getScaledHeight() * 0.05 - 8) + 1;
+        int maxY = (int) Math.ceil(Minecraft.getInstance().getWindow().getGuiScaledHeight() * 0.05 - 8) + 1;
         return Math.max(Math.min(maxY, SLOTS_Y_MAX), SLOTS_Y_MIN);
     }
 
@@ -169,7 +169,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     protected void openInventory(@Nonnull PlayerInventory inv) {
         super.openInventory(inv);
-        if (inv.player.world.isRemote()) {
+        if (inv.player.level.isClientSide()) {
             Mekanism.packetHandler.sendToServer(PacketGuiItemDataRequest.qioItemViewer());
         }
     }
@@ -177,8 +177,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     protected void closeInventory(@Nonnull PlayerEntity player) {
         super.closeInventory(player);
-        if (!player.world.isRemote()) {
-            clearSelectedCraftingGrid(player.getUniqueID());
+        if (!player.level.isClientSide()) {
+            clearSelectedCraftingGrid(player.getUUID());
             QIOFrequency freq = getFrequency();
             if (freq != null) {
                 freq.closeItemViewer((ServerPlayerEntity) player);
@@ -187,8 +187,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
+    public void broadcastChanges() {
+        super.broadcastChanges();
         if (doubleClickTransferTicks > 0) {
             doubleClickTransferTicks--;
         } else {
@@ -211,13 +211,13 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private void doDoubleClickTransfer(PlayerEntity player) {
         QIOFrequency freq = getFrequency();
         mainInventorySlots.forEach(slot -> {
-            if (freq != null && slot.getHasStack() && slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
-                updateSlot(player, slot, freq.addItem(slot.getStack()));
+            if (freq != null && slot.hasItem() && slot.mayPickup(player) && InventoryUtils.areItemsStackable(lastStack, slot.getItem())) {
+                updateSlot(player, slot, freq.addItem(slot.getItem()));
             }
         });
         hotBarSlots.forEach(slot -> {
-            if (freq != null && slot.getHasStack() && slot.canTakeStack(player) && InventoryUtils.areItemsStackable(lastStack, slot.getStack())) {
-                updateSlot(player, slot, freq.addItem(slot.getStack()));
+            if (freq != null && slot.hasItem() && slot.mayPickup(player) && InventoryUtils.areItemsStackable(lastStack, slot.getItem())) {
+                updateSlot(player, slot, freq.addItem(slot.getItem()));
             }
         });
     }
@@ -242,8 +242,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotID) {
-        Slot currentSlot = inventorySlots.get(slotID);
+    public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotID) {
+        Slot currentSlot = slots.get(slotID);
         if (currentSlot == null) {
             return ItemStack.EMPTY;
         }
@@ -253,12 +253,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         } else if (currentSlot instanceof InventoryContainerSlot) {
             //Otherwise if we are an inventory container slot (crafting input slots in this case)
             // use our normal handling to attempt and transfer the contents to the player's inventory
-            return super.transferStackInSlot(player, slotID);
+            return super.quickMoveStack(player, slotID);
         }
         // special handling for shift-clicking into GUI
-        if (!player.world.isRemote()) {
-            ItemStack slotStack = currentSlot.getStack();
-            byte selectedCraftingGrid = selectedCraftingGrids.getOrDefault(player.getUniqueID(), (byte) -1);
+        if (!player.level.isClientSide()) {
+            ItemStack slotStack = currentSlot.getItem();
+            byte selectedCraftingGrid = selectedCraftingGrids.getOrDefault(player.getUUID(), (byte) -1);
             if (selectedCraftingGrid != -1) {
                 //If the player has a crafting window open
                 if (!getCraftingWindow(selectedCraftingGrid).isOutput(slotStack)) {
@@ -281,7 +281,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             }
             QIOFrequency frequency = getFrequency();
             if (frequency != null) {
-                if (currentSlot.getHasStack()) {
+                if (currentSlot.hasItem()) {
                     //Make sure that we copy it so that we aren't just pointing to the reference of it
                     slotStack = slotStack.copy();
                     ItemStack ret = frequency.addItem(slotStack);
@@ -303,7 +303,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     private ItemStack updateSlot(PlayerEntity player, Slot currentSlot, ItemStack ret) {
-        return transferSuccess(currentSlot, player, currentSlot.getStack(), ret);
+        return transferSuccess(currentSlot, player, currentSlot.getItem(), ret);
     }
 
     public void handleBatchUpdate(Object2LongMap<UUIDAwareHashedItem> itemMap, long countCapacity, int typeCapacity) {
@@ -459,7 +459,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public void updateSearch(String queryText) {
         // searches should only updated on client-side
-        if (!inv.player.world.isRemote() || itemList == null) {
+        if (!inv.player.level.isClientSide() || itemList == null) {
             return;
         }
 
@@ -541,7 +541,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
         @Override
         public String getDisplayName() {
-            return getItem().getStack().getDisplayName().getString();
+            return getItem().getStack().getHoverName().getString();
         }
     }
 

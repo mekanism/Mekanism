@@ -46,7 +46,7 @@ public class MekanismButton extends GuiElement {
         //From AbstractButton
         if (this.active && this.visible && this.isFocused()) {
             if (keyCode == 257 || keyCode == 32 || keyCode == 335) {
-                playDownSound(Minecraft.getInstance().getSoundHandler());
+                playDownSound(Minecraft.getInstance().getSoundManager());
                 onLeftClick();
                 return true;
             }
@@ -69,7 +69,7 @@ public class MekanismButton extends GuiElement {
         if (this.active && this.visible && isHovered()) {
             if (button == 1) {
                 //Right clicked
-                playDownSound(Minecraft.getInstance().getSoundHandler());
+                playDownSound(Minecraft.getInstance().getSoundManager());
                 onRightClick();
                 return true;
             }

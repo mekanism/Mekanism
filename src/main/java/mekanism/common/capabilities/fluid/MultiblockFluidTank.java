@@ -70,9 +70,9 @@ public class MultiblockFluidTank<MULTIBLOCK extends MultiblockData> extends Vari
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
-        if (tile.hasWorld() && !tile.getWorld().isRemote()) {
+        if (tile.hasLevel() && !tile.getLevel().isClientSide()) {
             tile.markDirty(false);
-            multiblock.markDirtyComparator(tile.getWorld());
+            multiblock.markDirtyComparator(tile.getLevel());
         }
     }
 }

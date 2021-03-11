@@ -9,7 +9,7 @@ public enum ToolsLang implements ILangEntry {
     private final String key;
 
     ToolsLang(String type, String path) {
-        this(Util.makeTranslationKey(type, MekanismTools.rl(path)));
+        this(Util.makeDescriptionId(type, MekanismTools.rl(path)));
     }
 
     ToolsLang(String key) {

@@ -221,7 +221,7 @@ public class ClientRegistration {
 
         //Block render layers
         //Cutout
-        ClientRegistrationUtil.setRenderLayer(RenderType.getCutout(), MekanismBlocks.STRUCTURAL_GLASS, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,
+        ClientRegistrationUtil.setRenderLayer(RenderType.cutout(), MekanismBlocks.STRUCTURAL_GLASS, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,
               MekanismBlocks.CHARGEPAD, MekanismBlocks.ELECTROLYTIC_SEPARATOR,
               //Fluid Tanks
               MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
@@ -241,15 +241,15 @@ public class ClientRegistration {
         //TODO: Does the diversion transporter actually need to be in multiple render types
         // Also can we move the overlay from the TER to being part of the baked model
         //Logistical Transporter
-        ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getCutout() || renderType == RenderType.getTranslucent(),
+        ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.cutout() || renderType == RenderType.translucent(),
               MekanismBlocks.DIVERSION_TRANSPORTER, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
         //Fluids (translucent)
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : MekanismFluids.FLUIDS.getAllFluids()) {
-            ClientRegistrationUtil.setRenderLayer(RenderType.getTranslucent(), fluidRO);
+            ClientRegistrationUtil.setRenderLayer(RenderType.translucent(), fluidRO);
         }
         // Multi-Layer blocks (requiring both sold & translucent render layers)
-        ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.getSolid() || renderType == RenderType.getTranslucent(),
+        ClientRegistrationUtil.setRenderLayer(renderType -> renderType == RenderType.solid() || renderType == RenderType.translucent(),
               MekanismBlocks.ISOTOPIC_CENTRIFUGE, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismBlocks.CHEMICAL_CRYSTALLIZER);
 
         event.enqueueWork(() -> {
@@ -266,9 +266,9 @@ public class ClientRegistration {
             });
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pull"),
-                  (stack, world, entity) -> entity != null && entity.getActiveItemStack() == stack ? (stack.getUseDuration() - entity.getItemInUseCount()) / 20.0F : 0);
+                  (stack, world, entity) -> entity != null && entity.getUseItem() == stack ? (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F : 0);
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pulling"),
-                  (stack, world, entity) -> entity != null && entity.isHandActive() && entity.getActiveItemStack() == stack ? 1.0F : 0.0F);
+                  (stack, world, entity) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity) -> {
                 if (entity instanceof PlayerEntity) {
@@ -443,7 +443,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void loadComplete(FMLLoadCompleteEvent evt) {
-        EntityRendererManager entityRenderManager = Minecraft.getInstance().getRenderManager();
+        EntityRendererManager entityRenderManager = Minecraft.getInstance().getEntityRenderDispatcher();
         //Add our own custom armor layer to the various player renderers
         for (Entry<String, PlayerRenderer> entry : entityRenderManager.getSkinMap().entrySet()) {
             addCustomArmorLayer(entry.getValue());
@@ -459,11 +459,11 @@ public class ClientRegistration {
     }
 
     private static <T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> void addCustomArmorLayer(LivingRenderer<T, M> renderer) {
-        for (LayerRenderer<T, M> layerRenderer : new ArrayList<>(renderer.layerRenderers)) {
+        for (LayerRenderer<T, M> layerRenderer : new ArrayList<>(renderer.layers)) {
             //Only allow an exact match, so we don't add to modded entities that only have a modded extended armor layer
             if (layerRenderer.getClass() == BipedArmorLayer.class) {
                 BipedArmorLayer<T, M, A> bipedArmorLayer = (BipedArmorLayer<T, M, A>) layerRenderer;
-                renderer.addLayer(new MekanismArmorLayer<>(renderer, bipedArmorLayer.modelLeggings, bipedArmorLayer.modelArmor));
+                renderer.addLayer(new MekanismArmorLayer<>(renderer, bipedArmorLayer.innerModel, bipedArmorLayer.outerModel));
                 break;
             }
         }

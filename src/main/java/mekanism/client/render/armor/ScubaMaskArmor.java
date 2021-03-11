@@ -19,29 +19,29 @@ public class ScubaMaskArmor extends CustomArmor {
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
           LivingEntity entity, ItemStack stack) {
-        if (!bipedHead.showModel) {
+        if (!head.visible) {
             //If the head model shouldn't show don't bother displaying it
             return;
         }
-        if (isChild) {
-            matrix.push();
-            if (isChildHeadScaled) {
-                float f = 1.5F / childHeadScale;
+        if (young) {
+            matrix.pushPose();
+            if (scaleHead) {
+                float f = 1.5F / babyHeadScale;
                 matrix.scale(f, f, f);
             }
-            matrix.translate(0.0D, childHeadOffsetY / 16.0F, childHeadOffsetZ / 16.0F);
+            matrix.translate(0.0D, yHeadOffset / 16.0F, zHeadOffset / 16.0F);
             renderMask(matrix, renderer, light, overlayLight, hasEffect);
-            matrix.pop();
+            matrix.popPose();
         } else {
             renderMask(matrix, renderer, light, overlayLight, hasEffect);
         }
     }
 
     private void renderMask(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        matrix.push();
-        bipedHead.translateRotate(matrix);
+        matrix.pushPose();
+        head.translateAndRotate(matrix);
         matrix.translate(0, 0, 0.01);
         model.render(matrix, renderer, light, overlayLight, hasEffect);
-        matrix.pop();
+        matrix.popPose();
     }
 }

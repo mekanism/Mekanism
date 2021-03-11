@@ -32,7 +32,7 @@ public class PacketNewFilter implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender();
         if (player != null) {
-            TileEntity tile = WorldUtils.getTileEntity(player.world, pos);
+            TileEntity tile = WorldUtils.getTileEntity(player.level, pos);
             if (tile != null) {
                 if (filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
                     ((TileEntityLogisticalSorter) tile).getFilters().add((SorterFilter<?>) filter);
@@ -43,7 +43,7 @@ public class PacketNewFilter implements IMekanismPacket {
                 } else if (filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
                     ((TileEntityQIOFilterHandler) tile).getFilters().add((QIOFilter<?>) filter);
                 }
-                tile.markDirty();
+                tile.setChanged();
             }
         }
     }

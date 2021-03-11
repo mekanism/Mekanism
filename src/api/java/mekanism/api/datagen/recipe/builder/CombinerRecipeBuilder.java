@@ -53,7 +53,7 @@ public class CombinerRecipeBuilder extends MekanismRecipeBuilder<CombinerRecipeB
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.MAIN_INPUT, mainInput.serialize());
             json.add(JsonConstants.EXTRA_INPUT, extraInput.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));

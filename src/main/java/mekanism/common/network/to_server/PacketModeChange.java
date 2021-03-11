@@ -32,7 +32,7 @@ public class PacketModeChange implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender();
         if (player != null) {
-            ItemStack stack = player.getItemStackFromSlot(slot);
+            ItemStack stack = player.getItemBySlot(slot);
             if (!stack.isEmpty() && stack.getItem() instanceof IModeItem) {
                 ((IModeItem) stack.getItem()).changeMode(player, stack, shift, displayChangeMessage);
             }
@@ -41,12 +41,12 @@ public class PacketModeChange implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(slot);
+        buffer.writeEnum(slot);
         buffer.writeVarInt(shift);
         buffer.writeBoolean(displayChangeMessage);
     }
 
     public static PacketModeChange decode(PacketBuffer buffer) {
-        return new PacketModeChange(buffer.readEnumValue(EquipmentSlotType.class), buffer.readVarInt(), buffer.readBoolean());
+        return new PacketModeChange(buffer.readEnum(EquipmentSlotType.class), buffer.readVarInt(), buffer.readBoolean());
     }
 }

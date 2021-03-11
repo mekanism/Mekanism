@@ -21,7 +21,7 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
     }
 
     public static <TYPE> ListPropertyData<TYPE> readList(short property, PacketBuffer buffer) {
-        ListType listType = buffer.readEnumValue(ListType.class);
+        ListType listType = buffer.readEnum(ListType.class);
         int elements = buffer.readVarInt();
         switch (listType) {
             case STRING:
@@ -44,7 +44,7 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
     @Override
     public void writeToPacket(PacketBuffer buffer) {
         super.writeToPacket(buffer);
-        buffer.writeEnumValue(listType);
+        buffer.writeEnum(listType);
         buffer.writeVarInt(values.size());
         writeListElements(buffer);
     }

@@ -74,7 +74,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(dischargeSlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 17, 35));
+        builder.addSlot(dischargeSlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 17, 35));
         builder.addSlot(chargeSlot = EnergyInventorySlot.drain(energyContainer, this, 143, 35));
         dischargeSlot.setSlotOverlay(SlotOverlay.MINUS);
         chargeSlot.setSlotOverlay(SlotOverlay.PLUS);

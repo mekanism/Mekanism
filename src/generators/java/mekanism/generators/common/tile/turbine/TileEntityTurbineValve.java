@@ -33,7 +33,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     protected void onUpdateServer(TurbineMultiblockData multiblock) {
         super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
-            CableUtils.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.energyContainer, this);
+            CableUtils.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.energyContainer, this);
         }
     }
 

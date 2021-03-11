@@ -75,7 +75,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
                 // compute surface area
                 surfaceArea += 6;
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    if (fuelAssemblyCoords.contains(coord.offset(side))) {
+                    if (fuelAssemblyCoords.contains(coord.relative(side))) {
                         surfaceArea -= 2;
                     }
                 }

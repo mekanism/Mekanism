@@ -46,14 +46,14 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             return;
         }
 
-        Random rand = entity.world.getRandom();
+        Random rand = entity.level.getRandom();
         double minSeverity = MekanismConfig.general.radiationNegativeEffectsMinSeverity.get();
         double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
 
         // Hurt randomly
         if (severityScale > chance && rand.nextInt() % 2 == 0) {
-            entity.attackEntityFrom(MekanismDamageSource.RADIATION, 1);
+            entity.hurt(MekanismDamageSource.RADIATION, 1);
         }
 
         if (entity instanceof PlayerEntity) {
@@ -65,7 +65,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             }
 
             if (severityScale > chance) {
-                player.getFoodStats().addExhaustion(1F);
+                player.getFoodData().addExhaustion(1F);
             }
         }
     }

@@ -50,17 +50,17 @@ public class SpawnHelper {
               AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
         //Add parrot sound imitations for baby mobs
         //Note: There is no imitation sound for endermen
-        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_CREEPER.get(), SoundEvents.ENTITY_PARROT_IMITATE_CREEPER);
-        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_SKELETON.get(), SoundEvents.ENTITY_PARROT_IMITATE_SKELETON);
-        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_STRAY.get(), SoundEvents.ENTITY_PARROT_IMITATE_STRAY);
-        ParrotEntity.IMITATION_SOUND_EVENTS.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.get(), SoundEvents.ENTITY_PARROT_IMITATE_WITHER_SKELETON);
+        ParrotEntity.MOB_SOUND_MAP.put(AdditionsEntityTypes.BABY_CREEPER.get(), SoundEvents.PARROT_IMITATE_CREEPER);
+        ParrotEntity.MOB_SOUND_MAP.put(AdditionsEntityTypes.BABY_SKELETON.get(), SoundEvents.PARROT_IMITATE_SKELETON);
+        ParrotEntity.MOB_SOUND_MAP.put(AdditionsEntityTypes.BABY_STRAY.get(), SoundEvents.PARROT_IMITATE_STRAY);
+        ParrotEntity.MOB_SOUND_MAP.put(AdditionsEntityTypes.BABY_WITHER_SKELETON.get(), SoundEvents.PARROT_IMITATE_WITHER_SKELETON);
     }
 
     @SafeVarargs
     private static void registerSpawnControls(EntityTypeRegistryObject<? extends MonsterEntity>... entityTypeROs) {
         for (EntityTypeRegistryObject<? extends MonsterEntity> entityTypeRO : entityTypeROs) {
             EntitySpawnPlacementRegistry.register(entityTypeRO.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-                  MonsterEntity::canMonsterSpawnInLight);
+                  MonsterEntity::checkMonsterSpawnRules);
         }
     }
 
@@ -69,22 +69,22 @@ public class SpawnHelper {
         IDispenseItemBehavior dispenseBehavior = new DefaultDispenseItemBehavior() {
             @Nonnull
             @Override
-            public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
-                Direction direction = source.getBlockState().get(DispenserBlock.FACING);
+            public ItemStack execute(IBlockSource source, ItemStack stack) {
+                Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
                 EntityType<?> entityType = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
-                entityType.spawn(source.getWorld(), stack, null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
+                entityType.spawn(source.getLevel(), stack, null, source.getPos().relative(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
                 stack.shrink(1);
                 return stack;
             }
         };
         //TODO: Remove this when we can, for now just lazy add the dispense behavior
         for (ItemRegistryObject<AdditionsSpawnEggItem> spawnEgg : spawnEggs) {
-            DispenserBlock.registerDispenseBehavior(spawnEgg, dispenseBehavior);
+            DispenserBlock.registerBehavior(spawnEgg, dispenseBehavior);
         }
     }
 
     private static MobSpawnInfo.Spawners getSpawner(AdditionsCommonConfig.SpawnConfig spawnConfig, MobSpawnInfo.Spawners parentEntry) {
-        int weight = (int) Math.ceil(parentEntry.itemWeight * spawnConfig.weightPercentage.get());
+        int weight = (int) Math.ceil(parentEntry.weight * spawnConfig.weightPercentage.get());
         int minSize = (int) Math.ceil(parentEntry.minCount * spawnConfig.minSizePercentage.get());
         int maxSize = (int) Math.ceil(parentEntry.maxCount * spawnConfig.maxSizePercentage.get());
         return new MobSpawnInfo.Spawners(spawnConfig.entityTypeProvider.getEntityType(), weight, minSize, Math.max(minSize, maxSize));
@@ -108,17 +108,17 @@ public class SpawnHelper {
                     //If the adult mob can spawn in this biome let the baby mob spawn in it
                     //Note: We adjust the mob's spawning based on the adult's spawn rates
                     MobSpawnInfo.Spawners spawner = getSpawner(spawnConfig, parentEntry);
-                    spawns.withSpawner(EntityClassification.MONSTER, spawner);
+                    spawns.addSpawn(EntityClassification.MONSTER, spawner);
                     MobSpawnInfo.SpawnCosts parentCost = spawns.getCost(parent);
                     if (parentCost == null) {
                         Mekanism.logger.debug("Adding spawn rate for '{}' in biome '{}', with weight: {}, minSize: {}, maxSize: {}", spawner.type.getRegistryName(),
-                              biomeName, spawner.itemWeight, spawner.minCount, spawner.maxCount);
+                              biomeName, spawner.weight, spawner.minCount, spawner.maxCount);
                     } else {
-                        double spawnCostPerEntity = parentCost.getEntitySpawnCost() * spawnConfig.spawnCostPerEntityPercentage.get();
-                        double maxSpawnCost = parentCost.getMaxSpawnCost() * spawnConfig.maxSpawnCostPercentage.get();
-                        spawns.withSpawnCost(spawner.type, spawnCostPerEntity, maxSpawnCost);
+                        double spawnCostPerEntity = parentCost.getCharge() * spawnConfig.spawnCostPerEntityPercentage.get();
+                        double maxSpawnCost = parentCost.getEnergyBudget() * spawnConfig.maxSpawnCostPercentage.get();
+                        spawns.addMobCharge(spawner.type, spawnCostPerEntity, maxSpawnCost);
                         Mekanism.logger.debug("Adding spawn rate for '{}' in biome '{}', with weight: {}, minSize: {}, maxSize: {}, spawnCostPerEntity: {}, maxSpawnCost: {}",
-                              spawner.type.getRegistryName(), biomeName, spawner.itemWeight, spawner.minCount, spawner.maxCount, spawnCostPerEntity, maxSpawnCost);
+                              spawner.type.getRegistryName(), biomeName, spawner.weight, spawner.minCount, spawner.maxCount, spawnCostPerEntity, maxSpawnCost);
                     }
                 });
             });
@@ -139,7 +139,7 @@ public class SpawnHelper {
                     MobSpawnInfo.Spawners spawner = getSpawner(spawnConfig, parentEntry);
                     event.addEntitySpawn(EntityClassification.MONSTER, spawner);
                     Mekanism.logger.debug("Adding spawn rate for '{}' in structure '{}', with weight: {}, minSize: {}, maxSize: {}", spawner.type.getRegistryName(),
-                          structureName, spawner.itemWeight, spawner.minCount, spawner.maxCount);
+                          structureName, spawner.weight, spawner.minCount, spawner.maxCount);
                 });
             });
         }

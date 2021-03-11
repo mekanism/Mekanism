@@ -36,18 +36,18 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
 
     @Override
     @Deprecated
-    public void onBlockClicked(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
-        if (!world.isRemote) {
+    public void attack(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
+        if (!world.isClientSide) {
             TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
             if (bin == null) {
                 return;
             }
             BlockRayTraceResult mop = MekanismUtils.rayTrace(player);
-            if (mop.getType() != Type.MISS && mop.getFace() == bin.getDirection()) {
+            if (mop.getType() != Type.MISS && mop.getDirection() == bin.getDirection()) {
                 BinInventorySlot binSlot = bin.getBinSlot();
                 if (!binSlot.isEmpty()) {
                     ItemStack stack;
-                    if (player.isSneaking()) {
+                    if (player.isShiftKeyDown()) {
                         stack = StackUtils.size(binSlot.getStack(), 1);
                         MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(1, Action.EXECUTE), 1);
                     } else {
@@ -56,15 +56,15 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                             MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(stack.getCount(), Action.EXECUTE), stack.getCount());
                         }
                     }
-                    if (!player.inventory.addItemStackToInventory(stack)) {
-                        BlockPos dropPos = pos.offset(bin.getDirection());
+                    if (!player.inventory.add(stack)) {
+                        BlockPos dropPos = pos.relative(bin.getDirection());
                         Entity item = new ItemEntity(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
-                        Vector3d motion = item.getMotion();
-                        item.addVelocity(-motion.getX(), -motion.getY(), -motion.getZ());
-                        world.addEntity(item);
+                        Vector3d motion = item.getDeltaMovement();
+                        item.push(-motion.x(), -motion.y(), -motion.z());
+                        world.addFreshEntity(item);
                     } else {
-                        world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS,
-                              0.2F, ((world.rand.nextFloat() - world.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                        world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS,
+                              0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                     }
                 }
             }
@@ -74,26 +74,26 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             return ActionResultType.PASS;
         } else if (bin.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
-        } else if (!world.isRemote) {
+        } else if (!world.isClientSide) {
             BinInventorySlot binSlot = bin.getBinSlot();
             int binMaxSize = binSlot.getLimit(binSlot.getStack());
             if (binSlot.getCount() < binMaxSize) {
-                ItemStack stack = player.getHeldItem(hand);
+                ItemStack stack = player.getItemInHand(hand);
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
                         ItemStack remain = binSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
-                        player.setHeldItem(hand, remain);
+                        player.setItemInHand(hand, remain);
                         bin.addTicks = 5;
                     }
                 } else if (bin.addTicks > 0 && bin.getItemCount() > 0) {
-                    NonNullList<ItemStack> inv = player.inventory.mainInventory;
+                    NonNullList<ItemStack> inv = player.inventory.items;
                     for (int i = 0; i < inv.size(); i++) {
                         if (binSlot.getCount() == binMaxSize) {
                             break;
@@ -104,7 +104,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                             inv.set(i, remain);
                             bin.addTicks = 5;
                         }
-                        ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
+                        ((ServerPlayerEntity) player).refreshContainer(player.containerMenu);
                     }
                 }
             }

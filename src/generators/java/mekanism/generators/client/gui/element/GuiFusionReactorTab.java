@@ -50,7 +50,7 @@ public class GuiFusionReactorTab extends GuiTabElementType<TileEntityFusionReact
 
         @Override
         public void onClick(TileEntityFusionReactorController tile) {
-            MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getPos()));
+            MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getBlockPos()));
         }
 
         @Override

@@ -138,7 +138,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     public static boolean isValidTarget(ResourceLocation tag) {
         String path = tag.getPath();
         List<String> filters = possibleFilters.getOrDefault(tag.getNamespace(), Collections.emptyList());
-        return filters.stream().anyMatch(path::startsWith) && ItemTags.getCollection().getRegisteredTags().contains(tag);
+        return filters.stream().anyMatch(path::startsWith) && ItemTags.getAllTags().getAvailableTags().contains(tag);
     }
 
     public ItemStack getResult(ItemStack stack) {
@@ -156,15 +156,15 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         getConfigurationData(nbtTags);
         return nbtTags;
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         setConfigurationData(nbtTags);
     }
 
@@ -195,7 +195,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     @Override
     public String getDataType() {
-        return getBlockType().getTranslationKey();
+        return getBlockType().getDescriptionId();
     }
 
     @Override
@@ -298,11 +298,11 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
         private void setFilterLocation(ResourceLocation location) {
             filterLocation = location;
-            if (ItemTags.getCollection().getRegisteredTags().contains(filterLocation)) {
-                filterTag = ItemTags.makeWrapperTag(filterLocation.toString());
+            if (ItemTags.getAllTags().getAvailableTags().contains(filterLocation)) {
+                filterTag = ItemTags.bind(filterLocation.toString());
             } else {
                 //If the filter doesn't exist (because we loaded a tag that is no longer valid), then just set the filter to being empty
-                filterTag = Tag.getEmptyTag();
+                filterTag = Tag.empty();
             }
         }
 
@@ -346,7 +346,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
         public List<Item> getMatchingItems() {
             if (hasFilter()) {
-                return new ArrayList<>(filterTag.getAllElements());
+                return new ArrayList<>(filterTag.getValues());
             }
             return Collections.emptyList();
         }

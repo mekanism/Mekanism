@@ -29,7 +29,7 @@ public class PacketRobit implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender();
         if (player != null) {
-            EntityRobit robit = (EntityRobit) player.world.getEntityByID(entityId);
+            EntityRobit robit = (EntityRobit) player.level.getEntity(entityId);
             if (robit != null) {
                 if (activeType == RobitPacketType.FOLLOW) {
                     robit.setFollowing(!robit.getFollowing());
@@ -46,18 +46,18 @@ public class PacketRobit implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(activeType);
+        buffer.writeEnum(activeType);
         buffer.writeVarInt(entityId);
         if (activeType == RobitPacketType.NAME) {
-            buffer.writeTextComponent(name);
+            buffer.writeComponent(name);
         }
     }
 
     public static PacketRobit decode(PacketBuffer buffer) {
-        RobitPacketType activeType = buffer.readEnumValue(RobitPacketType.class);
+        RobitPacketType activeType = buffer.readEnum(RobitPacketType.class);
         int entityId = buffer.readVarInt();
         if (activeType == RobitPacketType.NAME) {
-            return new PacketRobit(entityId, buffer.readTextComponent());
+            return new PacketRobit(entityId, buffer.readComponent());
         }
         return new PacketRobit(activeType, entityId);
     }

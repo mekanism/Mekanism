@@ -53,22 +53,22 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         TileEntityFluidTank tile = WorldUtils.getTileEntity(TileEntityFluidTank.class, world, pos, true);
         if (tile == null) {
             return ActionResultType.PASS;
-        } else if (world.isRemote) {
+        } else if (world.isClientSide) {
             return genericClientActivated(player, hand, hit);
         } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
         }
         //Handle filling fluid tank
-        if (!player.isSneaking()) {
+        if (!player.isShiftKeyDown()) {
             if (SecurityUtils.canAccess(player, tile)) {
-                ItemStack stack = player.getHeldItem(hand);
+                ItemStack stack = player.getItemInHand(hand);
                 if (!stack.isEmpty() && FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank)) {
-                    player.inventory.markDirty();
+                    player.inventory.setChanged();
                     return ActionResultType.SUCCESS;
                 }
             } else {

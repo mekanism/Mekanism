@@ -75,21 +75,21 @@ public class Attributes {
         public static final AttributeMobSpawn WHEN_NOT_FORMED = new AttributeMobSpawn((state, reader, pos, entityType) -> {
             TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, reader, pos);
             if (tile != null) {
-                if (reader instanceof IWorldReader && ((IWorldReader) reader).isRemote()) {
+                if (reader instanceof IWorldReader && ((IWorldReader) reader).isClientSide()) {
                     //If we are on the client just check if we are formed as we don't sync structure information
                     // to the client. This way the client is at least relatively accurate with what values
                     // it returns for if mobs can spawn
                     if (tile.getMultiblock().isFormed()) {
                         return false;
                     }
-                } else if (tile.getMultiblock().isPositionInsideBounds(tile.getStructure(), pos.up())) {
+                } else if (tile.getMultiblock().isPositionInsideBounds(tile.getStructure(), pos.above())) {
                     //If the multiblock is formed and the position above this block is inside the bounds of the multiblock
                     // don't allow spawning on it.
                     return false;
                 }
             }
             //Super implementation
-            return state.isSolidSide(reader, pos, Direction.UP) && state.getLightValue(reader, pos) < 14;
+            return state.isFaceSturdy(reader, pos, Direction.UP) && state.getLightValue(reader, pos) < 14;
         });
 
         private final IExtendedPositionPredicate<EntityType<?>> spawningPredicate;
@@ -100,7 +100,7 @@ public class Attributes {
 
         @Override
         public void adjustProperties(Properties props) {
-            props.setAllowsSpawn(spawningPredicate);
+            props.isValidSpawn(spawningPredicate);
         }
     }
 

@@ -159,10 +159,10 @@ public class AdditionsBlockStateProvider extends BaseBlockStateProvider<Addition
     private void stairsBlock(BlockPlasticStairs block, ModelFile stairsModel, ModelFile stairsInner, ModelFile stairsOuter) {
         //Copy of BlockStateProvider#stairsBlock, except also ignores our fluid logging extension
         getVariantBuilder(block).forAllStatesExcept(state -> {
-            Direction facing = state.get(StairsBlock.FACING);
-            Half half = state.get(StairsBlock.HALF);
-            StairsShape shape = state.get(StairsBlock.SHAPE);
-            int yRot = (int) facing.rotateY().getHorizontalAngle(); // Stairs model is rotated 90 degrees clockwise for some reason
+            Direction facing = state.getValue(StairsBlock.FACING);
+            Half half = state.getValue(StairsBlock.HALF);
+            StairsShape shape = state.getValue(StairsBlock.SHAPE);
+            int yRot = (int) facing.getClockWise().toYRot(); // Stairs model is rotated 90 degrees clockwise for some reason
             if (shape == StairsShape.INNER_LEFT || shape == StairsShape.OUTER_LEFT) {
                 yRot += 270; // Left facing stairs are rotated 90 degrees clockwise
             }

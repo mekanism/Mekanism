@@ -38,7 +38,7 @@ public class CentrifugingIRecipe extends GasToGasRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.ISOTOPIC_CENTRIFUGE.getItemStack();
     }
 }

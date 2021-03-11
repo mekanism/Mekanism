@@ -46,7 +46,7 @@ public final class CableUtils {
         }
         //Fake that we have one target given we know that no sides will overlap This allows us to have slightly better performance
         EnergyAcceptorTarget target = new EnergyAcceptorTarget();
-        EmitUtils.forEachSide(from.getWorld(), from.getPos(), sides, (acceptor, side) -> {
+        EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
             //Insert to access side
             Direction accessSide = side.getOpposite();
             //Collect cap

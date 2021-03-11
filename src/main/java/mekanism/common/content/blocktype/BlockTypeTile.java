@@ -81,7 +81,7 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
         }
 
         public T withCustomContainerProvider(Function<TileEntityMekanism, IContainerProvider> providerFunction) {
-            return withNamedContainerProvider(tile -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getTranslationKey()),
+            return withNamedContainerProvider(tile -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getDescriptionId()),
                   providerFunction.apply(tile)));
         }
 

@@ -44,7 +44,7 @@ public class PacketGeneratorsGuiButtonPress implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         ServerPlayerEntity player = context.getSender();
         if (player != null) {//If we are on the server (the only time we should be receiving this packet), let forge handle switching the Gui
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, tilePosition);
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
             if (tile != null) {
                 INamedContainerProvider provider = tileButton.getProvider(tile, extra);
                 if (provider != null) {
@@ -60,13 +60,13 @@ public class PacketGeneratorsGuiButtonPress implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(tileButton);
+        buffer.writeEnum(tileButton);
         buffer.writeBlockPos(tilePosition);
         buffer.writeVarInt(extra);
     }
 
     public static PacketGeneratorsGuiButtonPress decode(PacketBuffer buffer) {
-        return new PacketGeneratorsGuiButtonPress(buffer.readEnumValue(ClickedGeneratorsTileButton.class), buffer.readBlockPos(), buffer.readVarInt());
+        return new PacketGeneratorsGuiButtonPress(buffer.readEnum(ClickedGeneratorsTileButton.class), buffer.readBlockPos(), buffer.readVarInt());
     }
 
     public enum ClickedGeneratorsTileButton {

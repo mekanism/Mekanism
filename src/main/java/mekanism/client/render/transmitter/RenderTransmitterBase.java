@@ -72,16 +72,16 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
           TextureAtlasSprite icon) {
         renderModel(transmitter, matrix, builder, MekanismRenderer.getRed(rgb), MekanismRenderer.getGreen(rgb), MekanismRenderer.getBlue(rgb), alpha, light,
               overlayLight, icon, Arrays.stream(EnumUtils.DIRECTIONS)
-                    .map(side -> side.getString() + transmitter.getTransmitter().getConnectionType(side).getString().toUpperCase(Locale.ROOT))
+                    .map(side -> side.getSerializedName() + transmitter.getTransmitter().getConnectionType(side).getSerializedName().toUpperCase(Locale.ROOT))
                     .collect(Collectors.toList()));
     }
 
     protected void renderModel(TRANSMITTER transmitter, MatrixStack matrix, IVertexBuilder builder, float red, float green, float blue, float alpha, int light,
           int overlayLight, TextureAtlasSprite icon, List<String> visible) {
         if (!visible.isEmpty()) {
-            Entry entry = matrix.getLast();
+            Entry entry = matrix.last();
             //Get all the sides
-            for (BakedQuad quad : getBakedQuads(visible, icon, transmitter.getWorld())) {
+            for (BakedQuad quad : getBakedQuads(visible, icon, transmitter.getLevel())) {
                 builder.addVertexData(entry, quad, red, green, blue, alpha, light, overlayLight);
             }
         }

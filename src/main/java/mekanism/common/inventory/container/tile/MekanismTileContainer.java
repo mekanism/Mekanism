@@ -63,12 +63,12 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull PlayerEntity player) {
         if (tile == null) {
             return true;
         }
         //prevent Containers from remaining valid after the chunk has unloaded;
-        return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getWorld(), tile.getPos());
+        return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getLevel(), tile.getBlockPos());
     }
 
     @Override
@@ -94,6 +94,6 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         if (buf == null) {
             return null;
         }
-        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> WorldUtils.getTileEntity(type, Minecraft.getInstance().world, buf.readBlockPos()));
+        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> WorldUtils.getTileEntity(type, Minecraft.getInstance().level, buf.readBlockPos()));
     }
 }

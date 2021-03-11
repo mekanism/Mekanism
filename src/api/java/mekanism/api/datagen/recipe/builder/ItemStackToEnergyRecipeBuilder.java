@@ -44,7 +44,7 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
             json.addProperty(JsonConstants.OUTPUT, output);
         }

@@ -37,7 +37,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Override
-    public boolean isItemValid(@Nonnull ItemStack stack) {
+    public boolean mayPlace(@Nonnull ItemStack stack) {
         //Short circuit to avoid looking through the various predicates
         return false;
     }
@@ -51,7 +51,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @Nonnull
     @Override
-    public ItemStack decrStackSize(int amount) {
+    public ItemStack remove(int amount) {
         //Simulate extraction so as to not actually modify the slot
         // Note: In theory even though we are "simulating" here instead of actually changing how much is
         // in the slot, this shouldn't be a problem or be a risk of duplication, as there are slots like
@@ -70,9 +70,9 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
      * slots.
      */
     @Override
-    protected void onCrafting(@Nonnull ItemStack stack, int amount) {
+    protected void onQuickCraft(@Nonnull ItemStack stack, int amount) {
         amountCrafted += amount;
-        onCrafting(stack);
+        checkTakeAchievements(stack);
     }
 
     @Override
@@ -89,8 +89,8 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Override
-    public boolean canTakeStack(@Nonnull PlayerEntity player) {
-        return canCraft && super.canTakeStack(player);
+    public boolean mayPickup(@Nonnull PlayerEntity player) {
+        return canCraft && super.mayPickup(player);
     }
 
     @Nonnull
@@ -111,7 +111,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @Override
     public void addTrackers(PlayerEntity player, Consumer<ISyncableData> tracker) {
-        if (player.world.isRemote || !(player instanceof ServerPlayerEntity)) {
+        if (player.level.isClientSide || !(player instanceof ServerPlayerEntity)) {
             //If we are on the client or not a server player entity for some reason return our cached value
             tracker.accept(SyncableBoolean.create(() -> canCraft, value -> canCraft = value));
         } else {

@@ -21,10 +21,10 @@ public class PacketResetPlayerClient implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeUniqueId(uuid);
+        buffer.writeUUID(uuid);
     }
 
     public static PacketResetPlayerClient decode(PacketBuffer buffer) {
-        return new PacketResetPlayerClient(buffer.readUniqueId());
+        return new PacketResetPlayerClient(buffer.readUUID());
     }
 }

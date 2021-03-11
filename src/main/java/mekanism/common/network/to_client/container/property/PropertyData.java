@@ -24,12 +24,12 @@ public abstract class PropertyData {
     public abstract void handleWindowProperty(MekanismContainer container);
 
     public void writeToPacket(PacketBuffer buffer) {
-        buffer.writeEnumValue(type);
+        buffer.writeEnum(type);
         buffer.writeShort(property);
     }
 
     public static PropertyData fromBuffer(PacketBuffer buffer) {
-        PropertyType type = buffer.readEnumValue(PropertyType.class);
+        PropertyType type = buffer.readEnum(PropertyType.class);
         short property = buffer.readShort();
         return type.createData(property, buffer);
     }

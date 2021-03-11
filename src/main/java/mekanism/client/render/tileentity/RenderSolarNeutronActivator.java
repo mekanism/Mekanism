@@ -27,7 +27,7 @@ public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<Tile
           IProfiler profiler) {
         performTranslations(tile, matrix);
         model.render(matrix, renderer, light, overlayLight, false);
-        matrix.pop();
+        matrix.popPose();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<Tile
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntitySolarNeutronActivator tile) {
+    public boolean shouldRenderOffScreen(TileEntitySolarNeutronActivator tile) {
         return true;
     }
 
@@ -45,7 +45,7 @@ public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<Tile
         if (tile instanceof TileEntitySolarNeutronActivator) {
             performTranslations((TileEntitySolarNeutronActivator) tile, matrix);
             model.renderWireFrame(matrix, buffer, red, green, blue, alpha);
-            matrix.pop();
+            matrix.popPose();
         }
     }
 
@@ -53,9 +53,9 @@ public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<Tile
      * Make sure to call matrix.pop afterwards
      */
     private void performTranslations(TileEntitySolarNeutronActivator tile, MatrixStack matrix) {
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
-        matrix.rotate(Vector3f.ZP.rotationDegrees(180));
+        matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
     }
 }

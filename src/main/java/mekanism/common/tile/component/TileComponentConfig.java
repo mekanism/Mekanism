@@ -97,7 +97,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         tile.sendUpdatePacket();
         tile.markDirty(false);
         //Notify the neighbor on that side our state changed
-        WorldUtils.notifyNeighborOfChange(tile.getWorld(), direction, tile.getPos());
+        WorldUtils.notifyNeighborOfChange(tile.getLevel(), direction, tile.getBlockPos());
     }
 
     private RelativeSide getSide(Direction direction) {

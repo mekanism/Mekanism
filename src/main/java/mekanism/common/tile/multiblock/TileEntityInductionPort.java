@@ -35,7 +35,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     protected void onUpdateServer(MatrixMultiblockData multiblock) {
         super.onUpdateServer(multiblock);
         if (multiblock.isFormed() && getActive()) {
-            CableUtils.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.getEnergyContainer(), this);
+            CableUtils.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.getEnergyContainer(), this);
         }
     }
 
@@ -54,7 +54,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                  MekanismLang.INDUCTION_PORT_MODE.translate(InputOutput.of(oldMode, true))), Util.DUMMY_UUID);
+                  MekanismLang.INDUCTION_PORT_MODE.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }

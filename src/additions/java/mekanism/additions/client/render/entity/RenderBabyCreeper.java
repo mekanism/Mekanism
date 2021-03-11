@@ -23,8 +23,8 @@ public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, ModelBabyC
     }
 
     @Override
-    protected void preRenderCallback(EntityBabyCreeper creeper, MatrixStack matrix, float partialTicks) {
-        float f = creeper.getCreeperFlashIntensity(partialTicks);
+    protected void scale(EntityBabyCreeper creeper, MatrixStack matrix, float partialTicks) {
+        float f = creeper.getSwelling(partialTicks);
         float f1 = 1.0F + MathHelper.sin(f * 100.0F) * f * 0.01F;
         f = MathHelper.clamp(f, 0.0F, 1.0F);
         f = f * f;
@@ -35,14 +35,14 @@ public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, ModelBabyC
     }
 
     @Override
-    protected float getOverlayProgress(EntityBabyCreeper creeper, float partialTicks) {
-        float f = creeper.getCreeperFlashIntensity(partialTicks);
+    protected float getWhiteOverlayProgress(EntityBabyCreeper creeper, float partialTicks) {
+        float f = creeper.getSwelling(partialTicks);
         return (int) (f * 10.0F) % 2 == 0 ? 0.0F : MathHelper.clamp(f, 0.5F, 1.0F);
     }
 
     @Nonnull
     @Override
-    public ResourceLocation getEntityTexture(@Nonnull EntityBabyCreeper entity) {
+    public ResourceLocation getTextureLocation(@Nonnull EntityBabyCreeper entity) {
         return CREEPER_TEXTURES;
     }
 }

@@ -40,7 +40,7 @@ public final class InventoryUtils {
         if (tile == null) {
             Mekanism.logger.warn(" - null tile");
         } else {
-            Mekanism.logger.warn(" - details: {} {}", tile, tile.getPos());
+            Mekanism.logger.warn(" - details: {} {}", tile, tile.getBlockPos());
         }
         return null;
     }

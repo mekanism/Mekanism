@@ -164,7 +164,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         //Add the energy slot after adding the other slots so that it has lowest priority in shift clicking
         //Note: We can just pass ourself as the listener instead of the listener that updates sorting as well,
         // as changes to it won't change anything about the sorting of the recipe
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 7, 13));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 7, 13));
         return builder.build();
     }
 
@@ -340,8 +340,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         sorting = nbtTags.getBoolean(NBTConstants.SORTING);
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);
@@ -350,8 +350,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putBoolean(NBTConstants.SORTING, isSorting());
         for (int i = 0; i < tier.processes; i++) {
             nbtTags.putInt(NBTConstants.PROGRESS + i, getProgress(i));

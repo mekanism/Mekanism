@@ -69,7 +69,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
         super.addSlots(builder, updateSortingListener);
         //Note: We care about the infusion tank not the slot when it comes to recipes and updating sorting
-        builder.addSlot(extraSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getWorld, this, 7, 57));
+        builder.addSlot(extraSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getLevel, this, 7, 57));
     }
 
     public IInfusionTank getInfusionTank() {

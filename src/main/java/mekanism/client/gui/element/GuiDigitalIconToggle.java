@@ -27,13 +27,13 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         TYPE type = typeSupplier.get();
-        minecraft.textureManager.bindTexture(type.getIcon());
+        minecraft.textureManager.bind(type.getIcon());
         blit(matrix, x + 3, y + 3, 0, 0, width - 6, height - 6, 6, 6);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
+        minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
         TYPE nextType = options[(typeSupplier.get().ordinal() + 1) % options.length];
         typeSetter.accept(nextType);
     }

@@ -149,11 +149,11 @@ public class MekanismTags {
         public static final INamedTag<Item> GEMS_FLUORITE = forgeTag("gems/fluorite");
 
         private static INamedTag<Item> forgeTag(String name) {
-            return ItemTags.makeWrapperTag("forge:" + name);
+            return ItemTags.bind("forge:" + name);
         }
 
         private static INamedTag<Item> tag(String name) {
-            return ItemTags.makeWrapperTag(Mekanism.rl(name).toString());
+            return ItemTags.bind(Mekanism.rl(name).toString());
         }
     }
 
@@ -190,11 +190,11 @@ public class MekanismTags {
         public static final INamedTag<Block> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
 
         private static INamedTag<Block> forgeTag(String name) {
-            return BlockTags.makeWrapperTag("forge:" + name);
+            return BlockTags.bind("forge:" + name);
         }
 
         private static INamedTag<Block> tag(String name) {
-            return BlockTags.makeWrapperTag(Mekanism.rl(name).toString());
+            return BlockTags.bind(Mekanism.rl(name).toString());
         }
     }
 
@@ -219,7 +219,7 @@ public class MekanismTags {
         public static final INamedTag<Fluid> HYDROFLUORIC_ACID = forgeTag("hydrofluoric_acid");
 
         private static INamedTag<Fluid> forgeTag(String name) {
-            return FluidTags.makeWrapperTag("forge:" + name);
+            return FluidTags.bind("forge:" + name);
         }
     }
 

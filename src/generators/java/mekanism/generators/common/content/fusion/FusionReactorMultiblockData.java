@@ -122,7 +122,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         gasTanks.add(tritiumTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM)));
         gasTanks.add(fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
         gasTanks.add(steamTank = MultiblockChemicalTankBuilder.GAS.output(this, tile, this::getMaxSteam, gas -> gas == MekanismGases.STEAM.getChemical()));
-        fluidTanks.add(waterTank = MultiblockFluidTank.input(this, tile, this::getMaxWater, fluid -> fluid.getFluid().isIn(FluidTags.WATER)));
+        fluidTanks.add(waterTank = MultiblockFluidTank.input(this, tile, this::getMaxWater, fluid -> fluid.getFluid().is(FluidTags.WATER)));
         energyContainers.add(energyContainer = BasicEnergyContainer.output(MAX_ENERGY, this));
         heatCapacitors.add(heatCapacitor = MultiblockHeatCapacitor.create(this, tile, caseHeatCapacity,
               FusionReactorMultiblockData::getInverseConductionCoefficient, () -> inverseInsulation));
@@ -229,10 +229,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
         if (world.getRandom().nextInt() % 20 != 0) {
             return;
         }
-        List<Entity> entitiesToDie = getWorld().getEntitiesWithinAABB(Entity.class, deathZone);
+        List<Entity> entitiesToDie = getWorld().getEntitiesOfClass(Entity.class, deathZone);
 
         for (Entity entity : entitiesToDie) {
-            entity.attackEntityFrom(DamageSource.MAGIC, 50_000F);
+            entity.hurt(DamageSource.MAGIC, 50_000F);
         }
     }
 

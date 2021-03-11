@@ -51,10 +51,10 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
     }
 
     @Override
-    protected float getPlayerRelativeBlockHardness(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
+    protected float getDestroyProgress(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
           @Nullable TileEntity tile) {
         //Call super variant of player relative hardness to get default
-        float speed = super.getPlayerRelativeBlockHardness(state, player, world, pos, tile);
+        float speed = super.getDestroyProgress(state, player, world, pos, tile);
         if (tile instanceof TileEntityRadioactiveWasteBarrel && ((TileEntityRadioactiveWasteBarrel) tile).getGasScale() > 0) {
             //Our tile has some radioactive substance in it; slow down breaking it
             return speed / 5F;
@@ -65,15 +65,15 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        if (!player.isSneaking()) {
+        if (!player.isShiftKeyDown()) {
             return ActionResultType.PASS;
         }
         TileEntityRadioactiveWasteBarrel tile = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        } else if (!world.isRemote()) {
+        } else if (!world.isClientSide()) {
             GasStack stored = tile.getGas();
             ITextComponent text;
             if (stored.isEmpty()) {
@@ -82,7 +82,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
                 String scale = TextUtils.getPercent(tile.getGasScale());
                 text = MekanismLang.STORED_MB_PERCENTAGE.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY, TextUtils.format(stored.getAmount()), scale);
             }
-            player.sendMessage(text, Util.DUMMY_UUID);
+            player.sendMessage(text, Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }

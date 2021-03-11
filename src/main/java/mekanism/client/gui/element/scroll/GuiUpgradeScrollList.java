@@ -98,7 +98,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
         if (hasSelection() && component.getUpgrades(getSelection()) == 0) {
             clearSelection();
         }
-        minecraft.textureManager.bindTexture(UPGRADE_SELECTION);
+        minecraft.textureManager.bind(UPGRADE_SELECTION);
         Upgrade[] upgrades = getCurrentUpgrades().toArray(new Upgrade[0]);
         for (int i = 0; i < getFocusedElements(); i++) {
             int index = getCurrentSelection() + i;

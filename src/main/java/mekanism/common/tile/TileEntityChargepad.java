@@ -52,8 +52,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
         super.onUpdateServer();
         boolean active = false;
         //Use 0.4 for y so as to catch entities that are partially standing on the back pane
-        List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos.getX(), pos.getY(), pos.getZ(),
-              pos.getX() + 1, pos.getY() + 0.4, pos.getZ() + 1), CHARGE_PREDICATE);
+        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
+              worldPosition.getX() + 1, worldPosition.getY() + 0.4, worldPosition.getZ() + 1), CHARGE_PREDICATE);
         for (LivingEntity entity : entities) {
             active = !energyContainer.isEmpty();
             if (!active) {
@@ -104,8 +104,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
     protected void onUpdateClient() {
         super.onUpdateClient();
         if (getActive()) {
-            world.addParticle(RedstoneParticleData.REDSTONE_DUST, getPos().getX() + world.rand.nextDouble(), getPos().getY() + 0.15,
-                  getPos().getZ() + world.rand.nextDouble(), 0, 0, 0);
+            level.addParticle(RedstoneParticleData.REDSTONE, getBlockPos().getX() + level.random.nextDouble(), getBlockPos().getY() + 0.15,
+                  getBlockPos().getZ() + level.random.nextDouble(), 0, 0, 0);
         }
     }
 
@@ -118,13 +118,13 @@ public class TileEntityChargepad extends TileEntityMekanism {
             SoundEvent sound;
             float pitch;
             if (active) {
-                sound = SoundEvents.BLOCK_STONE_PRESSURE_PLATE_CLICK_ON;
+                sound = SoundEvents.STONE_PRESSURE_PLATE_CLICK_ON;
                 pitch = 0.8F;
             } else {
-                sound = SoundEvents.BLOCK_STONE_PRESSURE_PLATE_CLICK_OFF;
+                sound = SoundEvents.STONE_PRESSURE_PLATE_CLICK_OFF;
                 pitch = 0.7F;
             }
-            world.playSound(null, getPos().getX() + 0.5, getPos().getY() + 0.1, getPos().getZ() + 0.5, sound, SoundCategory.BLOCKS, 0.3F, pitch);
+            level.playSound(null, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.1, getBlockPos().getZ() + 0.5, sound, SoundCategory.BLOCKS, 0.3F, pitch);
         }
     }
 }

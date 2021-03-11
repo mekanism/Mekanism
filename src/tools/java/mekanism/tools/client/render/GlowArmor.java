@@ -18,20 +18,20 @@ public class GlowArmor extends BipedModel<LivingEntity> {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
         //Make it render at full brightness
-        super.render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+        super.renderToBuffer(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
     }
 
     public static BipedModel<LivingEntity> getGlow(EquipmentSlotType index) {
         BipedModel<LivingEntity> biped = index == EquipmentSlotType.LEGS ? SMALL : BIG;
-        biped.bipedHead.showModel = index == EquipmentSlotType.HEAD;
-        biped.bipedHeadwear.showModel = index == EquipmentSlotType.HEAD;
-        biped.bipedBody.showModel = index == EquipmentSlotType.CHEST || index == EquipmentSlotType.LEGS;
-        biped.bipedRightArm.showModel = index == EquipmentSlotType.CHEST;
-        biped.bipedLeftArm.showModel = index == EquipmentSlotType.CHEST;
-        biped.bipedRightLeg.showModel = index == EquipmentSlotType.LEGS || index == EquipmentSlotType.FEET;
-        biped.bipedLeftLeg.showModel = index == EquipmentSlotType.LEGS || index == EquipmentSlotType.FEET;
+        biped.head.visible = index == EquipmentSlotType.HEAD;
+        biped.hat.visible = index == EquipmentSlotType.HEAD;
+        biped.body.visible = index == EquipmentSlotType.CHEST || index == EquipmentSlotType.LEGS;
+        biped.rightArm.visible = index == EquipmentSlotType.CHEST;
+        biped.leftArm.visible = index == EquipmentSlotType.CHEST;
+        biped.rightLeg.visible = index == EquipmentSlotType.LEGS || index == EquipmentSlotType.FEET;
+        biped.leftLeg.visible = index == EquipmentSlotType.LEGS || index == EquipmentSlotType.FEET;
         return biped;
     }
 }

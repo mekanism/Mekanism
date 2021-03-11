@@ -20,18 +20,18 @@ public class PacketUpdateInventorySlot implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender();
         if (player != null) {
-            player.inventory.setInventorySlotContents(slotId, containerStack);
-            player.inventory.markDirty();
+            player.inventory.setItem(slotId, containerStack);
+            player.inventory.setChanged();
         }
     }
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeItemStack(containerStack);
+        buffer.writeItem(containerStack);
         buffer.writeVarInt(slotId);
     }
 
     public static PacketUpdateInventorySlot decode(PacketBuffer buffer) {
-        return new PacketUpdateInventorySlot(buffer.readItemStack(), buffer.readVarInt());
+        return new PacketUpdateInventorySlot(buffer.readItem(), buffer.readVarInt());
     }
 }

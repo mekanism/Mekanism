@@ -67,8 +67,8 @@ public class PacketTransmitterUpdate implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(packetType);
-        buffer.writeUniqueId(networkID);
+        buffer.writeEnum(packetType);
+        buffer.writeUUID(networkID);
         buffer.writeFloat(scale);
         BasePacketHandler.log("Sending '{}' update message for network with id {}", packetType, networkID);
         if (packetType == PacketType.FLUID) {
@@ -79,7 +79,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket {
     }
 
     public static PacketTransmitterUpdate decode(PacketBuffer buffer) {
-        PacketTransmitterUpdate packet = new PacketTransmitterUpdate(buffer.readEnumValue(PacketType.class), buffer.readUniqueId(), buffer.readFloat());
+        PacketTransmitterUpdate packet = new PacketTransmitterUpdate(buffer.readEnum(PacketType.class), buffer.readUUID(), buffer.readFloat());
         if (packet.packetType == PacketType.FLUID) {
             packet.fluidStack = FluidStack.readFromPacket(buffer);
         } else if (packet.packetType == PacketType.CHEMICAL) {

@@ -38,7 +38,7 @@ public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.METALLURGIC_INFUSER.getItemStack();
     }
 }

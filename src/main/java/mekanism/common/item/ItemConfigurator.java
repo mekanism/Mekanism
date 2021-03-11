@@ -71,26 +71,26 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        return TextComponentUtil.build(EnumColor.AQUA, super.getDisplayName(stack));
+    public ITextComponent getName(@Nonnull ItemStack stack) {
+        return TextComponentUtil.build(EnumColor.AQUA, super.getName(stack));
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-        if (!world.isRemote && player != null) {
-            BlockPos pos = context.getPos();
-            Direction side = context.getFace();
-            ItemStack stack = context.getItem();
+        World world = context.getLevel();
+        if (!world.isClientSide && player != null) {
+            BlockPos pos = context.getClickedPos();
+            Direction side = context.getClickedFace();
+            ItemStack stack = context.getItemInHand();
             TileEntity tile = WorldUtils.getTileEntity(world, pos);
             ConfiguratorMode mode = getMode(stack);
             if (mode.isConfigurating()) { //Configurate
@@ -101,10 +101,10 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     if (info != null) {
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
                         DataType dataType = info.getDataType(relativeSide);
-                        if (!player.isSneaking()) {
+                        if (!player.isShiftKeyDown()) {
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
                                   MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType, dataType.getColor().getColoredName())),
-                                  Util.DUMMY_UUID);
+                                  Util.NIL_UUID);
                         } else if (SecurityUtils.canAccess(player, tile)) {
                             if (!player.isCreative()) {
                                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
@@ -117,7 +117,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                             dataType = info.incrementDataType(relativeSide);
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
                                   MekanismLang.CONFIGURATOR_TOGGLE_MODE.translate(transmissionType, dataType.getColor(), dataType, dataType.getColor().getColoredName())),
-                                  Util.DUMMY_UUID);
+                                  Util.NIL_UUID);
                             config.getConfig().sideChanged(transmissionType, relativeSide);
                         } else {
                             SecurityUtils.displayNoAccess(player);
@@ -129,7 +129,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).resolve();
                     if (capability.isPresent()) {
                         IConfigurable config = capability.get();
-                        if (player.isSneaking()) {
+                        if (player.isShiftKeyDown()) {
                             return config.onSneakRightClick(player, side);
                         }
                         return config.onRightClick(player, side);
@@ -158,7 +158,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                                         }
                                         energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
                                     }
-                                    Block.spawnAsEntity(world, pos, inventorySlot.getStack().copy());
+                                    Block.popResource(world, pos, inventorySlot.getStack().copy());
                                     inventorySlot.setEmpty();
                                 }
                             }
@@ -174,9 +174,9 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                     if (SecurityUtils.canAccess(player, tile)) {
                         TileEntityMekanism tileMekanism = (TileEntityMekanism) tile;
                         if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
-                            if (!player.isSneaking()) {
+                            if (!player.isShiftKeyDown()) {
                                 tileMekanism.setFacing(side);
-                            } else if (player.isSneaking()) {
+                            } else if (player.isShiftKeyDown()) {
                                 tileMekanism.setFacing(side.getOpposite());
                             }
                         }
@@ -219,7 +219,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
             setMode(stack, player, newMode);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                      MekanismLang.CONFIGURE_STATE.translate(newMode)), Util.DUMMY_UUID);
+                      MekanismLang.CONFIGURE_STATE.translate(newMode)), Util.NIL_UUID);
             }
         }
     }

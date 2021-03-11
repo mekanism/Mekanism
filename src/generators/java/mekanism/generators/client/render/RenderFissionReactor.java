@@ -44,8 +44,8 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
         if (tile.isMaster) {
             FissionReactorMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.renderLocation != null) {
-                BlockPos pos = tile.getPos();
-                IVertexBuilder buffer = renderer.getBuffer(Atlases.getTranslucentCullBlockType());
+                BlockPos pos = tile.getBlockPos();
+                IVertexBuilder buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
                 if (multiblock.isBurning()) {
                     //TODO - 10.1: Convert the glow model and stuff to being part of the baked model and using model data
                     // as I am fairly sure that should give a decent boost to performance
@@ -60,12 +60,12 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                         glowModel.setTexture(MekanismRenderer.whiteIcon);
                     }
                     for (FormedAssembly assembly : multiblock.assemblies) {
-                        matrix.push();
+                        matrix.pushPose();
                         matrix.translate(assembly.getPos().getX() - pos.getX(), assembly.getPos().getY() - pos.getY(), assembly.getPos().getZ() - pos.getZ());
                         matrix.scale(1, assembly.getHeight(), 1);
                         int argb = MekanismRenderer.getColorARGB(0.466F, 0.882F, 0.929F, 0.6F);
                         MekanismRenderer.renderObject(glowModel, matrix, buffer, argb, MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
-                        matrix.pop();
+                        matrix.popPose();
                     }
                 }
                 if (!multiblock.fluidCoolantTank.isEmpty()) {
@@ -77,11 +77,11 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                         data.length = multiblock.length();
                         data.width = multiblock.width();
                         int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
-                        matrix.push();
+                        matrix.pushPose();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         Model3D model = ModelRenderer.getModel(data, multiblock.prevCoolantScale);
                         MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevCoolantScale), glow, overlayLight, getFaceDisplay(data, model));
-                        matrix.pop();
+                        matrix.popPose();
                         MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, data, pos, glow, overlayLight, isInsideMultiblock(data));
                     }
                 }
@@ -108,11 +108,11 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                             gasModel.maxZ -= 0.01F;
                             cachedHeatedCoolantModels.put(data, gasModel);
                         }
-                        matrix.push();
+                        matrix.pushPose();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         MekanismRenderer.renderObject(gasModel, matrix, buffer, data.getColorARGB(multiblock.prevHeatedCoolantScale), glow, overlayLight,
                               getFaceDisplay(data, gasModel));
-                        matrix.pop();
+                        matrix.popPose();
                     }
                 }
             }
@@ -125,7 +125,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntityFissionReactorCasing tile) {
+    public boolean shouldRenderOffScreen(TileEntityFissionReactorCasing tile) {
         if (tile.isMaster) {
             FissionReactorMultiblockData multiblock = tile.getMultiblock();
             return multiblock.isFormed() && multiblock.renderLocation != null;

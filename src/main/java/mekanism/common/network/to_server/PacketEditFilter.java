@@ -39,7 +39,7 @@ public class PacketEditFilter implements IMekanismPacket {
         if (player == null) {
             return;
         }
-        TileEntity tile = WorldUtils.getTileEntity(player.world, pos);
+        TileEntity tile = WorldUtils.getTileEntity(player.level, pos);
         if (tile != null) {
             if (filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
                 HashList<SorterFilter<?>> filters = ((TileEntityLogisticalSorter) tile).getFilters();
@@ -78,7 +78,7 @@ public class PacketEditFilter implements IMekanismPacket {
                     }
                 }
             }
-            tile.markDirty();
+            tile.setChanged();
         }
     }
 

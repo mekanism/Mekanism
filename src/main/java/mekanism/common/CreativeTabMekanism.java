@@ -14,13 +14,13 @@ public class CreativeTabMekanism extends ItemGroup {
 
     @Nonnull
     @Override
-    public ItemStack createIcon() {
+    public ItemStack makeIcon() {
         return MekanismItems.ATOMIC_ALLOY.getItemStack();
     }
 
     @Nonnull
     @Override
-    public ITextComponent getGroupName() {
+    public ITextComponent getDisplayName() {
         //Overwrite the lang key to match the one representing Mekanism
         return MekanismLang.MEKANISM.translate();
     }

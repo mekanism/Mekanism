@@ -23,7 +23,7 @@ public class GeneratorTags {
         public static final INamedTag<Fluid> TRITIUM = forgeTag("tritium");
 
         private static INamedTag<Fluid> forgeTag(String name) {
-            return FluidTags.makeWrapperTag("forge:" + name);
+            return FluidTags.bind("forge:" + name);
         }
     }
 

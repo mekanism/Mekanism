@@ -52,8 +52,8 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
-        return original.isAmbientOcclusion();
+    public boolean useAmbientOcclusion() {
+        return original.useAmbientOcclusion();
     }
 
     @Override
@@ -62,20 +62,20 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     }
 
     @Override
-    public boolean isSideLit() {
-        return original.isSideLit();
+    public boolean usesBlockLight() {
+        return original.usesBlockLight();
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
-        return original.isBuiltInRenderer();
+    public boolean isCustomRenderer() {
+        return original.isCustomRenderer();
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public TextureAtlasSprite getParticleTexture() {
-        return original.getParticleTexture();
+    public TextureAtlasSprite getParticleIcon() {
+        return original.getParticleIcon();
     }
 
     @Nonnull
@@ -92,8 +92,8 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     @Nonnull
     @Override
     @Deprecated
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return original.getItemCameraTransforms();
+    public ItemCameraTransforms getTransforms() {
+        return original.getTransforms();
     }
 
     @Override

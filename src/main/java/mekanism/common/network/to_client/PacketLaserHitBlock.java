@@ -16,17 +16,17 @@ public class PacketLaserHitBlock implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        if (Minecraft.getInstance().world != null) {
-            Minecraft.getInstance().particles.addBlockHitEffects(result.getPos(), result);
+        if (Minecraft.getInstance().level != null) {
+            Minecraft.getInstance().particleEngine.addBlockHitEffects(result.getBlockPos(), result);
         }
     }
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeBlockRay(result);
+        buffer.writeBlockHitResult(result);
     }
 
     public static PacketLaserHitBlock decode(PacketBuffer buffer) {
-        return new PacketLaserHitBlock(buffer.readBlockRay());
+        return new PacketLaserHitBlock(buffer.readBlockHitResult());
     }
 }

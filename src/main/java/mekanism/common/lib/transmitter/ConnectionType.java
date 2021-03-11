@@ -23,7 +23,7 @@ public enum ConnectionType implements IIncrementalEnum<ConnectionType>, IStringS
     }
 
     @Override
-    public String getString() {
+    public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);
     }
 

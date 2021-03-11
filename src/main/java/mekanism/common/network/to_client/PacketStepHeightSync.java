@@ -18,7 +18,7 @@ public class PacketStepHeightSync implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
-            player.stepHeight = stepHeight;
+            player.maxUpStep = stepHeight;
         }
     }
 

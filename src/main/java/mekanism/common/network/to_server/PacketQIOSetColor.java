@@ -43,15 +43,15 @@ public class PacketQIOSetColor implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         ServerPlayerEntity player = context.getSender();
         if (player != null) {
-            QIOFrequency freq = FrequencyType.QIO.getFrequency(identity, player.getUniqueID());
-            if (freq != null && freq.ownerMatches(player.getUniqueID())) {
+            QIOFrequency freq = FrequencyType.QIO.getFrequency(identity, player.getUUID());
+            if (freq != null && freq.ownerMatches(player.getUUID())) {
                 freq.setColor(extra == 0 ? freq.getColor().getNext() : freq.getColor().getPrevious());
                 if (type == Type.ITEM) {
-                    ItemStack stack = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+                    ItemStack stack = player.getItemBySlot(EquipmentSlotType.MAINHAND);
                     if (stack.getItem() instanceof ItemPortableQIODashboard) {
                         ((ItemPortableQIODashboard) stack.getItem()).setColor(stack, freq.getColor());
                     }
-                    Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(currentHand, FrequencyType.QIO, player.getUniqueID(), freq), player);
+                    Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(currentHand, FrequencyType.QIO, player.getUUID(), freq), player);
                 }
             }
         }
@@ -59,22 +59,22 @@ public class PacketQIOSetColor implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(type);
+        buffer.writeEnum(type);
         buffer.writeVarInt(extra);
         FrequencyType.QIO.getIdentitySerializer().write(buffer, identity);
         if (type == Type.TILE) {
             buffer.writeBlockPos(tilePosition);
         } else {
-            buffer.writeEnumValue(currentHand);
+            buffer.writeEnum(currentHand);
         }
     }
 
     public static PacketQIOSetColor decode(PacketBuffer buffer) {
-        Type type = buffer.readEnumValue(Type.class);
+        Type type = buffer.readEnum(Type.class);
         int extra = buffer.readVarInt();
         FrequencyIdentity identity = FrequencyType.QIO.getIdentitySerializer().read(buffer);
         BlockPos pos = type == Type.TILE ? buffer.readBlockPos() : null;
-        Hand hand = type == Type.ITEM ? buffer.readEnumValue(Hand.class) : null;
+        Hand hand = type == Type.ITEM ? buffer.readEnum(Hand.class) : null;
         return new PacketQIOSetColor(type, extra, identity, pos, hand);
     }
 

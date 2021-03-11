@@ -87,7 +87,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     protected void onUpdateServer(FusionReactorMultiblockData multiblock) {
         super.onUpdateServer(multiblock);
         if (getActive() && multiblock.isFormed()) {
-            Set<Direction> directionsToEmit = multiblock.getDirectionsToEmit(getPos());
+            Set<Direction> directionsToEmit = multiblock.getDirectionsToEmit(getBlockPos());
             ChemicalUtil.emit(directionsToEmit, multiblock.steamTank, this);
             CableUtils.emit(directionsToEmit, multiblock.energyContainer, this);
         }
@@ -96,7 +96,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     @Nullable
     @Override
     public IHeatHandler getAdjacent(Direction side) {
-        TileEntity adj = WorldUtils.getTileEntity(getWorld(), getPos().offset(side));
+        TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
         if (adj instanceof TileEntityFusionReactorBlock) {
             return null;
         }
@@ -109,7 +109,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                  GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))), Util.DUMMY_UUID);
+                  GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }

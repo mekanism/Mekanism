@@ -166,7 +166,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     }
 
     public void markDirty() {
-        if (world != null && !world.isRemote && world.getGameTime() != lastMarkDirtyTime) {
+        if (world != null && !world.isClientSide && world.getGameTime() != lastMarkDirtyTime) {
             lastMarkDirtyTime = world.getGameTime();
             chunks.forEach((LongConsumer) chunk -> WorldUtils.markChunkDirty(world, WorldUtils.getBlockPosFromChunkPos(chunk)));
         }
@@ -210,7 +210,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
                 initialized = true;
             }
         }
-        return new Range3D(minX, minZ, maxX, maxZ, world.getDimensionKey());
+        return new Range3D(minX, minZ, maxX, maxZ, world.dimension());
     }
 
     public static class TransferEvent<NETWORK extends DynamicBufferedNetwork<?, NETWORK, ?, ?>> extends Event {

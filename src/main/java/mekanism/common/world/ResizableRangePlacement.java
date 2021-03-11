@@ -15,7 +15,7 @@ public class ResizableRangePlacement extends SimplePlacement<ResizableTopSolidRa
 
     @Nonnull
     @Override
-    public Stream<BlockPos> getPositions(@Nonnull Random random, @Nonnull ResizableTopSolidRangeConfig config, @Nonnull BlockPos pos) {
+    public Stream<BlockPos> place(@Nonnull Random random, @Nonnull ResizableTopSolidRangeConfig config, @Nonnull BlockPos pos) {
         int y = random.nextInt(config.maximum.getAsInt() - config.topOffset.getAsInt()) + config.bottomOffset.getAsInt();
         return Stream.of(new BlockPos(pos.getX(), y, pos.getZ()));
     }

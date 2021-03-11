@@ -29,22 +29,22 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem, IItemSustainedInventory {
 
     public ItemPortableQIODashboard(Properties properties) {
-        super(properties.maxStackSize(1).rarity(Rarity.RARE));
+        super(properties.stacksTo(1).rarity(Rarity.RARE));
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
         if (getOwnerUUID(stack) == null) {
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 SecurityUtils.claimItem(player, stack);
             }
         } else if (SecurityUtils.canAccess(player, stack)) {
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, getContainerProvider(stack, hand), buf -> {
-                    buf.writeEnumValue(hand);
-                    buf.writeItemStack(stack);
+                    buf.writeEnum(hand);
+                    buf.writeItem(stack);
                 });
             }
         } else {
@@ -56,7 +56,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
 
     @Override
     public INamedContainerProvider getContainerProvider(ItemStack stack, Hand hand) {
-        return new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableQIODashboardContainer(i, inv, hand, stack));
+        return new ContainerProvider(stack.getHoverName(), (i, inv, p) -> new PortableQIODashboardContainer(i, inv, hand, stack));
     }
 
     @Override

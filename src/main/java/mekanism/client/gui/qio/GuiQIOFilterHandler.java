@@ -40,14 +40,14 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     public GuiQIOFilterHandler(MekanismTileContainer<TILE> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        ySize += 74;
-        playerInventoryTitleY = ySize - 94;
+        imageHeight += 74;
+        inventoryLabelY = imageHeight - 94;
     }
 
     @Override
     public void init() {
         super.init();
-        addButton(new GuiInnerScreen(this, 9, 16, xSize - 18, 12, () -> {
+        addButton(new GuiInnerScreen(this, 9, 16, imageWidth - 18, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             QIOFrequency freq = tile.getQIOFrequency();
             if (freq == null) {
@@ -97,9 +97,9 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                 return list;
             }));
         }
-        addButton(new TranslationButton(this, guiLeft + 10, guiTop + 99, 71, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
+        addButton(new TranslationButton(this, leftPos + 10, topPos + 99, 71, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
               () -> addWindow(GuiQIOItemStackFilter.create(this, tile))));
-        addButton(new TranslationButton(this, guiLeft + 81, guiTop + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
+        addButton(new TranslationButton(this, leftPos + 81, topPos + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
               () -> addWindow(GuiQIOTagFilter.create(this, tile))));
     }
 
@@ -114,7 +114,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

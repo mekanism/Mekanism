@@ -49,7 +49,7 @@ public class ModVersionLoadedCondition implements ICondition {
 
         @Override
         public ModVersionLoadedCondition read(JsonObject json) {
-            return new ModVersionLoadedCondition(JSONUtils.getString(json, "modid"), JSONUtils.getString(json, "minVersion"));
+            return new ModVersionLoadedCondition(JSONUtils.getAsString(json, "modid"), JSONUtils.getAsString(json, "minVersion"));
         }
 
         @Override

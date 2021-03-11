@@ -18,8 +18,8 @@ public class GuiSolarNeutronActivator extends GuiMekanismTile<TileEntitySolarNeu
 
     public GuiSolarNeutronActivator(MekanismTileContainer<TileEntitySolarNeutronActivator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        playerInventoryTitleY += 2;
-        titleY = 4;
+        inventoryLabelY += 2;
+        titleLabelY = 4;
         dynamicSlots = true;
     }
 
@@ -36,7 +36,7 @@ public class GuiSolarNeutronActivator extends GuiMekanismTile<TileEntitySolarNeu
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

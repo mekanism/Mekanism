@@ -46,22 +46,22 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getMaxUses() {
+    public int getUses() {
         return 800;
     }
 
     @Override
-    public float getEfficiency() {
+    public float getSpeed() {
         return 14;
     }
 
     @Override
-    public float getAttackDamage() {
+    public float getAttackDamageBonus() {
         return 6;
     }
 
     @Override
-    public int getHarvestLevel() {
+    public int getLevel() {
         return 2;
     }
 
@@ -76,7 +76,7 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurability(@Nonnull EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
                 return 455;
@@ -91,7 +91,7 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDamageReductionAmount(@Nonnull EquipmentSlotType slotType) {
+    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
                 return 2;
@@ -118,14 +118,14 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Nonnull
     @Override
-    public SoundEvent getSoundEvent() {
-        return SoundEvents.ITEM_ARMOR_EQUIP_IRON;
+    public SoundEvent getEquipSound() {
+        return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
     @Nonnull
     @Override
     public Ingredient getCommonRepairMaterial() {
-        return Ingredient.fromTag(MekanismTags.Items.INGOTS_BRONZE);
+        return Ingredient.of(MekanismTags.Items.INGOTS_BRONZE);
     }
 
     @Override

@@ -32,7 +32,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockEnergyCube(BlockEnergyCube block) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1).setNoRepair().setISTER(ISTERProvider::energyCube));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1).setNoRepair().setISTER(ISTERProvider::energyCube));
     }
 
     @Nonnull
@@ -43,10 +43,10 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         StorageUtils.addStoredEnergy(stack, tooltip, true);
         tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getTier().getMaxEnergy())));
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, world, tooltip, flag);
     }
 
     @Override
@@ -56,10 +56,10 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
-        super.fillItemGroup(group, items);
+    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+        super.fillItemCategory(group, items);
         //Add the charged variant
-        if (isInGroup(group)) {
+        if (allowdedIn(group)) {
             EnergyCubeTier tier = Attribute.getTier(getBlock(), EnergyCubeTier.class);
             ItemStack stack = StorageUtils.getFilledEnergyVariant(new ItemStack(this), tier.getMaxEnergy());
             if (tier == EnergyCubeTier.CREATIVE) {

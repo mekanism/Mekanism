@@ -103,10 +103,10 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(gasTank, this::getWorld, this, 6, 69));
+        builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(gasTank, this::getLevel, this, 6, 69));
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 26, 40));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 152, 40));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 173, 69));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 173, 69));
         gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         return builder.build();
     }

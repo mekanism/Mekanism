@@ -21,24 +21,24 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        itemType.write(nbtTags);
+        itemType.save(nbtTags);
         return nbtTags;
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        itemType = ItemStack.read(nbtTags);
+        itemType = ItemStack.of(nbtTags);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeItemStack(itemType);
+        buffer.writeItem(itemType);
     }
 
     @Override
     public void read(PacketBuffer dataStream) {
-        itemType = dataStream.readItemStack();
+        itemType = dataStream.readItem();
     }
 
     @Override
@@ -50,7 +50,7 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof QIOItemStackFilter && ((QIOItemStackFilter) filter).itemType.isItemEqual(itemType);
+        return filter instanceof QIOItemStackFilter && ((QIOItemStackFilter) filter).itemType.sameItem(itemType);
     }
 
     @Override

@@ -42,9 +42,9 @@ public class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
                 //If the energy cost is free or we have enough energy for at least one pull grab all the items that can be picked up.
                 //Note: We check distance afterwards so that we aren't having to calculate a bunch of distances when we may run out
                 // of energy, and calculating distance is a bit more expensive than just checking if it can be picked up
-                List<ItemEntity> items = player.world.getEntitiesWithinAABB(ItemEntity.class, player.getBoundingBox().grow(size, size, size), item -> !item.cannotPickup());
+                List<ItemEntity> items = player.level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(size, size, size), item -> !item.hasPickUpDelay());
                 for (ItemEntity item : items) {
-                    if (item.getDistance(player) > 0.001) {
+                    if (item.distanceTo(player) > 0.001) {
                         if (free) {
                             pullItem(player, item);
                         } else if (useEnergy(player, energyContainer, usage, true).isZero()) {
@@ -65,12 +65,12 @@ public class ModuleMagneticAttractionUnit extends ModuleMekaSuit {
     }
 
     private void pullItem(PlayerEntity player, ItemEntity item) {
-        Vector3d diff = player.getPositionVec().subtract(item.getPositionVec());
+        Vector3d diff = player.position().subtract(item.position());
         Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
-        Vector3d motionDiff = motionNeeded.subtract(player.getMotion());
-        item.setMotion(motionDiff.scale(0.2));
+        Vector3d motionDiff = motionNeeded.subtract(player.getDeltaMovement());
+        item.setDeltaMovement(motionDiff.scale(0.2));
         Mekanism.packetHandler.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player, item),
-              player.getPositionVec().add(0, 0.2, 0), item.getPositionVec(), (int) (diff.length() * 4)), player);
+              player.position().add(0, 0.2, 0), item.position(), (int) (diff.length() * 4)), player);
     }
 
     @Override

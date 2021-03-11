@@ -16,11 +16,11 @@ public class TransmitterModelTransform implements IModelTransform {
     public TransmitterModelTransform(IModelTransform internal, Direction dir, float angle) {
         TransformationMatrix matrix = new TransformationMatrix(null, new Quaternion(vecForDirection(dir), angle, true), null, null);
         this.matrix = internal.getRotation().compose(matrix);
-        this.isUvLock = internal.isUvLock();
+        this.isUvLock = internal.isUvLocked();
     }
 
     private static Vector3f vecForDirection(Direction dir) {
-        Vector3f vec = new Vector3f(Vector3d.copy(dir.getDirectionVec()));
+        Vector3f vec = new Vector3f(Vector3d.atLowerCornerOf(dir.getNormal()));
         vec.mul(-1);
         return vec;
     }
@@ -32,7 +32,7 @@ public class TransmitterModelTransform implements IModelTransform {
     }
 
     @Override
-    public boolean isUvLock() {
+    public boolean isUvLocked() {
         return isUvLock;
     }
 }

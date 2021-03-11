@@ -51,13 +51,13 @@ public class WorldUtils {
      */
     @Contract("null, _ -> false")
     public static boolean isBlockLoaded(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
-        if (world == null || !World.isValid(pos)) {
+        if (world == null || !World.isInWorldBounds(pos)) {
             return false;
         } else if (world instanceof IWorldReader) {
             //Note: We don't bother checking if it is a world and then isBlockPresent because
             // all that does is also validate the y value is in bounds, and we already check to make
             // sure the position is valid both in the y and xz directions
-            return ((IWorldReader) world).isBlockLoaded(pos);
+            return ((IWorldReader) world).hasChunkAt(pos);
         }
         return true;
     }
@@ -75,7 +75,7 @@ public class WorldUtils {
     @Nullable
     @Contract("null, _, _ -> null")
     private static IChunk getChunkForPos(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
-        if (world == null || !World.isValid(pos)) {
+        if (world == null || !World.isInWorldBounds(pos)) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
             // Also short circuit to check if the position is out of bounds before bothering to lookup the chunk
             return null;
@@ -231,7 +231,7 @@ public class WorldUtils {
             //If the world is null or its a world reader and the block is not loaded, return null
             return null;
         }
-        return world.getTileEntity(pos);
+        return world.getBlockEntity(pos);
     }
 
     /**
@@ -280,8 +280,8 @@ public class WorldUtils {
      * @param tile TileEntity to save
      */
     public static void saveChunk(TileEntity tile) {
-        if (tile != null && !tile.isRemoved() && tile.getWorld() != null) {
-            markChunkDirty(tile.getWorld(), tile.getPos());
+        if (tile != null && !tile.isRemoved() && tile.getLevel() != null) {
+            markChunkDirty(tile.getLevel(), tile.getBlockPos());
         }
     }
 
@@ -290,7 +290,7 @@ public class WorldUtils {
      */
     public static void markChunkDirty(World world, BlockPos pos) {
         if (isBlockLoaded(world, pos)) {
-            world.getChunkAt(pos).markDirty();
+            world.getChunkAt(pos).markUnsaved();
         }
         //TODO: This line below is now (1.16+) called by the mark chunk dirty method (without even validating if it is loaded).
         // And with it causes issues where chunks are easily ghost loaded. Why was it added like that and do we need to somehow
@@ -309,7 +309,7 @@ public class WorldUtils {
      * Dismantles a block, dropping it and removing it from the world.
      */
     public static void dismantleBlock(BlockState state, World world, BlockPos pos, @Nullable TileEntity tile) {
-        Block.spawnDrops(state, world, pos, tile);
+        Block.dropResources(state, world, pos, tile);
         world.removeBlock(pos, false);
     }
 
@@ -319,7 +319,7 @@ public class WorldUtils {
      * @return the distance to the defined Coord4D
      */
     public static double distanceBetween(BlockPos start, BlockPos end) {
-        return MathHelper.sqrt(start.distanceSq(end));
+        return MathHelper.sqrt(start.distSqr(end));
     }
 
     /**
@@ -330,7 +330,7 @@ public class WorldUtils {
     public static Direction sideDifference(BlockPos pos, BlockPos other) {
         BlockPos diff = pos.subtract(other);
         for (Direction side : EnumUtils.DIRECTIONS) {
-            if (side.getXOffset() == diff.getX() && side.getYOffset() == diff.getY() && side.getZOffset() == diff.getZ()) {
+            if (side.getStepX() == diff.getX() && side.getStepY() == diff.getY() && side.getStepZ() == diff.getZ()) {
                 return side;
             }
         }
@@ -345,7 +345,7 @@ public class WorldUtils {
      * @return if the chunk is being vibrated
      */
     public static boolean isChunkVibrated(ChunkPos chunk, World world) {
-        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.getDimensionKey() && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
+        return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.dimension() && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
     }
 
     public static boolean tryPlaceContainedLiquid(@Nullable PlayerEntity player, World world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
@@ -355,33 +355,33 @@ public class WorldUtils {
             return false;
         }
         BlockState state = world.getBlockState(pos);
-        boolean isReplaceable = state.isReplaceable(fluid);
-        boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canContainFluid(world, pos, state, fluid);
+        boolean isReplaceable = state.canBeReplaced(fluid);
+        boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canPlaceLiquid(world, pos, state, fluid);
         if (state.isAir(world, pos) || isReplaceable || canContainFluid) {
-            if (world.getDimensionType().isUltrawarm() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
+            if (world.dimensionType().ultraWarm() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
                 fluid.getAttributes().vaporize(player, world, pos, fluidStack);
             } else if (canContainFluid) {
-                if (!((ILiquidContainer) state.getBlock()).receiveFluid(world, pos, state, fluid.getAttributes().getStateForPlacement(world, pos, fluidStack))) {
+                if (!((ILiquidContainer) state.getBlock()).placeLiquid(world, pos, state, fluid.getAttributes().getStateForPlacement(world, pos, fluidStack))) {
                     //If something went wrong return that we couldn't actually place it
                     return false;
                 }
                 playEmptySound(player, world, pos, fluidStack);
             } else {
-                if (!world.isRemote() && isReplaceable && !state.getMaterial().isLiquid()) {
+                if (!world.isClientSide() && isReplaceable && !state.getMaterial().isLiquid()) {
                     world.destroyBlock(pos, true);
                 }
                 playEmptySound(player, world, pos, fluidStack);
-                world.setBlockState(pos, fluid.getDefaultState().getBlockState(), BlockFlags.DEFAULT_AND_RERENDER);
+                world.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), BlockFlags.DEFAULT_AND_RERENDER);
             }
             return true;
         }
-        return side != null && tryPlaceContainedLiquid(player, world, pos.offset(side), fluidStack, null);
+        return side != null && tryPlaceContainedLiquid(player, world, pos.relative(side), fluidStack, null);
     }
 
     private static void playEmptySound(@Nullable PlayerEntity player, IWorld world, BlockPos pos, @Nonnull FluidStack fluidStack) {
         SoundEvent soundevent = fluidStack.getFluid().getAttributes().getEmptySound(world, pos);
         if (soundevent == null) {
-            soundevent = fluidStack.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY;
+            soundevent = fluidStack.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         }
         world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
@@ -389,7 +389,7 @@ public class WorldUtils {
     public static void playFillSound(@Nullable PlayerEntity player, IWorld world, BlockPos pos, @Nonnull FluidStack fluidStack) {
         SoundEvent soundevent = fluidStack.getFluid().getAttributes().getFillSound(world, pos);
         if (soundevent == null) {
-            soundevent = fluidStack.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL;
+            soundevent = fluidStack.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL;
         }
         world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
@@ -404,11 +404,11 @@ public class WorldUtils {
      */
     public static boolean isGettingPowered(World world, BlockPos pos) {
         for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos offset = pos.offset(side);
+            BlockPos offset = pos.relative(side);
             if (isBlockLoaded(world, pos) && isBlockLoaded(world, offset)) {
                 BlockState blockState = world.getBlockState(offset);
                 boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
-                if (weakPower && isDirectlyGettingPowered(world, offset) || !weakPower && blockState.getWeakPower(world, offset, side) > 0) {
+                if (weakPower && isDirectlyGettingPowered(world, offset) || !weakPower && blockState.getSignal(world, offset, side) > 0) {
                     return true;
                 }
             }
@@ -426,9 +426,9 @@ public class WorldUtils {
      */
     public static boolean isDirectlyGettingPowered(World world, BlockPos pos) {
         for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos offset = pos.offset(side);
+            BlockPos offset = pos.relative(side);
             if (isBlockLoaded(world, offset)) {
-                if (world.getRedstonePower(pos, side) > 0) {
+                if (world.getSignal(pos, side) > 0) {
                     return true;
                 }
             }
@@ -470,7 +470,7 @@ public class WorldUtils {
      * @return True if the block can be replaced and is within the world's bounds.
      */
     public static boolean isValidReplaceableBlock(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return World.isValid(pos) && world.getBlockState(pos).getMaterial().isReplaceable();
+        return World.isInWorldBounds(pos) && world.getBlockState(pos).getMaterial().isReplaceable();
     }
 
     /**
@@ -482,11 +482,11 @@ public class WorldUtils {
     public static void notifyLoadedNeighborsOfTileChange(World world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         for (Direction dir : EnumUtils.DIRECTIONS) {
-            BlockPos offset = pos.offset(dir);
+            BlockPos offset = pos.relative(dir);
             if (isBlockLoaded(world, offset)) {
                 notifyNeighborOfChange(world, offset, pos);
-                if (world.getBlockState(offset).isNormalCube(world, offset)) {
-                    offset = offset.offset(dir);
+                if (world.getBlockState(offset).isRedstoneConductor(world, offset)) {
+                    offset = offset.relative(dir);
                     if (isBlockLoaded(world, offset)) {
                         Block block1 = world.getBlockState(offset).getBlock();
                         //TODO: Make sure this is passing the correct state
@@ -521,7 +521,7 @@ public class WorldUtils {
      * @param fromPos      pos of our block that updated
      */
     public static void notifyNeighborOfChange(@Nullable World world, Direction neighborSide, BlockPos fromPos) {
-        notifyNeighborOfChange(world, fromPos.offset(neighborSide), fromPos);
+        notifyNeighborOfChange(world, fromPos.relative(neighborSide), fromPos);
     }
 
     /**
@@ -536,9 +536,9 @@ public class WorldUtils {
             return;
         }
         BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.getBlock();
-        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null, Direction.NORTH);
-        world.setBlockState(boundingLocation, newState, BlockFlags.DEFAULT);
-        if (!world.isRemote()) {
+        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.defaultBlockState(), world, boundingLocation, null, Direction.NORTH);
+        world.setBlock(boundingLocation, newState, BlockFlags.DEFAULT);
+        if (!world.isClientSide()) {
             TileEntityBoundingBlock tile = getTileEntity(TileEntityBoundingBlock.class, world, boundingLocation);
             if (tile != null) {
                 tile.setMainLocation(orig);
@@ -557,9 +557,9 @@ public class WorldUtils {
      */
     public static void makeAdvancedBoundingBlock(IWorld world, BlockPos boundingLocation, BlockPos orig) {
         BlockBounding boundingBlock = MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock();
-        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.getDefaultState(), world, boundingLocation, null, Direction.NORTH);
-        world.setBlockState(boundingLocation, newState, BlockFlags.DEFAULT);
-        if (!world.isRemote()) {
+        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.defaultBlockState(), world, boundingLocation, null, Direction.NORTH);
+        world.setBlock(boundingLocation, newState, BlockFlags.DEFAULT);
+        if (!world.isClientSide()) {
             TileEntityAdvancedBoundingBlock tile = getTileEntity(TileEntityAdvancedBoundingBlock.class, world, boundingLocation);
             if (tile != null) {
                 tile.setMainLocation(orig);
@@ -578,7 +578,7 @@ public class WorldUtils {
      */
     public static void updateBlock(@Nullable World world, @Nonnull BlockPos pos, BlockState state) {
         if (isBlockLoaded(world, pos)) {
-            world.notifyBlockUpdate(pos, state, state, BlockFlags.DEFAULT);
+            world.sendBlockUpdated(pos, state, state, BlockFlags.DEFAULT);
         }
     }
 
@@ -590,20 +590,20 @@ public class WorldUtils {
      */
     public static void recheckLighting(@Nullable IBlockDisplayReader world, @Nonnull BlockPos pos) {
         if (isBlockLoaded(world, pos)) {
-            world.getLightManager().checkBlock(pos);
+            world.getLightEngine().checkBlock(pos);
         }
     }
 
     /**
-     * Vanilla copy of {@link net.minecraft.client.world.ClientWorld#getSunBrightness(float)} used to be World#getSunBrightness
+     * Vanilla copy of {@link net.minecraft.client.world.ClientWorld#getSkyDarken(float)} used to be World#getSunBrightness
      */
     public static float getSunBrightness(World world, float partialTicks) {
-        float f = world.func_242415_f(partialTicks);
+        float f = world.getTimeOfDay(partialTicks);
         float f1 = 1.0F - (MathHelper.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.2F);
         f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;
-        f1 = (float) (f1 * (1.0D - world.getRainStrength(partialTicks) * 5.0F / 16.0D));
-        f1 = (float) (f1 * (1.0D - world.getThunderStrength(partialTicks) * 5.0F / 16.0D));
+        f1 = (float) (f1 * (1.0D - world.getRainLevel(partialTicks) * 5.0F / 16.0D));
+        f1 = (float) (f1 * (1.0D - world.getThunderLevel(partialTicks) * 5.0F / 16.0D));
         return f1 * 0.8F + 0.2F;
     }
 
@@ -620,7 +620,7 @@ public class WorldUtils {
         //Note: We manually handle the world#isDaytime check by just checking the subtracted skylight
         // as vanilla returns false if the world's time is set to a fixed value even if that time
         // would effectively be daytime
-        return world != null && world.getDimensionType().hasSkyLight() && world.getSkylightSubtracted() < 4 && world.canBlockSeeSky(pos);
+        return world != null && world.dimensionType().hasSkyLight() && world.getSkyDarken() < 4 && world.canSeeSkyFromBelowWater(pos);
     }
 
     /**

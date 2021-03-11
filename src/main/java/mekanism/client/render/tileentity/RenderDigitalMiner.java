@@ -50,18 +50,18 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
                 model.maxY = 1;
                 model.maxZ = 1;
             }
-            matrix.push();
+            matrix.pushPose();
             //Adjust translation and scale ever so slightly so that no z-fighting happens at the edges if there are blocks there
-            matrix.translate(-miner.getRadius() + 0.01, miner.getMinY() - miner.getPos().getY() + 0.01, -miner.getRadius() + 0.01);
+            matrix.translate(-miner.getRadius() + 0.01, miner.getMinY() - miner.getBlockPos().getY() + 0.01, -miner.getRadius() + 0.01);
             float diameter = miner.getDiameter() - 0.02F;
             matrix.scale(diameter, miner.getMaxY() - miner.getMinY() - 0.02F, diameter);
             //If we are inside of the visualization we don't have to render the "front" face, otherwise we need to render both given how the visualization works
             // we want to be able to see all faces easily
-            FaceDisplay faceDisplay = isInsideBounds(miner.getPos().getX() - miner.getRadius(), miner.getMinY(), miner.getPos().getZ() - miner.getRadius(),
-                  miner.getPos().getX() + miner.getRadius(), miner.getMaxY(), miner.getPos().getZ() + miner.getRadius()) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-            MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()), colors, MekanismRenderer.FULL_LIGHT, overlayLight,
+            FaceDisplay faceDisplay = isInsideBounds(miner.getBlockPos().getX() - miner.getRadius(), miner.getMinY(), miner.getBlockPos().getZ() - miner.getRadius(),
+                  miner.getBlockPos().getX() + miner.getRadius(), miner.getMaxY(), miner.getBlockPos().getZ() + miner.getRadius()) ? FaceDisplay.BACK : FaceDisplay.BOTH;
+            MekanismRenderer.renderObject(model, matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()), colors, MekanismRenderer.FULL_LIGHT, overlayLight,
                   faceDisplay);
-            matrix.pop();
+            matrix.popPose();
         }
     }
 
@@ -71,7 +71,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntityDigitalMiner tile) {
+    public boolean shouldRenderOffScreen(TileEntityDigitalMiner tile) {
         return true;
     }
 }

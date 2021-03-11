@@ -47,13 +47,13 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         ServerPlayerEntity player = context.getSender();
-        if (player != null && player.openContainer instanceof QIOItemViewerContainer) {
-            QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
-            byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUniqueID());
+        if (player != null && player.containerMenu instanceof QIOItemViewerContainer) {
+            QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
+            byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUUID());
             if (selectedCraftingGrid == -1) {
                 Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
             } else {
-                Optional<? extends IRecipe<?>> optionalIRecipe = player.world.getRecipeManager().getRecipe(recipeID);
+                Optional<? extends IRecipe<?>> optionalIRecipe = player.level.getRecipeManager().byKey(recipeID);
                 if (optionalIRecipe.isPresent()) {
                     IRecipe<?> recipe = optionalIRecipe.get();
                     if (recipe instanceof ICraftingRecipe) {
@@ -92,7 +92,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                 if (qioSource == null) {
                     throw new IllegalStateException("Invalid QIO crafting window transfer source.");
                 }
-                buffer.writeUniqueId(qioSource);
+                buffer.writeUUID(qioSource);
             }
         }
     }
@@ -106,7 +106,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
             byte targetSlot = buffer.readByte();
             byte sourceSlot = buffer.readByte();
             if (sourceSlot == -1) {
-                sources.put(targetSlot, new SingularHashedItemSource(buffer.readUniqueId()));
+                sources.put(targetSlot, new SingularHashedItemSource(buffer.readUUID()));
             } else {
                 sources.put(targetSlot, new SingularHashedItemSource(sourceSlot));
             }
@@ -139,7 +139,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                     return;
                 }
                 stack = storedItem.getStack();
-            } else if (slot >= 0 && slot < 9 + PlayerInventory.getHotbarSize() + 27) {
+            } else if (slot >= 0 && slot < 9 + PlayerInventory.getSelectionSize() + 27) {
                 if (slot < 9) {
                     //Crafting Window
                     CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
@@ -151,7 +151,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                         return;
                     }
                     stack = inputSlot.getStack();
-                } else if (slot < 9 + PlayerInventory.getHotbarSize()) {
+                } else if (slot < 9 + PlayerInventory.getSelectionSize()) {
                     //Hotbar
                     int actualSlot = slot - 9;
                     if (actualSlot >= hotBarSlots.size()) {
@@ -160,8 +160,8 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                         return;
                     }
                     HotBarSlot hotbarSlot = hotBarSlots.get(actualSlot);
-                    if (hotbarSlot.canTakeStack(player)) {
-                        stack = hotbarSlot.getStack();
+                    if (hotbarSlot.mayPickup(player)) {
+                        stack = hotbarSlot.getItem();
                     } else {
                         Mekanism.logger.warn("Received transfer request from: {}, for: {}, with a request to take from hotbar slot: {}, "
                                              + "but that slot cannot be taken from.", player, recipeID, actualSlot);
@@ -169,15 +169,15 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                     }
                 } else {
                     //Main inventory
-                    int actualSlot = slot - 9 - PlayerInventory.getHotbarSize();
+                    int actualSlot = slot - 9 - PlayerInventory.getSelectionSize();
                     if (actualSlot >= mainInventorySlots.size()) {
                         //Something went wrong, shouldn't happen even with an invalid packet
                         Mekanism.logger.warn("Received transfer request from: {}, for: {}, could not find main inventory slot: {}.", player, recipeID, actualSlot);
                         return;
                     }
                     MainInventorySlot mainInventorySlot = mainInventorySlots.get(actualSlot);
-                    if (mainInventorySlot.canTakeStack(player)) {
-                        stack = mainInventorySlot.getStack();
+                    if (mainInventorySlot.mayPickup(player)) {
+                        stack = mainInventorySlot.getItem();
                     } else {
                         Mekanism.logger.warn("Received transfer request from: {}, for: {}, with a request to take from main inventory slot: {}, "
                                              + "but that slot cannot be taken from.", player, recipeID, actualSlot);
@@ -197,9 +197,9 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                 Mekanism.logger.warn("Received transfer request from: {}, for: {}, with an invalid target slot id: {}.", player, recipeID, targetSlot);
                 return;
             }
-            dummy.setInventorySlotContents(targetSlot, stack);
+            dummy.setItem(targetSlot, stack);
         }
-        if (!recipe.matches(dummy, player.world)) {
+        if (!recipe.matches(dummy, player.level)) {
             Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipeID);
             return;
         }
@@ -250,11 +250,11 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                     return;
                 }
                 targetContents.put(entry.getByteKey(), stack);
-            } else if (slot < 9 + PlayerInventory.getHotbarSize()) {
+            } else if (slot < 9 + PlayerInventory.getSelectionSize()) {
                 //Hotbar
                 int actualSlot = slot - 9;
                 HotBarSlot hotbarSlot = hotBarSlots.get(actualSlot);
-                ItemStack stack = hotbarSlot.decrStackSize(1);
+                ItemStack stack = hotbarSlot.remove(1);
                 if (stack.isEmpty()) {
                     Mekanism.logger.warn("Received transfer request from: {}, for: {}, could not extract item from hotbar window slot: {}. "
                                          + "This likely means that more of it was requested than is stored.", player, recipeID, actualSlot);
@@ -263,9 +263,9 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                 targetContents.put(entry.getByteKey(), stack);
             } else {
                 //Main inventory
-                int actualSlot = slot - 9 - PlayerInventory.getHotbarSize();
+                int actualSlot = slot - 9 - PlayerInventory.getSelectionSize();
                 MainInventorySlot mainInventorySlot = mainInventorySlots.get(actualSlot);
-                ItemStack stack = mainInventorySlot.decrStackSize(1);
+                ItemStack stack = mainInventorySlot.remove(1);
                 if (stack.isEmpty()) {
                     Mekanism.logger.warn("Received transfer request from: {}, for: {}, could not extract item from main inventory window slot: {}. "
                                          + "This likely means that more of it was requested than is stored.", player, recipeID, actualSlot);
@@ -321,7 +321,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                         //If we couldn't insert it all, either because there was no frequency or it didn't have room for it all
                         // drop it as the player, and print a warning as ideally we should never have been able to get to this
                         // point as our simulation should have marked it as invalid
-                        player.dropItem(stack, false);
+                        player.drop(stack, false);
                         Mekanism.logger.warn("Received transfer request from: {}, for: {}, and was unable to fit all contents that were in the crafting window "
                                              + "into the player's inventory/QIO system; dropping items by player.", player, recipeID);
                         //TODO - 10.1: Make sure we don't get to this point by having accurate simulation

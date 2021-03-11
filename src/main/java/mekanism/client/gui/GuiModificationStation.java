@@ -27,8 +27,8 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     public GuiModificationStation(MekanismTileContainer<TileEntityModificationStation> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        ySize += 64;
-        playerInventoryTitleY = ySize - 92;
+        imageHeight += 64;
+        inventoryLabelY = imageHeight - 92;
     }
 
     @Override
@@ -39,8 +39,8 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 154, 40));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
-        addButton(removeButton = new TranslationButton(this, guiLeft + 34, guiTop + 96, 108, 17, MekanismLang.BUTTON_REMOVE,
-              () -> Mekanism.packetHandler.sendToServer(new PacketRemoveModule(tile.getPos(), selectedModule.getData()))));
+        addButton(removeButton = new TranslationButton(this, leftPos + 34, topPos + 96, 108, 17, MekanismLang.BUTTON_REMOVE,
+              () -> Mekanism.packetHandler.sendToServer(new PacketRemoveModule(tile.getBlockPos(), selectedModule.getData()))));
         removeButton.active = false;
 
         addButton(new GuiModuleScrollList(this, 34, 20, 108, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));
@@ -54,7 +54,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

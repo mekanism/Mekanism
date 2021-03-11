@@ -31,9 +31,9 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
     public GuiThermoelectricBoiler(MekanismTileContainer<TileEntityBoilerCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        xSize += 40;
-        playerInventoryTitleY += 2;
-        titleY = 5;
+        imageWidth += 40;
+        inventoryLabelY += 2;
+        titleLabelY = 5;
     }
 
     @Override
@@ -86,8 +86,8 @@ public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCas
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.BOILER.translate(), titleY);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawTitleText(matrix, MekanismLang.BOILER.translate(), titleLabelY);
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

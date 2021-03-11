@@ -7,6 +7,6 @@ public class GeneratorsBlockLootTables extends BaseBlockLootTables {
 
     @Override
     protected void addTables() {
-        registerDropSelfWithContentsLootTable(GeneratorsBlocks.BLOCKS.getAllBlocks());
+        dropSelfWithContents(GeneratorsBlocks.BLOCKS.getAllBlocks());
     }
 }

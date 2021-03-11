@@ -32,11 +32,11 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @param entity - entity to create the Coord4D from
      */
     public Coord4D(Entity entity) {
-        BlockPos entityPosition = entity.getPosition();
+        BlockPos entityPosition = entity.blockPosition();
         this.x = entityPosition.getX();
         this.y = entityPosition.getY();
         this.z = entityPosition.getZ();
-        this.dimension = entity.world.getDimensionKey();
+        this.dimension = entity.level.dimension();
     }
 
     /**
@@ -55,7 +55,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
     }
 
     public Coord4D(BlockPos pos, World world) {
-        this(pos, world.getDimensionKey());
+        this(pos, world.dimension());
     }
 
     public Coord4D(BlockPos pos, RegistryKey<World> dimension) {
@@ -63,7 +63,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
     }
 
     public Coord4D(BlockRayTraceResult mop, World world) {
-        this(mop.getPos(), world);
+        this(mop.getBlockPos(), world);
     }
 
     /**
@@ -74,7 +74,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @return the Coord4D object from the TileEntity
      */
     public static Coord4D get(TileEntity tile) {
-        return new Coord4D(tile.getPos(), tile.getWorld());
+        return new Coord4D(tile.getBlockPos(), tile.getLevel());
     }
 
     /**
@@ -86,7 +86,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      */
     public static Coord4D read(CompoundNBT tag) {
         return new Coord4D(tag.getInt(NBTConstants.X), tag.getInt(NBTConstants.Y), tag.getInt(NBTConstants.Z),
-              RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
+              RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tag.getString(NBTConstants.DIMENSION))));
     }
 
     /**
@@ -97,7 +97,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @return the Coord4D from the data input
      */
     public static Coord4D read(PacketBuffer dataStream) {
-        return new Coord4D(dataStream.readBlockPos(), RegistryKey.getOrCreateKey(Registry.WORLD_KEY, dataStream.readResourceLocation()));
+        return new Coord4D(dataStream.readBlockPos(), RegistryKey.create(Registry.DIMENSION_REGISTRY, dataStream.readResourceLocation()));
     }
 
     /**
@@ -136,7 +136,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
         nbtTags.putInt(NBTConstants.X, x);
         nbtTags.putInt(NBTConstants.Y, y);
         nbtTags.putInt(NBTConstants.Z, z);
-        nbtTags.putString(NBTConstants.DIMENSION, dimension.getLocation().toString());
+        nbtTags.putString(NBTConstants.DIMENSION, dimension.location().toString());
         return nbtTags;
     }
 
@@ -148,7 +148,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
     public void write(PacketBuffer dataStream) {
         //Note: We write the position as a block pos over the network so that it can be packed more efficiently
         dataStream.writeBlockPos(getPos());
-        dataStream.writeResourceLocation(dimension.getLocation());
+        dataStream.writeResourceLocation(dimension.location());
     }
 
     /**
@@ -187,7 +187,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
         if (side == null || amount == 0) {
             return this;
         }
-        return new Coord4D(x + (side.getXOffset() * amount), y + (side.getYOffset() * amount), z + (side.getZOffset() * amount), dimension);
+        return new Coord4D(x + (side.getStepX() * amount), y + (side.getStepY() * amount), z + (side.getStepZ() * amount), dimension);
     }
 
     /**
@@ -206,7 +206,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
 
     @Override
     public String toString() {
-        return "[Coord4D: " + x + ", " + y + ", " + z + ", dim=" + dimension.getLocation() + "]";
+        return "[Coord4D: " + x + ", " + y + ", " + z + ", dim=" + dimension.location() + "]";
     }
 
     @Override

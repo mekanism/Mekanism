@@ -38,11 +38,11 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
 
     public float getHoeDamage() {
         //Default to match the vanilla hoe's implementation of being negative the attack damage of the material
-        return -getAttackDamage();
+        return -getAttackDamageBonus();
     }
 
     public float getHoeAtkSpeed() {
-        return getAttackDamage() - 3.0F;
+        return getAttackDamageBonus() - 3.0F;
     }
 
     public abstract float getPaxelDamage();

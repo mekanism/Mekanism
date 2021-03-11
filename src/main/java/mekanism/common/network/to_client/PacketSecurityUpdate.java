@@ -59,8 +59,8 @@ public class PacketSecurityUpdate implements IMekanismPacket {
     public void encode(PacketBuffer buffer) {
         buffer.writeBoolean(isUpdate);
         if (isUpdate) {
-            buffer.writeUniqueId(playerUUID);
-            buffer.writeString(playerUsername);
+            buffer.writeUUID(playerUUID);
+            buffer.writeUtf(playerUsername);
             if (securityData == null) {
                 buffer.writeBoolean(false);
             } else {
@@ -73,9 +73,9 @@ public class PacketSecurityUpdate implements IMekanismPacket {
             for (SecurityFrequency frequency : frequencies) {
                 UUID owner = frequency.getOwner();
                 //In theory I don't think we can ever get here if this is null
-                buffer.writeUniqueId(owner);
+                buffer.writeUUID(owner);
                 new SecurityData(frequency).write(buffer);
-                buffer.writeString(MekanismUtils.getLastKnownUsername(owner));
+                buffer.writeUtf(MekanismUtils.getLastKnownUsername(owner));
             }
         }
     }
@@ -83,7 +83,7 @@ public class PacketSecurityUpdate implements IMekanismPacket {
     public static PacketSecurityUpdate decode(PacketBuffer buffer) {
         PacketSecurityUpdate packet = new PacketSecurityUpdate(buffer.readBoolean());
         if (packet.isUpdate) {
-            packet.playerUUID = buffer.readUniqueId();
+            packet.playerUUID = buffer.readUUID();
             packet.playerUsername = BasePacketHandler.readString(buffer);
             if (buffer.readBoolean()) {
                 packet.securityData = SecurityData.read(buffer);
@@ -93,7 +93,7 @@ public class PacketSecurityUpdate implements IMekanismPacket {
             packet.securityMap = new Object2ObjectOpenHashMap<>(frequencySize);
             packet.uuidMap = new Object2ObjectOpenHashMap<>(frequencySize);
             for (int i = 0; i < frequencySize; i++) {
-                UUID uuid = buffer.readUniqueId();
+                UUID uuid = buffer.readUUID();
                 packet.securityMap.put(uuid, SecurityData.read(buffer));
                 packet.uuidMap.put(uuid, BasePacketHandler.readString(buffer));
             }

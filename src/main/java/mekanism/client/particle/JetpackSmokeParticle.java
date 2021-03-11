@@ -18,14 +18,14 @@ public class JetpackSmokeParticle extends SmokeParticle {
     }
 
     @Override
-    public int getBrightnessForRender(float partialTick) {
-        return 190 + (int) (20F * (1.0F - Minecraft.getInstance().gameSettings.gamma));
+    public int getLightColor(float partialTick) {
+        return 190 + (int) (20F * (1.0F - Minecraft.getInstance().options.gamma));
     }
 
     @Override
-    public void renderParticle(@Nonnull IVertexBuilder vertexBuilder, @Nonnull ActiveRenderInfo renderInfo, float partialTicks) {
+    public void render(@Nonnull IVertexBuilder vertexBuilder, @Nonnull ActiveRenderInfo renderInfo, float partialTicks) {
         if (age > 0) {
-            super.renderParticle(vertexBuilder, renderInfo, partialTicks);
+            super.render(vertexBuilder, renderInfo, partialTicks);
         }
     }
 
@@ -38,7 +38,7 @@ public class JetpackSmokeParticle extends SmokeParticle {
         }
 
         @Override
-        public Particle makeParticle(@Nonnull BasicParticleType type, @Nonnull ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(@Nonnull BasicParticleType type, @Nonnull ClientWorld world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             return new JetpackSmokeParticle(world, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

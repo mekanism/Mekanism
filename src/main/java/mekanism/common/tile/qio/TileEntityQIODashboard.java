@@ -61,7 +61,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
                 craftingWindow.invalidateRecipe();
             }
         }
-        if (world.getGameTime() % 10 == 0) {
+        if (level.getGameTime() % 10 == 0) {
             setActive(getQIOFrequency() != null);
         }
     }
@@ -69,7 +69,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     @Nullable
     @Override
     public World getHolderWorld() {
-        return world;
+        return level;
     }
 
     @Override

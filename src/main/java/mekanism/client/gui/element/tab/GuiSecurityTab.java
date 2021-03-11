@@ -54,9 +54,9 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
 
     private static ISecurityObject getItemSecurityObject(@Nonnull Hand hand) {
         return SecurityUtils.wrapSecurityItem(() -> {
-            ItemStack stack = minecraft.player.getHeldItem(hand);
+            ItemStack stack = minecraft.player.getItemInHand(hand);
             if (stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem)) {
-                minecraft.player.closeScreen();
+                minecraft.player.closeContainer();
                 return ItemStack.EMPTY;
             }
             return stack;
@@ -108,13 +108,13 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
     public void onClick(double mouseX, double mouseY) {
         if (MekanismConfig.general.allowProtection.get()) {
             UUID owner = dataSource.getOwnerUUID();
-            if (owner != null && minecraft.player.getUniqueID().equals(owner)) {
+            if (owner != null && minecraft.player.getUUID().equals(owner)) {
                 if (currentHand != null) {
                     Mekanism.packetHandler.sendToServer(new PacketSecurityMode(currentHand, getSecurity().getNext()));
                 } else if (dataSource instanceof TileEntity) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_SECURITY_MODE, (TileEntity) dataSource));
                 } else if (dataSource instanceof Entity) {
-                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, ((Entity) dataSource).getEntityId()));
+                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, ((Entity) dataSource).getId()));
                 }
             }
         }

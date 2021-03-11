@@ -15,6 +15,6 @@ public class MekanismEntityTypes {
 
     public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(Mekanism.MODID);
 
-    public static final EntityTypeRegistryObject<EntityFlame> FLAME = ENTITY_TYPES.register("flame", EntityType.Builder.<EntityFlame>create(EntityFlame::new, EntityClassification.MISC).size(0.5F, 0.5F).immuneToFire());
-    public static final EntityTypeRegistryObject<EntityRobit> ROBIT = ENTITY_TYPES.register("robit", EntityType.Builder.<EntityRobit>create(EntityRobit::new, EntityClassification.MISC).size(0.6F, 0.65F).immuneToFire(), EntityRobit::getDefaultAttributes);
+    public static final EntityTypeRegistryObject<EntityFlame> FLAME = ENTITY_TYPES.register("flame", EntityType.Builder.<EntityFlame>of(EntityFlame::new, EntityClassification.MISC).sized(0.5F, 0.5F).fireImmune());
+    public static final EntityTypeRegistryObject<EntityRobit> ROBIT = ENTITY_TYPES.register("robit", EntityType.Builder.<EntityRobit>of(EntityRobit::new, EntityClassification.MISC).sized(0.6F, 0.65F).fireImmune(), EntityRobit::getDefaultAttributes);
 }

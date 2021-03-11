@@ -68,7 +68,7 @@ public class ItemStackGasToItemStackRecipeBuilder extends MekanismRecipeBuilder<
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.ITEM_INPUT, itemInput.serialize());
             json.add(JsonConstants.GAS_INPUT, gasInput.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));

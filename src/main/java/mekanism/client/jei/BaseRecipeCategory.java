@@ -106,7 +106,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public FontRenderer getFont() {
-        return Minecraft.getInstance().fontRenderer;
+        return Minecraft.getInstance().font;
     }
 
     protected void addGuiElements() {

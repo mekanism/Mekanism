@@ -42,9 +42,9 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
 
     public GuiFissionReactor(EmptyTileContainer<TileEntityFissionReactorCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        xSize = 195;
-        ySize += 6;
-        titleY = 5;
+        imageWidth = 195;
+        imageHeight += 6;
+        titleLabelY = 5;
     }
 
     @Override
@@ -74,10 +74,10 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }, this));
-        addButton(activateButton = new TranslationButton(this, guiLeft + 6, guiTop + 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
+        addButton(activateButton = new TranslationButton(this, leftPos + 6, topPos + 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
               () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 1)), null,
               () -> EnumColor.DARK_GREEN));
-        addButton(scramButton = new TranslationButton(this, guiLeft + 89, guiTop + 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
+        addButton(scramButton = new TranslationButton(this, leftPos + 89, topPos + 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
               () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 0)), null,
               () -> EnumColor.DARK_RED));
         addButton(new GuiBigLight(this, 173, 76, tile.getMultiblock()::isActive));
@@ -91,8 +91,8 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             public double getLevel() {
                 return Math.min(1, tile.getMultiblock().heatCapacitor.getTemperature() / FissionReactorMultiblockData.MAX_DAMAGE_TEMPERATURE);
             }
-        }, 5, 104, xSize - 12));
-        addButton(heatGraph = new GuiGraph(this, 6, 128, xSize - 12, 36, MekanismLang.TEMPERATURE::translate));
+        }, 5, 104, imageWidth - 12));
+        addButton(heatGraph = new GuiGraph(this, 6, 128, imageWidth - 12, 36, MekanismLang.TEMPERATURE::translate));
         heatGraph.setMinScale(1_600);
         updateButtons();
     }
@@ -107,7 +107,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         updateButtons();
 
-        drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR.translate(), titleY);
+        drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR.translate(), titleLabelY);
         drawString(matrix, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, titleTextColor());
         drawString(matrix, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);

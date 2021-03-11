@@ -37,7 +37,7 @@ public class SawmillIRecipe extends SawmillRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.PRECISION_SAWMILL.getItemStack();
     }
 }

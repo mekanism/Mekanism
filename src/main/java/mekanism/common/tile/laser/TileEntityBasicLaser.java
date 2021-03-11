@@ -91,23 +91,23 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             Direction direction = getDirection();
             Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
             Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
-            BlockRayTraceResult result = getWorldNN().rayTraceBlocks(new RayTraceContext(from, to, BlockMode.OUTLINE, FluidMode.NONE, null));
+            BlockRayTraceResult result = getWorldNN().clip(new RayTraceContext(from, to, BlockMode.OUTLINE, FluidMode.NONE, null));
             if (result.getType() != Type.MISS) {
-                to = new Pos3D(result.getHitVec());
+                to = new Pos3D(result.getLocation());
             }
 
             float laserEnergyScale = getEnergyScale(firing);
             FloatingLong remainingEnergy = firing.copy();
             //TODO: Make the dimensions scale with laser size
             // (so that the tractor beam can actually pickup items that are on the ground underneath it)
-            List<Entity> hitEntities = getWorldNN().getEntitiesWithinAABB(Entity.class, Pos3D.getAABB(from, to));
+            List<Entity> hitEntities = getWorldNN().getEntitiesOfClass(Entity.class, Pos3D.getAABB(from, to));
             if (hitEntities.isEmpty()) {
                 setEmittingRedstone(false);
             } else {
                 setEmittingRedstone(true);
                 //Sort the entities in order of which one is closest to the laser
                 Pos3D finalFrom = from;
-                hitEntities.sort(Comparator.comparing(entity -> entity.getDistanceSq(finalFrom)));
+                hitEntities.sort(Comparator.comparing(entity -> entity.distanceToSqr(finalFrom)));
                 FloatingLong energyPerDamage = MekanismConfig.general.laserEnergyPerDamage.get();
                 for (Entity entity : hitEntities) {
                     if (entity.isInvulnerableTo(MekanismDamageSource.LASER)) {
@@ -129,8 +129,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         // the shield to cause some of the damage to be dissipated in exchange for durability
                         LivingEntity livingEntity = (LivingEntity) entity;
                         //TODO - V11: Add a system for dissipating lasers in armor/the meka-suit
-                        if (livingEntity.isActiveItemStackBlocking() && livingEntity.getActiveItemStack().isShield(livingEntity)) {
-                            float damageBlocked = damageShield(livingEntity, livingEntity.getActiveItemStack(), damage, 2);
+                        if (livingEntity.isBlocking() && livingEntity.getUseItem().isShield(livingEntity)) {
+                            float damageBlocked = damageShield(livingEntity, livingEntity.getUseItem(), damage, 2);
                             //Remove how ever much energy we were able to block
                             remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damageBlocked));
                             if (remainingEnergy.isZero()) {
@@ -144,15 +144,15 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         }
                         health = livingEntity.getHealth();
                     }
-                    if (!entity.isImmuneToFire()) {
-                        entity.setFire(value.intValue());
+                    if (!entity.fireImmune()) {
+                        entity.setSecondsOnFire(value.intValue());
                     }
-                    int lastHurtResistTime = entity.hurtResistantTime;
+                    int lastHurtResistTime = entity.invulnerableTime;
                     //Set the hurt resistance time to zero to ensure we get a chance to do damage
-                    entity.hurtResistantTime = 0;
-                    boolean damaged = entity.attackEntityFrom(MekanismDamageSource.LASER, damage);
+                    entity.invulnerableTime = 0;
+                    boolean damaged = entity.hurt(MekanismDamageSource.LASER, damage);
                     //Set the hurt resistance time to whatever it was before the laser hit as lasers should not have a downtime in damage frequency
-                    entity.hurtResistantTime = lastHurtResistTime;
+                    entity.invulnerableTime = lastHurtResistTime;
                     if (damaged) {
                         if (entity instanceof LivingEntity) {
                             //Update the damage to match how much health the entity lost
@@ -186,32 +186,32 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 diggingProgress = FloatingLong.ZERO;
             } else {
                 //Otherwise we still have energy left that we can use
-                BlockPos hitPos = result.getPos();
+                BlockPos hitPos = result.getBlockPos();
                 if (!hitPos.equals(digging)) {
                     digging = result.getType() == Type.MISS ? null : hitPos;
                     diggingProgress = FloatingLong.ZERO;
                 }
-                Optional<ILaserReceptor> capability = CapabilityUtils.getCapability(WorldUtils.getTileEntity(world, hitPos), Capabilities.LASER_RECEPTOR_CAPABILITY,
-                      result.getFace()).resolve();
+                Optional<ILaserReceptor> capability = CapabilityUtils.getCapability(WorldUtils.getTileEntity(level, hitPos), Capabilities.LASER_RECEPTOR_CAPABILITY,
+                      result.getDirection()).resolve();
                 if (capability.isPresent() && !capability.get().canLasersDig()) {
                     //Give the energy to the receptor
-                    capability.get().receiveLaserEnergy(remainingEnergy, result.getFace());
+                    capability.get().receiveLaserEnergy(remainingEnergy, result.getDirection());
                 } else {
                     //Otherwise make progress on breaking the block
-                    BlockState hitState = world.getBlockState(hitPos);
-                    float hardness = hitState.getBlockHardness(world, hitPos);
+                    BlockState hitState = level.getBlockState(hitPos);
+                    float hardness = hitState.getDestroySpeed(level, hitPos);
                     if (hardness >= 0) {
                         diggingProgress = diggingProgress.plusEqual(remainingEnergy);
                         if (diggingProgress.compareTo(MekanismConfig.general.laserEnergyNeededPerHardness.get().multiply(hardness)) >= 0) {
                             if (MekanismConfig.general.aestheticWorldDamage.get()) {
-                                MekFakePlayer.withFakePlayer((ServerWorld) world, to.getX(), to.getY(), to.getZ(), dummy -> {
+                                MekFakePlayer.withFakePlayer((ServerWorld) level, to.x(), to.y(), to.z(), dummy -> {
                                     dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
-                                    BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, hitPos, hitState, dummy);
+                                    BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, hitPos, hitState, dummy);
                                     if (!MinecraftForge.EVENT_BUS.post(event)) {
                                         handleBreakBlock(hitState, hitPos);
-                                        hitState.onReplaced(world, hitPos, Blocks.AIR.getDefaultState(), false);
-                                        world.removeBlock(hitPos, false);
-                                        world.playEvent(WorldEvents.BREAK_BLOCK_EFFECTS, hitPos, Block.getStateId(hitState));
+                                        hitState.onRemove(level, hitPos, Blocks.AIR.defaultBlockState(), false);
+                                        level.removeBlock(hitPos, false);
+                                        level.levelEvent(WorldEvents.BREAK_BLOCK_EFFECTS, hitPos, Block.getId(hitState));
                                     }
                                     return null;
                                 });
@@ -247,29 +247,29 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         if (effectiveDamage >= 1) {
             //Allow the shield to absorb sub single unit damage values for free
             int durabilityNeeded = 1 + MathHelper.floor(effectiveDamage);
-            int activeDurability = activeStack.getMaxDamage() - activeStack.getDamage();
-            Hand hand = livingEntity.getActiveHand();
-            activeStack.damageItem(durabilityNeeded, livingEntity, entity -> {
-                entity.sendBreakAnimation(hand);
+            int activeDurability = activeStack.getMaxDamage() - activeStack.getDamageValue();
+            Hand hand = livingEntity.getUsedItemHand();
+            activeStack.hurtAndBreak(durabilityNeeded, livingEntity, entity -> {
+                entity.broadcastBreakEvent(hand);
                 if (livingEntity instanceof PlayerEntity) {
                     ForgeEventFactory.onPlayerDestroyItem((PlayerEntity) livingEntity, activeStack, hand);
                 }
             });
             if (activeStack.isEmpty()) {
                 if (hand == Hand.MAIN_HAND) {
-                    livingEntity.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+                    livingEntity.setItemSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
                 } else {
-                    livingEntity.setItemStackToSlot(EquipmentSlotType.OFFHAND, ItemStack.EMPTY);
+                    livingEntity.setItemSlot(EquipmentSlotType.OFFHAND, ItemStack.EMPTY);
                 }
-                livingEntity.resetActiveHand();
-                livingEntity.playSound(SoundEvents.ITEM_SHIELD_BREAK, 0.8F, 0.8F + 0.4F * world.rand.nextFloat());
+                livingEntity.stopUsingItem();
+                livingEntity.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + 0.4F * level.random.nextFloat());
                 //Durability needed to block damage - durability we had is the left over durability that would have been needed to block it all
                 int unblockedDamage = (durabilityNeeded - activeDurability) * absorptionRation;
                 damageBlocked = Math.max(0, damage - unblockedDamage);
             }
         }
         if (livingEntity instanceof ServerPlayerEntity && damageBlocked > 0 && damageBlocked < 3.4028235E37F) {
-            ((ServerPlayerEntity) livingEntity).addStat(Stats.DAMAGE_BLOCKED_BY_SHIELD, Math.round(damageBlocked * 10F));
+            ((ServerPlayerEntity) livingEntity).awardStat(Stats.DAMAGE_BLOCKED_BY_SHIELD, Math.round(damageBlocked * 10F));
         }
         return damageBlocked;
     }
@@ -279,10 +279,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     private void sendLaserDataToPlayers(LaserParticleData data, Pos3D from) {
-        if (!isRemote() && world instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) world;
-            for (ServerPlayerEntity player : serverWorld.getPlayers()) {
-                serverWorld.spawnParticle(player, data, true, from.x, from.y, from.z, 1, 0, 0, 0, 0);
+        if (!isRemote() && level instanceof ServerWorld) {
+            ServerWorld serverWorld = (ServerWorld) level;
+            for (ServerPlayerEntity player : serverWorld.players()) {
+                serverWorld.sendParticles(player, data, true, from.x, from.y, from.z, 1, 0, 0, 0, 0);
             }
         }
     }
@@ -295,7 +295,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     protected void handleBreakBlock(BlockState state, BlockPos hitPos) {
-        Block.spawnDrops(state, world, hitPos, WorldUtils.getTileEntity(world, hitPos));
+        Block.dropResources(state, level, hitPos, WorldUtils.getTileEntity(level, hitPos));
     }
 
     protected FloatingLong toFire() {
@@ -303,15 +303,15 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.LAST_FIRED, value -> lastFired = value);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putString(NBTConstants.LAST_FIRED, lastFired.toString());
         return nbtTags;
     }

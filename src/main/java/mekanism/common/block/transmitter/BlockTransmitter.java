@@ -48,21 +48,21 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     private static final Map<ConnectionInfo, VoxelShape> cachedShapes = new HashMap<>();
 
     protected BlockTransmitter() {
-        super(AbstractBlock.Properties.create(Material.PISTON).hardnessAndResistance(1, 6));
+        super(AbstractBlock.Properties.of(Material.PISTON).strength(1, 6));
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        ItemStack stack = player.getHeldItem(hand);
+        ItemStack stack = player.getItemInHand(hand);
         if (stack.isEmpty()) {
             return ActionResultType.PASS;
         }
         IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);
-        if (wrenchHandler != null && wrenchHandler.canUseWrench(stack, player, hit.getPos()) && player.isSneaking()) {
-            if (!world.isRemote) {
+        if (wrenchHandler != null && wrenchHandler.canUseWrench(stack, player, hit.getBlockPos()) && player.isShiftKeyDown()) {
+            if (!world.isClientSide) {
                 WorldUtils.dismantleBlock(state, world, pos);
             }
             return ActionResultType.SUCCESS;
@@ -71,7 +71,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     }
 
     @Override
-    public void onBlockPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
+    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
             tile.onAdded();
@@ -84,7 +84,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
           boolean isMoving) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
-            Direction side = Direction.getFacingFromVector(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
+            Direction side = Direction.getNearest(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
             tile.onNeighborBlockChange(side);
         }
     }
@@ -93,14 +93,14 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
-            Direction side = Direction.getFacingFromVector(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
+            Direction side = Direction.getNearest(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
             tile.onNeighborTileChange(side);
         }
     }
 
     @Override
     @Deprecated
-    public boolean allowsMovement(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType type) {
+    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType type) {
         return false;
     }
 
@@ -108,7 +108,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     @Override
     @Deprecated
     public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, ISelectionContext context) {
-        if (!context.hasItem(MekanismItems.CONFIGURATOR.getItem())) {
+        if (!context.isHoldingItem(MekanismItems.CONFIGURATOR.getItem())) {
             return getRealShape(world, pos);
         }
         //Get the partial selection box if we are holding a configurator
@@ -134,7 +134,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getRenderShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    public VoxelShape getOcclusionShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
         //Override this so that we ALWAYS have the full collision box, even if a configurator is being held
         return getRealShape(world, pos);
     }

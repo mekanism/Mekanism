@@ -125,16 +125,16 @@ public class NBTUtils {
     }
 
     public static void setUUIDIfPresent(CompoundNBT nbt, String key, Consumer<UUID> setter) {
-        if (nbt.hasUniqueId(key)) {
-            setter.accept(nbt.getUniqueId(key));
+        if (nbt.hasUUID(key)) {
+            setter.accept(nbt.getUUID(key));
         } else if (hasOldUUID(nbt, key)) {
             setter.accept(getOldUUID(nbt, key));
         }
     }
 
     public static void setUUIDIfPresentElse(CompoundNBT nbt, String key, Consumer<UUID> setter, Runnable notPresent) {
-        if (nbt.hasUniqueId(key)) {
-            setter.accept(nbt.getUniqueId(key));
+        if (nbt.hasUUID(key)) {
+            setter.accept(nbt.getUUID(key));
         } else if (hasOldUUID(nbt, key)) {
             setter.accept(getOldUUID(nbt, key));
         } else {
@@ -226,13 +226,13 @@ public class NBTUtils {
 
     public static void setItemStackIfPresent(CompoundNBT nbt, String key, Consumer<ItemStack> setter) {
         if (nbt.contains(key, NBT.TAG_COMPOUND)) {
-            setter.accept(ItemStack.read(nbt.getCompound(key)));
+            setter.accept(ItemStack.of(nbt.getCompound(key)));
         }
     }
 
     public static void setResourceLocationIfPresent(CompoundNBT nbt, String key, Consumer<ResourceLocation> setter) {
         if (nbt.contains(key, NBT.TAG_STRING)) {
-            ResourceLocation value = ResourceLocation.tryCreate(nbt.getString(key));
+            ResourceLocation value = ResourceLocation.tryParse(nbt.getString(key));
             if (value != null) {
                 setter.accept(value);
             }

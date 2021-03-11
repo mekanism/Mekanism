@@ -47,7 +47,7 @@ public class GuiFissionReactorTab extends GuiTabElementType<TileEntityFissionRea
 
         @Override
         public void onClick(TileEntityFissionReactorCasing tile) {
-            MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getPos()));
+            MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiButtonPress(button, tile.getBlockPos()));
         }
 
         @Override

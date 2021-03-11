@@ -15,7 +15,7 @@ public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockSecurityDesk> {
 
     @Override
     public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        if (!WorldUtils.isValidReplaceableBlock(context.getWorld(), context.getPos().up())) {
+        if (!WorldUtils.isValidReplaceableBlock(context.getLevel(), context.getClickedPos().above())) {
             //If there is not enough room, fail
             return false;
         }

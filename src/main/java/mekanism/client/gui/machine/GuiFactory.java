@@ -29,19 +29,19 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     public GuiFactory(MekanismTileContainer<TileEntityFactory<?>> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         if (tile.hasSecondaryResourceBar()) {
-            ySize += 11;
-            playerInventoryTitleY = 85;
+            imageHeight += 11;
+            inventoryLabelY = 85;
         } else if (tile instanceof TileEntitySawingFactory) {
-            ySize += 21;
-            playerInventoryTitleY = 95;
+            imageHeight += 21;
+            inventoryLabelY = 95;
         } else {
-            playerInventoryTitleY = 75;
+            inventoryLabelY = 75;
         }
         if (tile.tier == FactoryTier.ULTIMATE) {
-            xSize += 34;
-            playerInventoryTitleX = 26;
+            imageWidth += 34;
+            inventoryLabelX = 26;
         }
-        titleY = 4;
+        titleLabelY = 4;
         dynamicSlots = true;
     }
 
@@ -52,7 +52,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
         addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSortingTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), xSize - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), imageWidth - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getLastUsage, this));
         if (tile.hasSecondaryResourceBar()) {
             if (tile instanceof TileEntityMetallurgicInfuserFactory) {
@@ -101,7 +101,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

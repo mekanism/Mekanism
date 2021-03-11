@@ -27,7 +27,7 @@ public class GuiQIOExporter extends GuiQIOFilterHandler<TileEntityQIOExporter> {
         addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiScreenSwitch(this, 9, 122, xSize - 18, MekanismLang.QIO_EXPORT_WITHOUT_FILTER.translate(), tile::getExportWithoutFilter,
+        addButton(new GuiScreenSwitch(this, 9, 122, imageWidth - 18, MekanismLang.QIO_EXPORT_WITHOUT_FILTER.translate(), tile::getExportWithoutFilter,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_TOGGLE_EXPORT_WITHOUT_FILTER, tile))));
     }
 }

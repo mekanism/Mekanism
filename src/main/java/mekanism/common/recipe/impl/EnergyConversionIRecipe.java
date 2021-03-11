@@ -38,7 +38,7 @@ public class EnergyConversionIRecipe extends ItemStackToEnergyRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismItems.ENERGY_TABLET.getItemStack();
     }
 }

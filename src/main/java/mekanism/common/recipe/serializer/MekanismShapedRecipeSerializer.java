@@ -13,14 +13,14 @@ public class MekanismShapedRecipeSerializer extends ForgeRegistryEntry<IRecipeSe
 
     @Nonnull
     @Override
-    public MekanismShapedRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        return new MekanismShapedRecipe(IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, json));
+    public MekanismShapedRecipe fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        return new MekanismShapedRecipe(IRecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json));
     }
 
     @Override
-    public MekanismShapedRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public MekanismShapedRecipe fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
-            return new MekanismShapedRecipe(IRecipeSerializer.CRAFTING_SHAPED.read(recipeId, buffer));
+            return new MekanismShapedRecipe(IRecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer));
         } catch (Exception e) {
             Mekanism.logger.error("Error reading mekanism shaped recipe from packet.", e);
             throw e;
@@ -28,9 +28,9 @@ public class MekanismShapedRecipeSerializer extends ForgeRegistryEntry<IRecipeSe
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull MekanismShapedRecipe recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull MekanismShapedRecipe recipe) {
         try {
-            IRecipeSerializer.CRAFTING_SHAPED.write(buffer, recipe.getInternal());
+            IRecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.getInternal());
         } catch (Exception e) {
             Mekanism.logger.error("Error writing mekanism shaped recipe to packet.", e);
             throw e;

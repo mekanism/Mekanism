@@ -62,8 +62,8 @@ public class QIOCraftingTransferHelper {
 
     private byte addSlotsToMap(PlayerEntity player, List<? extends Slot> slots, byte inventorySlotIndex) {
         for (Slot slot : slots) {
-            if (slot.getHasStack() && slot.canTakeStack(player)) {
-                ItemStack stack = slot.getStack();
+            if (slot.hasItem() && slot.mayPickup(player)) {
+                ItemStack stack = slot.getItem();
                 int stored = stack.getCount();
                 HashedItem hashedItem = HashedItem.raw(stack);
                 availableItems.mergeLong(hashedItem, stored, Long::sum);

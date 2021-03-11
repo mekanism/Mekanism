@@ -38,7 +38,7 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
     public void openInventory(@Nonnull PlayerInventory inv) {
         super.openInventory(inv);
 
-        if (inv.player.world.isRemote()) {
+        if (inv.player.level.isClientSide()) {
             Mekanism.packetHandler.sendToServer(PacketGuiItemDataRequest.frequencyList(hand));
         }
     }

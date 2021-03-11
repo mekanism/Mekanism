@@ -61,7 +61,7 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
         public MekanismModel read(@Nonnull JsonDeserializationContext ctx, JsonObject modelContents) {
             Multimap<String, BlockPartWrapper> multimap = HashMultimap.create();
             if (modelContents.has("elements")) {
-                for (JsonElement element : JSONUtils.getJsonArray(modelContents, "elements")) {
+                for (JsonElement element : JSONUtils.getAsJsonArray(modelContents, "elements")) {
                     JsonObject obj = element.getAsJsonObject();
                     BlockPart part = ctx.deserialize(element, BlockPart.class);
                     String name = obj.has("name") ? obj.get("name").getAsString() : "undefined";
@@ -110,23 +110,23 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
         }
 
         public void light(Direction side, int light) {
-            litFaceMap.put(blockPart.mapFaces.get(side), light);
+            litFaceMap.put(blockPart.faces.get(side), light);
         }
 
         @Override
         public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
               ResourceLocation modelLocation) {
-            for (Direction direction : blockPart.mapFaces.keySet()) {
-                BlockPartFace face = blockPart.mapFaces.get(direction);
+            for (Direction direction : blockPart.faces.keySet()) {
+                BlockPartFace face = blockPart.faces.get(direction);
                 TextureAtlasSprite sprite = spriteGetter.apply(owner.resolveTexture(face.texture));
                 BakedQuad quad = BlockModel.makeBakedQuad(blockPart, face, sprite, direction, modelTransform, modelLocation);
                 if (litFaceMap.containsKey(face)) {
                     quad = new Quad(quad).transform(QuadTransformation.light(litFaceMap.getInt(face) / 15F)).bake();
                 }
-                if (face.cullFace == null) {
+                if (face.cullForDirection == null) {
                     modelBuilder.addGeneralQuad(quad);
                 } else {
-                    modelBuilder.addFaceQuad(modelTransform.getRotation().rotateTransform(face.cullFace), quad);
+                    modelBuilder.addFaceQuad(modelTransform.getRotation().rotateTransform(face.cullForDirection), quad);
                 }
             }
         }
@@ -134,9 +134,9 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
         @Override
         public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
             Set<RenderMaterial> textures = Sets.newHashSet();
-            for (BlockPartFace face : blockPart.mapFaces.values()) {
+            for (BlockPartFace face : blockPart.faces.values()) {
                 RenderMaterial texture = owner.resolveTexture(face.texture);
-                if (Objects.equals(texture.getTextureLocation(), MissingTextureSprite.getLocation())) {
+                if (Objects.equals(texture.texture(), MissingTextureSprite.getLocation())) {
                     missingTextureErrors.add(Pair.of(face.texture, owner.getModelName()));
                 }
                 textures.add(texture);

@@ -37,7 +37,7 @@ public class SmeltingIRecipe extends ItemStackToItemStackRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.ENERGIZED_SMELTER.getItemStack();
     }
 }

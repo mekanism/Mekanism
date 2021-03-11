@@ -20,26 +20,26 @@ public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> imp
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        materialItem.write(nbtTags);
+        materialItem.save(nbtTags);
         return nbtTags;
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        materialItem = ItemStack.read(nbtTags);
+        materialItem = ItemStack.of(nbtTags);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeItemStack(materialItem);
+        buffer.writeItem(materialItem);
     }
 
     @Override
     public void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        materialItem = dataStream.readItemStack();
+        materialItem = dataStream.readItem();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> imp
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof SorterMaterialFilter && ((SorterMaterialFilter) filter).materialItem.isItemEqual(materialItem);
+        return super.equals(filter) && filter instanceof SorterMaterialFilter && ((SorterMaterialFilter) filter).materialItem.sameItem(materialItem);
     }
 
     @Override

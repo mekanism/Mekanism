@@ -37,7 +37,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
 
     @Override
     public void write(PacketBuffer buffer) {
-        buffer.writeEnumValue(getFilterType());
+        buffer.writeEnum(getFilterType());
     }
 
     @Nullable
@@ -54,7 +54,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
 
     @Nullable
     public static IFilter<?> readFromPacket(PacketBuffer dataStream) {
-        IFilter<?> filter = fromType(dataStream.readEnumValue(FilterType.class));
+        IFilter<?> filter = fromType(dataStream.readEnum(FilterType.class));
         if (filter != null) {
             filter.read(dataStream);
         }

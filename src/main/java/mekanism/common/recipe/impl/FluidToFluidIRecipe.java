@@ -38,7 +38,7 @@ public class FluidToFluidIRecipe extends FluidToFluidRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getItemStack();
     }
 }

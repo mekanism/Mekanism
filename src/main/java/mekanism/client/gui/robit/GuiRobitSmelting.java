@@ -14,7 +14,7 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
 
     public GuiRobitSmelting(SmeltingRobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        playerInventoryTitleY += 1;
+        inventoryLabelY += 1;
         dynamicSlots = true;
     }
 
@@ -26,8 +26,8 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, MekanismLang.ROBIT_SMELTING.translate(), titleX, titleY, titleTextColor());
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, MekanismLang.ROBIT_SMELTING.translate(), titleLabelX, titleLabelY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

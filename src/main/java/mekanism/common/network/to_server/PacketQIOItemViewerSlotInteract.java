@@ -41,19 +41,19 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         ServerPlayerEntity player = context.getSender();
-        if (player != null && player.openContainer instanceof QIOItemViewerContainer) {
-            QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
+        if (player != null && player.containerMenu instanceof QIOItemViewerContainer) {
+            QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
             QIOFrequency freq = container.getFrequency();
-            ItemStack curStack = player.inventory.getItemStack();
+            ItemStack curStack = player.inventory.getCarried();
             if (freq != null) {
                 if (type == Type.TAKE) {
                     ItemStack ret = freq.removeByType(freq.getTypeByUUID(typeUUID), count);
                     if (curStack.isEmpty()) {
-                        player.inventory.setItemStack(ret);
+                        player.inventory.setCarried(ret);
                     } else if (InventoryUtils.areItemsStackable(ret, curStack)) {
                         curStack.grow(ret.getCount());
                     }
-                    player.connection.sendPacket(new SSetSlotPacket(-1, -1, player.inventory.getItemStack()));
+                    player.connection.send(new SSetSlotPacket(-1, -1, player.inventory.getCarried()));
                 } else if (type == Type.SHIFT_TAKE) {
                     HashedItem itemType = freq.getTypeByUUID(typeUUID);
                     if (itemType != null) {
@@ -70,9 +70,9 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
                     if (!curStack.isEmpty()) {
                         ItemStack rejects = freq.addItem(StackUtils.size(curStack, Math.min(count, curStack.getCount())));
                         ItemStack newStack = StackUtils.size(curStack, curStack.getCount() - (count - rejects.getCount()));
-                        player.inventory.setItemStack(newStack);
+                        player.inventory.setCarried(newStack);
                     }
-                    player.connection.sendPacket(new SSetSlotPacket(-1, -1, player.inventory.getItemStack()));
+                    player.connection.send(new SSetSlotPacket(-1, -1, player.inventory.getCarried()));
                 }
             }
         }
@@ -80,14 +80,14 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(type);
+        buffer.writeEnum(type);
         switch (type) {
             case TAKE:
-                buffer.writeUniqueId(typeUUID);
+                buffer.writeUUID(typeUUID);
                 buffer.writeVarInt(count);
                 break;
             case SHIFT_TAKE:
-                buffer.writeUniqueId(typeUUID);
+                buffer.writeUUID(typeUUID);
                 break;
             case PUT:
                 buffer.writeVarInt(count);
@@ -96,16 +96,16 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
     }
 
     public static PacketQIOItemViewerSlotInteract decode(PacketBuffer buffer) {
-        Type type = buffer.readEnumValue(Type.class);
+        Type type = buffer.readEnum(Type.class);
         UUID typeUUID = null;
         int count = 0;
         switch (type) {
             case TAKE:
-                typeUUID = buffer.readUniqueId();
+                typeUUID = buffer.readUUID();
                 count = buffer.readVarInt();
                 break;
             case SHIFT_TAKE:
-                typeUUID = buffer.readUniqueId();
+                typeUUID = buffer.readUUID();
                 break;
             case PUT:
                 count = buffer.readVarInt();

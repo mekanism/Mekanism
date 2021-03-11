@@ -83,9 +83,9 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         //Manually handle the code that is in super.addSlot so that we do not end up adding extra elements to
         // inventoryItemStacks as we handle the tracking/sync changing via the below track call. This way we are
         // able to minimize the amount of overhead that we end up with due to keeping track of the stack in SyncableItemStack
-        slot.slotNumber = inventorySlots.size();
-        inventorySlots.add(slot);
-        track(SyncableItemStack.create(slot::getStack, slot::putStack));
+        slot.index = slots.size();
+        slots.add(slot);
+        track(SyncableItemStack.create(slot::getItem, slot::set));
         if (slot instanceof IHasExtraData) {
             //If the slot has any extra data, allow it to add any trackers it may have
             ((IHasExtraData) slot).addTrackers(inv.player, this::track);
@@ -128,23 +128,23 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     }
 
     @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull PlayerEntity player) {
         //Is this the proper default
         //TODO - 10.1: Re-evaluate this and maybe add in some distance based checks??
         return true;
     }
 
     @Override
-    public boolean canMergeSlot(@Nonnull ItemStack stack, @Nonnull Slot slot) {
+    public boolean canTakeItemForPickAll(@Nonnull ItemStack stack, @Nonnull Slot slot) {
         if (slot instanceof IInsertableSlot) {
-            return ((IInsertableSlot) slot).canMergeWith(stack) && super.canMergeSlot(stack, slot);
+            return ((IInsertableSlot) slot).canMergeWith(stack) && super.canTakeItemForPickAll(stack, slot);
         }
-        return super.canMergeSlot(stack, slot);
+        return super.canTakeItemForPickAll(stack, slot);
     }
 
     @Override
-    public void onContainerClosed(@Nonnull PlayerEntity player) {
-        super.onContainerClosed(player);
+    public void removed(@Nonnull PlayerEntity player) {
+        super.removed(player);
         closeInventory(player);
     }
 
@@ -171,11 +171,11 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         int xOffset = getInventoryXOffset();
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
-                addSlot(new MainInventorySlot(inv, PlayerInventory.getHotbarSize() + slotX + slotY * 9, xOffset + slotX * 18, yOffset + slotY * 18));
+                addSlot(new MainInventorySlot(inv, PlayerInventory.getSelectionSize() + slotX + slotY * 9, xOffset + slotX * 18, yOffset + slotY * 18));
             }
         }
         yOffset += 58;
-        for (int slotX = 0; slotX < PlayerInventory.getHotbarSize(); slotX++) {
+        for (int slotX = 0; slotX < PlayerInventory.getSelectionSize(); slotX++) {
             addSlot(createHotBarSlot(inv, slotX, xOffset + slotX * 18, yOffset));
         }
     }
@@ -202,14 +202,14 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
      */
     @Nonnull
     @Override
-    public ItemStack transferStackInSlot(@Nonnull PlayerEntity player, int slotID) {
+    public ItemStack quickMoveStack(@Nonnull PlayerEntity player, int slotID) {
         //TODO: Do we need any special handling to have this not do anything if we don't have an inventory or are an empty container?
         // Probably not given we then won't have any slots to actually add
-        Slot currentSlot = inventorySlots.get(slotID);
-        if (currentSlot == null || !currentSlot.getHasStack()) {
+        Slot currentSlot = slots.get(slotID);
+        if (currentSlot == null || !currentSlot.hasItem()) {
             return ItemStack.EMPTY;
         }
-        ItemStack slotStack = currentSlot.getStack();
+        ItemStack slotStack = currentSlot.getItem();
         ItemStack stackToInsert = slotStack;
         if (currentSlot instanceof InventoryContainerSlot) {
             //Insert into stacks that already contain an item in the order hot bar -> main inventory
@@ -272,7 +272,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
             return stack;
         }
         for (SLOT slot : slots) {
-            if (ignoreEmpty && !slot.getHasStack()) {
+            if (ignoreEmpty && !slot.hasItem()) {
                 //Skip checking empty stacks if we want to ignore them
                 continue;
             }
@@ -287,7 +287,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     @Nonnull
     protected ItemStack transferSuccess(@Nonnull Slot currentSlot, @Nonnull PlayerEntity player, @Nonnull ItemStack slotStack, @Nonnull ItemStack stackToInsert) {
         int difference = slotStack.getCount() - stackToInsert.getCount();
-        currentSlot.decrStackSize(difference);
+        currentSlot.remove(difference);
         ItemStack newStack = StackUtils.size(slotStack, difference);
         currentSlot.onTake(player, newStack);
         return newStack;
@@ -300,7 +300,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
 
     @Nonnull
     @Override
-    protected IntReferenceHolder trackInt(@Nonnull IntReferenceHolder referenceHolder) {
+    protected IntReferenceHolder addDataSlot(@Nonnull IntReferenceHolder referenceHolder) {
         //Override vanilla's int tracking so that if for some reason this method gets called for our container
         // it properly adds it to our tracking
         track(SyncableInt.create(referenceHolder::get, referenceHolder::set));
@@ -464,11 +464,11 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     }
 
     @Override
-    public void detectAndSendChanges() {
+    public void broadcastChanges() {
         //Note: We do not call super.detectAndSendChanges() because we intercept and track the
         // stack changes and int changes ourselves. This allows for us to have more accurate syncing
         // and also batch various sync packets
-        if (!listeners.isEmpty()) {
+        if (!containerListeners.isEmpty()) {
             //Only check tracked data for changes if we actually have any listeners
             List<PropertyData> dirtyData = new ArrayList<>();
             for (short i = 0; i < trackedData.size(); i++) {
@@ -479,13 +479,13 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
                 }
             }
             if (!dirtyData.isEmpty()) {
-                sendChange(new PacketUpdateContainer((short) windowId, dirtyData));
+                sendChange(new PacketUpdateContainer((short) containerId, dirtyData));
             }
         }
     }
 
     private <MSG> void sendChange(MSG packet) {
-        for (IContainerListener listener : listeners) {
+        for (IContainerListener listener : containerListeners) {
             if (listener instanceof ServerPlayerEntity) {
                 Mekanism.packetHandler.sendTo(packet, (ServerPlayerEntity) listener);
             }
@@ -493,9 +493,9 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     }
 
     @Override
-    public void addListener(@Nonnull IContainerListener listener) {
-        boolean alreadyHas = listeners.contains(listener);
-        super.addListener(listener);
+    public void addSlotListener(@Nonnull IContainerListener listener) {
+        boolean alreadyHas = containerListeners.contains(listener);
+        super.addSlotListener(listener);
         if (!alreadyHas && listener instanceof ServerPlayerEntity) {
             //Send all contents to the listener when it first gets added
             List<PropertyData> dirtyData = new ArrayList<>();
@@ -503,7 +503,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
                 dirtyData.add(trackedData.get(i).getPropertyData(i, DirtyType.DIRTY));
             }
             if (!dirtyData.isEmpty()) {
-                Mekanism.packetHandler.sendTo(new PacketUpdateContainer((short) windowId, dirtyData), (ServerPlayerEntity) listener);
+                Mekanism.packetHandler.sendTo(new PacketUpdateContainer((short) containerId, dirtyData), (ServerPlayerEntity) listener);
             }
         }
     }

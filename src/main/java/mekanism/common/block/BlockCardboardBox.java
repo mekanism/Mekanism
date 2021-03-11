@@ -31,34 +31,34 @@ import net.minecraft.world.World;
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
     public BlockCardboardBox() {
-        super(AbstractBlock.Properties.create(Material.WOOL).hardnessAndResistance(0.5F, 0.6F));
+        super(AbstractBlock.Properties.of(Material.WOOL).strength(0.5F, 0.6F));
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        if (!world.isRemote && player.isSneaking()) {
+        if (!world.isClientSide && player.isShiftKeyDown()) {
             TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
             if (box != null && box.storedData != null) {
                 BlockData data = box.storedData;
                 //TODO: Note - this will not allow for rotation of the block based on how it is placed direction wise via the removal of
                 // the cardboard box and will instead leave it how it was when the box was initially put on
-                world.setBlockState(pos, data.blockState);
+                world.setBlockAndUpdate(pos, data.blockState);
                 if (data.tileTag != null) {
                     data.updateLocation(pos);
                     TileEntity tile = WorldUtils.getTileEntity(world, pos);
                     if (tile != null) {
-                        tile.read(state, data.tileTag);
+                        tile.load(state, data.tileTag);
                     }
                 }
                 //TODO: Do we need to call onBlockPlacedBy or not bother given we are setting the blockstate to what it was AND setting any tile data
                 //data.blockState.getBlock().onBlockPlacedBy(world, pos, data.blockState, player, new ItemStack(data.block));
-                spawnAsEntity(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
+                popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
             }
         }
-        return player.isSneaking() ? ActionResultType.SUCCESS : ActionResultType.PASS;
+        return player.isShiftKeyDown() ? ActionResultType.SUCCESS : ActionResultType.PASS;
     }
 
     @Nonnull

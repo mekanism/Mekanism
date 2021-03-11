@@ -87,7 +87,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         if (storedFreq != null) {
             storedFreq.update(tile);
             if (dataHandler != null) {
-                dataHandler.markDirty();
+                dataHandler.setDirty();
             }
             return storedFreq;
         }
@@ -102,7 +102,7 @@ public class FrequencyManager<FREQ extends Frequency> {
             freq.onRemove();
             frequencies.remove(key);
             if (dataHandler != null) {
-                dataHandler.markDirty();
+                dataHandler.setDirty();
             }
         }
     }
@@ -111,7 +111,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         if (freq != null) {
             freq.onDeactivate(tile);
             if (dataHandler != null) {
-                dataHandler.markDirty();
+                dataHandler.setDirty();
             }
         }
     }
@@ -125,7 +125,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         }
         storedFreq.update(tile);
         if (dataHandler != null) {
-            dataHandler.markDirty();
+            dataHandler.setDirty();
         }
         return storedFreq;
     }
@@ -137,8 +137,8 @@ public class FrequencyManager<FREQ extends Frequency> {
         if (dataHandler == null) {
             String name = getName();
             //Always associate the world with the over world as the frequencies are global
-            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().func_241755_D_().getSavedData();
-            dataHandler = savedData.getOrCreate(() -> new FrequencyDataHandler(name), name);
+            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
+            dataHandler = savedData.computeIfAbsent(() -> new FrequencyDataHandler(name), name);
             dataHandler.syncManager();
         }
     }
@@ -164,7 +164,7 @@ public class FrequencyManager<FREQ extends Frequency> {
     public void addFrequency(FREQ freq) {
         frequencies.put(freq.getKey(), freq);
         if (dataHandler != null) {
-            dataHandler.markDirty();
+            dataHandler.setDirty();
         }
     }
 
@@ -197,7 +197,7 @@ public class FrequencyManager<FREQ extends Frequency> {
         }
 
         @Override
-        public void read(@Nonnull CompoundNBT nbtTags) {
+        public void load(@Nonnull CompoundNBT nbtTags) {
             NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
             Function<CompoundNBT, FREQ> creatorFunction = frequencyType::create;
             ListNBT list = nbtTags.getList(NBTConstants.FREQUENCY_LIST, NBT.TAG_COMPOUND);
@@ -209,9 +209,9 @@ public class FrequencyManager<FREQ extends Frequency> {
 
         @Nonnull
         @Override
-        public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
+        public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
             if (ownerUUID != null) {
-                nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+                nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
             }
             ListNBT list = new ListNBT();
             for (FREQ freq : getFrequencies()) {

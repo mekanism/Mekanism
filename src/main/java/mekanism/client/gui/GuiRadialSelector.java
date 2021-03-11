@@ -46,10 +46,10 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     @Override
     public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTick) {
         // center of screen
-        float centerX = Minecraft.getInstance().getMainWindow().getScaledWidth() / 2F;
-        float centerY = Minecraft.getInstance().getMainWindow().getScaledHeight() / 2F;
+        float centerX = Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2F;
+        float centerY = Minecraft.getInstance().getWindow().getGuiScaledHeight() / 2F;
 
-        matrix.push();
+        matrix.pushPose();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.defaultAlphaFunc();
@@ -145,24 +145,24 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             float x = (float) Math.cos(angle) * (INNER + OUTER) / 2F;
             float y = (float) Math.sin(angle) * (INNER + OUTER) / 2F;
             // draw icon
-            Minecraft.getInstance().textureManager.bindTexture(type.getIcon());
+            Minecraft.getInstance().textureManager.bind(type.getIcon());
             blit(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
             // draw label
-            matrix.push();
-            int width = font.getStringPropertyWidth(type.getShortText());
+            matrix.pushPose();
+            int width = font.width(type.getShortText());
             matrix.translate(x, y, 0);
             matrix.scale(0.6F, 0.6F, 0.6F);
-            font.drawText(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);
-            matrix.pop();
+            font.draw(matrix, type.getShortText(), -width / 2F, 8, 0xCCFFFFFF);
+            matrix.popPose();
             position++;
         }
 
         MekanismRenderer.resetColor();
-        matrix.pop();
+        matrix.popPose();
     }
 
     @Override
-    public void onClose() {
+    public void removed() {
         updateSelection();
     }
 
@@ -184,17 +184,17 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     }
 
     private void drawTorus(MatrixStack matrix, float startAngle, float sizeAngle) {
-        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuffer();
-        Matrix4f matrix4f = matrix.getLast().getMatrix();
+        BufferBuilder vertexBuffer = Tessellator.getInstance().getBuilder();
+        Matrix4f matrix4f = matrix.last().pose();
         vertexBuffer.begin(GL11.GL_QUAD_STRIP, DefaultVertexFormats.POSITION);
         float draws = DRAWS * (sizeAngle / 360F);
         for (int i = 0; i <= draws; i++) {
             float angle = (float) Math.toRadians(startAngle + (i / DRAWS) * 360);
-            vertexBuffer.pos(matrix4f, (float) (OUTER * Math.cos(angle)), (float) (OUTER * Math.sin(angle)), 0).endVertex();
-            vertexBuffer.pos(matrix4f, (float) (INNER * Math.cos(angle)), (float) (INNER * Math.sin(angle)), 0).endVertex();
+            vertexBuffer.vertex(matrix4f, (float) (OUTER * Math.cos(angle)), (float) (OUTER * Math.sin(angle)), 0).endVertex();
+            vertexBuffer.vertex(matrix4f, (float) (INNER * Math.cos(angle)), (float) (INNER * Math.sin(angle)), 0).endVertex();
         }
-        vertexBuffer.finishDrawing();
-        WorldVertexBufferUploader.draw(vertexBuffer);
+        vertexBuffer.end();
+        WorldVertexBufferUploader.end(vertexBuffer);
     }
 
     public void updateSelection() {

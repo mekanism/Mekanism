@@ -68,10 +68,10 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         RenderSystem.enableAlphaTest();
         drawChemical(matrix, xPosition, yPosition, stack);
         if (overlay != null) {
-            matrix.push();
+            matrix.pushPose();
             matrix.translate(0, 0, 200);
             overlay.draw(matrix, xPosition, yPosition);
-            matrix.pop();
+            matrix.popPose();
         }
         RenderSystem.disableAlphaTest();
         RenderSystem.disableBlend();
@@ -112,7 +112,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
 
     @Override
     public FontRenderer getFontRenderer(Minecraft minecraft, @Nonnull STACK stack) {
-        return minecraft.fontRenderer;
+        return minecraft.font;
     }
 
     enum TooltipMode {

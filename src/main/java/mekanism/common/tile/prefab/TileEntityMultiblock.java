@@ -105,7 +105,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             unformedTicks++;
             if (!playersUsing.isEmpty()) {
                 for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
-                    player.closeScreen();
+                    player.closeContainer();
                 }
             }
         } else {
@@ -129,7 +129,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 cachedID = multiblock.inventoryID;
                 getManager().updateCache(this, multiblock);
                 if (isMaster) {
-                    if (multiblock.tick(world)) {
+                    if (multiblock.tick(level)) {
                         sendUpdatePacket();
                     }
                     // mark the chunk dirty each tick to make sure we save
@@ -137,7 +137,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 }
             }
         } else {
-            playersUsing.forEach(PlayerEntity::closeScreen);
+            playersUsing.forEach(PlayerEntity::closeContainer);
             if (cachedID != null) {
                 getManager().updateCache(this, multiblock);
             }
@@ -161,14 +161,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             //Force update the structure's comparator level as it may be incorrect due to not having a capacity while unformed
             multiblock.forceUpdateComparatorLevel();
             //If we are the block that is rendering the structure make sure to tell all the valves to update their comparator levels
-            multiblock.notifyAllUpdateComparator(world);
+            multiblock.notifyAllUpdateComparator(level);
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos pos = getPos().offset(side);
+            BlockPos pos = getBlockPos().relative(side);
             if (!multiblock.isFormed() || (!multiblock.locations.contains(pos) && !multiblock.internalLocations.contains(pos))) {
-                TileEntity tile = WorldUtils.getTileEntity(world, pos);
-                if (!world.isAirBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
-                    WorldUtils.notifyNeighborOfChange(world, pos, getPos());
+                TileEntity tile = WorldUtils.getTileEntity(level, pos);
+                if (!level.isEmptyBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
+                    WorldUtils.notifyNeighborOfChange(level, pos, getBlockPos());
                 }
             }
         }
@@ -187,15 +187,15 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
-        if (player.isSneaking() || !getMultiblock().isFormed()) {
+        if (player.isShiftKeyDown() || !getMultiblock().isFormed()) {
             return ActionResultType.PASS;
         }
         return openGui(player);
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         unload();
     }
 
@@ -212,7 +212,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     private void unload() {
         if (!isRemote()) {
-            structure.invalidate(world);
+            structure.invalidate(level);
             if (cachedID != null) {
                 getManager().invalidate(this);
             }
@@ -285,19 +285,19 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             //Note: Do not change this from ClientPlayerEntity to PlayerEntity or it will cause class loading issues on the server
             // due to trying to validate if the value is actually a PlayerEntity
             ClientPlayerEntity player = Minecraft.getInstance().player;
-            if (pos.distanceSq(player.getPosition()) <= 1_600) {
+            if (worldPosition.distSqr(player.blockPosition()) <= 1_600) {
                 if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
                     new SparkleAnimation(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1).run();
                 } else {
-                    player.sendStatusMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO), true);
+                    player.displayClientMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO), true);
                 }
             }
         }
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         if (!getMultiblock().isFormed()) {
             NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.INVENTORY_ID, id -> {
                 cachedID = id;
@@ -311,10 +311,10 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         if (cachedID != null) {
-            nbtTags.putUniqueId(NBTConstants.INVENTORY_ID, cachedID);
+            nbtTags.putUUID(NBTConstants.INVENTORY_ID, cachedID);
             if (cachedData != null) {
                 // sync one last time if this is the master
                 T multiblock = getMultiblock();
@@ -345,7 +345,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 //TODO: Eventually we may want to look into caching this
                 //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
                 // how the specific multiblock wants to render, that it is being viewed
-                return new AxisAlignedBB(multiblock.getMinPos(), multiblock.getMaxPos().add(1, 1, 1));
+                return new AxisAlignedBB(multiblock.getMinPos(), multiblock.getMaxPos().offset(1, 1, 1));
             }
         }
         return super.getRenderBoundingBox();
@@ -358,12 +358,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @Override
     public BlockPos getTilePos() {
-        return getPos();
+        return getBlockPos();
     }
 
     @Override
     public World getTileWorld() {
-        return getWorld();
+        return getLevel();
     }
 
     @Nonnull
@@ -383,12 +383,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             T multiblock = getMultiblock();
             if (multiblock.isPositionInsideBounds(getStructure(), neighborPos)) {
                 //If the neighbor change happened from inside the bounds of the multiblock,
-                if (!multiblock.innerNodes.contains(neighborPos) || world.isAirBlock(neighborPos)) {
+                if (!multiblock.innerNodes.contains(neighborPos) || level.isEmptyBlock(neighborPos)) {
                     //And we are not already an internal part of the structure, or we are changing an internal part to air
                     // then we mark the structure as needing to be re-validated
                     //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
                     // it won't know to invalidate it but oh well. (See java docs on innerNode for more caveats)
-                    getStructure().markForUpdate(world, true);
+                    getStructure().markForUpdate(level, true);
                 }
             }
         }
@@ -399,7 +399,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!isRemote() && !getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
-                player.sendMessage(result.getResultText(), Util.DUMMY_UUID);
+                player.sendMessage(result.getResultText(), Util.NIL_UUID);
                 return ActionResultType.SUCCESS;
             }
         }

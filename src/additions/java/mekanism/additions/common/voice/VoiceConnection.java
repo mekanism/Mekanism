@@ -42,13 +42,13 @@ public class VoiceConnection extends Thread {
                         List<ServerPlayerEntity> l = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
 
                         for (ServerPlayerEntity playerMP : l) {
-                            String playerIP = playerMP.getPlayerIP();
+                            String playerIP = playerMP.getIpAddress();
                             if (!server.isDedicatedServer() && playerIP.equals("local") && !MekanismAdditions.voiceManager.isFoundLocal()) {
                                 MekanismAdditions.voiceManager.setFoundLocal(true);
-                                uuid = playerMP.getUniqueID();
+                                uuid = playerMP.getUUID();
                                 break;
                             } else if (playerIP.equals(socket.getInetAddress().getHostAddress())) {
-                                uuid = playerMP.getUniqueID();
+                                uuid = playerMP.getUUID();
                                 break;
                             }
                         }
@@ -122,8 +122,8 @@ public class VoiceConnection extends Thread {
     }
 
     public boolean canListen(int channel) {
-        return getPlayer().inventory.mainInventory.stream().anyMatch(itemStack -> canListen(channel, itemStack))
-               || getPlayer().inventory.offHandInventory.stream().anyMatch(itemStack -> canListen(channel, itemStack));
+        return getPlayer().inventory.items.stream().anyMatch(itemStack -> canListen(channel, itemStack))
+               || getPlayer().inventory.offhand.stream().anyMatch(itemStack -> canListen(channel, itemStack));
     }
 
     private boolean canListen(int channel, ItemStack itemStack) {
@@ -135,7 +135,7 @@ public class VoiceConnection extends Thread {
     }
 
     public int getCurrentChannel() {
-        ItemStack itemStack = getPlayer().inventory.getCurrentItem();
+        ItemStack itemStack = getPlayer().inventory.getSelected();
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie) {
             ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie) itemStack.getItem();
             if (walkieTalkie.getOn(itemStack)) {
@@ -146,6 +146,6 @@ public class VoiceConnection extends Thread {
     }
 
     public ServerPlayerEntity getPlayer() {
-        return server.getPlayerList().getPlayerByUUID(uuid);
+        return server.getPlayerList().getPlayer(uuid);
     }
 }

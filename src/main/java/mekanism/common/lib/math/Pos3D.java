@@ -20,7 +20,7 @@ import net.minecraft.world.World;
  *
  * @author aidancbrady
  */
-public class Pos3D extends Vector3d {
+public class Pos3D extends Vector3d {//TODO - 10.1: Go through this class, it seems a decent number of these methods are effectively the same as in Vector3D
 
     public Pos3D() {
         this(0, 0, 0);
@@ -44,15 +44,15 @@ public class Pos3D extends Vector3d {
      * @param entity - entity to create the Pos3D from
      */
     public Pos3D(Entity entity) {
-        this(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+        this(entity.getX(), entity.getY(), entity.getZ());
     }
 
     public static Pos3D create(TileEntity tile) {
-        return create(tile.getPos());
+        return create(tile.getBlockPos());
     }
 
     public static Pos3D create(Vector3i vec) {
-        return new Pos3D(Vector3d.copy(vec));
+        return new Pos3D(Vector3d.atLowerCornerOf(vec));
     }
 
     /**
@@ -78,7 +78,7 @@ public class Pos3D extends Vector3d {
     }
 
     public static double anglePreNorm(Pos3D pos1, Pos3D pos2) {
-        return Math.acos(pos1.dotProduct(pos2));
+        return Math.acos(pos1.dot(pos2));
     }
 
     public static AxisAlignedBB getAABB(Pos3D pos1, Pos3D pos2) {
@@ -175,7 +175,7 @@ public class Pos3D extends Vector3d {
      * Performs the same operation as translate(x, y, z), but by a set amount in a Direction
      */
     public Pos3D translate(Direction direction, double amount) {
-        return translate(direction.getDirectionVec().getX() * amount, direction.getDirectionVec().getY() * amount, direction.getDirectionVec().getZ() * amount);
+        return translate(direction.getNormal().getX() * amount, direction.getNormal().getY() * amount, direction.getNormal().getZ() * amount);
     }
 
     /**
@@ -200,11 +200,11 @@ public class Pos3D extends Vector3d {
      */
     public Pos3D adjustPosition(Direction direction, Entity entity) {
         if (direction.getAxis() == Axis.X) {
-            return new Pos3D(entity.getPosX(), y, z);
+            return new Pos3D(entity.getX(), y, z);
         } else if (direction.getAxis() == Axis.Y) {
-            return new Pos3D(x, entity.getPosY(), z);
+            return new Pos3D(x, entity.getY(), z);
         } //Axis.Z
-        return new Pos3D(x, y, entity.getPosZ());
+        return new Pos3D(x, y, entity.getZ());
     }
 
     /**
@@ -230,7 +230,7 @@ public class Pos3D extends Vector3d {
      */
     @Nonnull
     @Override
-    public Pos3D rotateYaw(float yaw) {
+    public Pos3D yRot(float yaw) {
         double yawRadians = Math.toRadians(yaw);
         double xPos = x;
         double zPos = z;
@@ -243,7 +243,7 @@ public class Pos3D extends Vector3d {
 
     @Nonnull
     @Override
-    public Pos3D rotatePitch(float pitch) {
+    public Pos3D xRot(float pitch) {
         double pitchRadians = Math.toRadians(pitch);
         double yPos = y;
         double zPos = z;
@@ -273,8 +273,9 @@ public class Pos3D extends Vector3d {
         return new Pos3D(xPos, yPos, zPos);
     }
 
+    @Override
     public Pos3D multiply(Vector3d pos) {
-        return scale(pos.x, pos.y, pos.z);
+        return multiply(pos.x, pos.y, pos.z);
     }
 
     /**
@@ -286,14 +287,15 @@ public class Pos3D extends Vector3d {
      *
      * @return scaled Pos3D
      */
-    public Pos3D scale(double x, double y, double z) {
+    @Override
+    public Pos3D multiply(double x, double y, double z) {
         return new Pos3D(this.x * x, this.y * y, this.z * z);
     }
 
     @Nonnull
     @Override
     public Pos3D scale(double scale) {
-        return scale(scale, scale, scale);
+        return multiply(scale, scale, scale);
     }
 
     public Pos3D rotate(float angle, Pos3D axis) {
@@ -334,7 +336,7 @@ public class Pos3D extends Vector3d {
     }
 
     public double anglePreNorm(Pos3D pos2) {
-        return Math.acos(dotProduct(pos2));
+        return Math.acos(dot(pos2));
     }
 
     @Nonnull

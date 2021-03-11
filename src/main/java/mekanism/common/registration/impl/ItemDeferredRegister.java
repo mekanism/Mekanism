@@ -25,7 +25,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public static Item.Properties getMekBaseProperties() {
-        return new Item.Properties().group(Mekanism.tabMekanism);
+        return new Item.Properties().tab(Mekanism.tabMekanism);
     }
 
     public ItemRegistryObject<Item> register(String name) {
@@ -44,8 +44,8 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         return register(name, properties -> new Item(properties) {
             @Nonnull
             @Override
-            public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-                return TextComponentUtil.build(color, super.getDisplayName(stack));
+            public ITextComponent getName(@Nonnull ItemStack stack) {
+                return TextComponentUtil.build(color, super.getName(stack));
             }
         });
     }
@@ -55,7 +55,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> registerUnburnable(String name, Function<Item.Properties, ITEM> sup) {
-        return register(name, () -> sup.apply(getMekBaseProperties().isImmuneToFire()));
+        return register(name, () -> sup.apply(getMekBaseProperties().fireResistant()));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Supplier<? extends ITEM> sup) {

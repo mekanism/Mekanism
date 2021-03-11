@@ -37,7 +37,7 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
-        if (!event.getPlayer().world.isRemote) {
+        if (!event.getPlayer().level.isClientSide) {
             Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), (ServerPlayerEntity) event.getPlayer());
             Mekanism.packetHandler.sendTo(new PacketClearRecipeCache(), (ServerPlayerEntity) event.getPlayer());
             event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) event.getPlayer()));
@@ -47,14 +47,14 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerLogoutEvent(PlayerLoggedOutEvent event) {
         PlayerEntity player = event.getPlayer();
-        Mekanism.playerState.clearPlayer(player.getUniqueID(), false);
-        Mekanism.playerState.clearPlayerServerSideOnly(player.getUniqueID());
+        Mekanism.playerState.clearPlayer(player.getUUID(), false);
+        Mekanism.playerState.clearPlayerServerSideOnly(player.getUUID());
     }
 
     @SubscribeEvent
     public void onPlayerDimChangedEvent(PlayerChangedDimensionEvent event) {
         PlayerEntity player = event.getPlayer();
-        Mekanism.playerState.clearPlayer(player.getUniqueID(), false);
+        Mekanism.playerState.clearPlayer(player.getUUID(), false);
         Mekanism.playerState.reapplyServerSideOnly(player);
         player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) player));
 
@@ -63,7 +63,7 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerStartTrackingEvent(PlayerEvent.StartTracking event) {
         if (event.getTarget() instanceof PlayerEntity && event.getPlayer() instanceof ServerPlayerEntity) {
-            Mekanism.packetHandler.sendTo(new PacketPlayerData(event.getTarget().getUniqueID()), (ServerPlayerEntity) event.getPlayer());
+            Mekanism.packetHandler.sendTo(new PacketPlayerData(event.getTarget().getUUID()), (ServerPlayerEntity) event.getPlayer());
         }
     }
 
@@ -88,7 +88,7 @@ public class CommonPlayerTracker {
             c.set(0);
             PacketRadiationData.sync((ServerPlayerEntity) event.getPlayer());
         });
-        Mekanism.packetHandler.sendToAll(new PacketResetPlayerClient(event.getPlayer().getUniqueID()));
+        Mekanism.packetHandler.sendToAll(new PacketResetPlayerClient(event.getPlayer().getUUID()));
     }
 
     /**
@@ -98,7 +98,7 @@ public class CommonPlayerTracker {
      */
     @SubscribeEvent
     public void rightClickEvent(RightClickBlock blockEvent) {
-        if (blockEvent.getPlayer().isSneaking() && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() instanceof BlockCardboardBox) {
+        if (blockEvent.getPlayer().isShiftKeyDown() && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() instanceof BlockCardboardBox) {
             blockEvent.setUseBlock(Event.Result.ALLOW);
             blockEvent.setUseItem(Event.Result.DENY);
         }

@@ -26,25 +26,25 @@ public class RadiationCommand {
 
     static ArgumentBuilder<CommandSource, ?> register() {
         return Commands.literal("radiation")
-              .requires(cs -> cs.hasPermissionLevel(2))
+              .requires(cs -> cs.hasPermission(2))
               .then(Commands.literal("add")
                     .then(Commands.argument("magnitude", DoubleArgumentType.doubleArg(0, 10_000))
                           .executes(ctx -> {
                               //Get position based on source
                               CommandSource source = ctx.getSource();
-                              return addRadiation(source, source.getPos(), source.getWorld(), DoubleArgumentType.getDouble(ctx, "magnitude"));
+                              return addRadiation(source, source.getPosition(), source.getLevel(), DoubleArgumentType.getDouble(ctx, "magnitude"));
                           }).then(Commands.argument("location", Vec3Argument.vec3())
                                 .executes(ctx -> {
                                     //Get position based on passed in value, and the source's world
                                     CommandSource source = ctx.getSource();
-                                    return addRadiation(source, Vec3Argument.getLocation(ctx, "location"), source.getWorld(),
+                                    return addRadiation(source, Vec3Argument.getCoordinates(ctx, "location"), source.getLevel(),
                                           DoubleArgumentType.getDouble(ctx, "magnitude"));
-                                }).then(Commands.argument("dimension", DimensionArgument.getDimension())
+                                }).then(Commands.argument("dimension", DimensionArgument.dimension())
                                       .executes(ctx -> {
                                           //Get position and dimension by passed in values
                                           CommandSource source = ctx.getSource();
-                                          return addRadiation(source, Vec3Argument.getLocation(ctx, "location"),
-                                                DimensionArgument.getDimensionArgument(ctx, "dimension"), DoubleArgumentType.getDouble(ctx, "magnitude"));
+                                          return addRadiation(source, Vec3Argument.getCoordinates(ctx, "location"),
+                                                DimensionArgument.getDimension(ctx, "dimension"), DoubleArgumentType.getDouble(ctx, "magnitude"));
                                       })
                                 )
                           )
@@ -53,32 +53,32 @@ public class RadiationCommand {
                     .executes(ctx -> {
                         //Get position based on source
                         CommandSource source = ctx.getSource();
-                        return getRadiationLevel(source, source.getPos(), source.getWorld());
+                        return getRadiationLevel(source, source.getPosition(), source.getLevel());
                     }).then(Commands.argument("location", Vec3Argument.vec3())
                           .executes(ctx -> {
                               //Get position based on passed in value, and the source's world
                               CommandSource source = ctx.getSource();
-                              return getRadiationLevel(source, Vec3Argument.getLocation(ctx, "location"), source.getWorld());
-                          }).then(Commands.argument("dimension", DimensionArgument.getDimension())
+                              return getRadiationLevel(source, Vec3Argument.getCoordinates(ctx, "location"), source.getLevel());
+                          }).then(Commands.argument("dimension", DimensionArgument.dimension())
                                 .executes(ctx -> {
                                     //Get position and dimension by passed in values
-                                    return getRadiationLevel(ctx.getSource(), Vec3Argument.getLocation(ctx, "location"),
-                                          DimensionArgument.getDimensionArgument(ctx, "dimension"));
+                                    return getRadiationLevel(ctx.getSource(), Vec3Argument.getCoordinates(ctx, "location"),
+                                          DimensionArgument.getDimension(ctx, "dimension"));
                                 })
                           )
                     )
               ).then(Commands.literal("heal")
                     .executes(ctx -> {
                         CommandSource source = ctx.getSource();
-                        source.asPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(0));
-                        source.sendFeedback(MekanismLang.COMMAND_RADIATION_CLEAR.translateColored(EnumColor.GRAY), true);
+                        source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(0));
+                        source.sendSuccess(MekanismLang.COMMAND_RADIATION_CLEAR.translateColored(EnumColor.GRAY), true);
                         return 0;
                     }).then(Commands.argument("targets", EntityArgument.players())
                           .executes(ctx -> {
                               CommandSource source = ctx.getSource();
                               for (PlayerEntity player : EntityArgument.getPlayers(ctx, "targets")) {
                                   player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(0));
-                                  source.sendFeedback(MekanismLang.COMMAND_RADIATION_CLEAR_PLAYER.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                                  source.sendSuccess(MekanismLang.COMMAND_RADIATION_CLEAR_PLAYER.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                                         player.getDisplayName()), true);
                               }
                               return 0;
@@ -87,7 +87,7 @@ public class RadiationCommand {
               ).then(Commands.literal("removeAll")
                     .executes(ctx -> {
                         Mekanism.radiationManager.clearSources();
-                        ctx.getSource().sendFeedback(MekanismLang.COMMAND_RADIATION_REMOVE_ALL.translateColored(EnumColor.GRAY), true);
+                        ctx.getSource().sendSuccess(MekanismLang.COMMAND_RADIATION_REMOVE_ALL.translateColored(EnumColor.GRAY), true);
                         return 0;
                     })
               );
@@ -98,11 +98,11 @@ public class RadiationCommand {
     }
 
     private static int addRadiation(CommandSource source, Vector3d pos, World world, double magnitude) {
-        Coord4D location = new Coord4D(pos.x, pos.y, pos.z, world.getDimensionKey());
+        Coord4D location = new Coord4D(pos.x, pos.y, pos.z, world.dimension());
         Mekanism.radiationManager.radiate(location, magnitude);
-        source.sendFeedback(MekanismLang.COMMAND_RADIATION_ADD.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
+        source.sendSuccess(MekanismLang.COMMAND_RADIATION_ADD.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
               UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3), EnumColor.INDIGO, getPosition(location.getPos()), EnumColor.INDIGO,
-              location.dimension.getLocation()), true);
+              location.dimension.location()), true);
         return 0;
     }
 
@@ -111,10 +111,10 @@ public class RadiationCommand {
     }
 
     private static int getRadiationLevel(CommandSource source, Vector3d pos, World world) {
-        Coord4D location = new Coord4D(pos.x, pos.y, pos.z, world.getDimensionKey());
+        Coord4D location = new Coord4D(pos.x, pos.y, pos.z, world.dimension());
         double magnitude = Mekanism.radiationManager.getRadiationLevel(location);
-        source.sendFeedback(MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location.getPos()), EnumColor.INDIGO,
-              location.dimension.getLocation(), RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
+        source.sendSuccess(MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location.getPos()), EnumColor.INDIGO,
+              location.dimension.location(), RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
               true);
         return 0;
     }

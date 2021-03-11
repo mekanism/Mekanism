@@ -36,10 +36,10 @@ public class VoiceInput extends Thread {
             boolean doFlush = false;
 
             while (voiceClient.isRunning()) {
-                if (AdditionsKeyHandler.voiceKey.isPressed()) {
+                if (AdditionsKeyHandler.voiceKey.consumeClick()) {
                     targetLine.flush();
 
-                    while (voiceClient.isRunning() && AdditionsKeyHandler.voiceKey.isPressed()) {
+                    while (voiceClient.isRunning() && AdditionsKeyHandler.voiceKey.consumeClick()) {
                         try {
                             int availableBytes = audioInput.available();
                             byte[] audioData = new byte[Math.min(availableBytes, 2_200)];

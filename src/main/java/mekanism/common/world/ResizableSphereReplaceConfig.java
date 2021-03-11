@@ -29,7 +29,7 @@ public class ResizableSphereReplaceConfig implements IFeatureConfig {
         this.baseRadius = saltConfig.baseRadius;
         this.spread = saltConfig.spread;
         this.ySize = saltConfig.ySize;
-        this.targets = ImmutableList.of(Blocks.DIRT.getDefaultState(), Blocks.CLAY.getDefaultState(), this.state);
+        this.targets = ImmutableList.of(Blocks.DIRT.defaultBlockState(), Blocks.CLAY.defaultBlockState(), this.state);
     }
 
     public int getRadius(Random rand) {

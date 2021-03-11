@@ -83,7 +83,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         delayTicks = Math.max(0, delayTicks - 1);
         if (delayTicks == 0) {
             if (getActive()) {
-                TileEntity tile = WorldUtils.getTileEntity(getWorld(), getPos().down());
+                TileEntity tile = WorldUtils.getTileEntity(getLevel(), getBlockPos().below());
                 TileTransitRequest request = new TileTransitRequest(this, Direction.DOWN);
                 request.addItem(binSlot.getBottomStack(), 0);
                 TransitResponse response;
@@ -106,9 +106,9 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         setActive(!getActive());
-        World world = getWorld();
+        World world = getLevel();
         if (world != null) {
-            world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+            world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
         }
         return ActionResultType.SUCCESS;
     }
@@ -138,7 +138,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @Override
     public void onContentsChanged() {
         super.onContentsChanged();
-        if (world != null && !isRemote()) {
+        if (level != null && !isRemote()) {
             sendUpdatePacket();
         }
     }

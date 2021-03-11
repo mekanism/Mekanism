@@ -413,7 +413,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.FUELWOOD_HEATER)
           .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
-                .add(RedstoneParticleData.REDSTONE_DUST, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
+                .add(RedstoneParticleData.REDSTONE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
           .withComputerSupport("fuelwoodHeater")
           .build();
     // Oredictionificator

@@ -156,7 +156,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this, 5, 56));
         builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this, 155, 56));
         builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, this, 80, 65));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 155, 5));
         leftInputSlot.setSlotType(ContainerSlotType.INPUT);
         leftInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         rightInputSlot.setSlotType(ContainerSlotType.INPUT);

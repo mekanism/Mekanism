@@ -46,7 +46,7 @@ public class ItemHazmatSuitArmor extends ArmorItem {
 
     @Override
     public boolean isEnchantable(@Nonnull ItemStack stack) {
-        return material.getEnchantability() > 0 && super.isEnchantable(stack);
+        return material.getEnchantmentValue() > 0 && super.isEnchantable(stack);
     }
 
     @Override

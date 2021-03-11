@@ -45,7 +45,7 @@ public class BlockStateHelper {
         }
         if (block instanceof IStateFluidLoggable) {
             //Default the blocks to not being waterlogged, they have code to force waterlogging to true if being placed in water
-            state = state.with(((IStateFluidLoggable) block).getFluidLoggedProperty(), 0);
+            state = state.setValue(((IStateFluidLoggable) block).getFluidLoggedProperty(), 0);
         }
         return state;
     }
@@ -76,7 +76,7 @@ public class BlockStateHelper {
         return applyLightLevelAdjustments(properties, state -> {
             Block block = state.getBlock();
             if (block instanceof IStateFluidLoggable) {
-                return ((IStateFluidLoggable) block).getFluid(state).getFluid().getAttributes().getLuminosity();
+                return ((IStateFluidLoggable) block).getFluid(state).getType().getAttributes().getLuminosity();
             }
             return 0;
         });
@@ -88,14 +88,14 @@ public class BlockStateHelper {
      */
     public static AbstractBlock.Properties applyLightLevelAdjustments(AbstractBlock.Properties properties, ToIntFunction<BlockState> toApply) {
         //Cache what the current light level function is
-        ToIntFunction<BlockState> existingLightLevelFunction = properties.lightLevel;
+        ToIntFunction<BlockState> existingLightLevelFunction = properties.lightEmission;
         //And override the one in the properties in a way that we can modify if we have state information that should adjust it
-        return properties.setLightLevel(state -> Math.max(existingLightLevelFunction.applyAsInt(state), toApply.applyAsInt(state)));
+        return properties.lightLevel(state -> Math.max(existingLightLevelFunction.applyAsInt(state), toApply.applyAsInt(state)));
     }
 
     @Contract("_, null, _ -> null")
     public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, BlockItemUseContext context) {
-        return getStateForPlacement(block, state, context.getWorld(), context.getPos(), context.getPlayer(), context.getFace());
+        return getStateForPlacement(block, state, context.getLevel(), context.getClickedPos(), context.getPlayer(), context.getClickedFace());
     }
 
     @Contract("_, null, _, _, _, _ -> null")
@@ -111,7 +111,7 @@ public class BlockStateHelper {
         if (block instanceof IStateFluidLoggable) {
             IStateFluidLoggable fluidLoggable = (IStateFluidLoggable) block;
             FluidState fluidState = world.getFluidState(pos);
-            state = state.with(fluidLoggable.getFluidLoggedProperty(), fluidLoggable.getSupportedFluidPropertyIndex(fluidState.getFluid()));
+            state = state.setValue(fluidLoggable.getFluidLoggedProperty(), fluidLoggable.getSupportedFluidPropertyIndex(fluidState.getType()));
         }
         return state;
     }
@@ -125,7 +125,7 @@ public class BlockStateHelper {
             }
         }
         if (oldBlock instanceof IStateStorage && newBlock instanceof IStateStorage) {
-            newState = newState.with(storageProperty, oldState.get(storageProperty));
+            newState = newState.setValue(storageProperty, oldState.getValue(storageProperty));
         }
         if (oldBlock instanceof IStateFluidLoggable && newBlock instanceof IStateFluidLoggable) {
             IStateFluidLoggable oldFluidLoggable = (IStateFluidLoggable) oldBlock;
@@ -133,7 +133,7 @@ public class BlockStateHelper {
             if (oldFluidLoggable.getSupportedFluids().length == newFluidLoggable.getSupportedFluids().length) {
                 //Basic check if the number of supported fluids is the same copy it over
                 //TODO: Eventually maybe we want a better check? In theory they should always match but just in case
-                newState = newState.with(newFluidLoggable.getFluidLoggedProperty(), oldState.get(oldFluidLoggable.getFluidLoggedProperty()));
+                newState = newState.setValue(newFluidLoggable.getFluidLoggedProperty(), oldState.getValue(oldFluidLoggable.getFluidLoggedProperty()));
             }
         }
         return newState;

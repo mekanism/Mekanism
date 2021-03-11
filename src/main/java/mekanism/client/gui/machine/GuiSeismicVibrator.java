@@ -27,7 +27,7 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
         super.init();
         addButton(new GuiInnerScreen(this, 16, 23, 112, 40, () -> Arrays.asList(
               tile.getActive() ? MekanismLang.VIBRATING.translate() : MekanismLang.IDLE.translate(),
-              MekanismLang.CHUNK.translate(tile.getPos().getX() >> 4, tile.getPos().getZ() >> 4)
+              MekanismLang.CHUNK.translate(tile.getBlockPos().getX() >> 4, tile.getBlockPos().getZ() >> 4)
         )));
         addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
@@ -38,7 +38,7 @@ public class GuiSeismicVibrator extends GuiMekanismTile<TileEntitySeismicVibrato
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

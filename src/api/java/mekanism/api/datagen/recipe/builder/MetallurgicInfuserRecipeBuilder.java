@@ -54,7 +54,7 @@ public class MetallurgicInfuserRecipeBuilder extends MekanismRecipeBuilder<Metal
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.ITEM_INPUT, itemInput.serialize());
             json.add(JsonConstants.INFUSION_INPUT, infusionInput.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));

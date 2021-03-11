@@ -104,7 +104,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         superheatedCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getSuperheatedCoolantTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(),
               gas -> gas.has(HeatedCoolant.class));
-        waterTank = MultiblockFluidTank.input(this, tile, this::getWaterTankCapacity, fluid -> fluid.getFluid().isIn(FluidTags.WATER));
+        waterTank = MultiblockFluidTank.input(this, tile, this::getWaterTankCapacity, fluid -> fluid.getFluid().is(FluidTags.WATER));
         fluidTanks.add(waterTank);
         steamTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getSteamTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,

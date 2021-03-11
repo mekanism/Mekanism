@@ -43,13 +43,13 @@ public class PacketGearStateUpdate implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(gearType);
-        buffer.writeUniqueId(uuid);
+        buffer.writeEnum(gearType);
+        buffer.writeUUID(uuid);
         buffer.writeBoolean(state);
     }
 
     public static PacketGearStateUpdate decode(PacketBuffer buffer) {
-        return new PacketGearStateUpdate(buffer.readEnumValue(GearType.class), buffer.readUniqueId(), buffer.readBoolean());
+        return new PacketGearStateUpdate(buffer.readEnum(GearType.class), buffer.readUUID(), buffer.readBoolean());
     }
 
     public enum GearType {

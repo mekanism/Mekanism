@@ -86,8 +86,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         }
 
         if (MekanismUtils.canFunction(this) && delayTicks == 0) {
-            TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
-            TileEntity front = WorldUtils.getTileEntity(getWorld(), pos.offset(getDirection()));
+            TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
+            TileEntity front = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getDirection()));
             //If there is no tile to pull from or the push to, skip doing any checks
             if (InventoryUtils.isItemHandler(back, getDirection()) && front != null) {
                 boolean sentItems = false;
@@ -141,14 +141,14 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         return getConfigurationData(nbtTags);
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         setConfigurationData(nbtTags);
     }
 
@@ -203,18 +203,18 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     public boolean canSendHome(ItemStack stack) {
-        TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
         return TransporterUtils.canInsert(back, null, stack, getOppositeDirection(), true);
     }
 
     public boolean hasConnectedInventory() {
-        TileEntity tile = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+        TileEntity tile = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
         return TransporterUtils.isValidAcceptorOnSide(tile, getOppositeDirection());
     }
 
     @Nonnull
     public TransitResponse sendHome(TransitRequest request) {
-        TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
         return request.addToInventory(back, getOppositeDirection(), true);
     }
 
@@ -260,7 +260,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     @Override
     public String getDataType() {
-        return getBlockType().getTranslationKey();
+        return getBlockType().getDescriptionId();
     }
 
     @Override

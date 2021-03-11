@@ -58,9 +58,9 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (world.getGameTime() > lastProcessTick) {
+        if (level.getGameTime() > lastProcessTick) {
             //If we are not on the same tick do stuff, otherwise ignore it (anti tick accelerator protection)
-            lastProcessTick = world.getGameTime();
+            lastProcessTick = level.getGameTime();
             if (MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get() > 0 && !gasTank.isEmpty() &&
                 !gasTank.getType().isIn(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST) &&
                 ++processTicks >= MekanismConfig.general.radioactiveWasteBarrelProcessTicks.get()) {
@@ -95,9 +95,9 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
             setActive(!getActive());
-            World world = getWorld();
+            World world = getLevel();
             if (world != null) {
-                world.playSound(null, getPos().getX(), getPos().getY(), getPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+                world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
             }
         }
         return ActionResultType.SUCCESS;

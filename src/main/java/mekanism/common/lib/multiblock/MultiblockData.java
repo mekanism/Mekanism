@@ -100,8 +100,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     public MultiblockData(TileEntity tile) {
-        remoteSupplier = () -> tile.getWorld().isRemote();
-        worldSupplier = tile::getWorld;
+        remoteSupplier = () -> tile.getLevel().isClientSide();
+        worldSupplier = tile::getLevel;
     }
 
     /**
@@ -125,7 +125,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         if (shape instanceof VoxelCuboid) {
             VoxelCuboid cuboid = (VoxelCuboid) shape;
             bounds = cuboid;
-            renderLocation = cuboid.getMinPos().offset(Direction.UP);
+            renderLocation = cuboid.getMinPos().relative(Direction.UP);
             setVolume(bounds.length() * bounds.width() * bounds.height());
             return true;
         }
@@ -211,7 +211,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         tag.put(NBTConstants.MIN, NBTUtil.writeBlockPos(bounds.getMinPos()));
         tag.put(NBTConstants.MAX, NBTUtil.writeBlockPos(bounds.getMaxPos()));
         if (inventoryID != null) {
-            tag.putUniqueId(NBTConstants.INVENTORY_ID, inventoryID);
+            tag.putUUID(NBTConstants.INVENTORY_ID, inventoryID);
         }
     }
 
@@ -318,7 +318,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public Set<Direction> getDirectionsToEmit(BlockPos pos) {
         Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
         for (Direction direction : EnumUtils.DIRECTIONS) {
-            if (!locations.contains(pos.offset(direction))) {
+            if (!locations.contains(pos.relative(direction))) {
                 directionsToEmit.add(direction);
             }
         }

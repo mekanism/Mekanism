@@ -18,7 +18,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     public boolean replaceStackMatches(@Nonnull ItemStack stack) {
         //TODO: Should this be ItemHandlerHelper.canItemStacksStack() instead of isItemEqual
         // Potentially this should be be a "fuzzy" style thing as sometimes the player may want the NBT to match and other times they may not
-        return !replaceStack.isEmpty() && !stack.isEmpty() && stack.isItemEqual(replaceStack);
+        return !replaceStack.isEmpty() && !stack.isEmpty() && stack.sameItem(replaceStack);
     }
 
     public abstract boolean canFilter(BlockState state);
@@ -28,7 +28,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.REQUIRE_STACK, requireStack);
         if (!replaceStack.isEmpty()) {
-            nbtTags.put(NBTConstants.REPLACE_STACK, replaceStack.write(new CompoundNBT()));
+            nbtTags.put(NBTConstants.REPLACE_STACK, replaceStack.save(new CompoundNBT()));
         }
         return nbtTags;
     }
@@ -43,13 +43,13 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     public void write(PacketBuffer buffer) {
         super.write(buffer);
         buffer.writeBoolean(requireStack);
-        buffer.writeItemStack(replaceStack);
+        buffer.writeItem(replaceStack);
     }
 
     @Override
     public void read(PacketBuffer dataStream) {
         requireStack = dataStream.readBoolean();
-        replaceStack = dataStream.readItemStack();
+        replaceStack = dataStream.readItem();
     }
 
     public abstract boolean equals(Object filter);

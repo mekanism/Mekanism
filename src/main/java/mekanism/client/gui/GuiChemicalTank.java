@@ -52,7 +52,7 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
         }));
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiGasMode(this, guiLeft + 159, guiTop + 72, true, () -> tile.dumping, tile.getPos(), 0));
+        addButton(new GuiGasMode(this, leftPos + 159, topPos + 72, true, () -> tile.dumping, tile.getBlockPos(), 0));
     }
 
     private void addStored(List<ITextComponent> ret, IChemicalTank<?, ?> tank, ILangEntry langKey) {
@@ -68,7 +68,7 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

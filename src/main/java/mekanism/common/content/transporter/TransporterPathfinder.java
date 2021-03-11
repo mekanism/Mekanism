@@ -180,7 +180,7 @@ public final class TransporterPathfinder {
                 return getDestination(chunkMap, ret, startTile);
             }
             TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap,
-                  start.offset(transportStack.idleDir));
+                  start.relative(transportStack.idleDir));
             if (transportStack.canInsertToTransporter(tile, transportStack.idleDir, startTile)) {
                 loopSide(chunkMap, ret, transportStack.idleDir, startTile);
                 return new Destination(ret, true, null, 0).setPathType(Path.NONE);
@@ -210,12 +210,12 @@ public final class TransporterPathfinder {
 
         private void loopSide(Long2ObjectMap<IChunk> chunkMap, List<BlockPos> list, Direction side, TileEntity startTile) {
             TileEntity lastTile = startTile;
-            BlockPos pos = start.offset(side);
+            BlockPos pos = start.relative(side);
             TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             while (transportStack.canInsertToTransporter(tile, side, lastTile)) {
                 lastTile = tile;
                 list.add(pos);
-                pos = pos.offset(side);
+                pos = pos.relative(side);
                 tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             }
         }
@@ -224,7 +224,7 @@ public final class TransporterPathfinder {
             TileEntity startTile = WorldUtils.getTileEntity(world, chunkMap, start);
             if (transportStack.idleDir == null) {
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(side));
+                    TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.relative(side));
                     if (transportStack.canInsertToTransporter(tile, side, startTile)) {
                         return side;
                     }
@@ -232,12 +232,12 @@ public final class TransporterPathfinder {
             } else {
                 Direction opposite = transportStack.idleDir.getOpposite();
                 for (Direction side : EnumSet.complementOf(EnumSet.of(opposite))) {
-                    TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(side));
+                    TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.relative(side));
                     if (transportStack.canInsertToTransporter(tile, side, startTile)) {
                         return side;
                     }
                 }
-                TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.offset(opposite));
+                TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, world, chunkMap, start.relative(opposite));
                 if (transportStack.canInsertToTransporter(tile, opposite, startTile)) {
                     return opposite;
                 }
@@ -346,7 +346,7 @@ public final class TransporterPathfinder {
             boolean hasValidDirection = false;
             TileEntity startTile = WorldUtils.getTileEntity(world, chunkMap, start);
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                BlockPos neighbor = start.offset(direction);
+                BlockPos neighbor = start.relative(direction);
                 TileEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
                 if (transportStack.canInsertToTransporter(neighborTile, direction, startTile)) {
                     //If we can insert into the transporter, mark that we have a valid path we can take
@@ -390,7 +390,7 @@ public final class TransporterPathfinder {
                 TileEntity currentNodeTile = WorldUtils.getTileEntity(world, chunkMap, currentNode);
                 double currentScore = gScore.getDouble(currentNode);
                 for (Direction direction : EnumUtils.DIRECTIONS) {
-                    BlockPos neighbor = currentNode.offset(direction);
+                    BlockPos neighbor = currentNode.relative(direction);
                     TileEntity neighborEntity = WorldUtils.getTileEntity(world, chunkMap, neighbor);
                     if (transportStack.canInsertToTransporter(neighborEntity, direction, currentNodeTile)) {
                         //If the neighbor is a transporter and the stack is valid for it

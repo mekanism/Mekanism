@@ -27,12 +27,12 @@ public class MetallurgicInfuserRecipeSerializer<RECIPE extends MetallurgicInfuse
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement itemInput = JSONUtils.isJsonArray(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.ITEM_INPUT) :
-                                JSONUtils.getJsonObject(json, JsonConstants.ITEM_INPUT);
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        JsonElement itemInput = JSONUtils.isArrayNode(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
+                                JSONUtils.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
         ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
-        JsonElement infusionInput = JSONUtils.isJsonArray(json, JsonConstants.INFUSION_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.INFUSION_INPUT) :
-                                    JSONUtils.getJsonObject(json, JsonConstants.INFUSION_INPUT);
+        JsonElement infusionInput = JSONUtils.isArrayNode(json, JsonConstants.INFUSION_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.INFUSION_INPUT) :
+                                    JSONUtils.getAsJsonObject(json, JsonConstants.INFUSION_INPUT);
         InfusionStackIngredient infusionIngredient = InfusionStackIngredient.deserialize(infusionInput);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
@@ -42,11 +42,11 @@ public class MetallurgicInfuserRecipeSerializer<RECIPE extends MetallurgicInfuse
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient itemInput = ItemStackIngredient.read(buffer);
             InfusionStackIngredient infusionInput = InfusionStackIngredient.read(buffer);
-            ItemStack output = buffer.readItemStack();
+            ItemStack output = buffer.readItem();
             return this.factory.create(recipeId, itemInput, infusionInput, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading metallurgic infuser recipe from packet.", e);
@@ -55,7 +55,7 @@ public class MetallurgicInfuserRecipeSerializer<RECIPE extends MetallurgicInfuse
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

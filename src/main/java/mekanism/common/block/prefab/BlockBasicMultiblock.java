@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends BlockTile<TILE, BlockTypeTile<TILE>> {
 
     public BlockBasicMultiblock(BlockTypeTile<TILE> type) {
-        this(type, AbstractBlock.Properties.create(Material.IRON).hardnessAndResistance(5, 9).setRequiresTool());
+        this(type, AbstractBlock.Properties.of(Material.METAL).strength(5, 9).requiresCorrectToolForDrops());
     }
 
     public BlockBasicMultiblock(BlockTypeTile<TILE> type, AbstractBlock.Properties properties) {
@@ -32,13 +32,13 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile == null) {
             return ActionResultType.PASS;
-        } else if (world.isRemote) {
-            ItemStack stack = player.getHeldItem(hand);
+        } else if (world.isClientSide) {
+            ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
                 if (!tile.hasGui() || !tile.getMultiblock().isFormed()) {
                     //If the block doesn't have a gui (frames of things like the evaporation plant), or the multiblock is not formed then pass
@@ -49,6 +49,6 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
         } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
         }
-        return tile.onActivate(player, hand, player.getHeldItem(hand));
+        return tile.onActivate(player, hand, player.getItemInHand(hand));
     }
 }

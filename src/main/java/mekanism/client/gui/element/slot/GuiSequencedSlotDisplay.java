@@ -58,9 +58,9 @@ public class GuiSequencedSlotDisplay extends GuiRelativeElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (!renderStack.isEmpty()) {
-            gui().getItemRenderer().zLevel += zOffset;
+            gui().getItemRenderer().blitOffset += zOffset;
             gui().renderItem(matrix, renderStack, x, y);
-            gui().getItemRenderer().zLevel -= zOffset;
+            gui().getItemRenderer().blitOffset -= zOffset;
         }
     }
 

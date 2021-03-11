@@ -39,7 +39,7 @@ public class FluidSlurryToSlurryIRecipe extends FluidSlurryToSlurryRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_WASHER.getItemStack();
     }
 }

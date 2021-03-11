@@ -61,7 +61,7 @@ public class GuiGraph extends GuiTexturedElement {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw Black and border
         innerScreen.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getResource());
+        minecraft.textureManager.bind(getResource());
         //Draw the graph
         int size = graphData.size();
         for (int i = 0; i < size; i++) {

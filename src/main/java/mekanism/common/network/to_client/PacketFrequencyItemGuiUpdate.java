@@ -39,15 +39,15 @@ public class PacketFrequencyItemGuiUpdate<FREQ extends Frequency> implements IMe
     @Override
     public void handle(NetworkEvent.Context context) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player != null && player.openContainer instanceof FrequencyItemContainer) {
-            FrequencyItemContainer<FREQ> container = (FrequencyItemContainer<FREQ>) player.openContainer;
+        if (player != null && player.containerMenu instanceof FrequencyItemContainer) {
+            FrequencyItemContainer<FREQ> container = (FrequencyItemContainer<FREQ>) player.containerMenu;
             container.handleCacheUpdate(publicCache, privateCache, frequency);
         }
     }
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(currentHand);
+        buffer.writeEnum(currentHand);
         frequencyType.write(buffer);
         if (frequency == null) {
             buffer.writeBoolean(false);
@@ -66,7 +66,7 @@ public class PacketFrequencyItemGuiUpdate<FREQ extends Frequency> implements IMe
     }
 
     public static <FREQ extends Frequency> PacketFrequencyItemGuiUpdate<FREQ> decode(PacketBuffer buffer) {
-        Hand currentHand = buffer.readEnumValue(Hand.class);
+        Hand currentHand = buffer.readEnum(Hand.class);
         FrequencyType<FREQ> type = FrequencyType.load(buffer);
         List<FREQ> publicCache = new ArrayList<>();
         List<FREQ> privateCache = new ArrayList<>();

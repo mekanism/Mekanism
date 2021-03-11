@@ -52,14 +52,14 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             delay = MAX_DELAY;
         }
 
-        if (world.getGameTime() % 10 == 0) {
+        if (level.getGameTime() % 10 == 0) {
             setActive(getQIOFrequency() != null);
         }
     }
 
     private void tryImport() {
         QIOFrequency freq = getQIOFrequency();
-        TileEntity back = WorldUtils.getTileEntity(getWorld(), pos.offset(getOppositeDirection()));
+        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
         if (freq == null || !InventoryUtils.isItemHandler(back, getDirection())) {
             return;
         }

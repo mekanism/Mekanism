@@ -34,7 +34,7 @@ public class ItemCraftingFormula extends Item {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack itemStack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         NonNullList<ItemStack> inv = getInventory(itemStack);
         if (inv != null) {
             List<ItemStack> stacks = new ArrayList<>();
@@ -61,13 +61,13 @@ public class ItemCraftingFormula extends Item {
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (player.isSneaking()) {
-            if (!world.isRemote) {
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
+            if (!world.isClientSide) {
                 setInventory(stack, null);
                 setInvalid(stack, false);
-                ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
+                ((ServerPlayerEntity) player).refreshContainer(player.containerMenu);
             }
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
@@ -81,14 +81,14 @@ public class ItemCraftingFormula extends Item {
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
+    public ITextComponent getName(@Nonnull ItemStack stack) {
         if (getInventory(stack) == null) {
-            return super.getDisplayName(stack);
+            return super.getName(stack);
         }
         if (isInvalid(stack)) {
-            return TextComponentUtil.build(super.getDisplayName(stack), " ", EnumColor.DARK_RED, MekanismLang.INVALID);
+            return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_RED, MekanismLang.INVALID);
         }
-        return TextComponentUtil.build(super.getDisplayName(stack), " ", EnumColor.DARK_GREEN, MekanismLang.ENCODED);
+        return TextComponentUtil.build(super.getName(stack), " ", EnumColor.DARK_GREEN, MekanismLang.ENCODED);
     }
 
     public boolean isInvalid(ItemStack stack) {
@@ -109,7 +109,7 @@ public class ItemCraftingFormula extends Item {
             CompoundNBT tagCompound = tagList.getCompound(tagCount);
             byte slotID = tagCompound.getByte(NBTConstants.SLOT);
             if (slotID >= 0 && slotID < 9) {
-                inventory.set(slotID, ItemStack.read(tagCompound));
+                inventory.set(slotID, ItemStack.of(tagCompound));
             }
         }
         return inventory;
@@ -125,7 +125,7 @@ public class ItemCraftingFormula extends Item {
             if (!inv.get(slotCount).isEmpty()) {
                 CompoundNBT tagCompound = new CompoundNBT();
                 tagCompound.putByte(NBTConstants.SLOT, (byte) slotCount);
-                inv.get(slotCount).write(tagCompound);
+                inv.get(slotCount).save(tagCompound);
                 tagList.add(tagCompound);
             }
         }

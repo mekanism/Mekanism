@@ -57,19 +57,19 @@ public class ThreadMinerSearch extends Thread {
         int diameter = tile.getDiameter();
         int size = tile.getTotalSize();
         Block info;
-        BlockPos minerPos = tile.getPos();
+        BlockPos minerPos = tile.getBlockPos();
         for (int i = 0; i < size; i++) {
             if (tile.isRemoved()) {
                 //Make sure the miner is still valid and something hasn't gone wrong
                 return;
             }
-            BlockPos testPos = pos.add(i % diameter, i / diameter / diameter, (i / diameter) % diameter);
+            BlockPos testPos = pos.offset(i % diameter, i / diameter / diameter, (i / diameter) % diameter);
             if (minerPos.equals(testPos) || WorldUtils.getTileEntity(TileEntityBoundingBlock.class, chunkCache, testPos) != null) {
                 //Skip the miner itself, and also skip any bounding blocks
                 continue;
             }
             BlockState state = chunkCache.getBlockState(testPos);
-            if (state.isAir(chunkCache, testPos) || state.getBlockHardness(chunkCache, testPos) < 0) {
+            if (state.isAir(chunkCache, testPos) || state.getDestroySpeed(chunkCache, testPos) < 0) {
                 //Skip air and unbreakable blocks
                 continue;
             }

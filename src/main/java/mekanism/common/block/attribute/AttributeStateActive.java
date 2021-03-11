@@ -20,24 +20,24 @@ public class AttributeStateActive implements AttributeState {
     }
 
     public boolean isActive(BlockState state) {
-        return state.get(activeProperty);
+        return state.getValue(activeProperty);
     }
 
     public BlockState setActive(@Nonnull BlockState state, boolean active) {
-        return state.with(activeProperty, active);
+        return state.setValue(activeProperty, active);
     }
 
     @Override
     public BlockState copyStateData(BlockState oldState, BlockState newState) {
         if (Attribute.has(newState.getBlock(), AttributeStateActive.class)) {
-            newState = newState.with(activeProperty, oldState.get(activeProperty));
+            newState = newState.setValue(activeProperty, oldState.getValue(activeProperty));
         }
         return newState;
     }
 
     @Override
     public BlockState getDefaultState(@Nonnull BlockState state) {
-        return state.with(activeProperty, false);
+        return state.setValue(activeProperty, false);
     }
 
     @Override

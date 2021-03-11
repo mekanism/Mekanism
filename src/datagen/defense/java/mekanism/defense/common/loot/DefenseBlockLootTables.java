@@ -8,6 +8,6 @@ public class DefenseBlockLootTables extends BaseBlockLootTables {
     @Override
     protected void addTables() {
         //Register all remaining blocks as just dropping themselves
-        registerDropSelfLootTable(DefenseBlocks.BLOCKS.getAllBlocks());
+        dropSelf(DefenseBlocks.BLOCKS.getAllBlocks());
     }
 }

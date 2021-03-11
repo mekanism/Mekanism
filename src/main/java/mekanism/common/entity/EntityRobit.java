@@ -110,10 +110,10 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
       IMekanismStrictEnergyHandler {
 
     private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, 20);
-    private static final DataParameter<String> OWNER_UUID = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
-    private static final DataParameter<String> OWNER_NAME = EntityDataManager.createKey(EntityRobit.class, DataSerializers.STRING);
-    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.createKey(EntityRobit.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<String> OWNER_UUID = EntityDataManager.defineId(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<String> OWNER_NAME = EntityDataManager.defineId(EntityRobit.class, DataSerializers.STRING);
+    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.defineId(EntityRobit.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.defineId(EntityRobit.class, DataSerializers.BOOLEAN);
     public static final FloatingLong MAX_ENERGY = FloatingLong.createConst(100_000);
     private static final FloatingLong DISTANCE_MULTIPLIER = FloatingLong.createConst(1.5);
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
@@ -150,7 +150,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public EntityRobit(EntityType<EntityRobit> type, World world) {
         super(type, world);
-        getNavigator().setCanSwim(false);
+        getNavigation().setCanFloat(false);
         setCustomNameVisible(true);
         energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ENERGY, this));
 
@@ -163,7 +163,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 inventoryContainerSlots.add(slot);
             }
         }
-        inventorySlots.add(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getEntityWorld, this, 153, 17));
+        inventorySlots.add(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getCommandSenderWorld, this, 153, 17));
         inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 51, 35));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
         // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes? V10
@@ -178,10 +178,10 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public EntityRobit(World world, double x, double y, double z) {
         this(MekanismEntityTypes.ROBIT.getEntityType(), world);
-        setPosition(x, y, z);
-        prevPosX = x;
-        prevPosY = y;
-        prevPosZ = z;
+        setPos(x, y, z);
+        xo = x;
+        yo = y;
+        zo = z;
     }
 
     @Override
@@ -195,44 +195,44 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public static AttributeModifierMap.MutableAttribute getDefaultAttributes() {
-        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.MAX_HEALTH, 1.0D).createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3F);
+        return MobEntity.createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
     }
 
     @Override
-    public boolean canDespawn(double distanceToClosestPlayer) {
+    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         return false;
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        dataManager.register(OWNER_UUID, "");
-        dataManager.register(OWNER_NAME, "");
-        dataManager.register(FOLLOW, false);
-        dataManager.register(DROP_PICKUP, false);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        entityData.define(OWNER_UUID, "");
+        entityData.define(OWNER_NAME, "");
+        entityData.define(FOLLOW, false);
+        entityData.define(DROP_PICKUP, false);
     }
 
     private FloatingLong getRoundedTravelEnergy() {
-        return DISTANCE_MULTIPLIER.multiply(Math.sqrt(getDistanceSq(prevPosX, prevPosY, prevPosZ)));
+        return DISTANCE_MULTIPLIER.multiply(Math.sqrt(distanceToSqr(xo, yo, zo)));
     }
 
     @Override
     public void onRemovedFromWorld() {
-        if (world != null && !world.isRemote && getFollowing() && getOwner() != null) {
+        if (level != null && !level.isClientSide && getFollowing() && getOwner() != null) {
             //If this robit is currently following its owner and is being removed from the world (due to chunk unloading)
             // register a ticket that loads the chunk for a second, so that it has time to have its following check run again
             // (as it runs every 10 ticks, half a second), and then teleport to the owner.
-            ((ServerWorld) world).getChunkProvider().registerTicket(ROBIT_CHUNK_UNLOAD, new ChunkPos(getPosition()), 2, getEntityId());
+            ((ServerWorld) level).getChunkSource().addRegionTicket(ROBIT_CHUNK_UNLOAD, new ChunkPos(blockPosition()), 2, getId());
         }
         super.onRemovedFromWorld();
     }
 
     @Override
     public void baseTick() {
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             if (getFollowing()) {
                 PlayerEntity owner = getOwner();
-                if (owner != null && getDistanceSq(owner) > 4 && !getNavigator().noPath() && !energyContainer.isEmpty()) {
+                if (owner != null && distanceToSqr(owner) > 4 && !getNavigation().isDone() && !energyContainer.isEmpty()) {
                     energyContainer.extract(getRoundedTravelEnergy(), Action.EXECUTE, AutomationType.INTERNAL);
                 }
             }
@@ -240,7 +240,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
         super.baseTick();
 
-        if (!world.isRemote) {
+        if (!level.isClientSide) {
             if (getDropPickup()) {
                 collectItems();
             }
@@ -249,8 +249,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 return;
             }
 
-            if (ticksExisted % 20 == 0) {
-                World serverWorld = ServerLifecycleHooks.getCurrentServer().getWorld(homeLocation.dimension);
+            if (tickCount % 20 == 0) {
+                World serverWorld = ServerLifecycleHooks.getCurrentServer().getLevel(homeLocation.dimension);
                 BlockPos homePos = homeLocation.getPos();
                 if (WorldUtils.isBlockLoaded(serverWorld, homePos) && WorldUtils.getTileEntity(TileEntityChargepad.class, serverWorld, homePos) == null) {
                     drop();
@@ -271,20 +271,20 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public boolean isItemValid(ItemEntity item) {
-        return item.isAlive() && !item.cannotPickup() && !(item.getItem().getItem() instanceof ItemRobit);
+        return item.isAlive() && !item.hasPickUpDelay() && !(item.getItem().getItem() instanceof ItemRobit);
     }
 
     private void collectItems() {
-        List<ItemEntity> items = world.getEntitiesWithinAABB(ItemEntity.class, getBoundingBox().grow(1.5, 1.5, 1.5));
+        List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.5, 1.5, 1.5));
         if (!items.isEmpty()) {
             for (ItemEntity item : items) {
                 if (isItemValid(item)) {
                     for (IInventorySlot slot : inventoryContainerSlots) {
                         if (slot.isEmpty()) {
                             slot.setStack(item.getItem());
-                            onItemPickup(item, item.getItem().getCount());
+                            take(item, item.getItem().getCount());
                             item.remove();
-                            playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                             break;
                         }
                         ItemStack itemStack = slot.getStack();
@@ -294,11 +294,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                             int toAdd = Math.min(needed, item.getItem().getCount());
                             MekanismUtils.logMismatchedStackSize(slot.growStack(toAdd, Action.EXECUTE), toAdd);
                             item.getItem().shrink(toAdd);
-                            onItemPickup(item, toAdd);
+                            take(item, toAdd);
                             if (item.getItem().isEmpty()) {
                                 item.remove();
                             }
-                            playSound(SoundEvents.ENTITY_ITEM_PICKUP, 1, ((rand.nextFloat() - rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                             break;
                         }
                     }
@@ -308,15 +308,15 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public void goHome() {
-        if (world.isRemote()) {
+        if (level.isClientSide()) {
             return;
         }
         setFollowing(false);
-        if (world.getDimensionKey() == homeLocation.dimension) {
-            setMotion(0, 0, 0);
-            setPositionAndUpdate(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
+        if (level.dimension() == homeLocation.dimension) {
+            setDeltaMovement(0, 0, 0);
+            teleportTo(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
         } else {
-            ServerWorld newWorld = ((ServerWorld) this.world).getServer().getWorld(homeLocation.dimension);
+            ServerWorld newWorld = ((ServerWorld) this.level).getServer().getLevel(homeLocation.dimension);
             if (newWorld != null) {
                 Vector3d destination = new Vector3d(homeLocation.getX() + 0.5, homeLocation.getY() + 0.3, homeLocation.getZ() + 0.5);
                 changeDimension(newWorld, new ITeleporter() {
@@ -327,7 +327,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
                     @Override
                     public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
-                        return new PortalInfo(destination, Vector3d.ZERO, entity.rotationYaw, entity.rotationPitch);
+                        return new PortalInfo(destination, Vector3d.ZERO, entity.yRot, entity.xRot);
                     }
                 });
             }
@@ -335,32 +335,32 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     private boolean isOnChargepad() {
-        return WorldUtils.getTileEntity(TileEntityChargepad.class, world, getPosition()) != null;
+        return WorldUtils.getTileEntity(TileEntityChargepad.class, level, blockPosition()) != null;
     }
 
     @Nonnull
     @Override
-    public ActionResultType applyPlayerInteraction(PlayerEntity player, @Nonnull Vector3d vec, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (player.isSneaking()) {
+    public ActionResultType interactAt(PlayerEntity player, @Nonnull Vector3d vec, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.isShiftKeyDown()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
-                if (!world.isRemote) {
+                if (!level.isClientSide) {
                     drop();
                 }
                 remove();
-                player.swingArm(hand);
+                player.swing(hand);
                 return ActionResultType.SUCCESS;
             }
         } else {
             if (!SecurityUtils.canAccess(player, this)) {
-                if (!world.isRemote) {
+                if (!level.isClientSide) {
                     SecurityUtils.displayNoAccess(player);
                 }
                 return ActionResultType.FAIL;
             }
-            if (!world.isRemote) {
+            if (!level.isClientSide) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(MekanismLang.ROBIT, (i, inv, p) -> new MainRobitContainer(i, inv, this)),
-                      buf -> buf.writeVarInt(getEntityId()));
+                      buf -> buf.writeVarInt(getId()));
             }
             return ActionResultType.SUCCESS;
         }
@@ -386,9 +386,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
 
     public void drop() {
         //TODO: Move this to loot table?
-        ItemEntity entityItem = new ItemEntity(world, getPosX(), getPosY() + 0.3, getPosZ(), getItemVariant());
-        entityItem.setMotion(0, rand.nextGaussian() * 0.05F + 0.2F, 0);
-        world.addEntity(entityItem);
+        ItemEntity entityItem = new ItemEntity(level, getX(), getY() + 0.3, getZ(), getItemVariant());
+        entityItem.setDeltaMovement(0, random.nextGaussian() * 0.05F + 0.2F, 0);
+        level.addFreshEntity(entityItem);
     }
 
     public double getScaledProgress() {
@@ -405,9 +405,9 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    public void writeAdditional(@Nonnull CompoundNBT nbtTags) {
-        super.writeAdditional(nbtTags);
-        nbtTags.putUniqueId(NBTConstants.OWNER_UUID, getOwnerUUID());
+    public void addAdditionalSaveData(@Nonnull CompoundNBT nbtTags) {
+        super.addAdditionalSaveData(nbtTags);
+        nbtTags.putUUID(NBTConstants.OWNER_UUID, getOwnerUUID());
         nbtTags.putInt(NBTConstants.SECURITY_MODE, securityMode.ordinal());
         nbtTags.putBoolean(NBTConstants.FOLLOW, getFollowing());
         nbtTags.putBoolean(NBTConstants.PICKUP_DROPS, getDropPickup());
@@ -420,8 +420,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    public void readAdditional(@Nonnull CompoundNBT nbtTags) {
-        super.readAdditional(nbtTags);
+    public void readAdditionalSaveData(@Nonnull CompoundNBT nbtTags) {
+        super.readAdditionalSaveData(nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, this::setOwnerUUID);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.SECURITY_MODE, SecurityMode::byIndexStatic, mode -> securityMode = mode);
         setFollowing(nbtTags.getBoolean(NBTConstants.FOLLOW));
@@ -438,21 +438,21 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    protected void damageEntity(@Nonnull DamageSource damageSource, float amount) {
+    protected void actuallyHurt(@Nonnull DamageSource damageSource, float amount) {
         amount = ForgeHooks.onLivingHurt(this, damageSource, amount);
         if (amount <= 0) {
             return;
         }
-        amount = applyArmorCalculations(damageSource, amount);
-        amount = applyPotionDamageCalculations(damageSource, amount);
+        amount = getDamageAfterArmorAbsorb(damageSource, amount);
+        amount = getDamageAfterMagicAbsorb(damageSource, amount);
         float j = getHealth();
 
         energyContainer.extract(FloatingLong.create(1_000 * amount), Action.EXECUTE, AutomationType.INTERNAL);
-        getCombatTracker().trackDamage(damageSource, j, amount);
+        getCombatTracker().recordDamage(damageSource, j, amount);
     }
 
     @Override
-    protected void onDeathUpdate() {
+    protected void tickDeath() {
     }
 
     public void setHome(Coord4D home) {
@@ -460,24 +460,24 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    public boolean canBePushed() {
+    public boolean isPushable() {
         return !energyContainer.isEmpty();
     }
 
     public PlayerEntity getOwner() {
-        return world.getPlayerByUuid(getOwnerUUID());
+        return level.getPlayerByUUID(getOwnerUUID());
     }
 
     @Nonnull
     @Override
     public String getOwnerName() {
-        return dataManager.get(OWNER_NAME);
+        return entityData.get(OWNER_NAME);
     }
 
     @Nonnull
     @Override
     public UUID getOwnerUUID() {
-        return UUID.fromString(dataManager.get(OWNER_UUID));
+        return UUID.fromString(entityData.get(OWNER_UUID));
     }
 
     @Override
@@ -504,7 +504,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
                     if (!SecurityUtils.canAccess(player, this)) {
                         //and if they can't then boot them out
-                        player.closeScreen();
+                        player.closeContainer();
                     }
                 }
             }
@@ -520,24 +520,24 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public void setOwnerUUID(UUID uuid) {
-        dataManager.set(OWNER_UUID, uuid.toString());
-        dataManager.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
+        entityData.set(OWNER_UUID, uuid.toString());
+        entityData.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
     }
 
     public boolean getFollowing() {
-        return dataManager.get(FOLLOW);
+        return entityData.get(FOLLOW);
     }
 
     public void setFollowing(boolean follow) {
-        dataManager.set(FOLLOW, follow);
+        entityData.set(FOLLOW, follow);
     }
 
     public boolean getDropPickup() {
-        return dataManager.get(DROP_PICKUP);
+        return entityData.get(DROP_PICKUP);
     }
 
     public void setDropPickup(boolean pickup) {
-        dataManager.set(DROP_PICKUP, pickup);
+        entityData.set(DROP_PICKUP, pickup);
     }
 
     @Override
@@ -589,12 +589,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public boolean containsRecipe(@Nonnull Predicate<ItemStackToItemStackRecipe> matchCriteria) {
-        return getRecipeType().contains(getEntityWorld(), matchCriteria);
+        return getRecipeType().contains(getCommandSenderWorld(), matchCriteria);
     }
 
     @Nullable
     public ItemStackToItemStackRecipe findFirstRecipe(@Nonnull Predicate<ItemStackToItemStackRecipe> matchCriteria) {
-        return getRecipeType().findFirst(getEntityWorld(), matchCriteria);
+        return getRecipeType().findFirst(getCommandSenderWorld(), matchCriteria);
     }
 
     @Nullable
@@ -648,10 +648,10 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         return new IWorldPosCallable() {
             @Nonnull
             @Override
-            public <T> Optional<T> apply(@Nonnull BiFunction<World, BlockPos, T> worldBlockPosTBiFunction) {
+            public <T> Optional<T> evaluate(@Nonnull BiFunction<World, BlockPos, T> worldBlockPosTBiFunction) {
                 //Note: We use an anonymous class implementation rather than using IWorldPosCallable.of, so that if the robit moves
                 // this uses the proper updated position
-                return Optional.ofNullable(worldBlockPosTBiFunction.apply(getEntityWorld(), getPosition()));
+                return Optional.ofNullable(worldBlockPosTBiFunction.apply(getCommandSenderWorld(), blockPosition()));
             }
         };
     }

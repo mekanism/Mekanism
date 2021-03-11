@@ -31,7 +31,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     public GuiChemicalCrystallizer(MekanismTileContainer<TileEntityChemicalCrystallizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        titleY = 4;
+        titleLabelY = 4;
     }
 
     @Override

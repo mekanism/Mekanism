@@ -43,7 +43,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
 
     public static FluidStackIngredient read(PacketBuffer buffer) {
         //TODO: Allow supporting serialization of different types than just the ones we implement?
-        IngredientType type = buffer.readEnumValue(IngredientType.class);
+        IngredientType type = buffer.readEnum(IngredientType.class);
         if (type == IngredientType.SINGLE) {
             return Single.read(buffer);
         } else if (type == IngredientType.TAGGED) {
@@ -85,15 +85,15 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
             }
             JsonElement count = jsonObject.get(JsonConstants.AMOUNT);
-            if (!JSONUtils.isNumber(count)) {
+            if (!JSONUtils.isNumberValue(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
             }
             int amount = count.getAsJsonPrimitive().getAsInt();
             if (amount < 1) {
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
-            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, JsonConstants.TAG));
-            ITag<Fluid> tag = TagCollectionManager.getManager().getFluidTags().get(resourceLocation);
+            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(jsonObject, JsonConstants.TAG));
+            ITag<Fluid> tag = TagCollectionManager.getInstance().getFluids().getTag(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown fluid tag '" + resourceLocation + "'");
             }
@@ -160,7 +160,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
 
         @Override
         public void write(PacketBuffer buffer) {
-            buffer.writeEnumValue(IngredientType.SINGLE);
+            buffer.writeEnum(IngredientType.SINGLE);
             fluidInstance.writeToPacket(buffer);
         }
 
@@ -199,7 +199,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
 
         @Override
         public boolean testType(@Nonnull FluidStack fluidStack) {
-            return Objects.requireNonNull(fluidStack).getFluid().isIn(tag);
+            return Objects.requireNonNull(fluidStack).getFluid().is(tag);
         }
 
         @Nonnull
@@ -230,8 +230,8 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
 
         @Override
         public void write(PacketBuffer buffer) {
-            buffer.writeEnumValue(IngredientType.TAGGED);
-            buffer.writeResourceLocation(TagCollectionManager.getManager().getFluidTags().getValidatedIdFromTag(tag));
+            buffer.writeEnum(IngredientType.TAGGED);
+            buffer.writeResourceLocation(TagCollectionManager.getInstance().getFluids().getIdOrThrow(tag));
             buffer.writeVarInt(amount);
         }
 
@@ -240,12 +240,12 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         public JsonElement serialize() {
             JsonObject json = new JsonObject();
             json.addProperty(JsonConstants.AMOUNT, amount);
-            json.addProperty(JsonConstants.TAG, TagCollectionManager.getManager().getFluidTags().getValidatedIdFromTag(tag).toString());
+            json.addProperty(JsonConstants.TAG, TagCollectionManager.getInstance().getFluids().getIdOrThrow(tag).toString());
             return json;
         }
 
         public static Tagged read(PacketBuffer buffer) {
-            return new Tagged(FluidTags.makeWrapperTag(buffer.readResourceLocation().toString()), buffer.readVarInt());
+            return new Tagged(FluidTags.bind(buffer.readResourceLocation().toString()), buffer.readVarInt());
         }
     }
 
@@ -302,7 +302,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
 
         @Override
         public void write(PacketBuffer buffer) {
-            buffer.writeEnumValue(IngredientType.MULTI);
+            buffer.writeEnum(IngredientType.MULTI);
             buffer.writeVarInt(ingredients.length);
             for (FluidStackIngredient ingredient : ingredients) {
                 ingredient.write(buffer);

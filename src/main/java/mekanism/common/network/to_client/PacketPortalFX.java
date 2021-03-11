@@ -18,13 +18,13 @@ public class PacketPortalFX implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ClientWorld world = Minecraft.getInstance().world;
+        ClientWorld world = Minecraft.getInstance().level;
         if (world != null) {
             for (int i = 0; i < 50; i++) {
-                world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.rand.nextFloat(), pos.getY() + world.rand.nextFloat(),
-                      pos.getZ() + world.rand.nextFloat(), 0.0F, 0.0F, 0.0F);
-                world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.rand.nextFloat(), pos.getY() + 1 + world.rand.nextFloat(),
-                      pos.getZ() + world.rand.nextFloat(), 0.0F, 0.0F, 0.0F);
+                world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.random.nextFloat(), pos.getY() + world.random.nextFloat(),
+                      pos.getZ() + world.random.nextFloat(), 0.0F, 0.0F, 0.0F);
+                world.addParticle(ParticleTypes.PORTAL, pos.getX() + world.random.nextFloat(), pos.getY() + 1 + world.random.nextFloat(),
+                      pos.getZ() + world.random.nextFloat(), 0.0F, 0.0F, 0.0F);
             }
         }
     }

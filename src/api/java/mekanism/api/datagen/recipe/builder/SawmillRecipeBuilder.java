@@ -71,7 +71,7 @@ public class SawmillRecipeBuilder extends MekanismRecipeBuilder<SawmillRecipeBui
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
             if (outputType.hasPrimary) {
                 json.add(JsonConstants.MAIN_OUTPUT, SerializerHelper.serializeItemStack(mainOutput));

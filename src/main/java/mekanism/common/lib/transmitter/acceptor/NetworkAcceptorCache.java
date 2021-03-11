@@ -19,7 +19,7 @@ public class NetworkAcceptorCache<ACCEPTOR> {
 
     public void updateTransmitterOnSide(Transmitter<ACCEPTOR, ?, ?> transmitter, Direction side) {
         LazyOptional<ACCEPTOR> acceptor = transmitter.canConnectToAcceptor(side) ? transmitter.getAcceptor(side) : LazyOptional.empty();
-        BlockPos acceptorPos = transmitter.getTilePos().offset(side);
+        BlockPos acceptorPos = transmitter.getTilePos().relative(side);
         if (acceptor.isPresent()) {
             cachedAcceptors.computeIfAbsent(acceptorPos, pos -> new EnumMap<>(Direction.class)).put(side.getOpposite(), acceptor);
         } else if (cachedAcceptors.containsKey(acceptorPos)) {

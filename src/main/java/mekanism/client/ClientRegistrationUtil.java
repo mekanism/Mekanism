@@ -71,11 +71,11 @@ public class ClientRegistrationUtil {
     }
 
     public static <T extends IParticleData> void registerParticleFactory(ParticleTypeRegistryObject<T, ?> particleTypeRO, ParticleManager.IParticleMetaFactory<T> factory) {
-        Minecraft.getInstance().particles.registerFactory(particleTypeRO.getParticleType(), factory);
+        Minecraft.getInstance().particleEngine.register(particleTypeRO.getParticleType(), factory);
     }
 
     public static <C extends Container, U extends Screen & IHasContainer<C>> void registerScreen(ContainerTypeRegistryObject<C> type, IScreenFactory<C, U> factory) {
-        ScreenManager.registerFactory(type.getContainerType(), factory);
+        ScreenManager.register(type.getContainerType(), factory);
     }
 
     //Helper method to register GuiElectricMachine due to generics not being able to be resolved through registerScreen
@@ -101,7 +101,7 @@ public class ClientRegistrationUtil {
     }
 
     public static void setPropertyOverride(IItemProvider itemProvider, ResourceLocation override, IItemPropertyGetter propertyGetter) {
-        ItemModelsProperties.registerProperty(itemProvider.getItem(), override, propertyGetter);
+        ItemModelsProperties.register(itemProvider.getItem(), override, propertyGetter);
     }
 
     public static void registerItemColorHandler(ItemColors colors, IItemColor itemColor, IItemProvider... items) {

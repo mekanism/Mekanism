@@ -61,7 +61,7 @@ public class EnergyCompatUtils {
     }
 
     private static boolean isTileValid(@Nullable TileEntity tile) {
-        return tile != null && !tile.isRemoved() && tile.hasWorld();
+        return tile != null && !tile.isRemoved() && tile.hasLevel();
     }
 
     public static boolean hasStrictEnergyHandler(@Nonnull ItemStack stack) {

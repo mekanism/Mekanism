@@ -48,7 +48,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 143, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 143, 35));
         return builder.build();
     }
 
@@ -88,29 +88,29 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         Mekanism.activeVibrators.remove(Coord4D.get(this));
     }
 
     @Override
     public void onPlace() {
-        WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
     }
 
     @Override
     public void onBreak(BlockState oldState) {
-        World world = getWorld();
+        World world = getLevel();
         if (world != null) {
-            world.removeBlock(getPos().up(), false);
-            world.removeBlock(getPos(), false);
+            world.removeBlock(getBlockPos().above(), false);
+            world.removeBlock(getBlockPos(), false);
         }
     }
 
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos, pos.add(1, 2, 1));
+        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     public MachineEnergyContainer<TileEntitySeismicVibrator> getEnergyContainer() {

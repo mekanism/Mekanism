@@ -41,7 +41,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
 
     @Nonnull
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return output.copy();
     }
 
@@ -68,8 +68,8 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
 
     @Override
     public void write(PacketBuffer buffer) {
-        buffer.writeEnumValue(chemicalType);
+        buffer.writeEnum(chemicalType);
         input.write(buffer);
-        buffer.writeItemStack(output);
+        buffer.writeItem(output);
     }
 }

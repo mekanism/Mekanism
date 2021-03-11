@@ -100,7 +100,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     private void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, IItemProvider boat, IItemProvider door,
           IItemProvider fenceGate, IItemProvider pressurePlate, IItemProvider trapdoor, String name) {
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate,
-              ItemTags.makeWrapperTag(rl(name + "_logs").toString()), pressurePlate, trapdoor, name, modLoaded);
+              ItemTags.bind(rl(name + "_logs").toString()), pressurePlate, trapdoor, name, modLoaded);
     }
 
     private void addEnrichingDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {

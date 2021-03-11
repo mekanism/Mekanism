@@ -24,12 +24,12 @@ public class ItemBlockColoredName extends BlockItem {
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
+    public ITextComponent getName(@Nonnull ItemStack stack) {
         EnumColor color = getColor(stack);
         if (color == EnumColor.BLACK) {
             color = EnumColor.DARK_GRAY;
         }
-        return TextComponentUtil.build(color, super.getDisplayName(stack));
+        return TextComponentUtil.build(color, super.getName(stack));
     }
 
     private EnumColor getColor(ItemStack stack) {

@@ -148,7 +148,7 @@ public enum GeneratorsLang implements ILangEntry {
     private final String key;
 
     GeneratorsLang(String type, String path) {
-        this(Util.makeTranslationKey(type, MekanismGenerators.rl(path)));
+        this(Util.makeDescriptionId(type, MekanismGenerators.rl(path)));
     }
 
     GeneratorsLang(String key) {

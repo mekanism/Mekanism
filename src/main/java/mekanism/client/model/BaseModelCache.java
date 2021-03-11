@@ -96,7 +96,7 @@ public class BaseModelCache {
                 Mekanism.logger.error("Baked model doesn't exist: {}", rl.toString());
                 bakedModel = evt.getModelManager().getMissingModel();
             }
-            IUnbakedModel unbaked = evt.getModelLoader().getUnbakedModel(rl);
+            IUnbakedModel unbaked = evt.getModelLoader().getModel(rl);
             if (unbaked instanceof BlockModel) {
                 model = ((BlockModel) unbaked).customData.getCustomGeometry();
             }

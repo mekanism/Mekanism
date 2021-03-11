@@ -33,7 +33,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
 
     public GuiIndustrialTurbine(MekanismTileContainer<TileEntityTurbineCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        playerInventoryTitleY += 2;
+        inventoryLabelY += 2;
         dynamicSlots = true;
     }
 
@@ -107,13 +107,13 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             }
             return Arrays.asList(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
         }, this));
-        addButton(new GuiGasMode(this, guiLeft + 159, guiTop + 72, true, () -> tile.getMultiblock().dumpMode, tile.getPos(), 0));
+        addButton(new GuiGasMode(this, leftPos + 159, topPos + 72, true, () -> tile.getMultiblock().dumpMode, tile.getBlockPos(), 0));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, GeneratorsLang.TURBINE.translate(), 5);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

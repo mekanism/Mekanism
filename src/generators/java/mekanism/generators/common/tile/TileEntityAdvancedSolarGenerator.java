@@ -33,12 +33,12 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     public void onPlace() {
-        if (world != null) {
-            BlockPos pos = getPos();
-            WorldUtils.makeBoundingBlock(world, pos.add(0, 1, 0), pos);
+        if (level != null) {
+            BlockPos pos = getBlockPos();
+            WorldUtils.makeBoundingBlock(level, pos.offset(0, 1, 0), pos);
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
-                    WorldUtils.makeBoundingBlock(world, pos.add(x, 2, z), pos);
+                    WorldUtils.makeBoundingBlock(level, pos.offset(x, 2, z), pos);
                 }
             }
         }
@@ -46,26 +46,26 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     public void onBreak(BlockState oldState) {
-        if (world != null) {
-            world.removeBlock(getPos().add(0, 1, 0), false);
+        if (level != null) {
+            level.removeBlock(getBlockPos().offset(0, 1, 0), false);
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
-                    world.removeBlock(getPos().add(x, 2, z), false);
+                    level.removeBlock(getBlockPos().offset(x, 2, z), false);
                 }
             }
-            remove();
-            world.removeBlock(getPos(), false);
+            setRemoved();
+            level.removeBlock(getBlockPos(), false);
         }
     }
 
     @Override
     protected BlockPos getSkyCheckPos() {
-        return pos.up(2);
+        return worldPosition.above(2);
     }
 
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos.add(-1, 0, -1), pos.add(2, 3, 2));
+        return new AxisAlignedBB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 3, 2));
     }
 }

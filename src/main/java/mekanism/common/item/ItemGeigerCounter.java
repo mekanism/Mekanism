@@ -20,17 +20,17 @@ import net.minecraft.world.World;
 public class ItemGeigerCounter extends Item {
 
     public ItemGeigerCounter(Properties props) {
-        super(props.maxStackSize(1).rarity(Rarity.UNCOMMON));
+        super(props.stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (!player.isSneaking() && !world.isRemote()) {
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!player.isShiftKeyDown() && !world.isClientSide()) {
             double magnitude = Mekanism.radiationManager.getRadiationLevel(player);
             player.sendMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY,
-                  RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), Util.DUMMY_UUID);
+                  RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), Util.NIL_UUID);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.PASS, stack);

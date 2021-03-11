@@ -64,7 +64,7 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
     }
 
     protected void drawBackgroundOverlay(@Nonnull MatrixStack matrix) {
-        minecraft.textureManager.bindTexture(getOverlay());
+        minecraft.textureManager.bind(getOverlay());
         blit(matrix, getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
     }
 }

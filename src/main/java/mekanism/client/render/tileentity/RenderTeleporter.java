@@ -34,8 +34,8 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
 
     @Override
     protected void render(TileEntityTeleporter tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.shouldRender && tile.getWorld() != null) {
-            MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(Atlases.getTranslucentCullBlockType()),
+        if (tile.shouldRender && tile.getLevel() != null) {
+            MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()),
                   MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
         }
     }
@@ -126,7 +126,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     }
 
     @Override
-    public boolean isGlobalRenderer(TileEntityTeleporter tile) {
-        return tile.shouldRender && tile.getWorld() != null;
+    public boolean shouldRenderOffScreen(TileEntityTeleporter tile) {
+        return tile.shouldRender && tile.getLevel() != null;
     }
 }

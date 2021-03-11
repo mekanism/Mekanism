@@ -131,7 +131,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
         if (world == null) {
             //Try to get a fallback world if we are in a context that may not have one
             //If we are on the client get the client's world, if we are on the server get the current server's world
-            world = DistExecutor.safeRunForDist(() -> MekanismClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().func_241755_D_());
+            world = DistExecutor.safeRunForDist(() -> MekanismClient::tryGetClientWorld, () -> () -> ServerLifecycleHooks.getCurrentServer().overworld());
             if (world == null) {
                 //If we failed, then return no recipes
                 return Collections.emptyList();
@@ -140,16 +140,16 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
         if (cachedRecipes.isEmpty()) {
             RecipeManager recipeManager = world.getRecipeManager();
             //TODO: Should we use the getRecipes(RecipeType) that we ATd so that our recipes don't have to always return true for matching?
-            List<RECIPE_TYPE> recipes = recipeManager.getRecipes(this, IgnoredIInventory.INSTANCE, world);
+            List<RECIPE_TYPE> recipes = recipeManager.getRecipesFor(this, IgnoredIInventory.INSTANCE, world);
             if (this == SMELTING) {
-                Map<ResourceLocation, IRecipe<IInventory>> smeltingRecipes = recipeManager.getRecipes(IRecipeType.SMELTING);
+                Map<ResourceLocation, IRecipe<IInventory>> smeltingRecipes = recipeManager.byType(IRecipeType.SMELTING);
                 //Copy recipes our recipes to make sure it is mutable
                 recipes = new ArrayList<>(recipes);
                 for (Entry<ResourceLocation, IRecipe<IInventory>> entry : smeltingRecipes.entrySet()) {
                     IRecipe<IInventory> smeltingRecipe = entry.getValue();
                     //TODO: Allow for specifying not copying all smelting recipes, maybe do it by the resource location
-                    ItemStack recipeOutput = smeltingRecipe.getRecipeOutput();
-                    if (!smeltingRecipe.isDynamic() && !recipeOutput.isEmpty()) {
+                    ItemStack recipeOutput = smeltingRecipe.getResultItem();
+                    if (!smeltingRecipe.isSpecial() && !recipeOutput.isEmpty()) {
                         //TODO: Can Smelting recipes even "dynamic", if so can we add some sort of checker to make getOutput return the correct result
                         NonNullList<Ingredient> ingredients = smeltingRecipe.getIngredients();
                         ItemStackIngredient input;

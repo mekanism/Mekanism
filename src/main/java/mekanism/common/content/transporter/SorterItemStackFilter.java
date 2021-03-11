@@ -42,7 +42,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
         nbtTags.putBoolean(NBTConstants.FUZZY_MODE, fuzzyMode);
         nbtTags.putInt(NBTConstants.MIN, min);
         nbtTags.putInt(NBTConstants.MAX, max);
-        itemType.write(nbtTags);
+        itemType.save(nbtTags);
         return nbtTags;
     }
 
@@ -53,7 +53,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
         fuzzyMode = nbtTags.getBoolean(NBTConstants.FUZZY_MODE);
         min = nbtTags.getInt(NBTConstants.MIN);
         max = nbtTags.getInt(NBTConstants.MAX);
-        itemType = ItemStack.read(nbtTags);
+        itemType = ItemStack.of(nbtTags);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
         buffer.writeBoolean(fuzzyMode);
         buffer.writeVarInt(min);
         buffer.writeVarInt(max);
-        buffer.writeItemStack(itemType);
+        buffer.writeItem(itemType);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
         fuzzyMode = dataStream.readBoolean();
         min = dataStream.readVarInt();
         max = dataStream.readVarInt();
-        itemType = dataStream.readItemStack();
+        itemType = dataStream.readItem();
     }
 
     @Override
@@ -90,7 +90,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
 
     @Override
     public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof SorterItemStackFilter && ((SorterItemStackFilter) filter).itemType.isItemEqual(itemType)
+        return super.equals(filter) && filter instanceof SorterItemStackFilter && ((SorterItemStackFilter) filter).itemType.sameItem(itemType)
                && ((SorterItemStackFilter) filter).sizeMode == sizeMode && ((SorterItemStackFilter) filter).fuzzyMode == fuzzyMode && ((SorterItemStackFilter) filter).min == min
                && ((SorterItemStackFilter) filter).max == max;
     }

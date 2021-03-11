@@ -34,25 +34,25 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
     }
 
     @Override
-    public int getDamageReduceAmount() {
-        return getArmorMaterial().getDamageReductionAmount(getEquipmentSlot());
+    public int getDefense() {
+        return getMaterial().getDefenseForSlot(getSlot());
     }
 
     @Override
     public float getToughness() {
-        return getArmorMaterial().getToughness();
+        return getMaterial().getToughness();
     }
 
     @Nonnull
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, @Nonnull ItemStack stack) {
-        return slot == getEquipmentSlot() ? attributeCache.getAttributes() : ImmutableMultimap.of();
+        return slot == getSlot() ? attributeCache.getAttributes() : ImmutableMultimap.of();
     }
 
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
-        UUID modifier = ARMOR_MODIFIERS[getEquipmentSlot().getIndex()];
-        builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDamageReduceAmount(), Operation.ADDITION));
+        UUID modifier = ARMOR_MODIFIER_UUID_PER_SLOT[getSlot().getIndex()];
+        builder.put(Attributes.ARMOR, new AttributeModifier(modifier, "Armor modifier", getDefense(), Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifier, "Armor toughness", getToughness(), Operation.ADDITION));
     }
 
@@ -68,7 +68,7 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
     private static class ArmoredJetpackMaterial extends JetpackMaterial {
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType slotType) {
+        public int getDefenseForSlot(EquipmentSlotType slotType) {
             return slotType == EquipmentSlotType.CHEST ? MekanismConfig.gear.armoredJetpackArmor.get() : 0;
         }
 

@@ -49,9 +49,9 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     public GuiAntiprotonicNucleosynthesizer(MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        ySize += 27;
-        xSize += 20;
-        playerInventoryTitleY = ySize - 93;
+        imageHeight += 27;
+        imageWidth += 20;
+        inventoryLabelY = imageHeight - 93;
     }
 
     @Override
@@ -75,21 +75,21 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
             public double getLevel() {
                 return Math.min(1, tile.getScaledProgress());
             }
-        }, 5, 88, xSize - 12, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
+        }, 5, 88, imageWidth - 12, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, tile.getName(), (xSize - getStringWidth(tile.getName())) / 2, titleY, titleTextColor());
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, tile.getName(), (imageWidth - getStringWidth(tile.getName())) / 2, titleLabelY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
         super.drawForegroundText(matrix, mouseX, mouseY);
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(0, 0, 100);
-        IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+        IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
         bolt.update(this, boltSupplier.get(), MekanismRenderer.getPartialTick());
         bolt.render(MekanismRenderer.getPartialTick(), matrix, renderer);
-        renderer.finish(MekanismRenderType.MEK_LIGHTNING);
-        matrix.pop();
+        renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
+        matrix.popPose();
     }
 }

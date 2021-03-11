@@ -101,7 +101,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         addChild(new TranslationButton(gui(), getLeftButtonX(), getGuiTop() + screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
             if (origFilter != null) {
-                Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), true, origFilter, null));
+                Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getBlockPos(), true, origFilter, null));
             }
             close();
         }));
@@ -143,9 +143,9 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected void saveFilter() {
         if (isNew) {
-            Mekanism.packetHandler.sendToServer(new PacketNewFilter(tile.getPos(), filter));
+            Mekanism.packetHandler.sendToServer(new PacketNewFilter(tile.getBlockPos(), filter));
         } else {
-            Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getPos(), false, origFilter, filter));
+            Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getBlockPos(), false, origFilter, filter));
         }
         close();
     }
@@ -183,7 +183,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
                 if (Screen.hasShiftDown()) {
                     toSet = ItemStack.EMPTY;
                 } else {
-                    ItemStack stack = minecraft.player.inventory.getItemStack();
+                    ItemStack stack = minecraft.player.inventory.getCarried();
                     if (!stackValidator.test(stack)) {
                         return false;
                     }

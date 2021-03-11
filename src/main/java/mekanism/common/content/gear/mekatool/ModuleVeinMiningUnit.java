@@ -57,17 +57,17 @@ public class ModuleVeinMiningUnit extends ModuleMekaTool {
             if (found.size() > maxCount) {
                 return found;
             }
-            for (BlockPos pos : BlockPos.getAllInBoxMutable(blockPos.add(-1, -1, -1), blockPos.add(1, 1, 1))) {
+            for (BlockPos pos : BlockPos.betweenClosed(blockPos.offset(-1, -1, -1), blockPos.offset(1, 1, 1))) {
                 //We can check contains as mutable
                 if (!found.contains(pos) && (maxRange == -1 || WorldUtils.distanceBetween(location, pos) <= maxRange)) {
                     Optional<BlockState> blockState = WorldUtils.getBlockState(world, pos);
                     if (blockState.isPresent() && startBlock == blockState.get().getBlock()) {
                         //Make sure to add it as immutable
-                        if (openSet.add(pos.toImmutable())) {
+                        if (openSet.add(pos.immutable())) {
                             //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
                             // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
                             Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
-                                  Vector3d.copyCentered(blockPos), Vector3d.copyCentered(pos), 10), world, blockPos);
+                                  Vector3d.atCenterOf(blockPos), Vector3d.atCenterOf(pos), 10), world, blockPos);
                         }
                     }
                 }

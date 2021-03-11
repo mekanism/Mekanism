@@ -56,7 +56,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     @Override
     protected void drawBackgroundOverlay(@Nonnull MatrixStack matrix) {
         if (dataSource.getControlType() == RedstoneControl.PULSE) {
-            minecraft.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            minecraft.textureManager.bind(AtlasTexture.LOCATION_BLOCKS);
             GuiUtils.drawSprite(matrix, getButtonX() + 1, getButtonY() + 1, innerWidth - 2, innerHeight - 2, 0, MekanismRenderer.redstonePulse);
         } else {
             super.drawBackgroundOverlay(matrix);

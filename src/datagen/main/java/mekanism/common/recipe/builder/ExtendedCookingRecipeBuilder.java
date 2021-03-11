@@ -30,7 +30,7 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     }
 
     public static ExtendedCookingRecipeBuilder blasting(IItemProvider result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.BLASTING, result, count, ingredient, cookingTime);
+        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.BLASTING_RECIPE, result, count, ingredient, cookingTime);
     }
 
     public static ExtendedCookingRecipeBuilder campfire(IItemProvider result, Ingredient ingredient, int cookingTime) {
@@ -38,7 +38,7 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     }
 
     public static ExtendedCookingRecipeBuilder campfire(IItemProvider result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.CAMPFIRE_COOKING, result, count, ingredient, cookingTime);
+        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.CAMPFIRE_COOKING_RECIPE, result, count, ingredient, cookingTime);
     }
 
     public static ExtendedCookingRecipeBuilder smelting(IItemProvider result, Ingredient ingredient, int cookingTime) {
@@ -46,7 +46,7 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     }
 
     public static ExtendedCookingRecipeBuilder smelting(IItemProvider result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.SMELTING, result, count, ingredient, cookingTime);
+        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.SMELTING_RECIPE, result, count, ingredient, cookingTime);
     }
 
     public static ExtendedCookingRecipeBuilder smoking(IItemProvider result, Ingredient ingredient, int cookingTime) {
@@ -54,7 +54,7 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     }
 
     public static ExtendedCookingRecipeBuilder smoking(IItemProvider result, int count, Ingredient ingredient, int cookingTime) {
-        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.SMOKING, result, count, ingredient, cookingTime);
+        return new ExtendedCookingRecipeBuilder(IRecipeSerializer.SMOKING_RECIPE, result, count, ingredient, cookingTime);
     }
 
     public ExtendedCookingRecipeBuilder experience(float experience) {
@@ -77,9 +77,9 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
         }
 
         @Override
-        public void serialize(JsonObject json) {
-            super.serialize(json);
-            json.add(JsonConstants.INGREDIENT, ingredient.serialize());
+        public void serializeRecipeData(JsonObject json) {
+            super.serializeRecipeData(json);
+            json.add(JsonConstants.INGREDIENT, ingredient.toJson());
             json.addProperty(DataGenJsonConstants.COOKING_TIME, cookingTime);
             if (experience > 0) {
                 json.addProperty(DataGenJsonConstants.EXPERIENCE, experience);

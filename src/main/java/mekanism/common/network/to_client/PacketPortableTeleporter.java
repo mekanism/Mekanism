@@ -17,7 +17,7 @@ public class PacketPortableTeleporter implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        Screen screen = Minecraft.getInstance().currentScreen;
+        Screen screen = Minecraft.getInstance().screen;
         if (screen instanceof GuiPortableTeleporter) {
             GuiPortableTeleporter teleporter = (GuiPortableTeleporter) screen;
             teleporter.setStatus(status);

@@ -50,7 +50,7 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
 
     @Nonnull
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return output.copy();
     }
 
@@ -67,6 +67,6 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
     public void write(PacketBuffer buffer) {
         itemInput.write(buffer);
         chemicalInput.write(buffer);
-        buffer.writeItemStack(output);
+        buffer.writeItem(output);
     }
 }

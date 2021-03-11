@@ -221,7 +221,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
-                TileEntity adj = WorldUtils.getTileEntity(getWorld(), getPos().offset(side));
+                TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
                 return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
             }
         }
@@ -235,7 +235,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        return Collections.singleton(new ChunkPos(getPos()));
+        return Collections.singleton(new ChunkPos(getBlockPos()));
     }
 
     @Override
@@ -309,7 +309,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @Override
     public String getDataType() {
-        return getBlockType().getTranslationKey();
+        return getBlockType().getDescriptionId();
     }
 
     //Methods relating to IComputerTile

@@ -36,8 +36,8 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
 
     public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ySize += 64;
-        playerInventoryTitleY = ySize - 94;
+        imageHeight += 64;
+        inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }
 
@@ -52,7 +52,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiProgress(() -> tile.didProcess, ProgressType.LARGE_RIGHT, this, 64, 119));
-        addButton(new TranslationButton(this, guiLeft + 10, guiTop + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addButton(new TranslationButton(this, leftPos + 10, topPos + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(GuiOredictionificatorFilter.create(this, tile))));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
@@ -73,7 +73,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         HashList<OredictionificatorFilter> filters = getFilters();
         for (int i = 0; i < FILTER_COUNT; i++) {
             OredictionificatorFilter filter = filters.getOrNull(scrollBar.getCurrentSelection() + i);

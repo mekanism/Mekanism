@@ -27,7 +27,7 @@ public class AdditionsSpawnEggItem extends SpawnEggItem {
         if (nbt != null && nbt.contains(NBTConstants.ENTITY_TAG, NBT.TAG_COMPOUND)) {
             CompoundNBT entityTag = nbt.getCompound(NBTConstants.ENTITY_TAG);
             if (entityTag.contains(NBTConstants.ID, NBT.TAG_STRING)) {
-                return EntityType.byKey(entityTag.getString(NBTConstants.ID)).orElse(entityTypeRO.getEntityType());
+                return EntityType.byString(entityTag.getString(NBTConstants.ID)).orElse(entityTypeRO.getEntityType());
             }
         }
         return entityTypeRO.getEntityType();

@@ -15,6 +15,6 @@ public class SeismicReaderContainer extends MekanismItemContainer implements IEm
     }
 
     public SeismicReaderContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, buf.readEnumValue(Hand.class), getStackFromBuffer(buf, ItemSeismicReader.class));
+        this(id, inv, buf.readEnum(Hand.class), getStackFromBuffer(buf, ItemSeismicReader.class));
     }
 }

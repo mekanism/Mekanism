@@ -59,7 +59,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        if (world.getGameTime() % 10 == 0) {
+        if (level.getGameTime() % 10 == 0) {
             QIOFrequency frequency = getQIOFrequency();
             setActive(frequency != null);
             for (int i = 0; i < DRIVE_SLOTS; i++) {
@@ -95,13 +95,13 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT tag) {
+    public CompoundNBT save(@Nonnull CompoundNBT tag) {
         QIOFrequency freq = getFrequency(FrequencyType.QIO);
         if (freq != null) {
             // save all item data before we save
             freq.saveAll();
         }
-        super.write(tag);
+        super.save(tag);
         return tag;
     }
 
@@ -124,7 +124,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         super.handleUpdateTag(state, tag);
         driveStatus = tag.getByteArray(NBTConstants.DRIVES);
         requestModelDataUpdate();
-        WorldUtils.updateBlock(getWorld(), getPos(), getBlockState());
+        WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
     }
 
     @Override

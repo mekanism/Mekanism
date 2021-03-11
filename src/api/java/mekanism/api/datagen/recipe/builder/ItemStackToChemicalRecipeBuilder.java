@@ -68,7 +68,7 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
             json.add(JsonConstants.OUTPUT, outputSerializer.serializeStack(output));
         }

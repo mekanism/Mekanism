@@ -47,6 +47,6 @@ public class OwnerDisplay implements IHasTextComponent {
         if (player == null) {
             return MekanismLang.OWNER.translateColored(EnumColor.DARK_GRAY, name);
         }
-        return MekanismLang.OWNER.translateColored(EnumColor.DARK_GRAY, player.getUniqueID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
+        return MekanismLang.OWNER.translateColored(EnumColor.DARK_GRAY, player.getUUID().equals(ownerUUID) ? EnumColor.BRIGHT_GREEN : EnumColor.RED, name);
     }
 }

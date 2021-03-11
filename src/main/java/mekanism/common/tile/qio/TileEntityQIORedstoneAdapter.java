@@ -66,15 +66,15 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         super.onUpdateServer();
         boolean powering = isPowering();
         if (powering != prevPowering) {
-            World world = getWorld();
+            World world = getLevel();
             if (world != null) {
-                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+                world.updateNeighborsAt(getBlockPos(), getBlockType());
             }
             prevPowering = powering;
             sendUpdatePacket();
         }
 
-        if (world.getGameTime() % 10 == 0) {
+        if (level.getGameTime() % 10 == 0) {
             setActive(getQIOFrequency() != null);
         }
     }
@@ -98,22 +98,22 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         super.handleUpdateTag(state, tag);
         prevPowering = tag.getBoolean(NBTConstants.ACTIVE);
         requestModelDataUpdate();
-        WorldUtils.updateBlock(getWorld(), getPos(), getBlockState());
+        WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setItemStackIfPresent(nbtTags, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
         NBTUtils.setLongIfPresent(nbtTags, NBTConstants.AMOUNT, value -> count = value);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         if (itemType != null) {
-            nbtTags.put(NBTConstants.SINGLE_ITEM, itemType.getStack().write(new CompoundNBT()));
+            nbtTags.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
         }
         nbtTags.putLong(NBTConstants.AMOUNT, count);
         return nbtTags;

@@ -34,8 +34,8 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     public GuiModuleTweaker(ModuleTweakerContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        xSize = 248;
-        ySize += 20;
+        imageWidth = 248;
+        imageHeight += 20;
     }
 
     @Override
@@ -43,23 +43,23 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         super.init();
 
         addButton(moduleScreen = new GuiModuleScreen(this, 138, 20, stack -> {
-            int slotId = container.inventorySlots.get(selected).getSlotIndex();
+            int slotId = menu.slots.get(selected).getSlotIndex();
             Mekanism.packetHandler.sendToServer(new PacketUpdateInventorySlot(stack, slotId));
-            playerInventory.player.inventory.setInventorySlotContents(slotId, stack);
+            inventory.player.inventory.setItem(slotId, stack);
         }));
         addButton(scrollList = new GuiModuleScrollList(this, 30, 20, 108, 116, () -> getStack(selected), this::onModuleSelected));
         addButton(new GuiElementHolder(this, 30, 136, 108, 18));
-        addButton(optionsButton = new TranslationButton(this, guiLeft + 31, guiTop + 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
+        addButton(optionsButton = new TranslationButton(this, leftPos + 31, topPos + 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
         optionsButton.active = false;
-        int size = container.inventorySlots.size();
+        int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
-            Slot slot = container.inventorySlots.get(i);
+            Slot slot = menu.slots.get(i);
             final int index = i;
             // initialize selected item
             if (selected == -1 && isValidItem(index)) {
                 select(index);
             }
-            addButton(new GuiSlot(SlotType.NORMAL, this, slot.xPos - 1, slot.yPos - 1)
+            addButton(new GuiSlot(SlotType.NORMAL, this, slot.x - 1, slot.y - 1)
                   .click((e, x, y) -> select(index))
                   .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                   .with(() -> index == selected ? SlotOverlay.SELECT : null));
@@ -83,7 +83,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         if (selected != -1) {
             int curIndex = -1;
             IntList selectable = new IntArrayList();
-            for (int index = 0; index < container.inventorySlots.size(); index++) {
+            for (int index = 0; index < menu.slots.size(); index++) {
                 if (isValidItem(index)) {
                     selectable.add(index);
                     if (index == selected) {
@@ -113,7 +113,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.MODULE_TWEAKER.translate(), titleY);
+        drawTitleText(matrix, MekanismLang.MODULE_TWEAKER.translate(), titleLabelY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
@@ -134,6 +134,6 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         if (index == -1) {
             return ItemStack.EMPTY;
         }
-        return container.inventorySlots.get(index).getStack();
+        return menu.slots.get(index).getItem();
     }
 }

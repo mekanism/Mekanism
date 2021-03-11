@@ -49,19 +49,19 @@ public class ItemTierInstaller extends Item {
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName(@Nonnull ItemStack stack) {
-        return TextComponentUtil.build(toTier.getTextColor(), super.getDisplayName(stack));
+    public ITextComponent getName(@Nonnull ItemStack stack) {
+        return TextComponentUtil.build(toTier.getTextColor(), super.getName(stack));
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-        if (world.isRemote || player == null) {
+        World world = context.getLevel();
+        if (world.isClientSide || player == null) {
             return ActionResultType.PASS;
         }
-        BlockPos pos = context.getPos();
+        BlockPos pos = context.getClickedPos();
         BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
         if (Attribute.has(block, AttributeUpgradeable.class)) {
@@ -84,7 +84,7 @@ public class ItemTierInstaller extends Item {
                             return ActionResultType.FAIL;
                         }
                     } else {
-                        world.setBlockState(pos, upgradeState);
+                        world.setBlockAndUpdate(pos, upgradeState);
                         //TODO: Make it so it doesn't have to be a TileEntityMekanism?
                         TileEntityMekanism upgradedTile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
                         if (upgradedTile == null) {
@@ -96,9 +96,9 @@ public class ItemTierInstaller extends Item {
                             }
                             upgradedTile.parseUpgradeData(upgradeData);
                             upgradedTile.sendUpdatePacket();
-                            upgradedTile.markDirty();
+                            upgradedTile.setChanged();
                             if (!player.isCreative()) {
-                                context.getItem().shrink(1);
+                                context.getItemInHand().shrink(1);
                             }
                             return ActionResultType.SUCCESS;
                         }

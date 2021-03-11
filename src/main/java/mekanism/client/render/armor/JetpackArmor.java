@@ -25,31 +25,31 @@ public class JetpackArmor extends CustomArmor {
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
           LivingEntity entity, ItemStack stack) {
-        if (!bipedBody.showModel) {
+        if (!body.visible) {
             //If the body model shouldn't show don't bother displaying it
             return;
         }
-        if (isChild) {
-            matrix.push();
-            float f1 = 1.0F / childBodyScale;
+        if (young) {
+            matrix.pushPose();
+            float f1 = 1.0F / babyBodyScale;
             matrix.scale(f1, f1, f1);
-            matrix.translate(0.0D, childBodyOffsetY / 16.0F, 0.0D);
+            matrix.translate(0.0D, bodyYOffset / 16.0F, 0.0D);
             renderJetpack(matrix, renderer, light, overlayLight, hasEffect);
-            matrix.pop();
+            matrix.popPose();
         } else {
             renderJetpack(matrix, renderer, light, overlayLight, hasEffect);
         }
     }
 
     private void renderJetpack(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        matrix.push();
-        bipedBody.translateRotate(matrix);
+        matrix.pushPose();
+        body.translateAndRotate(matrix);
         matrix.translate(0, 0, 0.06);
         if (armored) {
             armoredModel.render(matrix, renderer, light, overlayLight, hasEffect);
         } else {
             model.render(matrix, renderer, light, overlayLight, hasEffect);
         }
-        matrix.pop();
+        matrix.popPose();
     }
 }

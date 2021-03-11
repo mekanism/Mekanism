@@ -106,13 +106,13 @@ public class MekaSuitArmor extends CustomArmor {
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
           LivingEntity entity, ItemStack stack) {
-        if (isChild) {
-            matrix.push();
-            float f1 = 1.0F / childBodyScale;
+        if (young) {
+            matrix.pushPose();
+            float f1 = 1.0F / babyBodyScale;
             matrix.scale(f1, f1, f1);
-            matrix.translate(0.0D, childBodyOffsetY / 16.0F, 0.0D);
+            matrix.translate(0.0D, bodyYOffset / 16.0F, 0.0D);
             renderMekaSuit(matrix, renderer, light, overlayLight, partialTicks, hasEffect, entity);
-            matrix.pop();
+            matrix.popPose();
         } else {
             renderMekaSuit(matrix, renderer, light, overlayLight, partialTicks, hasEffect, entity);
         }
@@ -122,15 +122,15 @@ public class MekaSuitArmor extends CustomArmor {
           LivingEntity entity) {
         ArmorQuads armorQuads = cache.getUnchecked(key(entity));
         armorQuads.getOpaqueMap().forEach((modelPos, quads) -> {
-            matrix.push();
+            matrix.pushPose();
             modelPos.translate(this, matrix);
             render(renderer, matrix, light, overlayLight, hasEffect, quads, false);
-            matrix.pop();
+            matrix.popPose();
         });
 
         if (type == EquipmentSlotType.CHEST) {
-            BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUniqueID(), id -> new BoltRenderer());
-            if (Modules.isEnabled(entity.getItemStackFromSlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT)) {
+            BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUUID(), id -> new BoltRenderer());
+            if (Modules.isEnabled(entity.getItemBySlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT)) {
                 BoltEffect leftBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3d(-0.01, 0.35, 0.37), new Vector3d(-0.01, 0.15, 0.37), 10)
                       .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
                 BoltEffect rightBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3d(0.025, 0.35, 0.37), new Vector3d(0.025, 0.15, 0.37), 10)
@@ -139,24 +139,24 @@ public class MekaSuitArmor extends CustomArmor {
                 boltRenderer.update(1, rightBolt, partialTicks);
             }
             //Adjust the matrix so that we render the lightning in the correct spot if the player is crouching
-            matrix.push();
+            matrix.pushPose();
             ModelPos.BODY.translate(this, matrix);
             boltRenderer.render(partialTicks, matrix, renderer);
-            matrix.pop();
+            matrix.popPose();
         }
 
         armorQuads.getTransparentMap().forEach((modelPos, quads) -> {
-            matrix.push();
+            matrix.pushPose();
             modelPos.translate(this, matrix);
             render(renderer, matrix, light, overlayLight, hasEffect, quads, true);
-            matrix.pop();
+            matrix.popPose();
         });
     }
 
     private void render(IRenderTypeBuffer renderer, MatrixStack matrix, int light, int overlayLight, boolean hasEffect, List<BakedQuad> quads, boolean transparent) {
-        RenderType renderType = transparent ? RenderType.getEntityTranslucent(AtlasTexture.LOCATION_BLOCKS_TEXTURE) : MekanismRenderType.getMekaSuit();
-        IVertexBuilder builder = ItemRenderer.getEntityGlintVertexBuilder(renderer, renderType, false, hasEffect);
-        MatrixStack.Entry last = matrix.getLast();
+        RenderType renderType = transparent ? RenderType.entityTranslucent(AtlasTexture.LOCATION_BLOCKS) : MekanismRenderType.getMekaSuit();
+        IVertexBuilder builder = ItemRenderer.getFoilBufferDirect(renderer, renderType, false, hasEffect);
+        MatrixStack.Entry last = matrix.last();
         for (BakedQuad quad : quads) {
             builder.addVertexData(last, quad, 1, 1, 1, 1, light, overlayLight);
         }
@@ -164,9 +164,9 @@ public class MekaSuitArmor extends CustomArmor {
 
     private static List<BakedQuad> getQuads(ModelData data, Set<String> parts, Set<String> ledParts, QuadTransformation transform) {
         List<BakedQuad> quads = data.bake(new MekaSuitModelConfiguration(parts))
-              .getQuads(null, null, Minecraft.getInstance().world.getRandom(), EmptyModelData.INSTANCE);
+              .getQuads(null, null, Minecraft.getInstance().level.getRandom(), EmptyModelData.INSTANCE);
         List<BakedQuad> ledQuads = data.bake(new MekaSuitModelConfiguration(ledParts))
-              .getQuads(null, null, Minecraft.getInstance().world.getRandom(), EmptyModelData.INSTANCE);
+              .getQuads(null, null, Minecraft.getInstance().level.getRandom(), EmptyModelData.INSTANCE);
         quads.addAll(QuadUtils.transformBakedQuads(ledQuads, QuadTransformation.fullbright));
         if (transform != null) {
             quads = QuadUtils.transformBakedQuads(quads, transform);
@@ -212,22 +212,22 @@ public class MekaSuitArmor extends CustomArmor {
         public void translate(MekaSuitArmor armor, MatrixStack matrix) {
             switch (this) {
                 case HEAD:
-                    armor.bipedHead.translateRotate(matrix);
+                    armor.head.translateAndRotate(matrix);
                     break;
                 case BODY:
-                    armor.bipedBody.translateRotate(matrix);
+                    armor.body.translateAndRotate(matrix);
                     break;
                 case LEFT_ARM:
-                    armor.bipedLeftArm.translateRotate(matrix);
+                    armor.leftArm.translateAndRotate(matrix);
                     break;
                 case RIGHT_ARM:
-                    armor.bipedRightArm.translateRotate(matrix);
+                    armor.rightArm.translateAndRotate(matrix);
                     break;
                 case LEFT_LEG:
-                    armor.bipedLeftLeg.translateRotate(matrix);
+                    armor.leftLeg.translateAndRotate(matrix);
                     break;
                 case RIGHT_LEG:
-                    armor.bipedRightLeg.translateRotate(matrix);
+                    armor.rightLeg.translateAndRotate(matrix);
                     break;
             }
         }
@@ -412,13 +412,13 @@ public class MekaSuitArmor extends CustomArmor {
     public QuickHash key(LivingEntity player) {
         Set<ModuleModelSpec> modules = new ObjectOpenHashSet<>();
         Set<EquipmentSlotType> wornParts = EnumSet.noneOf(EquipmentSlotType.class);
-        boolean hasMekaTool = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND).getItem() instanceof ItemMekaTool;
+        boolean hasMekaTool = player.getItemBySlot(EquipmentSlotType.MAINHAND).getItem() instanceof ItemMekaTool;
         for (EquipmentSlotType slotType : EnumUtils.ARMOR_SLOTS) {
-            if (player.getItemStackFromSlot(slotType).getItem() instanceof ItemMekaSuitArmor) {
+            if (player.getItemBySlot(slotType).getItem() instanceof ItemMekaSuitArmor) {
                 wornParts.add(slotType);
             }
             for (ModuleData<?> module : moduleModelSpec.row(slotType).keySet()) {
-                if (Modules.isEnabled(player.getItemStackFromSlot(slotType), module)) {
+                if (Modules.isEnabled(player.getItemBySlot(slotType), module)) {
                     modules.add(moduleModelSpec.get(slotType, module));
                 }
             }
@@ -476,7 +476,7 @@ public class MekaSuitArmor extends CustomArmor {
         @Override
         @Deprecated
         public ItemCameraTransforms getCameraTransforms() {
-            return ItemCameraTransforms.DEFAULT;
+            return ItemCameraTransforms.NO_TRANSFORMS;
         }
 
         @Nonnull

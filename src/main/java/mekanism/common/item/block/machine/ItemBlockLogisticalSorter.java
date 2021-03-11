@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 public class ItemBlockLogisticalSorter extends ItemBlockTooltip<BlockLogisticalSorter> implements IItemSustainedInventory, ISecurityItem {
 
     public ItemBlockLogisticalSorter(BlockLogisticalSorter block) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
+        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1));
     }
 
     @Override

@@ -40,9 +40,9 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         super.onUpdateServer(multiblock);
         boolean outputting = checkMode();
         if (outputting != prevOutputting) {
-            World world = getWorld();
+            World world = getLevel();
             if (world != null) {
-                world.notifyNeighborsOfStateChange(getPos(), getBlockType());
+                world.updateNeighborsAt(getBlockPos(), getBlockType());
             }
         }
         prevOutputting = outputting;
@@ -71,16 +71,16 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.LOGIC_TYPE, FusionReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
         activeCooled = nbtTags.getBoolean(NBTConstants.ACTIVE_COOLED);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putInt(NBTConstants.LOGIC_TYPE, logicType.ordinal());
         nbtTags.putBoolean(NBTConstants.ACTIVE_COOLED, activeCooled);
         return nbtTags;

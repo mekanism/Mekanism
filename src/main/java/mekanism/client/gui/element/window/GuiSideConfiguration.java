@@ -47,7 +47,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         }
         updateTabs();
         addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, getButtonLocation("auto_eject"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getPos(), currentType)), getOnHover(MekanismLang.AUTO_EJECT)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), currentType)), getOnHover(MekanismLang.AUTO_EJECT)));
         addSideDataButton(RelativeSide.BOTTOM, 71, 74);
         addSideDataButton(RelativeSide.TOP, 71, 44);
         addSideDataButton(RelativeSide.FRONT, 71, 59);
@@ -55,7 +55,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         addSideDataButton(RelativeSide.LEFT, 56, 59);
         addSideDataButton(RelativeSide.RIGHT, 86, 59);
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, 1));
-        ((MekanismContainer) ((GuiMekanism<?>) gui()).getContainer()).startTracking(1, this.tile.getConfig());
+        ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(1, this.tile.getConfig());
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
@@ -70,7 +70,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     public void close() {
         super.close();
         Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, 1));
-        ((MekanismContainer) ((GuiMekanism<?>) gui()).getContainer()).stopTracking(1);
+        ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(1);
     }
 
     private IHoverable getOnHover(RelativeSide side) {

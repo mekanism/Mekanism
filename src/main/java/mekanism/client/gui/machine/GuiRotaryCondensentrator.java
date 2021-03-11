@@ -34,7 +34,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     public GuiRotaryCondensentrator(MekanismTileContainer<TileEntityRotaryCondensentrator> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        titleY = 4;
+        titleLabelY = 4;
     }
 
     @Override
@@ -70,14 +70,14 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
                 return tile.mode;
             }
         }, ProgressType.LARGE_LEFT, this, 64, 39).jeiCategories(decondensentrating));
-        addButton(new MekanismImageButton(this, guiLeft + 4, guiTop + 4, 18, getButtonLocation("toggle"),
+        addButton(new MekanismImageButton(this, leftPos + 4, topPos + 4, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, (tile.mode ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING).translate(), 6, ySize - 92, titleTextColor());
+        drawString(matrix, (tile.mode ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING).translate(), 6, imageHeight - 92, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

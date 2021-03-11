@@ -42,14 +42,14 @@ public class ItemMekanismPickaxe extends PickaxeItem implements IHasRepairType, 
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
 
     @Override
     public float getAttackDamage() {
-        return material.getPickaxeDamage() + getTier().getAttackDamage();
+        return material.getPickaxeDamage() + getTier().getAttackDamageBonus();
     }
 
     /**
@@ -61,9 +61,9 @@ public class ItemMekanismPickaxe extends PickaxeItem implements IHasRepairType, 
     @Override
     public float getDestroySpeed(@Nonnull ItemStack stack, BlockState state) {
         Material material = state.getMaterial();
-        if (material == Material.IRON || material == Material.ANVIL || material == Material.ROCK || getToolTypes(stack).stream().anyMatch(state::isToolEffective) ||
-            effectiveBlocks.contains(state.getBlock())) {
-            return getTier().getEfficiency();
+        if (material == Material.METAL || material == Material.HEAVY_METAL || material == Material.STONE || getToolTypes(stack).stream().anyMatch(state::isToolEffective) ||
+            blocks.contains(state.getBlock())) {
+            return getTier().getSpeed();
         }
         return 1;
     }
@@ -71,22 +71,22 @@ public class ItemMekanismPickaxe extends PickaxeItem implements IHasRepairType, 
     @Nonnull
     @Override
     public Ingredient getRepairMaterial() {
-        return getTier().getRepairMaterial();
+        return getTier().getRepairIngredient();
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return getTier().getMaxUses();
+        return getTier().getUses();
     }
 
     @Override
-    public boolean isDamageable() {
-        return getTier().getMaxUses() > 0;
+    public boolean canBeDepleted() {
+        return getTier().getUses() > 0;
     }
 
     @Override
     public int getHarvestLevel(@Nonnull ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState) {
-        return tool == ToolType.PICKAXE ? getTier().getHarvestLevel() : super.getHarvestLevel(stack, tool, player, blockState);
+        return tool == ToolType.PICKAXE ? getTier().getLevel() : super.getHarvestLevel(stack, tool, player, blockState);
     }
 
     @Nonnull
@@ -97,7 +97,7 @@ public class ItemMekanismPickaxe extends PickaxeItem implements IHasRepairType, 
 
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", getAttackDamage(), Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", material.getPickaxeAtkSpeed(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", material.getPickaxeAtkSpeed(), Operation.ADDITION));
     }
 }

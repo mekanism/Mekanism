@@ -59,9 +59,9 @@ public class PacketDropperUse implements IMekanismPacket {
         if (player == null || tankId < 0) {
             return;
         }
-        ItemStack stack = player.inventory.getItemStack();
+        ItemStack stack = player.inventory.getCarried();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.world, pos);
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, pos);
             if (tile != null) {
                 if (tile instanceof TileEntityMultiblock) {
                     MultiblockData structure = ((TileEntityMultiblock<?>) tile).getMultiblock();
@@ -182,7 +182,7 @@ public class PacketDropperUse implements IMekanismPacket {
                 if (!extractedChemical.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
                     MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
-                    ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
+                    ((ServerPlayerEntity) player).refreshContainer(player.containerMenu);
                 }
             }
         }
@@ -200,7 +200,7 @@ public class PacketDropperUse implements IMekanismPacket {
                 if (!extractedFluid.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
                     MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedFluid, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
-                    ((ServerPlayerEntity) player).sendContainerToPlayer(player.openContainer);
+                    ((ServerPlayerEntity) player).refreshContainer(player.containerMenu);
                 }
             }
         }
@@ -209,13 +209,13 @@ public class PacketDropperUse implements IMekanismPacket {
     @Override
     public void encode(PacketBuffer buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeEnumValue(action);
-        buffer.writeEnumValue(tankType);
+        buffer.writeEnum(action);
+        buffer.writeEnum(tankType);
         buffer.writeVarInt(tankId);
     }
 
     public static PacketDropperUse decode(PacketBuffer buffer) {
-        return new PacketDropperUse(buffer.readBlockPos(), buffer.readEnumValue(DropperAction.class), buffer.readEnumValue(TankType.class), buffer.readVarInt());
+        return new PacketDropperUse(buffer.readBlockPos(), buffer.readEnum(DropperAction.class), buffer.readEnum(TankType.class), buffer.readVarInt());
     }
 
     public enum DropperAction {

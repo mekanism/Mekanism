@@ -21,7 +21,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     private final List<Ingredient> ingredients = new ArrayList<>();
 
     private ExtendedShapelessRecipeBuilder(IItemProvider result, int count) {
-        super(IRecipeSerializer.CRAFTING_SHAPELESS, result, count);
+        super(IRecipeSerializer.SHAPELESS_RECIPE, result, count);
     }
 
     public static ExtendedShapelessRecipeBuilder shapelessRecipe(IItemProvider result) {
@@ -33,7 +33,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(ITag<Item> tag) {
-        return addIngredient(Ingredient.fromTag(tag));
+        return addIngredient(Ingredient.of(tag));
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(IItemProvider item) {
@@ -42,7 +42,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
 
     public ExtendedShapelessRecipeBuilder addIngredient(IItemProvider item, int quantity) {
         for (int i = 0; i < quantity; ++i) {
-            addIngredient(Ingredient.fromItems(item));
+            addIngredient(Ingredient.of(item));
         }
         return this;
     }
@@ -77,11 +77,11 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
         }
 
         @Override
-        public void serialize(JsonObject json) {
-            super.serialize(json);
+        public void serializeRecipeData(JsonObject json) {
+            super.serializeRecipeData(json);
             JsonArray jsonIngredients = new JsonArray();
             for (Ingredient ingredient : ingredients) {
-                jsonIngredients.add(ingredient.serialize());
+                jsonIngredients.add(ingredient.toJson());
             }
             json.add(DataGenJsonConstants.INGREDIENTS, jsonIngredients);
         }

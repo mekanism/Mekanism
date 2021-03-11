@@ -41,8 +41,8 @@ public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionCha
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTextScaledBound(matrix, tile.getName(), xSize / 3 - 7, titleY, titleTextColor(), 2 * xSize / 3);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawTextScaledBound(matrix, tile.getName(), imageWidth / 3 - 7, titleLabelY, titleTextColor(), 2 * imageWidth / 3);
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

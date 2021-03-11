@@ -74,7 +74,7 @@ public class CrTBracketHandlers {
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, ?, CRT_STACK>> CRT_STACK getChemicalStack(String bracket,
           String tokens, IForgeRegistry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
-        ResourceLocation registryName = ResourceLocation.tryCreate(tokens);
+        ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
             throw new IllegalArgumentException("Could not get " + bracket + " for <" + bracket + ":" + tokens + ">. Syntax is <" + bracket + ":modid:" + bracket + "_name>");
         }

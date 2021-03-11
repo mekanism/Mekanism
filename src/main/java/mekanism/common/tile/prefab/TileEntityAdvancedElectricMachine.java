@@ -104,9 +104,9 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 64, 17));
-        builder.addSlot(secondarySlot = GasInventorySlot.fillOrConvert(gasTank, this::getWorld, this, 64, 53));
+        builder.addSlot(secondarySlot = GasInventorySlot.fillOrConvert(gasTank, this::getLevel, this, 64, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 39, 35));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 39, 35));
         return builder.build();
     }
 

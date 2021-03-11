@@ -70,7 +70,7 @@ public class TransporterStack {
         buf.writeVarInt(TransporterUtils.getColorIndex(color));
         buf.writeVarInt(progress);
         buf.writeBlockPos(originalLocation);
-        buf.writeEnumValue(pathType);
+        buf.writeEnum(pathType);
         if (pathToTarget.indexOf(transporter.getTilePos()) > 0) {
             buf.writeBoolean(true);
             buf.writeBlockPos(getNext(transporter));
@@ -78,19 +78,19 @@ public class TransporterStack {
             buf.writeBoolean(false);
         }
         buf.writeBlockPos(getPrev(transporter));
-        buf.writeItemStack(itemStack);
+        buf.writeItem(itemStack);
     }
 
     public void read(PacketBuffer dataStream) {
         color = TransporterUtils.readColor(dataStream.readVarInt());
         progress = dataStream.readVarInt();
         originalLocation = dataStream.readBlockPos();
-        pathType = dataStream.readEnumValue(Path.class);
+        pathType = dataStream.readEnum(Path.class);
         if (dataStream.readBoolean()) {
             clientNext = dataStream.readBlockPos();
         }
         clientPrev = dataStream.readBlockPos();
-        itemStack = dataStream.readItemStack();
+        itemStack = dataStream.readItem();
     }
 
     public void writeToUpdateTag(LogisticalTransporterBase transporter, CompoundNBT updateTag) {
@@ -102,7 +102,7 @@ public class TransporterStack {
             updateTag.put(NBTConstants.CLIENT_NEXT, NBTUtil.writeBlockPos(getNext(transporter)));
         }
         updateTag.put(NBTConstants.CLIENT_PREVIOUS, NBTUtil.writeBlockPos(getPrev(transporter)));
-        itemStack.write(updateTag);
+        itemStack.save(updateTag);
     }
 
     public void readFromUpdateTag(CompoundNBT updateTag) {
@@ -112,7 +112,7 @@ public class TransporterStack {
         NBTUtils.setEnumIfPresent(updateTag, NBTConstants.PATH_TYPE, Path::byIndexStatic, type -> pathType = type);
         NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.CLIENT_NEXT, coord -> clientNext = coord);
         NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.CLIENT_PREVIOUS, coord -> clientPrev = coord);
-        itemStack = ItemStack.read(updateTag);
+        itemStack = ItemStack.of(updateTag);
     }
 
     public void write(CompoundNBT nbtTags) {
@@ -128,17 +128,17 @@ public class TransporterStack {
             nbtTags.put(NBTConstants.HOME_LOCATION, NBTUtil.writeBlockPos(homeLocation));
         }
         nbtTags.putInt(NBTConstants.PATH_TYPE, pathType.ordinal());
-        itemStack.write(nbtTags);
+        itemStack.save(nbtTags);
     }
 
     public void read(CompoundNBT nbtTags) {
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.IDLE_DIR, Direction::byIndex, dir -> idleDir = dir);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.HOME_LOCATION, coord -> homeLocation = coord);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.PATH_TYPE, Path::byIndexStatic, type -> pathType = type);
-        itemStack = ItemStack.read(nbtTags);
+        itemStack = ItemStack.of(nbtTags);
     }
 
     private void setPath(World world, List<BlockPos> path, Path type) {

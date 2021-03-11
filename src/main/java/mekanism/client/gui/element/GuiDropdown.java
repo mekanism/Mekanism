@@ -34,7 +34,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         super.onClick(mouseX, mouseY);
         isHolding = true;
         setOpen(!isOpen || mouseY > y + 11);
-        minecraft.getSoundHandler().play(SimpleSound.master(MekanismSounds.BEEP.get(), 1.0F));
+        minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
     }
 
     @Override
@@ -65,7 +65,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        matrix.push();
+        matrix.pushPose();
         //TODO: Figure out why we need a translation of 1 to fix the text intersecting for the dictionary but it works just fine
         // for the QIO item viewer
         matrix.translate(0, 0, 1);
@@ -78,7 +78,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
         TYPE current = curType.get();
         if (current.getIcon() != null) {
-            minecraft.textureManager.bindTexture(current.getIcon());
+            minecraft.textureManager.bind(current.getIcon());
             blit(matrix, x + width - 9, y + 3, 0, 0, 6, 6, 6, 6);
         }
 
@@ -86,12 +86,12 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
             for (int i = 0; i < options.length; i++) {
                 ResourceLocation icon = options[i].getIcon();
                 if (icon != null) {
-                    minecraft.textureManager.bindTexture(icon);
+                    minecraft.textureManager.bind(icon);
                     blit(matrix, x + width - 9, y + 12 + 2 + 10 * i, 0, 0, 6, 6, 6, 6);
                 }
             }
         }
-        matrix.pop();
+        matrix.popPose();
     }
 
     @Override

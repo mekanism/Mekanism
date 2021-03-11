@@ -37,7 +37,7 @@ public class ChemicalCrystallizerIRecipe extends ChemicalCrystallizerRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.CHEMICAL_CRYSTALLIZER.getItemStack();
     }
 }

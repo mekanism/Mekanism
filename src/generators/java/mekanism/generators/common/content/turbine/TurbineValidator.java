@@ -143,7 +143,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
             }
             turbineHeight++;
             blades += rotor.getHousedBlades();
-            structure.internalLocations.add(rotor.getPos());
+            structure.internalLocations.add(rotor.getBlockPos());
             turbines.remove(new BlockPos(centerX, y, centerZ));
         }
 
@@ -155,7 +155,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
         // Update the structure with number of blades found on rotors
         structure.blades = blades;
 
-        BlockPos startCoord = complex.offset(Direction.UP);
+        BlockPos startCoord = complex.relative(Direction.UP);
         if (WorldUtils.getTileEntity(TileEntityElectromagneticCoil.class, world, chunkMap, startCoord) != null) {
             structure.coils = FormationProtocol.explore(startCoord, coord -> WorldUtils.getTileEntity(TileEntityElectromagneticCoil.class, world, chunkMap, coord) != null);
         }

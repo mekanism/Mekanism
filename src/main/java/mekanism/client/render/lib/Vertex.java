@@ -35,7 +35,7 @@ public class Vertex {
     }
 
     public static Vertex create(Vector3d pos, Vector3d normal, Color color, TextureAtlasSprite sprite, float texU, float texV, float lightU, float lightV) {
-        return new Vertex(pos, normal, color, sprite.getInterpolatedU(texU), sprite.getInterpolatedV(texV), lightU, lightV);
+        return new Vertex(pos, normal, color, sprite.getU(texU), sprite.getV(texV), lightU, lightV);
     }
 
     public static Vertex create(Vector3d pos, Vector3d normal, TextureAtlasSprite sprite, float u, float v) {
@@ -111,14 +111,14 @@ public class Vertex {
             VertexFormatElement element = format.getElements().get(i);
             switch (element.getUsage()) {
                 case POSITION:
-                    ret[i][0] = (float) pos.getX();
-                    ret[i][1] = (float) pos.getY();
-                    ret[i][2] = (float) pos.getZ();
+                    ret[i][0] = (float) pos.x();
+                    ret[i][1] = (float) pos.y();
+                    ret[i][2] = (float) pos.z();
                     break;
                 case NORMAL:
-                    ret[i][0] = (float) normal.getX();
-                    ret[i][1] = (float) normal.getY();
-                    ret[i][2] = (float) normal.getZ();
+                    ret[i][0] = (float) normal.x();
+                    ret[i][1] = (float) normal.y();
+                    ret[i][2] = (float) normal.z();
                     break;
                 case COLOR:
                     ret[i][0] = color.rf();

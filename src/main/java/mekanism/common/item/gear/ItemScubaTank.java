@@ -62,8 +62,8 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.FLOWING.translateColored(EnumColor.GRAY, YesNo.of(getFlowing(stack), true)));
     }
 
@@ -84,7 +84,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
 
     @Override
     public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
-        if (slotType == getEquipmentSlot()) {
+        if (slotType == getSlot()) {
             ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
             list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getFlowing(stack), true)));
             GasStack stored = GasStack.EMPTY;
@@ -107,7 +107,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
             setFlowing(stack, newState);
             if (displayChangeMessage) {
                 player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                      MekanismLang.FLOWING.translate(OnOff.of(newState, true))), Util.DUMMY_UUID);
+                      MekanismLang.FLOWING.translate(OnOff.of(newState, true))), Util.NIL_UUID);
             }
         }
     }
@@ -123,7 +123,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
-        return slotType == getEquipmentSlot();
+        return slotType == getSlot();
     }
 
     @ParametersAreNonnullByDefault

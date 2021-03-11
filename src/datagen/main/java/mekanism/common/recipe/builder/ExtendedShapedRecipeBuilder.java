@@ -31,7 +31,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     private ExtendedShapedRecipeBuilder(IItemProvider result, int count) {
-        this(IRecipeSerializer.CRAFTING_SHAPED, result, count);
+        this(IRecipeSerializer.SHAPED_RECIPE, result, count);
     }
 
     public static ExtendedShapedRecipeBuilder shapedRecipe(IItemProvider result) {
@@ -57,11 +57,11 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, ITag<Item> tag) {
-        return key(symbol, Ingredient.fromTag(tag));
+        return key(symbol, Ingredient.of(tag));
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, IItemProvider item) {
-        return key(symbol, Ingredient.fromItems(item));
+        return key(symbol, Ingredient.of(item));
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, Ingredient ingredient) {
@@ -109,8 +109,8 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         }
 
         @Override
-        public void serialize(JsonObject json) {
-            super.serialize(json);
+        public void serializeRecipeData(JsonObject json) {
+            super.serializeRecipeData(json);
             JsonArray jsonPattern = new JsonArray();
             for (String s : pattern) {
                 jsonPattern.add(s);
@@ -118,7 +118,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
             json.add(DataGenJsonConstants.PATTERN, jsonPattern);
             JsonObject jsonobject = new JsonObject();
             for (Char2ObjectMap.Entry<Ingredient> entry : key.char2ObjectEntrySet()) {
-                jsonobject.add(String.valueOf(entry.getCharKey()), entry.getValue().serialize());
+                jsonobject.add(String.valueOf(entry.getCharKey()), entry.getValue().toJson());
             }
             json.add(DataGenJsonConstants.KEY, jsonobject);
         }

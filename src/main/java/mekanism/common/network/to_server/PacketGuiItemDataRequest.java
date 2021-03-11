@@ -40,14 +40,14 @@ public class PacketGuiItemDataRequest implements IMekanismPacket {
         ServerPlayerEntity player = context.getSender();
         if (player != null) {
             if (type == Type.FREQUENCY_LIST_GUI) {
-                if (player.openContainer instanceof FrequencyItemContainer) {
+                if (player.containerMenu instanceof FrequencyItemContainer) {
                     handleFrequencyList(player);
                 }
             } else if (type == Type.QIO_ITEM_VIEWER) {
-                if (player.openContainer instanceof QIOItemViewerContainer) {
-                    QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
+                if (player.containerMenu instanceof QIOItemViewerContainer) {
+                    QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
                     QIOFrequency freq = container.getFrequency();
-                    if (!player.world.isRemote() && freq != null) {
+                    if (!player.level.isClientSide() && freq != null) {
                         freq.openItemViewer(player);
                     }
                 }
@@ -56,35 +56,35 @@ public class PacketGuiItemDataRequest implements IMekanismPacket {
     }
 
     private <FREQ extends Frequency> void handleFrequencyList(PlayerEntity player) {
-        FrequencyItemContainer<FREQ> container = (FrequencyItemContainer<FREQ>) player.openContainer;
-        ItemStack stack = player.getHeldItem(hand);
+        FrequencyItemContainer<FREQ> container = (FrequencyItemContainer<FREQ>) player.containerMenu;
+        ItemStack stack = player.getItemInHand(hand);
         FrequencyIdentity identity = ((IFrequencyItem) stack.getItem()).getFrequency(stack);
         FREQ freq = null;
         if (identity != null) {
             FrequencyManager<FREQ> manager = identity.isPublic() ? container.getFrequencyType().getManager(null)
-                                                                 : container.getFrequencyType().getManager(player.getUniqueID());
+                                                                 : container.getFrequencyType().getManager(player.getUUID());
             freq = manager.getFrequency(identity.getKey());
             // if this frequency no longer exists, remove the reference from the stack
             if (freq == null) {
                 ((IFrequencyItem) stack.getItem()).setFrequency(stack, null);
             }
         }
-        Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(hand, container.getFrequencyType(), player.getUniqueID(), freq), (ServerPlayerEntity) player);
+        Mekanism.packetHandler.sendTo(PacketFrequencyItemGuiUpdate.update(hand, container.getFrequencyType(), player.getUUID(), freq), (ServerPlayerEntity) player);
     }
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(type);
+        buffer.writeEnum(type);
         if (type == Type.FREQUENCY_LIST_GUI) {
-            buffer.writeEnumValue(hand);
+            buffer.writeEnum(hand);
         }
     }
 
     public static PacketGuiItemDataRequest decode(PacketBuffer buffer) {
-        Type type = buffer.readEnumValue(Type.class);
+        Type type = buffer.readEnum(Type.class);
         Hand hand = null;
         if (type == Type.FREQUENCY_LIST_GUI) {
-            hand = buffer.readEnumValue(Hand.class);
+            hand = buffer.readEnum(Hand.class);
         }
         return new PacketGuiItemDataRequest(type, hand);
     }

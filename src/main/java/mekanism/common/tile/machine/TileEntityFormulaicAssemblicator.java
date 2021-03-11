@@ -126,7 +126,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     if (formula == null) {
                         return true;
                     }
-                    IntList indices = formula.getIngredientIndices(world, stack);
+                    IntList indices = formula.getIngredientIndices(level, stack);
                     if (!indices.isEmpty()) {
                         HashedItem stockItem = stockControlMap[index];
                         if (!stockControl || stockItem == null) {
@@ -155,7 +155,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             }
         }
         //Add the energy slot after adding the other slots so that it has lowest priority in shift clicking
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getWorld, this, 152, 76));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 76));
         return builder.build();
     }
 
@@ -248,7 +248,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (formulaInventory == null) {
             formula = null;
         } else {
-            RecipeFormula recipe = new RecipeFormula(world, formulaInventory);
+            RecipeFormula recipe = new RecipeFormula(level, formulaInventory);
             if (recipe.isValidFormula()) {
                 if (formula == null) {
                     formula = recipe;
@@ -271,29 +271,29 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private void recalculateRecipe() {
-        if (world != null && !isRemote()) {
+        if (level != null && !isRemote()) {
             if (formula == null || !formula.isValidFormula()) {
                 //Should always be 9 for the size
                 for (int i = 0; i < craftingGridSlots.size(); i++) {
-                    dummyInv.setInventorySlotContents(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
+                    dummyInv.setItem(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
                 }
 
                 lastRemainingItems = EMPTY_LIST;
 
-                if (cachedRecipe == null || !cachedRecipe.matches(dummyInv, world)) {
-                    cachedRecipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, dummyInv, world).orElse(null);
+                if (cachedRecipe == null || !cachedRecipe.matches(dummyInv, level)) {
+                    cachedRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, dummyInv, level).orElse(null);
                 }
                 if (cachedRecipe != null) {
-                    lastOutputStack = cachedRecipe.getCraftingResult(dummyInv);
+                    lastOutputStack = cachedRecipe.assemble(dummyInv);
                     lastRemainingItems = cachedRecipe.getRemainingItems(dummyInv);
                 } else {
-                    lastOutputStack = MekanismUtils.findRepairRecipe(dummyInv, world);
+                    lastOutputStack = MekanismUtils.findRepairRecipe(dummyInv, level);
                 }
                 isRecipe = !lastOutputStack.isEmpty();
             } else {
-                isRecipe = formula.matches(world, craftingGridSlots);
+                isRecipe = formula.matches(level, craftingGridSlots);
                 if (isRecipe) {
-                    lastOutputStack = formula.recipe.getCraftingResult(dummyInv);
+                    lastOutputStack = formula.recipe.assemble(dummyInv);
                     lastRemainingItems = formula.recipe.getRemainingItems(dummyInv);
                 } else {
                     lastOutputStack = ItemStack.EMPTY;
@@ -306,7 +306,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private boolean doSingleCraft() {
         //Should always be 9 for the size
         for (int i = 0; i < craftingGridSlots.size(); i++) {
-            dummyInv.setInventorySlotContents(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
+            dummyInv.setItem(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
         }
         recalculateRecipe();
 
@@ -344,7 +344,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             return doSingleCraft();
         }
         boolean canOperate = true;
-        if (!formula.matches(getWorld(), craftingGridSlots)) {
+        if (!formula.matches(getLevel(), craftingGridSlots)) {
             canOperate = moveItemsToGrid();
         }
         if (canOperate) {
@@ -358,7 +358,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
             ItemStack recipeStack = recipeSlot.getStack();
-            if (formula.isIngredientInPos(world, recipeStack, i)) {
+            if (formula.isIngredientInPos(level, recipeStack, i)) {
                 continue;
             }
             if (recipeStack.isEmpty()) {
@@ -368,7 +368,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     IInventorySlot stockSlot = inputSlots.get(j);
                     if (!stockSlot.isEmpty()) {
                         ItemStack stockStack = stockSlot.getStack();
-                        if (formula.isIngredientInPos(world, stockStack, i)) {
+                        if (formula.isIngredientInPos(level, stockStack, i)) {
                             recipeSlot.setStack(StackUtils.size(stockStack, 1));
                             MekanismUtils.logMismatchedStackSize(stockSlot.shrinkStack(1, Action.EXECUTE), 1);
                             markDirty(false);
@@ -409,7 +409,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
             ItemStack recipeStack = recipeSlot.getStack();
-            if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(getWorld(), recipeStack, i)))) {
+            if (!recipeStack.isEmpty() && (forcePush || (formula != null && !formula.isIngredientInPos(getLevel(), recipeStack, i)))) {
                 recipeSlot.setStack(tryMoveToInput(recipeStack));
             }
         }
@@ -553,7 +553,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private static void setSlotIfChanged(IInventorySlot slot, HashedItem item, int count) {
         ItemStack stack = item.createStack(count);
-        if (!ItemStack.areItemStacksEqual(slot.getStack(), stack)) {
+        if (!ItemStack.matches(slot.getStack(), stack)) {
             slot.setStack(stack);
         }
     }
@@ -607,7 +607,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             if (formulaStack.getItem() instanceof ItemCraftingFormula) {
                 ItemCraftingFormula item = (ItemCraftingFormula) formulaStack.getItem();
                 if (item.getInventory(formulaStack) == null) {
-                    RecipeFormula formula = new RecipeFormula(world, craftingGridSlots);
+                    RecipeFormula formula = new RecipeFormula(level, craftingGridSlots);
                     if (formula.isValidFormula()) {
                         item.setInventory(formulaStack, formula.input);
                         markDirty(false);
@@ -618,8 +618,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         autoMode = nbtTags.getBoolean(NBTConstants.AUTO);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
         pulseOperations = nbtTags.getInt(NBTConstants.PULSE);
@@ -628,8 +628,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putBoolean(NBTConstants.AUTO, autoMode);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         nbtTags.putInt(NBTConstants.PULSE, pulseOperations);
@@ -667,7 +667,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 if (formula == null && isRemote()) {
                     //If we are on the client (which we should be when setting anyways) and we don't have a formula yet
                     // but should, then create an empty formula
-                    formula = new RecipeFormula(getWorld(), NonNullList.withSize(9, ItemStack.EMPTY));
+                    formula = new RecipeFormula(getLevel(), NonNullList.withSize(9, ItemStack.EMPTY));
                 }
             } else {
                 formula = null;
@@ -679,10 +679,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 if (!stack.isEmpty() && formula == null && isRemote()) {
                     //If we are on the client (which we should be when setting anyways) and we don't have a formula yet
                     // but should, then create an empty formula. Also make sure it isn't just us trying to clear the formula slot
-                    formula = new RecipeFormula(getWorld(), NonNullList.withSize(9, ItemStack.EMPTY));
+                    formula = new RecipeFormula(getLevel(), NonNullList.withSize(9, ItemStack.EMPTY));
                 }
                 if (formula != null) {
-                    formula.setStack(getWorld(), index, stack);
+                    formula.setStack(getLevel(), index, stack);
                 }
             }));
         }

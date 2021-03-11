@@ -38,13 +38,13 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     @Override
     protected void render(TileEntityBioGenerator tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
         if (!tile.bioFuelTank.isEmpty()) {
-            matrix.push();
+            matrix.pushPose();
             FluidStack fluid = tile.bioFuelTank.getFluid();
             float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
             MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix,
-                  renderer.getBuffer(Atlases.getTranslucentCullBlockType()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight,
+                  renderer.getBuffer(Atlases.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight,
                   FaceDisplay.FRONT);
-            matrix.pop();
+            matrix.popPose();
         }
     }
 

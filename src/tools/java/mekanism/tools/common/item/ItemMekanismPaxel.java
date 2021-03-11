@@ -53,9 +53,9 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
     private static Item.Properties getItemProperties(ItemTier material) {
         Item.Properties properties = ItemDeferredRegister.getMekBaseProperties();
         if (material == ItemTier.NETHERITE) {
-            properties = properties.isImmuneToFire();
+            properties = properties.fireResistant();
         }
-        return addHarvestLevel(properties, material.getHarvestLevel());
+        return addHarvestLevel(properties, material.getLevel());
     }
 
     private static Item.Properties addHarvestLevel(Item.Properties properties, int harvestLevel) {
@@ -86,24 +86,24 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         super(4, -2.4F, material, Collections.emptySet(), getItemProperties(material));
         paxelDamage = () -> 4;
         paxelAtkSpeed = () -> -2.4F;
-        paxelEfficiency = material::getEfficiency;
-        paxelEnchantability = material::getEnchantability;
-        paxelMaxDurability = material::getMaxUses;
-        paxelHarvestLevel = material::getHarvestLevel;
+        paxelEfficiency = material::getSpeed;
+        paxelEnchantability = material::getEnchantmentValue;
+        paxelMaxDurability = material::getUses;
+        paxelHarvestLevel = material::getLevel;
         //Don't add any listeners as all the values are "static"
         attributeCache = new AttributeCache(this);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        super.addInformation(stack, world, tooltip, flag);
+    public void appendHoverText(@Nonnull ItemStack stack, @Nullable World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+        super.appendHoverText(stack, world, tooltip, flag);
         ToolsUtils.addDurability(tooltip, stack);
     }
 
     @Override
     public float getAttackDamage() {
-        return paxelDamage.getAsFloat() + getTier().getAttackDamage();
+        return paxelDamage.getAsFloat() + getTier().getAttackDamageBonus();
     }
 
     private int getHarvestLevel() {
@@ -111,7 +111,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
     }
 
     @Override
-    public boolean canHarvestBlock(BlockState state) {
+    public boolean isCorrectToolForDrops(BlockState state) {
         ToolType harvestTool = state.getHarvestTool();
         if (harvestTool == ToolType.AXE || harvestTool == ToolType.PICKAXE || harvestTool == ToolType.SHOVEL) {
             if (getHarvestLevel() >= state.getHarvestLevel()) {
@@ -120,13 +120,13 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
                 return true;
             }
         }
-        if (state.matchesBlock(Blocks.SNOW) || state.matchesBlock(Blocks.SNOW_BLOCK)) {
+        if (state.is(Blocks.SNOW) || state.is(Blocks.SNOW_BLOCK)) {
             //Extra hardcoded shovel checks
             return true;
         }
         //Extra hardcoded pickaxe checks
         Material material = state.getMaterial();
-        return material == Material.ROCK || material == Material.IRON || material == Material.ANVIL;
+        return material == Material.STONE || material == Material.METAL || material == Material.HEAVY_METAL;
     }
 
     /**
@@ -140,8 +140,8 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         Material material = state.getMaterial();
         //If pickaxe hardcoded shortcut, or axe hardcoded shortcut or ToolItem#getDestroySpeed checks
         //Note: We do it this way so that we don't need to check if the AxeItem material set contains the material if one of the pickaxe checks match
-        if (material == Material.IRON || material == Material.ANVIL || material == Material.ROCK || AxeItem.EFFECTIVE_ON_MATERIALS.contains(material) ||
-            getToolTypes(stack).stream().anyMatch(state::isToolEffective) || effectiveBlocks.contains(state.getBlock())) {
+        if (material == Material.METAL || material == Material.HEAVY_METAL || material == Material.STONE || AxeItem.DIGGABLE_MATERIALS.contains(material) ||
+            getToolTypes(stack).stream().anyMatch(state::isToolEffective) || blocks.contains(state.getBlock())) {
             return paxelEfficiency.getAsFloat();
         }
         return 1;
@@ -150,60 +150,60 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
     /**
      * {@inheritDoc}
      *
-     * Merged version of {@link AxeItem#onItemUse(ItemUseContext)} and {@link ShovelItem#onItemUse(ItemUseContext)}
+     * Merged version of {@link AxeItem#useOn(ItemUseContext)} and {@link ShovelItem#useOn(ItemUseContext)}
      */
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        World world = context.getWorld();
-        BlockPos blockpos = context.getPos();
+    public ActionResultType useOn(ItemUseContext context) {
+        World world = context.getLevel();
+        BlockPos blockpos = context.getClickedPos();
         PlayerEntity player = context.getPlayer();
-        ItemStack stack = context.getItem();
+        ItemStack stack = context.getItemInHand();
         BlockState blockstate = world.getBlockState(blockpos);
         BlockState resultToSet = blockstate.getToolModifiedState(world, blockpos, player, stack, ToolType.AXE);
         if (resultToSet != null) {
             //We can strip the item as an axe
-            world.playSound(player, blockpos, SoundEvents.ITEM_AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(player, blockpos, SoundEvents.AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
         } else {
             //We cannot strip the item that was right clicked, so attempt to use the paxel as a shovel
-            if (context.getFace() == Direction.DOWN) {
+            if (context.getClickedFace() == Direction.DOWN) {
                 return ActionResultType.PASS;
             }
             BlockState foundResult = blockstate.getToolModifiedState(world, blockpos, player, stack, ToolType.SHOVEL);
-            if (foundResult != null && world.isAirBlock(blockpos.up())) {
+            if (foundResult != null && world.isEmptyBlock(blockpos.above())) {
                 //We can flatten the item as a shovel
-                world.playSound(player, blockpos, SoundEvents.ITEM_SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(player, blockpos, SoundEvents.SHOVEL_FLATTEN, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 resultToSet = foundResult;
-            } else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.get(CampfireBlock.LIT)) {
+            } else if (blockstate.getBlock() instanceof CampfireBlock && blockstate.getValue(CampfireBlock.LIT)) {
                 //We can use the paxel as a shovel to extinguish a campfire
-                if (!world.isRemote) {
-                    world.playEvent(null, WorldEvents.FIRE_EXTINGUISH_SOUND, blockpos, 0);
+                if (!world.isClientSide) {
+                    world.levelEvent(null, WorldEvents.FIRE_EXTINGUISH_SOUND, blockpos, 0);
                 }
-                CampfireBlock.extinguish(world, blockpos, blockstate);
-                resultToSet = blockstate.with(CampfireBlock.LIT, false);
+                CampfireBlock.dowse(world, blockpos, blockstate);
+                resultToSet = blockstate.setValue(CampfireBlock.LIT, false);
             }
         }
         if (resultToSet == null) {
             return ActionResultType.PASS;
         }
-        if (!world.isRemote) {
-            world.setBlockState(blockpos, resultToSet, BlockFlags.DEFAULT_AND_RERENDER);
+        if (!world.isClientSide) {
+            world.setBlock(blockpos, resultToSet, BlockFlags.DEFAULT_AND_RERENDER);
             if (player != null) {
-                stack.damageItem(1, player, onBroken -> onBroken.sendBreakAnimation(context.getHand()));
+                stack.hurtAndBreak(1, player, onBroken -> onBroken.broadcastBreakEvent(context.getHand()));
             }
         }
-        return ActionResultType.func_233537_a_(world.isRemote);
+        return ActionResultType.sidedSuccess(world.isClientSide);
     }
 
     @Override
-    public int getItemEnchantability() {
+    public int getEnchantmentValue() {
         return paxelEnchantability.getAsInt();
     }
 
     @Nonnull
     @Override
     public Ingredient getRepairMaterial() {
-        return getTier().getRepairMaterial();
+        return getTier().getRepairIngredient();
     }
 
     @Override
@@ -212,7 +212,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
     }
 
     @Override
-    public boolean isDamageable() {
+    public boolean canBeDepleted() {
         return paxelMaxDurability.getAsInt() > 0;
     }
 
@@ -232,7 +232,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
 
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Tool modifier", getAttackDamage(), Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Tool modifier", paxelAtkSpeed.getAsFloat(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", paxelAtkSpeed.getAsFloat(), Operation.ADDITION));
     }
 }

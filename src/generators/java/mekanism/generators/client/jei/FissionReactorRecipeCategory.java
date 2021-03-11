@@ -56,7 +56,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
 
     private List<FluidStack> getWaterInput() {
         List<FluidStack> representations = new ArrayList<>();
-        for (Fluid fluid : FluidTags.WATER.getAllElements()) {
+        for (Fluid fluid : FluidTags.WATER.getValues()) {
             representations.add(new FluidStack(fluid, 1_000));
         }
         return representations;

@@ -77,7 +77,7 @@ public abstract class BaseSoundProvider implements IDataProvider {
     }
 
     @Override
-    public void act(@Nonnull DirectoryCache cache) {
+    public void run(@Nonnull DirectoryCache cache) {
         soundEventBuilders.clear();
         addSoundEvents();
         if (!soundEventBuilders.isEmpty()) {

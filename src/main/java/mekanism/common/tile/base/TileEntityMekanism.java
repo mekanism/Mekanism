@@ -420,13 +420,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Nonnull
     public ITextComponent getName() {
-        return TextComponentUtil.translate(Util.makeTranslationKey("container", getBlockType().getRegistryName()));
+        return TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
     }
 
     @Override
     public void markDirtyComparator() {
         //Only update the comparator state if we support comparators
-        if (supportsComparator() && !getBlockState().isAir(world, pos)) {
+        if (supportsComparator() && !getBlockState().isAir(level, worldPosition)) {
             int newRedstoneLevel = getRedstoneLevel();
             if (newRedstoneLevel != currentRedstoneLevel) {
                 currentRedstoneLevel = newRedstoneLevel;
@@ -436,26 +436,26 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     protected void notifyComparatorChange() {
-        world.updateComparatorOutputLevel(pos, getBlockType());
+        level.updateNeighbourForOutputSignal(worldPosition, getBlockType());
     }
 
     public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
-        ItemStack stack = player.getHeldItem(hand);
+        ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty()) {
             IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);
             if (wrenchHandler != null) {
-                if (wrenchHandler.canUseWrench(stack, player, rayTrace.getPos())) {
+                if (wrenchHandler.canUseWrench(stack, player, rayTrace.getBlockPos())) {
                     if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                         SecurityUtils.displayNoAccess(player);
                         return WrenchResult.NO_SECURITY;
                     }
-                    if (player.isSneaking()) {
-                        WorldUtils.dismantleBlock(state, getWorld(), pos, this);
+                    if (player.isShiftKeyDown()) {
+                        WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this);
                         return WrenchResult.DISMANTLED;
                     }
                     //Special ITileDirectional handling
                     if (isDirectional() && Attribute.get(getBlockType(), AttributeStateFacing.class).canRotate()) {
-                        setFacing(getDirection().rotateY());
+                        setFacing(getDirection().getClockWise());
                     }
                     return WrenchResult.SUCCESS;
                 }
@@ -466,13 +466,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public ActionResultType openGui(PlayerEntity player) {
         //Everything that calls this has isRemote being false but add the check just in case anyways
-        if (hasGui() && !isRemote() && !player.isSneaking()) {
+        if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
                 return ActionResultType.FAIL;
             }
             //Pass on this activation if the player is rotating with a configurator
-            ItemStack stack = player.getHeldItemMainhand();
+            ItemStack stack = player.getMainHandItem();
             if (isDirectional() && !stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 ItemConfigurator configurator = (ItemConfigurator) stack.getItem();
                 if (configurator.getMode(stack) == ItemConfigurator.ConfiguratorMode.ROTATE) {
@@ -486,7 +486,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
 
-            NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(blockProvider.getBlock(), AttributeGui.class).getProvider(this), pos);
+            NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(blockProvider.getBlock(), AttributeGui.class).getProvider(this), worldPosition);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
@@ -508,7 +508,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                     updateDelay--;
                     if (updateDelay == 0 && getClientActive() != currentActive) {
                         //If it doesn't match and we are done with the delay period, then update it
-                        world.setBlockState(pos, Attribute.setActive(getBlockState(), currentActive));
+                        level.setBlockAndUpdate(worldPosition, Attribute.setActive(getBlockState(), currentActive));
                     }
                 }
             }
@@ -535,8 +535,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         for (ITileComponent component : components) {
             component.invalidate();
         }
@@ -588,8 +588,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.REDSTONE, value -> redstone = value);
         for (ITileComponent component : components) {
             component.read(nbtTags);
@@ -616,8 +616,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         nbtTags.putBoolean(NBTConstants.REDSTONE, redstone);
         for (ITileComponent component : components) {
             component.write(nbtTags);
@@ -765,12 +765,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             Direction facing = Attribute.getFacing(state);
             if (facing != null) {
                 return facing;
-            } else if (!getType().isValidBlock(state.getBlock())) {
+            } else if (!getType().isValid(state.getBlock())) {
                 //This is probably always true if we couldn't get the direction it is facing
                 // but double check just in case before logging
                 Mekanism.logger.warn("Error invalid block for tile {} at {} in {}. Unable to get direction, falling back to north, "
                                      + "things will probably not work correctly. This is almost certainly due to another mod incorrectly "
-                                     + "trying to move this tile and not properly updating the position.", getType().getRegistryName(), pos, world);
+                                     + "trying to move this tile and not properly updating the position.", getType().getRegistryName(), worldPosition, level);
             }
         }
         //TODO: Remove, give it some better default, or allow it to be null
@@ -781,8 +781,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public void setFacing(@Nonnull Direction direction) {
         if (isDirectional()) {
             BlockState state = Attribute.setFacing(getBlockState(), direction);
-            if (world != null && state != null) {
-                world.setBlockState(pos, state);
+            if (level != null && state != null) {
+                level.setBlockAndUpdate(worldPosition, state);
             }
         }
     }
@@ -814,7 +814,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     private void updatePower() {
-        boolean power = world.isBlockPowered(getPos());
+        boolean power = level.hasNeighborSignal(getBlockPos());
         if (redstone != power) {
             redstone = power;
             onPowerChange();
@@ -1002,7 +1002,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public IHeatHandler getAdjacent(Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            TileEntity adj = WorldUtils.getTileEntity(getWorld(), getPos().offset(side));
+            TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
         }
         return null;
@@ -1033,7 +1033,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                     for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
                         if (!SecurityUtils.canAccess(player, this)) {
                             //and if they can't then boot them out
-                            player.closeScreen();
+                            player.closeContainer();
                         }
                     }
                 }
@@ -1063,11 +1063,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                     if (active) {
                         //Always turn on instantly
                         state = Attribute.setActive(state, true);
-                        world.setBlockState(pos, state);
+                        level.setBlockAndUpdate(worldPosition, state);
                     } else {
                         // if the update delay is already zero, we can go ahead and set the state
                         if (updateDelay == 0) {
-                            world.setBlockState(pos, Attribute.setActive(getBlockState(), currentActive));
+                            level.setBlockAndUpdate(worldPosition, Attribute.setActive(getBlockState(), currentActive));
                         }
                         // we always reset the update delay when turning off
                         updateDelay = delaySupplier.getAsInt();
@@ -1104,7 +1104,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
             // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
             // play it
-            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundHandler().isPlaying(activeSound))) {
+            if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundManager().isActive(activeSound))) {
                 activeSound = SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), getSoundPos());
             }
             // Always reset the cooldown; either we just attempted to play a sound or we're fully muffled; either way

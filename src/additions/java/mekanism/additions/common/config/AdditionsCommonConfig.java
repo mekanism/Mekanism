@@ -93,7 +93,7 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
                   .worldRestart()
                   .defineList("biomeBlackList", new ArrayList<>(), o -> {
                       if (o instanceof String) {
-                          ResourceLocation rl = ResourceLocation.tryCreate(((String) o).toLowerCase(Locale.ROOT));
+                          ResourceLocation rl = ResourceLocation.tryParse(((String) o).toLowerCase(Locale.ROOT));
                           if (rl != null) {
                               return ForgeRegistries.BIOMES.containsKey(rl);
                           }
@@ -104,7 +104,7 @@ public class AdditionsCommonConfig extends BaseMekanismConfig {
                   .worldRestart()
                   .defineList("structureBlackList", new ArrayList<>(), o -> {
                       if (o instanceof String) {
-                          ResourceLocation rl = ResourceLocation.tryCreate(((String) o).toLowerCase(Locale.ROOT));
+                          ResourceLocation rl = ResourceLocation.tryParse(((String) o).toLowerCase(Locale.ROOT));
                           if (rl != null) {
                               return ForgeRegistries.STRUCTURE_FEATURES.containsKey(rl);
                           }

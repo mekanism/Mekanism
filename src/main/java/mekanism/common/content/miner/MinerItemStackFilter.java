@@ -25,32 +25,32 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
         if (itemStack.isEmpty()) {
             return false;
         }
-        return itemType.isItemEqual(itemStack);
+        return itemType.sameItem(itemStack);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        itemType.write(nbtTags);
+        itemType.save(nbtTags);
         return nbtTags;
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        itemType = ItemStack.read(nbtTags);
+        itemType = ItemStack.of(nbtTags);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeItemStack(itemType);
+        buffer.writeItem(itemType);
     }
 
     @Override
     public void read(PacketBuffer dataStream) {
         super.read(dataStream);
-        itemType = dataStream.readItemStack();
+        itemType = dataStream.readItem();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof MinerItemStackFilter && ((MinerItemStackFilter) filter).itemType.isItemEqual(itemType);
+        return filter instanceof MinerItemStackFilter && ((MinerItemStackFilter) filter).itemType.sameItem(itemType);
     }
 
     @Override

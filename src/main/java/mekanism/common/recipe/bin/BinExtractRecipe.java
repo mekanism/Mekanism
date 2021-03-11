@@ -25,8 +25,8 @@ public class BinExtractRecipe extends BinRecipe {
     @Override
     public boolean matches(CraftingInventory inv, World world) {
         ItemStack binStack = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getSizeInventory(); ++i) {
-            ItemStack stackInSlot = inv.getStackInSlot(i);
+        for (int i = 0; i < inv.getContainerSize(); ++i) {
+            ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
                     if (!binStack.isEmpty()) {
@@ -49,10 +49,10 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
+    public ItemStack assemble(CraftingInventory inv) {
         ItemStack binStack = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getSizeInventory(); ++i) {
-            ItemStack stackInSlot = inv.getStackInSlot(i);
+        for (int i = 0; i < inv.getContainerSize(); ++i) {
+            ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
                     if (!binStack.isEmpty()) {
@@ -76,9 +76,9 @@ public class BinExtractRecipe extends BinRecipe {
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-        NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+        NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
         for (int i = 0; i < remaining.size(); ++i) {
-            ItemStack stackInSlot = inv.getStackInSlot(i);
+            ItemStack stackInSlot = inv.getItem(i);
             if (stackInSlot.getItem() instanceof ItemBlockBin) {
                 ItemStack binStack = stackInSlot.copy();
                 BinInventorySlot slot = convertToSlot(binStack);

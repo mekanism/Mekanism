@@ -26,12 +26,12 @@ public class ChemicalInfuserRecipeSerializer<RECIPE extends ChemicalInfuserRecip
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement leftIngredients = JSONUtils.isJsonArray(json, JsonConstants.LEFT_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.LEFT_INPUT) :
-                                      JSONUtils.getJsonObject(json, JsonConstants.LEFT_INPUT);
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        JsonElement leftIngredients = JSONUtils.isArrayNode(json, JsonConstants.LEFT_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.LEFT_INPUT) :
+                                      JSONUtils.getAsJsonObject(json, JsonConstants.LEFT_INPUT);
         GasStackIngredient leftInput = GasStackIngredient.deserialize(leftIngredients);
-        JsonElement rightIngredients = JSONUtils.isJsonArray(json, JsonConstants.RIGHT_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.RIGHT_INPUT) :
-                                       JSONUtils.getJsonObject(json, JsonConstants.RIGHT_INPUT);
+        JsonElement rightIngredients = JSONUtils.isArrayNode(json, JsonConstants.RIGHT_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.RIGHT_INPUT) :
+                                       JSONUtils.getAsJsonObject(json, JsonConstants.RIGHT_INPUT);
         GasStackIngredient rightInput = GasStackIngredient.deserialize(rightIngredients);
         GasStack output = SerializerHelper.getGasStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
@@ -41,7 +41,7 @@ public class ChemicalInfuserRecipeSerializer<RECIPE extends ChemicalInfuserRecip
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             GasStackIngredient leftInput = GasStackIngredient.read(buffer);
             GasStackIngredient rightInput = GasStackIngredient.read(buffer);
@@ -54,7 +54,7 @@ public class ChemicalInfuserRecipeSerializer<RECIPE extends ChemicalInfuserRecip
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

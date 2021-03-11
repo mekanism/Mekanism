@@ -50,7 +50,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
 
     @Override
     protected void handleBreakBlock(BlockState state, BlockPos hitPos) {
-        List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, hitPos, WorldUtils.getTileEntity(world, hitPos));
+        List<ItemStack> drops = Block.getDrops(state, (ServerWorld) level, hitPos, WorldUtils.getTileEntity(level, hitPos));
         if (!drops.isEmpty()) {
             List<IInventorySlot> inventorySlots = getInventorySlots(null);
             for (ItemStack drop : drops) {
@@ -63,7 +63,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
                 }
                 if (!drop.isEmpty()) {
                     //If we have some drop left over that we couldn't fit, then spawn it into the world
-                    Block.spawnAsEntity(world, pos, drop);
+                    Block.popResource(level, worldPosition, drop);
                 }
             }
         }

@@ -33,32 +33,32 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
         if (getFrequency(stack) != null) {
             tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getFrequency(stack).getKey()));
             tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, !getFrequency(stack).isPublic() ? MekanismLang.PRIVATE : MekanismLang.PUBLIC));
         }
-        super.addInformation(stack, world, tooltip, flag);
+        super.appendHoverText(stack, world, tooltip, flag);
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
+    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
         if (getOwnerUUID(stack) == null) {
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 SecurityUtils.claimItem(player, stack);
             }
         } else if (SecurityUtils.canAccess(player, stack)) {
-            if (!world.isRemote) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getDisplayName(), (i, inv, p) -> new PortableTeleporterContainer(i, inv, hand, stack)), buf -> {
-                    buf.writeEnumValue(hand);
-                    buf.writeItemStack(stack);
+            if (!world.isClientSide) {
+                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getHoverName(), (i, inv, p) -> new PortableTeleporterContainer(i, inv, hand, stack)), buf -> {
+                    buf.writeEnum(hand);
+                    buf.writeItem(stack);
                 });
             }
         } else {
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 SecurityUtils.displayNoAccess(player);
             }
             return new ActionResult<>(ActionResultType.FAIL, stack);

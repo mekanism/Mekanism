@@ -26,8 +26,8 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
     public GuiSPS(MekanismTileContainer<TileEntitySPSCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-        ySize += 16;
-        playerInventoryTitleY = ySize - 92;
+        imageHeight += 16;
+        inventoryLabelY = imageHeight - 92;
     }
 
     @Override
@@ -56,13 +56,13 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
             public double getLevel() {
                 return Math.min(1, tile.getMultiblock().getScaledProgress());
             }
-        }, 7, 79, xSize - 16, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
+        }, 7, 79, imageWidth - 16, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.SPS.translate(), titleY);
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawTitleText(matrix, MekanismLang.SPS.translate(), titleLabelY);
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

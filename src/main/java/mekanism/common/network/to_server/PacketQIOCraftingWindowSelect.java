@@ -17,9 +17,9 @@ public class PacketQIOCraftingWindowSelect implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         ServerPlayerEntity player = context.getSender();
-        if (player != null && player.openContainer instanceof QIOItemViewerContainer) {
-            QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
-            container.setSelectedCraftingGrid(player.getUniqueID(), windowIndex);
+        if (player != null && player.containerMenu instanceof QIOItemViewerContainer) {
+            QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
+            container.setSelectedCraftingGrid(player.getUUID(), windowIndex);
         }
     }
 

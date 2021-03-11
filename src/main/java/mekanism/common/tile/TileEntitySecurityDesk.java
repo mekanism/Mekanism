@@ -82,14 +82,14 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
      * Validates access for anyone who might be accessing a GUI that changed security modes
      */
     private void validateAccess() {
-        if (hasWorld()) {
+        if (hasLevel()) {
             MinecraftServer server = getWorldNN().getServer();
             if (server != null) {
                 for (ServerPlayerEntity player : server.getPlayerList().getPlayers()) {
-                    if (player.openContainer instanceof ISecurityContainer) {
-                        if (!SecurityUtils.canAccess(player, ((ISecurityContainer) player.openContainer).getSecurityObject())) {
+                    if (player.containerMenu instanceof ISecurityContainer) {
+                        if (!SecurityUtils.canAccess(player, ((ISecurityContainer) player.containerMenu).getSecurityObject())) {
                             //Boot any players out of the container if they no longer have access to viewing it
-                            player.closeScreen();
+                            player.closeContainer();
                         }
                     }
                 }
@@ -124,7 +124,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     public void addTrusted(String name) {
         SecurityFrequency frequency = getFreq();
         if (frequency != null) {
-            GameProfile profile = ServerLifecycleHooks.getCurrentServer().getPlayerProfileCache().getGameProfileForUsername(name);
+            GameProfile profile = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(name);
             if (profile != null) {
                 frequency.addTrusted(profile.getId(), profile.getName());
                 markDirty(false);
@@ -133,39 +133,39 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public void read(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.read(state, nbtTags);
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
-        super.write(nbtTags);
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
         if (ownerUUID != null) {
-            nbtTags.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
         }
         return nbtTags;
     }
 
     @Override
     public void onPlace() {
-        WorldUtils.makeBoundingBlock(getWorld(), getPos().up(), getPos());
+        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
     }
 
     @Override
     public void onBreak(BlockState oldState) {
-        World world = getWorld();
+        World world = getLevel();
         if (world != null) {
-            world.removeBlock(getPos().up(), false);
-            world.removeBlock(getPos(), false);
+            world.removeBlock(getBlockPos().above(), false);
+            world.removeBlock(getBlockPos(), false);
         }
     }
 
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(pos, pos.add(1, 2, 1));
+        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     @Nonnull
@@ -173,7 +173,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
         if (ownerUUID != null) {
-            updateTag.putUniqueId(NBTConstants.OWNER_UUID, ownerUUID);
+            updateTag.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
             updateTag.putString(NBTConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
         }
         return updateTag;

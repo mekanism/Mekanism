@@ -29,7 +29,7 @@ public class PacketAddTrusted implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         PlayerEntity player = context.getSender();
         if (player != null) {
-            TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, player.world, tilePosition);
+            TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, player.level, tilePosition);
             if (tile != null) {
                 tile.addTrusted(name);
             }
@@ -39,10 +39,10 @@ public class PacketAddTrusted implements IMekanismPacket {
     @Override
     public void encode(PacketBuffer buffer) {
         buffer.writeBlockPos(tilePosition);
-        buffer.writeString(name, MAX_NAME_LENGTH);
+        buffer.writeUtf(name, MAX_NAME_LENGTH);
     }
 
     public static PacketAddTrusted decode(PacketBuffer buffer) {
-        return new PacketAddTrusted(buffer.readBlockPos(), buffer.readString(MAX_NAME_LENGTH));
+        return new PacketAddTrusted(buffer.readBlockPos(), buffer.readUtf(MAX_NAME_LENGTH));
     }
 }

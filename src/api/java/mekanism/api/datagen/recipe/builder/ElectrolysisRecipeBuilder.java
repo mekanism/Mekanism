@@ -57,7 +57,7 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         }
 
         @Override
-        public void serialize(@Nonnull JsonObject json) {
+        public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.INPUT, input.serialize());
             if (energyMultiplier.greaterThan(FloatingLong.ONE)) {
                 //Only add energy usage if it is greater than one, as otherwise it will default to one

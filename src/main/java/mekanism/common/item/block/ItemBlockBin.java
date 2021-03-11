@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSustainedInventory {
 
     public ItemBlockBin(BlockBin block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties().maxStackSize(1));
+        super(block, ItemDeferredRegister.getMekBaseProperties().stacksTo(1));
     }
 
     @Override
@@ -37,7 +37,7 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
             if (slot.isEmpty()) {
                 tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
             } else {
-                tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, slot.getStack().getDisplayName()));
+                tooltip.add(TextComponentUtil.build(EnumColor.BRIGHT_GREEN, slot.getStack().getHoverName()));
                 if (tier == BinTier.CREATIVE) {
                     tooltip.add(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, MekanismLang.INFINITE));
                 } else {

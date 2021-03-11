@@ -57,10 +57,10 @@ public abstract class ModuleMekaSuit extends Module {
             //Check if the mask is under water
             //Note: Being in water is checked first to ensure that if it is raining and the player is in water
             // they get the full strength production
-            double maskHeight = player.getPosYEye() - 0.15;
-            BlockPos headPos = new BlockPos(player.getPosX(), maskHeight, player.getPosZ());
-            FluidState fluidstate = player.getEntityWorld().getFluidState(headPos);
-            if (fluidstate.isTagged(FluidTags.WATER) && maskHeight <= headPos.getY() + fluidstate.getActualHeight(player.getEntityWorld(), headPos)) {
+            double maskHeight = player.getEyeY() - 0.15;
+            BlockPos headPos = new BlockPos(player.getX(), maskHeight, player.getZ());
+            FluidState fluidstate = player.getCommandSenderWorld().getFluidState(headPos);
+            if (fluidstate.is(FluidTags.WATER) && maskHeight <= headPos.getY() + fluidstate.getHeight(player.getCommandSenderWorld(), headPos)) {
                 //If the position the bottom of the mask is in is water set the production rate to our max rate
                 productionRate = getMaxRate();
             } else if (player.isInRain()) {
@@ -72,21 +72,21 @@ public abstract class ModuleMekaSuit extends Module {
                 int maxRate = Math.min(productionRate, getContainerEnergy().divideToInt(usage));
                 long hydrogenUsed = 0;
                 GasStack hydrogenStack = MekanismGases.HYDROGEN.getStack(maxRate * 2L);
-                ItemStack chestStack = player.getItemStackFromSlot(EquipmentSlotType.CHEST);
+                ItemStack chestStack = player.getItemBySlot(EquipmentSlotType.CHEST);
                 Optional<IGasHandler> chestCapability = chestStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
                 if (checkChestPlate(chestStack) && chestCapability.isPresent()) {
                     hydrogenUsed = maxRate * 2L - chestCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                     hydrogenStack.shrink(hydrogenUsed);
                 }
-                ItemStack handStack = player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+                ItemStack handStack = player.getItemBySlot(EquipmentSlotType.MAINHAND);
                 Optional<IGasHandler> handCapability = handStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
                 if (handCapability.isPresent()) {
                     hydrogenUsed = maxRate * 2L - handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                 }
-                int oxygenUsed = Math.min(maxRate, player.getMaxAir() - player.getAir());
+                int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());
                 long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
                 useEnergy(player, usage.multiply(used));
-                player.setAir(player.getAir() + oxygenUsed);
+                player.setAirSupply(player.getAirSupply() + oxygenUsed);
             }
         }
 
@@ -134,7 +134,7 @@ public abstract class ModuleMekaSuit extends Module {
                 if (free || energy.greaterOrEqual(usage)) {
                     //Gather all the active effects that we can handle, so that we have them in their own list and
                     // don't run into any issues related to CMEs
-                    List<EffectInstance> effects = player.getActivePotionEffects().stream().filter(effect -> canHandle(effect.getPotion().getEffectType()))
+                    List<EffectInstance> effects = player.getActiveEffects().stream().filter(effect -> canHandle(effect.getEffect().getCategory()))
                           .collect(Collectors.toList());
                     for (EffectInstance effect : effects) {
                         if (free) {
@@ -161,8 +161,8 @@ public abstract class ModuleMekaSuit extends Module {
             if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
                 //Gather all the active effects that we can handle, so that we have them in their own list and
                 // don't run into any issues related to CMEs
-                List<EffectInstance> effects = player.getActivePotionEffects().stream()
-                      .filter(effect -> canHandle(effect.getPotion().getEffectType()))
+                List<EffectInstance> effects = player.getActiveEffects().stream()
+                      .filter(effect -> canHandle(effect.getEffect().getCategory()))
                       .collect(Collectors.toList());
                 for (EffectInstance effect : effects) {
                     if (free) {
@@ -330,8 +330,8 @@ public abstract class ModuleMekaSuit extends Module {
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
             IEnergyContainer energyContainer = getEnergyContainer();
-            if (energyContainer != null && !energyContainer.getNeeded().isZero() && player.world.isDaytime() &&
-                player.world.canSeeSky(new BlockPos(player.getPositionVec())) && !player.world.isRaining() && player.world.getDimensionType().hasSkyLight()) {
+            if (energyContainer != null && !energyContainer.getNeeded().isZero() && player.level.isDay() &&
+                player.level.canSeeSky(new BlockPos(player.position())) && !player.level.isRaining() && player.level.dimensionType().hasSkyLight()) {
                 FloatingLong rate = MekanismConfig.gear.mekaSuitSolarRechargingRate.get().multiply(getInstalledCount());
                 energyContainer.insert(rate, Action.EXECUTE, AutomationType.MANUAL);
             }
@@ -352,7 +352,7 @@ public abstract class ModuleMekaSuit extends Module {
                 if (toFeed > 0) {
                     useEnergy(player, usage.multiply(toFeed));
                     item.useGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get());
-                    player.getFoodStats().addStats(1, MekanismConfig.general.nutritionalPasteSaturation.get());
+                    player.getFoodData().eat(1, MekanismConfig.general.nutritionalPasteSaturation.get());
                 }
             }
         }

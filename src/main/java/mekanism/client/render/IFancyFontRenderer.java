@@ -33,11 +33,11 @@ public interface IFancyFontRenderer {
     }
 
     default int drawString(MatrixStack matrix, ITextComponent component, int x, int y, int color) {
-        return getFont().drawText(matrix, component, x, y, color);
+        return getFont().draw(matrix, component, x, y, color);
     }
 
     default int getStringWidth(ITextComponent component) {
-        return getFont().getStringPropertyWidth(component);
+        return getFont().width(component);
     }
 
     default void drawCenteredText(MatrixStack matrix, ITextComponent component, float x, float y, int color) {
@@ -66,10 +66,10 @@ public interface IFancyFontRenderer {
     }
 
     default void drawTextExact(MatrixStack matrix, ITextComponent text, float x, float y, int color) {
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(x, y, 0);
         drawString(matrix, text, 0, 0, color);
-        matrix.pop();
+        matrix.popPose();
     }
 
     default float getNeededScale(ITextComponent text, float maxLength) {
@@ -105,11 +105,11 @@ public interface IFancyFontRenderer {
 
     default void prepTextScale(MatrixStack matrix, Consumer<MatrixStack> runnable, float x, float y, float scale) {
         float yAdd = 4 - (scale * 8) / 2F;
-        matrix.push();
+        matrix.pushPose();
         matrix.translate(x, y + yAdd, 0);
         matrix.scale(scale, scale, scale);
         runnable.accept(matrix);
-        matrix.pop();
+        matrix.popPose();
         MekanismRenderer.resetColor();
     }
 
@@ -128,7 +128,7 @@ public interface IFancyFontRenderer {
 
         WrappedTextRenderer(IFancyFontRenderer font) {
             this.font = font;
-            SPACE_LENGTH = font.getFont().getStringWidth(" ");
+            SPACE_LENGTH = font.getFont().width(" ");
         }
 
         void render(MatrixStack matrix, String text, float x, float y, int color, float maxLength) {
@@ -138,7 +138,7 @@ public interface IFancyFontRenderer {
                     continue;
                 }
                 wordBuilder.append(c);
-                wordLength += font.getFont().getStringWidth(Character.toString(c));
+                wordLength += font.getFont().width(Character.toString(c));
             }
             if (wordBuilder.length() > 0) {
                 addWord(maxLength);

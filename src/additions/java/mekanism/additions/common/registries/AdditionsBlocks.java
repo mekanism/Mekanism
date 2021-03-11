@@ -308,19 +308,19 @@ public class AdditionsBlocks {
     }
 
     private static BlockRegistryObject<BlockPlastic, ItemBlockColoredName> registerPlastic(EnumColor color) {
-        return registerPlastic(color, "_plastic", properties -> properties.hardnessAndResistance(5, 6));
+        return registerPlastic(color, "_plastic", properties -> properties.strength(5, 6));
     }
 
     private static BlockRegistryObject<BlockPlastic, ItemBlockColoredName> registerSlickPlastic(EnumColor color) {
-        return registerPlastic(color, "_slick_plastic", properties -> properties.hardnessAndResistance(5, 6).slipperiness(0.98F));
+        return registerPlastic(color, "_slick_plastic", properties -> properties.strength(5, 6).friction(0.98F));
     }
 
     private static BlockRegistryObject<BlockPlastic, ItemBlockColoredName> registerGlowPlastic(EnumColor color) {
-        return registerPlastic(color, "_plastic_glow", properties -> properties.hardnessAndResistance(5, 6).setLightLevel(state -> 10));
+        return registerPlastic(color, "_plastic_glow", properties -> properties.strength(5, 6).lightLevel(state -> 10));
     }
 
     private static BlockRegistryObject<BlockPlastic, ItemBlockColoredName> registerReinforcedPlastic(EnumColor color) {
-        return registerPlastic(color, "_reinforced_plastic", properties -> properties.hardnessAndResistance(50, 1_200));
+        return registerPlastic(color, "_reinforced_plastic", properties -> properties.strength(50, 1_200));
     }
 
     private static BlockRegistryObject<BlockPlasticRoad, ItemBlockColoredName> registerPlasticRoad(EnumColor color) {
@@ -348,11 +348,11 @@ public class AdditionsBlocks {
     }
 
     private static BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName> registerGlowPlasticStairs(IBlockProvider baseBlock, EnumColor color) {
-        return registerPlasticStairs(baseBlock, color, "_plastic_glow_stairs", properties -> properties.setLightLevel(state -> 10));
+        return registerPlasticStairs(baseBlock, color, "_plastic_glow_stairs", properties -> properties.lightLevel(state -> 10));
     }
 
     private static BlockRegistryObject<BlockPlasticSlab, ItemBlockColoredName> registerGlowPlasticSlab(EnumColor color) {
-        return registerPlasticSlab(color, "_plastic_glow_slab", properties -> properties.setLightLevel(state -> 10));
+        return registerPlasticSlab(color, "_plastic_glow_slab", properties -> properties.lightLevel(state -> 10));
     }
 
     private static BlockRegistryObject<BlockPlasticTransparentStairs, ItemBlockColoredName> registerTransparentPlasticStairs(IBlockProvider baseBlock, EnumColor color) {

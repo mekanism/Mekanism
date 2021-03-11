@@ -32,7 +32,7 @@ public class GuiQIOTileFrequencySelect extends GuiQIOFrequencySelect<QIOFrequenc
     @Override
     public void init() {
         super.init();
-        addButton(new MekanismImageButton(this, guiLeft + 6, guiTop + 6, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, leftPos + 6, topPos + 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, (TileEntity) tile))));
     }
 

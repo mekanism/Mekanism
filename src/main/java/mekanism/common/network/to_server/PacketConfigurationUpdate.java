@@ -65,7 +65,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
         if (player == null) {
             return;
         }
-        TileEntity tile = WorldUtils.getTileEntity(player.world, pos);
+        TileEntity tile = WorldUtils.getTileEntity(player.level, pos);
         if (tile instanceof ISideConfiguration) {
             ISideConfiguration config = (ISideConfiguration) tile;
             if (packetType == ConfigurationPacket.EJECT) {
@@ -121,39 +121,39 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(packetType);
+        buffer.writeEnum(packetType);
         buffer.writeBlockPos(pos);
         if (packetType == ConfigurationPacket.EJECT) {
-            buffer.writeEnumValue(transmission);
+            buffer.writeEnum(transmission);
         } else if (packetType == ConfigurationPacket.SIDE_DATA) {
             buffer.writeVarInt(clickType);
-            buffer.writeEnumValue(inputSide);
-            buffer.writeEnumValue(transmission);
+            buffer.writeEnum(inputSide);
+            buffer.writeEnum(transmission);
         } else if (packetType == ConfigurationPacket.EJECT_COLOR) {
             buffer.writeVarInt(clickType);
         } else if (packetType == ConfigurationPacket.INPUT_COLOR) {
             buffer.writeVarInt(clickType);
-            buffer.writeEnumValue(inputSide);
+            buffer.writeEnum(inputSide);
         }
     }
 
     public static PacketConfigurationUpdate decode(PacketBuffer buffer) {
-        ConfigurationPacket packetType = buffer.readEnumValue(ConfigurationPacket.class);
+        ConfigurationPacket packetType = buffer.readEnum(ConfigurationPacket.class);
         BlockPos pos = buffer.readBlockPos();
         int clickType = 0;
         RelativeSide inputSide = null;
         TransmissionType transmission = null;
         if (packetType == ConfigurationPacket.EJECT) {
-            transmission = buffer.readEnumValue(TransmissionType.class);
+            transmission = buffer.readEnum(TransmissionType.class);
         } else if (packetType == ConfigurationPacket.SIDE_DATA) {
             clickType = buffer.readVarInt();
-            inputSide = buffer.readEnumValue(RelativeSide.class);
-            transmission = buffer.readEnumValue(TransmissionType.class);
+            inputSide = buffer.readEnum(RelativeSide.class);
+            transmission = buffer.readEnum(TransmissionType.class);
         } else if (packetType == ConfigurationPacket.EJECT_COLOR) {
             clickType = buffer.readVarInt();
         } else if (packetType == ConfigurationPacket.INPUT_COLOR) {
             clickType = buffer.readVarInt();
-            inputSide = buffer.readEnumValue(RelativeSide.class);
+            inputSide = buffer.readEnum(RelativeSide.class);
         }
         return new PacketConfigurationUpdate(packetType, pos, clickType, inputSide, transmission);
     }

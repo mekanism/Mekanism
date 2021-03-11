@@ -116,7 +116,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         ChemicalUtils.writeChemicalStack(buffer, storedInfusion.getStack());
         ChemicalUtils.writeChemicalStack(buffer, storedPigment.getStack());
         ChemicalUtils.writeChemicalStack(buffer, storedSlurry.getStack());
-        buffer.writeCompoundTag(storedItem.serializeNBT());
+        buffer.writeNbt(storedItem.serializeNBT());
         buffer.writeDouble(storedHeat.getHeat());
     }
 
@@ -130,7 +130,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         storedInfusion.setStack(ChemicalUtils.readInfusionStack(dataStream));
         storedPigment.setStack(ChemicalUtils.readPigmentStack(dataStream));
         storedSlurry.setStack(ChemicalUtils.readSlurryStack(dataStream));
-        storedItem.deserializeNBT(dataStream.readCompoundTag());
+        storedItem.deserializeNBT(dataStream.readNbt());
         storedHeat.setHeat(dataStream.readDouble());
     }
 

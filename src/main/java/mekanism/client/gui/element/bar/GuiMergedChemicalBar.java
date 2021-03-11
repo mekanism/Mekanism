@@ -35,7 +35,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     private final GuiChemicalBar<Slurry, SlurryStack> slurryBar;
 
     public GuiMergedChemicalBar(IGuiWrapper gui, HANDLER handler, MergedChemicalTank chemicalTank, int x, int y, int width, int height, boolean horizontal) {
-        super(AtlasTexture.LOCATION_BLOCKS_TEXTURE, gui, new IBarInfoHandler() {
+        super(AtlasTexture.LOCATION_BLOCKS, gui, new IBarInfoHandler() {
             @Nullable
             private IChemicalTank<?, ?> getCurrentTank() {
                 Current current = chemicalTank.getCurrent();

@@ -54,7 +54,7 @@ public class SecurityFrequency extends Frequency {
         if (!trusted.isEmpty()) {
             ListNBT trustedList = new ListNBT();
             for (UUID uuid : trusted) {
-                trustedList.add(NBTUtil.func_240626_a_(uuid));
+                trustedList.add(NBTUtil.createUUID(uuid));
             }
             nbtTags.put(NBTConstants.TRUSTED, trustedList);
         }
@@ -68,7 +68,7 @@ public class SecurityFrequency extends Frequency {
         if (nbtTags.contains(NBTConstants.TRUSTED, NBT.TAG_LIST)) {
             ListNBT trustedList = nbtTags.getList(NBTConstants.TRUSTED, NBT.TAG_INT_ARRAY);
             for (INBT trusted : trustedList) {
-                UUID uuid = NBTUtil.readUniqueId(trusted);
+                UUID uuid = NBTUtil.loadUUID(trusted);
                 addTrusted(uuid, MekanismUtils.getLastKnownUsername(uuid));
             }
         }
@@ -78,16 +78,16 @@ public class SecurityFrequency extends Frequency {
     public void write(PacketBuffer buffer) {
         super.write(buffer);
         buffer.writeBoolean(override);
-        buffer.writeEnumValue(securityMode);
+        buffer.writeEnum(securityMode);
         buffer.writeVarInt(trustedCache.size());
-        trustedCache.forEach(buffer::writeString);
+        trustedCache.forEach(buffer::writeUtf);
     }
 
     @Override
     protected void read(PacketBuffer dataStream) {
         super.read(dataStream);
         override = dataStream.readBoolean();
-        securityMode = dataStream.readEnumValue(SecurityMode.class);
+        securityMode = dataStream.readEnum(SecurityMode.class);
         trustedCache = new ArrayList<>();
         int count = dataStream.readVarInt();
         for (int i = 0; i < count; i++) {

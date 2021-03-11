@@ -53,7 +53,7 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
 
     @Nonnull
     @Override
-    public ItemStack getRecipeOutput() {
+    public ItemStack getResultItem() {
         return output.copy();
     }
 
@@ -70,6 +70,6 @@ public abstract class CombinerRecipe extends MekanismRecipe implements BiPredica
     public void write(PacketBuffer buffer) {
         mainInput.write(buffer);
         extraInput.write(buffer);
-        buffer.writeItemStack(output);
+        buffer.writeItem(output);
     }
 }

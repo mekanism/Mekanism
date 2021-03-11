@@ -117,7 +117,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         super(tile);
         fluidCoolantTank = MultiblockFluidTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
-              fluid -> fluid.getFluid().isIn(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
+              fluid -> fluid.getFluid().is(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
         fluidTanks.add(fluidCoolantTank);
         gasCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> (long) getVolume() * COOLANT_PER_VOLUME,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
@@ -235,7 +235,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
         // consider a meltdown only if it's config-enabled, we're passed the damage threshold and the temperature is still dangerous
         if (MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get() && reactorDamage >= MAX_DAMAGE && temp >= MIN_DAMAGE_TEMPERATURE) {
-            if (world.rand.nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
+            if (world.random.nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
                 double radiation = wasteTank.getStored() * MekanismGases.NUCLEAR_WASTE.get().get(GasAttributes.Radiation.class).getRadioactivity();
                 if (wasteTank.getStack().has(GasAttributes.Radiation.class)) {
                     radiation += wasteTank.getStored() * wasteTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
@@ -306,7 +306,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private void radiateEntities(World world) {
         if (MekanismConfig.general.radiationEnabled.get() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
-            List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesWithinAABB(LivingEntity.class, hotZone);
+            List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesOfClass(LivingEntity.class, hotZone);
             for (LivingEntity entity : entitiesToRadiate) {
                 double wasteRadiation = 0;
                 if (wasteTank.getStored() > 0) {
@@ -334,7 +334,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     public boolean handlesSound(TileEntityFissionReactorCasing tile) {
-        return getBounds().isOnCorner(tile.getPos());
+        return getBounds().isOnCorner(tile.getBlockPos());
     }
 
     @ComputerMethod

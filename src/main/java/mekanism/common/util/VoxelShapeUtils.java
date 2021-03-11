@@ -30,7 +30,7 @@ public final class VoxelShapeUtils {
      */
     public static void printSimplified(String name, VoxelShape shape) {
         Mekanism.logger.info("Simplified: {}", name);
-        shape.simplify().toBoundingBoxList().forEach(box -> print(box.minX * 16, box.minY * 16, box.minZ * 16, box.maxX * 16, box.maxY * 16, box.maxZ * 16));
+        shape.optimize().toAabbs().forEach(box -> print(box.minX * 16, box.minY * 16, box.minZ * 16, box.maxX * 16, box.maxY * 16, box.maxZ * 16));
     }
 
     /**
@@ -150,12 +150,12 @@ public final class VoxelShapeUtils {
     public static VoxelShape rotate(VoxelShape shape, UnaryOperator<AxisAlignedBB> rotateFunction) {
         List<VoxelShape> rotatedPieces = new ArrayList<>();
         //Explode the voxel shape into bounding boxes
-        List<AxisAlignedBB> sourceBoundingBoxes = shape.toBoundingBoxList();
+        List<AxisAlignedBB> sourceBoundingBoxes = shape.toAabbs();
         //Rotate them and convert them each back into a voxel shape
         for (AxisAlignedBB sourceBoundingBox : sourceBoundingBoxes) {
             //Make the bounding box be centered around the middle, and then move it back after rotating
-            rotatedPieces.add(VoxelShapes.create(rotateFunction.apply(sourceBoundingBox.offset(fromOrigin.x, fromOrigin.y, fromOrigin.z))
-                  .offset(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z)));
+            rotatedPieces.add(VoxelShapes.create(rotateFunction.apply(sourceBoundingBox.move(fromOrigin.x, fromOrigin.y, fromOrigin.z))
+                  .move(-fromOrigin.x, -fromOrigin.z, -fromOrigin.z)));
         }
         //return the recombined rotated voxel shape
         return combine(rotatedPieces);
@@ -191,7 +191,7 @@ public final class VoxelShapeUtils {
      * @return A {@link VoxelShape} including everything that is not part of any of the input shapes.
      */
     public static VoxelShape exclude(VoxelShape... shapes) {
-        return batchCombine(VoxelShapes.fullCube(), IBooleanFunction.ONLY_FIRST, true, shapes);
+        return batchCombine(VoxelShapes.block(), IBooleanFunction.ONLY_FIRST, true, shapes);
     }
 
     /**
@@ -199,7 +199,7 @@ public final class VoxelShapeUtils {
      *
      * @param initial  The {@link VoxelShape} to start with
      * @param function The {@link IBooleanFunction} to perform
-     * @param simplify True if the returned shape should run {@link VoxelShape#simplify()}, False otherwise
+     * @param simplify True if the returned shape should run {@link VoxelShape#optimize()}, False otherwise
      * @param shapes   The collection of {@link VoxelShape}s to include
      *
      * @return A {@link VoxelShape} based on the input parameters.
@@ -210,9 +210,9 @@ public final class VoxelShapeUtils {
     public static VoxelShape batchCombine(VoxelShape initial, IBooleanFunction function, boolean simplify, Collection<VoxelShape> shapes) {
         VoxelShape combinedShape = initial;
         for (VoxelShape shape : shapes) {
-            combinedShape = VoxelShapes.combine(combinedShape, shape, function);
+            combinedShape = VoxelShapes.joinUnoptimized(combinedShape, shape, function);
         }
-        return simplify ? combinedShape.simplify() : combinedShape;
+        return simplify ? combinedShape.optimize() : combinedShape;
     }
 
     /**
@@ -220,7 +220,7 @@ public final class VoxelShapeUtils {
      *
      * @param initial  The {@link VoxelShape} to start with
      * @param function The {@link IBooleanFunction} to perform
-     * @param simplify True if the returned shape should run {@link VoxelShape#simplify()}, False otherwise
+     * @param simplify True if the returned shape should run {@link VoxelShape#optimize()}, False otherwise
      * @param shapes   The list of {@link VoxelShape}s to include
      *
      * @return A {@link VoxelShape} based on the input parameters.
@@ -231,9 +231,9 @@ public final class VoxelShapeUtils {
     public static VoxelShape batchCombine(VoxelShape initial, IBooleanFunction function, boolean simplify, VoxelShape... shapes) {
         VoxelShape combinedShape = initial;
         for (VoxelShape shape : shapes) {
-            combinedShape = VoxelShapes.combine(combinedShape, shape, function);
+            combinedShape = VoxelShapes.joinUnoptimized(combinedShape, shape, function);
         }
-        return simplify ? combinedShape.simplify() : combinedShape;
+        return simplify ? combinedShape.optimize() : combinedShape;
     }
 
     public static void setShape(VoxelShape shape, VoxelShape[] dest, boolean verticalAxis) {

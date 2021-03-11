@@ -39,8 +39,8 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player != null && player.openContainer instanceof QIOItemViewerContainer) {
-            QIOItemViewerContainer container = (QIOItemViewerContainer) player.openContainer;
+        if (player != null && player.containerMenu instanceof QIOItemViewerContainer) {
+            QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
             switch (type) {
                 case BATCH:
                     container.handleBatchUpdate(itemMap, countCapacity, typeCapacity);
@@ -57,19 +57,19 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
 
     @Override
     public void encode(PacketBuffer buffer) {
-        buffer.writeEnumValue(type);
+        buffer.writeEnum(type);
         if (type == Type.BATCH || type == Type.UPDATE) {
             buffer.writeVarLong(countCapacity);
             buffer.writeVarInt(typeCapacity);
             buffer.writeVarInt(itemMap.size());
             itemMap.forEach((key, value) -> {
-                buffer.writeItemStack(key.getStack());
+                buffer.writeItem(key.getStack());
                 if (key.getUUID() == null) {
                     //Shouldn't be null unless something failed, but if it does try to handle it relatively gracefully
                     buffer.writeBoolean(false);
                 } else {
                     buffer.writeBoolean(true);
-                    buffer.writeUniqueId(key.getUUID());
+                    buffer.writeUUID(key.getUUID());
                 }
                 buffer.writeVarLong(value);
             });
@@ -77,7 +77,7 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
     }
 
     public static PacketQIOItemViewerGuiSync decode(PacketBuffer buffer) {
-        Type type = buffer.readEnumValue(Type.class);
+        Type type = buffer.readEnum(Type.class);
         long countCapacity = 0;
         int typeCapacity = 0;
         Object2LongMap<UUIDAwareHashedItem> map = null;
@@ -87,7 +87,7 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
             int count = buffer.readVarInt();
             map = new Object2LongOpenHashMap<>(count);
             for (int i = 0; i < count; i++) {
-                map.put(new UUIDAwareHashedItem(buffer.readItemStack(), buffer.readBoolean() ? buffer.readUniqueId() : null), buffer.readVarLong());
+                map.put(new UUIDAwareHashedItem(buffer.readItem(), buffer.readBoolean() ? buffer.readUUID() : null), buffer.readVarLong());
             }
         }
         return new PacketQIOItemViewerGuiSync(type, map, countCapacity, typeCapacity);

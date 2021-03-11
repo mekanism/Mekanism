@@ -33,20 +33,20 @@ public class BlockSecurityDesk extends BlockTileModel<TileEntitySecurityDesk, Bl
     @Override
     public void setTileData(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
         if (tile instanceof TileEntitySecurityDesk && placer != null) {
-            ((TileEntitySecurityDesk) tile).ownerUUID = placer.getUniqueID();
+            ((TileEntitySecurityDesk) tile).ownerUUID = placer.getUUID();
         }
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType onBlockActivated(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
+    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, world, pos);
-        if (tile != null && !player.isSneaking()) {
-            if (!world.isRemote) {
+        if (tile != null && !player.isShiftKeyDown()) {
+            if (!world.isClientSide) {
                 UUID ownerUUID = tile.ownerUUID;
-                if (ownerUUID == null || player.getUniqueID().equals(ownerUUID)) {
+                if (ownerUUID == null || player.getUUID().equals(ownerUUID)) {
                     NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(this, AttributeGui.class).getProvider(tile), pos);
                 } else {
                     SecurityUtils.displayNoAccess(player);

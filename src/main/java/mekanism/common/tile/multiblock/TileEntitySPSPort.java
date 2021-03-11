@@ -37,7 +37,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
             if (getActive()) {
-                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getPos()), multiblock.outputTank, this);
+                ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.outputTank, this);
             }
             if (!energyContainer.isEmpty() && multiblock.canSupplyCoilEnergy(this)) {
                 multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
@@ -74,7 +74,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                  MekanismLang.SPS_PORT_MODE.translate(InputOutput.of(oldMode, true))), Util.DUMMY_UUID);
+                  MekanismLang.SPS_PORT_MODE.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }

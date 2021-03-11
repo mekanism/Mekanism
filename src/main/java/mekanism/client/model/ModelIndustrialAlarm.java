@@ -25,29 +25,29 @@ public class ModelIndustrialAlarm extends MekanismJavaModel {
     private final ModelRenderer aura;
 
     public ModelIndustrialAlarm() {
-        super(RenderType::getEntitySolid);
-        textureWidth = 64;
-        textureHeight = 64;
+        super(RenderType::entitySolid);
+        texWidth = 64;
+        texHeight = 64;
 
         base = new ModelRenderer(this, 0, 9);
         base.addBox(-3F, 0F, -3F, 6, 1, 6);
-        base.setRotationPoint(0F, 0F, 0F);
-        base.setTextureSize(64, 64);
+        base.setPos(0F, 0F, 0F);
+        base.setTexSize(64, 64);
         setRotation(base, 0F, 0F, 0F);
         bulb = new ModelRenderer(this, 16, 0);
         bulb.addBox(-1F, 1F, -1F, 2, 3, 2);
-        bulb.setRotationPoint(0F, 0F, 0F);
-        bulb.setTextureSize(64, 64);
+        bulb.setPos(0F, 0F, 0F);
+        bulb.setTexSize(64, 64);
         setRotation(bulb, 0F, 0F, 0F);
         light_box = new ModelRenderer(this, 0, 0);
         light_box.addBox(-2F, 1F, -2F, 4, 4, 4);
-        light_box.setRotationPoint(0F, 0F, 0F);
-        light_box.setTextureSize(64, 64);
+        light_box.setPos(0F, 0F, 0F);
+        light_box.setTexSize(64, 64);
         setRotation(light_box, 0F, 0F, 0F);
         aura = new ModelRenderer(this, 0, 16);
         aura.addBox(-6F, 2F, -1F, 12, 1, 2);
-        aura.setRotationPoint(0F, 0F, 0F);
-        aura.setTextureSize(64, 64);
+        aura.setPos(0F, 0F, 0F);
+        aura.setTexSize(64, 64);
         setRotation(aura, 0F, 0F, 0F);
     }
 
@@ -58,7 +58,7 @@ public class ModelIndustrialAlarm extends MekanismJavaModel {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue,
+    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue,
           float alpha) {
         render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha, false, 0, false);
     }

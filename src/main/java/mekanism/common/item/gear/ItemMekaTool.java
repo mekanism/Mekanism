@@ -82,19 +82,19 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.ATTACK_AMPLIFICATION_UNIT, Modules.SILK_TOUCH_UNIT, Modules.VEIN_MINING_UNIT,
               Modules.FARMING_UNIT, Modules.TELEPORTATION_UNIT, Modules.EXCAVATION_ESCALATION_UNIT);
         Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4D, Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4D, Operation.ADDITION));
         this.attributes = builder.build();
     }
 
     @Override
-    public boolean canHarvestBlock(@Nonnull BlockState state) {
+    public boolean isCorrectToolForDrops(@Nonnull BlockState state) {
         //Allow harvesting everything, things that are unbreakable are caught elsewhere
         return true;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
             for (Module module : getModules(stack)) {
                 ILangEntry langEntry = module.getData().getLangEntry();
@@ -107,14 +107,14 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             }
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
-            tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.func_238171_j_()));
+            tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
-        for (Module module : getModules(context.getItem())) {
+    public ActionResultType useOn(ItemUseContext context) {
+        for (Module module : getModules(context.getItemInHand())) {
             if (module.isEnabled() && module instanceof ModuleMekaTool) {
                 ActionResultType result = ((ModuleMekaTool) module).onItemUse(context);
                 if (result != ActionResultType.PASS) {
@@ -134,16 +134,16 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     @Override
-    public boolean onBlockDestroyed(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity entityliving) {
+    public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity entityliving) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null) {
-            energyContainer.extract(getDestroyEnergy(stack, state.getBlockHardness(world, pos), false), Action.EXECUTE, AutomationType.MANUAL);
+            energyContainer.extract(getDestroyEnergy(stack, state.getDestroySpeed(world, pos), false), Action.EXECUTE, AutomationType.MANUAL);
         }
         return true;
     }
 
     @Override
-    public boolean hitEntity(@Nonnull ItemStack stack, @Nonnull LivingEntity target, @Nonnull LivingEntity attacker) {
+    public boolean hurtEnemy(@Nonnull ItemStack stack, @Nonnull LivingEntity target, @Nonnull LivingEntity attacker) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         FloatingLong energy = energyContainer == null ? FloatingLong.ZERO : energyContainer.getEnergy();
         FloatingLong energyCost = FloatingLong.ZERO;
@@ -163,9 +163,9 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         }
         float damage = (float) (minDamage + damageDifference * percent);
         if (attacker instanceof PlayerEntity) {
-            target.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) attacker), damage);
+            target.hurt(DamageSource.playerAttack((PlayerEntity) attacker), damage);
         } else {
-            target.attackEntityFrom(DamageSource.causeMobDamage(attacker), damage);
+            target.hurt(DamageSource.mobAttack(attacker), damage);
         }
         if (energyContainer != null && !energy.isZero()) {
             energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
@@ -175,8 +175,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
-        World world = player.world;
-        if (!world.isRemote && !player.isCreative()) {
+        World world = player.level;
+        if (!world.isClientSide && !player.isCreative()) {
             BlockState state = world.getBlockState(pos);
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
             if (energyContainer == null) {
@@ -199,7 +199,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                     return silk;
                 }
                 //If it is extended or should be treated as an ore
-                if (extended || state.isIn(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                if (extended || state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
                     Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, extended ? module.getExcavationRange() : -1);
                     for (BlockPos foundPos : found) {
@@ -216,11 +216,11 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     private boolean breakBlock(ItemStack stack, World world, BlockPos pos, ServerPlayerEntity player, IEnergyContainer energyContainer, boolean silk) {
         BlockState state = world.getBlockState(pos);
-        FloatingLong destroyEnergy = getDestroyEnergy(stack, state.getBlockHardness(world, pos), silk);
+        FloatingLong destroyEnergy = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), silk);
         if (energyContainer.extract(destroyEnergy, Action.SIMULATE, AutomationType.MANUAL).smallerThan(destroyEnergy)) {
             return false;
         }
-        int exp = ForgeHooks.onBlockBreakEvent(world, player.interactionManager.getGameType(), player, pos);
+        int exp = ForgeHooks.onBlockBreakEvent(world, player.gameMode.getGameModeForPlayer(), player, pos);
         if (exp == -1) {
             //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
             return false;
@@ -232,11 +232,11 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         //Remove the block
         boolean removed = state.removedByPlayer(world, pos, player, true, state.getFluidState());
         if (removed) {
-            block.onPlayerDestroy(world, pos, state);
+            block.destroy(world, pos, state);
             //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
             ItemStack harvestTool = stack.copy();
             if (silk) {
-                harvestTool.addEnchantment(Enchantments.SILK_TOUCH, 1);
+                harvestTool.enchant(Enchantments.SILK_TOUCH, 1);
                 //Calculate the proper amount of xp that the state would drop if broken with a silk touch tool
                 //Note: This fixes ores and the like dropping xp when broken with silk touch but makes it so that
                 // BlockEvent.BreakEvent is unable to be used to adjust the amount of xp dropped.
@@ -244,11 +244,11 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                 // of the item in the main hand so there isn't an easy way to change this without actually enchanting the meka-tool
                 exp = state.getExpDrop(world, pos, 0, 1);
             }
-            block.harvestBlock(world, player, pos, state, tileEntity, harvestTool);
-            player.addStat(Stats.ITEM_USED.get(this));
+            block.playerDestroy(world, player, pos, state, tileEntity, harvestTool);
+            player.awardStat(Stats.ITEM_USED.get(this));
             if (exp > 0) {
                 //If we have xp drop it
-                block.dropXpOnBlockBreak((ServerWorld) world, pos, exp);
+                block.popExperience((ServerWorld) world, pos, exp);
             }
             //Use energy
             energyContainer.extract(destroyEnergy, Action.EXECUTE, AutomationType.MANUAL);
@@ -273,18 +273,18 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand) {
-        ItemStack stack = player.getHeldItem(hand);
-        if (!world.isRemote() && hasModule(stack, Modules.TELEPORTATION_UNIT)) {
+    public ActionResult<ItemStack> use(World world, PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!world.isClientSide() && hasModule(stack, Modules.TELEPORTATION_UNIT)) {
             ModuleTeleportationUnit module = getModule(stack, Modules.TELEPORTATION_UNIT);
             if (module.isEnabled()) {
                 BlockRayTraceResult result = MekanismUtils.rayTrace(player, MekanismConfig.gear.mekaToolMaxTeleportReach.get());
                 //If we don't require a block target or are not a miss, allow teleporting
                 if (!module.requiresBlockTarget() || result.getType() != RayTraceResult.Type.MISS) {
-                    BlockPos pos = result.getPos();
+                    BlockPos pos = result.getBlockPos();
                     // make sure we fit
-                    if (isValidDestinationBlock(world, pos.up()) && isValidDestinationBlock(world, pos.up(2))) {
-                        double distance = player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ());
+                    if (isValidDestinationBlock(world, pos.above()) && isValidDestinationBlock(world, pos.above(2))) {
+                        double distance = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
                         if (distance < 5) {
                             return new ActionResult<>(ActionResultType.PASS, stack);
                         }
@@ -297,10 +297,10 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                         if (player.isPassenger()) {
                             player.stopRiding();
                         }
-                        player.setPositionAndUpdate(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
+                        player.teleportTo(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
                         player.fallDistance = 0.0F;
-                        Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(pos.up()), world, pos);
-                        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(pos.above()), world, pos);
+                        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                         return new ActionResult<>(ActionResultType.SUCCESS, stack);
                     }
                 }

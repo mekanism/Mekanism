@@ -49,7 +49,7 @@ public class RotaryIRecipe extends RotaryRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.ROTARY_CONDENSENTRATOR.getItemStack();
     }
 

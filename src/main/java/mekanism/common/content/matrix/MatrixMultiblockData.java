@@ -51,7 +51,7 @@ public class MatrixMultiblockData extends MultiblockData {
         super(tile);
         energyContainers.add(energyContainer = new MatrixEnergyContainer(this));
         inventorySlots.add(energyInputSlot = EnergyInventorySlot.drain(energyContainer, this, 146, 21));
-        inventorySlots.add(energyOutputSlot = EnergyInventorySlot.fillOrConvert(energyContainer, tile::getWorld, this, 146, 51));
+        inventorySlots.add(energyOutputSlot = EnergyInventorySlot.fillOrConvert(energyContainer, tile::getLevel, this, 146, 51));
         energyInputSlot.setSlotOverlay(SlotOverlay.PLUS);
         energyOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
     }
@@ -67,11 +67,11 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     public void addCell(TileEntityInductionCell cell) {
-        energyContainer.addCell(cell.getPos(), cell);
+        energyContainer.addCell(cell.getBlockPos(), cell);
     }
 
     public void addProvider(TileEntityInductionProvider provider) {
-        energyContainer.addProvider(provider.getPos(), provider);
+        energyContainer.addProvider(provider.getBlockPos(), provider);
     }
 
     @Nonnull

@@ -67,7 +67,7 @@ public class CrTBracketValidators {
     }
 
     private static boolean validateChemicalStack(String bracket, String tokens, IForgeRegistry<?> registry) {
-        ResourceLocation registryName = ResourceLocation.tryCreate(tokens);
+        ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
             CraftTweakerAPI.logError("Could not get BEP <%s:%s>. Syntax is <%1$s:modid:%1$s_name>", bracket, tokens);
             return false;

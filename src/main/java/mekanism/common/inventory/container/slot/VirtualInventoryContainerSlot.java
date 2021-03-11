@@ -10,8 +10,8 @@ import net.minecraft.item.ItemStack;
 
 public class VirtualInventoryContainerSlot extends InventoryContainerSlot implements IVirtualSlot {
 
-    private IntSupplier xPositionSupplier = () -> xPos;
-    private IntSupplier yPositionSupplier = () -> yPos;
+    private IntSupplier xPositionSupplier = () -> x;
+    private IntSupplier yPositionSupplier = () -> y;
     private ItemStack stackToRender = ItemStack.EMPTY;
     @Nullable
     private String tooltipOverride;

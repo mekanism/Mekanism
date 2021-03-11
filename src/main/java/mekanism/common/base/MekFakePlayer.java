@@ -40,7 +40,7 @@ public class MekFakePlayer extends FakePlayer {
     }
 
     @Override
-    public boolean isPotionApplicable(@Nonnull EffectInstance effect) {
+    public boolean canBeAffected(@Nonnull EffectInstance effect) {
         return false;
     }
 
@@ -50,8 +50,8 @@ public class MekFakePlayer extends FakePlayer {
 
     @Nonnull
     @Override
-    public UUID getUniqueID() {
-        return this.emulatingUUID != null ? this.emulatingUUID : super.getUniqueID();
+    public UUID getUUID() {
+        return this.emulatingUUID != null ? this.emulatingUUID : super.getUUID();
     }
 
     /**
@@ -75,10 +75,10 @@ public class MekFakePlayer extends FakePlayer {
             INSTANCE = new WeakReference<>(actual);
         }
         MekFakePlayer player = actual;
-        player.world = world;
+        player.level = world;
         R result = fakePlayerConsumer.apply(player);
         player.emulatingUUID = null;
-        player.world = null;//don't keep reference to the World
+        player.level = null;//don't keep reference to the World
         return result;
     }
 
@@ -97,7 +97,7 @@ public class MekFakePlayer extends FakePlayer {
      */
     public static <R> R withFakePlayer(ServerWorld world, double x, double y, double z, Function<MekFakePlayer, R> fakePlayerConsumer) {
         return withFakePlayer(world, fakePlayer -> {
-            fakePlayer.setRawPosition(x, y, z);
+            fakePlayer.setPosRaw(x, y, z);
             return fakePlayerConsumer.apply(fakePlayer);
         });
     }
@@ -106,8 +106,8 @@ public class MekFakePlayer extends FakePlayer {
         // If the fake player has a reference to the world getting unloaded,
         // null out the fake player so that the world can unload
         MekFakePlayer actual = INSTANCE != null ? INSTANCE.get() : null;
-        if (actual != null && actual.world == world) {
-            actual.world = null;
+        if (actual != null && actual.level == world) {
+            actual.level = null;
         }
     }
 

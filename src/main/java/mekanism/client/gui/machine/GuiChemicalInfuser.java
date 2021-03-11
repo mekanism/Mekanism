@@ -22,9 +22,9 @@ public class GuiChemicalInfuser extends GuiConfigurableTile<TileEntityChemicalIn
 
     public GuiChemicalInfuser(MekanismTileContainer<TileEntityChemicalInfuser> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        playerInventoryTitleY += 2;
-        titleX = 5;
-        titleY = 5;
+        inventoryLabelY += 2;
+        titleLabelX = 5;
+        titleLabelY = 5;
         dynamicSlots = true;
     }
 
@@ -45,8 +45,8 @@ public class GuiChemicalInfuser extends GuiConfigurableTile<TileEntityChemicalIn
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, MekanismLang.CHEMICAL_INFUSER_SHORT.translate(), titleX, titleY, titleTextColor());
-        drawString(matrix, playerInventory.getDisplayName(), playerInventoryTitleX, playerInventoryTitleY, titleTextColor());
+        drawString(matrix, MekanismLang.CHEMICAL_INFUSER_SHORT.translate(), titleLabelX, titleLabelY, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

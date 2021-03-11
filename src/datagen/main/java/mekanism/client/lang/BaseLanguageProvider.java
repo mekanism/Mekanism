@@ -42,7 +42,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         if (key instanceof IBlockProvider) {
             Block block = ((IBlockProvider) key).getBlock();
             if (Attribute.has(block, AttributeGui.class)) {
-                add(Util.makeTranslationKey("container", block.getRegistryName()), value);
+                add(Util.makeDescriptionId("container", block.getRegistryName()), value);
             }
         }
         add(key.getTranslationKey(), value);
@@ -67,11 +67,11 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    public void act(DirectoryCache cache) throws IOException {
-        super.act(cache);
+    public void run(DirectoryCache cache) throws IOException {
+        super.run(cache);
         if (altProviders.length > 0) {
             for (ConvertibleLanguageProvider provider : altProviders) {
-                provider.act(cache);
+                provider.run(cache);
             }
         }
     }

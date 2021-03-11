@@ -58,7 +58,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
         if (gui() instanceof GuiMekanismTile) {
             TANK tank = getTank();
             if (tank != null) {
-                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) gui()).getContainer().getTileEntity();
+                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) gui()).getMenu().getTileEntity();
                 if (tile instanceof ISideConfiguration) {
                     DataType dataType = ((ISideConfiguration) tile).getActiveDataType(tank);
                     if (dataType != null) {

@@ -27,12 +27,12 @@ public class ItemStackGasToItemStackRecipeSerializer<RECIPE extends ItemStackGas
 
     @Nonnull
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement itemInput = JSONUtils.isJsonArray(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.ITEM_INPUT) :
-                                JSONUtils.getJsonObject(json, JsonConstants.ITEM_INPUT);
+    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
+        JsonElement itemInput = JSONUtils.isArrayNode(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
+                                JSONUtils.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
         ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
-        JsonElement gasInput = JSONUtils.isJsonArray(json, JsonConstants.GAS_INPUT) ? JSONUtils.getJsonArray(json, JsonConstants.GAS_INPUT) :
-                               JSONUtils.getJsonObject(json, JsonConstants.GAS_INPUT);
+        JsonElement gasInput = JSONUtils.isArrayNode(json, JsonConstants.GAS_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
+                               JSONUtils.getAsJsonObject(json, JsonConstants.GAS_INPUT);
         GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
@@ -42,11 +42,11 @@ public class ItemStackGasToItemStackRecipeSerializer<RECIPE extends ItemStackGas
     }
 
     @Override
-    public RECIPE read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
         try {
             ItemStackIngredient itemInput = ItemStackIngredient.read(buffer);
             GasStackIngredient gasInput = GasStackIngredient.read(buffer);
-            ItemStack output = buffer.readItemStack();
+            ItemStack output = buffer.readItem();
             return this.factory.create(recipeId, itemInput, gasInput, output);
         } catch (Exception e) {
             Mekanism.logger.error("Error reading itemstack gas to itemstack recipe from packet.", e);
@@ -55,7 +55,7 @@ public class ItemStackGasToItemStackRecipeSerializer<RECIPE extends ItemStackGas
     }
 
     @Override
-    public void write(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
         try {
             recipe.write(buffer);
         } catch (Exception e) {

@@ -43,8 +43,8 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
 
     public GuiQIOFrequencySelect(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
-        ySize -= 6;
-        titleY = 5;
+        imageHeight -= 6;
+        titleLabelY = 5;
     }
 
     @Override
@@ -52,15 +52,15 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
         super.init();
         addButton(scrollList = new GuiTextScrollList(this, 27, 39, 122, 42));
 
-        addButton(publicButton = new TranslationButton(this, guiLeft + 27, guiTop + 17, 60, 20, MekanismLang.PUBLIC, () -> {
+        addButton(publicButton = new TranslationButton(this, leftPos + 27, topPos + 17, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, guiLeft + 89, guiTop + 17, 60, 20, MekanismLang.PRIVATE, () -> {
+        addButton(privateButton = new TranslationButton(this, leftPos + 89, topPos + 17, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, guiLeft + 27, guiTop + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
+        addButton(setButton = new TranslationButton(this, leftPos + 27, topPos + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
@@ -68,7 +68,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, guiLeft + 79, guiTop + 120, 50, 18, MekanismLang.BUTTON_DELETE,
+        addButton(deleteButton = new TranslationButton(this, leftPos + 79, topPos + 120, 50, 18, MekanismLang.BUTTON_DELETE,
               () -> GuiConfirmationDialog.show(this, MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
                   int selection = scrollList.getSelection();
                   if (selection != -1) {
@@ -79,7 +79,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
                   updateButtons();
               }, DialogType.DANGER)));
         addButton(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
-        addButton(new ColorButton(this, guiLeft + 132, guiTop + 121, 16, 16, () -> {
+        addButton(new ColorButton(this, leftPos + 132, topPos + 121, 16, 16, () -> {
             QIOFrequency frequency = getFrequency();
             return frequency == null ? null : frequency.getColor();
         }, () -> sendColorUpdate(0), () -> sendColorUpdate(1)));
@@ -167,7 +167,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.QIO_FREQUENCY_SELECT.translate(), titleY);
+        drawTitleText(matrix, MekanismLang.QIO_FREQUENCY_SELECT.translate(), titleLabelY);
         drawString(matrix, OwnerDisplay.of(getOwnerUUID(), getOwnerUsername()).getTextComponent(), 8, 143, titleTextColor());
         ITextComponent frequencyComponent = MekanismLang.FREQUENCY.translate();
         drawString(matrix, frequencyComponent, 32, 84, titleTextColor());
@@ -179,7 +179,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + frequencyOffset, 84, subheadingTextColor());
             drawString(matrix, MekanismLang.NONE.translateColored(EnumColor.DARK_RED), 32 + getStringWidth(securityComponent), 94, subheadingTextColor());
         } else {
-            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 84, subheadingTextColor(), xSize - 32 - frequencyOffset - 4);
+            drawTextScaledBound(matrix, frequency.getName(), 32 + frequencyOffset, 84, subheadingTextColor(), imageWidth - 32 - frequencyOffset - 4);
             drawString(matrix, getSecurity(frequency), 32 + getStringWidth(securityComponent), 94, subheadingTextColor());
         }
         drawTextScaledBound(matrix, MekanismLang.SET.translate(), 27, 107, titleTextColor(), 20);

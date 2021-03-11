@@ -21,12 +21,12 @@ public class RobitAIPickup extends RobitAIBase {
     }
 
     @Override
-    public boolean shouldExecute() {
+    public boolean canUse() {
         if (!theRobit.getDropPickup()) {
             return false;
         }
         PathNavigator navigator = getNavigator();
-        if (validateClosest() && navigator.pathfind(closest, 0) != null) {
+        if (validateClosest() && navigator.createPath(closest, 0) != null) {
             return true;
         }
         //Ensure we don't have a closest one set
@@ -34,14 +34,14 @@ public class RobitAIPickup extends RobitAIBase {
         //Cached for slight performance
         double closestDistance = -1;
         //TODO: Look at and potentially mimic the way piglins search for items to pickup once their AI has mappings
-        List<ItemEntity> items = theRobit.world.getEntitiesWithinAABB(ItemEntity.class,
-              new AxisAlignedBB(theRobit.getPosX() - SEARCH_RADIUS, theRobit.getPosY() - SEARCH_RADIUS, theRobit.getPosZ() - SEARCH_RADIUS,
-                    theRobit.getPosX() + SEARCH_RADIUS, theRobit.getPosY() + SEARCH_RADIUS, theRobit.getPosZ() + SEARCH_RADIUS), itemPredicate);
+        List<ItemEntity> items = theRobit.level.getEntitiesOfClass(ItemEntity.class,
+              new AxisAlignedBB(theRobit.getX() - SEARCH_RADIUS, theRobit.getY() - SEARCH_RADIUS, theRobit.getZ() - SEARCH_RADIUS,
+                    theRobit.getX() + SEARCH_RADIUS, theRobit.getY() + SEARCH_RADIUS, theRobit.getZ() + SEARCH_RADIUS), itemPredicate);
         for (ItemEntity entity : items) {
-            double distance = theRobit.getDistanceSq(entity);
+            double distance = theRobit.distanceToSqr(entity);
             if (distance <= SEARCH_RADIUS_SQ) {
                 if (closestDistance == -1 || distance < closestDistance) {
-                    if (navigator.pathfind(entity, 0) != null) {
+                    if (navigator.createPath(entity, 0) != null) {
                         closest = entity;
                         closestDistance = distance;
                     }
@@ -53,13 +53,13 @@ public class RobitAIPickup extends RobitAIBase {
     }
 
     private boolean validateClosest() {
-        return closest != null && theRobit.isItemValid(closest) && closest.world.getDimensionKey() == theRobit.world.getDimensionKey() &&
-               theRobit.getDistanceSq(closest) <= SEARCH_RADIUS_SQ;
+        return closest != null && theRobit.isItemValid(closest) && closest.level.dimension() == theRobit.level.dimension() &&
+               theRobit.distanceToSqr(closest) <= SEARCH_RADIUS_SQ;
     }
 
     @Override
-    public boolean shouldContinueExecuting() {
-        return theRobit.getDropPickup() && validateClosest() && !getNavigator().noPath() && !theRobit.getEnergyContainer().isEmpty();
+    public boolean canContinueToUse() {
+        return theRobit.getDropPickup() && validateClosest() && !getNavigator().isDone() && !theRobit.getEnergyContainer().isEmpty();
     }
 
     @Override

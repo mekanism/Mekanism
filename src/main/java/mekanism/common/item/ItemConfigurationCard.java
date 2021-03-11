@@ -37,28 +37,28 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public class ItemConfigurationCard extends Item {
 
     public ItemConfigurationCard(Properties properties) {
-        super(properties.maxStackSize(1).rarity(Rarity.UNCOMMON));
+        super(properties.stacksTo(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(@Nonnull ItemStack stack, World world, List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, World world, List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         tooltip.add(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextComponentUtil.translate(getDataType(stack))));
     }
 
     @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-        if (!world.isRemote && player != null) {
-            BlockPos pos = context.getPos();
-            Direction side = context.getFace();
+        World world = context.getLevel();
+        if (!world.isClientSide && player != null) {
+            BlockPos pos = context.getClickedPos();
+            Direction side = context.getClickedFace();
             TileEntity tile = WorldUtils.getTileEntity(world, pos);
             if (CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
                 if (SecurityUtils.canAccess(player, tile)) {
-                    ItemStack stack = context.getItem();
-                    if (player.isSneaking()) {
+                    ItemStack stack = context.getItemInHand();
+                    if (player.isShiftKeyDown()) {
                         Optional<ISpecialConfigData> configData = CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).resolve();
                         CompoundNBT data = configData.isPresent() ? configData.get().getConfigurationData(getBaseData(tile)) : getBaseData(tile);
                         if (data != null) {
@@ -66,7 +66,7 @@ public class ItemConfigurationCard extends Item {
                             setData(stack, data);
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
                                   MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(data.getString(NBTConstants.DATA_TYPE)))),
-                                  Util.DUMMY_UUID);
+                                  Util.NIL_UUID);
                         }
                         return ActionResultType.SUCCESS;
                     }
@@ -83,10 +83,10 @@ public class ItemConfigurationCard extends Item {
                                 WorldUtils.notifyLoadedNeighborsOfTileChange(world, pos);
                             }
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.DARK_GREEN,
-                                  MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO, TextComponentUtil.translate(getDataType(stack)))), Util.DUMMY_UUID);
+                                  MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO, TextComponentUtil.translate(getDataType(stack)))), Util.NIL_UUID);
                         } else {
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED,
-                                  MekanismLang.CONFIG_CARD_UNEQUAL), Util.DUMMY_UUID);
+                                  MekanismLang.CONFIG_CARD_UNEQUAL), Util.NIL_UUID);
                         }
                         return ActionResultType.SUCCESS;
                     }
@@ -127,7 +127,7 @@ public class ItemConfigurationCard extends Item {
         }
         String ret = Integer.toString(tile.hashCode());
         if (tile instanceof TileEntityMekanism) {
-            ret = ((TileEntityMekanism) tile).getBlockType().getTranslationKey();
+            ret = ((TileEntityMekanism) tile).getBlockType().getDescriptionId();
         }
         return ret;
     }

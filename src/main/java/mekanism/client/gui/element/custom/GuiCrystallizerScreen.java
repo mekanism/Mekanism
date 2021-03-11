@@ -71,7 +71,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         innerScreen.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bindTexture(getResource());
+        minecraft.textureManager.bind(getResource());
         blit(matrix, slotX, y, 0, 0, SLOT.getWidth(), SLOT.getHeight(), SLOT.getWidth(), SLOT.getHeight());
         if (!renderStack.isEmpty()) {
             gui().renderItem(matrix, renderStack, slotX + 1, y + 1);
@@ -90,7 +90,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
                 if (!prevSlurry.isEmptyType() && !prevSlurry.isIn(MekanismTags.Slurries.DIRTY)) {
                     ITag<Item> oreTag = prevSlurry.getOreTag();
                     if (oreTag != null) {
-                        for (Item ore : oreTag.getAllElements()) {
+                        for (Item ore : oreTag.getValues()) {
                             iterStacks.add(new ItemStack(ore));
                         }
                     }

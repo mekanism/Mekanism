@@ -88,7 +88,7 @@ public class QIOCraftingWindow implements IContentsListener {
         } else {
             //If we are not currently crafting, recalculate the contents for the output slot
             World world = holder.getHolderWorld();
-            if (world != null && !world.isRemote) {
+            if (world != null && !world.isClientSide) {
                 updateOutputSlot(world);
             }
         }
@@ -101,7 +101,7 @@ public class QIOCraftingWindow implements IContentsListener {
             outputSlot.setEmpty();
         }
         World world = holder.getHolderWorld();
-        if (world != null && !world.isRemote) {
+        if (world != null && !world.isClientSide) {
             //And recheck the recipe
             updateOutputSlot(world);
         }
@@ -122,11 +122,11 @@ public class QIOCraftingWindow implements IContentsListener {
                 if (outputSlot.isEmpty()) {
                     //Set the slot to the recipe result, this fixes it not properly updating when
                     // we remove a single item recipe such as for buttons, and put it back in
-                    outputSlot.setStack(lastRecipe.getCraftingResult(craftingInventory));
+                    outputSlot.setStack(lastRecipe.assemble(craftingInventory));
                 }
             } else {
                 //If we don't have a cached recipe, or our cached recipe doesn't match our inventory contents, lookup the recipe
-                ICraftingRecipe recipe = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, craftingInventory, world).orElse(null);
+                ICraftingRecipe recipe = world.getServer().getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, craftingInventory, world).orElse(null);
                 if (recipe != lastRecipe) {
                     if (recipe == null) {
                         //If there is no found recipe, clear the output, but don't update our last recipe
@@ -137,7 +137,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     } else {
                         //If the recipe is different, update the output
                         lastRecipe = recipe;
-                        outputSlot.setStack(lastRecipe.getCraftingResult(craftingInventory));
+                        outputSlot.setStack(lastRecipe.assemble(craftingInventory));
                     }
                 }
             }
@@ -153,7 +153,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
         //If the recipe is dynamic, doLimitedCrafting is disabled, or the recipe is unlocked
         // allow viewing the recipe
-        return lastRecipe.isDynamic() || !player.world.getGameRules().getBoolean(GameRules.DO_LIMITED_CRAFTING) || player.getRecipeBook().isUnlocked(lastRecipe);
+        return lastRecipe.isSpecial() || !player.level.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) || player.getRecipeBook().contains(lastRecipe);
     }
 
     @Contract("null, _ -> false")
@@ -163,14 +163,14 @@ public class QIOCraftingWindow implements IContentsListener {
             //Note: lastRecipe shouldn't be null here but we validate it just in case
             return false;
         }
-        if (lastRecipe != null && !lastRecipe.isDynamic()) {
-            if (player instanceof ServerPlayerEntity && world.getGameRules().getBoolean(GameRules.DO_LIMITED_CRAFTING) &&
-                !((ServerPlayerEntity) player).getRecipeBook().isUnlocked(lastRecipe)) {
+        if (lastRecipe != null && !lastRecipe.isSpecial()) {
+            if (player instanceof ServerPlayerEntity && world.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) &&
+                !((ServerPlayerEntity) player).getRecipeBook().contains(lastRecipe)) {
                 //If the player cannot use the recipe, don't allow crafting
                 return false;
             }
             //Unload the recipe for the player
-            player.unlockRecipes(Collections.singleton(lastRecipe));
+            player.awardRecipes(Collections.singleton(lastRecipe));
         }
         return true;
     }
@@ -251,7 +251,7 @@ public class QIOCraftingWindow implements IContentsListener {
         //Figure out the base of the result stack after crafting (onCreated can adjust it slightly)
         ItemStack result = outputSlot.getStack().copy();
         Item resultItem = result.getItem();
-        resultItem.onCreated(result, world, player);
+        resultItem.onCraftedBy(result, world, player);
         Stat<Item> itemCraftedStat = Stats.ITEM_CRAFTED.get(resultItem);
         int maxToCraft = calculateMaxCraftAmount(result, frequency);
         int amountPerCraft = result.getCount();
@@ -283,8 +283,8 @@ public class QIOCraftingWindow implements IContentsListener {
                 //If they may still be compatible, copy the stack, and apply the onCreated to it so that
                 // we can adjust the NBT if it needs adjusting
                 ItemStack potentialUpdatedOutput = updatedOutput.copy();
-                resultItem.onCreated(potentialUpdatedOutput, world, player);
-                if (!ItemStack.areItemStacksEqual(result, potentialUpdatedOutput)) {
+                resultItem.onCraftedBy(potentialUpdatedOutput, world, player);
+                if (!ItemStack.matches(result, potentialUpdatedOutput)) {
                     //If some of the data is different about the output, stop crafting
                     // Note: we check if the stacks are equal instead of just if they can stack as if they are different sizes
                     // for some reason we want to stop to allow the player to decide if they want to keep going, or stop crafting
@@ -328,7 +328,7 @@ public class QIOCraftingWindow implements IContentsListener {
             if (!toInsert.isEmpty()) {
                 //If something went horribly wrong adding it to the player's inventory given we calculated there was room
                 // and suddenly a few lines down there is no longer room, then just drop the items as the player
-                player.dropItem(toInsert, false);
+                player.drop(toInsert, false);
             }
             //Update slots with remaining contents
             for (int index = 0; index < remaining.size(); index++) {
@@ -378,7 +378,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
         if (crafted > 0) {
             //Add to the stat how much of the item the player crafted that the player crafted the item
-            player.addStat(itemCraftedStat, crafted);
+            player.awardStat(itemCraftedStat, crafted);
             //Note: We don't fire a crafting event as we don't want to allow for people to modify the output
             // stack or more importantly the input inventory during crafting
             //TODO: If this ends up causing major issues with some weird way another mod ends up doing crafting
@@ -409,7 +409,7 @@ public class QIOCraftingWindow implements IContentsListener {
         //Mark that we are crafting so changes to the slots below don't force a bunch of recalculations to take place
         craftingStarted(player);
         //Craft the result
-        result.onCrafting(world, player, amountCrafted);
+        result.onCraftedBy(world, player, amountCrafted);
         //Note: We don't fire a crafting event as we don't want to allow for people to modify the output
         // stack or more importantly the input inventory during crafting
         //TODO: If this ends up causing major issues with some weird way another mod ends up doing crafting
@@ -480,7 +480,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 remainder = remainder.copy();
             }
             //If some or all of the stack could not be returned to the input slot add it to the player's inventory
-            if (!player.inventory.addItemStackToInventory(remainder)) {
+            if (!player.inventory.add(remainder)) {
                 //failing that try adding it to the qio frequency if there is one
                 if (frequency != null) {
                     remainder = frequency.addItem(remainder);
@@ -493,7 +493,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 // and then have the current stack go into the inventory/QIO?? In theory it sounds like
                 // a good idea but may be way too convoluted to implement cleanly
                 //If there is no frequency or we couldn't add it all to the QIO, drop the remaining item as the player
-                player.dropItem(remainder, false);
+                player.drop(remainder, false);
             }
         }
     }
@@ -520,7 +520,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }
 
         @Override
-        public int getSizeInventory() {
+        public int getContainerSize() {
             return 9;
         }
 
@@ -531,8 +531,8 @@ public class QIOCraftingWindow implements IContentsListener {
 
         @Nonnull
         @Override
-        public ItemStack getStackInSlot(int index) {
-            if (index >= 0 && index < getSizeInventory()) {
+        public ItemStack getItem(int index) {
+            if (index >= 0 && index < getContainerSize()) {
                 IInventorySlot inputSlot = getInputSlot(index);
                 if (!inputSlot.isEmpty()) {
                     //Note: We copy this as we don't want to allow someone trying to interact with the stack directly
@@ -545,8 +545,8 @@ public class QIOCraftingWindow implements IContentsListener {
 
         @Nonnull
         @Override
-        public ItemStack removeStackFromSlot(int index) {
-            if (index >= 0 && index < getSizeInventory()) {
+        public ItemStack removeItemNoUpdate(int index) {
+            if (index >= 0 && index < getContainerSize()) {
                 IInventorySlot inputSlot = getInputSlot(index);
                 ItemStack stored = inputSlot.getStack();
                 inputSlot.setEmpty();
@@ -559,22 +559,22 @@ public class QIOCraftingWindow implements IContentsListener {
 
         @Nonnull
         @Override
-        public ItemStack decrStackSize(int index, int count) {
-            if (index >= 0 && index < getSizeInventory()) {
+        public ItemStack removeItem(int index, int count) {
+            if (index >= 0 && index < getContainerSize()) {
                 return getInputSlot(index).extractItem(count, Action.EXECUTE, AutomationType.INTERNAL);
             }
             return ItemStack.EMPTY;
         }
 
         @Override
-        public void setInventorySlotContents(int index, @Nonnull ItemStack stack) {
-            if (index >= 0 && index < getSizeInventory()) {
+        public void setItem(int index, @Nonnull ItemStack stack) {
+            if (index >= 0 && index < getContainerSize()) {
                 getInputSlot(index).setStack(stack);
             }
         }
 
         @Override
-        public void clear() {
+        public void clearContent() {
             //TODO - 10.1: Re-evaluate, should this instead just force a refresh or something?
             for (CraftingWindowInventorySlot inputSlot : inputSlots) {
                 inputSlot.setEmpty();
@@ -598,7 +598,7 @@ public class QIOCraftingWindow implements IContentsListener {
             boolean copyNeeded = helper.getClass() != RecipeItemHelper.class;
             for (CraftingWindowInventorySlot inputSlot : inputSlots) {
                 ItemStack stack = inputSlot.getStack();
-                helper.accountPlainStack(copyNeeded ? stack.copy() : stack);
+                helper.accountSimpleStack(copyNeeded ? stack.copy() : stack);
             }
         }
     }
@@ -612,13 +612,13 @@ public class QIOCraftingWindow implements IContentsListener {
         public void updateInputs(IInventorySlot[] inputSlots) {
             for (int index = 0; index < inputSlots.length; index++) {
                 //TODO - 10.1: Does this and isStackStillValid need to be copying the stack
-                dummy.setInventorySlotContents(index, inputSlots[index].getStack());
+                dummy.setItem(index, inputSlots[index].getStack());
             }
         }
 
         public boolean isStackStillValid(ICraftingRecipe recipe, World world, ItemStack stack, int index) {
-            ItemStack old = dummy.getStackInSlot(index);
-            dummy.setInventorySlotContents(index, stack);
+            ItemStack old = dummy.getItem(index);
+            dummy.setItem(index, stack);
             if (recipe.matches(dummy, world)) {
                 //If the remaining item is still valid in the recipe in that position
                 // return that it is still valid
@@ -626,7 +626,7 @@ public class QIOCraftingWindow implements IContentsListener {
             }
             //Otherwise, revert the contents of the slot to what used to be in that slot
             // and return that the remaining item is not still valid in the slot
-            dummy.setInventorySlotContents(index, old);
+            dummy.setItem(index, old);
             return false;
         }
 

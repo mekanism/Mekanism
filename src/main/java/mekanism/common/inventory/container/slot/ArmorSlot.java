@@ -25,26 +25,26 @@ public class ArmorSlot extends InsertableSlot {
     }
 
     @Override
-    public int getSlotStackLimit() {
+    public int getMaxStackSize() {
         return 1;
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
-        return stack.canEquip(slotType, ((PlayerInventory) inventory).player);
+    public boolean mayPlace(ItemStack stack) {
+        return stack.canEquip(slotType, ((PlayerInventory) container).player);
     }
 
     @Override
-    public boolean canTakeStack(@Nonnull PlayerEntity player) {
-        ItemStack itemstack = getStack();
+    public boolean mayPickup(@Nonnull PlayerEntity player) {
+        ItemStack itemstack = getItem();
         if (!itemstack.isEmpty() && !player.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack)) {
             return false;
         }
-        return super.canTakeStack(player);
+        return super.mayPickup(player);
     }
 
     @Override
-    public Pair<ResourceLocation, ResourceLocation> getBackground() {
-        return Pair.of(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ARMOR_SLOT_TEXTURES[slotType.getIndex()]);
+    public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+        return Pair.of(PlayerContainer.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[slotType.getIndex()]);
     }
 }

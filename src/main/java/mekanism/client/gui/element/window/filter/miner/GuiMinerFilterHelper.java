@@ -29,7 +29,7 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
         childAdder.accept(new GuiSlot(SlotType.NORMAL, gui, getRelativeX() + 148, getRelativeY() + slotOffset).setRenderHover(true)
               .setGhostHandler((IGhostBlockItemConsumer) ingredient -> {
                   filter.replaceStack = StackUtils.size((ItemStack) ingredient, 1);
-                  Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                  Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
               }));
         childAdder.accept(new MekanismImageButton(gui, gui.getLeft() + getRelativeX() + 148, gui.getTop() + getRelativeY() + 45, 14, 16,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), () -> filter.requireStack = !filter.requireStack,
@@ -43,16 +43,16 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
 
     default void renderReplaceStack(MatrixStack matrix, IGuiWrapper gui, MinerFilter<?> filter) {
         if (!filter.replaceStack.isEmpty()) {
-            gui.getItemRenderer().zLevel += 200;
+            gui.getItemRenderer().blitOffset += 200;
             gui.renderItem(matrix, filter.replaceStack, getRelativeX() + 149, getRelativeY() + 19);
-            gui.getItemRenderer().zLevel -= 200;
+            gui.getItemRenderer().blitOffset -= 200;
         }
     }
 
     default boolean tryClickReplaceStack(IGuiWrapper gui, double mouseX, double mouseY, int button, int slotOffset, MinerFilter<?> filter) {
         return GuiFilter.mouseClickSlot(gui, button, mouseX, mouseY, getRelativeX() + 149, getRelativeY() + slotOffset + 1, GuiFilter.NOT_EMPTY_BLOCK, stack -> {
             filter.replaceStack = stack;
-            Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         });
     }
 }

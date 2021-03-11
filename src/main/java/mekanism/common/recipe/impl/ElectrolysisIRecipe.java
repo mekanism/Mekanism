@@ -39,7 +39,7 @@ public class ElectrolysisIRecipe extends ElectrolysisRecipe {
 
     @Nonnull
     @Override
-    public ItemStack getIcon() {
+    public ItemStack getToastSymbol() {
         return MekanismBlocks.ELECTROLYTIC_SEPARATOR.getItemStack();
     }
 }
