@@ -212,6 +212,12 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onEntityAttacked(LivingAttackEvent event) {
+        if (event.getAmount() <= 0) {
+            //If some mod does weird things and causes the damage value to be negative or zero then exit
+            // as our logic assumes there is actually damage happening and can crash if someone tries to
+            // use a negative number as the damage value
+            return;
+        }
         LivingEntity base = event.getEntityLiving();
         //Gas Mask checks
         if (event.getSource().isMagic()) {
@@ -261,6 +267,12 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
+        if (event.getAmount() <= 0) {
+            //If some mod does weird things and causes the damage value to be negative (or zero instead of just cancelling)
+            // then exit as our logic assumes there is actually damage happening and can crash if someone tries to use a
+            // negative number as the damage value
+            return;
+        }
         LivingEntity entity = event.getEntityLiving();
         if (event.getSource() == DamageSource.FALL) {
             IEnergyContainer energyContainer = getFallAbsorptionEnergyContainer(entity);
