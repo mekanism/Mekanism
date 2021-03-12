@@ -104,7 +104,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ChemicalInfuserRecipeBuilder.chemicalInfusing(
               GasStackIngredient.from(GeneratorsGases.DEUTERIUM, 1),
               GasStackIngredient.from(GeneratorsGases.TRITIUM, 1),
-              GeneratorsGases.FUSION_FUEL.getStack(1)
+              GeneratorsGases.FUSION_FUEL.getStack(2)
         ).build(consumer, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
 

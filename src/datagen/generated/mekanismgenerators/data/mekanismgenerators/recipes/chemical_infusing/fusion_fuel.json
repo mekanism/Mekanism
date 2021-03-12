@@ -10,6 +10,6 @@
   },
   "output": {
     "gas": "mekanismgenerators:fusion_fuel",
-    "amount": 1
+    "amount": 2
   }
 }
