@@ -1,7 +1,5 @@
 package mekanism.generators.common.config;
 
-import java.util.ArrayList;
-import java.util.Locale;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.BaseMekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -10,7 +8,6 @@ import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -106,9 +103,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         //TODO: Also see if we can somehow check world.getHeight()
         windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation.")
               .define("windGenerationMaxY", 255, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
-        //Note: Unlike in 1.15 we don't verify the dimension exists as dimensions are a lot more dynamic now
-        windGenerationDimBlacklist = CachedResourceLocationListValue.wrap(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in.")
-              .defineList("windGenerationDimBlacklist", new ArrayList<>(), o -> o instanceof String && ResourceLocation.tryParse(((String) o).toLowerCase(Locale.ROOT)) != null));
+        //Note: We cannot verify the dimension exists as dimensions are dynamic so may not actually exist when we are validating
+        windGenerationDimBlacklist = CachedResourceLocationListValue.define(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in."),
+              "windGenerationDimBlacklist", rl -> true);
         builder.pop();
 
         builder.comment("Fusion Settings").push(FUSION_CATEGORY);
