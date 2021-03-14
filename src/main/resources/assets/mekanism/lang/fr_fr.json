@@ -1317,7 +1317,7 @@
   "upgrade.mekanism.display.level": "- %s : x%s",
   "upgrade.mekanism.energy": "Énergie",
   "upgrade.mekanism.energy.description": "Augmente l'efficacité énergétique et la capacité des machines.",
-  "upgrade.mekanism.filter": "Filtrez",
+  "upgrade.mekanism.filter": "Filtre",
   "upgrade.mekanism.filter.description": "Un filtre qui sépare l'eau lourde de l'eau ordinaire.",
   "upgrade.mekanism.gas": "Gaz",
   "upgrade.mekanism.gas.description": "Augmente l'efficacité des machines à gaz.",
