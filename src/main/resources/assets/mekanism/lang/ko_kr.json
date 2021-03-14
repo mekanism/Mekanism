@@ -1041,7 +1041,7 @@
   "module.mekanism.electrolytic_breathing_unit": "전기적 호흡 기구",
   "module.mekanism.enabled": "활성화됨",
   "module.mekanism.enabled_lower": "활성화됨",
-  "module.mekanism.energy_unit": "에너지 단위",
+  "module.mekanism.energy_unit": "에너지 기구",
   "module.mekanism.excavation_escalation": "채굴 확대 기구",
   "module.mekanism.exclusive": "(전용 모듈)",
   "module.mekanism.extended_enabled": "광범위 광맥 체굴: %s",
