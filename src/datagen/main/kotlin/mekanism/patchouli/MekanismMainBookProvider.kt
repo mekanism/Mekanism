@@ -507,6 +507,10 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                     +"It is produced by splitting ${link(BRINE, "Brine")} into Sodium and ${link(CHLORINE, "Chlorine")} in an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Separator")}"
                 }
 
+                SUPERHEATED_SODIUM {
+                    TODO()
+                }
+
                 SULFUR_DIOXIDE {
                     +"Sulfur dioxide is a step in ${link(SULFURIC_ACID, "Sulfuric Acid")} production."
                     +"It is created by putting sulfur in a ${link(CHEMICAL_OXIDIZER, "Chemical Oxidizer")} and used with ${link(OXYGEN, "Oxygen")} in the ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to create ${link(SULFUR_TRIOXIDE, "Sulfur Trioxide")}."
@@ -536,6 +540,51 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                     +"Water vapor is created from water in the ${link(ROTARY_CONDENSENTRATOR, "Rotary Condenstrator")}. It is not as hot as Steam"
                     +"It is combined with ${link(SULFUR_TRIOXIDE, "Sulfur Trioxide")} in the ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to create ${link(SULFURIC_ACID, "Sulfuric Acid")}.  It can also be combined with dirt in the ${link(CHEMICAL_INJECTION_CHAMBER, "Chemical Injection Chamber")} to make clay."
                 }
+
+                HYDROFLUORIC_ACID {
+                    TODO()
+                }
+
+                URANIUM_OXIDE {
+                    TODO()
+                }
+
+                URANIUM_HEXAFLUORIDE {
+                    TODO()
+                }
+
+                LIQUID_OSMIUM {
+                    TODO()
+                }
+
+                FISSILE_FUEL {
+                    TODO()
+                }
+
+                NUCLEAR_WASTE {
+                    TODO()
+                }
+
+                SPENT_NUCLEAR_WASTE {
+                    TODO()
+                }
+
+                PLUTONIUM {
+                    TODO()
+                }
+
+                POLONIUM {
+                    TODO()
+                }
+
+                ANTIMATTER {
+                    TODO()
+                }
+
+                NUTRITIONAL_PASTE {
+                    TODO()
+                }
+
             }
         }
     }
