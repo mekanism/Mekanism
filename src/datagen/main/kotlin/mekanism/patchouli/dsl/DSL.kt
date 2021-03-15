@@ -8,10 +8,13 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import mekanism.api.providers.IBlockProvider
+import mekanism.api.providers.IGasProvider
 import mekanism.api.providers.IItemProvider
 import mekanism.common.block.attribute.Attribute
 import mekanism.common.block.attribute.AttributeStateFacing
 import mekanism.common.registration.impl.BlockRegistryObject
+import mekanism.common.registries.MekanismBlocks
+import mekanism.common.registries.MekanismItems
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.client.settings.KeyBinding
@@ -64,7 +67,13 @@ val IItemProvider.bookId: String get() {
     return type + "/" + this.registryName.path
 }
 
+val IGasProvider.bookId: String get() = "gas/" + this.registryName.path
+
 fun link(item: IItemProvider, text: String): String {
+    return "$(l:${item.bookId})${text}$(/l)"
+}
+
+fun link(item: IGasProvider, text: String): String {
     return "$(l:${item.bookId})${text}$(/l)"
 }
 
@@ -445,6 +454,16 @@ interface ICategory {
     }
 
     @PatchouliDSL
+    operator fun IGasProvider.invoke(spotlightText: String? = null, init: (Entry.() -> Unit)) {
+        entry(this.bookId) {
+            name = translationKey
+            icon = MekanismBlocks.ULTIMATE_CHEMICAL_TANK//todo icon or filled
+            readByDefault = true//no one wants to have to go through EVERY item in the index...
+            init.invoke(this)
+        }
+    }
+
+    @PatchouliDSL
     operator fun IGuideEntry.invoke(init: Entry.() -> Unit) {
         entry(this.entryId) {
             init()
@@ -474,6 +493,14 @@ class Category(override val book: PatchouliBook, override val id: String): ICate
         }
         set(value) {
             iconStr = ItemStackUtils.serializeStack(value.itemStack)
+        }
+
+    var iconItem: ItemStack
+        get() {
+            throw UnsupportedOperationException()
+        }
+        set(value) {
+            iconStr = ItemStackUtils.serializeStack(value)
         }
 
     /** The parent category to this one. If this is a sub-category, simply put the name of the category this is a child to here. If not, don't define it. Use fully-qualified names including both a namespace and a path. */
@@ -533,6 +560,14 @@ class Entry(
         set(value) {
             field = value!!
             iconStr = ItemStackUtils.serializeStack(value.itemStack)
+        }
+
+    var iconItem: ItemStack
+        get() {
+            throw UnsupportedOperationException()
+        }
+        set(value) {
+            iconStr = ItemStackUtils.serializeStack(value)
         }
 
     /** mandatory. The array of pages for this entry. */

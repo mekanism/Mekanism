@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "Quadrupling your ores is significantly more complex than doubling or tripling, due to the need for $(l:chemicals/hydrogen_chloride)Hydrogen Chloride$(/l)."
+      "text": "Quadrupling your ores is significantly more complex than doubling or tripling, due to the need for $(l:gas/hydrogen_chloride)Hydrogen Chloride$(/l)."
     },
     {
       "type": "text",

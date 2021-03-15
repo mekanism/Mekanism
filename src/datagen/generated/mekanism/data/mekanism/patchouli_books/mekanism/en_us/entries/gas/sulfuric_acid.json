@@ -1,5 +1,5 @@
 {
-  "name": "Sulfuric Acid",
+  "name": "gas.mekanism.sulfuric_acid",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
   "pages": [
@@ -9,7 +9,8 @@
     },
     {
       "type": "text",
-      "text": "It is created by combining $(l:chemicals/sulfur_trioxide)Sulfur Trioxide$(/l) and $(l:chemicals/water_vapor)Water Vapor$(/l) in the $(l:block/chemical_infuser)Chemical Infuser$(/l)."
+      "text": "It is created by combining $(l:gas/sulfur_trioxide)Sulfur Trioxide$(/l) and $(l:gas/water_vapor)Water Vapor$(/l) in the $(l:block/chemical_infuser)Chemical Infuser$(/l)."
     }
-  ]
+  ],
+  "read_by_default": true
 }

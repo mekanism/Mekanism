@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "Tritium is another isotope of $(l:chemicals/hydrogen)Hydrogen$(/l), with two extra neturons.  It is used as fuel in the $(l:multiblocks/fusion_reactor)Fusion Reactor$(/l)."
+      "text": "Tritium is another isotope of $(l:gas/hydrogen)Hydrogen$(/l), with two extra neturons.  It is used as fuel in the $(l:multiblocks/fusion_reactor)Fusion Reactor$(/l)."
     },
     {
       "type": "text",

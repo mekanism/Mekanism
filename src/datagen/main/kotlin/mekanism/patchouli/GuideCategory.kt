@@ -13,7 +13,9 @@ enum class GuideCategory : IGuideCategory {
     BLOCKS,
     MULTIBLOCKS,
     ORE_PROCESSING,
-    CHEMICALS;
+    CHEMICALS,
+    LIQUIDS
+    ;
 
     override val id: String = name.toLowerCase(Locale.ROOT)
     private val translationKey: String = Util.makeTranslationKey("guidebook", Mekanism.rl("category.$id"))

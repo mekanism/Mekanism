@@ -31,6 +31,7 @@ enum class GuideEntry(folder: String?, name: String): IGuideEntry {
     ORE_QUADRUPLING("ore_processing", "quadrupling"),
     ORE_QUINTUPLING("ore_processing", "quintupling"),
 
+    //fixme?
     /* Disassembler entries are really pages, but have title and text */
     DISASSEMBLER_NORMAL("items", "atomic_disassembler.normal"),
     DISASSEMBLER_SLOW("items", "atomic_disassembler.slow"),
@@ -39,24 +40,17 @@ enum class GuideEntry(folder: String?, name: String): IGuideEntry {
     DISASSEMBLER_EXTENDED_VEIN("items", "atomic_disassembler.extended_vein"),
     DISASSEMBLER_OFF("items", "atomic_disassembler.off"),
 
+    //fixme?
     GENERATORS_TURBINE("multiblocks", "industrial_turbine"),
     GENERATORS_FUSION("multiblocks", "fusion_reactor"),
 
-    CHEMICAL_HYDROGEN("chemicals", "hydrogen"),
-    CHEMICAL_OXYGEN("chemicals", "oxygen"),
-    CHEMICAL_CHLORINE("chemicals", "chlorine"),
-    CHEMICAL_HYDROGEN_CHLORIDE("chemicals", "hydrogen_chloride"),
-    CHEMICAL_SULFUR_DIOXIDE("chemicals", "sulfur_dioxide"),
-    CHEMICAL_SULFUR_TRIOXIDE("chemicals", "sulfur_trioxide"),
-    CHEMICAL_BRINE("chemicals", "gaseous_brine"),
-    CHEMICAL_WATER_VAPOR("chemicals", "water_vapor"),
-    CHEMICAL_SULFURIC_ACID("chemicals", "sulfuric_acid"),
-    CHEMICAL_ETHYLENE("chemicals", "ethylene"),
     CHEMICAL_DEUTERIUM("chemicals", "deuterium"),
     CHEMICAL_TRITIUM("chemicals", "tritium"),
     CHEMICAL_DT_FUEL("chemicals", "dt_fuel"),
-    CHEMICAL_LITHIUM("chemicals", "lithium"),
-    CHEMICAL_SODIUM("chemicals", "sodium");
+
+    LIQUID_HEAVY_WATER("liquids", "heavy_water")
+
+    ;
 
     override val entryId: String = IGuideEntry.generate(folder, name)
 

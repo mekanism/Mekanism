@@ -4,6 +4,8 @@ import mekanism.client.MekanismKeyHandler
 import mekanism.common.Mekanism
 import mekanism.common.MekanismLang
 import mekanism.common.registries.MekanismBlocks.*
+import mekanism.common.registries.MekanismFluids
+import mekanism.common.registries.MekanismGases.*
 import mekanism.common.registries.MekanismItems.*
 import mekanism.common.resource.OreType
 import mekanism.common.resource.PrimaryResource
@@ -12,6 +14,7 @@ import mekanism.patchouli.dsl.invoke
 import mekanism.patchouli.dsl.link
 import net.minecraft.data.DataGenerator
 import net.minecraft.data.DirectoryCache
+import net.minecraft.item.ItemStack
 import net.minecraft.util.Direction
 
 /**
@@ -419,46 +422,56 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                 GuideEntry.ORE_QUADRUPLING {
                     name = "4x - Ore Quadrupling"
                     icon = CHEMICAL_INJECTION_CHAMBER
-                    +"Quadrupling your ores is significantly more complex than doubling or tripling, due to the need for ${link(GuideEntry.CHEMICAL_HYDROGEN_CHLORIDE, "Hydrogen Chloride")}."
+                    +"Quadrupling your ores is significantly more complex than doubling or tripling, due to the need for ${link(HYDROGEN_CHLORIDE, "Hydrogen Chloride")}."
                     +"Once you have that set up, use a ${link(CHEMICAL_INJECTION_CHAMBER, "Chemical Injection Chamber")} to convert ores into shards, and feed those into your crusher."
                 }
                 GuideEntry.ORE_QUINTUPLING {
                     name = "5x - Ore Quintupling"
                     icon = CHEMICAL_DISSOLUTION_CHAMBER
                     +"Quintupling ores is quite complicated, however it can lead to huge riches, especially with a ${link(DIGITAL_MINER, "Digital Miner")}."
-                    +"To quintuple ores, put them and ${link(GuideEntry.CHEMICAL_SULFURIC_ACID, "Sulfuric Acid")} into a ${link(CHEMICAL_DISSOLUTION_CHAMBER, "Chemical Dissolution Chamber")}, which will convert them into slurry.  Clean the slurry in a ${link(CHEMICAL_WASHER, "Chemical Washer")}, then use a ${link(CHEMICAL_CRYSTALLIZER, "Chemical Crystallizer")} to turn them into crystals."
+                    +"To quintuple ores, put them and ${link(SULFURIC_ACID, "Sulfuric Acid")} into a ${link(CHEMICAL_DISSOLUTION_CHAMBER, "Chemical Dissolution Chamber")}, which will convert them into slurry.  Clean the slurry in a ${link(CHEMICAL_WASHER, "Chemical Washer")}, then use a ${link(CHEMICAL_CRYSTALLIZER, "Chemical Crystallizer")} to turn them into crystals."
                     +"Put the crystals into your injection chamber."
+                }
+            }
+
+            GuideCategory.LIQUIDS {
+                name = "Liquids"
+                description = "Splish splash, Robit's taking a bath. Warranty void when exposed to liquids."
+                icon = ULTIMATE_FLUID_TANK
+
+                GuideEntry.LIQUID_HEAVY_WATER {
+                    name = "Heavy Water"
+                    iconItem = ItemStack(MekanismFluids.HEAVY_WATER.bucket, 1)//todo filled fluid tank
+                    +"Heavy Water is obtaind by having an ${link(ELECTRIC_PUMP, "Electric Pump")} with a ${link(FILTER_UPGRADE, "Filter Upgrade")} pump a regular water source."
                 }
             }
 
             GuideCategory.CHEMICALS {
                 name = "Chemicals"
-                description = "Transport these with ${link(GuideEntry.PIPES_GAS, "Pressurized Tubes")} and store them in ${link(GuideEntry.TANKS_GAS, "Chemical Tanks")} or a high capacity ${link(GuideEntry.DYNAMIC_TANK, "Dynamic Tank")}."
+                description = "Gasses and other chemicals. Transport these with ${link(GuideEntry.PIPES_GAS, "Pressurized Tubes")} and store them in ${link(GuideEntry.TANKS_GAS, "Chemical Tanks")} or a high capacity ${link(GuideEntry.DYNAMIC_TANK, "Dynamic Tank")}."
                 icon = ULTIMATE_CHEMICAL_TANK
 
-                GuideEntry.CHEMICAL_BRINE {
-                    name = "Gaseous Brine"
-                    icon = ULTIMATE_CHEMICAL_TANK
+                BRINE {
                     +"The gaseous form of brine, made by putting ${link(SALT, "salt")} in a ${link(CHEMICAL_OXIDIZER, "Chemical Oxidizer")}, or by evaporating liquid brine in a ${link(ROTARY_CONDENSENTRATOR, "Rotary Condenstrator")}."
-                    +"The condenstrator can also turn it back into liquid brine, by pressing the \"Switch Operation\" toggle."
+                    +"The Condenstrator can also turn it back into liquid brine, by pressing the \"Switch Operation\" toggle."
                 }
 
-                GuideEntry.CHEMICAL_CHLORINE {
-                    name = "Chlorine"
-                    icon = ULTIMATE_CHEMICAL_TANK
-                    +"Chlorine is combined in a ${link(CHEMICAL_INFUSER, "Chemical Infuser")} along with ${link(GuideEntry.CHEMICAL_HYDROGEN, "Hydrogen")} to make ${link(GuideEntry.CHEMICAL_HYDROGEN_CHLORIDE, "Hydrogen Chloride")}."
-                    +"It is produced by putting brine in an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Seperator")}, which also produces ${link(GuideEntry.CHEMICAL_SODIUM, "Sodium")}"
+                CHLORINE {
+                    +"Chlorine is combined in a ${link(CHEMICAL_INFUSER, "Chemical Infuser")} along with ${link(HYDROGEN, "Hydrogen")} to make ${link(HYDROGEN_CHLORIDE, "Hydrogen Chloride")}."
+                    +"It is produced by putting brine in an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Separator")}, which also produces ${link(SODIUM, "Sodium")}"
                 }
 
+                //todo move to Generators book
                 GuideEntry.CHEMICAL_DEUTERIUM {
                     name = "Deuterium"
                     icon = ULTIMATE_CHEMICAL_TANK
-                    +"Deuterium is an isotope of ${link(GuideEntry.CHEMICAL_HYDROGEN, "Hydrogen")} with an extra neutron, used in a ${link(GuideEntry.GENERATORS_FUSION, "Fusion Reactor")}."
-                    +"It is made by putting heavy water in an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Seperator")}, which also produces ${link(GuideEntry.CHEMICAL_OXYGEN, "oxygen")}"
+                    +"Deuterium is an isotope of ${link(HYDROGEN, "Hydrogen")} with an extra neutron, used in a ${link(GuideEntry.GENERATORS_FUSION, "Fusion Reactor")}."
+                    +"It is made by putting heavy water in an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Separator")}, which also produces ${link(OXYGEN, "oxygen")}"
                     +"Deuterium and ${link(GuideEntry.CHEMICAL_TRITIUM, "Tritium")} can be either injected straight into a reactor, or combined in a ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to create ${link(GuideEntry.CHEMICAL_DT_FUEL, "D-T Fuel")}"
                     +"See ${link(GuideEntry.GENERATORS_FUSION, "Fusion Reactor")} for more details."
                 }
 
+                //todo move to Generators book
                 GuideEntry.CHEMICAL_DT_FUEL {
                     name = "D-T Fuel"
                     icon = ULTIMATE_CHEMICAL_TANK
@@ -466,79 +479,62 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                     +"Direct D-T injection is only feasible for very high fuel production, see ${link(GuideEntry.GENERATORS_FUSION, "Fusion Reactor")} for more details."
                 }
 
-                GuideEntry.CHEMICAL_ETHYLENE {
-                    name = "Ethylene"
-                    icon = ULTIMATE_CHEMICAL_TANK
+                ETHENE {
                     +"Ethylene is the fuel for our ultra-efficient Gas-Burning generator.  It is a byproduct of ${link(HDPE_PELLET, "HDPE (High-Density Polyethylene)")}."
-                    +"It is produced by the ${link(PRESSURIZED_REACTION_CHAMBER, "Pressurized Reaction Chamber")} when turning ${link(BIO_FUEL, "bio-fuel")} into ${link(SUBSTRATE, "substrate")}, using ${link(GuideEntry.CHEMICAL_HYDROGEN, "hydrogen")} and water."
+                    +"It is produced by the ${link(PRESSURIZED_REACTION_CHAMBER, "Pressurized Reaction Chamber")} when turning ${link(BIO_FUEL, "bio-fuel")} into ${link(SUBSTRATE, "substrate")}, using ${link(HYDROGEN, "hydrogen")} and water."
                 }
 
-                GuideEntry.CHEMICAL_HYDROGEN {
-                    name = "Hydrogen"
-                    icon = ULTIMATE_CHEMICAL_TANK
-                    +"Hydrogen is a carrier of energy.  It is produced by putting water in an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Seperator")}, and can be used as fuel in a Gas-Burning Generator, as well as a ${link(JETPACK, "Jetpack")} or ${link(ARMORED_JETPACK, "Armored Jetpack")} and ${link(FLAMETHROWER, "Flamethrower")}."
-                    +"It is also used in a ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to make ${link(GuideEntry.CHEMICAL_HYDROGEN_CHLORIDE, "Hydrogen Chloride")}."
+                HYDROGEN {
+                    +"Hydrogen is a carrier of energy.  It is produced by putting water in an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Separator")}, and can be used as fuel in a Gas-Burning Generator, as well as a ${link(JETPACK, "Jetpack")} or ${link(ARMORED_JETPACK, "Armored Jetpack")} and ${link(FLAMETHROWER, "Flamethrower")}."
+                    +"It is also used in a ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to make ${link(HYDROGEN_CHLORIDE, "Hydrogen Chloride")}."
                 }
 
-                GuideEntry.CHEMICAL_HYDROGEN_CHLORIDE {
-                    name = "Hydrogen Chloride"
-                    icon = ULTIMATE_CHEMICAL_TANK
-                    +"Hydrogen Chloride is needed for the ${link(CHEMICAL_INJECTION_CHAMBER, "Injection Chamber")}, part of ${link(GuideEntry.ORE_QUADRUPLING, "Ore Quadrupling")}. It is cretd by putting ${link(GuideEntry.CHEMICAL_CHLORINE, "Chlorine")} and ${link(GuideEntry.CHEMICAL_HYDROGEN, "Hydrogen")} in a ${link(CHEMICAL_INFUSER, "Chemical Infuser")}."
+                HYDROGEN_CHLORIDE {
+                    +"Hydrogen Chloride is needed for the ${link(CHEMICAL_INJECTION_CHAMBER, "Injection Chamber")}, part of ${link(GuideEntry.ORE_QUADRUPLING, "Ore Quadrupling")}. It is created by putting ${link(CHLORINE, "Chlorine")} and ${link(HYDROGEN, "Hydrogen")} in a ${link(CHEMICAL_INFUSER, "Chemical Infuser")}."
                 }
 
-                GuideEntry.CHEMICAL_LITHIUM {
-                    name = "Lithium"
-                    icon = ULTIMATE_CHEMICAL_TANK
-                    +"Lithium is produced by ${link(GuideEntry.THERMAL_EVAP, "evaporating")} ${link(GuideEntry.CHEMICAL_BRINE, "brine")}.  It is processed into ${link(GuideEntry.CHEMICAL_TRITIUM, "Tritium")} in a ${link(SOLAR_NEUTRON_ACTIVATOR, "Solar Neutron Activator")}."
+                LITHIUM {
+                    +"Lithium is produced by ${link(GuideEntry.THERMAL_EVAP, "evaporating")} ${link(BRINE, "brine")}.  It is processed into ${link(GuideEntry.CHEMICAL_TRITIUM, "Tritium")} in a ${link(SOLAR_NEUTRON_ACTIVATOR, "Solar Neutron Activator")}."
                 }
 
-                GuideEntry.CHEMICAL_OXYGEN {
-                    name = "Oxygen"
-                    icon = ULTIMATE_CHEMICAL_TANK
-                    +"Oxygen is produced by splitting water using an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Seperator")}, which also produces ${link(GuideEntry.CHEMICAL_HYDROGEN, "Hydrogen")}"
-                    +"It is used in the ${link(PURIFICATION_CHAMBER, "Purification Chamber")}, part of ${link(GuideEntry.ORE_TRIPLING, "Ore Tripling")}.  It is also combined with ${link(GuideEntry.CHEMICAL_SULFUR_TRIOXIDE, "Sulfur Trioxide")} in the ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to make ${link(GuideEntry.CHEMICAL_SULFUR_DIOXIDE, "Sulfur Dioxide")}, as well as in the ${link(SCUBA_MASK, "Scuba Mask")}."
+                OXYGEN {
+                    +"Oxygen is produced by splitting water using an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Separator")}, which also produces ${link(HYDROGEN, "Hydrogen")}"
+                    +"It is used in the ${link(PURIFICATION_CHAMBER, "Purification Chamber")}, part of ${link(GuideEntry.ORE_TRIPLING, "Ore Tripling")}.  It is also combined with ${link(SULFUR_TRIOXIDE, "Sulfur Trioxide")} in the ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to make ${link(SULFUR_DIOXIDE, "Sulfur Dioxide")}, as well as in the ${link(SCUBA_MASK, "Scuba Mask")}."
                 }
 
-                GuideEntry.CHEMICAL_SODIUM {
-                    name = "Sodium"
-                    icon = ULTIMATE_CHEMICAL_TANK
+                SODIUM {
                     +"Sodium is a coolant for the fission reactor.  it has a higher heat capacity than water and is needed for larger and/or more active reactors."
-                    +"It is produced by splitting ${link(GuideEntry.CHEMICAL_BRINE, "Brine")} into Sodium and ${link(GuideEntry.CHEMICAL_CHLORINE, "Chlorine")} in an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Seperator")}"
+                    +"It is produced by splitting ${link(BRINE, "Brine")} into Sodium and ${link(CHLORINE, "Chlorine")} in an ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Separator")}"
                 }
 
-                GuideEntry.CHEMICAL_SULFUR_DIOXIDE {
-                    name = "Sulfur Dioxide"
-                    icon = ULTIMATE_CHEMICAL_TANK
-                    +"Sulfur dioxide is a step in ${link(GuideEntry.CHEMICAL_SULFURIC_ACID, "Sulfuric Acid")} production."
-                    +"It is created by putting sulfur in a ${link(CHEMICAL_OXIDIZER, "Chemical Oxidizer")} and used with ${link(GuideEntry.CHEMICAL_OXYGEN, "Oxygen")} in the ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to create ${link(GuideEntry.CHEMICAL_SULFUR_TRIOXIDE, "Sulfur Trioxide")}."
+                SULFUR_DIOXIDE {
+                    +"Sulfur dioxide is a step in ${link(SULFURIC_ACID, "Sulfuric Acid")} production."
+                    +"It is created by putting sulfur in a ${link(CHEMICAL_OXIDIZER, "Chemical Oxidizer")} and used with ${link(OXYGEN, "Oxygen")} in the ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to create ${link(SULFUR_TRIOXIDE, "Sulfur Trioxide")}."
                 }
 
-                GuideEntry.CHEMICAL_SULFUR_TRIOXIDE {
+                SULFUR_TRIOXIDE {
                     name = "Sulfur Trioxide"
                     icon = ULTIMATE_CHEMICAL_TANK
-                    +"Sulfur trioxide is another step in ${link(GuideEntry.CHEMICAL_SULFURIC_ACID, "Sulfuric Acid")} production. It is produced by combining ${link(GuideEntry.CHEMICAL_SULFUR_DIOXIDE, "Sulfur Dioxide")} and ${link(GuideEntry.CHEMICAL_OXYGEN, "Oxygen")} in a ${link(CHEMICAL_INFUSER, "Chemical Infuser")}."
-                    +"It is combined with ${link(GuideEntry.CHEMICAL_WATER_VAPOR, "Water Vapor")} in a Chemical Infuser to create sulfuric acid."
+                    +"Sulfur trioxide is another step in ${link(SULFURIC_ACID, "Sulfuric Acid")} production. It is produced by combining ${link(SULFUR_DIOXIDE, "Sulfur Dioxide")} and ${link(OXYGEN, "Oxygen")} in a ${link(CHEMICAL_INFUSER, "Chemical Infuser")}."
+                    +"It is combined with ${link(WATER_VAPOR, "Water Vapor")} in a Chemical Infuser to create sulfuric acid."
                 }
 
-                GuideEntry.CHEMICAL_SULFURIC_ACID {
-                    name = "Sulfuric Acid"
-                    icon = ULTIMATE_CHEMICAL_TANK
+                SULFURIC_ACID {
                     +"Sulfuric acid is necesary for ${link(GuideEntry.ORE_QUINTUPLING, "Ore Quintupling")}.  It is used in the ${link(CHEMICAL_DISSOLUTION_CHAMBER, "Chemical Dissolution Chamber")} to dissolve ores into slurry."
-                    +"It is created by combining ${link(GuideEntry.CHEMICAL_SULFUR_TRIOXIDE, "Sulfur Trioxide")} and ${link(GuideEntry.CHEMICAL_WATER_VAPOR, "Water Vapor")} in the ${link(CHEMICAL_INFUSER, "Chemical Infuser")}."
+                    +"It is created by combining ${link(SULFUR_TRIOXIDE, "Sulfur Trioxide")} and ${link(WATER_VAPOR, "Water Vapor")} in the ${link(CHEMICAL_INFUSER, "Chemical Infuser")}."
                 }
 
+                //todo move to generators
                 GuideEntry.CHEMICAL_TRITIUM {
                     name = "Tritium"
                     icon = ULTIMATE_CHEMICAL_TANK
-                    +"Tritium is another isotope of ${link(GuideEntry.CHEMICAL_HYDROGEN, "Hydrogen")}, with two extra neturons.  It is used as fuel in the ${link(GuideEntry.GENERATORS_FUSION, "Fusion Reactor")}."
+                    +"Tritium is another isotope of ${link(HYDROGEN, "Hydrogen")}, with two extra neturons.  It is used as fuel in the ${link(GuideEntry.GENERATORS_FUSION, "Fusion Reactor")}."
                     +"It can either be injected directly into the reactor along with ${link(GuideEntry.CHEMICAL_DEUTERIUM, "Deuterium")}, or combined into ${link(GuideEntry.CHEMICAL_DT_FUEL, "D-T Fuel")}.  The latter is only useful if production is very high, see ${link(GuideEntry.GENERATORS_FUSION, "Fusion Reactor")} for more information."
                 }
 
-                GuideEntry.CHEMICAL_WATER_VAPOR {
-                    name = "Water Vapor"
-                    icon = ULTIMATE_CHEMICAL_TANK
-                    +"Water vapor is created from water in the ${link(ROTARY_CONDENSENTRATOR, "Rotary Condenstrator")}."
-                    +"It is combined with ${link(GuideEntry.CHEMICAL_SULFUR_TRIOXIDE, "Sulfur Trioxide")} in the ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to create ${link(GuideEntry.CHEMICAL_SULFURIC_ACID, "Sulfuric Acid")}.  It can also be combined with dirt in the ${link(CHEMICAL_INJECTION_CHAMBER, "Chemical Injection Chamber")} to make clay."
+                WATER_VAPOR {
+                    +"Water vapor is created from water in the ${link(ROTARY_CONDENSENTRATOR, "Rotary Condenstrator")}. It is not as hot as Steam"
+                    +"It is combined with ${link(SULFUR_TRIOXIDE, "Sulfur Trioxide")} in the ${link(CHEMICAL_INFUSER, "Chemical Infuser")} to create ${link(SULFURIC_ACID, "Sulfuric Acid")}.  It can also be combined with dirt in the ${link(CHEMICAL_INJECTION_CHAMBER, "Chemical Injection Chamber")} to make clay."
                 }
             }
         }

@@ -1,5 +1,5 @@
 {
-  "name": "Gaseous Brine",
+  "name": "gas.mekanism.brine",
   "category": "chemicals",
   "icon": "mekanism:ultimate_chemical_tank",
   "pages": [
@@ -9,7 +9,8 @@
     },
     {
       "type": "text",
-      "text": "The condenstrator can also turn it back into liquid brine, by pressing the \"Switch Operation\" toggle."
+      "text": "The Condenstrator can also turn it back into liquid brine, by pressing the \"Switch Operation\" toggle."
     }
-  ]
+  ],
+  "read_by_default": true
 }
