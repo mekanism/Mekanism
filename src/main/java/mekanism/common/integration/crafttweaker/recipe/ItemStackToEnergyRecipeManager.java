@@ -6,8 +6,6 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.CrTFloatingLong;
-import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.EnergyConversionIRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -22,12 +20,11 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient input, CrTFloatingLong output) {
-        FloatingLong outputEnergy = output.getInternalAsConst();
-        if (outputEnergy.isZero()) {
+    public void addRecipe(String name, ItemStackIngredient input, FloatingLong output) {
+        if (output.isZero()) {
             throw new JsonSyntaxException("Output must be greater than zero.");
         }
-        addRecipe(makeRecipe(getAndValidateName(name), input.getInternal(), outputEnergy));
+        addRecipe(makeRecipe(getAndValidateName(name), input, output.copyAsConst()));
     }
 
     protected abstract ItemStackToEnergyRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, FloatingLong output);

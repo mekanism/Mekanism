@@ -2,11 +2,11 @@ package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.ChemicalInfuserIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
@@ -22,8 +22,8 @@ public class ChemicalInfuserRecipeManager extends MekanismRecipeManager<Chemical
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTGasStackIngredient leftInput, CrTGasStackIngredient rightInput, ICrTGasStack output) {
-        addRecipe(new ChemicalInfuserIRecipe(getAndValidateName(name), leftInput.getInternal(), rightInput.getInternal(), getAndValidateNotEmpty(output)));
+    public void addRecipe(String name, GasStackIngredient leftInput, GasStackIngredient rightInput, ICrTGasStack output) {
+        addRecipe(new ChemicalInfuserIRecipe(getAndValidateName(name), leftInput, rightInput, getAndValidateNotEmpty(output)));
     }
 
     @Override

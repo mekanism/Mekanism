@@ -12,6 +12,11 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
+import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
+import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.bracket.IBracketSupport;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemical.CrTGas;
@@ -22,7 +27,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTGas;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTInfuseType;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTPigment;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTSlurry;
-import mekanism.common.integration.crafttweaker.ingredient.CrTChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngredient;
@@ -200,12 +204,12 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     }
 
     /**
-     * Casts this chemical stack to a generic {@link CrTChemicalStackIngredient} for use in recipes that support any chemical type as an input.
+     * Casts this chemical stack to a generic {@link IChemicalStackIngredient} for use in recipes that support any chemical type as an input.
      *
      * @apiNote We declare this as generic so that ZenCode can properly match this to the places where we declare all the sub types as generic.
      */
     @ZenCodeType.Caster(implicit = true)
-    CrTChemicalStackIngredient<?, ?, ?> asChemicalStackIngredient();
+    IChemicalStackIngredient<?, ?> asChemicalStackIngredient();
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_GAS_STACK)
@@ -217,15 +221,15 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         }
 
         @Override
-        default CrTChemicalStackIngredient<Gas, GasStack, ?> asChemicalStackIngredient() {
+        default IChemicalStackIngredient<Gas, GasStack> asChemicalStackIngredient() {
             return asGasStackIngredient();
         }
 
         /**
-         * Casts this gas stack to a {@link CrTGasStackIngredient}.
+         * Casts this gas stack to a {@link GasStackIngredient}.
          */
         @ZenCodeType.Caster(implicit = true)
-        default CrTGasStackIngredient asGasStackIngredient() {
+        default GasStackIngredient asGasStackIngredient() {
             return CrTGasStackIngredient.from(this);
         }
     }
@@ -240,15 +244,15 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         }
 
         @Override
-        default CrTChemicalStackIngredient<InfuseType, InfusionStack, ?> asChemicalStackIngredient() {
+        default IChemicalStackIngredient<InfuseType, InfusionStack> asChemicalStackIngredient() {
             return asInfusionStackIngredient();
         }
 
         /**
-         * Casts this infusion stack to a {@link CrTInfusionStackIngredient}.
+         * Casts this infusion stack to a {@link InfusionStackIngredient}.
          */
         @ZenCodeType.Caster(implicit = true)
-        default CrTInfusionStackIngredient asInfusionStackIngredient() {
+        default InfusionStackIngredient asInfusionStackIngredient() {
             return CrTInfusionStackIngredient.from(this);
         }
     }
@@ -263,15 +267,15 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         }
 
         @Override
-        default CrTChemicalStackIngredient<Pigment, PigmentStack, ?> asChemicalStackIngredient() {
+        default IChemicalStackIngredient<Pigment, PigmentStack> asChemicalStackIngredient() {
             return asPigmentStackIngredient();
         }
 
         /**
-         * Casts this pigment stack to a {@link CrTPigmentStackIngredient}.
+         * Casts this pigment stack to a {@link PigmentStackIngredient}.
          */
         @ZenCodeType.Caster(implicit = true)
-        default CrTPigmentStackIngredient asPigmentStackIngredient() {
+        default PigmentStackIngredient asPigmentStackIngredient() {
             return CrTPigmentStackIngredient.from(this);
         }
     }
@@ -286,15 +290,15 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
         }
 
         @Override
-        default CrTChemicalStackIngredient<Slurry, SlurryStack, ?> asChemicalStackIngredient() {
+        default IChemicalStackIngredient<Slurry, SlurryStack> asChemicalStackIngredient() {
             return asSlurryStackIngredient();
         }
 
         /**
-         * Casts this slurry stack to a {@link CrTSlurryStackIngredient}.
+         * Casts this slurry stack to a {@link SlurryStackIngredient}.
          */
         @ZenCodeType.Caster(implicit = true)
-        default CrTSlurryStackIngredient asSlurryStackIngredient() {
+        default SlurryStackIngredient asSlurryStackIngredient() {
             return CrTSlurryStackIngredient.from(this);
         }
     }

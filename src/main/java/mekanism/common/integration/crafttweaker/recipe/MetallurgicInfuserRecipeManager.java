@@ -4,10 +4,10 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
-import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
@@ -23,8 +23,8 @@ public class MetallurgicInfuserRecipeManager extends MekanismRecipeManager<Metal
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient itemInput, CrTInfusionStackIngredient infusionInput, IItemStack output) {
-        addRecipe(new MetallurgicInfuserIRecipe(getAndValidateName(name), itemInput.getInternal(), infusionInput.getInternal(), getAndValidateNotEmpty(output)));
+    public void addRecipe(String name, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, IItemStack output) {
+        addRecipe(new MetallurgicInfuserIRecipe(getAndValidateName(name), itemInput, infusionInput, getAndValidateNotEmpty(output)));
     }
 
     @Override

@@ -352,6 +352,8 @@ public abstract class ModuleMekaSuit extends Module {
                 if (toFeed > 0) {
                     useEnergy(player, usage.multiply(toFeed));
                     item.useGas(getContainer(), MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get());
+                    //TODO - 10.1: Re-evaluate the calculations related to this as it seems slightly different than the canteen
+                    // and I think the 1, should be toFeed except I am not sure toFeed can ever by > 1 currently
                     player.getFoodData().eat(1, MekanismConfig.general.nutritionalPasteSaturation.get());
                 }
             }

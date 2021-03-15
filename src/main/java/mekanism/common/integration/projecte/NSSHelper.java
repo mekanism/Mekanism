@@ -11,7 +11,6 @@ import net.minecraftforge.fml.InterModComms;
 
 //TODO: Convert various things ingredient representation to being able to also do it via tags?
 //TODO: Factor energy into the equation of how much EMC something costs?
-//TODO - 10.1: Add CrT support to extend ProjectE's NSS helpers
 public class NSSHelper {
 
     private static final NSSCreator gasCreator = gasName -> {

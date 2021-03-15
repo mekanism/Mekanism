@@ -1,5 +1,6 @@
 package mekanism.common.integration.crafttweaker;
 
+import com.blamejared.crafttweaker.impl.tag.MCTag;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
@@ -22,6 +23,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
+import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 
 public class CrTUtils {
@@ -93,9 +95,14 @@ public class CrTUtils {
      * Helper method for describing the outputs of a recipe that may have multiple outputs.
      */
     public static <TYPE> String describeOutputs(List<TYPE> outputs, Function<TYPE, Object> converter) {
-        //Note: This isn't the best but it is probably as close as we can get
-        StringBuilder description = new StringBuilder();
         int size = outputs.size();
+        if (size == 0) {
+            return "";
+        } else if (size == 1) {
+            return converter.apply(outputs.get(0)).toString();
+        }
+        //Note: This isn't the best way to describe multiple outputs but it is probably as close as we can get
+        StringBuilder description = new StringBuilder();
         for (int i = 0; i < size; i++) {
             if (i > 0) {
                 description.append(", or ");
@@ -103,5 +110,16 @@ public class CrTUtils {
             description.append(converter.apply(outputs.get(i)));
         }
         return description.toString();
+    }
+
+    /**
+     * Helper to convert a CraftTweaker type tag to a regular tag and validate it exists
+     */
+    public static <TYPE, CRT_TYPE> ITag<TYPE> validateTagAndGet(MCTag<CRT_TYPE> crtTag, Function<MCTag<CRT_TYPE>, ITag<TYPE>> getter) {
+        ITag<TYPE> tag = getter.apply(crtTag);
+        if (tag == null) {
+            throw new IllegalArgumentException("Tag " + crtTag.getCommandString() + " does not exist.");
+        }
+        return tag;
     }
 }

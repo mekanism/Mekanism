@@ -2,8 +2,8 @@ package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTPigment;
@@ -13,64 +13,59 @@ import net.minecraft.tags.ITag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT)
-public class CrTPigmentStackIngredient extends CrTChemicalStackIngredient<Pigment, PigmentStack, PigmentStackIngredient> {
+@NativeTypeRegistration(value = PigmentStackIngredient.class, zenCodeName = CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT)
+public class CrTPigmentStackIngredient {
 
     /**
-     * Creates a {@link CrTPigmentStackIngredient} that matches a given pigment and amount.
+     * Creates a {@link PigmentStackIngredient} that matches a given pigment and amount.
      *
      * @param instance Pigment to match
      * @param amount   Amount needed
      *
-     * @return A {@link CrTPigmentStackIngredient} that matches a given pigment and amount.
+     * @return A {@link PigmentStackIngredient} that matches a given pigment and amount.
      */
-    @ZenCodeType.Method
-    public static CrTPigmentStackIngredient from(ICrTPigment instance, long amount) {
-        assertValid(instance, amount, "PigmentStackIngredients", "pigment");
-        return new CrTPigmentStackIngredient(PigmentStackIngredient.from(instance, amount));
+    @ZenCodeType.StaticExpansionMethod
+    public static PigmentStackIngredient from(ICrTPigment instance, long amount) {
+        CrTIngredientHelper.assertValid(instance, amount, "PigmentStackIngredients", "pigment");
+        return PigmentStackIngredient.from(instance, amount);
     }
 
     /**
-     * Creates a {@link CrTPigmentStackIngredient} that matches a given pigment stack.
+     * Creates a {@link PigmentStackIngredient} that matches a given pigment stack.
      *
      * @param instance Pigment stack to match
      *
-     * @return A {@link CrTPigmentStackIngredient} that matches a given pigment stack.
+     * @return A {@link PigmentStackIngredient} that matches a given pigment stack.
      */
-    @ZenCodeType.Method
-    public static CrTPigmentStackIngredient from(ICrTPigmentStack instance) {
-        assertValid(instance, "PigmentStackIngredients");
-        return new CrTPigmentStackIngredient(PigmentStackIngredient.from(instance.getInternal()));
+    @ZenCodeType.StaticExpansionMethod
+    public static PigmentStackIngredient from(ICrTPigmentStack instance) {
+        CrTIngredientHelper.assertValid(instance, "PigmentStackIngredients");
+        return PigmentStackIngredient.from(instance.getInternal());
     }
 
     /**
-     * Creates a {@link CrTPigmentStackIngredient} that matches a given pigment tag with a given amount.
+     * Creates a {@link PigmentStackIngredient} that matches a given pigment tag with a given amount.
      *
      * @param pigmentTag Tag to match
      * @param amount     Amount needed
      *
-     * @return A {@link CrTPigmentStackIngredient} that matches a given pigment tag with a given amount.
+     * @return A {@link PigmentStackIngredient} that matches a given pigment tag with a given amount.
      */
-    @ZenCodeType.Method
-    public static CrTPigmentStackIngredient from(MCTag<ICrTPigment> pigmentTag, long amount) {
-        ITag<Pigment> tag = assertValidAndGet(pigmentTag, amount, CrTPigmentTagManager.INSTANCE::getInternal, "PigmentStackIngredients");
-        return new CrTPigmentStackIngredient(PigmentStackIngredient.from(tag, amount));
+    @ZenCodeType.StaticExpansionMethod
+    public static PigmentStackIngredient from(MCTag<ICrTPigment> pigmentTag, long amount) {
+        ITag<Pigment> tag = CrTIngredientHelper.assertValidAndGet(pigmentTag, amount, CrTPigmentTagManager.INSTANCE::getInternal, "PigmentStackIngredients");
+        return PigmentStackIngredient.from(tag, amount);
     }
 
     /**
-     * Combines multiple {@link CrTPigmentStackIngredient}s into a single {@link CrTPigmentStackIngredient}.
+     * Combines multiple {@link PigmentStackIngredient}s into a single {@link PigmentStackIngredient}.
      *
-     * @param crtIngredients Ingredients to combine
+     * @param ingredients Ingredients to combine
      *
-     * @return A single {@link CrTPigmentStackIngredient} representing all the passed in ingredients.
+     * @return A single {@link PigmentStackIngredient} representing all the passed in ingredients.
      */
-    @ZenCodeType.Method
-    public static CrTPigmentStackIngredient createMulti(CrTPigmentStackIngredient... crtIngredients) {
-        return createMulti("PigmentStackIngredients", PigmentStackIngredient[]::new,
-              ingredients -> new CrTPigmentStackIngredient(PigmentStackIngredient.createMulti(ingredients)), crtIngredients);
-    }
-
-    private CrTPigmentStackIngredient(PigmentStackIngredient ingredient) {
-        super(ingredient);
+    @ZenCodeType.StaticExpansionMethod
+    public static PigmentStackIngredient createMulti(PigmentStackIngredient... ingredients) {
+        return CrTIngredientHelper.createMulti("PigmentStackIngredients", PigmentStackIngredient::createMulti, ingredients);
     }
 }

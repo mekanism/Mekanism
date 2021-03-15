@@ -21,7 +21,7 @@ public final class VoxelShapeUtils {
      * Prints out an easy to copy paste string representing the cuboid of a shape
      */
     public static void print(double x1, double y1, double z1, double x2, double y2, double z2) {
-        Mekanism.logger.info("makeCuboidShape({}, {}, {}, {}, {}, {}),", Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
+        Mekanism.logger.info("box({}, {}, {}, {}, {}, {}),", Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
               Math.max(x1, x2), Math.max(y1, y2), Math.max(z1, z2));
     }
 

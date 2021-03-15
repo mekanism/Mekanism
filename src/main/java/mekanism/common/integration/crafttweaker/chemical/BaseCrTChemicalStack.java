@@ -46,6 +46,11 @@ public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, 
     }
 
     @Override
+    public String toString() {
+        return getCommandString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

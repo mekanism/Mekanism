@@ -9,8 +9,6 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
-import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.CompressingIRecipe;
 import mekanism.common.recipe.impl.InjectingIRecipe;
@@ -29,8 +27,8 @@ public abstract class ItemStackGasToItemStackRecipeManager<RECIPE extends ItemSt
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient itemInput, CrTGasStackIngredient gasInput, IItemStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), itemInput.getInternal(), gasInput.getInternal(), getAndValidateNotEmpty(output)));
+    public void addRecipe(String name, ItemStackIngredient itemInput, GasStackIngredient gasInput, IItemStack output) {
+        addRecipe(makeRecipe(getAndValidateName(name), itemInput, gasInput, getAndValidateNotEmpty(output)));
     }
 
     protected abstract RECIPE makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output);
@@ -110,11 +108,11 @@ public abstract class ItemStackGasToItemStackRecipeManager<RECIPE extends ItemSt
         }
 
         @ZenCodeType.Method
-        public void addRecipe(String name, CrTItemStackIngredient itemInput, CrTGasStackIngredient gasInput, IItemStack output, int duration) {
+        public void addRecipe(String name, ItemStackIngredient itemInput, GasStackIngredient gasInput, IItemStack output, int duration) {
             if (duration <= 0) {
                 throw new IllegalArgumentException("Duration must be a number greater than zero! Duration: " + duration);
             }
-            addRecipe(new NucleosynthesizingIRecipe(getAndValidateName(name), itemInput.getInternal(), gasInput.getInternal(), getAndValidateNotEmpty(output), duration));
+            addRecipe(new NucleosynthesizingIRecipe(getAndValidateName(name), itemInput, gasInput, getAndValidateNotEmpty(output), duration));
         }
     }
 }

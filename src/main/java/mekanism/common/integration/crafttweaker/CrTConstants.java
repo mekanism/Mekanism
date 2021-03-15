@@ -11,14 +11,6 @@ public class CrTConstants {
     public static final String CLASS_BRACKET_HANDLER = "mekanism.api.BracketHandlers";
     public static final String CLASS_BRACKET_VALIDATORS = "mekanism.api.BracketValidators";
 
-    public static final String EXPANSION_TARGET_MCTAG = "crafttweaker.api.tag.MCTag";
-    public static final String EXPANSION_TARGET_INGREDIENT = "crafttweaker.api.item.IIngredient";
-    public static final String EXPANSION_TARGET_IITEM_STACK = "crafttweaker.api.item.IItemStack";
-    public static final String EXPANSION_TARGET_INGREDIENT_LIST = "crafttweaker.api.item.IngredientList";
-    public static final String EXPANSION_TARGET_ITEM_TAG = "crafttweaker.api.tag.MCTag<crafttweaker.api.item.MCItemDefinition>";
-    public static final String EXPANSION_TARGET_MC_ITEM_DEFINITION = "crafttweaker.api.item.MCItemDefinition";
-    public static final String EXPANSION_TARGET_IFLUID_STACK = "crafttweaker.api.fluid.IFluidStack";
-
     //TODO - 10.1: Figure out properly which things need registration and annotation and which don't in terms of concrete vs interfaces
     // We may be registering more things than needed currently, or at least naming more things than needed
     //TODO - 10.1: We also should re-evaluate all the paths we use, as the impl stuff potentially shouldn't be in an api package
@@ -112,4 +104,13 @@ public class CrTConstants {
     public static final String CLASS_BUILDER_INFUSE_TYPE = "mekanism.content.builder.InfuseTypeBuilder";
     public static final String CLASS_BUILDER_PIGMENT = "mekanism.content.builder.PigmentBuilder";
     public static final String CLASS_BUILDER_SLURRY = "mekanism.content.builder.SlurryBuilder";
+
+    //Expansions, declared below classes we we can reference the partial string parts of our other types
+    public static final String EXPANSION_TARGET_NSS_RESOLVER = "mods.projecte.NSSResolver";
+    public static final String EXPANSION_TARGET_INGREDIENT_LIST = "crafttweaker.api.item.IngredientList";
+    public static final String EXPANSION_TARGET_ITEM_TAG = "crafttweaker.api.tag.MCTag<crafttweaker.api.item.MCItemDefinition>";
+    public static final String EXPANSION_TARGET_GAS_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_GAS + ">";
+    public static final String EXPANSION_TARGET_INFUSE_TYPE_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_INFUSE_TYPE + ">";
+    public static final String EXPANSION_TARGET_PIGMENT_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_PIGMENT + ">";
+    public static final String EXPANSION_TARGET_SLURRY_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_SLURRY + ">";
 }

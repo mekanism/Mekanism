@@ -77,7 +77,7 @@ public class ModelToVoxelShapeUtil {
             String name = nameObj != null ? " // " + nameObj.getAsString() : "";
             String fromText = df.format(from.get(0).getAsDouble()) + ", " + df.format(from.get(1).getAsDouble()) + ", " + df.format(from.get(2).getAsDouble());
             String toText = df.format(to.get(0).getAsDouble()) + ", " + df.format(to.get(1).getAsDouble()) + ", " + df.format(to.get(2).getAsDouble());
-            System.out.println("makeCuboidShape(" + fromText + ", " + toText + ")" + (i < array.size() - 1 ? "," : "") + name);
+            System.out.println("box(" + fromText + ", " + toText + ")" + (i < array.size() - 1 ? "," : "") + name);
         }
     }
 }

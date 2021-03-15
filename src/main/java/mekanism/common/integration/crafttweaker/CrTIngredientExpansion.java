@@ -6,6 +6,9 @@ import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCIngredientList;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker_annotations.annotations.TypedExpansion;
+import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import net.minecraft.item.Item;
@@ -20,29 +23,29 @@ public class CrTIngredientExpansion {
     }
 
     @ZenRegister
-    @ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_INGREDIENT)
+    @TypedExpansion(IIngredient.class)
     public static class IIngredientExpansion {
 
         /**
-         * Allows for casting {@link IIngredient}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link IIngredient}s to {@link ItemStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTItemStackIngredient asItemStackIngredient(IIngredient _this) {
+        public static ItemStackIngredient asItemStackIngredient(IIngredient _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }
 
     @ZenRegister
-    @ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_IITEM_STACK)
+    @TypedExpansion(IItemStack.class)
     public static class IItemStackExpansion {
 
         /**
          * {@inheritDoc}
          *
-         * @implNote Override our expansion of {@link IIngredient} to use the {@link IItemStack} param based {@link CrTItemStackIngredient}.
+         * @implNote Override our expansion of {@link IIngredient} to use the {@link IItemStack} param based {@link ItemStackIngredient}.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTItemStackIngredient asItemStackIngredient(IItemStack _this) {
+        public static ItemStackIngredient asItemStackIngredient(IItemStack _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }
@@ -54,10 +57,10 @@ public class CrTIngredientExpansion {
         /**
          * {@inheritDoc}
          *
-         * @implNote Override our expansion of {@link IIngredient} to use the {@link MCIngredientList} param based {@link CrTItemStackIngredient}.
+         * @implNote Override our expansion of {@link IIngredient} to use the {@link MCIngredientList} param based {@link ItemStackIngredient}.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTItemStackIngredient asItemStackIngredient(MCIngredientList _this) {
+        public static ItemStackIngredient asItemStackIngredient(MCIngredientList _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }
@@ -67,36 +70,36 @@ public class CrTIngredientExpansion {
     public static class ItemTagExpansion {
 
         /**
-         * Allows for casting {@link MCTag<Item>}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link MCTag<Item>}s to {@link ItemStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTItemStackIngredient asItemStackIngredient(MCTag<Item> _this) {
+        public static ItemStackIngredient asItemStackIngredient(MCTag<Item> _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }
 
     @ZenRegister
-    @ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_MC_ITEM_DEFINITION)
-    public static class MCItemDefinitionExpansion {
+    @TypedExpansion(Item.class)
+    public static class ItemExpansion {
 
         /**
-         * Allows for casting {@link Item}s to {@link CrTItemStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link Item}s to {@link ItemStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTItemStackIngredient asItemStackIngredient(Item _this) {
+        public static ItemStackIngredient asItemStackIngredient(Item _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }
 
     @ZenRegister
-    @ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_IFLUID_STACK)
+    @TypedExpansion(IFluidStack.class)
     public static class IFluidStackExpansion {
 
         /**
-         * Allows for casting {@link IFluidStack}s to {@link CrTFluidStackIngredient} without even needing to specify the cast.
+         * Allows for casting {@link IFluidStack}s to {@link FluidStackIngredient} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTFluidStackIngredient asFluidStackIngredient(IFluidStack _this) {
+        public static FluidStackIngredient asFluidStackIngredient(IFluidStack _this) {
             return CrTFluidStackIngredient.from(_this);
         }
     }

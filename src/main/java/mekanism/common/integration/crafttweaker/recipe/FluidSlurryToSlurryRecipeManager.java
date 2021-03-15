@@ -8,8 +8,6 @@ import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
-import mekanism.common.integration.crafttweaker.ingredient.CrTSlurryStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.FluidSlurryToSlurryIRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -24,8 +22,8 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTFluidStackIngredient fluidInput, CrTSlurryStackIngredient slurryInput, ICrTSlurryStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), fluidInput.getInternal(), slurryInput.getInternal(), getAndValidateNotEmpty(output)));
+    public void addRecipe(String name, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, ICrTSlurryStack output) {
+        addRecipe(makeRecipe(getAndValidateName(name), fluidInput, slurryInput, getAndValidateNotEmpty(output)));
     }
 
     protected abstract FluidSlurryToSlurryRecipe makeRecipe(ResourceLocation id, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, SlurryStack output);

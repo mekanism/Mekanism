@@ -7,7 +7,6 @@ import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.ActivatingIRecipe;
 import mekanism.common.recipe.impl.CentrifugingIRecipe;
@@ -23,8 +22,8 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTGasStackIngredient input, ICrTGasStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input.getInternal(), getAndValidateNotEmpty(output)));
+    public void addRecipe(String name, GasStackIngredient input, ICrTGasStack output) {
+        addRecipe(makeRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));
     }
 
     protected abstract GasToGasRecipe makeRecipe(ResourceLocation id, GasStackIngredient ingredient, GasStack output);

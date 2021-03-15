@@ -7,7 +7,6 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.CrushingIRecipe;
 import mekanism.common.recipe.impl.EnrichingIRecipe;
@@ -25,8 +24,8 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient input, IItemStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input.getInternal(), getAndValidateNotEmpty(output)));
+    public void addRecipe(String name, ItemStackIngredient input, IItemStack output) {
+        addRecipe(makeRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));
     }
 
     protected abstract ItemStackToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, ItemStack output);

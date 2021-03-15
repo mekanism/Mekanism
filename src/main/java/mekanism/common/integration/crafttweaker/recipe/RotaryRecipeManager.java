@@ -4,11 +4,11 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.impl.fluid.MCFluidStack;
 import mekanism.api.recipes.RotaryRecipe;
+import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
-import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.RotaryIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
@@ -24,18 +24,18 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTFluidStackIngredient fluidInput, ICrTGasStack gasOutput) {
-        addRecipe(new RotaryIRecipe(getAndValidateName(name), fluidInput.getInternal(), getAndValidateNotEmpty(gasOutput)));
+    public void addRecipe(String name, FluidStackIngredient fluidInput, ICrTGasStack gasOutput) {
+        addRecipe(new RotaryIRecipe(getAndValidateName(name), fluidInput, getAndValidateNotEmpty(gasOutput)));
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTGasStackIngredient gasInput, IFluidStack fluidOutput) {
-        addRecipe(new RotaryIRecipe(getAndValidateName(name), gasInput.getInternal(), getAndValidateNotEmpty(fluidOutput)));
+    public void addRecipe(String name, GasStackIngredient gasInput, IFluidStack fluidOutput) {
+        addRecipe(new RotaryIRecipe(getAndValidateName(name), gasInput, getAndValidateNotEmpty(fluidOutput)));
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTFluidStackIngredient fluidInput, CrTGasStackIngredient gasInput, ICrTGasStack gasOutput, IFluidStack fluidOutput) {
-        addRecipe(new RotaryIRecipe(getAndValidateName(name), fluidInput.getInternal(), gasInput.getInternal(), getAndValidateNotEmpty(gasOutput),
+    public void addRecipe(String name, FluidStackIngredient fluidInput, GasStackIngredient gasInput, ICrTGasStack gasOutput, IFluidStack fluidOutput) {
+        addRecipe(new RotaryIRecipe(getAndValidateName(name), fluidInput, gasInput, getAndValidateNotEmpty(gasOutput),
               getAndValidateNotEmpty(fluidOutput)));
     }
 

@@ -7,7 +7,6 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
-import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.InfusionConversionIRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -22,8 +21,8 @@ public abstract class ItemStackToInfuseTypeRecipeManager extends MekanismRecipeM
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient input, ICrTInfusionStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), input.getInternal(), getAndValidateNotEmpty(output)));
+    public void addRecipe(String name, ItemStackIngredient input, ICrTInfusionStack output) {
+        addRecipe(makeRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));
     }
 
     protected abstract ItemStackToInfuseTypeRecipe makeRecipe(ResourceLocation id, ItemStackIngredient input, InfusionStack output);

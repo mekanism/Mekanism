@@ -37,6 +37,7 @@ public class MekanismAPI {
     private static IForgeRegistry<Slurry> SLURRY_REGISTRY;
 
     //Note: None of the empty variants support registry replacement
+    //TODO - 1.17: Rename registry names for the empty types to just being mekanism:empty instead of mekanism:empty_type
     @Nonnull
     public static final Gas EMPTY_GAS = new EmptyGas();
     @Nonnull

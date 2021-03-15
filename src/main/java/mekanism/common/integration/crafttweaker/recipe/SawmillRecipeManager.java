@@ -6,9 +6,9 @@ import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
 import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
 import java.util.List;
 import mekanism.api.recipes.SawmillRecipe;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.SawmillIRecipe;
 import mekanism.common.util.text.TextUtils;
@@ -26,32 +26,32 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient input, IItemStack mainOutput) {
+    public void addRecipe(String name, ItemStackIngredient input, IItemStack mainOutput) {
         addRecipe(name, input, getAndValidateNotEmpty(mainOutput), ItemStack.EMPTY, 0);
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient input, MCWeightedItemStack secondaryOutput) {
+    public void addRecipe(String name, ItemStackIngredient input, MCWeightedItemStack secondaryOutput) {
         addRecipe(name, input, secondaryOutput.getItemStack(), secondaryOutput.getWeight());
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient input, IItemStack secondaryOutput, double secondaryChance) {
+    public void addRecipe(String name, ItemStackIngredient input, IItemStack secondaryOutput, double secondaryChance) {
         addRecipe(name, input, ItemStack.EMPTY, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient input, IItemStack mainOutput, MCWeightedItemStack secondaryOutput) {
+    public void addRecipe(String name, ItemStackIngredient input, IItemStack mainOutput, MCWeightedItemStack secondaryOutput) {
         addRecipe(name, input, mainOutput, secondaryOutput.getItemStack(), secondaryOutput.getWeight());
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient input, IItemStack mainOutput, IItemStack secondaryOutput, double secondaryChance) {
+    public void addRecipe(String name, ItemStackIngredient input, IItemStack mainOutput, IItemStack secondaryOutput, double secondaryChance) {
         addRecipe(name, input, getAndValidateNotEmpty(mainOutput), getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
     }
 
-    private void addRecipe(String name, CrTItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
-        addRecipe(new SawmillIRecipe(getAndValidateName(name), input.getInternal(), mainOutput, secondaryOutput, secondaryChance));
+    private void addRecipe(String name, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
+        addRecipe(new SawmillIRecipe(getAndValidateName(name), input, mainOutput, secondaryOutput, secondaryChance));
     }
 
     private double getAndValidateSecondaryChance(double secondaryChance) {

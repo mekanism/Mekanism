@@ -4,9 +4,9 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
 import mekanism.api.recipes.CombinerRecipe;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.CombinerIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
@@ -22,8 +22,8 @@ public class CombinerRecipeManager extends MekanismRecipeManager<CombinerRecipe>
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient mainInput, CrTItemStackIngredient extraInput, IItemStack output) {
-        addRecipe(new CombinerIRecipe(getAndValidateName(name), mainInput.getInternal(), extraInput.getInternal(), getAndValidateNotEmpty(output)));
+    public void addRecipe(String name, ItemStackIngredient mainInput, ItemStackIngredient extraInput, IItemStack output) {
+        addRecipe(new CombinerIRecipe(getAndValidateName(name), mainInput, extraInput, getAndValidateNotEmpty(output)));
     }
 
     @Override

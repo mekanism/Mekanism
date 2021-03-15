@@ -1,6 +1,7 @@
 package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import mekanism.api.math.FloatingLong;
 import org.openzen.zencode.java.ZenCodeType;
 
 public class CrTNumberExpansion {
@@ -13,10 +14,10 @@ public class CrTNumberExpansion {
     public static class ByteExpansion {
 
         /**
-         * Allows for casting ints to {@link CrTFloatingLong} without even needing to specify the cast.
+         * Allows for casting ints to {@link FloatingLong} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTFloatingLong asFloatingLong(byte _this) {
+        public static FloatingLong asFloatingLong(byte _this) {
             return CrTFloatingLong.create(_this);
         }
     }
@@ -26,10 +27,10 @@ public class CrTNumberExpansion {
     public static class ShortExpansion {
 
         /**
-         * Allows for casting ints to {@link CrTFloatingLong} without even needing to specify the cast.
+         * Allows for casting ints to {@link FloatingLong} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTFloatingLong asFloatingLong(short _this) {
+        public static FloatingLong asFloatingLong(short _this) {
             return CrTFloatingLong.create(_this);
         }
     }
@@ -39,10 +40,10 @@ public class CrTNumberExpansion {
     public static class IntExpansion {
 
         /**
-         * Allows for casting ints to {@link CrTFloatingLong} without even needing to specify the cast.
+         * Allows for casting ints to {@link FloatingLong} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTFloatingLong asFloatingLong(int _this) {
+        public static FloatingLong asFloatingLong(int _this) {
             return CrTFloatingLong.create(_this);
         }
     }
@@ -52,10 +53,10 @@ public class CrTNumberExpansion {
     public static class LongExpansion {
 
         /**
-         * Allows for casting longs to {@link CrTFloatingLong} without even needing to specify the cast.
+         * Allows for casting longs to {@link FloatingLong} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTFloatingLong asFloatingLong(long _this) {
+        public static FloatingLong asFloatingLong(long _this) {
             return CrTFloatingLong.create(_this);
         }
     }
@@ -65,10 +66,10 @@ public class CrTNumberExpansion {
     public static class FloatExpansion {
 
         /**
-         * Allows for casting floats to {@link CrTFloatingLong} without even needing to specify the cast.
+         * Allows for casting floats to {@link FloatingLong} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTFloatingLong asFloatingLong(float _this) {
+        public static FloatingLong asFloatingLong(float _this) {
             return CrTFloatingLong.create(_this);
         }
     }
@@ -78,10 +79,10 @@ public class CrTNumberExpansion {
     public static class DoubleExpansion {
 
         /**
-         * Allows for casting doubles to {@link CrTFloatingLong} without even needing to specify the cast.
+         * Allows for casting doubles to {@link FloatingLong} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTFloatingLong asFloatingLong(double _this) {
+        public static FloatingLong asFloatingLong(double _this) {
             return CrTFloatingLong.create(_this);
         }
     }
@@ -91,10 +92,10 @@ public class CrTNumberExpansion {
     public static class StringExpansion {
 
         /**
-         * Allows for casting strings to {@link CrTFloatingLong} without even needing to specify the cast.
+         * Allows for casting strings to {@link FloatingLong} without even needing to specify the cast.
          */
         @ZenCodeType.Caster(implicit = true)
-        public static CrTFloatingLong asFloatingLong(String _this) {
+        public static FloatingLong asFloatingLong(String _this) {
             return CrTFloatingLong.create(_this);
         }
     }

@@ -6,15 +6,15 @@ import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
 import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.CrTFloatingLong;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
-import mekanism.common.integration.crafttweaker.ingredient.CrTFluidStackIngredient;
-import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient;
-import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.PressurizedReactionIRecipe;
 import net.minecraft.item.ItemStack;
@@ -32,30 +32,29 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient inputSolid, CrTFluidStackIngredient inputFluid, CrTGasStackIngredient inputGas, int duration,
-          IItemStack outputItem, @ZenCodeType.Optional("0 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyRequired) {
+    public void addRecipe(String name, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
+          IItemStack outputItem, @ZenCodeType.Optional("0 as " + CrTConstants.CLASS_FLOATING_LONG) FloatingLong energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), GasStack.EMPTY, energyRequired);
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient inputSolid, CrTFluidStackIngredient inputFluid, CrTGasStackIngredient inputGas, int duration,
-          ICrTGasStack outputGas, @ZenCodeType.Optional("0 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyRequired) {
+    public void addRecipe(String name, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
+          ICrTGasStack outputGas, @ZenCodeType.Optional("0 as " + CrTConstants.CLASS_FLOATING_LONG) FloatingLong energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, ItemStack.EMPTY, getAndValidateNotEmpty(outputGas), energyRequired);
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTItemStackIngredient inputSolid, CrTFluidStackIngredient inputFluid, CrTGasStackIngredient inputGas, int duration,
-          IItemStack outputItem, ICrTGasStack outputGas, @ZenCodeType.Optional("0 as " + CrTConstants.CLASS_FLOATING_LONG) CrTFloatingLong energyRequired) {
+    public void addRecipe(String name, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
+          IItemStack outputItem, ICrTGasStack outputGas, @ZenCodeType.Optional("0 as " + CrTConstants.CLASS_FLOATING_LONG) FloatingLong energyRequired) {
         addRecipe(name, inputSolid, inputFluid, inputGas, duration, getAndValidateNotEmpty(outputItem), getAndValidateNotEmpty(outputGas), energyRequired);
     }
 
-    private void addRecipe(String name, CrTItemStackIngredient inputSolid, CrTFluidStackIngredient inputFluid, CrTGasStackIngredient inputGas,
-          int duration, ItemStack outputItem, GasStack outputGas, CrTFloatingLong energyRequired) {
+    private void addRecipe(String name, ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, GasStackIngredient inputGas, int duration,
+          ItemStack outputItem, GasStack outputGas, FloatingLong energyRequired) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be positive! Duration: " + duration);
         }
-        addRecipe(new PressurizedReactionIRecipe(getAndValidateName(name), inputSolid.getInternal(), inputFluid.getInternal(), inputGas.getInternal(),
-              energyRequired.getInternalAsConst(), duration, outputItem, outputGas));
+        addRecipe(new PressurizedReactionIRecipe(getAndValidateName(name), inputSolid, inputFluid, inputGas, energyRequired.copyAsConst(), duration, outputItem, outputGas));
     }
 
     @Override

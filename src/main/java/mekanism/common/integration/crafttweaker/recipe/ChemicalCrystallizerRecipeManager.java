@@ -4,9 +4,9 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.ingredient.CrTChemicalStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.ChemicalCrystallizerIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
@@ -22,8 +22,8 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Che
     }
 
     @ZenCodeType.Method
-    public void addRecipe(String name, CrTChemicalStackIngredient<?, ?, ?> input, IItemStack output) {
-        addRecipe(new ChemicalCrystallizerIRecipe(getAndValidateName(name), input.getInternal(), getAndValidateNotEmpty(output)));
+    public void addRecipe(String name, IChemicalStackIngredient<?, ?> input, IItemStack output) {
+        addRecipe(new ChemicalCrystallizerIRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));
     }
 
     @Override

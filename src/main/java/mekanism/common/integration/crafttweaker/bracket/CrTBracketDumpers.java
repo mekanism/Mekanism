@@ -17,22 +17,22 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_BRACKET_DUMPERS)
 public class CrTBracketDumpers {
 
-    @BracketDumper(CrTConstants.BRACKET_GAS)
+    @BracketDumper(value = CrTConstants.BRACKET_GAS, subCommandName = "gases")
     public static Collection<String> getGasStackDump() {
         return getChemicalStackDump(MekanismAPI.gasRegistry(), CrTUtils::stackFromGas);
     }
 
-    @BracketDumper(CrTConstants.BRACKET_INFUSE_TYPE)
+    @BracketDumper(value = CrTConstants.BRACKET_INFUSE_TYPE, subCommandName = "infuseTypes")
     public static Collection<String> getInfusionStackDump() {
         return getChemicalStackDump(MekanismAPI.infuseTypeRegistry(), CrTUtils::stackFromInfuseType);
     }
 
-    @BracketDumper(CrTConstants.BRACKET_PIGMENT)
+    @BracketDumper(value = CrTConstants.BRACKET_PIGMENT, subCommandName = "pigments")
     public static Collection<String> getPigmentStackDump() {
         return getChemicalStackDump(MekanismAPI.pigmentRegistry(), CrTUtils::stackFromPigment);
     }
 
-    @BracketDumper(CrTConstants.BRACKET_SLURRY)
+    @BracketDumper(value = CrTConstants.BRACKET_SLURRY, subCommandName = "slurries")
     public static Collection<String> getSlurryStackDump() {
         return getChemicalStackDump(MekanismAPI.slurryRegistry(), CrTUtils::stackFromSlurry);
     }

@@ -3,7 +3,9 @@ package mekanism.common.integration.crafttweaker.content;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.ScriptLoadingOptions;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
@@ -24,7 +26,6 @@ import net.minecraftforge.event.RegistryEvent;
  */
 public class CrTContentUtils {
 
-    //TODO - 10.1: Do we want to add some sort of auto generation resource wise like CoT has, for if a resource is declared instead of the default being used?
     private static Map<ResourceLocation, GasBuilder> queuedGases = new HashMap<>();
     private static Map<ResourceLocation, InfuseTypeBuilder> queuedInfuseTypes = new HashMap<>();
     private static Map<ResourceLocation, PigmentBuilder> queuedPigments = new HashMap<>();
@@ -90,58 +91,35 @@ public class CrTContentUtils {
         // to make sure that the new registry events have fired and that the registries exist and the bracket handler
         // validators won't choke
         CraftTweakerAPI.loadScripts(new ScriptLoadingOptions().setLoaderName(Mekanism.MODID + "content").execute());
-        if (queuedGases != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
-            //Copy the reference and then invalidate the other reference so that we properly don't allow more registration to
-            // happen once we start registering it
-            Map<ResourceLocation, GasBuilder> queued = queuedGases;
-            queuedGases = null;
-            CraftTweakerAPI.logInfo("Registering %d custom gases.", queued.size());
-            queued.forEach((registryName, builder) -> {
-                event.getRegistry().register(new Gas(builder).setRegistryName(registryName));
-                CraftTweakerAPI.logInfo("Registered Gas: '%s'.", registryName);
-            });
-        }
+        registerQueuedChemicals(event, queuedGases, () -> queuedGases = null, Gas::new, "Gas", "gases");
     }
 
     public static void registerCrTInfuseTypes(RegistryEvent.Register<InfuseType> event) {
-        if (queuedInfuseTypes != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
-            //Copy the reference and then invalidate the other reference so that we properly don't allow more registration to
-            // happen once we start registering it
-            Map<ResourceLocation, InfuseTypeBuilder> queued = queuedInfuseTypes;
-            queuedInfuseTypes = null;
-            CraftTweakerAPI.logInfo("Registering %d custom infuse types.", queued.size());
-            queued.forEach((registryName, builder) -> {
-                event.getRegistry().register(new InfuseType(builder).setRegistryName(registryName));
-                CraftTweakerAPI.logInfo("Registered Infuse Type: '%s'.", registryName);
-            });
-        }
+        registerQueuedChemicals(event, queuedInfuseTypes, () -> queuedInfuseTypes = null, InfuseType::new, "Infuse Type", "infuse types");
     }
 
     public static void registerCrTPigments(RegistryEvent.Register<Pigment> event) {
-        if (queuedPigments != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
-            //Copy the reference and then invalidate the other reference so that we properly don't allow more registration to
-            // happen once we start registering it
-            Map<ResourceLocation, PigmentBuilder> queued = queuedPigments;
-            queuedPigments = null;
-            CraftTweakerAPI.logInfo("Registering %d custom pigments.", queued.size());
-            queued.forEach((registryName, builder) -> {
-                event.getRegistry().register(new Pigment(builder).setRegistryName(registryName));
-                CraftTweakerAPI.logInfo("Registered Pigment: '%s'.", registryName);
-            });
-        }
+        registerQueuedChemicals(event, queuedPigments, () -> queuedPigments = null, Pigment::new, "Pigment", "pigments");
     }
 
     public static void registerCrTSlurries(RegistryEvent.Register<Slurry> event) {
-        if (queuedSlurries != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
-            //Copy the reference and then invalidate the other reference so that we properly don't allow more registration to
-            // happen once we start registering it
-            Map<ResourceLocation, SlurryBuilder> queued = queuedSlurries;
-            queuedSlurries = null;
-            CraftTweakerAPI.logInfo("Registering %d custom slurries.", queued.size());
-            queued.forEach((registryName, builder) -> {
-                event.getRegistry().register(new Slurry(builder).setRegistryName(registryName));
-                CraftTweakerAPI.logInfo("Registered Slurry: '%s'.", registryName);
-            });
+        registerQueuedChemicals(event, queuedSlurries, () -> queuedSlurries = null, Slurry::new, "Slurry", "slurries");
+    }
+
+    private static <CHEMICAL extends Chemical<CHEMICAL>, BUILDER extends ChemicalBuilder<CHEMICAL, BUILDER>> void registerQueuedChemicals(
+          RegistryEvent.Register<CHEMICAL> event, Map<ResourceLocation, BUILDER> queued, Runnable setNull, Function<BUILDER, CHEMICAL> constructor,
+          String type, String plural) {
+        if (queued != null) {//Validate it isn't null, it shouldn't be but just in case the event gets fired again or something
+            //The reference got copied as needed to our parameter, so we can invalidate the other reference to it safely, so that
+            // we properly don't allow more registration to happen once we start registering a specific chemical type
+            setNull.run();
+            int count = queued.size();
+            CraftTweakerAPI.logInfo("Registering %d custom %s.", count, count == 1 ? type.toLowerCase(Locale.ROOT) : plural);
+            for (Map.Entry<ResourceLocation, BUILDER> entry : queued.entrySet()) {
+                ResourceLocation registryName = entry.getKey();
+                event.getRegistry().register(constructor.apply(entry.getValue()).setRegistryName(registryName));
+                CraftTweakerAPI.logInfo("Registered %s: '%s'.", type, registryName);
+            }
         }
     }
 }
