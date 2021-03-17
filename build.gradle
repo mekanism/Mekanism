@@ -6,12 +6,16 @@ buildscript {
     ext.kotlin_version = '1.3.72'
     repositories {
         maven {
+            name 'thiakil'
+            url "https://maven.thiakil.com"
+        }
+        maven {
             name "forge"
             url "https://files.minecraftforge.net/maven"
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.0.18', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
     }
 }
 
@@ -306,6 +310,14 @@ minecraft {
 
 repositories {
     maven {
+        name 'thiakil'
+        url 'https://maven.thiakil.com'
+        content {
+            includeGroup 'de.oceanlabs.mcp'
+            includeGroup 'net.minecraft'//custom mappings
+        }
+    }
+    /*maven { Redundant - added by ForgeGradle
         name 'ForgeFS'
         url 'https://files.minecraftforge.net/maven'
         content {
@@ -313,7 +325,7 @@ repositories {
             includeGroup 'de.oceanlabs.mcp'
             includeGroup 'cpw.mods'
         }
-    }
+    }*/
     maven {
         name 'prog'
         url 'https://dvs1.progwml6.com/files/maven'
@@ -351,6 +363,25 @@ repositories {
         url 'https://maven.blamejared.com'
         content {
             includeGroup 'vazkii.patchouli'
+    }
+
+    whenObjectAdded {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
+        if (it instanceof MavenArtifactRepository){
+            if (it.url.toString() == 'https://files.minecraftforge.net/maven/' || it.url.toString() == 'https://libraries.minecraft.net/' || it.url.toString() == 'https://repo.maven.apache.org/maven2/') {
+                println("Adding exclusions to ${it.url}")
+                it.content {
+                    excludeGroup 'curse.maven'
+                    excludeGroup 'mezz.jei'
+                    excludeGroupByRegex 'com\\.enderio.*'
+                    excludeGroupByRegex 'com\\.enderzoo.*'
+                    excludeGroupByRegex 'com\\.tterrag.*'
+                    excludeGroupByRegex 'tterrag.*'
+                    excludeGroup 'mcjty.theoneprobe'
+                    excludeGroup 'team.chisel.ctm'
+                    excludeGroup 'appeng'
+                    excludeGroup 'org.squiddev'
+                }
+            }
         }
     }
 }
