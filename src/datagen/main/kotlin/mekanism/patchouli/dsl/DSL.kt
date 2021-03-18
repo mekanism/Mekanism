@@ -14,7 +14,6 @@ import mekanism.common.block.attribute.Attribute
 import mekanism.common.block.attribute.AttributeStateFacing
 import mekanism.common.registration.impl.BlockRegistryObject
 import mekanism.common.registries.MekanismBlocks
-import mekanism.common.registries.MekanismItems
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
 import net.minecraft.client.settings.KeyBinding
@@ -636,8 +635,15 @@ class Entry(
     }
 
     @PatchouliDSL
-    fun crafting(recipe: ResourceLocation, init: CraftingPage.() -> Unit) {
-        this.pages.add(CraftingPage(recipe).also(init))
+    fun crafting(recipe: ResourceLocation, init: (CraftingPage.() -> Unit)? = null) {
+        this.pages.add(CraftingPage(recipe).also { page->
+            init?.let { init(page) }
+        })
+    }
+
+    @PatchouliDSL
+    fun crafting(result: IItemProvider, init: (CraftingPage.() -> Unit)? = null) {
+        crafting(result.registryName, init)
     }
 
     @PatchouliDSL
@@ -821,7 +827,13 @@ abstract class BaseCraftingPage(
 ) : EntryPage(type) {
 
     /** The ID of the second recipe you want to show. Displaying two recipes is optional. */
-    var recipe2: String? = null
+    var recipe2: ResourceLocation? = null
+
+    var secondaryRecipe: IItemProvider
+        get() = throw UnsupportedOperationException()
+        set(value) {
+            this.recipe2 = value.registryName
+        }
 
     /** The title of the page, to be displayed above both recipes. This is optional, but if you include it, only this title will be displayed, rather than the names of both recipe output items. */
     var title: String? = null
