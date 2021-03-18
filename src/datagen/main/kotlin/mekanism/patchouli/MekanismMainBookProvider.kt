@@ -318,17 +318,24 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                 GuideEntry.INDUCTION_CELL {
                     name = "Induction Cells"
                     icon = BASIC_INDUCTION_CELL
-                    +"Induction Cells are components in the Induction Matrix. Each cell increases the total energy storage of a Matrix. Note that this does not increase transfer rate; look to the Induction Providers for that."
-                    spotlight(BASIC_INDUCTION_CELL)
-                    spotlight(ADVANCED_INDUCTION_CELL)
-                    spotlight(ELITE_INDUCTION_CELL)
-                    spotlight(ULTIMATE_INDUCTION_CELL)
+                    +"Induction Cells are components in the ${link(GuideEntry.INDUCTION, "Induction Matrix")}. Each cell increases the total energy storage of a Matrix. Note that this does not increase transfer rate; look to the ${link(GuideEntry.INDUCTION_PROVIDER, "Induction Providers")} for that."
+                    spotlight(BASIC_INDUCTION_CELL, "Adds 8 GJ to the Matrix's capacity")
+                    spotlight(ADVANCED_INDUCTION_CELL, "Adds 64 GJ to the Matrix's capacity.")
+                    spotlight(ELITE_INDUCTION_CELL, "Adds 512 GJ to the Matrix's capacity")
+                    spotlight(ULTIMATE_INDUCTION_CELL, "Adds 4 TJ to the Matrix's capacity")
+                    crafting(BASIC_INDUCTION_CELL) {
+                        secondaryRecipe = ADVANCED_INDUCTION_CELL
+                    }
+                    crafting(ELITE_INDUCTION_CELL) {
+                        secondaryRecipe = ULTIMATE_INDUCTION_CELL
+                    }
+
                 }
 
                 GuideEntry.INDUCTION_PROVIDER {
                     name = "Induction Providers"
                     icon = BASIC_INDUCTION_PROVIDER
-                    +"The Induction Providers are used in the Induction Matrix to determine how fast it is able to output energy through the Induction Port.$(2br)Using multiple Induction Providers in the same Induction Matrix will add extra output capacity, by adding their values together.$(2br)The total output value is for the entire multi-block structure, and not on a \"per port\" basis."
+                    +"The Induction Providers are used in the ${link(GuideEntry.INDUCTION, "Induction Matrix")} to determine how fast it is able to output energy through the Induction Port.$(2br)Using multiple Induction Providers in the same Induction Matrix will add extra output capacity, by adding their values together.$(2br)The total output value is for the entire multi-block structure, and not on a \"per port\" basis."
                     spotlight(BASIC_INDUCTION_PROVIDER)
                     spotlight(ADVANCED_INDUCTION_PROVIDER)
                     spotlight(ELITE_INDUCTION_PROVIDER)
