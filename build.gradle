@@ -363,6 +363,7 @@ repositories {
         url 'https://maven.blamejared.com'
         content {
             includeGroup 'vazkii.patchouli'
+        }
     }
 
     whenObjectAdded {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
@@ -381,6 +382,7 @@ repositories {
                         excludeGroup 'appeng'
                         excludeGroup 'org.squiddev'
                         excludeGroup 'com.blamejared.crafttweaker'
+                        excludeGroup 'vazkii.patchouli'
                     }
                     println("Adding exclusions to ${it.url}")
                 } catch (Exception ignored) {
