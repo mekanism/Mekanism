@@ -3,6 +3,7 @@ package mekanism.patchouli
 import mekanism.client.MekanismKeyHandler
 import mekanism.common.Mekanism
 import mekanism.common.MekanismLang
+import mekanism.common.content.gear.Modules
 import mekanism.common.registries.MekanismBlocks.*
 import mekanism.common.registries.MekanismFluids
 import mekanism.common.registries.MekanismGases.*
@@ -448,7 +449,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                 GuideEntry.LIQUID_HEAVY_WATER {
                     name = "Heavy Water"
-                    iconItem = ItemStack(MekanismFluids.HEAVY_WATER.bucket, 1)//todo filled fluid tank
+                    iconItem = ItemStack(MekanismFluids.HEAVY_WATER.bucket, 1)
                     +"Heavy Water is obtaind by having an ${link(ELECTRIC_PUMP, "Electric Pump")} with a ${link(FILTER_UPGRADE, "Filter Upgrade")} pump a regular water source."
                 }
             }
@@ -515,7 +516,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                 }
 
                 SUPERHEATED_SODIUM {
-                    TODO()
+                    +"${link(SODIUM, "Sodium")} that has been heated in a reactor. Remove the heat using a Boiler to return to normal Sodium"
                 }
 
                 SULFUR_DIOXIDE {
@@ -549,47 +550,51 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                 }
 
                 HYDROFLUORIC_ACID {
-                    TODO()
+                    +"An acid make from ${link(SULFURIC_ACID, "Sulfuric Acid")} and ${link(FLUORITE_GEM, "Fluorite")}, used to make ${link(URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride")}"
                 }
 
                 URANIUM_OXIDE {
-                    TODO()
+                    +"Oxidized form of ${link(YELLOW_CAKE_URANIUM, "Yellow Cake Uranium")}, used to make ${link(URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride")}"
                 }
 
                 URANIUM_HEXAFLUORIDE {
-                    TODO()
+                    +"Used to make ${link(FISSILE_FUEL, "Fissile Fuel")} in the ${link(ISOTOPIC_CENTRIFUGE, "Isotopic Centrifuge")}."
                 }
 
                 LIQUID_OSMIUM {
-                    TODO()
+                    +"Chemical form of Osmium used in the ${link(OSMIUM_COMPRESSOR, "Osmium Compressor")}."
                 }
 
                 FISSILE_FUEL {
-                    TODO()
+                    +"Fuel source made from ${link(URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride")} in the ${link(ISOTOPIC_CENTRIFUGE, "Isotopic Centrifuge")}."
+                    text {
+                        text = "Used in the Fission Reactor."
+                        flag = "false"//todo check if generators installed
+                    }
                 }
 
                 NUCLEAR_WASTE {
-                    TODO()
+                    +"Waste product of used ${link(FISSILE_FUEL, "Fissile Fuel")}."
                 }
 
                 SPENT_NUCLEAR_WASTE {
-                    TODO()
+                    +"Biproduct of reprocessed ${link(NUCLEAR_WASTE, "Nuclear Waste")}"
                 }
 
                 PLUTONIUM {
-                    TODO()
+                    +"First stage of ${link(PLUTONIUM_PELLET, "Plutonium Pellet")} production."
                 }
 
                 POLONIUM {
-                    TODO()
+                    +"First stage of ${link(POLONIUM_PELLET, "Polonium Pellet")} production."
                 }
 
                 ANTIMATTER {
-                    TODO()
+                    +"Late-game chemical used for advanced processes."
                 }
 
                 NUTRITIONAL_PASTE {
-                    TODO()
+                    +"Food, tasty paste form. Used with the ${link(CANTEEN, "Canteen")}, or in the ${link(MODULES[Modules.NUTRITIONAL_INJECTION_UNIT]!!, "Nutritional Injection Unit")}."
                 }
 
             }
