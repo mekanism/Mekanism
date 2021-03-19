@@ -1,7 +1,7 @@
 {
   "name": "Heavy Water",
   "category": "liquids",
-  "icon": "mekanism:ultimate_fluid_tank",
+  "icon": "mekanism:heavy_water_bucket",
   "pages": [
     {
       "type": "text",
