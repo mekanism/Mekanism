@@ -32,15 +32,6 @@ enum class GuideEntry(folder: String?, name: String): IGuideEntry {
     ORE_QUINTUPLING("ore_processing", "quintupling"),
 
     //fixme?
-    /* Disassembler entries are really pages, but have title and text */
-    DISASSEMBLER_NORMAL("items", "atomic_disassembler.normal"),
-    DISASSEMBLER_SLOW("items", "atomic_disassembler.slow"),
-    DISASSEMBLER_FAST("items", "atomic_disassembler.fast"),
-    DISASSEMBLER_VEIN("items", "atomic_disassembler.vein"),
-    DISASSEMBLER_EXTENDED_VEIN("items", "atomic_disassembler.extended_vein"),
-    DISASSEMBLER_OFF("items", "atomic_disassembler.off"),
-
-    //fixme?
     GENERATORS_TURBINE("multiblocks", "industrial_turbine"),
     GENERATORS_FUSION("multiblocks", "fusion_reactor"),
 
