@@ -2,7 +2,7 @@ package mekanism.patchouli.content
 
 import mekanism.client.MekanismKeyHandler
 import mekanism.common.content.gear.Modules
-import mekanism.common.registries.MekanismBlocks
+import mekanism.common.registries.MekanismBlocks.*
 import mekanism.common.registries.MekanismGases
 import mekanism.common.registries.MekanismItems.*
 import mekanism.common.resource.OreType
@@ -32,7 +32,7 @@ fun PatchouliBook.itemCategory() {
                     title = "Fueling"
                     text = "The Jetpack can be filled up wherever Hydrogen gas is outputted into a slot.$(br)" +
                             "Here are a few examples:" +
-                            "$(li)It can be placed in the ${link(MekanismBlocks.ELECTROLYTIC_SEPARATOR, "Electrolytic Separator's")} left output slot (where Hydrogen is outputted) after placing water in the machine's input slot" +
+                            "$(li)It can be placed in the ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Separator's")} left output slot (where Hydrogen is outputted) after placing water in the machine's input slot" +
                             "$(li)It can be placed in a ${link(GuideEntry.TANKS_GAS, "Chemical Tank's")} output slot.$(br2)" +
                             "While worn, the Jetpack displays the Hydrogen remaining and the mode active in the bottom left corner."
                 }
@@ -114,7 +114,9 @@ fun PatchouliBook.itemCategory() {
                     text = "Behaves like a wrench from most other mods. Right click to rotate the machine clockwise on the ground, \$(k:sneak) + Right click to have the machine instantly pried loose as an item (works on cables and pipes, too!)"
                 }
             }
-            ELECTRIC_BOW("Much like a normal bow, but uses energy instead of durability. Can also set arrows on fire (toggle with ${MekanismKeyHandler.handModeSwitchKey()}).")
+            ELECTRIC_BOW("Arrows not included.") {
+                +"Much like a normal bow, but uses energy instead of durability. Can also set arrows on fire (toggle with ${MekanismKeyHandler.handModeSwitchKey()})."
+            }
             FLAMETHROWER("The Flamethrower is a ranged weapon which uses Hydrogen gas as its fuel. It is fairly effective against mobs as it deals damage when they are directly hit with the stream and sets them on fire. It is most effective on large groups of mobs, where the user can hose down the entire group with fuel at a short distance.") {
                 text("Modes") {
                     text = "You can switch between three fire modes using \$(k:sneak) + ${MekanismKeyHandler.handModeSwitchKey()}. The modes are" +
@@ -131,7 +133,7 @@ fun PatchouliBook.itemCategory() {
                     text = "Right-clicking with this device in hand will open a GUI similar to that of the full Teleporter, allowing instant travel to any Teleporters that the player has set up. The Portable Teleporter is capable of multidimensional travel.$(p)Note that in order for the Portable Teleporter to be functional, the complete Teleporter Portal structure does $(bold)not$() need to be built; only the Teleporter block must be present (and supplied with power)."
                 }
             }
-            SEISMIC_READER("The Seismic Reader is used in conjunction with the ${link(MekanismBlocks.SEISMIC_VIBRATOR, "Seismic Vibrator")} to analyze the ground immediately around the vibrator, informing you of the blocks, by level, all the way to bedrock level.")
+            SEISMIC_READER("The Seismic Reader is used in conjunction with the ${link(SEISMIC_VIBRATOR, "Seismic Vibrator")} to analyze the ground immediately around the vibrator, informing you of the blocks, by level, all the way to bedrock level.")
             CANTEEN("The Canteen is used to store ${link(MekanismGases.NUTRITIONAL_PASTE, "Nutritional Paste")} (total of 64 Buckets). When hungry, you can hold right click to drink some Nutritional Paste. Each hunger point (half a hunger bar) consumes 50mB of Nutritional Paste.")
         }
         GuideCategory.ITEMS_METAL_AND_ORE {
@@ -161,21 +163,21 @@ fun PatchouliBook.itemCategory() {
             entry(REFINED_GLOWSTONE_INGOT) {
                 name = "Refined Glowstone"
                 readByDefault = true
-                +"Refined glowstone is a stronger form of Glowstone, reinforced with Osmium in the ${link(MekanismBlocks.OSMIUM_COMPRESSOR, "Osmium Compressor")}."
+                +"Refined glowstone is a stronger form of Glowstone, reinforced with Osmium in the ${link(OSMIUM_COMPRESSOR, "Osmium Compressor")}."
                 spotlight(REFINED_GLOWSTONE_INGOT)
                 spotlight(REFINED_GLOWSTONE_NUGGET)
-                spotlight(MekanismBlocks.REFINED_GLOWSTONE_BLOCK)
+                spotlight(REFINED_GLOWSTONE_BLOCK)
             }
 
             entry(REFINED_OBSIDIAN_INGOT) {
                 name = "Refined Obsidian"
                 readByDefault = true
-                +"Harder obsidian? Unpossible!$(p)Obsidian reinforced with Osmium in the ${link(MekanismBlocks.OSMIUM_COMPRESSOR, "Osmium Compressor")}. Can be used to form a Nether Portal"
+                +"Harder obsidian? Unpossible!$(p)Obsidian reinforced with Osmium in the ${link(OSMIUM_COMPRESSOR, "Osmium Compressor")}. Can be used to form a Nether Portal"
 
                 spotlight(REFINED_OBSIDIAN_DUST)
                 spotlight(REFINED_OBSIDIAN_INGOT)
                 spotlight(REFINED_OBSIDIAN_NUGGET)
-                spotlight(MekanismBlocks.REFINED_OBSIDIAN_BLOCK)
+                spotlight(REFINED_OBSIDIAN_BLOCK)
             }
 
             entry(STEEL_INGOT) {
@@ -186,7 +188,7 @@ fun PatchouliBook.itemCategory() {
                 spotlight(STEEL_INGOT)
                 spotlight(STEEL_DUST)
                 spotlight(STEEL_NUGGET)
-                spotlight(MekanismBlocks.STEEL_BLOCK)
+                spotlight(STEEL_BLOCK)
             }
 
             SULFUR_DUST("Solidified sulfur, can be used to make ${link(MekanismGases.SULFURIC_ACID, "Sulfuric Acid")}.")
@@ -218,7 +220,7 @@ fun PatchouliBook.itemCategory() {
                 name = "Osmium"
                 readByDefault = true
                 +"Osmium is a hard, brittle, bluish-white transition metal in the platinum group that is found as a trace element in alloys, mostly in platinum ores.$(p)Osmium is the densest stable element; it is approximately twice as dense as lead and slightly denser than iridium."
-                spotlight(MekanismBlocks.ORES[OreType.OSMIUM]!!)
+                spotlight(ORES[OreType.OSMIUM]!!)
                 PROCESSED_RESOURCES.column(PrimaryResource.OSMIUM).values.forEach(this::spotlight)
             }
 
@@ -226,7 +228,7 @@ fun PatchouliBook.itemCategory() {
                 name = "Copper"
                 readByDefault = true
                 +"Copper is a soft, malleable, and ductile metal with very high thermal and electrical conductivity. A freshly exposed surface of pure copper has a pinkish-orange color."
-                spotlight(MekanismBlocks.ORES[OreType.COPPER]!!)
+                spotlight(ORES[OreType.COPPER]!!)
                 PROCESSED_RESOURCES.column(PrimaryResource.COPPER).values.forEach(this::spotlight)
             }
 
@@ -234,7 +236,7 @@ fun PatchouliBook.itemCategory() {
                 name = "Tin"
                 readByDefault = true
                 +"Tin is a silvery metal that characteristically has a faint yellow hue. Tin, like indium, is soft enough to be cut without much force."
-                spotlight(MekanismBlocks.ORES[OreType.TIN]!!)
+                spotlight(ORES[OreType.TIN]!!)
                 PROCESSED_RESOURCES.column(PrimaryResource.TIN).values.forEach(this::spotlight)
             }
 
@@ -242,7 +244,7 @@ fun PatchouliBook.itemCategory() {
                 name = "Uranium"
                 readByDefault = true
                 +"Uranium is a silvery-grey metal in the actinide series of the periodic table. A uranium atom has 92 protons and 92 electrons, of which 6 are valence electrons. Uranium is weakly radioactive because all isotopes of uranium are unstable; the half-lives of its naturally occurring isotopes range between 159,200 years and 4.5 billion years."
-                spotlight(MekanismBlocks.ORES[OreType.URANIUM]!!)
+                spotlight(ORES[OreType.URANIUM]!!)
                 PROCESSED_RESOURCES.column(PrimaryResource.URANIUM).values.forEach(this::spotlight)
             }
 
@@ -250,7 +252,7 @@ fun PatchouliBook.itemCategory() {
                 name = "Lead"
                 readByDefault = true
                 +"Lead is a heavy metal that is denser than most common materials. Lead is soft and malleable, and also has a relatively low melting point."
-                spotlight(MekanismBlocks.ORES[OreType.URANIUM]!!)
+                spotlight(ORES[OreType.URANIUM]!!)
                 PROCESSED_RESOURCES.column(PrimaryResource.URANIUM).values.forEach(this::spotlight)
             }
 
@@ -258,7 +260,7 @@ fun PatchouliBook.itemCategory() {
                 name = "Fluorite"
                 readByDefault = true
                 +"Fluorite (also called fluorspar) is the mineral form of calcium fluoride, CaF2. It belongs to the halide minerals group."
-                spotlight(MekanismBlocks.ORES[OreType.FLUORITE]!!)
+                spotlight(ORES[OreType.FLUORITE]!!)
                 spotlight(FLUORITE_DUST)
                 spotlight(FLUORITE_GEM)
             }
@@ -272,17 +274,17 @@ fun PatchouliBook.itemCategory() {
             SPEED_UPGRADE("An upgrade to increate the running speed of a machine.") {
                 +"Note that every speed upgrade makes the machine 33% faster, and the Power Usage increases with ~77% (33²%), which makes for an increase in power usage for each operation with 33%.$(p)$(bold)The machine must have enough buffer to run one operation or it will not run at all."
             }
-            ENERGY_UPGRADE("Upgrades the energy buffer of a machine and reduces its per-operation consumption.$(p)The ${link(MekanismBlocks.ELECTROLYTIC_SEPARATOR, "Electrolytic Separator")} only receives a buffer increase.")
-            FILTER_UPGRADE("The Filter Upgrade is an upgrade that, when used in the ${link(MekanismBlocks.ELECTRIC_PUMP, "Electric Pump")}, allows the Electric Pump to produce Heavy Water.")
+            ENERGY_UPGRADE("Upgrades the energy buffer of a machine and reduces its per-operation consumption.$(p)The ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Separator")} only receives a buffer increase.")
+            FILTER_UPGRADE("The Filter Upgrade is an upgrade that, when used in the ${link(ELECTRIC_PUMP, "Electric Pump")}, allows the Electric Pump to produce Heavy Water.")
             MUFFLING_UPGRADE("Reduces the sound produced by a machine.")
             GAS_UPGRADE("The gas upgrade allows you to increase the gas usage efficiency of a Mekanism machine which consumes gas.")
-            ANCHOR_UPGRADE("The Anchor Upgrade is a machine upgrade which keeps the chunk of the machine to which it is applied loaded. This is helpful for machines like the Digital Miner and Teleporter which must be in loaded chunks to function properly.$(p)$(bold)Compatible machines$()$(li)${link(MekanismBlocks.DIGITAL_MINER, "Digital Miner")}$(li)${link(MekanismBlocks.QUANTUM_ENTANGLOPORTER, "Quantum Entangloporter")}$(li)${link(GuideEntry.TELEPORTER, "Teleporter")}")
+            ANCHOR_UPGRADE("The Anchor Upgrade is a machine upgrade which keeps the chunk of the machine to which it is applied loaded. This is helpful for machines like the Digital Miner and Teleporter which must be in loaded chunks to function properly.$(p)$(bold)Compatible machines$()$(li)${link(DIGITAL_MINER, "Digital Miner")}$(li)${link(QUANTUM_ENTANGLOPORTER, "Quantum Entangloporter")}$(li)${link(GuideEntry.TELEPORTER, "Teleporter")}")
         }
 
         GuideEntry.ALLOYS {
             name = "Alloys"
             icon = INFUSED_ALLOY
-            +"Crafting components used to make tiered items. Can also be right clicked on Logistical Transporters, Mechanical Pipes, Pressurized Tubes, Thermodynamic Conductors, and Universal Cables to upgrade tiers in-world.$(p)Created in a ${link(MekanismBlocks.METALLURGIC_INFUSER, "Metallurgic Infuser")}."
+            +"Crafting components used to make tiered items. Can also be right clicked on Logistical Transporters, Mechanical Pipes, Pressurized Tubes, Thermodynamic Conductors, and Universal Cables to upgrade tiers in-world.$(p)Created in a ${link(METALLURGIC_INFUSER, "Metallurgic Infuser")}."
             spotlight(INFUSED_ALLOY, "Redstone infused")
             spotlight(REINFORCED_ALLOY, "Diamond infused")
             spotlight(ATOMIC_ALLOY, "Refined Obsidian infused")
@@ -291,7 +293,7 @@ fun PatchouliBook.itemCategory() {
         GuideEntry.CIRCUITS {
             name = "Circuits"
             icon = BASIC_CONTROL_CIRCUIT
-            +"Crafting components used to make tiered items. Created in the ${link(MekanismBlocks.METALLURGIC_INFUSER, "Metallurgic Infuser")}."
+            +"Crafting components used to make tiered items. Created in the ${link(METALLURGIC_INFUSER, "Metallurgic Infuser")}."
             spotlight(BASIC_CONTROL_CIRCUIT, "Osmium based.")
             spotlight(ADVANCED_CONTROL_CIRCUIT, "Infused Alloy based.")
             spotlight(ELITE_CONTROL_CIRCUIT, "Reinforced Alloy based.")
@@ -308,10 +310,12 @@ fun PatchouliBook.itemCategory() {
             spotlight(ULTIMATE_TIER_INSTALLER, "Upgrades block to Ultimate tier. Requires block to be Elite tier.")
         }
 
-        BIO_FUEL("A fuel made from plant material in a Crusher.$(p)Used in a Biofuel Generator (Mekanism Generators required) for power or ${link(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, "Pressurized Reaction Chamber")} to produce Ethylene.") {
+        BIO_FUEL("A fuel made from plant material in a Crusher.$(p)Used in a Biofuel Generator (Mekanism Generators required) for power or ${link(PRESSURIZED_REACTION_CHAMBER, "Pressurized Reaction Chamber")} to produce Ethylene.") {
             //todo override in mek generators' book generator?
         }
-        CONFIGURATION_CARD("An item used to copy configuration data from one machine to another.$(p)To copy data to the card, $(k:sneak) + right click on the source machine, then right click the destination machine. Chat messages will inform you of the success/failure.$(p)Supported machines: ${link(MekanismBlocks.DIGITAL_MINER, "Digital Miner")}, ${link(GuideEntry.ENERGY_CUBES, "Energy Cubes")}, ${link(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, "Formulaic Assemblicator")}, ${link(MekanismBlocks.LOGISTICAL_SORTER, "Logistical Sorter")}, ${link(MekanismBlocks.OREDICTIONIFICATOR, "Oredictionificator")}, and any machine with configurable sides.")
-        CRAFTING_FORMULA("Used in the ${link(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, "Formulaic Assemblicator")} to encode a crafting recipe for automatic operation.")
+        CONFIGURATION_CARD("An item used to copy configuration data from one machine to another.$(p)To copy data to the card, $(k:sneak) + right click on the source machine, then right click the destination machine. Chat messages will inform you of the success/failure") {
+            +"Supported machines: ${link(DIGITAL_MINER, "Digital Miner")}, ${link(GuideEntry.ENERGY_CUBES, "Energy Cubes")}, ${link(FORMULAIC_ASSEMBLICATOR, "Formulaic Assemblicator")}, ${link(LOGISTICAL_SORTER, "Logistical Sorter")}, ${link(OREDICTIONIFICATOR, "Oredictionificator")}, and any machine with configurable sides."
+        }
+        CRAFTING_FORMULA("Used in the ${link(FORMULAIC_ASSEMBLICATOR, "Formulaic Assemblicator")} to encode a crafting recipe for automatic operation.")
     }// end items category
 }
