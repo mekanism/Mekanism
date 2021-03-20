@@ -70,7 +70,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                     ATOMIC_DISASSEMBLER("The Atomic Disassembler is Mekanism's an all-in-one tool, essentially the ultimate, electronic version of the Paxel (working at any mining level). Also functions as a Hoe & Scoop (Forestry)$(p)The Atomic Disassembler has multiple modes that can be cycled with $(k:sneak) + right click.") {
                         text {
                             title = "Normal Mode"
-                            text = "Base speed setting, single block, roughly equivalent to Efficiency II.$(p)Farmland tilling and Grass Path functions have been moved to the MekaTool Farming Module"
+                            text = "Base speed setting, single block, roughly equivalent to Efficiency II.$(p)Farmland tilling and Grass Path functions have been moved to the MekaTool ${link(Modules.FARMING_UNIT, "Farming Unit")}"
                         }
                         text {
                             title = "Slow Mode"
@@ -148,33 +148,124 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                         }
                     }
                     SEISMIC_READER ("The Seismic Reader is used in conjunction with the ${link(SEISMIC_VIBRATOR, "Seismic Vibrator")} to analyze the ground immediately around the vibrator, informing you of the blocks, by level, all the way to bedrock level.")
+                    CANTEEN("The Canteen is used to store ${link(NUTRITIONAL_PASTE, "Nutritional Paste")} (total of 64 Buckets). When hungry, you can hold right click to drink some Nutritional Paste. Each hunger point (half a hunger bar) consumes 50mB of Nutritional Paste.")
                 }
                 GuideCategory.ITEMS_METAL_AND_ORE {
                     name = "Metals & Ores"
                     description = "Ore/Metal processing based materials."
                     icon = PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)
 
-                    BRONZE_DUST()
-                    BRONZE_INGOT()
-                    BRONZE_NUGGET()
-                    CHARCOAL_DUST()
-                    COAL_DUST()
-                    DIAMOND_DUST()
-                    EMERALD_DUST()
-                    ENRICHED_IRON()
-                    LAPIS_LAZULI_DUST()
-                    LITHIUM_DUST()
-                    OBSIDIAN_DUST()
-                    QUARTZ_DUST()
-                    REFINED_GLOWSTONE_INGOT()
-                    REFINED_GLOWSTONE_NUGGET()
-                    REFINED_OBSIDIAN_DUST()
-                    REFINED_OBSIDIAN_INGOT()
-                    REFINED_OBSIDIAN_NUGGET()
-                    STEEL_DUST()
-                    STEEL_INGOT()
-                    STEEL_NUGGET()
-                    SULFUR_DUST()
+                    entry(BRONZE_INGOT) {
+                        name = "Bronze"
+                        +"Bronze is an alloy of Copper and Tin."
+                        spotlight(BRONZE_INGOT)
+                        spotlight(BRONZE_DUST)
+                        spotlight(BRONZE_NUGGET)
+                    }
+
+                    CHARCOAL_DUST("Crushed form of Charcoal")
+                    COAL_DUST("Crushed form of Coal")
+                    DIAMOND_DUST("Crushed form of Diamond")
+                    EMERALD_DUST("Crushed form of Emerald")
+                    OBSIDIAN_DUST("Crushed form of Obsidian")
+                    QUARTZ_DUST("Crushed form of Quartz")
+                    LAPIS_LAZULI_DUST("Crushed form of Lapis Lazuli")
+
+                    LITHIUM_DUST("Crystallized form of ${link(LITHIUM, "Lithium")}")
+
+                    entry(REFINED_GLOWSTONE_INGOT) {
+                        name = "Refined Glowstone"
+                        +"Refined glowstone is a stronger form of Glowstone, reinforced with Osmium in the ${link(OSMIUM_COMPRESSOR, "Osmium Compressor")}."
+                        spotlight(REFINED_GLOWSTONE_INGOT)
+                        spotlight(REFINED_GLOWSTONE_NUGGET)
+                        spotlight(REFINED_GLOWSTONE_BLOCK)
+                    }
+
+                    entry(REFINED_OBSIDIAN_INGOT) {
+                        name = "Refined Obsidian"
+                        +"Harder obsidian? Unpossible!$(p)Obsidian reinforced with Osmium in the ${link(OSMIUM_COMPRESSOR, "Osmium Compressor")}. Can be used to form a Nether Portal"
+
+                        spotlight(REFINED_OBSIDIAN_DUST)
+                        spotlight(REFINED_OBSIDIAN_INGOT)
+                        spotlight(REFINED_OBSIDIAN_NUGGET)
+                        spotlight(REFINED_OBSIDIAN_BLOCK)
+                    }
+
+                    entry(STEEL_INGOT) {
+                        name = "Steel"
+                        +"Steel is a hardened metal used in most Mekanism constructions."
+                        spotlight(ENRICHED_IRON, "Intermediate step in Mekanism Steel production.")
+                        spotlight(STEEL_INGOT)
+                        spotlight(STEEL_DUST)
+                        spotlight(STEEL_NUGGET)
+                        spotlight(STEEL_BLOCK)
+                    }
+
+                    SULFUR_DUST("Solidified sulfur, can be used to make ${link(SULFURIC_ACID, "Sulfuric Acid")}.")
+
+                    entry(PROCESSED_RESOURCES.get(ResourceType.CLUMP, PrimaryResource.IRON)!!) {
+                        name = "Clumps"
+                        +"Clumps are part of the ${link(GuideEntry.ORE_TRIPLING, "3x Ore Processing")} pipeline and above."
+                        PROCESSED_RESOURCES.row(ResourceType.CLUMP).values.forEach(this::spotlight)
+                    }
+
+                    entry(PROCESSED_RESOURCES.get(ResourceType.SHARD, PrimaryResource.IRON)!!) {
+                        name = "Crystals"
+                        +"Crystals are part of the ${link(GuideEntry.ORE_QUADRUPLING, "4x Ore Processing")} pipeline and above."
+                        PROCESSED_RESOURCES.row(ResourceType.SHARD).values.forEach(this::spotlight)
+                    }
+
+                    entry(PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, PrimaryResource.IRON)!!) {
+                        name = "Crystals"
+                        +"Crystals are part of the ${link(GuideEntry.ORE_QUINTUPLING, "5x Ore Processing")} pipeline and above."
+                        PROCESSED_RESOURCES.row(ResourceType.CRYSTAL).values.forEach(this::spotlight)
+                    }
+
+                    DIRTY_NETHERITE_SCRAP("Dirty Netherite Scraps are part of the ore processing of Ancient Debris.")
+
+                    entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)) {
+                        name = "Osmium"
+                        +"Osmium is a hard, brittle, bluish-white transition metal in the platinum group that is found as a trace element in alloys, mostly in platinum ores.$(p)Osmium is the densest stable element; it is approximately twice as dense as lead and slightly denser than iridium."
+                        spotlight(ORES[OreType.OSMIUM]!!)
+                        PROCESSED_RESOURCES.column(PrimaryResource.OSMIUM).values.forEach(this::spotlight)
+                    }
+
+                    entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER)) {
+                        name = "Copper"
+                        +"Copper is a soft, malleable, and ductile metal with very high thermal and electrical conductivity. A freshly exposed surface of pure copper has a pinkish-orange color."
+                        spotlight(ORES[OreType.COPPER]!!)
+                        PROCESSED_RESOURCES.column(PrimaryResource.COPPER).values.forEach(this::spotlight)
+                    }
+
+                    entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)) {
+                        name = "Tin"
+                        +"Tin is a silvery metal that characteristically has a faint yellow hue. Tin, like indium, is soft enough to be cut without much force."
+                        spotlight(ORES[OreType.TIN]!!)
+                        PROCESSED_RESOURCES.column(PrimaryResource.TIN).values.forEach(this::spotlight)
+                    }
+
+                    entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)) {
+                        name = "Uranium"
+                        +"Uranium is a silvery-grey metal in the actinide series of the periodic table. A uranium atom has 92 protons and 92 electrons, of which 6 are valence electrons. Uranium is weakly radioactive because all isotopes of uranium are unstable; the half-lives of its naturally occurring isotopes range between 159,200 years and 4.5 billion years."
+                        spotlight(ORES[OreType.URANIUM]!!)
+                        PROCESSED_RESOURCES.column(PrimaryResource.URANIUM).values.forEach(this::spotlight)
+                    }
+
+                    entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD)) {
+                        name = "Lead"
+                        +"Lead is a heavy metal that is denser than most common materials. Lead is soft and malleable, and also has a relatively low melting point."
+                        spotlight(ORES[OreType.URANIUM]!!)
+                        PROCESSED_RESOURCES.column(PrimaryResource.URANIUM).values.forEach(this::spotlight)
+                    }
+
+                    entry(FLUORITE_GEM) {
+                        name = "Fluorite"
+                        +"Fluorite (also called fluorspar) is the mineral form of calcium fluoride, CaF2. It belongs to the halide minerals group."
+                        spotlight(ORES[OreType.FLUORITE]!!)
+                        spotlight(FLUORITE_DUST)
+                        spotlight(FLUORITE_GEM)
+                    }
+
                 }
                 GuideCategory.ITEMS_UPGRADES {
                     name = "Upgrades"
@@ -194,7 +285,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                 GuideEntry.ALLOYS {
                     name = "Alloys"
                     icon = INFUSED_ALLOY
-                    +"Crafting components used to make tiered items. Can also be right clicked on Logistical Transporters, Mechanical Pipes, Pressurized Tubes, Thermodynamic Conductors, and Universal Cables to upgrade tiers in-world.$(p)Created in a Metallurgic Infuser."
+                    +"Crafting components used to make tiered items. Can also be right clicked on Logistical Transporters, Mechanical Pipes, Pressurized Tubes, Thermodynamic Conductors, and Universal Cables to upgrade tiers in-world.$(p)Created in a ${link(METALLURGIC_INFUSER, "Metallurgic Infuser")}."
                     spotlight(INFUSED_ALLOY, "Redstone infused")
                     spotlight(REINFORCED_ALLOY, "Diamond infused")
                     spotlight(ATOMIC_ALLOY, "Refined Obsidian infused")
@@ -203,7 +294,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                 GuideEntry.CIRCUITS {
                     name = "Circuits"
                     icon = BASIC_CONTROL_CIRCUIT
-                    +"Crafting components used to make tiered items."
+                    +"Crafting components used to make tiered items. Created in the ${link(METALLURGIC_INFUSER, "Metallurgic Infuser")}."
                     spotlight(BASIC_CONTROL_CIRCUIT, "Osmium based.")
                     spotlight(ADVANCED_CONTROL_CIRCUIT, "Infused Alloy based.")
                     spotlight(ELITE_CONTROL_CIRCUIT, "Reinforced Alloy based.")
@@ -337,10 +428,10 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                     name = "Induction Providers"
                     icon = BASIC_INDUCTION_PROVIDER
                     +"The Induction Providers are used in the ${link(GuideEntry.INDUCTION, "Induction Matrix")} to determine how fast it is able to output energy through the Induction Port.$(2br)Using multiple Induction Providers in the same Induction Matrix will add extra output capacity, by adding their values together.$(2br)The total output value is for the entire multi-block structure, and not on a \"per port\" basis."
-                    spotlight(BASIC_INDUCTION_PROVIDER)
-                    spotlight(ADVANCED_INDUCTION_PROVIDER)
-                    spotlight(ELITE_INDUCTION_PROVIDER)
-                    spotlight(ULTIMATE_INDUCTION_PROVIDER)
+                    spotlight(BASIC_INDUCTION_PROVIDER, "Adds 256 kJ/t to output/input rate.")
+                    spotlight(ADVANCED_INDUCTION_PROVIDER, "Adds 2.04 MJ/t to output/input rate.")
+                    spotlight(ELITE_INDUCTION_PROVIDER, "Adds 16.38 MJ/t to output/input rate.")
+                    spotlight(ULTIMATE_INDUCTION_PROVIDER, "Adds 131.07 MJ/t to output/input rate.")
                 }
 
                 GuideEntry.BINS{ name = "Bins"
@@ -594,7 +685,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
                 }
 
                 NUTRITIONAL_PASTE {
-                    +"Food, tasty paste form. Used with the ${link(CANTEEN, "Canteen")}, or in the ${link(MODULES[Modules.NUTRITIONAL_INJECTION_UNIT]!!, "Nutritional Injection Unit")}."
+                    +"Food, tasty paste form. Used with the ${link(CANTEEN, "Canteen")}, or in the ${link(Modules.NUTRITIONAL_INJECTION_UNIT, "Nutritional Injection Unit")}."
                 }
 
             }
