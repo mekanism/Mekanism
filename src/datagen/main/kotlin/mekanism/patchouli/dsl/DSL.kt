@@ -66,7 +66,7 @@ fun link(guideEntry: IGuideEntry, text: String): String = link(guideEntry.entryI
 fun link(module: Modules.ModuleData<*>, text: String): String = link(module.bookId, text)
 
 operator fun KeyBinding.invoke(): String {
-    return "$(k:${translationKey})"
+    return "$(k:${keyDescription})"
 }
 
 val LOGGER = LogManager.getLogger("PatchouliDSL")!!
