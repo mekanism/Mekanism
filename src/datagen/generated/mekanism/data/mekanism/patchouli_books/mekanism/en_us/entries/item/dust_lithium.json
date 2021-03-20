@@ -6,7 +6,8 @@
     {
       "type": "spotlight",
       "item": "mekanism:dust_lithium",
-      "link_recipe": true
+      "link_recipe": true,
+      "text": "Crystallized form of $(l:gas/lithium)Lithium$(/l)"
     }
   ],
   "read_by_default": true

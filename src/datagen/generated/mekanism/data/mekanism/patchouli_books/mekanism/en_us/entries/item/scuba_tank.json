@@ -11,7 +11,7 @@
     },
     {
       "type": "text",
-      "text": "When you first put on the Scuba Tank, its oxygen supply will be turned off. In order to use it underwater you must turn it on by using the $(k:key.keyboard.g) button. Also, you must have the Gas Mask equipped in the helmet armor slot or you won't be able to breathe and will start to drown."
+      "text": "When you first put on the Scuba Tank, its oxygen supply will be turned off. In order to use it underwater you must turn it on by using the $(k:key.mekanism.chest_mode) button. Also, you must have the Gas Mask equipped in the helmet armor slot or you won't be able to breathe and will start to drown."
     },
     {
       "type": "text",

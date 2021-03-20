@@ -6,7 +6,8 @@
     {
       "type": "spotlight",
       "item": "mekanism:dust_charcoal",
-      "link_recipe": true
+      "link_recipe": true,
+      "text": "Crushed form of Charcoal"
     }
   ],
   "read_by_default": true

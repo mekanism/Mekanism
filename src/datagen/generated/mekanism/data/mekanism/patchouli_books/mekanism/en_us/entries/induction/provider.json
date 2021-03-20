@@ -10,22 +10,26 @@
     {
       "type": "spotlight",
       "item": "mekanism:basic_induction_provider",
-      "link_recipe": true
+      "link_recipe": true,
+      "text": "Adds 256 kJ/t to output/input rate."
     },
     {
       "type": "spotlight",
       "item": "mekanism:advanced_induction_provider",
-      "link_recipe": true
+      "link_recipe": true,
+      "text": "Adds 2.04 MJ/t to output/input rate."
     },
     {
       "type": "spotlight",
       "item": "mekanism:elite_induction_provider",
-      "link_recipe": true
+      "link_recipe": true,
+      "text": "Adds 16.38 MJ/t to output/input rate."
     },
     {
       "type": "spotlight",
       "item": "mekanism:ultimate_induction_provider",
-      "link_recipe": true
+      "link_recipe": true,
+      "text": "Adds 131.07 MJ/t to output/input rate."
     }
   ]
 }

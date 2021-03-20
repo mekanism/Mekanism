@@ -6,7 +6,8 @@
     {
       "type": "spotlight",
       "item": "mekanism:dust_obsidian",
-      "link_recipe": true
+      "link_recipe": true,
+      "text": "Crushed form of Obsidian"
     }
   ],
   "read_by_default": true

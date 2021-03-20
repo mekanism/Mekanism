@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "Crafting components used to make tiered items. Can also be right clicked on Logistical Transporters, Mechanical Pipes, Pressurized Tubes, Thermodynamic Conductors, and Universal Cables to upgrade tiers in-world.$(p)Created in a Metallurgic Infuser."
+      "text": "Crafting components used to make tiered items. Can also be right clicked on Logistical Transporters, Mechanical Pipes, Pressurized Tubes, Thermodynamic Conductors, and Universal Cables to upgrade tiers in-world.$(p)Created in a $(l:block/metallurgic_infuser)Metallurgic Infuser$(/l)."
     },
     {
       "type": "spotlight",

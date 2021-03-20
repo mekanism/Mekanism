@@ -6,7 +6,8 @@
     {
       "type": "spotlight",
       "item": "mekanism:dust_sulfur",
-      "link_recipe": true
+      "link_recipe": true,
+      "text": "Solidified sulfur, can be used to make $(l:gas/sulfuric_acid)Sulfuric Acid$(/l)."
     }
   ],
   "read_by_default": true

@@ -6,7 +6,8 @@
     {
       "type": "spotlight",
       "item": "mekanism:dust_diamond",
-      "link_recipe": true
+      "link_recipe": true,
+      "text": "Crushed form of Diamond"
     }
   ],
   "read_by_default": true

@@ -11,7 +11,7 @@
     },
     {
       "type": "text",
-      "text": "Base speed setting, single block, roughly equivalent to Efficiency II.$(p)Farmland tilling and Grass Path functions have been moved to the MekaTool Farming Module",
+      "text": "Base speed setting, single block, roughly equivalent to Efficiency II.$(p)Farmland tilling and Grass Path functions have been moved to the MekaTool $(l:items/modules/mekanism:module_farming_unit)Farming Unit$(/l)",
       "title": "Normal Mode"
     },
     {

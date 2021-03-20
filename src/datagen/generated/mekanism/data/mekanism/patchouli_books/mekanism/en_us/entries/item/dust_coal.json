@@ -6,7 +6,8 @@
     {
       "type": "spotlight",
       "item": "mekanism:dust_coal",
-      "link_recipe": true
+      "link_recipe": true,
+      "text": "Crushed form of Coal"
     }
   ],
   "read_by_default": true

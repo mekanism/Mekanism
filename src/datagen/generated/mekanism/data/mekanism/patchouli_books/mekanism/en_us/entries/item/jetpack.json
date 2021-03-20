@@ -16,7 +16,7 @@
     },
     {
       "type": "text",
-      "text": "The Jetpack has three modes to choose from, which can be toggled by pressing the $(k:key.keyboard.g) key.$(li)$(bold)Regular$() (default): Press $(k:jump) to increase your height and release to fall. Note that you will take fall damage unless you carefully lower yourself to the ground.$(li)$(bold)Hover$(): Constant flight, without the need to level yourself like you do with Regular mode. Press $(k:jump) to increase altitude and press $(k:sneak) to decrease. Note that this mode constantly consumes Hydrogen, but at a reduced rate as compared to Regular mode.$(li)$(bold)Disabled$(): The Jetpack is disabled.",
+      "text": "The Jetpack has three modes to choose from, which can be toggled by pressing the $(k:key.mekanism.chest_mode) key.$(li)$(bold)Regular$() (default): Press $(k:jump) to increase your height and release to fall. Note that you will take fall damage unless you carefully lower yourself to the ground.$(li)$(bold)Hover$(): Constant flight, without the need to level yourself like you do with Regular mode. Press $(k:jump) to increase altitude and press $(k:sneak) to decrease. Note that this mode constantly consumes Hydrogen, but at a reduced rate as compared to Regular mode.$(li)$(bold)Disabled$(): The Jetpack is disabled.",
       "title": "Operation Modes"
     },
     {

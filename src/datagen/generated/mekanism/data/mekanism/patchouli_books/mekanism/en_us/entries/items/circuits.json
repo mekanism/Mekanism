@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "Crafting components used to make tiered items."
+      "text": "Crafting components used to make tiered items. Created in the $(l:block/metallurgic_infuser)Metallurgic Infuser$(/l)."
     },
     {
       "type": "spotlight",

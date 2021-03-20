@@ -7,7 +7,7 @@
       "type": "spotlight",
       "item": "mekanism:configurator",
       "link_recipe": true,
-      "text": "The Configurator is a configuration tool for Mekanism machines & pipes.$(p)It comes with several different modes that you can switch between by sneaking and then pressing the Item Mode Switch Key ($(k:key.keyboard.n))"
+      "text": "The Configurator is a configuration tool for Mekanism machines & pipes.$(p)It comes with several different modes that you can switch between by sneaking and then pressing the Item Mode Switch Key ($(k:key.mekanism.mode))"
     },
     {
       "type": "text",

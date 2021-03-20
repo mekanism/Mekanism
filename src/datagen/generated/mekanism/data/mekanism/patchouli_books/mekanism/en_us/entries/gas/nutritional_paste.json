@@ -5,7 +5,7 @@
   "pages": [
     {
       "type": "text",
-      "text": "Food, tasty paste form. Used with the $(l:item/canteen)Canteen$(/l), or in the $(l:item/module_nutritional_injection_unit)Nutritional Injection Unit$(/l)."
+      "text": "Food, tasty paste form. Used with the $(l:item/canteen)Canteen$(/l), or in the $(l:items/modules/mekanism:module_nutritional_injection_unit)Nutritional Injection Unit$(/l)."
     }
   ],
   "read_by_default": true
