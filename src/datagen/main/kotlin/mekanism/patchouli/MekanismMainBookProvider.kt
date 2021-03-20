@@ -157,6 +157,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(BRONZE_INGOT) {
                         name = "Bronze"
+                        readByDefault = true
                         +"Bronze is an alloy of Copper and Tin."
                         spotlight(BRONZE_INGOT)
                         spotlight(BRONZE_DUST)
@@ -175,6 +176,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(REFINED_GLOWSTONE_INGOT) {
                         name = "Refined Glowstone"
+                        readByDefault = true
                         +"Refined glowstone is a stronger form of Glowstone, reinforced with Osmium in the ${link(OSMIUM_COMPRESSOR, "Osmium Compressor")}."
                         spotlight(REFINED_GLOWSTONE_INGOT)
                         spotlight(REFINED_GLOWSTONE_NUGGET)
@@ -183,6 +185,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(REFINED_OBSIDIAN_INGOT) {
                         name = "Refined Obsidian"
+                        readByDefault = true
                         +"Harder obsidian? Unpossible!$(p)Obsidian reinforced with Osmium in the ${link(OSMIUM_COMPRESSOR, "Osmium Compressor")}. Can be used to form a Nether Portal"
 
                         spotlight(REFINED_OBSIDIAN_DUST)
@@ -193,6 +196,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(STEEL_INGOT) {
                         name = "Steel"
+                        readByDefault = true
                         +"Steel is a hardened metal used in most Mekanism constructions."
                         spotlight(ENRICHED_IRON, "Intermediate step in Mekanism Steel production.")
                         spotlight(STEEL_INGOT)
@@ -205,18 +209,21 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(PROCESSED_RESOURCES.get(ResourceType.CLUMP, PrimaryResource.IRON)!!) {
                         name = "Clumps"
+                        readByDefault = true
                         +"Clumps are part of the ${link(GuideEntry.ORE_TRIPLING, "3x Ore Processing")} pipeline and above."
                         PROCESSED_RESOURCES.row(ResourceType.CLUMP).values.forEach(this::spotlight)
                     }
 
                     entry(PROCESSED_RESOURCES.get(ResourceType.SHARD, PrimaryResource.IRON)!!) {
                         name = "Crystals"
+                        readByDefault = true
                         +"Crystals are part of the ${link(GuideEntry.ORE_QUADRUPLING, "4x Ore Processing")} pipeline and above."
                         PROCESSED_RESOURCES.row(ResourceType.SHARD).values.forEach(this::spotlight)
                     }
 
                     entry(PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, PrimaryResource.IRON)!!) {
                         name = "Crystals"
+                        readByDefault = true
                         +"Crystals are part of the ${link(GuideEntry.ORE_QUINTUPLING, "5x Ore Processing")} pipeline and above."
                         PROCESSED_RESOURCES.row(ResourceType.CRYSTAL).values.forEach(this::spotlight)
                     }
@@ -225,6 +232,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)) {
                         name = "Osmium"
+                        readByDefault = true
                         +"Osmium is a hard, brittle, bluish-white transition metal in the platinum group that is found as a trace element in alloys, mostly in platinum ores.$(p)Osmium is the densest stable element; it is approximately twice as dense as lead and slightly denser than iridium."
                         spotlight(ORES[OreType.OSMIUM]!!)
                         PROCESSED_RESOURCES.column(PrimaryResource.OSMIUM).values.forEach(this::spotlight)
@@ -232,6 +240,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER)) {
                         name = "Copper"
+                        readByDefault = true
                         +"Copper is a soft, malleable, and ductile metal with very high thermal and electrical conductivity. A freshly exposed surface of pure copper has a pinkish-orange color."
                         spotlight(ORES[OreType.COPPER]!!)
                         PROCESSED_RESOURCES.column(PrimaryResource.COPPER).values.forEach(this::spotlight)
@@ -239,6 +248,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)) {
                         name = "Tin"
+                        readByDefault = true
                         +"Tin is a silvery metal that characteristically has a faint yellow hue. Tin, like indium, is soft enough to be cut without much force."
                         spotlight(ORES[OreType.TIN]!!)
                         PROCESSED_RESOURCES.column(PrimaryResource.TIN).values.forEach(this::spotlight)
@@ -246,6 +256,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)) {
                         name = "Uranium"
+                        readByDefault = true
                         +"Uranium is a silvery-grey metal in the actinide series of the periodic table. A uranium atom has 92 protons and 92 electrons, of which 6 are valence electrons. Uranium is weakly radioactive because all isotopes of uranium are unstable; the half-lives of its naturally occurring isotopes range between 159,200 years and 4.5 billion years."
                         spotlight(ORES[OreType.URANIUM]!!)
                         PROCESSED_RESOURCES.column(PrimaryResource.URANIUM).values.forEach(this::spotlight)
@@ -253,6 +264,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD)) {
                         name = "Lead"
+                        readByDefault = true
                         +"Lead is a heavy metal that is denser than most common materials. Lead is soft and malleable, and also has a relatively low melting point."
                         spotlight(ORES[OreType.URANIUM]!!)
                         PROCESSED_RESOURCES.column(PrimaryResource.URANIUM).values.forEach(this::spotlight)
@@ -260,6 +272,7 @@ class MekanismMainBookProvider(generator: DataGenerator): BasePatchouliProvider(
 
                     entry(FLUORITE_GEM) {
                         name = "Fluorite"
+                        readByDefault = true
                         +"Fluorite (also called fluorspar) is the mineral form of calcium fluoride, CaF2. It belongs to the halide minerals group."
                         spotlight(ORES[OreType.FLUORITE]!!)
                         spotlight(FLUORITE_DUST)
