@@ -150,7 +150,7 @@ class Entry(
     }
 
     @PatchouliDSL
-    fun link(init: LinkPage.() -> Unit) {
+    fun linkPage(init: LinkPage.() -> Unit) {
         this.pages.add(LinkPage().also(init))
     }
 

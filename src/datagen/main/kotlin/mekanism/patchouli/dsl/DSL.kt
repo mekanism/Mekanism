@@ -57,12 +57,16 @@ val Modules.ModuleData<*>.bookId: String get() = "items/modules/"+this.stack.ite
 
 private fun link(id:String, text:String): String = "$(l:${id})${text}$(/l)"
 
+@PatchouliDSL
 fun link(item: IItemProvider, text: String): String = link(item.bookId, text)
 
+@PatchouliDSL
 fun link(item: IGasProvider, text: String): String = link(item.bookId, text)
 
+@PatchouliDSL
 fun link(guideEntry: IGuideEntry, text: String): String = link(guideEntry.entryId, text)
 
+@PatchouliDSL
 fun link(module: Modules.ModuleData<*>, text: String): String = link(module.bookId, text)
 
 operator fun KeyBinding.invoke(): String {
