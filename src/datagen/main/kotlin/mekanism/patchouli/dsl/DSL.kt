@@ -7,6 +7,7 @@ import com.google.gson.JsonObject
 import mekanism.api.providers.IBlockProvider
 import mekanism.api.providers.IGasProvider
 import mekanism.api.providers.IItemProvider
+import mekanism.common.content.gear.Modules
 import net.minecraft.client.settings.KeyBinding
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
@@ -52,17 +53,17 @@ val IItemProvider.bookId: String get() {
 
 val IGasProvider.bookId: String get() = "gas/" + this.registryName.path
 
-fun link(item: IItemProvider, text: String): String {
-    return "$(l:${item.bookId})${text}$(/l)"
-}
+val Modules.ModuleData<*>.bookId: String get() = "items/modules/"+this.stack.item.registryName!!
 
-fun link(item: IGasProvider, text: String): String {
-    return "$(l:${item.bookId})${text}$(/l)"
-}
+private fun link(id:String, text:String): String = "$(l:${id})${text}$(/l)"
 
-fun link(guideEntry: IGuideEntry, text: String): String {
-    return "$(l:${guideEntry.entryId})${text}$(/l)"
-}
+fun link(item: IItemProvider, text: String): String = link(item.bookId, text)
+
+fun link(item: IGasProvider, text: String): String = link(item.bookId, text)
+
+fun link(guideEntry: IGuideEntry, text: String): String = link(guideEntry.entryId, text)
+
+fun link(module: Modules.ModuleData<*>, text: String): String = link(module.bookId, text)
 
 operator fun KeyBinding.invoke(): String {
     return "$(k:${translationKey})"
