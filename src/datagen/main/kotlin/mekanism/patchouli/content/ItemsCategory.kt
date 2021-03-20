@@ -91,14 +91,14 @@ fun PatchouliBook.itemCategory() {
             SCUBA_MASK("The Scuba Mask is an utility head armor piece, used in conjunction with the ${link(SCUBA_TANK, "Scuba Tank")} to breathe underwater.$(p)It can be enchanted with respiration and water breathing for extended use.")
             CONFIGURATOR("The Configurator is a configuration tool for Mekanism machines & pipes.$(p)It comes with several different modes that you can switch between by sneaking and then pressing the Item Mode Switch Key (${MekanismKeyHandler.handModeSwitchKey()})") {
                 text("Configurate") {
-                    text = "Mousing over a Mekanism machine or factory will show the color for that side, using the the Configuration Color Scheme. Right clicking will print a message announcing both the color and input/output mode. $(k:sneak) + Right Clicking will cycle through the valid colors for the given sub-mode." +
-                            "$(li)Grey is no connection (neither in nor out)." +
-                            "\$(li)Dark Red is input (items, gasses)." +
-                            "\$(li)Dark Blue is output (items, gasses)." +
-                            "\$(li)Green is for Energy input (items, cable)." +
-                            "\$(li)Purple is Infusion item input (for the Metallurgic Infuser)" +
-                            "\$(li)Yellow is for fluids (for the Pressurized Reaction Chamber)"
+                    text = "Mousing over a Mekanism machine or factory will show the color for that side, using the the Configuration Color Scheme. Right clicking will print a message announcing both the color and input/output mode. $(k:sneak) + Right Clicking will cycle through the valid colors for the given sub-mode."
                 }
+                +("$(li)Grey is no connection (neither in nor out)." +
+                        "\$(li)Dark Red is input (items, gasses)." +
+                        "\$(li)Dark Blue is output (items, gasses)." +
+                        "\$(li)Green is for Energy input (items, cable)." +
+                        "\$(li)Purple is Infusion item input (for the Metallurgic Infuser)" +
+                        "\$(li)Yellow is for fluids (for the Pressurized Reaction Chamber)")
                 +("Additionally, you can interact with any of the cables, pipes, transporters, or tubes to set their connection type between machines/inventory and their redstone sensitivity. Right clicking on the center of the cable/pipe/transporter/tube will toggle sensitivity off/on (default is on). \$(k:sneak) + Right clicking on a segment between the center of the cable/etc. and machine will cycle between:" +
                         "$(li)Normal" +
                         "\$(li)Pull - try to take items, etc. from the machine" +
@@ -314,8 +314,25 @@ fun PatchouliBook.itemCategory() {
             //todo override in mek generators' book generator?
         }
         CONFIGURATION_CARD("An item used to copy configuration data from one machine to another.$(p)To copy data to the card, $(k:sneak) + right click on the source machine, then right click the destination machine. Chat messages will inform you of the success/failure") {
-            +"Supported machines: ${link(DIGITAL_MINER, "Digital Miner")}, ${link(GuideEntry.ENERGY_CUBES, "Energy Cubes")}, ${link(FORMULAIC_ASSEMBLICATOR, "Formulaic Assemblicator")}, ${link(LOGISTICAL_SORTER, "Logistical Sorter")}, ${link(OREDICTIONIFICATOR, "Oredictionificator")}, and any machine with configurable sides."
+            +"Supported machines: \$(li)${link(DIGITAL_MINER, "Digital Miner")} \$(li)${link(GuideEntry.ENERGY_CUBES, "Energy Cubes")} \$(li)${link(FORMULAIC_ASSEMBLICATOR, "Formulaic Assemblicator")} \$(li)${link(LOGISTICAL_SORTER, "Logistical Sorter")} \$(li)${link(OREDICTIONIFICATOR, "Oredictionificator")} \$(li)and any machine with configurable sides."
         }
-        CRAFTING_FORMULA("Used in the ${link(FORMULAIC_ASSEMBLICATOR, "Formulaic Assemblicator")} to encode a crafting recipe for automatic operation.")
+        CRAFTING_FORMULA("Used in the ${link(FORMULAIC_ASSEMBLICATOR, "Formulaic Assemblicator")} to encode a crafting recipe for automatic operation.") {
+            text {
+                title = "Usage"
+                text = "Open up a Formualaic Assemblicator's GUI. Put in the crafting recipe of the item you want to craft. Insert a Crafting Formula into that blank spot to the left of the crafting grid and press Encode.$(p)Now the recipe has been encoded into the Crafting Formula, and if you insert the Crafting Formula into any Formulaic Assemblicator, "
+            }
+            +"the recipe will appear in the crafting grid. $(p)$(k:sneak) + $(k:use) the Crafting Formula in the air to clear the encoded recipe."
+        }
+
+        //TODO check dictionary functions
+        DICTIONARY("Don't worry, you won't have to read much.") {
+            +"The Dictionary allows you to check the Tags (vanilla mechanic) of an item which can be used in a Tag Filter for things like the ${link(DIGITAL_MINER, "Digital Miner")} & ${link(LOGISTICAL_SORTER, "Logistical Sorter")}, or in the ${link(OREDICTIONIFICATOR, "Oredictionificator")}."
+            text {
+                title = "Usage"
+                text = "Right click to open the GUI and insert an item into the slot. The tags will be listed.$(p)Right clicking a block in-world will tell you the Tags of that block."
+            }
+        }
+
+        DOSIMETER()
     }// end items category
 }
