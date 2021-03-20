@@ -39,6 +39,14 @@ interface ICategory {
     }
 
     @PatchouliDSL
+    fun entry(item: IItemProvider, init: Entry.() -> Unit): Entry {
+        return entry(item.bookId) {
+            icon = item
+            init()
+        }
+    }
+
+    @PatchouliDSL
     operator fun IItemProvider.invoke(spotlightText: String? = null, init: (Entry.() -> Unit)? = null) {
         entry(this.bookId) {
             name = translationKey
