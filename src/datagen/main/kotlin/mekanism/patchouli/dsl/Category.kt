@@ -125,6 +125,11 @@ class Category(override val book: PatchouliBook, override val id: String): ICate
     /** Defaults to false. Set this to true to make this category a secret category. Secret categories don't display a locked icon when locked, and instead will not display at all until unlocked. */
     var secret: Boolean? = null
 
+    @PatchouliDSL
+    fun flags(init: FlagsBuilder.()->Unit) {
+        this.flag = FlagsBuilder().apply(init).build()
+    }
+
     fun toJson(): JsonObject {
         val json = JsonObject()
         json.addProperty("name", name)

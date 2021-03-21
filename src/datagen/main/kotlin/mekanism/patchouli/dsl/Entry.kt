@@ -165,12 +165,18 @@ class Entry(
     }
 
     @PatchouliDSL
-    fun empty(init: EmptyPage.() -> Unit) {
+    fun emptyPage(init: EmptyPage.() -> Unit) {
         this.pages.add(EmptyPage().also(init))
     }
 
-    fun empty() {
+    @PatchouliDSL
+    fun emptyPage() {
         this.pages.add(EmptyPage())
+    }
+
+    @PatchouliDSL
+    fun flags(init: FlagsBuilder.()->Unit) {
+        this.flag = FlagsBuilder().apply(init).build()
     }
 
     fun toJson(): JsonObject {

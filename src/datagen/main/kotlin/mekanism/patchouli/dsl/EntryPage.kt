@@ -13,6 +13,11 @@ abstract class EntryPage(val type: String) {
     /** An anchor can be used elsewhere to refer to this specific page in an internal link. See Text Formatting 101 for more details about internal links. */
     var anchor: String? = null
 
+    @PatchouliDSL
+    fun flags(init: FlagsBuilder.()->Unit) {
+        this.flag = FlagsBuilder().apply(init).build()
+    }
+
     open fun toJson(): JsonObject {
         val json = JsonObject()
         json.addProperty("type", type)
