@@ -80,6 +80,10 @@ public class PacketPortableTeleporterGui implements IMekanismPacket {
                             if (player.isPassenger()) {
                                 player.stopRiding();
                             }
+                            double oldX = player.getX();
+                            double oldY = player.getY();
+                            double oldZ = player.getZ();
+                            World oldWorld = player.level;
                             TileEntityTeleporter.teleportEntityTo(player, coords, teleporter);
                             BlockPos coordsPos = coords.getPos();
                             Direction frameDirection = teleporter.frameDirection();
@@ -87,6 +91,10 @@ public class PacketPortableTeleporterGui implements IMekanismPacket {
                                 coordsPos = coordsPos.below().relative(frameDirection);
                             }
                             TileEntityTeleporter.alignPlayer(player, coordsPos);
+                            if (player.level != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
+                                //If the player teleported over 5 blocks, play the sound at both the destination and the source
+                                oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            }
                             player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
                             Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), teleWorld, coordsPos);
                         } catch (Exception ignored) {

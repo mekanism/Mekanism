@@ -329,6 +329,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                     public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
                         return new PortalInfo(destination, Vector3d.ZERO, entity.yRot, entity.xRot);
                     }
+
+                    @Override
+                    public boolean playTeleportSound(ServerPlayerEntity player, ServerWorld sourceWorld, ServerWorld destWorld) {
+                        return false;
+                    }
                 });
             }
         }

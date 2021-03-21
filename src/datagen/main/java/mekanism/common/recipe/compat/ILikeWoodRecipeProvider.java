@@ -55,8 +55,8 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
     }
 
     //TODO: Maybe move some of these into RecipeProviderUtil, so that we make sure the numbers stay consistent
-    public static void addWoodType(Consumer<IFinishedRecipe> consumer, ICondition condition, String basePath, IItemProvider planks, IItemProvider log, IItemProvider fences,
-          IWoodType woodType, ICondition bedVersion) {
+    public static void addWoodType(Consumer<IFinishedRecipe> consumer, ICondition condition, String basePath, IItemProvider planks, IItemProvider log,
+          IItemProvider fences, IWoodType woodType, ICondition bedVersion) {
         String name = woodType.getName();
         Item stick = WoodenItems.getItem(WoodenObjectType.STICK, woodType);
         //Barrel
@@ -171,6 +171,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               ItemStackIngredient.from(Ingredient.of(WoodenItems.getBedItems(woodType).filter(b -> b != bed).map(ItemStack::new))),
               PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               new ItemStack(bed)
-        ).build(consumer, Mekanism.rl(basePath + "painting/" + color.getRegistryPrefix()));
+        ).addCondition(condition)
+              .build(consumer, Mekanism.rl(basePath + "painting/" + color.getRegistryPrefix()));
     }
 }
