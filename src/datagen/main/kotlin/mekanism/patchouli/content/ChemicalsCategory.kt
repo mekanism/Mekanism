@@ -125,7 +125,9 @@ fun PatchouliBook.chemicals() {
             +"Fuel source made from ${link(URANIUM_HEXAFLUORIDE, "Uranium Hexafluoride")} in the ${link(ISOTOPIC_CENTRIFUGE, "Isotopic Centrifuge")}."
             text {
                 text = "Used in the Fission Reactor."
-                flag = "false"//todo check if generators installed
+                flags {
+                    generatorsInstalled()
+                }
             }
         }
 

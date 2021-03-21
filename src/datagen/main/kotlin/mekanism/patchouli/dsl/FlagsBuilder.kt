@@ -40,6 +40,12 @@ class FlagsBuilder {
         single { modLoaded(modId) }
     }
 
+    /** Is true when Mekanism: Generators is loaded */
+    @PatchouliDSL
+    fun generatorsInstalled() {
+        modLoaded("mekanismgenerators")
+    }
+
     /**  Is true when the game is being loaded from an IDE Debug mode */
     @PatchouliDSL
     fun isDebug() {
