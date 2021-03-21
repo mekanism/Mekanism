@@ -333,6 +333,12 @@ fun PatchouliBook.itemCategory() {
             }
         }
 
-        DOSIMETER()
+        DOSIMETER("Measures your accumulated radiation dosage.") {
+            text {
+                title = "Usage"
+                text = "Right click in the air to show $(bold)your$() current radiation dose in the chat feed. NB: this will never be zero, as there is always some background radiation.$(p)Use the ${link(GEIGER_COUNTER, "Geiger Counter")} to assess the level of radiation in an area."
+            }
+        }
+        ELECTROLYTIC_CORE("Crafting ingredient used for electrolysis.")
     }// end items category
 }
