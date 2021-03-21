@@ -44,7 +44,7 @@ import net.minecraft.item.ItemStack;
 public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemStackToGasRecipe> {
 
     public static final long MAX_GAS = 10_000;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     public IGasTank gasTank;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;

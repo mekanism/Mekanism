@@ -51,11 +51,13 @@ import mekanism.common.util.RecipeLookupUtil;
 public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> {
 
     public static final long MAX_GAS = 10_000;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftInput", "getLeftInputCapacity", "getLeftInputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftInput", "getLeftInputCapacity", "getLeftInputNeeded",
+                                                                                        "getLeftInputFilledPercentage"})
     public IGasTank leftTank;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightInput", "getRightInputCapacity", "getRightInputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightInput", "getRightInputCapacity", "getRightInputNeeded",
+                                                                                        "getRightInputFilledPercentage"})
     public IGasTank rightTank;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     public IGasTank centerTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;

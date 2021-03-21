@@ -34,8 +34,8 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
-import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerPercentageChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -238,7 +238,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         return MekanismUtils.redstoneLevelFromContents(currentTank.getStored(), currentTank.getCapacity());
     }
 
-    @WrappingComputerMethod(wrapper = ComputerPercentageChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
     private IChemicalTank<?, ?> getCurrentTank() {
         Current current = chemicalTank.getCurrent();
         return chemicalTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);

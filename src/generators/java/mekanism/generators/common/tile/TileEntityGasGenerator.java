@@ -41,7 +41,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     /**
      * The tank this block is storing fuel in.
      */
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"})
     public FuelTank fuelTank;
     private long burnTicks;
     private int maxBurnTicks;

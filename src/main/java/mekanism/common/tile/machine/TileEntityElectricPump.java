@@ -75,7 +75,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     /**
      * This pump's tank
      */
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"})
     public BasicFluidTank fluidTank;
     /**
      * The type of fluid this pump is pumping

@@ -15,7 +15,7 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerPercentageChemicalTankWrapper;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
@@ -37,7 +37,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     private static final float TOLERANCE = 0.05F;
 
     private long lastProcessTick;
-    @WrappingComputerMethod(wrapper = ComputerPercentageChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
     private StackedWasteBarrel gasTank;
     private float prevScale;
     private int processTicks;

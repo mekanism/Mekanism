@@ -48,7 +48,7 @@ import net.minecraft.item.ItemStack;
 public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     public IGasTank gasTank;
 
     private final IOutputHandler<@NonNull GasStack> outputHandler;

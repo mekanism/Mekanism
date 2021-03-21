@@ -44,7 +44,7 @@ import net.minecraft.item.ItemStack;
 
 public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemStackToPigmentRecipe> {
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     public IPigmentTank pigmentTank;
 
     private final IOutputHandler<@NonNull PigmentStack> outputHandler;

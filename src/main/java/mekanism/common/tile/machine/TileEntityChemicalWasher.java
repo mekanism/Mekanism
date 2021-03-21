@@ -53,13 +53,15 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurryToSlurryRecipe> {
 
-    public static final long MAX_SLURRY = 10_000;
-    public static final int MAX_FLUID = 10_000;
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded"})
+    private static final long MAX_SLURRY = 10_000;
+    private static final int MAX_FLUID = 10_000;
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"})
     public BasicFluidTank fluidTank;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryInput", "getSlurryInputCapacity", "getSlurryInputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryInput", "getSlurryInputCapacity", "getSlurryInputNeeded",
+                                                                                        "getSlurryInputFilledPercentage"})
     public ISlurryTank inputTank;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryOutput", "getSlurryOutputCapacity", "getSlurryOutputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSlurryOutput", "getSlurryOutputCapacity", "getSlurryOutputNeeded",
+                                                                                        "getSlurryOutputFilledPercentage"})
     public ISlurryTank outputTank;
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;

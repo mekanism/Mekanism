@@ -48,7 +48,8 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     private double secondaryEnergyPerTickMultiplier = 1;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem")
     private GasInventorySlot extraSlot;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
+                                                                                        "getChemicalFilledPercentage"})
     private IGasTank gasTank;
 
     public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {

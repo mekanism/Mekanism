@@ -74,14 +74,15 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     public MultiblockFluidTank<FissionReactorMultiblockData> fluidCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getFuel", "getFuelCapacity", "getFuelNeeded", "getFuelFilledPercentage"})
     public IGasTank fuelTank;
 
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getHeatedCoolant", "getHeatedCoolantCapacity", "getHeatedCoolantNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getHeatedCoolant", "getHeatedCoolantCapacity", "getHeatedCoolantNeeded",
+                                                                                        "getHeatedCoolantFilledPercentage"})
     public IGasTank heatedCoolantTank;
     @ContainerSync
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getWaste", "getWasteCapacity", "getWasteNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getWaste", "getWasteCapacity", "getWasteNeeded", "getWasteFilledPercentage"})
     public IGasTank wasteTank;
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
@@ -409,6 +410,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             return gasCoolantTank.getNeeded();
         }
         return fluidCoolantTank.getNeeded();
+    }
+
+    @ComputerMethod
+    private double getCoolantFilledPercentage() {
+        if (fluidCoolantTank.isEmpty() && !gasCoolantTank.isEmpty()) {
+            return gasCoolantTank.getStored() / (double) gasCoolantTank.getCapacity();
+        }
+        return fluidCoolantTank.getFluidAmount() / (double) fluidCoolantTank.getCapacity();
     }
 
     @ComputerMethod

@@ -49,7 +49,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     public static final int BASE_TICKS_REQUIRED = 400;
     public static final long MAX_GAS = 10_000;
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputChemical", "getInputChemicalCapacity", "getInputChemicalNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInputChemical", "getInputChemicalCapacity", "getInputChemicalNeeded",
+                                                                                        "getInputChemicalFilledPercentage"})
     public IGasTank gasTank;
 
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;

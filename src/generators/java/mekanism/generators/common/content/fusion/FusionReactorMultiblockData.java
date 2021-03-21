@@ -81,10 +81,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public IHeatCapacitor heatCapacitor;
 
     @ContainerSync(tags = "heat")
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getWater", "getWaterCapacity", "getWaterNeeded", "getWaterFilledPercentage"})
     public IExtendedFluidTank waterTank;
     @ContainerSync(tags = "heat")
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"})
     public IGasTank steamTank;
 
     @ContainerSync(tags = "heat")
@@ -95,13 +95,13 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private double lastCaseTemperature = HeatAPI.AMBIENT_TEMP;
 
     @ContainerSync(tags = "fuel")
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded", "getDeuteriumFilledPercentage"})
     public IGasTank deuteriumTank;
     @ContainerSync(tags = "fuel")
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getTritium", "getTritiumCapacity", "getTritiumNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getTritium", "getTritiumCapacity", "getTritiumNeeded", "getTritiumFilledPercentage"})
     public IGasTank tritiumTank;
     @ContainerSync(tags = "fuel")
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded", "getDTFuelFilledPercentage"})
     public IGasTank fuelTank;
     @ContainerSync(tags = {"fuel", "heat"}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;

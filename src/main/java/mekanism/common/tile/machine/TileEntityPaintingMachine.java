@@ -43,7 +43,8 @@ import net.minecraft.item.ItemStack;
 
 public class TileEntityPaintingMachine extends TileEntityProgressMachine<PaintingRecipe> {
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getPigmentInput", "getPigmentInputCapacity", "getPigmentInputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getPigmentInput", "getPigmentInputCapacity", "getPigmentInputNeeded",
+                                                                                        "getPigmentInputFilledPercentage"})
     public IPigmentTank pigmentTank;
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
@@ -55,7 +56,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     private PigmentInventorySlot pigmentInputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private InputInventorySlot inputSlot;
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutput")
     private OutputInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;

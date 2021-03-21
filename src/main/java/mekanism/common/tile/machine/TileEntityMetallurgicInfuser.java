@@ -47,7 +47,8 @@ import net.minecraft.item.ItemStack;
 public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<MetallurgicInfuserRecipe> implements IHasDumpButton {
 
     public static final long MAX_INFUSE = 1_000;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
+                                                                                        "getInfuseTypeFilledPercentage"})
     public IInfusionTank infusionTank;
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;

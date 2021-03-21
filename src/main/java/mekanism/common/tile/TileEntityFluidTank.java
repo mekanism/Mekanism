@@ -16,8 +16,8 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
-import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerPercentageFluidTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -47,7 +47,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager {
 
-    @WrappingComputerMethod(wrapper = ComputerPercentageFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
     public FluidTankFluidTank fluidTank;
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;

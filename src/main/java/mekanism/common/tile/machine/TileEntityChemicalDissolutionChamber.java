@@ -60,7 +60,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     private static final long MAX_CHEMICAL = 10_000;
     public static final int BASE_TICKS_REQUIRED = 100;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGasInput", "getGasInputCapacity", "getGasInputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getGasInput", "getGasInputCapacity", "getGasInputNeeded",
+                                                                                        "getGasInputFilledPercentage"})
     public IGasTank injectTank;
     public MergedChemicalTank outputTank;
     public double injectUsage = 1;
@@ -231,7 +232,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     private IChemicalTank<?, ?> getOutputTank() {
         Current current = outputTank.getCurrent();
         return outputTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);

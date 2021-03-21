@@ -51,7 +51,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     public static final long MAX_GAS = 210;
 
     private double gasUsage = 1;
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
+                                                                                        "getChemicalFilledPercentage"})
     public IGasTank gasTank;
 
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;

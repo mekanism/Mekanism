@@ -72,7 +72,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public int operatingTicks;
 
     private MachineEnergyContainer<TileEntityFluidicPlenisher> energyContainer;
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded", "getFluidFilledPercentage"})
     public BasicFluidTank fluidTank;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem")
     private FluidInventorySlot inputSlot;

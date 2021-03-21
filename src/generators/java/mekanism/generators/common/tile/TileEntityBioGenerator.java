@@ -31,7 +31,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     private static final int MAX_FLUID = 24_000;
 
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBioFuel", "getBioFuelCapacity", "getBioFuelNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBioFuel", "getBioFuelCapacity", "getBioFuelNeeded", "getBioFuelFilledPercentage"})
     public BasicFluidTank bioFuelTank;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
     private FluidFuelInventorySlot fuelSlot;

@@ -213,7 +213,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         return getActive() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
     }
 
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
     private IChemicalTank<?, ?> getInputTank() {
         Current current = inputTank.getCurrent();
         return inputTank.getTankFromCurrent(current == Current.EMPTY ? Current.GAS : current);

@@ -53,7 +53,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     /**
      * The FluidTank for this generator.
      */
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getLava", "getLavaCapacity", "getLavaNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getLava", "getLavaCapacity", "getLavaNeeded", "getLavaFilledPercentage"})
     public BasicFluidTank lavaTank;
     private FloatingLong producingEnergy = FloatingLong.ZERO;
     private double lastTransferLoss;

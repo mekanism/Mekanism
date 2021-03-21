@@ -71,7 +71,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     /**
      * This separator's water slot.
      */
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
     public BasicFluidTank fluidTank;
     /**
      * The maximum amount of gas this block can store.
@@ -80,12 +80,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     /**
      * The amount of oxygen this block is storing.
      */
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftOutput", "getLeftOutputCapacity", "getLeftOutputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftOutput", "getLeftOutputCapacity", "getLeftOutputNeeded",
+                                                                                        "getLeftOutputFilledPercentage"})
     public IGasTank leftTank;
     /**
      * The amount of hydrogen this block is storing.
      */
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightOutput", "getRightOutputCapacity", "getRightOutputNeeded"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightOutput", "getRightOutputCapacity", "getRightOutputNeeded",
+                                                                                        "getRightOutputFilledPercentage"})
     public IGasTank rightTank;
     /**
      * The type of gas this block is outputting.
