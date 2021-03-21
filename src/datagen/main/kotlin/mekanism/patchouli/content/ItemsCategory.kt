@@ -3,7 +3,7 @@ package mekanism.patchouli.content
 import mekanism.client.MekanismKeyHandler
 import mekanism.common.content.gear.Modules
 import mekanism.common.registries.MekanismBlocks.*
-import mekanism.common.registries.MekanismGases
+import mekanism.common.registries.MekanismGases.*
 import mekanism.common.registries.MekanismItems.*
 import mekanism.common.resource.OreType
 import mekanism.common.resource.PrimaryResource
@@ -27,12 +27,12 @@ fun PatchouliBook.itemCategory() {
             description = "Suit up, attack, or configure with these items."
             icon = ELECTRIC_BOW
 
-            JETPACK("The Jetpack is an item that allows the player to fly, equippable in the chestplate slot. It uses Hydrogen gas as a fuel, of which it can store up to 24,000 mB.") {
+            JETPACK("We here at Mekanism, Inc. are not responsible for any incidents involving fall damage.$(p)The Jetpack is an item that allows the player to fly, equippable in the chestplate slot. It uses ${link(HYDROGEN, "Hydrogen")} as a fuel, of which it can store up to 24,000 mB.") {
                 text {
                     title = "Fueling"
                     text = "The Jetpack can be filled up wherever Hydrogen gas is outputted into a slot.$(br)" +
                             "Here are a few examples:" +
-                            "$(li)It can be placed in the ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Separator's")} left output slot (where Hydrogen is outputted) after placing water in the machine's input slot" +
+                            "$(li)It can be placed in the ${link(ELECTROLYTIC_SEPARATOR, "Electrolytic Separator's")} hydrogen slot after placing water in the machine's input slot" +
                             "$(li)It can be placed in a ${link(GuideEntry.TANKS_GAS, "Chemical Tank's")} output slot.$(br2)" +
                             "While worn, the Jetpack displays the Hydrogen remaining and the mode active in the bottom left corner."
                 }
@@ -40,14 +40,19 @@ fun PatchouliBook.itemCategory() {
                     title = "Operation Modes"
                     text = "The Jetpack has three modes to choose from, which can be toggled by pressing the ${MekanismKeyHandler.chestModeSwitchKey()} key." +
                             "$(li)$(bold)Regular$() (default): Press $(k:jump) to increase your height and release to fall. Note that you will take fall damage unless you carefully lower yourself to the ground." +
-                            "$(li)$(bold)Hover$(): Constant flight, without the need to level yourself like you do with Regular mode. Press $(k:jump) to increase altitude and press $(k:sneak) to decrease. Note that this mode constantly consumes Hydrogen, but at a reduced rate as compared to Regular mode." +
-                            "$(li)$(bold)Disabled$(): The Jetpack is disabled."
+                            "$(li)$(bold)Hover$(): Constant flight, without the need to level yourself like you do with Regular mode. Press $(k:jump) to increase altitude and press $(k:sneak) to decrease. "
                 }
+                +("Note that this mode constantly consumes Hydrogen, but at a reduced rate as compared to Regular mode." +
+                        "$(li)$(bold)Disabled$(): The Jetpack is disabled.")
                 text {
                     title = "Tips"
                     text = "\$(li)The Jetpack cannot be worn with chestplate armor, since it uses the same slot, consider upgrading it to the ${link(ARMORED_JETPACK, "Armored Jetpack")} if you want protection." +
                             "\$(li)The Jetpack emits fire particles; however, it will not set anything on fire." +
-                            "\$(li)If you want to maintain your altitude, choose Hover mode. If you want to ascend/descend rapidly, use Regular mode. If you want to conserve fuel while trekking across hills, mountains, consider Disabled mode." +
+                            "\$(li)If you want to maintain your altitude, choose Hover mode. " +
+                            "\$(li)If you want to ascend/descend rapidly, use Regular mode. "
+                }
+                text {
+                    text = "\$(li)If you want to conserve fuel while trekking across hills, mountains, consider Disabled mode." +
                             "\$(li)The Jetpack can be paired with the Free Runners to protect against fall damage."
                 }
             }
@@ -101,8 +106,8 @@ fun PatchouliBook.itemCategory() {
                         "\$(li)Yellow is for fluids (for the Pressurized Reaction Chamber)")
                 +("Additionally, you can interact with any of the cables, pipes, transporters, or tubes to set their connection type between machines/inventory and their redstone sensitivity. Right clicking on the center of the cable/pipe/transporter/tube will toggle sensitivity off/on (default is on). \$(k:sneak) + Right clicking on a segment between the center of the cable/etc. and machine will cycle between:" +
                         "$(li)Normal" +
-                        "\$(li)Pull - try to take items, etc. from the machine" +
-                        "\$(li)Push - try to put items, etc., into the machine" +
+                        "\$(li)Pull - try to take from the machine")
+                +("\$(li)Push - try to insert only into the machine" +
                         "\$(li)None - no connection. Will not try to push or pull items from the machine.")
                 text("Empty") {
                     text = "\$(k:sneak) + Right Clicking on the machine while in this mode will eject any and all items currently in the machine in random directions. It will not dump fluids or gasses."
@@ -121,9 +126,9 @@ fun PatchouliBook.itemCategory() {
                 text("Modes") {
                     text = "You can switch between three fire modes using \$(k:sneak) + ${MekanismKeyHandler.handModeSwitchKey()}. The modes are" +
                             "$(li)\$(bold)Combat\$() - The default mode. Damages mobs and sets them on fire. Destroys any items on the ground. Does not set fire to blocks nor damage them." +
-                            "$(li)\$(bold)Heat\$() - Same as combat, but blocks/items that have a smelter recipe will be instantly converted into it. For example you can fire a short burst at iron ore block and a single ingot of iron will be dropped.1\n" +
-                            "$(li)\$(bold)Inferno\$() - Same as combat, but blocks that the stream hits will be hit with blast damage (like with creepers, ghasts, TNT) and will usually be destroyed. Nearby blocks will be set on fire."
+                            "$(li)\$(bold)Heat\$() - Same as combat, but blocks/items that have a smelter recipe will be instantly converted into it. For example you can fire a short burst at iron ore block and a single ingot of iron"
                 }
+                +"will be dropped. \$(li)\$(bold)Inferno\$() - Same as combat, but blocks that the stream hits will be hit with blast damage (like with creepers, ghasts, TNT) and will usually be destroyed. Nearby blocks will be set on fire."
             }
             FREE_RUNNERS("Free Runners are an item that allows players to ascend 1-block inclines automatically, as well as preventing fall damage as long as they are charged. A fall will reduce the item's charge, depending on how far the fall was.$(p)Can be toggled with ${MekanismKeyHandler.feetModeSwitchKey()}")
             NETWORK_READER("Sends information about the targeted pipe network to chat.")
@@ -134,7 +139,39 @@ fun PatchouliBook.itemCategory() {
                 }
             }
             SEISMIC_READER("The Seismic Reader is used in conjunction with the ${link(SEISMIC_VIBRATOR, "Seismic Vibrator")} to analyze the ground immediately around the vibrator, informing you of the blocks, by level, all the way to bedrock level.")
-            CANTEEN("The Canteen is used to store ${link(MekanismGases.NUTRITIONAL_PASTE, "Nutritional Paste")} (total of 64 Buckets). When hungry, you can hold right click to drink some Nutritional Paste. Each hunger point (half a hunger bar) consumes 50mB of Nutritional Paste.")
+            CANTEEN("The Canteen is used to store ${link(NUTRITIONAL_PASTE, "Nutritional Paste")} (total of 64 Buckets). When hungry, you can hold right click to drink some Nutritional Paste. Each hunger point (half a hunger bar) consumes 50mB of Nutritional Paste.")
+            GAUGE_DROPPER("The Gauge Dropper is a really handy tool for managing the fluid/chemical inventories of machines/blocks.$(p)Open up the inventory of the machine, click on your Gauge Dropper to move it around the GUI. Hover over the substance you want to extract with the Gauge Dropper and left click. The substance should now be") {
+                +"in the Gauge Dropper (it can hold up to 16,000mB).\$(p) You can hover over a fluid/gas gauge and right click to deposit the stored contents in your Gauge Dropper. \$(p)Shift left click on a gauge to dump all of the content in said gauge. \$(p)Shift right click on any block, while holding the Gauge Dropper, to dump all of the Gauge Dropper's contents."
+            }
+            //TODO check dictionary functions
+            DICTIONARY("Don't worry, you won't have to read much.") {
+                +"The Dictionary allows you to check the Tags (vanilla mechanic) of an item which can be used in a Tag Filter for things like the ${link(DIGITAL_MINER, "Digital Miner")} & ${link(LOGISTICAL_SORTER, "Logistical Sorter")}, or in the ${link(OREDICTIONIFICATOR, "Oredictionificator")}."
+                text {
+                    title = "Usage"
+                    text = "Right click to open the GUI and insert an item into the slot. The tags will be listed.$(p)Right clicking a block in-world will tell you the Tags of that block."
+                }
+            }
+
+            DOSIMETER("Measures your accumulated radiation dosage.\$(p)Use the ${link(GEIGER_COUNTER, "Geiger Counter")} to assess the level of radiation in an area.") {
+                text {
+                    title = "Usage"
+                    text = "Right click in the air to show $(bold)your$() current radiation dose in the chat feed. NB: this will never be zero, as there is always some background radiation."
+                }
+            }
+            GEIGER_COUNTER("Measures the radiation level around you.\$(p)Use the ${link(DOSIMETER, "Dosimeter")} to assess your existing radiation exposure."){
+                text {
+                    title = "Usage"
+                    text = "Right click in the air to show the $(bold)surrounding$() radiation level in the chat feed. NB: this will never be zero, as there is always some background radiation."
+                }
+            }
+            entry(HAZMAT_GOWN) {
+                name = "Hazmat Suit"
+                +"The hazmat suit will protect you from surrounding radiation. You have to wear all the pieces of the hazmat suit in order to receive full protection from radiation. Otherwise, your radiation dosage will increase.$(p)Damage from $(bold)prior$() exposure will continue."
+                spotlight(HAZMAT_MASK, "For your face.")
+                spotlight(HAZMAT_GOWN, "For your torso.")
+                spotlight(HAZMAT_PANTS, "For your legs.")
+                spotlight(HAZMAT_BOOTS, "For your feet.")
+            }
         }
         GuideCategory.ITEMS_METAL_AND_ORE {
             name = "Metals & Ores"
@@ -158,7 +195,7 @@ fun PatchouliBook.itemCategory() {
             QUARTZ_DUST("Crushed form of Quartz")
             LAPIS_LAZULI_DUST("Crushed form of Lapis Lazuli")
 
-            LITHIUM_DUST("Crystallized form of ${link(MekanismGases.LITHIUM, "Lithium")}")
+            LITHIUM_DUST("Crystallized form of ${link(LITHIUM, "Lithium")}")
 
             entry(REFINED_GLOWSTONE_INGOT) {
                 name = "Refined Glowstone"
@@ -191,7 +228,7 @@ fun PatchouliBook.itemCategory() {
                 spotlight(STEEL_BLOCK)
             }
 
-            SULFUR_DUST("Solidified sulfur, can be used to make ${link(MekanismGases.SULFURIC_ACID, "Sulfuric Acid")}.")
+            SULFUR_DUST("Solidified sulfur, can be used to make ${link(SULFURIC_ACID, "Sulfuric Acid")}.")
 
             entry(PROCESSED_RESOURCES.get(ResourceType.CLUMP, PrimaryResource.IRON)!!) {
                 name = "Clumps"
@@ -323,22 +360,26 @@ fun PatchouliBook.itemCategory() {
             }
             +"the recipe will appear in the crafting grid. $(p)$(k:sneak) + $(k:use) the Crafting Formula in the air to clear the encoded recipe."
         }
-
-        //TODO check dictionary functions
-        DICTIONARY("Don't worry, you won't have to read much.") {
-            +"The Dictionary allows you to check the Tags (vanilla mechanic) of an item which can be used in a Tag Filter for things like the ${link(DIGITAL_MINER, "Digital Miner")} & ${link(LOGISTICAL_SORTER, "Logistical Sorter")}, or in the ${link(OREDICTIONIFICATOR, "Oredictionificator")}."
-            text {
-                title = "Usage"
-                text = "Right click to open the GUI and insert an item into the slot. The tags will be listed.$(p)Right clicking a block in-world will tell you the Tags of that block."
-            }
-        }
-
-        DOSIMETER("Measures your accumulated radiation dosage.") {
-            text {
-                title = "Usage"
-                text = "Right click in the air to show $(bold)your$() current radiation dose in the chat feed. NB: this will never be zero, as there is always some background radiation.$(p)Use the ${link(GEIGER_COUNTER, "Geiger Counter")} to assess the level of radiation in an area."
-            }
-        }
         ELECTROLYTIC_CORE("Crafting ingredient used for electrolysis.")
+        ENERGY_TABLET("The Energy Tablet is chiefly an a crafting component and a can be used directly as a battery. Charge will be retained when used as a crafting ingredient.")
+        GuideEntry.ENRICHED_INFUSION {
+            name = "Enriched Infusion"
+            icon = ENRICHED_REDSTONE
+            +"Infusion ingredients can be enriched in the ${link(ENRICHMENT_CHAMBER, "Enrichment Chamber")} to provide more infusion amount in the ${link(METALLURGIC_INFUSER, "Metallurgic Infuser")}."
+            spotlight(ENRICHED_REDSTONE)
+            spotlight(ENRICHED_DIAMOND)
+            spotlight(ENRICHED_OBSIDIAN)
+            spotlight(ENRICHED_CARBON)
+            spotlight(ENRICHED_GOLD)
+            spotlight(ENRICHED_TIN)
+        }
+        entry(HDPE_SHEET) {
+            name = "HDPE"
+            +"High Density PolyEthylene is used to make plastic."
+            spotlight(HDPE_PELLET, "First stage of HDPE production")
+            spotlight(HDPE_SHEET, "A sheet of plastic.")
+            spotlight(HDPE_ROD, "A rod of plastic")
+            spotlight(HDPE_STICK, "It's a stick.")
+        }
     }// end items category
 }

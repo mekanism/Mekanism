@@ -18,9 +18,9 @@ enum class GuideEntry(folder: String?, name: String): IGuideEntry {
     ENERGY_CUBES("energy_cubes"),
     INDUCTION_CELL("induction", "cell"),
     INDUCTION_PROVIDER("induction", "provider"),
-    ALLOYS("items", "alloys"),
-    INSTALLERS("items", "installers"),
-    CIRCUITS("items", "circuits"),
+    ALLOYS("item", "alloys"),
+    INSTALLERS("item", "installers"),
+    CIRCUITS("item", "circuits"),
     THERMAL_EVAP("multiblocks", "thermal_evaporation"),
     DYNAMIC_TANK("multiblocks", "dynamic_tank"),
     TELEPORTER("multiblocks", "teleporter"),
@@ -30,6 +30,7 @@ enum class GuideEntry(folder: String?, name: String): IGuideEntry {
     ORE_TRIPLING("ore_processing", "tripling"),
     ORE_QUADRUPLING("ore_processing", "quadrupling"),
     ORE_QUINTUPLING("ore_processing", "quintupling"),
+    ENRICHED_INFUSION("item", "enriched_infusion"),
 
     //fixme?
     GENERATORS_TURBINE("multiblocks", "industrial_turbine"),
