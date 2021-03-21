@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:stairs/plastic/glow"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:stairs/plastic/glow"
+      },
+      "without": {
+        "item": "mekanismadditions:magenta_plastic_glow_stairs"
+      }
     },
     "D": {
       "tag": "forge:dyes/magenta"

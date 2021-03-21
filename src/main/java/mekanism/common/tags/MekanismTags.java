@@ -148,6 +148,15 @@ public class MekanismTags {
 
         public static final INamedTag<Item> GEMS_FLUORITE = forgeTag("gems/fluorite");
 
+        public static final INamedTag<Item> COLORABLE_WOOL = tag("colorable/wool");
+        public static final INamedTag<Item> COLORABLE_CARPETS = tag("colorable/carpets");
+        public static final INamedTag<Item> COLORABLE_BEDS = tag("colorable/beds");
+        public static final INamedTag<Item> COLORABLE_GLASS = tag("colorable/glass");
+        public static final INamedTag<Item> COLORABLE_GLASS_PANES = tag("colorable/glass_panes");
+        public static final INamedTag<Item> COLORABLE_TERRACOTTA = tag("colorable/terracotta");
+        public static final INamedTag<Item> COLORABLE_CONCRETE = tag("colorable/concrete");
+        public static final INamedTag<Item> COLORABLE_CONCRETE_POWDER = tag("colorable/concrete_powder");
+
         private static INamedTag<Item> forgeTag(String name) {
             return ItemTags.bind("forge:" + name);
         }

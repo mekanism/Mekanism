@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:lime_wool"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:lime",
+    "amount": 192
+  }
+}

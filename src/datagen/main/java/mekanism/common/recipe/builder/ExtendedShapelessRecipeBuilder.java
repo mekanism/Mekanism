@@ -33,7 +33,11 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(ITag<Item> tag) {
-        return addIngredient(Ingredient.of(tag));
+        return addIngredient(tag, 1);
+    }
+
+    public ExtendedShapelessRecipeBuilder addIngredient(ITag<Item> tag, int quantity) {
+        return addIngredient(Ingredient.of(tag), quantity);
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(IItemProvider item) {
@@ -41,10 +45,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(IItemProvider item, int quantity) {
-        for (int i = 0; i < quantity; ++i) {
-            addIngredient(Ingredient.of(item));
-        }
-        return this;
+        return addIngredient(Ingredient.of(item), quantity);
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(Ingredient ingredient) {

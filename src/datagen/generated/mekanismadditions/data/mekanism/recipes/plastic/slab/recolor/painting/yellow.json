@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:slabs/plastic"
+      },
+      "without": {
+        "item": "mekanismadditions:yellow_plastic_slab"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:yellow"
+  },
+  "output": {
+    "item": "mekanismadditions:yellow_plastic_slab"
+  }
+}

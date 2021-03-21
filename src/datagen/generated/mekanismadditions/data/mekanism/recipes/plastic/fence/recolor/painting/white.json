@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:fences/plastic"
+      },
+      "without": {
+        "item": "mekanismadditions:white_plastic_fence"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:white"
+  },
+  "output": {
+    "item": "mekanismadditions:white_plastic_fence"
+  }
+}

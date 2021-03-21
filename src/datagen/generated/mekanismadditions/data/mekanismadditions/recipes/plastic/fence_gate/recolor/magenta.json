@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:fence_gates/plastic"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:fence_gates/plastic"
+      },
+      "without": {
+        "item": "mekanismadditions:magenta_plastic_fence_gate"
+      }
     },
     "D": {
       "tag": "forge:dyes/magenta"

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "tag": "forge:glass/orange"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:orange",
+    "amount": 16
+  }
+}

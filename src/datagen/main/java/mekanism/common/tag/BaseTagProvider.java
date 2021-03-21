@@ -18,7 +18,6 @@ import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IEntityTypeProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
-import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.DataGenJsonConstants;
@@ -36,6 +35,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
@@ -182,7 +182,7 @@ public abstract class BaseTagProvider implements IDataProvider {
     protected void addToTag(INamedTag<Item> tag, IItemProvider... itemProviders) {
         ForgeRegistryTagBuilder<Item> tagBuilder = getItemBuilder(tag);
         for (IItemProvider itemProvider : itemProviders) {
-            tagBuilder.add(itemProvider.getItem());
+            tagBuilder.add(itemProvider.asItem());
         }
     }
 

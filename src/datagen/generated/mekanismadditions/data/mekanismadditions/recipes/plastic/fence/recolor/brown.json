@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:fences/plastic"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:fences/plastic"
+      },
+      "without": {
+        "item": "mekanismadditions:brown_plastic_fence"
+      }
     },
     "D": {
       "tag": "forge:dyes/brown"

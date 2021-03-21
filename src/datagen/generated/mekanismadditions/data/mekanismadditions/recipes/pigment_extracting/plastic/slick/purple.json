@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:purple_slick_plastic"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:purple",
+    "amount": 42
+  }
+}

@@ -32,7 +32,7 @@ public class GuiChemicalOxidizer extends GuiConfigurableTile<TileEntityChemicalO
         addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getActive, this));
-        addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 133, 13));
+        addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 131, 13));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 64, 40).jeiCategory(tile));
     }
 

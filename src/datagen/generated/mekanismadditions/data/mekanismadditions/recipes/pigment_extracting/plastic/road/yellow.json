@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:yellow_plastic_road"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:yellow",
+    "amount": 42
+  }
+}

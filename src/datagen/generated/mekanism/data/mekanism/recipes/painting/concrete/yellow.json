@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/concrete"
+      },
+      "without": {
+        "item": "minecraft:yellow_concrete"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:yellow"
+  },
+  "output": {
+    "item": "minecraft:yellow_concrete"
+  }
+}

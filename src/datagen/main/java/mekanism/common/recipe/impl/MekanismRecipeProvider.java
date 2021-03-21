@@ -42,6 +42,7 @@ import net.minecraftforge.common.Tags;
 @ParametersAreNonnullByDefault
 public class MekanismRecipeProvider extends BaseRecipeProvider {
 
+    static final char CLAY_CHAR = 'C';
     static final char DIAMOND_CHAR = 'D';
     static final char GLASS_CHAR = 'G';
     static final char PERSONAL_CHEST_CHAR = 'P';
@@ -95,6 +96,9 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new NucleosynthesizingRecipeProvider(),
               new OreProcessingRecipeProvider(),
               new OxidizingRecipeProvider(),
+              new PaintingRecipeProvider(),
+              new PigmentExtractingRecipeProvider(),
+              new PigmentMixingRecipeProvider(),
               new PressurizedReactionRecipeProvider(),
               new RotaryRecipeProvider(),
               new SawingRecipeProvider(),
@@ -315,6 +319,11 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.INGOT, Pattern.EMPTY))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .build(consumer);
+        //Dye Base
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.DYE_BASE, 3)
+              .addIngredient(MekanismTags.Items.SAWDUST, 2)
+              .addIngredient(Items.CLAY_BALL)
               .build(consumer);
         //Dynamic tank
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.DYNAMIC_TANK, 4)

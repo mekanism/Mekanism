@@ -1,16 +1,15 @@
 package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
+import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalDissolutionRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.CombinerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.FluidSlurryToSlurryRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.ItemStackGasToItemStackRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.MetallurgicInfuserRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -59,7 +58,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "gold/ore/nether_from_dust"));
 
         //Iron -> enriched iron
-        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(Tags.Items.INGOTS_IRON),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.CARBON, 10),
               MekanismItems.ENRICHED_IRON.getItemStack()
@@ -131,11 +130,17 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
         // Clump
         // from ore
-        ItemStackGasToItemStackRecipeBuilder.purifying(ItemStackIngredient.from(resource.getOreTag()), GasStackIngredient.from(MekanismGases.OXYGEN, 1), clump.getItemStack(3))
-              .build(consumer, Mekanism.rl(basePath + "clump/from_ore"));
+        ItemStackChemicalToItemStackRecipeBuilder.purifying(
+              ItemStackIngredient.from(resource.getOreTag()),
+              GasStackIngredient.from(MekanismGases.OXYGEN, 1),
+              clump.getItemStack(3)
+        ).build(consumer, Mekanism.rl(basePath + "clump/from_ore"));
         // from shard
-        ItemStackGasToItemStackRecipeBuilder.purifying(ItemStackIngredient.from(shardTag), GasStackIngredient.from(MekanismGases.OXYGEN, 1), clump.getItemStack())
-              .build(consumer, Mekanism.rl(basePath + "clump/from_shard"));
+        ItemStackChemicalToItemStackRecipeBuilder.purifying(
+              ItemStackIngredient.from(shardTag),
+              GasStackIngredient.from(MekanismGases.OXYGEN, 1),
+              clump.getItemStack()
+        ).build(consumer, Mekanism.rl(basePath + "clump/from_shard"));
         // Crystal
         // from slurry
         ChemicalCrystallizerRecipeBuilder.crystallizing(SlurryStackIngredient.from(slurry.getCleanSlurry(), 200), crystal.getItemStack())
@@ -188,13 +193,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "ore/from_dust"));
         // Shard
         // from crystal
-        ItemStackGasToItemStackRecipeBuilder.injecting(
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(crystalTag),
               GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
               shard.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "shard/from_crystal"));
         // from ore
-        ItemStackGasToItemStackRecipeBuilder.injecting(
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(resource.getOreTag()),
               GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
               shard.getItemStack(4)
@@ -280,7 +285,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.NETHERITE_SCRAP, 2)
         ).build(consumer, Mekanism.rl(basePath + "ancient_debris_to_scrap"));
         //Netherite scrap to netherite dust
-        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(Items.NETHERITE_SCRAP, 4),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.GOLD, 40),
               MekanismItems.NETHERITE_DUST.getItemStack()
@@ -305,7 +310,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
     private void addBronzeProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Dust
         //from infusing
-        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.COPPER), 3),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.TIN, 10),
               MekanismItems.BRONZE_DUST.getItemStack(4)
@@ -324,7 +329,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(MekanismTags.Items.DUSTS_BRONZE), MekanismItems.BRONZE_INGOT, 0.35F, 200,
               Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
         //from infusing
-        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER), 3),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.TIN, 10),
               MekanismItems.BRONZE_INGOT.getItemStack(4)
@@ -357,7 +362,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_REFINED_GLOWSTONE)
               .build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
         //from dust
-        ItemStackGasToItemStackRecipeBuilder.compressing(
+        ItemStackChemicalToItemStackRecipeBuilder.compressing(
               ItemStackIngredient.from(Tags.Items.DUSTS_GLOWSTONE),
               GasStackIngredient.from(MekanismGases.LIQUID_OSMIUM, 1),
               MekanismItems.REFINED_GLOWSTONE_INGOT.getItemStack()
@@ -382,7 +387,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               MekanismItems.REFINED_OBSIDIAN_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
         //from obsidian dust
-        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_OBSIDIAN),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.DIAMOND, 10),
               MekanismItems.REFINED_OBSIDIAN_DUST.getItemStack()
@@ -393,7 +398,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_REFINED_OBSIDIAN)
               .build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
         //from dust
-        ItemStackGasToItemStackRecipeBuilder.compressing(
+        ItemStackChemicalToItemStackRecipeBuilder.compressing(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_REFINED_OBSIDIAN),
               GasStackIngredient.from(MekanismGases.LIQUID_OSMIUM, 1),
               MekanismItems.REFINED_OBSIDIAN_INGOT.getItemStack()
@@ -420,7 +425,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_STEEL)
               .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
         //Enriched iron -> dust
-        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismItems.ENRICHED_IRON),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.CARBON, 10),
               MekanismItems.STEEL_DUST.getItemStack()
@@ -450,7 +455,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               MekanismGases.URANIUM_OXIDE.getStack(250)
         ).build(consumer, Mekanism.rl(basePath + "uranium_oxide"));
         //uranium hexafluoride
-        ChemicalInfuserRecipeBuilder.chemicalInfusing(
+        ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
               GasStackIngredient.from(MekanismGases.HYDROFLUORIC_ACID, 1),
               GasStackIngredient.from(MekanismGases.URANIUM_OXIDE, 1),
               MekanismGases.URANIUM_HEXAFLUORIDE.getStack(2)
@@ -461,7 +466,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               MekanismGases.FISSILE_FUEL.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "fissile_fuel"));
         //fissile fuel reprocessing (IMPORTANT)
-        ItemStackGasToItemStackRecipeBuilder.injecting(
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(MekanismTags.Items.PELLETS_PLUTONIUM),
               GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
               MekanismItems.REPROCESSED_FISSILE_FRAGMENT.getItemStack(4)

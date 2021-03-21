@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:aqua_plastic_stairs",
+    "count": 4
+  },
+  "pattern": [
+    "#  ",
+    "## ",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "mekanismadditions:aqua_plastic"
+    }
+  }
+}

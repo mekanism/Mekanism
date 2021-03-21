@@ -48,7 +48,9 @@ public class GuiVerticalPowerBar extends GuiBar<IBarInfoHandler> {
     @Override
     protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         int displayInt = (int) (getHandler().getLevel() * texHeight);
-        int scaled = calculateScaled(heightScale, displayInt);
-        blit(matrix, x + 1, y + height - 1 - scaled, texWidth, scaled, 0, 0, texWidth, displayInt, texWidth, texHeight);
+        if (displayInt > 0) {
+            int scaled = calculateScaled(heightScale, displayInt);
+            blit(matrix, x + 1, y + height - 1 - scaled, texWidth, scaled, 0, 0, texWidth, displayInt, texWidth, texHeight);
+        }
     }
 }

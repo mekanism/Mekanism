@@ -12,6 +12,8 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
@@ -54,6 +56,13 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
             throw new IllegalArgumentException("This infusion conversion recipe requires a non empty infusion output.");
         }
         return new ItemStackToChemicalRecipeBuilder<>(mekSerializer("infusion_conversion"), input, output, ChemicalIngredientDeserializer.INFUSION);
+    }
+
+    public static ItemStackToChemicalRecipeBuilder<Pigment, PigmentStack> pigmentExtracting(ItemStackIngredient input, PigmentStack output) {
+        if (output.isEmpty()) {
+            throw new IllegalArgumentException("This pigment extracting recipe requires a non empty pigment output.");
+        }
+        return new ItemStackToChemicalRecipeBuilder<>(mekSerializer("pigment_extracting"), input, output, ChemicalIngredientDeserializer.PIGMENT);
     }
 
     @Override

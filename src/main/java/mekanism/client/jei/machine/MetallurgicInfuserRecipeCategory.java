@@ -49,7 +49,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     public void setIngredients(MetallurgicInfuserRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
         ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
-        ingredients.setInputLists(MekanismJEI.TYPE_INFUSION, Collections.singletonList(recipe.getInfusionInput().getRepresentations()));
+        ingredients.setInputLists(MekanismJEI.TYPE_INFUSION, Collections.singletonList(recipe.getChemicalInput().getRepresentations()));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
         itemStacks.set(0, recipe.getItemInput().getRepresentations());
         itemStacks.set(1, recipe.getOutputDefinition());
         List<ItemStack> infuseItemProviders = new ArrayList<>();
-        List<@NonNull InfusionStack> infusionStacks = recipe.getInfusionInput().getRepresentations();
+        List<@NonNull InfusionStack> infusionStacks = recipe.getChemicalInput().getRepresentations();
         for (InfusionStack infusionStack : infusionStacks) {
             infuseItemProviders.addAll(MekanismJEI.INFUSION_STACK_HELPER.getStacksFor(infusionStack.getType(), true));
         }

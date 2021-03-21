@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:balloons"
+      },
+      "without": {
+        "item": "mekanismadditions:lime_balloon"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:lime"
+  },
+  "output": {
+    "item": "mekanismadditions:lime_balloon"
+  }
+}

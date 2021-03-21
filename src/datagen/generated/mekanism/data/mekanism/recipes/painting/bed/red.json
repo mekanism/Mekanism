@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/beds"
+      },
+      "without": {
+        "item": "minecraft:red_bed"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:red"
+  },
+  "output": {
+    "item": "minecraft:red_bed"
+  }
+}

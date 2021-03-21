@@ -91,6 +91,9 @@ import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOsmiumCompressor;
+import mekanism.common.tile.machine.TileEntityPaintingMachine;
+import mekanism.common.tile.machine.TileEntityPigmentExtractor;
+import mekanism.common.tile.machine.TileEntityPigmentMixer;
 import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
 import mekanism.common.tile.machine.TileEntityPressurizedReactionChamber;
 import mekanism.common.tile.machine.TileEntityPurificationChamber;
@@ -490,6 +493,36 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .withCustomShape(BlockShapes.ANTIPROTONIC_NUCLEOSYNTHESIZER)
           .withComputerSupport("antiprotonicNucleosynthesizer")
+          .build();
+    // Pigment Extractor
+    public static final Machine<TileEntityPigmentExtractor> PIGMENT_EXTRACTOR = MachineBuilder
+          .createMachine(() -> MekanismTileEntityTypes.PIGMENT_EXTRACTOR, MekanismLang.DESCRIPTION_PIGMENT_EXTRACTOR)
+          .withGui(() -> MekanismContainerTypes.PIGMENT_EXTRACTOR)
+          .withSound(MekanismSounds.PIGMENT_EXTRACTOR)
+          .withEnergyConfig(MekanismConfig.usage.pigmentExtractor, MekanismConfig.storage.pigmentExtractor)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
+          .withCustomShape(BlockShapes.PIGMENT_EXTRACTOR)
+          .withComputerSupport("pigmentExtractor")
+          .build();
+    // Pigment Mixer
+    public static final Machine<TileEntityPigmentMixer> PIGMENT_MIXER = MachineBuilder
+          .createMachine(() -> MekanismTileEntityTypes.PIGMENT_MIXER, MekanismLang.DESCRIPTION_PIGMENT_MIXER)
+          .withGui(() -> MekanismContainerTypes.PIGMENT_MIXER)
+          .withSound(MekanismSounds.PIGMENT_MIXER)
+          .withEnergyConfig(MekanismConfig.usage.pigmentMixer, MekanismConfig.storage.pigmentMixer)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
+          .withCustomShape(BlockShapes.PIGMENT_MIXER)
+          .withComputerSupport("pigmentMixer")
+          .build();
+    // Painting Machine
+    public static final Machine<TileEntityPaintingMachine> PAINTING_MACHINE = MachineBuilder
+          .createMachine(() -> MekanismTileEntityTypes.PAINTING_MACHINE, MekanismLang.DESCRIPTION_PAINTING_MACHINE)
+          .withGui(() -> MekanismContainerTypes.PAINTING_MACHINE)
+          .withSound(MekanismSounds.PAINTING_MACHINE)
+          .withEnergyConfig(MekanismConfig.usage.paintingMachine, MekanismConfig.storage.paintingMachine)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
+          .withCustomShape(BlockShapes.PAINTING_MACHINE)
+          .withComputerSupport("paintingMachine")
           .build();
 
     // QIO Drive Array

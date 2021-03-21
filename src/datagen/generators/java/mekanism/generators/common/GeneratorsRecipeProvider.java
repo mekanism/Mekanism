@@ -3,10 +3,10 @@ package mekanism.generators.common;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.datagen.recipe.builder.ChemicalInfuserRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ElectrolysisRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.MetallurgicInfuserRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IFluidProvider;
@@ -101,7 +101,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     private void addChemicalInfuserRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "chemical_infusing/";
         //DT Fuel
-        ChemicalInfuserRecipeBuilder.chemicalInfusing(
+        ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
               GasStackIngredient.from(GeneratorsGases.DEUTERIUM, 1),
               GasStackIngredient.from(GeneratorsGases.TRITIUM, 1),
               GeneratorsGases.FUSION_FUEL.getStack(2)
@@ -264,7 +264,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
 
     private void addFusionReactorRecipes(Consumer<IFinishedRecipe> consumer) {
         //Hohlraum
-        MetallurgicInfuserRecipeBuilder.metallurgicInfusing(
+        ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 4),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.CARBON, 10),
               GeneratorsItems.HOHLRAUM.getItemStack()

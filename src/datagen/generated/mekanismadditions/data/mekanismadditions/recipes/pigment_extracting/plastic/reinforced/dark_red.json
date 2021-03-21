@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:dark_red_reinforced_plastic"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:dark_red",
+    "amount": 42
+  }
+}

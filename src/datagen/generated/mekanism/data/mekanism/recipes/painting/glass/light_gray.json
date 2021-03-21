@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/glass"
+      },
+      "without": {
+        "item": "minecraft:light_gray_stained_glass"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:light_gray"
+  },
+  "output": {
+    "item": "minecraft:light_gray_stained_glass"
+  }
+}

@@ -3,6 +3,7 @@ package mekanism.common.util;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalType;
+import mekanism.api.text.EnumColor;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -174,4 +175,9 @@ public class EnumUtils {
      * Cached value of {@link ChemicalType#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final ChemicalType[] CHEMICAL_TYPES = ChemicalType.values();
+
+    /**
+     * Cached value of {@link EnumColor#values()}. DO NOT MODIFY THIS LIST.
+     */
+    public static final EnumColor[] COLORS = EnumColor.values();
 }

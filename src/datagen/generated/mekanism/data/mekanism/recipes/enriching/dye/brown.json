@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cocoa_beans"
+    }
+  },
+  "output": {
+    "item": "minecraft:brown_dye",
+    "count": 2
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "item": "mekanism:dye_base"
+    }
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:lime"
+  },
+  "output": {
+    "item": "minecraft:lime_dye"
+  }
+}

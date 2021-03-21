@@ -3,12 +3,17 @@
   "input": [
     {
       "ingredient": {
-        "item": "minecraft:red_tulip"
+        "item": "minecraft:beetroot"
       }
     },
     {
       "ingredient": {
         "item": "minecraft:poppy"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:red_tulip"
       }
     }
   ],

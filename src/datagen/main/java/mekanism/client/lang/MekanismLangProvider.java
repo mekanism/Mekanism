@@ -4,6 +4,7 @@ import com.google.common.collect.Table.Cell;
 import java.util.Locale;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
+import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.APILang;
@@ -13,6 +14,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
+import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageSource;
@@ -21,6 +23,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.resource.OreType;
@@ -64,6 +67,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.SALT, "Salt");
         add(MekanismItems.SUBSTRATE, "Substrate");
         add(MekanismItems.BIO_FUEL, "Bio Fuel");
+        add(MekanismItems.DYE_BASE, "Dye Base");
         add(MekanismItems.FLUORITE_GEM, "Fluorite");
         add(MekanismItems.YELLOW_CAKE_URANIUM, "Yellow Cake Uranium");
         add(MekanismItems.ANTIMATTER_PELLET, "Antimatter Pellet");
@@ -235,7 +239,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.METALLURGIC_INFUSER, "Metallurgic Infuser");
         add(MekanismBlocks.OREDICTIONIFICATOR, "Oredictionificator");
         add(MekanismBlocks.OSMIUM_COMPRESSOR, "Osmium Compressor");
+        add(MekanismBlocks.PAINTING_MACHINE, "Painting Machine");
         add(MekanismBlocks.PERSONAL_CHEST, "Personal Chest");
+        add(MekanismBlocks.PIGMENT_EXTRACTOR, "Pigment Extractor");
+        add(MekanismBlocks.PIGMENT_MIXER, "Pigment Mixer");
         add(MekanismBlocks.PRECISION_SAWMILL, "Precision Sawmill");
         add(MekanismBlocks.PRESSURE_DISPERSER, "Pressure Disperser");
         add(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, "Pressurized Reaction Chamber");
@@ -375,6 +382,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addPigments() {
         add(MekanismAPI.EMPTY_PIGMENT, "Empty");
+        for (Map.Entry<EnumColor, PigmentRegistryObject<Pigment>> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
+            add(entry.getValue(), entry.getKey().getEnglishName() + " Pigment");
+        }
     }
 
     private void addSlurries() {
@@ -421,6 +431,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismSounds.NUTRITIONAL_LIQUIFIER, "Nutrients liquified");
         add(MekanismSounds.INDUSTRIAL_ALARM, "Alarm sounds");
         add(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER, "Nucleosynthesizer hums");
+        //TODO - 10.1: Re-evaluate the subtitles for the three new pigment based machines after we actually have sounds for them
+        add(MekanismSounds.PIGMENT_EXTRACTOR, "Pigment extractor extracts");
+        add(MekanismSounds.PIGMENT_MIXER, "Pigment mixer slushes");
+        add(MekanismSounds.PAINTING_MACHINE, "Painting machine imbues");
         add(MekanismSounds.SPS, "SPS hums");
         //Gear
         add(MekanismSounds.FLAMETHROWER_IDLE, "Flamethrower hisses");
@@ -464,7 +478,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, " - Coolant Efficiency: %s");
         add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Thermal Enthalpy: %s J/mB");
         //Colors
-        for (EnumColor color : EnumColor.values()) {
+        for (EnumColor color : EnumUtils.COLORS) {
             add(color.getLangEntry(), color.getEnglishName());
         }
         add(MekanismLang.MEKANISM, Mekanism.MOD_NAME);
@@ -1170,6 +1184,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_QUANTUM_ENTANGLOPORTER, "A highly-advanced block capable of transmitting any practical resource across long distances and dimensions.");
         add(MekanismLang.DESCRIPTION_NUTRITIONAL_LIQUIFIER, "A machine that is capable of processing any foods into non-dangerous, easily-digestible Nutritional Paste.");
         add(MekanismLang.DESCRIPTION_ANTIPROTONIC_NUCLEOSYNTHESIZER, "A machine which uses bits of antimatter and mass amounts of energy to atomically transmute various resources.");
+        add(MekanismLang.DESCRIPTION_PIGMENT_EXTRACTOR, "A machine used to extract pigments from blocks and items.");
+        add(MekanismLang.DESCRIPTION_PIGMENT_MIXER, "A sturdy machine capable of mixing two pigments together to produce a new pigment.");
+        add(MekanismLang.DESCRIPTION_PAINTING_MACHINE, "A machine used to color blocks and items via a careful application of a stored pigment.");
         add(MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL, "A barrel that can be used to 'safety' store radioactive waste. WARNING: breaking this barrel will release its contents into the atmosphere.");
         add(MekanismLang.DESCRIPTION_INDUSTRIAL_ALARM, "Not just your everyday alarm... this is an 'industrial' alarm!");
         add(MekanismLang.DESCRIPTION_ENERGY_CUBE, "An advanced device for storing and distributing energy.");

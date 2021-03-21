@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "mekanism:dye_base",
+    "count": 3
+  },
+  "ingredients": [
+    {
+      "tag": "forge:sawdust"
+    },
+    {
+      "tag": "forge:sawdust"
+    },
+    {
+      "item": "minecraft:clay_ball"
+    }
+  ]
+}

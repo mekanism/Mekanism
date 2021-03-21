@@ -3,6 +3,7 @@ package mekanism.common.registration.impl;
 import java.util.function.Supplier;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentBuilder;
+import mekanism.api.text.EnumColor;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.util.ResourceLocation;
 

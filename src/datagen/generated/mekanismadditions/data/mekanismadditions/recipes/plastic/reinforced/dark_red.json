@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "result": {
+    "item": "mekanismadditions:dark_red_reinforced_plastic",
+    "count": 4
+  },
+  "pattern": [
+    " # ",
+    "#O#",
+    " # "
+  ],
+  "key": {
+    "O": {
+      "tag": "forge:dusts/osmium"
+    },
+    "#": {
+      "item": "mekanismadditions:dark_red_plastic"
+    }
+  }
+}

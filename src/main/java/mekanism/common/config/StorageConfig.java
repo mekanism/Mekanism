@@ -38,6 +38,9 @@ public class StorageConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue isotopicCentrifuge;
     public final CachedFloatingLongValue nutritionalLiquifier;
     public final CachedFloatingLongValue antiprotonicNucleosynthesizer;
+    public final CachedFloatingLongValue pigmentExtractor;
+    public final CachedFloatingLongValue pigmentMixer;
+    public final CachedFloatingLongValue paintingMachine;
     public final CachedFloatingLongValue spsPort;
 
     StorageConfig() {
@@ -101,6 +104,12 @@ public class StorageConfig extends BaseMekanismConfig {
               FloatingLong.createConst(40_000));
         antiprotonicNucleosynthesizer = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules). Also defines max process rate.", "antiprotonicNucleosynthesizer",
               FloatingLong.createConst(1_000_000_000));
+        pigmentExtractor = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "pigmentExtractor",
+              FloatingLong.createConst(40_000));
+        pigmentMixer = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "pigmentMixer",
+              FloatingLong.createConst(80_000));
+        paintingMachine = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules).", "paintingMachine",
+              FloatingLong.createConst(40_000));
         spsPort = CachedFloatingLongValue.define(this, builder, "Base energy storage (Joules). Also defines max output rate.", "spsPort",
               FloatingLong.createConst(1_000_000_000));
 

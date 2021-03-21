@@ -2,18 +2,24 @@ package mekanism.common.recipe.compat;
 
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.condition.ModVersionLoadedCondition;
+import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismPigments;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import yamahari.ilikewood.plugin.vanilla.VanillaWoodTypes;
@@ -135,30 +141,36 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "wall/" + name));
         //Beds
-        addPrecisionSawmillBedRecipes(consumer, bedVersion, planks, woodType, basePath + "bed/" + name + "/");
+        addBedRecipes(consumer, bedVersion, planks, woodType, basePath + "bed/" + name + "/");
     }
 
-    private static void addPrecisionSawmillBedRecipes(Consumer<IFinishedRecipe> consumer, ICondition condition, IItemProvider planks, IWoodType woodType, String basePath) {
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.BLACK, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.BLUE, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.BROWN, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.CYAN, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.GRAY, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.GREEN, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.LIGHT_BLUE, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.LIGHT_GRAY, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.LIME, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.MAGENTA, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.ORANGE, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.PINK, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.PURPLE, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.RED, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.WHITE, basePath);
-        addPrecisionSawmillBedRecipe(consumer, condition, planks, woodType, DyeColor.YELLOW, basePath);
+    private static void addBedRecipes(Consumer<IFinishedRecipe> consumer, ICondition condition, IItemProvider planks, IWoodType woodType, String basePath) {
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.BLACK, EnumColor.BLACK, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.BLUE, EnumColor.DARK_BLUE, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.BROWN, EnumColor.BROWN, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.CYAN, EnumColor.DARK_AQUA, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.GRAY, EnumColor.DARK_GRAY, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.GREEN, EnumColor.DARK_GREEN, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.LIGHT_BLUE, EnumColor.INDIGO, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.LIGHT_GRAY, EnumColor.GRAY, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.LIME, EnumColor.BRIGHT_GREEN, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.MAGENTA, EnumColor.PINK, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.ORANGE, EnumColor.ORANGE, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.PINK, EnumColor.BRIGHT_PINK, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.PURPLE, EnumColor.PURPLE, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.RED, EnumColor.RED, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.WHITE, EnumColor.WHITE, basePath);
+        addBedRecipe(consumer, condition, planks, woodType, DyeColor.YELLOW, EnumColor.YELLOW, basePath);
     }
 
-    private static void addPrecisionSawmillBedRecipe(Consumer<IFinishedRecipe> consumer, ICondition condition, IItemProvider planks, IWoodType woodType, DyeColor color,
-          String basePath) {
-        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, WoodenItems.getBedItem(woodType, color), planks, color, condition);
+    private static void addBedRecipe(Consumer<IFinishedRecipe> consumer, ICondition condition, IItemProvider planks, IWoodType woodType, DyeColor dyeColor,
+          EnumColor color, String basePath) {
+        Item bed = WoodenItems.getBedItem(woodType, dyeColor);
+        RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, bed, planks, dyeColor, condition);
+        ItemStackChemicalToItemStackRecipeBuilder.painting(
+              ItemStackIngredient.from(Ingredient.of(WoodenItems.getBedItems(woodType).filter(b -> b != bed).map(ItemStack::new))),
+              PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
+              new ItemStack(bed)
+        ).build(consumer, Mekanism.rl(basePath + "painting/" + color.getRegistryPrefix()));
     }
 }

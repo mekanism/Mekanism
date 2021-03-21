@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/slick"
+      },
+      "without": {
+        "item": "mekanismadditions:pink_slick_plastic"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:pink"
+  },
+  "output": {
+    "item": "mekanismadditions:pink_slick_plastic"
+  }
+}

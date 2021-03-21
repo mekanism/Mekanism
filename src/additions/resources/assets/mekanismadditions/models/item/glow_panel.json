@@ -1,5 +1,6 @@
 {
     "parent": "mekanismadditions:block/glow_panel",
+    "gui_light": "front",
     "display": {
         "thirdperson_righthand": {
             "rotation": [100, 45, 0],

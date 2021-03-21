@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/reinforced"
+      },
+      "without": {
+        "item": "mekanismadditions:dark_red_reinforced_plastic"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:dark_red"
+  },
+  "output": {
+    "item": "mekanismadditions:dark_red_reinforced_plastic"
+  }
+}

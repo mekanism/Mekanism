@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:slabs/plastic/glow"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:slabs/plastic/glow"
+      },
+      "without": {
+        "item": "mekanismadditions:blue_plastic_glow_slab"
+      }
     },
     "D": {
       "tag": "forge:dyes/blue"

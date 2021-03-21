@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:sunflower"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:yellow",
+    "amount": 1536
+  }
+}

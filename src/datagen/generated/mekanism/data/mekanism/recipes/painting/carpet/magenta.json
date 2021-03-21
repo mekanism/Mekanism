@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/carpets"
+      },
+      "without": {
+        "item": "minecraft:magenta_carpet"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:magenta"
+  },
+  "output": {
+    "item": "minecraft:magenta_carpet"
+  }
+}

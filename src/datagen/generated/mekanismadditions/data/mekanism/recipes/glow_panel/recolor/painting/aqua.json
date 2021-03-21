@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:glow_panels"
+      },
+      "without": {
+        "item": "mekanismadditions:aqua_glow_panel"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:aqua"
+  },
+  "output": {
+    "item": "mekanismadditions:aqua_glow_panel"
+  }
+}

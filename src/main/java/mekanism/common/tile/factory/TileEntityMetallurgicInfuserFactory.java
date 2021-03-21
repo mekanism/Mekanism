@@ -61,7 +61,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
         // as maybe the valid recipes have changed and we need to sort again
         builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.create(TileEntityMetallurgicInfuser.MAX_INFUSE * tier.processes,
-              type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this::onContentsChangedUpdateSorting));
+              type -> containsRecipe(recipe -> recipe.getChemicalInput().testType(type)), this::onContentsChangedUpdateSorting));
         return builder.build();
     }
 
@@ -96,7 +96,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     protected boolean isCachedRecipeValid(@Nullable CachedRecipe<MetallurgicInfuserRecipe> cached, @Nonnull ItemStack stack) {
         if (cached != null) {
             MetallurgicInfuserRecipe cachedRecipe = cached.getRecipe();
-            return cachedRecipe.getItemInput().testType(stack) && (infusionTank.isEmpty() || cachedRecipe.getInfusionInput().testType(infusionTank.getType()));
+            return cachedRecipe.getItemInput().testType(stack) && (infusionTank.isEmpty() || cachedRecipe.getChemicalInput().testType(infusionTank.getType()));
         }
         return false;
     }
@@ -109,8 +109,8 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         ItemStack output = outputSlot.getStack();
         return findFirstRecipe(recipe -> {
             //Check the infusion type before the ItemStack type as it a quicker easier compare check
-            if (stored == 0 || recipe.getInfusionInput().testType(type)) {
-                return recipe.getItemInput().testType(fallbackInput) && InventoryUtils.areItemsStackable(recipe.getOutput(infusionTank.getStack(), fallbackInput), output);
+            if (stored == 0 || recipe.getChemicalInput().testType(type)) {
+                return recipe.getItemInput().testType(fallbackInput) && InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput, infusionTank.getStack()), output);
             }
             return false;
         });
@@ -135,7 +135,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Nullable
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findMetallurgicInfuserRecipe(this, inputHandlers[cacheIndex], infusionInputHandler);
+        return RecipeLookupUtil.findItemStackChemicalRecipe(this, inputHandlers[cacheIndex], infusionInputHandler);
     }
 
     @Override

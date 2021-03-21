@@ -1,72 +1,26 @@
 package mekanism.common.recipe.serializer;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
-import mekanism.api.SerializerHelper;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.common.Mekanism;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class ItemStackGasToItemStackRecipeSerializer<RECIPE extends ItemStackGasToItemStackRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
+public class ItemStackGasToItemStackRecipeSerializer<RECIPE extends ItemStackGasToItemStackRecipe> extends
+      ItemStackChemicalToItemStackRecipeSerializer<Gas, GasStack, GasStackIngredient, RECIPE> {
 
-    private final IFactory<RECIPE> factory;
-
-    public ItemStackGasToItemStackRecipeSerializer(IFactory<RECIPE> factory) {
-        this.factory = factory;
-    }
-
-    @Nonnull
-    @Override
-    public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        JsonElement itemInput = JSONUtils.isArrayNode(json, JsonConstants.ITEM_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
-                                JSONUtils.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
-        ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
-        JsonElement gasInput = JSONUtils.isArrayNode(json, JsonConstants.GAS_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
-                               JSONUtils.getAsJsonObject(json, JsonConstants.GAS_INPUT);
-        GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
-        ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
-        if (output.isEmpty()) {
-            throw new JsonSyntaxException("Recipe output must not be empty.");
-        }
-        return this.factory.create(recipeId, itemIngredient, gasIngredient, output);
+    public ItemStackGasToItemStackRecipeSerializer(IFactory<Gas, GasStack, GasStackIngredient, RECIPE> factory) {
+        super(factory);
     }
 
     @Override
-    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
-        try {
-            ItemStackIngredient itemInput = ItemStackIngredient.read(buffer);
-            GasStackIngredient gasInput = GasStackIngredient.read(buffer);
-            ItemStack output = buffer.readItem();
-            return this.factory.create(recipeId, itemInput, gasInput, output);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error reading itemstack gas to itemstack recipe from packet.", e);
-            throw e;
-        }
+    protected ChemicalIngredientDeserializer<Gas, GasStack, GasStackIngredient> getDeserializer() {
+        return ChemicalIngredientDeserializer.GAS;
     }
 
     @Override
-    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
-        try {
-            recipe.write(buffer);
-        } catch (Exception e) {
-            Mekanism.logger.error("Error writing itemstack gas to itemstack recipe to packet.", e);
-            throw e;
-        }
-    }
-
-    @FunctionalInterface
-    public interface IFactory<RECIPE extends ItemStackGasToItemStackRecipe> {
-
-        RECIPE create(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output);
+    protected String getChemicalInputJsonKey() {
+        return JsonConstants.GAS_INPUT;
     }
 }

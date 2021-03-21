@@ -50,7 +50,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RecipeLookupUtil;
@@ -82,7 +81,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
     public TileEntityChemicalDissolutionChamber() {
         super(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, BASE_TICKS_REQUIRED);
-        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.INFUSION, /*TransmissionType.PIGMENT, */
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT,
               TransmissionType.SLURRY, TransmissionType.ENERGY);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, gasInputSlot, energySlot);
         configComponent.setupIOConfig(TransmissionType.GAS, injectTank, outputTank.getGasTank(), RelativeSide.RIGHT).setEjecting(true);
@@ -92,7 +91,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.INFUSION, /* TransmissionType.PIGMENT, */
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT,
               TransmissionType.SLURRY);
 
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
@@ -115,7 +114,14 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(injectTank = ChemicalTankBuilder.GAS.input(MAX_CHEMICAL, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+        builder.addTank(injectTank = ChemicalTankBuilder.GAS.input(MAX_CHEMICAL, gas -> {
+            if (!inputSlot.isEmpty()) {
+                ItemStack stack = inputSlot.getStack();
+                return containsRecipe(recipe -> recipe.getItemInput().testType(stack) && recipe.getGasInput().testType(gas));
+            }
+            //Otherwise return true, as we already validated the type was valid
+            return true;
+        }, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
         builder.addTank(outputTank.getGasTank());
         return builder.build();
     }
@@ -157,7 +163,13 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::getLevel, this, 8, 65));
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 28, 36));
+        builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
+            if (!injectTank.isEmpty()) {
+                return containsRecipe(recipe -> recipe.getGasInput().testType(injectTank.getType()) && recipe.getItemInput().testType(stack));
+            }
+            //Otherwise return true, as we already validated the type was valid
+            return true;
+        }, item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 28, 36));
         builder.addSlot(outputSlot = MergedChemicalInventorySlot.drain(outputTank, this, 152, 25));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 5));
         gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
@@ -199,11 +211,6 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
               .setRequiredTicks(this::getTicksRequired)
               .setOnFinish(() -> markDirty(false))
               .setOperatingTicksChanged(this::setOperatingTicks);
-    }
-
-    @Override
-    public TileComponentUpgrade getComponent() {
-        return upgradeComponent;
     }
 
     @Override

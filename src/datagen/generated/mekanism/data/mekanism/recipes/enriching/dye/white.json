@@ -1,10 +1,17 @@
 {
   "type": "mekanism:enriching",
-  "input": {
-    "ingredient": {
-      "item": "minecraft:lily_of_the_valley"
+  "input": [
+    {
+      "ingredient": {
+        "item": "minecraft:bone_meal"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:lily_of_the_valley"
+      }
     }
-  },
+  ],
   "output": {
     "item": "minecraft:white_dye",
     "count": 2

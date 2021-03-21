@@ -65,6 +65,7 @@ import mekanism.common.network.to_client.PacketTransmitterUpdate;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.recipe.condition.ModVersionLoadedCondition;
+import mekanism.common.recipe.ingredient.IngredientWithout;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -262,6 +263,7 @@ public class Mekanism {
     private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         MekanismRecipeType.registerRecipeTypes(event.getRegistry());
         CraftingHelper.register(ModVersionLoadedCondition.Serializer.INSTANCE);
+        CraftingHelper.register(IngredientWithout.ID, IngredientWithout.Serializer.INSTANCE);
     }
 
     public static ResourceLocation rl(String path) {

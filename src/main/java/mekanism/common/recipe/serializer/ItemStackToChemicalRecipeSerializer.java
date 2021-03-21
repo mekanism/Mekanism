@@ -21,7 +21,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
 
     private final IFactory<CHEMICAL, STACK, RECIPE> factory;
 
-    public ItemStackToChemicalRecipeSerializer(IFactory<CHEMICAL, STACK, RECIPE> factory) {
+    protected ItemStackToChemicalRecipeSerializer(IFactory<CHEMICAL, STACK, RECIPE> factory) {
         this.factory = factory;
     }
 

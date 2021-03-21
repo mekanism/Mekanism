@@ -1,5 +1,6 @@
 package mekanism.client;
 
+import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -48,6 +49,24 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
 public class ClientRegistrationUtil {
+
+    private static final IBlockColor COLORED_BLOCK_COLOR = (state, world, pos, tintIndex) -> {
+        Block block = state.getBlock();
+        if (block instanceof IColoredBlock) {
+            return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
+        }
+        return -1;
+    };
+    private static final IItemColor COLORED_BLOCK_ITEM_COLOR = (stack, tintIndex) -> {
+        Item item = stack.getItem();
+        if (item instanceof BlockItem) {
+            Block block = ((BlockItem) item).getBlock();
+            if (block instanceof IColoredBlock) {
+                return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
+            }
+        }
+        return -1;
+    };
 
     private ClientRegistrationUtil() {
     }
@@ -124,22 +143,13 @@ public class ClientRegistrationUtil {
     }
 
     public static void registerIColoredBlockHandler(BlockColors blockColors, ItemColors itemColors, IBlockProvider... blocks) {
-        ClientRegistrationUtil.registerBlockColorHandler(blockColors, itemColors, (state, world, pos, tintIndex) -> {
-            Block block = state.getBlock();
-            if (block instanceof IColoredBlock) {
-                return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
-            }
-            return -1;
-        }, (stack, tintIndex) -> {
-            Item item = stack.getItem();
-            if (item instanceof BlockItem) {
-                Block block = ((BlockItem) item).getBlock();
-                if (block instanceof IColoredBlock) {
-                    return MekanismRenderer.getColorARGB(((IColoredBlock) block).getColor(), 1);
-                }
-            }
-            return -1;
-        }, blocks);
+        ClientRegistrationUtil.registerBlockColorHandler(blockColors, itemColors, COLORED_BLOCK_COLOR, COLORED_BLOCK_ITEM_COLOR, blocks);
+    }
+
+    public static void setRenderLayer(RenderType type, Collection<? extends IBlockProvider> blockProviders) {
+        for (IBlockProvider blockProvider : blockProviders) {
+            RenderTypeLookup.setRenderLayer(blockProvider.getBlock(), type);
+        }
     }
 
     public static void setRenderLayer(RenderType type, IBlockProvider... blockProviders) {

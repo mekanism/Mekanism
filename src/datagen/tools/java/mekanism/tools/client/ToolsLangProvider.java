@@ -3,6 +3,7 @@ package mekanism.tools.client;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.client.lang.BaseLanguageProvider;
+import mekanism.common.util.EnumUtils;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.registries.ToolsItems;
@@ -68,7 +69,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
     private void addShield(IItemProvider shield, String name) {
         add(shield, name);
         //Add names for all the bannered overlay types
-        for (EnumColor color : EnumColor.values()) {
+        for (EnumColor color : EnumUtils.COLORS) {
             if (color.hasDyeName()) {
                 add(shield.getTranslationKey() + "." + color.getRegistryPrefix(), color.getEnglishName() + " " + name);
             }

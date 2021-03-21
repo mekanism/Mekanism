@@ -34,6 +34,7 @@ public class JsonConstants {
     public static final String MAIN_INPUT = "mainInput";
     public static final String EXTRA_INPUT = "extraInput";
     public static final String ITEM_INPUT = "itemInput";
+    public static final String CHEMICAL_INPUT = "chemicalInput";
     public static final String INFUSION_INPUT = "infusionInput";
     public static final String GAS_INPUT = "gasInput";
     public static final String SLURRY_INPUT = "slurryInput";

@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:magenta_carpet"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:magenta",
+    "amount": 128
+  }
+}

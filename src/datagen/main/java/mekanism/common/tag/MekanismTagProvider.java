@@ -68,6 +68,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addSlurryTags();
         addInfuseTags();
         addPellets();
+        addColorableItems();
         getBlockBuilder(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE).add(Tags.Blocks.ORES, BlockTags.LOGS);
         addToTag(BlockTags.GUARDED_BY_PIGLINS, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_CHEST);
         addToTag(BlockTags.HOGLIN_REPELLENTS, MekanismBlocks.TELEPORTER, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
@@ -164,33 +165,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE
         );
         getBlockBuilder(MekanismTags.Blocks.CARDBOARD_BLACKLIST)
-              .add(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED)
-              .add(Blocks.WHITE_BED,
-                    Blocks.ORANGE_BED,
-                    Blocks.MAGENTA_BED,
-                    Blocks.LIGHT_BLUE_BED,
-                    Blocks.YELLOW_BED,
-                    Blocks.LIME_BED,
-                    Blocks.PINK_BED,
-                    Blocks.GRAY_BED,
-                    Blocks.LIGHT_GRAY_BED,
-                    Blocks.CYAN_BED,
-                    Blocks.PURPLE_BED,
-                    Blocks.BLUE_BED,
-                    Blocks.BROWN_BED,
-                    Blocks.GREEN_BED,
-                    Blocks.RED_BED,
-                    Blocks.BLACK_BED,
-                    Blocks.OAK_DOOR,
-                    Blocks.SPRUCE_DOOR,
-                    Blocks.BIRCH_DOOR,
-                    Blocks.JUNGLE_DOOR,
-                    Blocks.ACACIA_DOOR,
-                    Blocks.DARK_OAK_DOOR,
-                    Blocks.CRIMSON_DOOR,
-                    Blocks.WARPED_DOOR,
-                    Blocks.IRON_DOOR
-              );
+              .add(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED, BlockTags.BEDS, BlockTags.DOORS);
         TileEntityTypeRegistryObject<?>[] tilesToBlacklist = {
               MekanismTileEntityTypes.CARDBOARD_BOX,
               MekanismTileEntityTypes.BOUNDING_BLOCK,
@@ -241,7 +216,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Items.ALLOYS_ULTIMATE, MekanismItems.ATOMIC_ALLOY);
         getItemBuilder(MekanismTags.Items.FORGE_ALLOYS).add(MekanismTags.Items.ALLOYS_ADVANCED, MekanismTags.Items.ALLOYS_ELITE, MekanismTags.Items.ALLOYS_ULTIMATE);
         //Alloy tags that go in our domain
-        getItemBuilder(MekanismTags.Items.ALLOYS_BASIC).add(Items.REDSTONE);
+        addToTag(MekanismTags.Items.ALLOYS_BASIC, Items.REDSTONE);
         getItemBuilder(MekanismTags.Items.ALLOYS_INFUSED).add(MekanismTags.Items.ALLOYS_ADVANCED);
         getItemBuilder(MekanismTags.Items.ALLOYS_REINFORCED).add(MekanismTags.Items.ALLOYS_ELITE);
         getItemBuilder(MekanismTags.Items.ALLOYS_ATOMIC).add(MekanismTags.Items.ALLOYS_ULTIMATE);
@@ -377,6 +352,38 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Items.PELLETS_ANTIMATTER, MekanismItems.ANTIMATTER_PELLET);
         addToTag(MekanismTags.Items.PELLETS_PLUTONIUM, MekanismItems.PLUTONIUM_PELLET);
         addToTag(MekanismTags.Items.PELLETS_POLONIUM, MekanismItems.POLONIUM_PELLET);
+    }
+
+    private void addColorableItems() {
+        addToTag(MekanismTags.Items.COLORABLE_WOOL, Blocks.WHITE_WOOL, Blocks.ORANGE_WOOL, Blocks.MAGENTA_WOOL, Blocks.LIGHT_BLUE_WOOL, Blocks.YELLOW_WOOL,
+              Blocks.LIME_WOOL, Blocks.PINK_WOOL, Blocks.GRAY_WOOL, Blocks.LIGHT_GRAY_WOOL, Blocks.CYAN_WOOL, Blocks.PURPLE_WOOL, Blocks.BLUE_WOOL, Blocks.BROWN_WOOL,
+              Blocks.GREEN_WOOL, Blocks.RED_WOOL, Blocks.BLACK_WOOL);
+        addToTag(MekanismTags.Items.COLORABLE_CARPETS, Blocks.WHITE_CARPET, Blocks.ORANGE_CARPET, Blocks.MAGENTA_CARPET, Blocks.LIGHT_BLUE_CARPET, Blocks.YELLOW_CARPET,
+              Blocks.LIME_CARPET, Blocks.PINK_CARPET, Blocks.GRAY_CARPET, Blocks.LIGHT_GRAY_CARPET, Blocks.CYAN_CARPET, Blocks.PURPLE_CARPET, Blocks.BLUE_CARPET,
+              Blocks.BROWN_CARPET, Blocks.GREEN_CARPET, Blocks.RED_CARPET, Blocks.BLACK_CARPET);
+        addToTag(MekanismTags.Items.COLORABLE_BEDS, Blocks.WHITE_BED, Blocks.ORANGE_BED, Blocks.MAGENTA_BED, Blocks.LIGHT_BLUE_BED, Blocks.YELLOW_BED,
+              Blocks.LIME_BED, Blocks.PINK_BED, Blocks.GRAY_BED, Blocks.LIGHT_GRAY_BED, Blocks.CYAN_BED, Blocks.PURPLE_BED, Blocks.BLUE_BED, Blocks.BROWN_BED,
+              Blocks.GREEN_BED, Blocks.RED_BED, Blocks.BLACK_BED);
+        addToTag(MekanismTags.Items.COLORABLE_GLASS, Blocks.GLASS, Blocks.WHITE_STAINED_GLASS, Blocks.ORANGE_STAINED_GLASS, Blocks.MAGENTA_STAINED_GLASS,
+              Blocks.LIGHT_BLUE_STAINED_GLASS, Blocks.YELLOW_STAINED_GLASS, Blocks.LIME_STAINED_GLASS, Blocks.PINK_STAINED_GLASS, Blocks.GRAY_STAINED_GLASS,
+              Blocks.LIGHT_GRAY_STAINED_GLASS, Blocks.CYAN_STAINED_GLASS, Blocks.PURPLE_STAINED_GLASS, Blocks.BLUE_STAINED_GLASS, Blocks.BROWN_STAINED_GLASS,
+              Blocks.GREEN_STAINED_GLASS, Blocks.RED_STAINED_GLASS, Blocks.BLACK_STAINED_GLASS);
+        addToTag(MekanismTags.Items.COLORABLE_GLASS_PANES, Blocks.GLASS_PANE, Blocks.WHITE_STAINED_GLASS_PANE, Blocks.ORANGE_STAINED_GLASS_PANE,
+              Blocks.MAGENTA_STAINED_GLASS_PANE, Blocks.LIGHT_BLUE_STAINED_GLASS_PANE, Blocks.YELLOW_STAINED_GLASS_PANE, Blocks.LIME_STAINED_GLASS_PANE,
+              Blocks.PINK_STAINED_GLASS_PANE, Blocks.GRAY_STAINED_GLASS_PANE, Blocks.LIGHT_GRAY_STAINED_GLASS_PANE, Blocks.CYAN_STAINED_GLASS_PANE,
+              Blocks.PURPLE_STAINED_GLASS_PANE, Blocks.BLUE_STAINED_GLASS_PANE, Blocks.BROWN_STAINED_GLASS_PANE, Blocks.GREEN_STAINED_GLASS_PANE,
+              Blocks.RED_STAINED_GLASS_PANE, Blocks.BLACK_STAINED_GLASS_PANE);
+        addToTag(MekanismTags.Items.COLORABLE_TERRACOTTA, Blocks.TERRACOTTA, Blocks.WHITE_TERRACOTTA, Blocks.ORANGE_TERRACOTTA, Blocks.MAGENTA_TERRACOTTA,
+              Blocks.LIGHT_BLUE_TERRACOTTA, Blocks.YELLOW_TERRACOTTA, Blocks.LIME_TERRACOTTA, Blocks.PINK_TERRACOTTA, Blocks.GRAY_TERRACOTTA,
+              Blocks.LIGHT_GRAY_TERRACOTTA, Blocks.CYAN_TERRACOTTA, Blocks.PURPLE_TERRACOTTA, Blocks.BLUE_TERRACOTTA, Blocks.BROWN_TERRACOTTA,
+              Blocks.GREEN_TERRACOTTA, Blocks.RED_TERRACOTTA, Blocks.BLACK_TERRACOTTA);
+        addToTag(MekanismTags.Items.COLORABLE_CONCRETE, Blocks.WHITE_CONCRETE, Blocks.ORANGE_CONCRETE, Blocks.MAGENTA_CONCRETE, Blocks.LIGHT_BLUE_CONCRETE,
+              Blocks.YELLOW_CONCRETE, Blocks.LIME_CONCRETE, Blocks.PINK_CONCRETE, Blocks.GRAY_CONCRETE, Blocks.LIGHT_GRAY_CONCRETE, Blocks.CYAN_CONCRETE,
+              Blocks.PURPLE_CONCRETE, Blocks.BLUE_CONCRETE, Blocks.BROWN_CONCRETE, Blocks.GREEN_CONCRETE, Blocks.RED_CONCRETE, Blocks.BLACK_CONCRETE);
+        addToTag(MekanismTags.Items.COLORABLE_CONCRETE_POWDER, Blocks.WHITE_CONCRETE_POWDER, Blocks.ORANGE_CONCRETE_POWDER, Blocks.MAGENTA_CONCRETE_POWDER,
+              Blocks.LIGHT_BLUE_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE_POWDER, Blocks.LIME_CONCRETE_POWDER, Blocks.PINK_CONCRETE_POWDER, Blocks.GRAY_CONCRETE_POWDER,
+              Blocks.LIGHT_GRAY_CONCRETE_POWDER, Blocks.CYAN_CONCRETE_POWDER, Blocks.PURPLE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE_POWDER, Blocks.BROWN_CONCRETE_POWDER,
+              Blocks.GREEN_CONCRETE_POWDER, Blocks.RED_CONCRETE_POWDER, Blocks.BLACK_CONCRETE_POWDER);
     }
 
     private void addFluids() {

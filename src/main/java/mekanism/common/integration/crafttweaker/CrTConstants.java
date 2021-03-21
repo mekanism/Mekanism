@@ -63,6 +63,7 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_ENRICHING = "mekanism.recipe.ItemStackToItemStack.Enriching";
     public static final String CLASS_RECIPE_SMELTING = "mekanism.recipe.ItemStackToItemStack.Smelting";
     public static final String CLASS_RECIPE_CHEMICAL_INFUSING = "mekanism.recipe.ChemicalInfusing";
+    public static final String CLASS_RECIPE_PIGMENT_MIXING = "mekanism.recipe.PigmentMixing";
     public static final String CLASS_RECIPE_COMBINING = "mekanism.recipe.Combining";
     public static final String CLASS_RECIPE_SEPARATING = "mekanism.recipe.Separating";
     public static final String CLASS_RECIPE_FLUID_SLURRY_TO_SLURRY = "mekanism.recipe.FluidSlurryToSlurry";
@@ -74,10 +75,12 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_CENTRIFUGING = "mekanism.recipe.GasToGas.Centrifuging";
     public static final String CLASS_RECIPE_CRYSTALLIZING = "mekanism.recipe.Crystallizing";
     public static final String CLASS_RECIPE_DISSOLUTION = "mekanism.recipe.Dissolution";
-    public static final String CLASS_RECIPE_ITEM_STACK_GAS_TO_ITEM_STACK = "mekanism.recipe.ItemStackGasToItemStack";
-    public static final String CLASS_RECIPE_COMPRESSING = "mekanism.recipe.ItemStackGasToItemStack.Compressing";
-    public static final String CLASS_RECIPE_PURIFYING = "mekanism.recipe.ItemStackGasToItemStack.Purifying";
-    public static final String CLASS_RECIPE_INJECTING = "mekanism.recipe.ItemStackGasToItemStack.Injecting";
+    public static final String CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK = "mekanism.recipe.ItemStackChemicalToItemStack";
+    public static final String CLASS_RECIPE_COMPRESSING = "mekanism.recipe.ItemStackChemicalToItemStack.Compressing";
+    public static final String CLASS_RECIPE_PURIFYING = "mekanism.recipe.ItemStackChemicalToItemStack.Purifying";
+    public static final String CLASS_RECIPE_INJECTING = "mekanism.recipe.ItemStackChemicalToItemStack.Injecting";
+    public static final String CLASS_RECIPE_METALLURGIC_INFUSING = "mekanism.recipe.ItemStackChemicalToItemStack.MetallurgicInfusing";
+    public static final String CLASS_RECIPE_PAINTING = "mekanism.recipe.ItemStackChemicalToItemStack.Painting";
     public static final String CLASS_RECIPE_NUCLEOSYNTHESIZING = "mekanism.recipe.ItemStackGasToItemStack.Nucleosynthesizing";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_ENERGY = "mekanism.recipe.ItemStackToEnergy";
     public static final String CLASS_RECIPE_ENERGY_CONVERSION = "mekanism.recipe.ItemStackToEnergy.EnergyConversion";
@@ -86,7 +89,8 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_OXIDIZING = "mekanism.recipe.ItemStackToGas.Oxidizing";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_INFUSE_TYPE = "mekanism.recipe.ItemStackToInfuseType";
     public static final String CLASS_RECIPE_INFUSION_CONVERSION = "mekanism.recipe.ItemStackToInfuseType.InfusionConversion";
-    public static final String CLASS_RECIPE_METALLURGIC_INFUSING = "mekanism.recipe.MetallurgicInfusing";
+    public static final String CLASS_RECIPE_ITEM_STACK_TO_PIGMENT = "mekanism.recipe.ItemStackToPigment";
+    public static final String CLASS_RECIPE_PIGMENT_EXTRACTING = "mekanism.recipe.ItemStackToPigment.PigmentExtracting";
     public static final String CLASS_RECIPE_REACTION = "mekanism.recipe.Reaction";
     public static final String CLASS_RECIPE_ROTARY = "mekanism.recipe.Rotary";
     public static final String CLASS_RECIPE_SAWING = "mekanism.recipe.Sawing";

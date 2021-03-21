@@ -75,4 +75,11 @@ public enum ProgressType {
     public boolean isVertical() {
         return vertical;
     }
+
+    /**
+     * Keeps track of if it is going in the "opposite" direction as to normal for how it fills up
+     */
+    public boolean isReverse() {
+        return this == SMALL_LEFT || this == LARGE_LEFT;
+    }
 }

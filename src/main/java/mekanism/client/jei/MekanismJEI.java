@@ -39,8 +39,11 @@ import mekanism.client.jei.machine.ItemStackToEnergyRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToGasRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToInfuseTypeRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
+import mekanism.client.jei.machine.ItemStackToPigmentRecipeCategory;
 import mekanism.client.jei.machine.MetallurgicInfuserRecipeCategory;
 import mekanism.client.jei.machine.NucleosynthesizingRecipeCategory;
+import mekanism.client.jei.machine.PaintingRecipeCategory;
+import mekanism.client.jei.machine.PigmentMixerRecipeCategory;
 import mekanism.client.jei.machine.PressurizedReactionRecipeCategory;
 import mekanism.client.jei.machine.RotaryCondensentratorRecipeCategory;
 import mekanism.client.jei.machine.SPSRecipeCategory;
@@ -119,10 +122,7 @@ public class MekanismJEI implements IModPlugin {
     };
 
     private static String addInterpretation(String nbtRepresentation, String component) {
-        if (nbtRepresentation.isEmpty()) {
-            return component;
-        }
-        return nbtRepresentation + ":" + component;
+        return nbtRepresentation.isEmpty() ? component : nbtRepresentation + ":" + component;
     }
 
     private static String getChemicalComponent(ItemStack stack, Capability<? extends IChemicalHandler<?, ?>> capability) {
@@ -235,6 +235,9 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new ElectrolysisRecipeCategory(guiHelper));
         registry.addRecipeCategories(new MetallurgicInfuserRecipeCategory(guiHelper));
         registry.addRecipeCategories(new PressurizedReactionRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new ItemStackToPigmentRecipeCategory(guiHelper, MekanismBlocks.PIGMENT_EXTRACTOR));
+        registry.addRecipeCategories(new PigmentMixerRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new PaintingRecipeCategory(guiHelper));
 
         //Register both methods of rotary condensentrator recipes
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, true));
@@ -300,6 +303,9 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismRecipeType.EVAPORATING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, MekanismRecipeType.REACTION);
         RecipeRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, MekanismRecipeType.NUCLEOSYNTHESIZING);
+        RecipeRegistryHelper.register(registry, MekanismBlocks.PIGMENT_EXTRACTOR, MekanismRecipeType.PIGMENT_EXTRACTING);
+        RecipeRegistryHelper.register(registry, MekanismBlocks.PIGMENT_MIXER, MekanismRecipeType.PIGMENT_MIXING);
+        RecipeRegistryHelper.register(registry, MekanismBlocks.PAINTING_MACHINE, MekanismRecipeType.PAINTING);
         RecipeRegistryHelper.registerCondensentrator(registry);
         RecipeRegistryHelper.registerNutritionalLiquifier(registry);
         RecipeRegistryHelper.registerSPS(registry);
@@ -329,6 +335,9 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
         CatalystRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.PIGMENT_EXTRACTOR);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.PIGMENT_MIXER);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.PAINTING_MACHINE);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, GAS_CONVERSION);
         CatalystRegistryHelper.registerCondensentrator(registry);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ENERGIZED_SMELTER, VanillaRecipeCategoryUid.FURNACE);

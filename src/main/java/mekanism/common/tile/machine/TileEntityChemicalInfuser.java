@@ -46,6 +46,7 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.RecipeLookupUtil;
 
 public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> {
 
@@ -153,10 +154,10 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         //TODO: Should our gas checking, also check the other tank's contents so we don't let putting the same gas in on both sides
-        builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this, 5, 56));
-        builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this, 155, 56));
+        builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this, 6, 56));
+        builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this, 154, 56));
         builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, this, 80, 65));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 155, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 154, 14));
         leftInputSlot.setSlotType(ContainerSlotType.INPUT);
         leftInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         rightInputSlot.setSlotType(ContainerSlotType.INPUT);
@@ -197,15 +198,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @Nullable
     @Override
     public ChemicalInfuserRecipe getRecipe(int cacheIndex) {
-        GasStack leftGas = leftInputHandler.getInput();
-        if (leftGas.isEmpty()) {
-            return null;
-        }
-        GasStack rightGas = rightInputHandler.getInput();
-        if (rightGas.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(leftGas, rightGas));
+        return RecipeLookupUtil.findChemicalChemicalRecipe(this, leftInputHandler, rightInputHandler);
     }
 
     @Nullable

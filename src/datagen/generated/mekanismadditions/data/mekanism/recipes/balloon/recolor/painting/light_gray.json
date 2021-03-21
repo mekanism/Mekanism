@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:balloons"
+      },
+      "without": {
+        "item": "mekanismadditions:light_gray_balloon"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:light_gray"
+  },
+  "output": {
+    "item": "mekanismadditions:light_gray_balloon"
+  }
+}

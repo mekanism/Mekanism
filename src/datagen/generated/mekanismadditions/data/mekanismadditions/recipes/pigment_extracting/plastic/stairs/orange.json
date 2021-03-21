@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:orange_plastic_stairs"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:orange",
+    "amount": 32
+  }
+}

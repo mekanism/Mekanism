@@ -86,11 +86,11 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
         builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.create(MAX_INFUSE, ChemicalTankBuilder.INFUSION.alwaysTrueBi, (type, automationType) -> {
             if (!inputSlot.isEmpty()) {
                 ItemStack stack = inputSlot.getStack();
-                return containsRecipe(recipe -> recipe.getItemInput().testType(stack) && recipe.getInfusionInput().testType(type));
+                return containsRecipe(recipe -> recipe.getItemInput().testType(stack) && recipe.getChemicalInput().testType(type));
             }
             //Otherwise return true, as we already validated the type was valid
             return true;
-        }, type -> containsRecipe(recipe -> recipe.getInfusionInput().testType(type)), this));
+        }, type -> containsRecipe(recipe -> recipe.getChemicalInput().testType(type)), this));
         return builder.build();
     }
 
@@ -109,7 +109,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
         builder.addSlot(infusionSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getLevel, this, 17, 35));
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             if (!infusionTank.isEmpty()) {
-                return containsRecipe(recipe -> recipe.getInfusionInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(stack));
+                return containsRecipe(recipe -> recipe.getChemicalInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(stack));
             }
             //Otherwise return true, as we already validated the type was valid
             return true;
@@ -139,7 +139,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     @Nullable
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findMetallurgicInfuserRecipe(this, itemInputHandler, infusionInputHandler);
+        return RecipeLookupUtil.findItemStackChemicalRecipe(this, itemInputHandler, infusionInputHandler);
     }
 
     @Nullable

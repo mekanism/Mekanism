@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:black_plastic_stairs"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:black",
+    "amount": 32
+  }
+}

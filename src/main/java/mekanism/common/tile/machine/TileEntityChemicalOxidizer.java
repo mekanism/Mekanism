@@ -93,8 +93,8 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 26, 36));
-        builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, this, 155, 25));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 155, 5));
+        builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, this, 152, 55));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 14));
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();
     }

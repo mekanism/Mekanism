@@ -2,14 +2,21 @@ package mekanism.client.state;
 
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.BaseBlockModelProvider;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.state.Property;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -49,5 +56,19 @@ public abstract class BaseBlockStateProvider<PROVIDER extends BaseBlockModelProv
             simpleBlock(fluidRO.getBlock(), models().getBuilder(name(fluidRO.getBlock())).texture(DataGenJsonConstants.PARTICLE,
                   fluidRO.getStillFluid().getAttributes().getStillTexture()));
         }
+    }
+
+    /**
+     * Like directionalBlock but allows us to skip specific properties
+     */
+    protected void directionalBlock(Block block, Function<BlockState, ModelFile> modelFunc, int angleOffset, Property<?>... toSkip) {
+        getVariantBuilder(block).forAllStatesExcept(state -> {
+            Direction dir = state.getValue(BlockStateProperties.FACING);
+            return ConfiguredModel.builder()
+                  .modelFile(modelFunc.apply(state))
+                  .rotationX(dir == Direction.DOWN ? 180 : dir.getAxis().isHorizontal() ? 90 : 0)
+                  .rotationY(dir.getAxis().isVertical() ? 0 : (((int) dir.toYRot()) + angleOffset) % 360)
+                  .build();
+        }, toSkip);
     }
 }

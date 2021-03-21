@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "result": {
+    "item": "mekanismadditions:aqua_plastic_glow",
+    "count": 3
+  },
+  "ingredients": [
+    {
+      "item": "mekanismadditions:aqua_plastic"
+    },
+    {
+      "item": "mekanismadditions:aqua_plastic"
+    },
+    {
+      "item": "mekanismadditions:aqua_plastic"
+    },
+    {
+      "tag": "forge:dusts/glowstone"
+    }
+  ]
+}

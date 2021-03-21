@@ -163,6 +163,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> SALT = ITEMS.register("salt");
     public static final ItemRegistryObject<Item> SUBSTRATE = ITEMS.register("substrate");
     public static final ItemRegistryObject<Item> BIO_FUEL = ITEMS.register("bio_fuel");
+    public static final ItemRegistryObject<Item> DYE_BASE = ITEMS.register("dye_base");
     public static final ItemRegistryObject<Item> FLUORITE_GEM = ITEMS.register("fluorite_gem");
     public static final ItemRegistryObject<Item> YELLOW_CAKE_URANIUM = ITEMS.register("yellow_cake_uranium", Rarity.UNCOMMON);
     public static final ItemRegistryObject<Item> DIRTY_NETHERITE_SCRAP = ITEMS.registerUnburnable("dirty_netherite_scrap");

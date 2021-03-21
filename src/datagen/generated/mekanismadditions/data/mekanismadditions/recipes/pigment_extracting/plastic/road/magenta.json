@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:magenta_plastic_road"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:magenta",
+    "amount": 42
+  }
+}

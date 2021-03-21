@@ -1,6 +1,7 @@
 package mekanism.common.loot.table;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -98,6 +99,12 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             if (!skipBlock(block)) {
                 dropSelf(block);
             }
+        }
+    }
+
+    protected void add(Function<Block, Builder> factory, Collection<? extends IBlockProvider> blockProviders) {
+        for (IBlockProvider blockProvider : blockProviders) {
+            add(blockProvider.getBlock(), factory);
         }
     }
 

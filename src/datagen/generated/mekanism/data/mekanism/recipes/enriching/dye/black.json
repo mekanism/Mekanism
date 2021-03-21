@@ -1,10 +1,17 @@
 {
   "type": "mekanism:enriching",
-  "input": {
-    "ingredient": {
-      "item": "minecraft:wither_rose"
+  "input": [
+    {
+      "ingredient": {
+        "item": "minecraft:ink_sac"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:wither_rose"
+      }
     }
-  },
+  ],
   "output": {
     "item": "minecraft:black_dye",
     "count": 2

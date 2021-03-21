@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanism:colorable/glass_panes"
+      },
+      "without": {
+        "item": "minecraft:yellow_stained_glass_pane"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 32,
+    "pigment": "mekanism:yellow"
+  },
+  "output": {
+    "item": "minecraft:yellow_stained_glass_pane"
+  }
+}

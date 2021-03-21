@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "mekanismadditions:glow_panels"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:glow_panels"
+      },
+      "without": {
+        "item": "mekanismadditions:red_glow_panel"
+      }
     },
     "D": {
       "tag": "forge:dyes/red"

@@ -49,6 +49,9 @@ public final class BlockShapes {
     public static final VoxelShape[] ISOTOPIC_CENTRIFUGE = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] SUPERCHARGED_COIL = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] ANTIPROTONIC_NUCLEOSYNTHESIZER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] PIGMENT_EXTRACTOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] PIGMENT_MIXER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
+    public static final VoxelShape[] PAINTING_MACHINE = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
@@ -794,6 +797,11 @@ public final class BlockShapes {
               box(10, 6, 15.01, 11, 10, 16.01), // port_led4
               box(4, 7.99, 1.01, 12, 14.99, 10.01) // glass
         ), ANTIPROTONIC_NUCLEOSYNTHESIZER);
+
+        //TODO - 10.1: Set the porper shapes for the pigment extractor, pigment mixer, and painting machine
+        setShape(box(0, 0, 0, 16, 16, 16), PIGMENT_EXTRACTOR);
+        setShape(box(0, 0, 0, 16, 32, 16), PIGMENT_MIXER);
+        setShape(box(0, 0, 0, 16, 16, 16), PAINTING_MACHINE);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations
         setShape(box(2, 0, 2, 14, 16, 14), FLUID_TANK);

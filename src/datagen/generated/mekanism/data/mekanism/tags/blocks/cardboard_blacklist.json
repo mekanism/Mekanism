@@ -1,30 +1,7 @@
 {
   "values": [
     "#forge:relocation_not_supported",
-    "minecraft:white_bed",
-    "minecraft:orange_bed",
-    "minecraft:magenta_bed",
-    "minecraft:light_blue_bed",
-    "minecraft:yellow_bed",
-    "minecraft:lime_bed",
-    "minecraft:pink_bed",
-    "minecraft:gray_bed",
-    "minecraft:light_gray_bed",
-    "minecraft:cyan_bed",
-    "minecraft:purple_bed",
-    "minecraft:blue_bed",
-    "minecraft:brown_bed",
-    "minecraft:green_bed",
-    "minecraft:red_bed",
-    "minecraft:black_bed",
-    "minecraft:oak_door",
-    "minecraft:spruce_door",
-    "minecraft:birch_door",
-    "minecraft:jungle_door",
-    "minecraft:acacia_door",
-    "minecraft:dark_oak_door",
-    "minecraft:crimson_door",
-    "minecraft:warped_door",
-    "minecraft:iron_door"
+    "#minecraft:beds",
+    "#minecraft:doors"
   ]
 }

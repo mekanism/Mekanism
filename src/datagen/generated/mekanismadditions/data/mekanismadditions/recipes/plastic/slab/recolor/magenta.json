@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:slabs/plastic"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:slabs/plastic"
+      },
+      "without": {
+        "item": "mekanismadditions:magenta_plastic_slab"
+      }
     },
     "D": {
       "tag": "forge:dyes/magenta"

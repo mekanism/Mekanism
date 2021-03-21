@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:lime_concrete"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:lime",
+    "amount": 24
+  }
+}

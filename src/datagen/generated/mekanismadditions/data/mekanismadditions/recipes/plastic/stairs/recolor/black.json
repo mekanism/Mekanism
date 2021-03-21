@@ -11,7 +11,13 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:stairs/plastic"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:stairs/plastic"
+      },
+      "without": {
+        "item": "mekanismadditions:black_plastic_stairs"
+      }
     },
     "D": {
       "tag": "forge:dyes/black"

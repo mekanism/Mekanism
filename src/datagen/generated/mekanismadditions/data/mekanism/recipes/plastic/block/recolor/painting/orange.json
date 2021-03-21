@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:painting",
+  "itemInput": {
+    "ingredient": {
+      "type": "mekanism:without",
+      "base": {
+        "tag": "mekanismadditions:plastic_blocks/plastic"
+      },
+      "without": {
+        "item": "mekanismadditions:orange_plastic"
+      }
+    }
+  },
+  "chemicalInput": {
+    "amount": 64,
+    "pigment": "mekanism:orange"
+  },
+  "output": {
+    "item": "mekanismadditions:orange_plastic"
+  }
+}

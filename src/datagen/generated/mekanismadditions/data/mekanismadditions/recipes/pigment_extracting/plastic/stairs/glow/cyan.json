@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:cyan_plastic_glow_stairs"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:cyan",
+    "amount": 28
+  }
+}

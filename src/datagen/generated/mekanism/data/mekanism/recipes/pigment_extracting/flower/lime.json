@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:sea_pickle"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:lime",
+    "amount": 768
+  }
+}

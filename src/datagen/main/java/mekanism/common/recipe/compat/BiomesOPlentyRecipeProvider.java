@@ -4,7 +4,7 @@ import biomesoplenty.api.block.BOPBlocks;
 import biomesoplenty.api.item.BOPItems;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.datagen.recipe.builder.ItemStackGasToItemStackRecipeBuilder;
+import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
@@ -30,7 +30,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         addPrecisionSawmillRecipes(consumer, basePath + "sawing/");
         addEnrichingDyeRecipes(consumer, basePath + "dye/");
         //Mud brick -> mud ball
-        ItemStackGasToItemStackRecipeBuilder.injecting(
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(BOPItems.mud_brick),
               GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(BOPItems.mud_ball)

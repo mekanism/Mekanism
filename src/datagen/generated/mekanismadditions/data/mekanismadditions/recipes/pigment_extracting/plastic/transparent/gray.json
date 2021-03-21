@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "mekanismadditions:gray_plastic_transparent"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:gray",
+    "amount": 42
+  }
+}

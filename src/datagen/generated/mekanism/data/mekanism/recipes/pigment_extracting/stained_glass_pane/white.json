@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "tag": "forge:glass_panes/white"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:white",
+    "amount": 6
+  }
+}

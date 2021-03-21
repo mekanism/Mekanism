@@ -23,9 +23,12 @@ import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
+import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
+import mekanism.api.recipes.PaintingRecipe;
+import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
@@ -86,7 +89,13 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe> implements I
 
     public static final MekanismRecipeType<ItemStackToInfuseTypeRecipe> INFUSION_CONVERSION = create("infusion_conversion");
 
+    public static final MekanismRecipeType<ItemStackToPigmentRecipe> PIGMENT_EXTRACTING = create("pigment_extracting");
+
+    public static final MekanismRecipeType<PigmentMixingRecipe> PIGMENT_MIXING = create("pigment_mixing");
+
     public static final MekanismRecipeType<MetallurgicInfuserRecipe> METALLURGIC_INFUSING = create("metallurgic_infusing");
+
+    public static final MekanismRecipeType<PaintingRecipe> PAINTING = create("painting");
 
     public static final MekanismRecipeType<PressurizedReactionRecipe> REACTION = create("reaction");
 

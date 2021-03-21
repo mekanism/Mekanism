@@ -25,20 +25,21 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
       RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> extends BaseRecipeCategory<RECIPE> {
 
     private final IIngredientType<STACK> ingredientType;
+    protected GuiProgress progressBar;
 
     protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, ResourceLocation id, ITextComponent component, IIngredientType<STACK> ingredientType,
           boolean isConversion) {
         super(helper, id, component, 20, 12, 132, 62);
         this.ingredientType = ingredientType;
-        //Add the progress bar. addGuiElements gets called before isConversion is accessible
-        guiElements.add(new GuiProgress(isConversion ? () -> 1 : () -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 64, 40));
+        //Add the progress bar. addGuiElements gets called before we would be able to expose isConversion
+        guiElements.add(progressBar = new GuiProgress(isConversion ? () -> 1 : () -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 64, 40));
     }
 
     protected abstract GuiChemicalGauge<CHEMICAL, STACK, ?> getGauge(GaugeType type, int x, int y);
 
     @Override
     protected void addGuiElements() {
-        guiElements.add(getGauge(GaugeType.STANDARD, 133, 13));
+        guiElements.add(getGauge(GaugeType.STANDARD, 131, 13));
         guiElements.add(new GuiSlot(SlotType.INPUT, this, 25, 35));
     }
 
@@ -54,6 +55,6 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
         itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
         itemStacks.set(0, recipe.getInput().getRepresentations());
         IGuiIngredientGroup<STACK> chemicalStacks = recipeLayout.getIngredientsGroup(ingredientType);
-        initChemical(chemicalStacks, 0, false, 134 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputDefinition()), true);
+        initChemical(chemicalStacks, 0, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputDefinition()), true);
     }
 }

@@ -438,14 +438,13 @@ public class MekanismRenderer {
     }
 
     private static void parseColorAtlas(ResourceLocation rl) {
-        EnumColor[] colors = EnumColor.values();
-        List<Color> parsed = ColorAtlas.load(rl, colors.length);
-        if (parsed.size() < colors.length) {
+        List<Color> parsed = ColorAtlas.load(rl, EnumUtils.COLORS.length);
+        if (parsed.size() < EnumUtils.COLORS.length) {
             Mekanism.logger.error("Failed to parse primary color atlas.");
             return;
         }
-        for (int i = 0; i < colors.length; i++) {
-            colors[i].setColorFromAtlas(parsed.get(i).rgbArray());
+        for (int i = 0; i < EnumUtils.COLORS.length; i++) {
+            EnumUtils.COLORS[i].setColorFromAtlas(parsed.get(i).rgbArray());
         }
     }
 

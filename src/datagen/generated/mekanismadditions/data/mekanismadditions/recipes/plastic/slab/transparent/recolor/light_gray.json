@@ -11,10 +11,22 @@
   ],
   "key": {
     "#": {
-      "tag": "forge:slabs/plastic/transparent"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:slabs/plastic/transparent"
+      },
+      "without": {
+        "item": "mekanismadditions:light_gray_plastic_transparent_slab"
+      }
     },
     "D": {
-      "tag": "forge:dyes/light_gray"
+      "type": "mekanism:without",
+      "base": {
+        "tag": "forge:slabs/plastic/transparent"
+      },
+      "without": {
+        "item": "mekanismadditions:light_gray_plastic_transparent_slab"
+      }
     }
   }
 }

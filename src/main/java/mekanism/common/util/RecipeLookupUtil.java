@@ -5,10 +5,8 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import net.minecraft.item.ItemStack;
@@ -38,6 +36,17 @@ public class RecipeLookupUtil {
     }
 
     @Nullable
+    public static <STACK_A extends ChemicalStack<?>, STACK_B extends ChemicalStack<?>, RECIPE extends MekanismRecipe & BiPredicate<STACK_A, STACK_B>> RECIPE
+    findChemicalChemicalRecipe(ITileCachedRecipeHolder<RECIPE> holder, IInputHandler<@NonNull STACK_A> inputHandlerA, IInputHandler<@NonNull STACK_B> inputHandlerB) {
+        STACK_A stackA = inputHandlerA.getInput();
+        if (stackA.isEmpty()) {
+            return null;
+        }
+        STACK_B stackB = inputHandlerB.getInput();
+        return stackB.isEmpty() ? null : holder.findFirstRecipe(recipe -> recipe.test(stackA, stackB));
+    }
+
+    @Nullable
     public static <STACK extends ChemicalStack<?>, RECIPE extends MekanismRecipe & BiPredicate<ItemStack, STACK>> RECIPE findItemStackChemicalRecipe(
           ITileCachedRecipeHolder<RECIPE> holder, IInputHandler<@NonNull ItemStack> inputHandler, IInputHandler<@NonNull STACK> chemicalInputHandler) {
         ItemStack stack = inputHandler.getInput();
@@ -46,19 +55,6 @@ public class RecipeLookupUtil {
         }
         STACK chemicalStack = chemicalInputHandler.getInput();
         return chemicalStack.isEmpty() ? null : holder.findFirstRecipe(recipe -> recipe.test(stack, chemicalStack));
-    }
-
-    @Nullable
-    public static MetallurgicInfuserRecipe findMetallurgicInfuserRecipe(ITileCachedRecipeHolder<MetallurgicInfuserRecipe> holder,
-          IInputHandler<@NonNull ItemStack> inputHandler, IInputHandler<@NonNull InfusionStack> infusionInputHandler) {
-        //TODO - 1.17: Switch MetallurgicInfuserRecipes from being a BiPredicate<InfusionStack, ItemStack> to being a BiPredicate<ItemStack, InfusionStack>
-        // so that we can just use the above findItemStackChemicalRecipe. We can't do this now as it would be a breaking change
-        ItemStack stack = inputHandler.getInput();
-        if (stack.isEmpty()) {
-            return null;
-        }
-        InfusionStack infusionStack = infusionInputHandler.getInput();
-        return infusionStack.isEmpty() ? null : holder.findFirstRecipe(recipe -> recipe.test(infusionStack, stack));
     }
 
     @Nullable

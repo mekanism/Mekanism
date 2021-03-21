@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:pink_concrete_powder"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:pink",
+    "amount": 32
+  }
+}

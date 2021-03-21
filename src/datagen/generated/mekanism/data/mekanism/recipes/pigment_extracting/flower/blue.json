@@ -1,0 +1,19 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": [
+    {
+      "ingredient": {
+        "item": "minecraft:cornflower"
+      }
+    },
+    {
+      "ingredient": {
+        "item": "minecraft:lapis_lazuli"
+      }
+    }
+  ],
+  "output": {
+    "pigment": "mekanism:blue",
+    "amount": 768
+  }
+}
