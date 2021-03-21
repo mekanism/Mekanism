@@ -176,12 +176,17 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         outputHandler = OutputHelper.getOutputHandler(smeltingOutputSlot);
     }
 
-    public EntityRobit(World world, double x, double y, double z) {
-        this(MekanismEntityTypes.ROBIT.getEntityType(), world);
-        setPos(x, y, z);
-        xo = x;
-        yo = y;
-        zo = z;
+    @Nullable
+    public static EntityRobit create(World world, double x, double y, double z) {
+        EntityRobit robit = MekanismEntityTypes.ROBIT.get().create(world);
+        if (robit == null) {
+            return null;
+        }
+        robit.setPos(x, y, z);
+        robit.xo = x;
+        robit.yo = y;
+        robit.zo = z;
+        return robit;
     }
 
     @Override

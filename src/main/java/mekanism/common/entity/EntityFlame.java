@@ -66,8 +66,12 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         super(type, world);
     }
 
-    public EntityFlame(PlayerEntity player) {
-        this(MekanismEntityTypes.FLAME.getEntityType(), player.level);
+    @Nullable
+    public static EntityFlame create(PlayerEntity player) {
+        EntityFlame flame = MekanismEntityTypes.FLAME.get().create(player.level);
+        if (flame == null) {
+            return null;
+        }
         Pos3D playerPos = new Pos3D(player.getX(), player.getEyeY() - 0.1, player.getZ());
         Pos3D flameVec = new Pos3D(1, 1, 1);
 
@@ -75,10 +79,12 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         flameVec = flameVec.multiply(lookVec).yRot(6);
 
         Pos3D mergedVec = playerPos.translate(flameVec);
-        setPos(mergedVec.x, mergedVec.y, mergedVec.z);
-        setOwner(player);
-        mode = ((ItemFlamethrower) player.inventory.getSelected().getItem()).getMode(player.inventory.getSelected());
-        shootFromRotation(player, player.xRot, player.yRot, 0, 0.5F, 1);
+        flame.setPos(mergedVec.x, mergedVec.y, mergedVec.z);
+        flame.setOwner(player);
+        ItemStack selected = player.inventory.getSelected();
+        flame.mode = ((ItemFlamethrower) selected.getItem()).getMode(selected);
+        flame.shootFromRotation(player, player.xRot, player.yRot, 0, 0.5F, 1);
+        return flame;
     }
 
     @Override

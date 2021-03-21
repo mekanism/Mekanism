@@ -61,7 +61,10 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
             if (!chargepad.getActive()) {
                 if (!world.isClientSide) {
                     ItemStack stack = context.getItemInHand();
-                    EntityRobit robit = new EntityRobit(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
+                    EntityRobit robit = EntityRobit.create(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
+                    if (robit == null) {
+                        return ActionResultType.FAIL;
+                    }
                     robit.setHome(Coord4D.get(chargepad));
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                     if (energyContainer != null) {

@@ -81,18 +81,22 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
     @Override
     public void catchFire(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
         if (!world.isClientSide) {
-            TNTEntity tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
-            world.addFreshEntity(tnt);
-            world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            TNTEntity tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
+            if (tnt != null) {
+                world.addFreshEntity(tnt);
+                world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            }
         }
     }
 
     @Override
     public void wasExploded(World world, @Nonnull BlockPos pos, @Nonnull Explosion explosion) {
         if (!world.isClientSide) {
-            TNTEntity tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getSourceMob());
-            tnt.setFuse((short) (world.random.nextInt(tnt.getLife() / 4) + tnt.getLife() / 8));
-            world.addFreshEntity(tnt);
+            TNTEntity tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getSourceMob());
+            if (tnt != null) {
+                tnt.setFuse((short) (world.random.nextInt(tnt.getLife() / 4) + tnt.getLife() / 8));
+                world.addFreshEntity(tnt);
+            }
         }
     }
 

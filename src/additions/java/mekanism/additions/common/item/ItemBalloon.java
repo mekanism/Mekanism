@@ -45,7 +45,11 @@ public class ItemBalloon extends Item {
     public ActionResult<ItemStack> use(World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
         if (!world.isClientSide) {
             Pos3D pos = new Pos3D(hand == Hand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).yRot(player.yBodyRot).translate(new Pos3D(player));
-            world.addFreshEntity(new EntityBalloon(world, pos.x - 0.5, pos.y - 1.25, pos.z - 0.5, color));
+            EntityBalloon balloon = EntityBalloon.create(world, pos.x - 0.5, pos.y - 1.25, pos.z - 0.5, color);
+            if (balloon == null) {
+                return new ActionResult<>(ActionResultType.FAIL, player.getItemInHand(hand));
+            }
+            world.addFreshEntity(balloon);
         }
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isCreative()) {
@@ -90,7 +94,11 @@ public class ItemBalloon extends Item {
                 world.removeBlock(pos.above(), false);
                 world.removeBlock(pos.above(2), false);
                 if (!world.isClientSide) {
-                    world.addFreshEntity(new EntityBalloon(world, pos, color));
+                    EntityBalloon balloon = EntityBalloon.create(world, pos, color);
+                    if (balloon == null) {
+                        return ActionResultType.FAIL;
+                    }
+                    world.addFreshEntity(balloon);
                     stack.shrink(1);
                 }
                 return ActionResultType.SUCCESS;
@@ -113,7 +121,11 @@ public class ItemBalloon extends Item {
                         return ActionResultType.SUCCESS;
                     }
                 }
-                player.level.addFreshEntity(new EntityBalloon(entity, color));
+                EntityBalloon balloon = EntityBalloon.create(entity, color);
+                if (balloon == null) {
+                    return ActionResultType.FAIL;
+                }
+                player.level.addFreshEntity(balloon);
                 stack.shrink(1);
             }
             return ActionResultType.SUCCESS;
@@ -144,7 +156,10 @@ public class ItemBalloon extends Item {
                     }
                 }
                 if (!hasBalloon) {
-                    source.getLevel().addFreshEntity(new EntityBalloon(entity, color));
+                    EntityBalloon balloon = EntityBalloon.create(entity, color);
+                    if (balloon != null) {
+                        source.getLevel().addFreshEntity(balloon);
+                    }
                     latched = true;
                 }
             }
@@ -173,7 +188,10 @@ public class ItemBalloon extends Item {
                         break;
                 }
                 if (!source.getLevel().isClientSide) {
-                    source.getLevel().addFreshEntity(new EntityBalloon(source.getLevel(), pos.x, pos.y, pos.z, color));
+                    EntityBalloon balloon = EntityBalloon.create(source.getLevel(), pos.x, pos.y, pos.z, color);
+                    if (balloon != null) {
+                        source.getLevel().addFreshEntity(balloon);
+                    }
                 }
             }
             stack.shrink(1);

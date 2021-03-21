@@ -110,9 +110,12 @@ public class CommonPlayerTickHandler {
 
         ItemStack currentItem = player.inventory.getSelected();
         if (isFlamethrowerOn(player, currentItem)) {
-            player.level.addFreshEntity(new EntityFlame(player));
-            if (MekanismUtils.isPlayingMode(player)) {
-                ((ItemFlamethrower) currentItem.getItem()).useGas(currentItem, 1);
+            EntityFlame flame = EntityFlame.create(player);
+            if (flame != null) {
+                player.level.addFreshEntity(flame);
+                if (MekanismUtils.isPlayingMode(player)) {
+                    ((ItemFlamethrower) currentItem.getItem()).useGas(currentItem, 1);
+                }
             }
         }
 

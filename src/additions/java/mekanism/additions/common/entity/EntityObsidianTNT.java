@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import mekanism.common.Mekanism;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.TNTEntity;
@@ -21,13 +22,29 @@ public class EntityObsidianTNT extends TNTEntity {
     public EntityObsidianTNT(EntityType<EntityObsidianTNT> type, World world) {
         super(type, world);
         setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
-        blocksBuilding = true;
+        Mekanism.logger.info("Blocks building: {}", blocksBuilding);
+        //blocksBuilding = true;
     }
 
-    public EntityObsidianTNT(World world, double x, double y, double z, @Nullable LivingEntity igniter) {
-        super(world, x, y, z, igniter);
-        setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
-        blocksBuilding = true;
+    @Nullable
+    public static EntityObsidianTNT create(World world, double x, double y, double z, @Nullable LivingEntity igniter) {
+        EntityObsidianTNT tnt = AdditionsEntityTypes.OBSIDIAN_TNT.get().create(world);
+        if (tnt == null) {
+            return null;
+        }
+        //From TNTEntity constructor
+        tnt.setPos(x, y, z);
+        double d0 = world.random.nextDouble() * (double) ((float)Math.PI * 2F);
+        tnt.setDeltaMovement(-Math.sin(d0) * 0.02D, 0.2F, -Math.cos(d0) * 0.02D);
+        tnt.xo = x;
+        tnt.yo = y;
+        tnt.zo = z;
+        tnt.owner = igniter;
+        //End TNTEntity constructor
+        tnt.setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
+        //blocksBuilding = true;
+        Mekanism.logger.info("Blocks building: {}", tnt.blocksBuilding);
+        return tnt;
     }
 
     @Override

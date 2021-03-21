@@ -3,6 +3,7 @@ package mekanism.additions.common.entity;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
@@ -73,45 +74,59 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         this(type.getEntityType(), world);
     }
 
-    public EntityBalloon(World world, double x, double y, double z, EnumColor c) {
-        this(AdditionsEntityTypes.BALLOON, world);
-        setPos(x + 0.5F, y + 3F, z + 0.5F);
-
-        xo = getX();
-        yo = getY();
-        zo = getZ();
-        color = c;
+    @Nullable
+    public static EntityBalloon create(World world, double x, double y, double z, EnumColor c) {
+        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(world);
+        if (balloon == null) {
+            return null;
+        }
+        balloon.setPos(x + 0.5F, y + 3F, z + 0.5F);
+        balloon.xo = balloon.getX();
+        balloon.yo = balloon.getY();
+        balloon.zo = balloon.getZ();
+        balloon.color = c;
+        return balloon;
     }
 
-    public EntityBalloon(LivingEntity entity, EnumColor c) {
-        this(AdditionsEntityTypes.BALLOON, entity.level);
-        latchedEntity = entity;
-        float height = latchedEntity.getDimensions(latchedEntity.getPose()).height;
-        setPos(latchedEntity.getX(), latchedEntity.getY() + height + 1.7F, latchedEntity.getZ());
+    @Nullable
+    public static EntityBalloon create(LivingEntity entity, EnumColor c) {
+        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(entity.level);
+        if (balloon == null) {
+            return null;
+        }
+        balloon.latchedEntity = entity;
+        float height = balloon.latchedEntity.getDimensions(balloon.latchedEntity.getPose()).height;
+        balloon.setPos(balloon.latchedEntity.getX(), balloon.latchedEntity.getY() + height + 1.7F, balloon.latchedEntity.getZ());
 
-        xo = getX();
-        yo = getY();
-        zo = getZ();
+        balloon.xo = balloon.getX();
+        balloon.yo = balloon.getY();
+        balloon.zo = balloon.getZ();
 
-        color = c;
-        entityData.set(IS_LATCHED, (byte) 2);
-        entityData.set(LATCHED_ID, entity.getId());
+        balloon.color = c;
+        balloon.entityData.set(IS_LATCHED, (byte) 2);
+        balloon.entityData.set(LATCHED_ID, entity.getId());
+        return balloon;
     }
 
-    public EntityBalloon(World world, BlockPos pos, EnumColor c) {
-        this(AdditionsEntityTypes.BALLOON, world);
-        latched = pos;
-        setPos(latched.getX() + 0.5F, latched.getY() + 1.8F, latched.getZ() + 0.5F);
+    @Nullable
+    public static EntityBalloon create(World world, BlockPos pos, EnumColor c) {
+        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(world);
+        if (balloon == null) {
+            return null;
+        }
+        balloon.latched = pos;
+        balloon.setPos(balloon.latched.getX() + 0.5F, balloon.latched.getY() + 1.8F, balloon.latched.getZ() + 0.5F);
 
-        xo = getX();
-        yo = getY();
-        zo = getZ();
+        balloon.xo = balloon.getX();
+        balloon.yo = balloon.getY();
+        balloon.zo = balloon.getZ();
 
-        color = c;
-        entityData.set(IS_LATCHED, (byte) 1);
-        entityData.set(LATCHED_X, latched.getX());
-        entityData.set(LATCHED_Y, latched.getY());
-        entityData.set(LATCHED_Z, latched.getZ());
+        balloon.color = c;
+        balloon.entityData.set(IS_LATCHED, (byte) 1);
+        balloon.entityData.set(LATCHED_X, balloon.latched.getX());
+        balloon.entityData.set(LATCHED_Y, balloon.latched.getY());
+        balloon.entityData.set(LATCHED_Z, balloon.latched.getZ());
+        return balloon;
     }
 
     public EnumColor getColor() {
