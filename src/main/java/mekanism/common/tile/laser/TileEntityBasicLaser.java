@@ -48,6 +48,7 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.WorldEvents;
@@ -278,7 +279,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return Math.min(energy.divide(MekanismConfig.usage.laser.get()).divide(10).floatValue(), 0.6F);
     }
 
-    private void sendLaserDataToPlayers(LaserParticleData data, Pos3D from) {
+    private void sendLaserDataToPlayers(LaserParticleData data, Vector3d from) {
         if (!isRemote() && level instanceof ServerWorld) {
             ServerWorld serverWorld = (ServerWorld) level;
             for (ServerPlayerEntity player : serverWorld.players()) {

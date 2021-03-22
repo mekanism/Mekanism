@@ -20,7 +20,9 @@ import net.minecraft.world.World;
  *
  * @author aidancbrady
  */
-public class Pos3D extends Vector3d {//TODO - 10.1: Go through this class, it seems a decent number of these methods are effectively the same as in Vector3D
+public class Pos3D extends Vector3d {
+    //TODO - 10.1: Go through this class, it seems a decent number of these methods are effectively the same as in Vector3D
+    // Though it seems like at least our yRot method is subtly different than the Vector3D yrot method
 
     public Pos3D() {
         this(0, 0, 0);
@@ -81,7 +83,7 @@ public class Pos3D extends Vector3d {//TODO - 10.1: Go through this class, it se
         return Math.acos(pos1.dot(pos2));
     }
 
-    public static AxisAlignedBB getAABB(Pos3D pos1, Pos3D pos2) {
+    public static AxisAlignedBB getAABB(Vector3d pos1, Vector3d pos2) {
         return new AxisAlignedBB(pos1.x, pos1.y, pos1.z, pos2.x, pos2.y, pos2.z);
     }
 
@@ -235,8 +237,10 @@ public class Pos3D extends Vector3d {//TODO - 10.1: Go through this class, it se
         double xPos = x;
         double zPos = z;
         if (yaw != 0) {
-            xPos = x * Math.cos(yawRadians) - z * Math.sin(yawRadians);
-            zPos = z * Math.cos(yawRadians) + x * Math.sin(yawRadians);
+            double cos = Math.cos(yawRadians);
+            double sin = Math.sin(yawRadians);
+            xPos = x * cos - z * sin;
+            zPos = z * cos + x * sin;
         }
         return new Pos3D(xPos, y, zPos);
     }
@@ -248,8 +252,10 @@ public class Pos3D extends Vector3d {//TODO - 10.1: Go through this class, it se
         double yPos = y;
         double zPos = z;
         if (pitch != 0) {
-            yPos = y * Math.cos(pitchRadians) - z * Math.sin(pitchRadians);
-            zPos = z * Math.cos(pitchRadians) + y * Math.sin(pitchRadians);
+            double cos = Math.cos(pitchRadians);
+            double sin = Math.sin(pitchRadians);
+            yPos = y * cos - z * sin;
+            zPos = z * cos + y * sin;
         }
         return new Pos3D(x, yPos, zPos);
     }
@@ -273,6 +279,7 @@ public class Pos3D extends Vector3d {//TODO - 10.1: Go through this class, it se
         return new Pos3D(xPos, yPos, zPos);
     }
 
+    @Nonnull
     @Override
     public Pos3D multiply(Vector3d pos) {
         return multiply(pos.x, pos.y, pos.z);
@@ -287,6 +294,7 @@ public class Pos3D extends Vector3d {//TODO - 10.1: Go through this class, it se
      *
      * @return scaled Pos3D
      */
+    @Nonnull
     @Override
     public Pos3D multiply(double x, double y, double z) {
         return new Pos3D(this.x * x, this.y * y, this.z * z);
@@ -311,7 +319,8 @@ public class Pos3D extends Vector3d {//TODO - 10.1: Go through this class, it se
 
     public double[] getRotationMatrix(float angle) {
         double[] matrix = new double[16];
-        Pos3D axis = clone().normalize();
+        //Note: We don't need to bother cloning it here as normalize will return a new object regardless
+        Vector3d axis = normalize();
 
         double x = axis.x;
         double y = axis.y;

@@ -292,7 +292,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         /**
          * Only exposed for creating via ComputerCraft
          */
-        public void setSelectedOutput(Item output) {
+        public void setSelectedOutput(@Nonnull Item output) {
             this.selectedOutput = output;
         }
 

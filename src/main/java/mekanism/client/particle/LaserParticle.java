@@ -57,7 +57,7 @@ public class LaserParticle extends SpriteTexturedParticle {
     private final Direction direction;
     private final float halfLength;
 
-    private LaserParticle(ClientWorld world, Pos3D start, Pos3D end, Direction dir, float energyScale) {
+    private LaserParticle(ClientWorld world, Vector3d start, Vector3d end, Direction dir, float energyScale) {
         super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
         lifetime = 5;
         rCol = 1;
@@ -65,7 +65,7 @@ public class LaserParticle extends SpriteTexturedParticle {
         bCol = 0;
         alpha = 0.1F;
         quadSize = energyScale;
-        halfLength = (float) (end.distance(start) / 2);
+        halfLength = (float) (end.distanceTo(start) / 2);
         direction = dir;
         updateBoundingBox();
     }

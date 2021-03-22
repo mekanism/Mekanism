@@ -78,7 +78,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         Vector3d lookVec = player.getLookAngle();
         flameVec = flameVec.multiply(lookVec).yRot(6);
 
-        Pos3D mergedVec = playerPos.translate(flameVec);
+        Vector3d mergedVec = playerPos.add(flameVec);
         flame.setPos(mergedVec.x, mergedVec.y, mergedVec.z);
         flame.setOwner(player);
         ItemStack selected = player.inventory.getSelected();

@@ -329,6 +329,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return sorting;
     }
 
+    @Nonnull
     @ComputerMethod(nameOverride = "getEnergyUsage")
     public FloatingLong getLastUsage() {
         return lastUsage;

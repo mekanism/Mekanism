@@ -283,9 +283,8 @@ public class RenderTickHandler {
                                     flameVec = new Pos3D(flameXCoord, flameYCoord, flameZCoord).yRot(p.yBodyRot);
                                 }
                                 Vector3d motion = p.getDeltaMovement();
-                                Pos3D flameMotion = new Pos3D(motion.x(), p.isOnGround() ? 0 : motion.y(), motion.z());
-                                Pos3D playerPos = new Pos3D(p);
-                                Pos3D mergedVec = playerPos.translate(flameVec);
+                                Vector3d flameMotion = new Vector3d(motion.x(), p.isOnGround() ? 0 : motion.y(), motion.z());
+                                Vector3d mergedVec = p.position().add(flameVec);
                                 world.addParticle(MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
                                       mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
                             }
@@ -474,7 +473,7 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderJetpackSmoke(World world, Pos3D pos, Pos3D motion) {
+    private void renderJetpackSmoke(World world, Vector3d pos, Vector3d motion) {
         world.addParticle(MekanismParticleTypes.JETPACK_FLAME.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
         world.addParticle(MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
     }

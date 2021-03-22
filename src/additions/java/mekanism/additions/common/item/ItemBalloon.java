@@ -23,6 +23,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
@@ -33,7 +34,7 @@ public class ItemBalloon extends Item {
     public ItemBalloon(EnumColor color) {
         super(ItemDeferredRegister.getMekBaseProperties());
         this.color = color;
-        DispenserBlock.registerBehavior(this, new DispenserBehavior());
+        DispenserBlock.registerBehavior(this, new DispenserBehavior(this.color));
     }
 
     public EnumColor getColor() {
@@ -44,7 +45,7 @@ public class ItemBalloon extends Item {
     @Override
     public ActionResult<ItemStack> use(World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
         if (!world.isClientSide) {
-            Pos3D pos = new Pos3D(hand == Hand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).yRot(player.yBodyRot).translate(new Pos3D(player));
+            Vector3d pos = new Pos3D(hand == Hand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).yRot(player.yBodyRot).translate(new Pos3D(player));
             EntityBalloon balloon = EntityBalloon.create(world, pos.x - 0.5, pos.y - 1.25, pos.z - 0.5, color);
             if (balloon == null) {
                 return new ActionResult<>(ActionResultType.FAIL, player.getItemInHand(hand));
@@ -133,7 +134,13 @@ public class ItemBalloon extends Item {
         return ActionResultType.PASS;
     }
 
-    public class DispenserBehavior extends DefaultDispenseItemBehavior {
+    private static class DispenserBehavior extends DefaultDispenseItemBehavior {
+
+        private final EnumColor color;
+
+        public DispenserBehavior(EnumColor color) {
+            this.color = color;
+        }
 
         @Nonnull
         @Override
@@ -164,26 +171,24 @@ public class ItemBalloon extends Item {
                 }
             }
             if (!latched) {
-                Pos3D pos = Pos3D.create(sourcePos).translate(0, -0.5, 0);
+                Vector3d pos = Vector3d.atLowerCornerOf(sourcePos).add(0, -0.5, 0);
                 switch (side) {
                     case DOWN:
-                        pos = pos.translate(0, -2.5, 0);
-                        break;
-                    case UP:
-                        pos = pos.translate(0, 0, 0);
+                        pos = pos.add(0, -3.5, 0);
                         break;
                     case NORTH:
-                        pos = pos.translate(0, -1, -0.5);
+                        pos = pos.add(0, -1, -0.5);
                         break;
                     case SOUTH:
-                        pos = pos.translate(0, -1, 0.5);
+                        pos = pos.add(0, -1, 0.5);
                         break;
                     case WEST:
-                        pos = pos.translate(-0.5, -1, 0);
+                        pos = pos.add(-0.5, -1, 0);
                         break;
                     case EAST:
-                        pos = pos.translate(0.5, -1, 0);
+                        pos = pos.add(0.5, -1, 0);
                         break;
+                    case UP:
                     default:
                         break;
                 }

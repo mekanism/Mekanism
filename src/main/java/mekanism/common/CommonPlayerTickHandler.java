@@ -65,7 +65,6 @@ public class CommonPlayerTickHandler {
         }
         AxisAlignedBB playerBox = player.getBoundingBox();
         return !s.isAir(player.level, pos) && playerBox.move(0, -0.01, 0).intersects(shape.bounds().move(pos));
-
     }
 
     public static boolean isScubaMaskOn(PlayerEntity player, ItemStack tank) {
