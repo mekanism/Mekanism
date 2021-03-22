@@ -9,7 +9,7 @@
     },
     {
       "type": "text",
-      "flag": "false",
+      "flag": "mod:mekanismgenerators",
       "text": "Used in the Fission Reactor."
     }
   ],

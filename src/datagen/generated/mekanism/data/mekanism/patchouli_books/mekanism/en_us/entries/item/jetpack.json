@@ -16,13 +16,21 @@
     },
     {
       "type": "text",
-      "text": "The Jetpack has three modes to choose from, which can be toggled by pressing the $(k:key.mekanism.chest_mode) key.$(li)$(bold)Regular$() (default): Press $(k:jump) to increase your height and release to fall. Note that you will take fall damage unless you carefully lower yourself to the ground.$(li)$(bold)Hover$(): Constant flight, without the need to level yourself like you do with Regular mode. Press $(k:jump) to increase altitude and press $(k:sneak) to decrease. Note that this mode constantly consumes Hydrogen, but at a reduced rate as compared to Regular mode.$(li)$(bold)Disabled$(): The Jetpack is disabled.",
+      "text": "The Jetpack has three modes to choose from, which can be toggled by pressing the $(k:key.mekanism.chest_mode) key.$(li)$(bold)Regular$() (default): Press $(k:jump) to increase your height and release to fall. Note that you will take fall damage unless you carefully lower yourself to the ground.$(li)$(bold)Hover$(): Constant flight, without the need to level yourself like you do with Regular mode. Press $(k:jump) to increase altitude and press $(k:sneak) to decrease. ",
       "title": "Operation Modes"
     },
     {
       "type": "text",
-      "text": "$(li)The Jetpack cannot be worn with chestplate armor, since it uses the same slot, consider upgrading it to the $(l:item/jetpack_armored)Armored Jetpack$(/l) if you want protection.$(li)The Jetpack emits fire particles; however, it will not set anything on fire.$(li)If you want to maintain your altitude, choose Hover mode. If you want to ascend/descend rapidly, use Regular mode. If you want to conserve fuel while trekking across hills, mountains, consider Disabled mode.$(li)The Jetpack can be paired with the Free Runners to protect against fall damage.",
+      "text": "Note that this mode constantly consumes Hydrogen, but at a reduced rate as compared to Regular mode.$(li)$(bold)Disabled$(): The Jetpack is disabled."
+    },
+    {
+      "type": "text",
+      "text": "$(li)The Jetpack cannot be worn with chestplate armor, since it uses the same slot, consider upgrading it to the $(l:item/jetpack_armored)Armored Jetpack$(/l) if you want protection.$(li)The Jetpack emits fire particles; however, it will not set anything on fire.$(li)If you want to maintain your altitude, choose Hover mode. $(li)If you want to ascend/descend rapidly, use Regular mode. ",
       "title": "Tips"
+    },
+    {
+      "type": "text",
+      "text": "$(li)If you want to conserve fuel while trekking across hills, mountains, consider Disabled mode.$(li)The Jetpack can be paired with the Free Runners to protect against fall damage."
     }
   ],
   "read_by_default": true
