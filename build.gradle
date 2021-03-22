@@ -418,7 +418,9 @@ dependencies {
     compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:${computer_craft_version}")
 
     //Dependencies for data generators for mod compat reference
-    datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}")
+    datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}"){
+        transitive = false
+    }
     datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
