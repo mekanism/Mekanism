@@ -53,7 +53,7 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
             if (type.isInstance(e)) {
                 return (ENTITY) e;
             }
-            throw new IllegalStateException("Client could not locate entity (id: " + entityId + ")  for entity container or the entity didn't was of an invalid type. "
+            throw new IllegalStateException("Client could not locate entity (id: " + entityId + ")  for entity container or the entity was of an invalid type. "
                                             + "This is likely caused by a mod breaking client side entity lookup.");
         });
     }

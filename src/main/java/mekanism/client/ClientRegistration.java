@@ -1,7 +1,6 @@
 package mekanism.client;
 
 import com.google.common.collect.Table.Cell;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -449,29 +448,32 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void loadComplete(FMLLoadCompleteEvent evt) {
-        EntityRendererManager entityRenderManager = Minecraft.getInstance().getEntityRenderDispatcher();
-        //Add our own custom armor layer to the various player renderers
-        for (Entry<String, PlayerRenderer> entry : entityRenderManager.getSkinMap().entrySet()) {
-            addCustomArmorLayer(entry.getValue());
-        }
-        //Add our own custom armor layer to everything that has an armor layer
-        //Note: This includes any modded mobs that have vanilla's BipedArmorLayer added to them
-        for (Entry<EntityType<?>, EntityRenderer<?>> entry : entityRenderManager.renderers.entrySet()) {
-            EntityRenderer<?> renderer = entry.getValue();
-            if (renderer instanceof LivingRenderer) {
-                addCustomArmorLayer((LivingRenderer) renderer);
+        evt.enqueueWork(() -> {
+            //Enqueue our layer render injection code as it acts on non thread safe collections
+            EntityRendererManager entityRenderManager = Minecraft.getInstance().getEntityRenderDispatcher();
+            //Add our own custom armor layer to the various player renderers
+            for (Entry<String, PlayerRenderer> entry : entityRenderManager.getSkinMap().entrySet()) {
+                addCustomArmorLayer(entry.getValue());
             }
-        }
+            //Add our own custom armor layer to everything that has an armor layer
+            //Note: This includes any modded mobs that have vanilla's BipedArmorLayer added to them
+            for (Entry<EntityType<?>, EntityRenderer<?>> entry : entityRenderManager.renderers.entrySet()) {
+                EntityRenderer<?> renderer = entry.getValue();
+                if (renderer instanceof LivingRenderer) {
+                    addCustomArmorLayer((LivingRenderer) renderer);
+                }
+            }
+        });
     }
 
     private static <T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> void addCustomArmorLayer(LivingRenderer<T, M> renderer) {
-        for (LayerRenderer<T, M> layerRenderer : new ArrayList<>(renderer.layers)) {
-            //Only allow an exact match, so we don't add to modded entities that only have a modded extended armor layer
-            if (layerRenderer.getClass() == BipedArmorLayer.class) {
-                BipedArmorLayer<T, M, A> bipedArmorLayer = (BipedArmorLayer<T, M, A>) layerRenderer;
-                renderer.addLayer(new MekanismArmorLayer<>(renderer, bipedArmorLayer.innerModel, bipedArmorLayer.outerModel));
-                break;
-            }
+        //Only allow an exact class match, so we don't add to modded entities that only have a modded extended armor layer
+        // We also validate against the layer render being null, as it seems like some mods do stupid things and add in null layers
+        LayerRenderer<T, M> matchingLayer = renderer.layers.stream().filter(layerRenderer -> layerRenderer != null && layerRenderer.getClass() == BipedArmorLayer.class)
+              .findFirst().orElse(null);
+        if (matchingLayer != null) {
+            BipedArmorLayer<T, M, A> bipedArmorLayer = (BipedArmorLayer<T, M, A>) matchingLayer;
+            renderer.addLayer(new MekanismArmorLayer<>(renderer, bipedArmorLayer.innerModel, bipedArmorLayer.outerModel));
         }
     }
 
