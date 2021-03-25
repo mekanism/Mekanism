@@ -49,7 +49,7 @@ import net.minecraftforge.fluids.FluidStack;
 public class EvaporationMultiblockData extends MultiblockData implements ITileCachedRecipeHolder<FluidToFluidRecipe>, IValveHandler {
 
     private static final int MAX_OUTPUT = 10_000;
-    private static final int MAX_HEIGHT = 18;
+    public static final int MAX_HEIGHT = 18;
     public static final double MAX_MULTIPLIER_TEMP = 3_000;
 
     @ContainerSync

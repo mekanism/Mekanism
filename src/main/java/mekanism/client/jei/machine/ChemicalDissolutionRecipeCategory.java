@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.GasStack;
@@ -13,9 +12,10 @@ import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
+import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -23,32 +23,33 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
 
 public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<ChemicalDissolutionRecipe> {
 
+    private final GuiGauge<?> inputGauge;
+    private final GuiGauge<?> outputGauge;
+    private final GuiSlot inputSlot;
+
     public ChemicalDissolutionRecipeCategory(IGuiHelper helper) {
         super(helper, MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, 3, 3, 170, 79);
         //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations
         // we will eventually instead just make the text scale
-    }
-
-    @Override
-    protected void addGuiElements() {
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 7, 4));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 131, 13));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 151, 4).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 27, 35));
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 151, 24).with(SlotOverlay.PLUS));
-        guiElements.add(new GuiSlot(SlotType.EXTRA, this, 7, 64).with(SlotOverlay.MINUS));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 64, 40));
+        inputGauge = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 7, 4));
+        outputGauge = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 131, 13));
+        inputSlot = addSlot(SlotType.INPUT, 28, 36);
+        addSlot(SlotType.EXTRA, 8, 65).with(SlotOverlay.MINUS);
+        addSlot(SlotType.OUTPUT, 152, 55).with(SlotOverlay.PLUS);
+        addSlot(SlotType.POWER, 152, 14).with(SlotOverlay.POWER);
+        addSimpleProgress(ProgressType.LARGE_RIGHT, 64, 40);
+        addElement(new GuiHorizontalPowerBar(this, FULL_BAR, 115, 75));
     }
 
     @Override
@@ -80,14 +81,12 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, ChemicalDissolutionRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 27 - xOffset, 35 - yOffset);
-        itemStacks.set(0, recipe.getItemInput().getRepresentations());
+        initItem(recipeLayout.getItemStacks(), 0, true, inputSlot, recipe.getItemInput().getRepresentations());
         List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
               .collect(Collectors.toList());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initChemical(gasStacks, 0, true, 8 - xOffset, 5 - yOffset, 16, 58, scaledGases, true);
+        initChemical(gasStacks, 0, true, inputGauge, scaledGases);
         BoxedChemicalStack outputDefinition = recipe.getOutputDefinition();
         ChemicalType chemicalType = outputDefinition.getChemicalType();
         if (chemicalType == ChemicalType.GAS) {
@@ -103,9 +102,7 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void initChemicalOutput(IRecipeLayout recipeLayout, IIngredientType<STACK> type,
-          STACK stack) {
-        IGuiIngredientGroup<STACK> stacks = recipeLayout.getIngredientsGroup(type);
-        initChemical(stacks, 1, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(stack), true);
+    private <STACK extends ChemicalStack<?>> void initChemicalOutput(IRecipeLayout recipeLayout, IIngredientType<STACK> type, STACK stack) {
+        initChemical(recipeLayout.getIngredientsGroup(type), 1, false, outputGauge, Collections.singletonList(stack));
     }
 }

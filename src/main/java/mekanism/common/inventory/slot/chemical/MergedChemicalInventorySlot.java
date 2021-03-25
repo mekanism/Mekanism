@@ -12,6 +12,7 @@ import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
+import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.item.ItemStack;
 
@@ -92,6 +93,7 @@ public class MergedChemicalInventorySlot<MERGED extends MergedChemicalTank> exte
     protected MergedChemicalInventorySlot(MERGED mergedTank, BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract,
           BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
+        setSlotType(ContainerSlotType.EXTRA);
         this.mergedTank = mergedTank;
     }
 

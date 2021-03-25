@@ -46,8 +46,12 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
 
     public abstract List<ITextComponent> getTooltipText();
 
+    public GaugeOverlay getGaugeOverlay() {
+        return gaugeType.getGaugeOverlay();
+    }
+
     protected GaugeInfo getGaugeColor() {
-        return GaugeInfo.STANDARD;
+        return gaugeType.getGaugeInfo();
     }
 
     protected void applyRenderColor() {
@@ -73,14 +77,14 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         }
         //Draw the bar overlay
         minecraft.textureManager.bind(getResource());
-        GaugeOverlay gaugeOverlay = gaugeType.getGaugeOverlay();
+        GaugeOverlay gaugeOverlay = getGaugeOverlay();
         blit(matrix, x + 1, y + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         ItemStack stack = minecraft.player.inventory.getCarried();
-        EnumColor color = gaugeType.getGaugeInfo().getColor();
+        EnumColor color = getGaugeColor().getColor();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
             if (gui() instanceof GuiMekanismTile) {
                 TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) gui()).getTileEntity();

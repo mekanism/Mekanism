@@ -10,14 +10,10 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.config.DataType;
-import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -51,23 +47,6 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
                 return tank == null ? -1 : tanksSupplier.get().indexOf(tank);
             }
         }, type, gui, x, y, sizeX, sizeY, tankType);
-    }
-
-    @Override
-    protected GaugeInfo getGaugeColor() {
-        if (gui() instanceof GuiMekanismTile) {
-            TANK tank = getTank();
-            if (tank != null) {
-                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) gui()).getMenu().getTileEntity();
-                if (tile instanceof ISideConfiguration) {
-                    DataType dataType = ((ISideConfiguration) tile).getActiveDataType(tank);
-                    if (dataType != null) {
-                        return GaugeInfo.get(dataType);
-                    }
-                }
-            }
-        }
-        return GaugeInfo.STANDARD;
     }
 
     public GuiChemicalGauge<CHEMICAL, STACK, TANK> setLabel(ITextComponent label) {

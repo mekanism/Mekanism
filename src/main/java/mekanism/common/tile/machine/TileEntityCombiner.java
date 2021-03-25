@@ -76,7 +76,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        //TODO: Should we limit ACTUAL insertion to be based on the other slot's contents?
+        //TODO - 10.1: Limit insertion to make sure it matches with the secondary type (similar to metallurgic infusers and the like)
         builder.addSlot(mainInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getMainInput().testType(item)), this, 64, 17));
         builder.addSlot(extraInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getExtraInput().testType(item)), this, 64, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));

@@ -9,8 +9,8 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
+import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.gauge.GuiPigmentGauge;
-import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.GuiProgress.ColorDetails;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -19,6 +19,7 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
@@ -34,20 +35,18 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
     // between the recipe and the ingredient group JEI has so that we can ensure the arrows are the proper color
     private final Map<PaintingRecipe, IGuiIngredientGroup<PigmentStack>> ingredients = new WeakHashMap<>();
     private final PigmentColorDetails colorDetails;
+    private final GuiGauge<?> inputPigment;
+    private final GuiSlot inputSlot;
+    private final GuiSlot output;
 
     public PaintingRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.PAINTING_MACHINE, 5, 10, 166, 64);
-        //Add the progress bar. addGuiElements gets called before we would be able to set the color details
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 64, 40).colored(colorDetails = new PigmentColorDetails()));
-    }
-
-    @Override
-    protected void addGuiElements() {
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 45, 35));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 142, 35).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 116, 35));
-        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(GuiPigmentGauge.getDummy(GaugeType.STANDARD, this, 25, 13));
+        super(helper, MekanismBlocks.PAINTING_MACHINE, 25, 13, 146, 60);
+        inputSlot = addSlot(SlotType.INPUT, 45, 35);
+        addSlot(SlotType.POWER, 144, 35).with(SlotOverlay.POWER);
+        output = addSlot(SlotType.OUTPUT, 116, 35);
+        addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
+        inputPigment = addElement(GuiPigmentGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 25, 13));
+        addSimpleProgress(ProgressType.LARGE_RIGHT, 64, 39).colored(colorDetails = new PigmentColorDetails());
     }
 
     @Override
@@ -76,12 +75,10 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, PaintingRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 45 - xOffset, 35 - yOffset);
-        itemStacks.init(1, false, 116 - xOffset, 35 - yOffset);
-        itemStacks.set(0, recipe.getItemInput().getRepresentations());
-        itemStacks.set(1, recipe.getOutputDefinition());
+        initItem(itemStacks, 0, true, inputSlot, recipe.getItemInput().getRepresentations());
+        initItem(itemStacks, 1, false, output, recipe.getOutputDefinition());
         IGuiIngredientGroup<PigmentStack> pigmentStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_PIGMENT);
-        initChemical(pigmentStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, recipe.getChemicalInput().getRepresentations(), true);
+        initChemical(pigmentStacks, 0, true, inputPigment, recipe.getChemicalInput().getRepresentations());
         this.ingredients.put(recipe, pigmentStacks);
     }
 

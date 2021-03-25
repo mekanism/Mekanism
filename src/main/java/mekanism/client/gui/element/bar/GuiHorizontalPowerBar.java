@@ -36,6 +36,10 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
         }, x, y, desiredWidth);
     }
 
+    public GuiHorizontalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y) {
+        this(gui, handler, x, y, texWidth);
+    }
+
     public GuiHorizontalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int desiredWidth) {
         super(ENERGY_BAR, gui, handler, x, y, desiredWidth, texHeight);
         widthScale = desiredWidth / (double) texWidth;

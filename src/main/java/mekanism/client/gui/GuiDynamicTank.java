@@ -69,7 +69,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
             // capacity is the same for the tank no matter what type it is currently stored
             ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(multiblock.getTankCapacity())));
             return ret;
-        }).defaultFormat().spacing(2));
+        }).spacing(2));
         addButton(new GuiDownArrow(this, 150, 39));
         addButton(new GuiContainerEditModeTab<>(this, tile));
         addButton(new GuiMergedTankGauge<>(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));

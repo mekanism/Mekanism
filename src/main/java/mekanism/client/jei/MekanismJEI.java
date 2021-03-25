@@ -312,10 +312,13 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, ENERGY_CONVERSION, MekanismRecipeType.ENERGY_CONVERSION);
         RecipeRegistryHelper.register(registry, GAS_CONVERSION, MekanismRecipeType.GAS_CONVERSION);
         RecipeRegistryHelper.register(registry, INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
+        //TODO - 10.1: Do something similar as we do to fission, and make it so that the boiler can shows that it can work?
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
+        //TODO - 1.17: Re-evaluate how some of the recipes return a list and some return a single element as output representations
+        // Strictly speaking all the output definitions should be based on which set of inputs there is
         CatalystRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CRUSHER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.COMBINER);
@@ -331,7 +334,10 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.register(registry, MekanismBlocks.CHEMICAL_WASHER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ELECTROLYTIC_SEPARATOR);
-        CatalystRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.SPS_CASING.getRegistryName(), MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT,
+              MekanismBlocks.SUPERCHARGED_COIL);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getRegistryName(), MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
+              MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
         CatalystRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
         CatalystRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER);
@@ -345,10 +351,8 @@ public class MekanismJEI implements IModPlugin {
         CatalystRegistryHelper.registerRecipeItem(registry, MekanismItems.ROBIT, MekanismBlocks.ENERGIZED_SMELTER.getRegistryName(), VanillaRecipeCategoryUid.ANVIL,
               VanillaRecipeCategoryUid.CRAFTING, VanillaRecipeCategoryUid.FURNACE);
         //TODO: Decide if we want to make it so all mekanism energy supporting blocks that have gui's are added as catalysts?
-        registry.addRecipeCatalyst(MekanismBlocks.BASIC_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
-        registry.addRecipeCatalyst(MekanismBlocks.ADVANCED_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
-        registry.addRecipeCatalyst(MekanismBlocks.ELITE_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
-        registry.addRecipeCatalyst(MekanismBlocks.ULTIMATE_ENERGY_CUBE.getItemStack(), ENERGY_CONVERSION);
+        CatalystRegistryHelper.register(registry, ENERGY_CONVERSION, MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE,
+              MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
     }
 
     @Override

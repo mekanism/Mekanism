@@ -47,8 +47,8 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         this(capacityMb, TooltipMode.SHOW_AMOUNT, width, height, null);
     }
 
-    public ChemicalStackRenderer(long capacityMb, boolean showCapacity, int width, int height, @Nullable IDrawable overlay) {
-        this(capacityMb, showCapacity ? TooltipMode.SHOW_AMOUNT_AND_CAPACITY : TooltipMode.SHOW_AMOUNT, width, height, overlay);
+    public ChemicalStackRenderer(long capacityMb, int width, int height, @Nullable IDrawable overlay) {
+        this(capacityMb, TooltipMode.SHOW_AMOUNT, width, height, overlay);
     }
 
     private ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height, @Nullable IDrawable overlay) {

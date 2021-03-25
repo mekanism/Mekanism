@@ -41,4 +41,10 @@ public class CatalystRegistryHelper {
     public static void registerRecipeItem(IRecipeCatalystRegistration registry, IItemProvider mekanismItem, ResourceLocation... categories) {
         registry.addRecipeCatalyst(mekanismItem.getItemStack(), categories);
     }
+
+    public static void register(IRecipeCatalystRegistration registry, ResourceLocation category, IItemProvider... catalysts) {
+        for (IItemProvider catalyst : catalysts) {
+            registry.addRecipeCatalyst(catalyst.getItemStack(), category);
+        }
+    }
 }

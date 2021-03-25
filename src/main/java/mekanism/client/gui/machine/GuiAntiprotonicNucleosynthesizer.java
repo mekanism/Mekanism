@@ -57,7 +57,6 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     @Override
     public void init() {
         super.init();
-
         addButton(new GuiInnerScreen(this, 45, 18, 104, 68).jeiCategory(tile));
         addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiRedstoneControlTab(this, tile));
@@ -75,7 +74,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
             public double getLevel() {
                 return Math.min(1, tile.getScaledProgress());
             }
-        }, 5, 88, imageWidth - 12, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
+        }, 5, 88, 183, ColorFunction.scale(Color.rgbi(60, 45, 74), Color.rgbi(100, 30, 170))));
     }
 
     @Override

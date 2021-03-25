@@ -73,13 +73,13 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-
         if (renderStrings != null) {
             List<ITextComponent> list = renderStrings.get();
             float startY = relativeY + padding;
             if (centerY) {
-                int totalHeight = list.size() * 8 + spacing * (list.size() - 1);
-                startY = relativeY + getHeight() / 2F - totalHeight / 2F;
+                int listSize = list.size();
+                int totalHeight = listSize * 8 + spacing * (listSize - 1);
+                startY = relativeY + (getHeight() - totalHeight) / 2F;
             }
             for (ITextComponent text : renderStrings.get()) {
                 drawText(matrix, text, relativeX + padding, startY);

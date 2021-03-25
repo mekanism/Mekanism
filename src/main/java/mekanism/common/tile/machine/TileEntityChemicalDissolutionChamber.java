@@ -171,8 +171,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
             //Otherwise return true, as we already validated the type was valid
             return true;
         }, item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 28, 36));
-        builder.addSlot(outputSlot = MergedChemicalInventorySlot.drain(outputTank, this, 152, 25));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 5));
+        builder.addSlot(outputSlot = MergedChemicalInventorySlot.drain(outputTank, this, 152, 55));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 14));
         gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
         return builder.build();

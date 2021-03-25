@@ -48,6 +48,16 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
     }
 
     @Override
+    public GaugeOverlay getGaugeOverlay() {
+        return getCurrentGauge().getGaugeOverlay();
+    }
+
+    @Override
+    protected GaugeInfo getGaugeColor() {
+        return getCurrentGauge().getGaugeColor();
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
         if (currentGauge == null) {

@@ -321,7 +321,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         }
     }
 
-    public void onDrawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public final void onDrawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             drawBackground(matrix, mouseX, mouseY, partialTicks);
         }

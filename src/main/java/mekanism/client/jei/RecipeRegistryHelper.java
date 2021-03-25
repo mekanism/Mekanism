@@ -11,6 +11,7 @@ import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.registries.MekanismBlocks;
@@ -73,7 +74,8 @@ public class RecipeRegistryHelper {
     public static void registerSPS(IRecipeRegistration registry) {
         //TODO - V11: Make the SPS have a proper recipe type to allow for custom recipes
         // Note: While the serializer and type are nonnull, they aren't used anywhere by recipes that are only added to JEI
-        GasToGasRecipe recipe = new GasToGasRecipe(Mekanism.rl("processing/polonium_to_antimatter"), GasStackIngredient.from(MekanismGases.POLONIUM, 1_000), MekanismGases.ANTIMATTER.getStack(1)) {
+        GasToGasRecipe recipe = new GasToGasRecipe(Mekanism.rl("processing/polonium_to_antimatter"),
+              GasStackIngredient.from(MekanismGases.POLONIUM, MekanismConfig.general.spsInputPerAntimatter.get()), MekanismGases.ANTIMATTER.getStack(1)) {
             @Nonnull
             @Override
             public IRecipeSerializer<?> getSerializer() {

@@ -47,6 +47,16 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTrac
     }
 
     @Override
+    public GaugeOverlay getGaugeOverlay() {
+        return getCurrentGauge().getGaugeOverlay();
+    }
+
+    @Override
+    protected GaugeInfo getGaugeColor() {
+        return getCurrentGauge().getGaugeColor();
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
         if (currentGauge == null) {

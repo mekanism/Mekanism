@@ -78,9 +78,9 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
         }
     }
 
-    //TODO: Come up with a better way to have this "tick"/update
     @Override
     public void tick() {
+        super.tick();
         BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
         if (boxedChemical.getChemicalType() == ChemicalType.SLURRY) {
             Slurry inputSlurry = (Slurry) boxedChemical.getChemicalStack().getType();
@@ -117,6 +117,10 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
                 }
             }
         }
+    }
+
+    public int getSlotX() {
+        return slotX;
     }
 
     public interface IOreInfo {

@@ -9,6 +9,9 @@ import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.network.to_server.PacketDropperUse;
 import mekanism.common.network.to_server.PacketDropperUse.DropperAction;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
+import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.config.DataType;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 
@@ -25,6 +28,23 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IJEII
 
     public TANK getTank() {
         return infoHandler.getTank();
+    }
+
+    @Override
+    protected GaugeInfo getGaugeColor() {
+        if (gui() instanceof GuiMekanismTile) {
+            TANK tank = getTank();
+            if (tank != null) {
+                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) gui()).getMenu().getTileEntity();
+                if (tile instanceof ISideConfiguration) {
+                    DataType dataType = ((ISideConfiguration) tile).getActiveDataType(tank);
+                    if (dataType != null) {
+                        return GaugeInfo.get(dataType);
+                    }
+                }
+            }
+        }
+        return super.getGaugeColor();
     }
 
     @Override

@@ -6,15 +6,15 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
+import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
@@ -25,23 +25,20 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
       RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> extends BaseRecipeCategory<RECIPE> {
 
     private final IIngredientType<STACK> ingredientType;
-    protected GuiProgress progressBar;
+    protected final GuiProgress progressBar;
+    private final GuiGauge<?> output;
+    private final GuiSlot input;
 
     protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, ResourceLocation id, ITextComponent component, IIngredientType<STACK> ingredientType,
           boolean isConversion) {
         super(helper, id, component, 20, 12, 132, 62);
         this.ingredientType = ingredientType;
-        //Add the progress bar. addGuiElements gets called before we would be able to expose isConversion
-        guiElements.add(progressBar = new GuiProgress(isConversion ? () -> 1 : () -> timer.getValue() / 20D, ProgressType.LARGE_RIGHT, this, 64, 40));
+        output = addElement(getGauge(GaugeType.STANDARD.with(DataType.OUTPUT), 131, 13));
+        input = addSlot(SlotType.INPUT, 26, 36);
+        progressBar = addElement(new GuiProgress(isConversion ? () -> 1 : getSimpleProgressTimer(), ProgressType.LARGE_RIGHT, this, 64, 40));
     }
 
     protected abstract GuiChemicalGauge<CHEMICAL, STACK, ?> getGauge(GaugeType type, int x, int y);
-
-    @Override
-    protected void addGuiElements() {
-        guiElements.add(getGauge(GaugeType.STANDARD, 131, 13));
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 25, 35));
-    }
 
     @Override
     public void setIngredients(RECIPE recipe, IIngredients ingredients) {
@@ -51,10 +48,7 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, RECIPE recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 25 - xOffset, 35 - yOffset);
-        itemStacks.set(0, recipe.getInput().getRepresentations());
-        IGuiIngredientGroup<STACK> chemicalStacks = recipeLayout.getIngredientsGroup(ingredientType);
-        initChemical(chemicalStacks, 0, false, 132 - xOffset, 14 - yOffset, 16, 58, Collections.singletonList(recipe.getOutputDefinition()), true);
+        initItem(recipeLayout.getItemStacks(), 0, true, input, recipe.getInput().getRepresentations());
+        initChemical(recipeLayout.getIngredientsGroup(ingredientType), 0, false, output, Collections.singletonList(recipe.getOutputDefinition()));
     }
 }

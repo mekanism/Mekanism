@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -44,7 +45,8 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
                     if (isMouseOverSlot(slot, mouseX, mouseY)) {
                         DataType data = getFromSlot(slot);
                         if (data != null) {
-                            displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(data.getColor(), data.getColor().getName()), mouseX - leftPos, mouseY - topPos);
+                            EnumColor color = data.getColor();
+                            displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName()), mouseX - leftPos, mouseY - topPos);
                         }
                         break;
                     }

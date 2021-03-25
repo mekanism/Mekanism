@@ -100,6 +100,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Override
     public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
         ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
+        //TODO - 10.1: Only allow things to be input if they can interact with the currently stored type of fluid? (See metallurgic infuser)
         builder.addTank(inputTank = ChemicalTankBuilder.SLURRY.input(MAX_SLURRY, slurry -> containsRecipe(recipe -> recipe.getChemicalInput().testType(slurry)), this));
         builder.addTank(outputTank = ChemicalTankBuilder.SLURRY.output(MAX_SLURRY, this));
         return builder.build();
@@ -129,7 +130,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
         //Output slot for the fluid container that was used as an input
         builder.addSlot(fluidOutputSlot = OutputInventorySlot.at(this, 180, 102));
         builder.addSlot(slurryOutputSlot = SlurryInventorySlot.drain(outputTank, this, 152, 56));
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 5));
+        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 14));
         slurryOutputSlot.setSlotOverlay(SlotOverlay.MINUS);
         fluidSlot.setSlotType(ContainerSlotType.INPUT);
         return builder.build();

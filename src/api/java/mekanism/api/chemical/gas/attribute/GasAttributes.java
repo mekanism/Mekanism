@@ -81,6 +81,7 @@ public class GasAttributes {
         @Override
         public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
             super.addTooltipText(list);
+            //TODO - 10.1: Move the percentage part into the lang string?
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, Math.round(conductivity * 100) + "%"));
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, thermalEnthalpy));
             return list;

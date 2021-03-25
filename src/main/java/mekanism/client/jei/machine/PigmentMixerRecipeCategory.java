@@ -8,17 +8,18 @@ import java.util.WeakHashMap;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
+import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
-import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.gauge.GuiGauge;
+import mekanism.client.gui.element.gauge.GuiPigmentGauge;
 import mekanism.client.gui.element.progress.GuiProgress.ColorDetails;
 import mekanism.client.gui.element.progress.ProgressType;
-import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
@@ -33,23 +34,22 @@ public class PigmentMixerRecipeCategory extends BaseRecipeCategory<PigmentMixing
     private final Map<PigmentMixingRecipe, IGuiIngredientGroup<PigmentStack>> ingredients = new WeakHashMap<>();
     private final PigmentColorDetails leftColorDetails;
     private final PigmentColorDetails rightColorDetails;
+    private final GuiGauge<?> leftInputGauge;
+    private final GuiGauge<?> rightInputGauge;
+    private final GuiGauge<?> outputGauge;
 
     public PigmentMixerRecipeCategory(IGuiHelper helper) {
         super(helper, MekanismBlocks.PIGMENT_MIXER, 3, 3, 170, 80);
-        //Add the progress bars. addGuiElements gets called before we would be able to set the color details
-        guiElements.add(new GuiProgress(() -> 1, ProgressType.SMALL_RIGHT, this, 47, 39).colored(leftColorDetails = new PigmentColorDetails()));
-        guiElements.add(new GuiProgress(() -> 1, ProgressType.SMALL_LEFT, this, 101, 39).colored(rightColorDetails = new PigmentColorDetails()));
-    }
-
-    @Override
-    protected void addGuiElements() {
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 25, 13));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 79, 4));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 133, 13));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 154, 4).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 154, 55).with(SlotOverlay.MINUS));
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 4, 55).with(SlotOverlay.MINUS));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 79, 64).with(SlotOverlay.PLUS));
+        leftInputGauge = addElement(GuiPigmentGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT_1), this, 25, 13));
+        outputGauge = addElement(GuiPigmentGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 79, 4));
+        rightInputGauge = addElement(GuiPigmentGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT_2), this, 133, 13));
+        addSlot(SlotType.INPUT, 6, 56).with(SlotOverlay.MINUS);
+        addSlot(SlotType.INPUT_2, 154, 56).with(SlotOverlay.MINUS);
+        addSlot(SlotType.OUTPUT, 80, 65).with(SlotOverlay.PLUS);
+        addSlot(SlotType.POWER, 154, 14).with(SlotOverlay.POWER);
+        addConstantProgress(ProgressType.SMALL_RIGHT, 47, 39).colored(leftColorDetails = new PigmentColorDetails());
+        addConstantProgress(ProgressType.SMALL_LEFT, 101, 39).colored(rightColorDetails = new PigmentColorDetails());
+        addElement(new GuiHorizontalPowerBar(this, FULL_BAR, 115, 75));
     }
 
     @Override
@@ -82,9 +82,9 @@ public class PigmentMixerRecipeCategory extends BaseRecipeCategory<PigmentMixing
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, PigmentMixingRecipe recipe, IIngredients ingredients) {
         IGuiIngredientGroup<PigmentStack> pigmentStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_PIGMENT);
-        initChemical(pigmentStacks, 0, true, 26 - xOffset, 14 - yOffset, 16, 58, recipe.getLeftInput().getRepresentations(), true);
-        initChemical(pigmentStacks, 1, true, 134 - xOffset, 14 - yOffset, 16, 58, recipe.getRightInput().getRepresentations(), true);
-        initChemical(pigmentStacks, 2, false, 80 - xOffset, 5 - yOffset, 16, 58, recipe.getOutputDefinition(), true);
+        initChemical(pigmentStacks, 0, true, leftInputGauge, recipe.getLeftInput().getRepresentations());
+        initChemical(pigmentStacks, 1, true, rightInputGauge, recipe.getRightInput().getRepresentations());
+        initChemical(pigmentStacks, 2, false, outputGauge, recipe.getOutputDefinition());
         this.ingredients.put(recipe, pigmentStacks);
     }
 

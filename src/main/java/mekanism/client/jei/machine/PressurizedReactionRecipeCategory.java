@@ -6,11 +6,10 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
-import mekanism.client.gui.element.gauge.GaugeInfo;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
-import mekanism.client.gui.element.progress.GuiProgress;
+import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -18,35 +17,36 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.component.config.DataType;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<PressurizedReactionRecipe> {
 
+    private final GuiGauge<?> inputGas;
+    private final GuiGauge<?> inputFluid;
+    private final GuiSlot inputItem;
+    private final GuiSlot outputItem;
+    private final GuiGauge<?> outputGas;
+
     public PressurizedReactionRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 3, 11, 170, 68);
+        super(helper, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, 3, 10, 170, 60);
         //Note: This previously had a lang key for a shorter string. Though ideally especially due to translations
         // we will eventually instead just make the text scale
-    }
-
-    @Override
-    protected void addGuiElements() {
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 53, 34));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 140, 18).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 115, 34));
-        guiElements.add(GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 5, 10));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.STANDARD.with(GaugeInfo.RED), this, 28, 10));
-        guiElements.add(GuiGasGauge.getDummy(GaugeType.SMALL.with(GaugeInfo.BLUE), this, 140, 40));
-        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.RIGHT, this, 77, 38));
+        inputItem = addSlot(SlotType.INPUT, 54, 35);
+        outputItem = addSlot(SlotType.OUTPUT, 116, 35);
+        addSlot(SlotType.POWER, 141, 17).with(SlotOverlay.POWER);
+        inputFluid = addElement(GuiFluidGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 5, 10));
+        inputGas = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 28, 10));
+        outputGas = addElement(GuiGasGauge.getDummy(GaugeType.SMALL.with(DataType.OUTPUT), this, 140, 40));
+        addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
+        addSimpleProgress(ProgressType.RIGHT, 77, 38);
     }
 
     @Override
@@ -67,18 +67,12 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, PressurizedReactionRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 53 - xOffset, 34 - yOffset);
-        itemStacks.init(1, false, 115 - xOffset, 34 - yOffset);
-        itemStacks.set(0, recipe.getInputSolid().getRepresentations());
+        initItem(itemStacks, 0, true, inputItem, recipe.getInputSolid().getRepresentations());
         Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = recipe.getOutputDefinition();
-        itemStacks.set(1, outputDefinition.getLeft());
-        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        List<FluidStack> fluidInputs = recipe.getInputFluid().getRepresentations();
-        int max = fluidInputs.stream().mapToInt(FluidStack::getAmount).filter(input -> input >= 0).max().orElse(0);
-        fluidStacks.init(0, true, 3, 0, 16, 58, max, false, fluidOverlayLarge);
-        fluidStacks.set(0, fluidInputs);
+        initItem(itemStacks, 1, false, outputItem, outputDefinition.getLeft());
+        initFluid(recipeLayout.getFluidStacks(), 0, true, inputFluid, recipe.getInputFluid().getRepresentations());
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initChemical(gasStacks, 0, true, 29 - xOffset, 11 - yOffset, 16, 58, recipe.getInputGas().getRepresentations(), true);
-        initChemical(gasStacks, 1, false, 141 - xOffset, 41 - yOffset, 16, 28, Collections.singletonList(outputDefinition.getRight()), true);
+        initChemical(gasStacks, 0, true, inputGas, recipe.getInputGas().getRepresentations());
+        initChemical(gasStacks, 1, false, outputGas, Collections.singletonList(outputDefinition.getRight()));
     }
 }

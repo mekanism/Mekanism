@@ -26,8 +26,6 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemicalCrystallizer, MekanismTileContainer<TileEntityChemicalCrystallizer>> {
 
-    private GuiCrystallizerScreen crystallizerScreen;
-
     public GuiChemicalCrystallizer(MekanismTileContainer<TileEntityChemicalCrystallizer> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
@@ -37,7 +35,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     @Override
     public void init() {
         super.init();
-        addButton(crystallizerScreen = new GuiCrystallizerScreen(this, 31, 13, new IOreInfo() {
+        addButton(new GuiCrystallizerScreen(this, 31, 13, new IOreInfo() {
             @Nonnull
             @Override
             public BoxedChemicalStack getInputChemical() {
@@ -65,11 +63,5 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        crystallizerScreen.tick();
     }
 }

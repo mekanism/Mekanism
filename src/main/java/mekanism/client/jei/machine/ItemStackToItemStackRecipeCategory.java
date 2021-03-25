@@ -5,7 +5,6 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.client.gui.element.GuiUpArrow;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
-import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
@@ -19,18 +18,17 @@ import mezz.jei.api.ingredients.IIngredients;
 
 public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemStackToItemStackRecipe> {
 
+    private final GuiSlot input;
+    private final GuiSlot output;
+
     public ItemStackToItemStackRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
         super(helper, mekanismBlock, 28, 16, 144, 54);
-    }
-
-    @Override
-    protected void addGuiElements() {
-        guiElements.add(new GuiUpArrow(this, 68, 38));
-        guiElements.add(new GuiSlot(SlotType.INPUT, this, 63, 16));
-        guiElements.add(new GuiSlot(SlotType.POWER, this, 63, 52).with(SlotOverlay.POWER));
-        guiElements.add(new GuiSlot(SlotType.OUTPUT, this, 116, 35));
-        guiElements.add(new GuiVerticalPowerBar(this, () -> 1F, 164, 15));
-        guiElements.add(new GuiProgress(() -> timer.getValue() / 20D, ProgressType.BAR, this, 86, 38));
+        addElement(new GuiUpArrow(this, 68, 38));
+        input = addSlot(SlotType.INPUT, 64, 17);
+        output = addSlot(SlotType.OUTPUT, 116, 35);
+        addSlot(SlotType.POWER, 64, 53).with(SlotOverlay.POWER);
+        addElement(new GuiVerticalPowerBar(this, FULL_BAR, 164, 15));
+        addSimpleProgress(ProgressType.BAR, 86, 38);
     }
 
     @Override
@@ -47,8 +45,7 @@ public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemS
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, ItemStackToItemStackRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        itemStacks.init(0, true, 35, 0);
-        itemStacks.init(1, false, 88, 19);
-        itemStacks.set(ingredients);
+        initItem(itemStacks, 0, true, input, recipe.getInput().getRepresentations());
+        initItem(itemStacks, 1, false, output, recipe.getOutputDefinition());
     }
 }

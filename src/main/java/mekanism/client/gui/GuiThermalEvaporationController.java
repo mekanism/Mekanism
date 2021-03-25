@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Nonnull;
-import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -35,7 +34,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         super.init();
         addButton(new GuiInnerScreen(this, 48, 19, 80, 40, () -> {
             EvaporationMultiblockData multiblock = tile.getMultiblock();
-            return Arrays.asList(getStruct().translate(), MekanismLang.EVAPORATION_HEIGHT.translate(multiblock.height()),
+            return Arrays.asList(MekanismLang.MULTIBLOCK_FORMED.translate(), MekanismLang.EVAPORATION_HEIGHT.translate(multiblock.height()),
                   MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(multiblock.getTemp(), TemperatureUnit.KELVIN, true)),
                   MekanismLang.FLUID_PRODUCTION.translate(Math.round(multiblock.lastGain * 100D) / 100D));
         }).spacing(1).jeiCategory(tile));
@@ -65,9 +64,5 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         drawTitleText(matrix, MekanismLang.EVAPORATION_PLANT.translate(), titleLabelY);
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
-    }
-
-    private ILangEntry getStruct() {
-        return MekanismLang.MULTIBLOCK_FORMED;
     }
 }

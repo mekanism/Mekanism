@@ -104,6 +104,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        //TODO - 10.1: Only allow things to be input if they can interact with the currently stored type of gas? (See metallurgic infuser)
         builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 64, 17));
         builder.addSlot(secondarySlot = GasInventorySlot.fillOrConvert(gasTank, this::getLevel, this, 64, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
