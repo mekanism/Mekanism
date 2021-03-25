@@ -19,8 +19,6 @@ public class FusionReactorHeatTabContainer extends EmptyTileContainer<TileEntity
     @Override
     protected void addContainerTrackers() {
         super.addContainerTrackers();
-        if (tile != null) {
-            tile.addHeatTabContainerTrackers(this);
-        }
+        tile.addHeatTabContainerTrackers(this);
     }
 }

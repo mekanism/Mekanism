@@ -27,8 +27,6 @@ public class DigitalMinerConfigContainer extends MekanismTileContainer<TileEntit
 
     @Override
     protected void addContainerTrackers() {
-        if (tile != null) {
-            tile.addConfigContainerTrackers(this);
-        }
+        tile.addConfigContainerTrackers(this);
     }
 }

@@ -18,8 +18,6 @@ public class MatrixStatsTabContainer extends EmptyTileContainer<TileEntityInduct
     @Override
     protected void addContainerTrackers() {
         super.addContainerTrackers();
-        if (tile != null) {
-            tile.addStatsTabContainerTrackers(this);
-        }
+        tile.addStatsTabContainerTrackers(this);
     }
 }

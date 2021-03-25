@@ -19,8 +19,6 @@ public class FusionReactorFuelTabContainer extends EmptyTileContainer<TileEntity
     @Override
     protected void addContainerTrackers() {
         super.addContainerTrackers();
-        if (tile != null) {
-            tile.addFuelTabContainerTrackers(this);
-        }
+        tile.addFuelTabContainerTrackers(this);
     }
 }

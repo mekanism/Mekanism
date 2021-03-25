@@ -32,6 +32,7 @@ public class CraftingRobitContainer extends WorkbenchContainer implements IEntit
         return entity.isAlive();
     }
 
+    @Nonnull
     @Override
     public EntityRobit getEntity() {
         return entity;

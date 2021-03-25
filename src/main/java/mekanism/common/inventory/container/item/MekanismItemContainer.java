@@ -33,14 +33,14 @@ public abstract class MekanismItemContainer extends MekanismContainer {
     @Nonnull
     public static <ITEM extends Item> ItemStack getStackFromBuffer(PacketBuffer buf, Class<ITEM> type) {
         if (buf == null) {
-            return ItemStack.EMPTY;
+            throw new IllegalArgumentException("Null packet buffer");
         }
         return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> {
             ItemStack stack = buf.readItem();
             if (type.isInstance(stack.getItem())) {
                 return stack;
             }
-            return ItemStack.EMPTY;
+            throw new IllegalStateException("Client received invalid stack (" + stack.getItem().getRegistryName() + ") for item container.");
         });
     }
 }

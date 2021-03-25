@@ -32,6 +32,7 @@ public class RepairRobitContainer extends RepairContainer implements IEntityCont
         return entity.isAlive();
     }
 
+    @Nonnull
     @Override
     public EntityRobit getEntity() {
         return entity;

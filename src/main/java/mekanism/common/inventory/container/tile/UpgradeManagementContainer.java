@@ -18,7 +18,7 @@ public class UpgradeManagementContainer extends MekanismTileContainer<TileEntity
 
     @Override
     protected void addContainerTrackers() {
-        if (tile != null && tile.supportsUpgrades()) {
+        if (tile.supportsUpgrades()) {
             //Make sure just in case that it really does support upgrades
             tile.getComponent().addContainerTrackers(this);
         }
@@ -27,7 +27,7 @@ public class UpgradeManagementContainer extends MekanismTileContainer<TileEntity
     @Override
     protected void addSlots() {
         //Add the upgrade slot
-        if (tile != null && tile.supportsUpgrades()) {
+        if (tile.supportsUpgrades()) {
             InventoryContainerSlot containerSlot = tile.getComponent().getUpgradeSlot().createContainerSlot();
             if (containerSlot != null) {
                 addSlot(containerSlot);

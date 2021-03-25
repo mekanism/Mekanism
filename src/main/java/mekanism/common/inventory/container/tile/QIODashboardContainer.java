@@ -17,9 +17,7 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
     private QIODashboardContainer(int id, PlayerInventory inv, TileEntityQIODashboard tile, boolean remote) {
         super(MekanismContainerTypes.QIO_DASHBOARD, id, inv, remote, tile);
         this.tile = tile;
-        if (tile != null) {
-            tile.addContainerTrackers(this);
-        }
+        tile.addContainerTrackers(this);
         addSlotsAndOpen();
     }
 
@@ -47,24 +45,17 @@ public class QIODashboardContainer extends QIOItemViewerContainer {
     @Override
     protected void openInventory(@Nonnull PlayerInventory inv) {
         super.openInventory(inv);
-        if (tile != null) {
-            tile.open(inv.player);
-        }
+        tile.open(inv.player);
     }
 
     @Override
     protected void closeInventory(@Nonnull PlayerEntity player) {
         super.closeInventory(player);
-        if (tile != null) {
-            tile.close(player);
-        }
+        tile.close(player);
     }
 
     @Override
     public boolean stillValid(@Nonnull PlayerEntity player) {
-        if (tile == null) {
-            return true;
-        }
         //prevent Containers from remaining valid after the chunk has unloaded;
         return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getLevel(), tile.getBlockPos());
     }

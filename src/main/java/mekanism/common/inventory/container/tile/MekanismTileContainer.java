@@ -2,7 +2,6 @@ package mekanism.common.inventory.container.tile;
 
 import java.util.List;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
@@ -16,17 +15,16 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 
 public class MekanismTileContainer<TILE extends TileEntityMekanism> extends MekanismContainer {
 
-    //Note: We don't want our tile to be null but it technically can be if something went wrong
-    // retrieving it, so we mark it as nullable to not instantly hard crash
-    @Nullable
+    @Nonnull
     protected final TILE tile;
 
-    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, @Nullable TILE tile) {
+    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, @Nonnull TILE tile) {
         super(type, id, inv);
         this.tile = tile;
         addContainerTrackers();
@@ -34,9 +32,7 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     }
 
     protected void addContainerTrackers() {
-        if (tile != null) {
-            tile.addContainerTrackers(this);
-        }
+        tile.addContainerTrackers(this);
     }
 
     public TILE getTileEntity() {
@@ -50,23 +46,16 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
 
     @Override
     protected void openInventory(@Nonnull PlayerInventory inv) {
-        if (tile != null) {
-            tile.open(inv.player);
-        }
+        tile.open(inv.player);
     }
 
     @Override
     protected void closeInventory(@Nonnull PlayerEntity player) {
-        if (tile != null) {
-            tile.close(player);
-        }
+        tile.close(player);
     }
 
     @Override
     public boolean stillValid(@Nonnull PlayerEntity player) {
-        if (tile == null) {
-            return true;
-        }
         //prevent Containers from remaining valid after the chunk has unloaded;
         return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getLevel(), tile.getBlockPos());
     }
@@ -78,7 +67,7 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
             //Don't include the inventory slots
             return;
         }
-        if (tile != null && tile.hasInventory()) {
+        if (tile.hasInventory()) {
             //Get all the inventory slots the tile has
             List<IInventorySlot> inventorySlots = tile.getInventorySlots(null);
             for (IInventorySlot inventorySlot : inventorySlots) {
@@ -90,10 +79,19 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         }
     }
 
+    @Nonnull
     public static <TILE extends TileEntity> TILE getTileFromBuf(PacketBuffer buf, Class<TILE> type) {
         if (buf == null) {
-            return null;
+            throw new IllegalArgumentException("Null packet buffer");
         }
-        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> WorldUtils.getTileEntity(type, Minecraft.getInstance().level, buf.readBlockPos()));
+        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> {
+            BlockPos pos = buf.readBlockPos();
+            TILE tile = WorldUtils.getTileEntity(type, Minecraft.getInstance().level, pos);
+            if (tile == null) {
+                throw new IllegalStateException("Client could not locate tile at " + pos + " for tile container. "
+                                                + "This is likely caused by a mod breaking client side tile lookup");
+            }
+            return tile;
+        });
     }
 }

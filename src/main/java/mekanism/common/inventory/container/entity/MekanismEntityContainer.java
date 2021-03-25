@@ -14,14 +14,16 @@ import net.minecraftforge.fml.DistExecutor;
 
 public abstract class MekanismEntityContainer<ENTITY extends Entity> extends MekanismContainer implements IEntityContainer<ENTITY> {
 
+    @Nonnull
     protected final ENTITY entity;
 
-    protected MekanismEntityContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, ENTITY entity) {
+    protected MekanismEntityContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, @Nonnull ENTITY entity) {
         super(type, id, inv);
         this.entity = entity;
         addSlotsAndOpen();
     }
 
+    @Nonnull
     @Override
     public ENTITY getEntity() {
         return entity;
@@ -37,16 +39,22 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
         return entity instanceof ISecurityObject ? (ISecurityObject) entity : ISecurityObject.NO_SECURITY;
     }
 
+    @Nonnull
     public static <ENTITY extends Entity> ENTITY getEntityFromBuf(PacketBuffer buf, Class<ENTITY> type) {
         if (buf == null) {
-            return null;
+            throw new IllegalArgumentException("Null packet buffer");
         }
         return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> {
-            Entity entity = Minecraft.getInstance().level.getEntity(buf.readVarInt());
-            if (type.isInstance(entity)) {
-                return (ENTITY) entity;
+            if (Minecraft.getInstance().level == null) {
+                throw new IllegalStateException("Client world is null.");
             }
-            return null;
+            int entityId = buf.readVarInt();
+            Entity e = Minecraft.getInstance().level.getEntity(entityId);
+            if (type.isInstance(e)) {
+                return (ENTITY) e;
+            }
+            throw new IllegalStateException("Client could not locate entity (id: " + entityId + ")  for entity container or the entity didn't was of an invalid type. "
+                                            + "This is likely caused by a mod breaking client side entity lookup.");
         });
     }
 }
