@@ -265,6 +265,11 @@ public class GuiTextField extends GuiRelativeElement {
         textField.setEditable(enabled);
     }
 
+    public void setCanLoseFocus(boolean canLoseFocus) {
+        //TODO: Improve handling of when this is set to false in regards to focus changing with tab or things
+        textField.setCanLoseFocus(canLoseFocus);
+    }
+
     @Override
     public void setFocused(boolean focused) {
         super.setFocused(focused);

@@ -1,4 +1,4 @@
-package mekanism.common.lib;
+package mekanism.common.lib.collection;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
@@ -63,6 +63,10 @@ public class BiMultimap<K, V> {
 
     public Set<Entry<V, K>> getReverseEntries() {
         return reverseMap.entries();
+    }
+
+    public boolean hasAllKeys(Collection<K> keys) {
+        return getAllKeys().containsAll(keys);
     }
 
     public void clear() {

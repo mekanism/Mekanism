@@ -16,7 +16,7 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -34,7 +34,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     private static final int FILTER_COUNT = 4;
     private GuiScrollBar scrollBar;
 
-    public GuiFilterHolder(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+    protected GuiFilterHolder(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         imageHeight += 86;
         inventoryLabelY = imageHeight - 92;

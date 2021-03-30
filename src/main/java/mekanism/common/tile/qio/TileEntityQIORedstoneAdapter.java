@@ -73,10 +73,6 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             prevPowering = powering;
             sendUpdatePacket();
         }
-
-        if (level.getGameTime() % 10 == 0) {
-            setActive(getQIOFrequency() != null);
-        }
     }
 
     @Nonnull

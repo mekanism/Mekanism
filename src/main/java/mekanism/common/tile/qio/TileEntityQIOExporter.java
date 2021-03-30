@@ -11,11 +11,13 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import mekanism.api.NBTConstants;
+import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.QIOFrequency.QIOItemTypeData;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
+import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.computer.ComputerException;
@@ -43,9 +45,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     private boolean exportWithoutFilter;
 
     private final EfficientEjector<Object2LongMap.Entry<HashedItem>> filterEjector =
-          new EfficientEjector<>(Entry::getKey, e -> (int) Math.min(Integer.MAX_VALUE, e.getLongValue()));
+          new EfficientEjector<>(Entry::getKey, e -> MathUtils.clampToInt(e.getLongValue()));
     private final EfficientEjector<Map.Entry<HashedItem, QIOItemTypeData>> filterlessEjector =
-          new EfficientEjector<>(Entry::getKey, e -> (int) Math.min(Integer.MAX_VALUE, e.getValue().getCount()));
+          new EfficientEjector<>(Entry::getKey, e -> MathUtils.clampToInt(e.getValue().getCount()));
 
     public TileEntityQIOExporter() {
         super(MekanismBlocks.QIO_EXPORTER);
@@ -61,11 +63,6 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             }
             tryEject();
             delay = MAX_DELAY;
-        }
-
-        if (level.getGameTime() % 10 == 0) {
-            QIOFrequency frequency = getQIOFrequency();
-            setActive(frequency != null);
         }
     }
 
@@ -93,7 +90,10 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
                 map.put(type, freq.getStored(type));
             } else if (filter instanceof QIOTagFilter) {
                 String tagName = ((QIOTagFilter) filter).getTagName();
-                map.putAll(freq.getStacksByWildcard(tagName));
+                map.putAll(freq.getStacksByTagWildcard(tagName));
+            } else if (filter instanceof QIOModIDFilter) {
+                String modID = ((QIOModIDFilter) filter).getModID();
+                map.putAll(freq.getStacksByModIDWildcard(modID));
             }
         }
         return map;

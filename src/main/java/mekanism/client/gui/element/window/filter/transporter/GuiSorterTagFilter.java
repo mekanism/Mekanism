@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.window.filter.transporter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
@@ -16,7 +17,7 @@ public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntity
         return new GuiSorterTagFilter(gui, (gui.getWidth() - 182) / 2, 30, tile, filter);
     }
 
-    private GuiSorterTagFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, SorterTagFilter origFilter) {
+    private GuiSorterTagFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, @Nullable SorterTagFilter origFilter) {
         super(gui, x, y, 182, 90, tile, origFilter);
     }
 

@@ -1,14 +1,13 @@
 package mekanism.common.content.miner;
 
-import java.util.Set;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
+import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.network.BasePacketHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
 
 public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagFilter<MinerTagFilter> {
 
@@ -23,32 +22,7 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
 
     @Override
     public boolean canFilter(BlockState state) {
-        Set<ResourceLocation> tags = state.getBlock().getTags();
-        if (tags.isEmpty()) {
-            return false;
-        } else if (tagName.equals("*")) {
-            //If we have any tags and our filter is everything, allow it to filter it
-            return true;
-        }
-        for (ResourceLocation tag : tags) {
-            String tagAsString = tag.toString();
-            if (tagName.equals(tagAsString)) {
-                return true;
-            } else if (tagName.endsWith("*") && !tagName.startsWith("*")) {
-                if (tagAsString.startsWith(tagName.substring(0, tagName.length() - 1))) {
-                    return true;
-                }
-            } else if (tagName.startsWith("*") && !tagName.endsWith("*")) {
-                if (tagAsString.endsWith(tagName.substring(1))) {
-                    return true;
-                }
-            } else if (tagName.startsWith("*") && tagName.endsWith("*")) {
-                if (tagAsString.contains(tagName.substring(1, tagName.length() - 1))) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return state.getBlock().getTags().stream().anyMatch(tag -> WildcardMatcher.matches(tagName, tag.toString()));
     }
 
     @Override

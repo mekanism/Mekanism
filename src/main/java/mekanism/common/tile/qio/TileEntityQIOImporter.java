@@ -8,14 +8,11 @@ import mekanism.api.NBTConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.filter.QIOFilter;
-import mekanism.common.content.qio.filter.QIOItemStackFilter;
-import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.CapabilityUtils;
@@ -50,10 +47,6 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             }
             tryImport();
             delay = MAX_DELAY;
-        }
-
-        if (level.getGameTime() % 10 == 0) {
-            setActive(getQIOFrequency() != null);
         }
     }
 
@@ -105,14 +98,8 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             return true;
         }
         for (QIOFilter<?> filter : getFilters()) {
-            if (filter instanceof QIOItemStackFilter) {
-                if (Finder.item(((QIOItemStackFilter) filter).getItemStack()).modifies(stack)) {
-                    return true;
-                }
-            } else if (filter instanceof QIOTagFilter) {
-                if (Finder.tag(((QIOTagFilter) filter).getTagName()).modifies(stack)) {
-                    return true;
-                }
+            if (filter.getFinder().modifies(stack)) {
+                return true;
             }
         }
         return false;

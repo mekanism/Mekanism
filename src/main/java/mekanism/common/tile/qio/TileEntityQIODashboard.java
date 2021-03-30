@@ -61,9 +61,6 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
                 craftingWindow.invalidateRecipe();
             }
         }
-        if (level.getGameTime() % 10 == 0) {
-            setActive(getQIOFrequency() != null);
-        }
     }
 
     @Nullable

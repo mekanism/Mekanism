@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.window.filter.transporter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -25,7 +26,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
     private GuiTextField minField;
     private GuiTextField maxField;
 
-    private GuiSorterItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, SorterItemStackFilter origFilter) {
+    private GuiSorterItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, @Nullable SorterItemStackFilter origFilter) {
         super(gui, x, y, 195, 90, tile, origFilter);
     }
 

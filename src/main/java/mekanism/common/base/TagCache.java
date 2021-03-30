@@ -24,9 +24,11 @@ import net.minecraft.tags.ITag;
 import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
+//TODO: Try to come up with a better name for this class given it also handles things like materials, and modids
 public final class TagCache {
 
     private TagCache() {
@@ -89,38 +91,26 @@ public final class TagCache {
     }
 
     public static List<ItemStack> getItemTagStacks(@Nonnull String oreName) {
-        if (itemTagStacks.containsKey(oreName)) {
-            return itemTagStacks.get(oreName);
-        }
-        ITagCollection<Item> tagCollection = ItemTags.getAllTags();
-        List<ResourceLocation> keys = tagCollection.getAvailableTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
-        Set<Item> items = new HashSet<>();
-        for (ResourceLocation key : keys) {
-            ITag<Item> itemTag = tagCollection.getTag(key);
-            if (itemTag != null) {
-                items.addAll(itemTag.getValues());
-            }
-        }
-        List<ItemStack> stacks = items.stream().map(ItemStack::new).collect(Collectors.toList());
-        itemTagStacks.put(oreName, stacks);
-        return stacks;
+        return getTagStacks(itemTagStacks, ItemTags.getAllTags(), oreName);
     }
 
     public static List<ItemStack> getBlockTagStacks(@Nonnull String oreName) {
-        if (blockTagStacks.containsKey(oreName)) {
-            return blockTagStacks.get(oreName);
+        return getTagStacks(blockTagStacks, BlockTags.getAllTags(), oreName);
+    }
+
+    private static <TYPE extends IItemProvider> List<ItemStack> getTagStacks(Map<String, List<ItemStack>> cache, ITagCollection<TYPE> tagCollection,
+          @Nonnull String oreName) {
+        if (cache.containsKey(oreName)) {
+            return cache.get(oreName);
         }
-        ITagCollection<Block> tagCollection = BlockTags.getAllTags();
-        List<ResourceLocation> keys = tagCollection.getAvailableTags().stream().filter(rl -> WildcardMatcher.matches(oreName, rl.toString())).collect(Collectors.toList());
-        Set<Block> blocks = new HashSet<>();
-        for (ResourceLocation key : keys) {
-            ITag<Block> blockTag = tagCollection.getTag(key);
-            if (blockTag != null) {
-                blocks.addAll(blockTag.getValues());
+        Set<TYPE> items = new HashSet<>();
+        for (Map.Entry<ResourceLocation, ITag<TYPE>> entry : tagCollection.getAllTags().entrySet()) {
+            if (WildcardMatcher.matches(oreName, entry.getKey().toString())) {
+                items.addAll(entry.getValue().getValues());
             }
         }
-        List<ItemStack> stacks = blocks.stream().map(ItemStack::new).collect(Collectors.toList());
-        blockTagStacks.put(oreName, stacks);
+        List<ItemStack> stacks = items.stream().map(ItemStack::new).collect(Collectors.toList());
+        cache.put(oreName, stacks);
         return stacks;
     }
 
@@ -131,7 +121,7 @@ public final class TagCache {
         List<ItemStack> stacks = new ArrayList<>();
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
             if (!forceBlock || item instanceof BlockItem) {
-                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderType() with a dummy BlockState
+                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderShape() with a dummy BlockState
                 if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof BlockBounding) {
                     continue;
                 }
@@ -159,7 +149,7 @@ public final class TagCache {
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
             if (item instanceof BlockItem) {
                 Block block = ((BlockItem) item).getBlock();
-                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderType() with a dummy BlockState
+                //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderShape() with a dummy BlockState
                 //noinspection ConstantConditions getBlock is nonnull, but if something "goes wrong" it returns null, just skip it
                 if (block == null || block instanceof BlockBounding) {
                     continue;

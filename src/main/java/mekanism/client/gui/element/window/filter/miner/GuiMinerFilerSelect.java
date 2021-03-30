@@ -1,35 +1,37 @@
 package mekanism.client.gui.element.window.filter.miner;
 
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiFilterSelect;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 
-public class GuiMinerFilerSelect extends GuiFilterSelect {
-
-    private final TileEntityDigitalMiner tile;
+public class GuiMinerFilerSelect extends GuiFilterSelect<TileEntityDigitalMiner> {
 
     public GuiMinerFilerSelect(IGuiWrapper gui, TileEntityDigitalMiner tile) {
-        super(gui);
-        this.tile = tile;
+        super(gui, tile, 4);
     }
 
+    @Nonnull
     @Override
-    protected GuiMinerItemStackFilter createNewItemStackFilter() {
-        return GuiMinerItemStackFilter.create(gui(), tile);
+    protected GuiFilterCreator<TileEntityDigitalMiner> getItemStackFilterCreator() {
+        return GuiMinerItemStackFilter::create;
     }
 
+    @Nonnull
     @Override
-    protected GuiMinerTagFilter createNewTagFilter() {
-        return GuiMinerTagFilter.create(gui(), tile);
+    protected GuiFilterCreator<TileEntityDigitalMiner> getTagFilterCreator() {
+        return GuiMinerTagFilter::create;
     }
 
+    @Nonnull
     @Override
-    protected GuiMinerMaterialFilter createNewMaterialFilter() {
-        return GuiMinerMaterialFilter.create(gui(), tile);
+    protected GuiFilterCreator<TileEntityDigitalMiner> getMaterialFilterCreator() {
+        return GuiMinerMaterialFilter::create;
     }
 
+    @Nonnull
     @Override
-    protected GuiMinerModIDFilter createNewModIDFilter() {
-        return GuiMinerModIDFilter.create(gui(), tile);
+    protected GuiFilterCreator<TileEntityDigitalMiner> getModIDFilterCreator() {
+        return GuiMinerModIDFilter::create;
     }
 }

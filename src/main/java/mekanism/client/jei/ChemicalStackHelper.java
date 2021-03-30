@@ -75,10 +75,8 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     /*@Override
     public Iterable<Integer> getColors(STACK ingredient) {
         CHEMICAL chemical = ingredient.getType();
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(chemical.getIcon());
-        int renderColor = chemical.getTint();
         //TODO: Does tint need alpha applied/factored in to getting the color, Either way this is waiting on https://github.com/mezz/JustEnoughItems/issues/1886
-        return ColorGetter.getColors(sprite, renderColor, 1);
+        return ColorGetter.getColors(MekanismRenderer.getChemicalTexture(chemical), chemical.getTint(), 1);
     }*/
 
     @Override

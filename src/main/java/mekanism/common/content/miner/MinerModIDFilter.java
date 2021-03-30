@@ -3,6 +3,7 @@ package mekanism.common.content.miner;
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
+import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.network.BasePacketHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
@@ -21,20 +22,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     @Override
     public boolean canFilter(BlockState state) {
-        if (modID.equals("*")) {
-            return true;
-        }
-        String id = state.getBlock().getRegistryName().getNamespace();
-        if (modID.equals(id)) {
-            return true;
-        } else if (modID.endsWith("*") && !modID.startsWith("*")) {
-            return id.startsWith(modID.substring(0, modID.length() - 1));
-        } else if (modID.startsWith("*") && !modID.endsWith("*")) {
-            return id.endsWith(modID.substring(1));
-        } else if (modID.startsWith("*") && modID.endsWith("*")) {
-            return id.contains(modID.substring(1, modID.length() - 1));
-        }
-        return false;
+        return WildcardMatcher.matches(modID, state.getBlock().getRegistryName().getNamespace());
     }
 
     @Override

@@ -38,6 +38,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     public static final Predicate<ItemStack> NOT_EMPTY_BLOCK = stack -> !stack.isEmpty() && stack.getItem() instanceof BlockItem;
 
     private final ITextComponent filterName;
+    @Nullable
     protected final FILTER origFilter;
     protected final FILTER filter;
     protected final TILE tile;
@@ -47,7 +48,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     protected GuiSequencedSlotDisplay slotDisplay;
     private int ticker;
 
-    public GuiFilter(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, TILE tile, FILTER origFilter) {
+    protected GuiFilter(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, TILE tile, @Nullable FILTER origFilter) {
         super(gui, x, y, width, height);
         this.tile = tile;
         this.origFilter = origFilter;

@@ -22,7 +22,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiTextFilter<FILTER, TILE> {
 
-    protected GuiModIDFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, FILTER origFilter) {
+    protected GuiModIDFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, @Nullable FILTER origFilter) {
         super(gui, x, y, width, height, MekanismLang.MODID_FILTER.translate(), tile, origFilter);
     }
 

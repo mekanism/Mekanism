@@ -25,7 +25,7 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.slot.InternalInventorySlot;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;

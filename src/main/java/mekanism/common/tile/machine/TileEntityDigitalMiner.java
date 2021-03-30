@@ -52,7 +52,7 @@ import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TileTransitRequest;

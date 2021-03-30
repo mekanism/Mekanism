@@ -11,7 +11,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;

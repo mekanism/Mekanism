@@ -18,7 +18,7 @@ public class GuiMinerItemStackFilter extends GuiItemStackFilter<MinerItemStackFi
         return new GuiMinerItemStackFilter(gui, (gui.getWidth() - 173) / 2, 30, tile, filter);
     }
 
-    private GuiMinerItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, MinerItemStackFilter origFilter) {
+    private GuiMinerItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, @Nullable MinerItemStackFilter origFilter) {
         super(gui, x, y, 173, 90, tile, origFilter);
     }
 

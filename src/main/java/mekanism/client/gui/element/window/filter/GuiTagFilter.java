@@ -3,6 +3,7 @@ package mekanism.client.gui.element.window.filter;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
@@ -16,7 +17,7 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiTextFilter<FILTER, TILE> {
 
-    protected GuiTagFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, FILTER origFilter) {
+    protected GuiTagFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, @Nullable FILTER origFilter) {
         super(gui, x, y, width, height, MekanismLang.TAG_FILTER.translate(), tile, origFilter);
     }
 

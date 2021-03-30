@@ -18,7 +18,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.math.voxel.Chunk3D;
 import mekanism.common.lib.radiation.capability.IRadiationEntity;
 import mekanism.common.lib.radiation.capability.IRadiationShielding;

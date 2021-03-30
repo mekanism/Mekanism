@@ -14,7 +14,7 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
-import mekanism.common.lib.LRU;
+import mekanism.common.lib.collection.LRU;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
 import net.minecraft.client.gui.IGuiEventListener;
 import net.minecraft.client.gui.widget.Widget;

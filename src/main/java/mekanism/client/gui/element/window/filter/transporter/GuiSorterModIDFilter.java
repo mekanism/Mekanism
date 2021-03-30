@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.window.filter.transporter;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiModIDFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
@@ -16,7 +17,7 @@ public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, Tile
         return new GuiSorterModIDFilter(gui, (gui.getWidth() - 182) / 2, 30, tile, filter);
     }
 
-    private GuiSorterModIDFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, SorterModIDFilter origFilter) {
+    private GuiSorterModIDFilter(IGuiWrapper gui, int x, int y, TileEntityLogisticalSorter tile, @Nullable SorterModIDFilter origFilter) {
         super(gui, x, y, 182, 90, tile, origFilter);
     }
 

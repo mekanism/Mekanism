@@ -5,14 +5,18 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
@@ -21,13 +25,14 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import mekanism.common.lib.BiMultimap;
 import mekanism.common.lib.WildcardMatcher;
+import mekanism.common.lib.collection.BiMultimap;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.to_client.PacketQIOItemViewerGuiSync;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -44,10 +49,16 @@ public class QIOFrequency extends Frequency {
     private final Set<IQIODriveHolder> driveHolders = new HashSet<>();
     // efficiently keep track of the tags utilized by the items stored
     private final BiMultimap<String, HashedItem> tagLookupMap = new BiMultimap<>();
+    // efficiently keep track of the modids utilized by the items stored
+    private final Map<String, Set<HashedItem>> modIDLookupMap = new HashMap<>();
     //Keep track of a UUID for each hashed item
     private final BiMap<HashedItem, UUID> itemTypeLookup = HashBiMap.create();
     // a sensitive cache for wildcard tag lookups (wildcard -> [matching tags])
     private final SetMultimap<String, String> tagWildcardCache = HashMultimap.create();
+    private final Set<String> failedWildcardTags = new HashSet<>();
+    // a sensitive cache for wildcard modid lookups (wildcard -> [matching modids])
+    private final SetMultimap<String, String> modIDWildcardCache = HashMultimap.create();
+    private final Set<String> failedWildcardModIDs = new HashSet<>();
 
     private final Set<UUIDAwareHashedItem> updatedItems = new HashSet<>();
     private final Set<ServerPlayerEntity> playersViewingItems = new HashSet<>();
@@ -102,13 +113,31 @@ public class QIOFrequency extends Frequency {
             return stack;
         }
         // at this point we're guaranteed at least part of the input stack will be inserted
-        QIOItemTypeData data = itemDataMap.computeIfAbsent(type, t -> {
-            tagLookupMap.putAll(TagCache.getItemTags(stack), t);
-            tagWildcardCache.clear();
-            itemTypeLookup.put(t, UUID.randomUUID());
-            return new QIOItemTypeData(t);
-        });
+        QIOItemTypeData data = itemDataMap.computeIfAbsent(type, this::createTypeDataForAbsent);
         return type.createStack((int) data.add(stack.getCount()));
+    }
+
+    private QIOItemTypeData createTypeDataForAbsent(HashedItem type) {
+        ItemStack stack = type.getStack();
+        List<String> tags = TagCache.getItemTags(stack);
+        if (!tags.isEmpty()) {
+            boolean hasAllKeys = tagLookupMap.hasAllKeys(tags);
+            if (tagLookupMap.putAll(tags, type) && !hasAllKeys) {
+                //If we added any tag item combinations and we didn't have all the keys for tags this item has,
+                // then we need to clear our wildcard cache as our new tags may be valid for some of our wildcards
+                tagWildcardCache.clear();
+                failedWildcardTags.clear();
+            }
+        }
+        modIDLookupMap.computeIfAbsent(MekanismUtils.getModId(stack), modID -> {
+            //If we added a new modid to the lookup map we also want to make sure that we clear our modid wildcard cache
+            // as our new modid may be valid for some of our wildcards
+            modIDWildcardCache.clear();
+            failedWildcardModIDs.clear();
+            return new HashSet<>();
+        }).add(type);
+        itemTypeLookup.put(type, UUID.randomUUID());
+        return new QIOItemTypeData(type);
     }
 
     public ItemStack removeItem(int amount) {
@@ -139,43 +168,126 @@ public class QIOFrequency extends Frequency {
         ItemStack removed = data.remove(amount);
         // remove this item type if it's now empty
         if (data.count == 0) {
-            itemDataMap.remove(data.itemType);
-            tagLookupMap.removeValue(data.itemType);
-            itemTypeLookup.remove(data.itemType);
-            tagWildcardCache.clear();
+            removeItemData(data.itemType);
         }
         return removed;
     }
 
+    private void removeItemData(HashedItem type) {
+        itemDataMap.remove(type);
+        itemTypeLookup.remove(type);
+        //Note: We need to copy the tags to a new collection as otherwise when we start removing them from the lookup
+        // they will also get removed from this view
+        Set<String> tags = new HashSet<>(tagLookupMap.getKeys(type));
+        if (tagLookupMap.removeValue(type) && !tagLookupMap.hasAllKeys(tags)) {
+            //If we completely removed any tags clear our wildcard cache as it may have some wildcards that are
+            // matching a tag that is no longer stored
+            tagWildcardCache.clear();
+            //Note: We don't need to clear the failed wildcard tags as if we are removing tags they still won't have any matches
+        }
+        String modID = MekanismUtils.getModId(type.getStack());
+        Set<HashedItem> itemsForMod = modIDLookupMap.get(modID);
+        //In theory if we are removing an item and it existed we should have a set corresponding to it,
+        // but double check that it is not null just in case
+        // Next if we removed the item successfully, check if the items for that mod is now empty, and if they are
+        // remove the modid from the lookup map, and clear our wildcard cache as it may have some wildcards that are
+        // matching a modid that is no longer stored
+        if (itemsForMod != null && itemsForMod.remove(type) && itemsForMod.isEmpty()) {
+            modIDLookupMap.remove(modID);
+            modIDWildcardCache.clear();
+            //Note: We don't need to clear the failed wildcard modids as if we are removing tags they still won't have any matches
+        }
+    }
+
     public Object2LongMap<HashedItem> getStacksByTag(String tag) {
         Set<HashedItem> items = tagLookupMap.getValues(tag);
-        Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
-        items.forEach(item -> ret.put(item, getStored(item)));
-        return ret;
-    }
-
-    public Object2LongMap<HashedItem> getStacksByWildcard(String wildcard) {
-        if (!tagWildcardCache.containsKey(wildcard)) {
-            buildWildcardMapping(wildcard);
+        if (items.isEmpty()) {
+            return Object2LongMaps.emptyMap();
         }
-        Set<String> matchingTags = tagWildcardCache.get(wildcard);
         Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
-        matchingTags.forEach(tag -> ret.putAll(getStacksByTag(tag)));
+        for (HashedItem item : items) {
+            ret.put(item, getStored(item));
+        }
         return ret;
     }
 
-    private void buildWildcardMapping(String wildcard) {
-        for (String tag : tagLookupMap.getAllKeys()) {
-            if (WildcardMatcher.matches(wildcard, tag)) {
-                tagWildcardCache.put(wildcard, tag);
+    public Object2LongMap<HashedItem> getStacksByModID(String modID) {
+        Set<HashedItem> items = modIDLookupMap.get(modID);
+        if (items == null) {
+            return Object2LongMaps.emptyMap();
+        }
+        Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
+        for (HashedItem item : items) {
+            ret.put(item, getStored(item));
+        }
+        return ret;
+    }
+
+    public Object2LongMap<HashedItem> getStacksByTagWildcard(String wildcard) {
+        if (hasMatchingElements(tagWildcardCache, failedWildcardTags, wildcard, tagLookupMap::getAllKeys)) {
+            Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
+            for (String match : tagWildcardCache.get(wildcard)) {
+                for (HashedItem item : tagLookupMap.getValues(match)) {
+                    //If our return map doesn't already have the stored value in it, calculate it.
+                    // The case where it may have the stored value in it is if an item has multiple
+                    // tags that all match the wildcard
+                    ret.computeLongIfAbsent(item, this::getStored);
+                }
+            }
+            return ret;
+        }
+        return Object2LongMaps.emptyMap();
+    }
+
+    public Object2LongMap<HashedItem> getStacksByModIDWildcard(String wildcard) {
+        if (hasMatchingElements(modIDWildcardCache, failedWildcardModIDs, wildcard, modIDLookupMap::keySet)) {
+            Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
+            for (String match : modIDWildcardCache.get(wildcard)) {
+                for (HashedItem item : modIDLookupMap.get(match)) {
+                    //Note: Unlike in getStacksByTagWildcard, we don't use computeLongIfAbsent here because
+                    // each stack only has one modid, so while we may have multiple modids that match our
+                    // wildcard, the stacks that correspond to said modids will be unique
+                    ret.put(item, getStored(item));
+                }
+            }
+            return ret;
+        }
+        return Object2LongMaps.emptyMap();
+    }
+
+    private boolean hasMatchingElements(SetMultimap<String, String> wildcardCache, Set<String> failedWildcards, String wildcard, Supplier<Set<String>> entriesSupplier) {
+        if (failedWildcards.contains(wildcard)) {
+            //If we already know this wildcard has no matching things, fail fast
+            return false;
+        }
+        //If we don't have a cached value for the given wildcard, try to build up the corresponding cache
+        if (!wildcardCache.containsKey(wildcard) && !buildWildcardMapping(wildcardCache, wildcard, entriesSupplier.get())) {
+            // If we don't actually have any matches, mark that the wildcard failed, and return false
+            failedWildcards.add(wildcard);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return {@code true} if any wildcards were added.
+     */
+    private boolean buildWildcardMapping(SetMultimap<String, String> wildcardCache, String wildcard, Set<String> entries) {
+        boolean added = false;
+        for (String entry : entries) {
+            if (WildcardMatcher.matches(wildcard, entry)) {
+                added |= wildcardCache.put(wildcard, entry);
             }
         }
+        return added;
     }
 
     public void openItemViewer(ServerPlayerEntity player) {
         playersViewingItems.add(player);
         Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>();
-        itemDataMap.values().forEach(d -> map.put(new UUIDAwareHashedItem(d.itemType, getUUIDForType(d.itemType)), d.count));
+        for (QIOItemTypeData data : itemDataMap.values()) {
+            map.put(new UUIDAwareHashedItem(data.itemType, getUUIDForType(data.itemType)), data.count);
+        }
         Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.batch(map, totalCountCapacity, totalTypeCapacity), player);
     }
 
@@ -242,6 +354,7 @@ public class QIOFrequency extends Frequency {
         }
 
         if (CommonWorldTickHandler.flushTagAndRecipeCaches) {
+            //Note: We only need to clear tags here as the modids cannot change just because a reload happened
             tagLookupMap.clear();
             tagWildcardCache.clear();
             itemDataMap.values().forEach(item -> tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getStack()), item.itemType));
@@ -338,12 +451,7 @@ public class QIOFrequency extends Frequency {
             totalTypeCapacity += data.getTypeCapacity();
             driveMap.put(key, data);
             data.getItemMap().forEach((storedKey, value) -> {
-                itemDataMap.computeIfAbsent(storedKey, e -> {
-                    tagWildcardCache.clear();
-                    tagLookupMap.putAll(TagCache.getItemTags(e.getStack()), e);
-                    itemTypeLookup.put(e, UUID.randomUUID());
-                    return new QIOItemTypeData(e);
-                }).addFromDrive(data, value);
+                itemDataMap.computeIfAbsent(storedKey, this::createTypeDataForAbsent).addFromDrive(data, value);
                 updatedItems.add(new UUIDAwareHashedItem(storedKey, getUUIDForType(storedKey)));
             });
             setNeedsUpdate();
@@ -362,12 +470,11 @@ public class QIOFrequency extends Frequency {
                     itemData.containingDrives.remove(key);
                     itemData.count -= value;
                     totalCount -= value;
+                    updatedItems.add(new UUIDAwareHashedItem(storedKey, getUUIDForType(storedKey)));
                     // remove this entry from the item data map if it's now empty
                     if (itemData.containingDrives.isEmpty() || itemData.count == 0) {
-                        itemDataMap.remove(storedKey);
-                        tagWildcardCache.clear();
+                        removeItemData(storedKey);
                     }
-                    updatedItems.add(new UUIDAwareHashedItem(storedKey, getUUIDForType(storedKey)));
                 }
             });
             setNeedsUpdate();

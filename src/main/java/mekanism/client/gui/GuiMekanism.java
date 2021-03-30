@@ -24,7 +24,7 @@ import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.lib.LRU;
+import mekanism.common.lib.collection.LRU;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;

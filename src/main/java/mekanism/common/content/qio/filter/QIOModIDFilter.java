@@ -2,75 +2,75 @@ package mekanism.common.content.qio.filter;
 
 import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
-import mekanism.common.content.filter.ITagFilter;
+import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.network.BasePacketHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 
-public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<QIOTagFilter> {
+public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDFilter<QIOModIDFilter> {
 
-    private String tagName;
+    private String modID;
 
     @Override
     public Finder getFinder() {
-        return Finder.tag(tagName);
+        return Finder.modID(modID);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);
-        nbtTags.putString(NBTConstants.TAG_NAME, tagName);
+        nbtTags.putString(NBTConstants.MODID, modID);
         return nbtTags;
     }
 
     @Override
     public void read(CompoundNBT nbtTags) {
-        tagName = nbtTags.getString(NBTConstants.TAG_NAME);
+        modID = nbtTags.getString(NBTConstants.MODID);
     }
 
     @Override
     public void write(PacketBuffer buffer) {
         super.write(buffer);
-        buffer.writeUtf(tagName);
+        buffer.writeUtf(modID);
     }
 
     @Override
     public void read(PacketBuffer dataStream) {
-        tagName = BasePacketHandler.readString(dataStream);
+        modID = BasePacketHandler.readString(dataStream);
     }
 
     @Override
     public int hashCode() {
         int code = 1;
-        code = 31 * code + tagName.hashCode();
+        code = 31 * code + modID.hashCode();
         return code;
     }
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof QIOTagFilter && ((QIOTagFilter) filter).tagName.equals(tagName);
+        return filter instanceof QIOModIDFilter && ((QIOModIDFilter) filter).modID.equals(modID);
     }
 
     @Override
-    public QIOTagFilter clone() {
-        QIOTagFilter filter = new QIOTagFilter();
-        filter.tagName = tagName;
+    public QIOModIDFilter clone() {
+        QIOModIDFilter filter = new QIOModIDFilter();
+        filter.modID = modID;
         return filter;
     }
 
     @Override
     public FilterType getFilterType() {
-        return FilterType.QIO_TAG_FILTER;
+        return FilterType.QIO_MODID_FILTER;
     }
 
     @Override
-    public void setTagName(String name) {
-        tagName = name;
+    public void setModID(String id) {
+        modID = id;
     }
 
     @Override
-    public String getTagName() {
-        return tagName;
+    public String getModID() {
+        return modID;
     }
 }

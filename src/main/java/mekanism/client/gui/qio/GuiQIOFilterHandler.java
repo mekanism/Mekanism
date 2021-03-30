@@ -12,15 +12,18 @@ import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.client.gui.element.window.filter.qio.GuiQIOItemStackFilter;
+import mekanism.client.gui.element.window.filter.qio.GuiQIOModIDFilter;
 import mekanism.client.gui.element.window.filter.qio.GuiQIOTagFilter;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
+import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
+import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.to_server.PacketGuiInteract;
@@ -71,6 +74,8 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         addButton(new GuiElementHolder(this, 9, 30, 144, 68));
         //new filter button border
         addButton(new GuiElementHolder(this, 9, 98, 144, 22));
+        addButton(new TranslationButton(this, leftPos + 10, topPos + 99, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
+              () -> addWindow(new GuiQIOFilerSelect(this, tile))));
         addButton(scrollBar = new GuiScrollBar(this, 153, 30, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
@@ -92,15 +97,13 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
                         if (name != null && !name.isEmpty()) {
                             list.addAll(TagCache.getItemTagStacks(((ITagFilter<?>) filter).getTagName()));
                         }
+                    } else if (filter instanceof IModIDFilter) {
+                        list.addAll(TagCache.getModIDStacks(((IModIDFilter<?>) filter).getModID(), false));
                     }
                 }
                 return list;
             }));
         }
-        addButton(new TranslationButton(this, leftPos + 10, topPos + 99, 71, 20, MekanismLang.BUTTON_ITEMSTACK_FILTER,
-              () -> addWindow(GuiQIOItemStackFilter.create(this, tile))));
-        addButton(new TranslationButton(this, leftPos + 81, topPos + 99, 71, 20, MekanismLang.BUTTON_TAG_FILTER,
-              () -> addWindow(GuiQIOTagFilter.create(this, tile))));
     }
 
     protected void onClick(IFilter<?> filter, int index) {
@@ -108,7 +111,14 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
             addWindow(GuiQIOItemStackFilter.edit(this, tile, (QIOItemStackFilter) filter));
         } else if (filter instanceof ITagFilter) {
             addWindow(GuiQIOTagFilter.edit(this, tile, (QIOTagFilter) filter));
+        } else if (filter instanceof IModIDFilter) {
+            addWindow(GuiQIOModIDFilter.edit(this, tile, (QIOModIDFilter) filter));
         }
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override

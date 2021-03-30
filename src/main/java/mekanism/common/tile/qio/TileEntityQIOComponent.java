@@ -39,6 +39,9 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         if (prev != lastColor) {
             sendUpdatePacket();
         }
+        if (level.getGameTime() % 10 == 0) {
+            setActive(frequency != null);
+        }
     }
 
     @Nonnull

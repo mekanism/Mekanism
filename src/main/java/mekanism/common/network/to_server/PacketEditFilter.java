@@ -5,7 +5,7 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.transporter.SorterFilter;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;

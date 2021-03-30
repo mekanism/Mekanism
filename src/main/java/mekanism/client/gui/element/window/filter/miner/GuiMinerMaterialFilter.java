@@ -18,7 +18,7 @@ public class GuiMinerMaterialFilter extends GuiMaterialFilter<MinerMaterialFilte
         return new GuiMinerMaterialFilter(gui, (gui.getWidth() - 173) / 2, 30, tile, filter);
     }
 
-    private GuiMinerMaterialFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, MinerMaterialFilter origFilter) {
+    private GuiMinerMaterialFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, @Nullable MinerMaterialFilter origFilter) {
         super(gui, x, y, 173, 90, tile, origFilter);
     }
 

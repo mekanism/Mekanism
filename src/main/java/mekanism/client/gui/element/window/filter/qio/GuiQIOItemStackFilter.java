@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.window.filter.qio;
 
+import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiItemStackFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
@@ -15,7 +16,7 @@ public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter
         return new GuiQIOItemStackFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
     }
 
-    private GuiQIOItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityQIOFilterHandler tile, QIOItemStackFilter origFilter) {
+    private GuiQIOItemStackFilter(IGuiWrapper gui, int x, int y, TileEntityQIOFilterHandler tile, @Nullable QIOItemStackFilter origFilter) {
         super(gui, x, y, 152, 90, tile, origFilter);
     }
 

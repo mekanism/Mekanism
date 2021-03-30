@@ -3,6 +3,7 @@ package mekanism.common.content.qio.filter;
 import javax.annotation.Nonnull;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
+import mekanism.common.lib.inventory.Finder;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -16,6 +17,11 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
     }
 
     public QIOItemStackFilter() {
+    }
+
+    @Override
+    public Finder getFinder() {
+        return Finder.item(itemType);
     }
 
     @Override

@@ -19,7 +19,7 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiFilter<FILTER, TILE> {
 
-    protected GuiMaterialFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, FILTER origFilter) {
+    protected GuiMaterialFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, @Nullable FILTER origFilter) {
         super(gui, x, y, width, height, MekanismLang.MATERIAL_FILTER.translate(), tile, origFilter);
         if (filter.hasFilter()) {
             slotDisplay.updateStackList();

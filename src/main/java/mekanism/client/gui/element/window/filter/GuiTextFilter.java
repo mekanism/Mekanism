@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.window.filter;
 
+import javax.annotation.Nullable;
 import mekanism.api.functions.CharPredicate;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.text.GuiTextField;
@@ -15,7 +16,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
 
     protected GuiTextField text;
 
-    protected GuiTextFilter(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, TILE tile, FILTER origFilter) {
+    protected GuiTextFilter(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, TILE tile, @Nullable FILTER origFilter) {
         super(gui, x, y, width, height, filterName, tile, origFilter);
     }
 

@@ -7,6 +7,7 @@ import mekanism.common.content.miner.MinerMaterialFilter;
 import mekanism.common.content.miner.MinerModIDFilter;
 import mekanism.common.content.miner.MinerTagFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
+import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.content.transporter.SorterMaterialFilter;
@@ -83,6 +84,8 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
                 return new OredictionificatorFilter();
             case QIO_ITEMSTACK_FILTER:
                 return new QIOItemStackFilter();
+            case QIO_MODID_FILTER:
+                return new QIOModIDFilter();
             case QIO_TAG_FILTER:
                 return new QIOTagFilter();
             default:

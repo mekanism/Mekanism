@@ -1,35 +1,37 @@
 package mekanism.client.gui.element.window.filter.transporter;
 
+import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiFilterSelect;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 
-public class GuiSorterFilerSelect extends GuiFilterSelect {
-
-    private final TileEntityLogisticalSorter tile;
+public class GuiSorterFilerSelect extends GuiFilterSelect<TileEntityLogisticalSorter> {
 
     public GuiSorterFilerSelect(IGuiWrapper gui, TileEntityLogisticalSorter tile) {
-        super(gui);
-        this.tile = tile;
+        super(gui, tile, 4);
     }
 
+    @Nonnull
     @Override
-    protected GuiSorterItemStackFilter createNewItemStackFilter() {
-        return GuiSorterItemStackFilter.create(gui(), tile);
+    protected GuiFilterCreator<TileEntityLogisticalSorter> getItemStackFilterCreator() {
+        return GuiSorterItemStackFilter::create;
     }
 
+    @Nonnull
     @Override
-    protected GuiSorterTagFilter createNewTagFilter() {
-        return GuiSorterTagFilter.create(gui(), tile);
+    protected GuiFilterCreator<TileEntityLogisticalSorter> getTagFilterCreator() {
+        return GuiSorterTagFilter::create;
     }
 
+    @Nonnull
     @Override
-    protected GuiSorterMaterialFilter createNewMaterialFilter() {
-        return GuiSorterMaterialFilter.create(gui(), tile);
+    protected GuiFilterCreator<TileEntityLogisticalSorter> getMaterialFilterCreator() {
+        return GuiSorterMaterialFilter::create;
     }
 
+    @Nonnull
     @Override
-    protected GuiSorterModIDFilter createNewModIDFilter() {
-        return GuiSorterModIDFilter.create(gui(), tile);
+    protected GuiFilterCreator<TileEntityLogisticalSorter> getModIDFilterCreator() {
+        return GuiSorterModIDFilter::create;
     }
 }

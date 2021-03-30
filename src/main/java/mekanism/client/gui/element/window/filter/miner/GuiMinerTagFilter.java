@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.base.TagCache;
@@ -21,7 +22,7 @@ public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDi
         return new GuiMinerTagFilter(gui, (gui.getWidth() - 173) / 2, 30, tile, filter);
     }
 
-    private GuiMinerTagFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, MinerTagFilter origFilter) {
+    private GuiMinerTagFilter(IGuiWrapper gui, int x, int y, TileEntityDigitalMiner tile, @Nullable MinerTagFilter origFilter) {
         super(gui, x, y, 173, 90, tile, origFilter);
     }
 

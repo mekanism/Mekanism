@@ -17,7 +17,7 @@ import mekanism.client.gui.element.window.filter.GuiOredictionificatorFilter;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.entity.player.PlayerInventory;

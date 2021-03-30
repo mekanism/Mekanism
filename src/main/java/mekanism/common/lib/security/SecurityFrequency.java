@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.BasePacketHandler;

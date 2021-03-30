@@ -61,7 +61,6 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         super.onUpdateServer();
         if (level.getGameTime() % 10 == 0) {
             QIOFrequency frequency = getQIOFrequency();
-            setActive(frequency != null);
             for (int i = 0; i < DRIVE_SLOTS; i++) {
                 QIODriveSlot slot = (QIODriveSlot) driveSlots.get(i);
                 QIODriveData data = frequency == null ? null : frequency.getDriveData(slot.getKey());

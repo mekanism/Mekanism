@@ -19,7 +19,7 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.transporter.SorterFilter;
-import mekanism.common.lib.HashList;
+import mekanism.common.lib.collection.HashList;
 import net.minecraft.item.ItemStack;
 
 public class MovableFilterButton extends FilterButton {

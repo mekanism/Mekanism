@@ -13,7 +13,9 @@ public enum FilterType {
     SORTER_TAG_FILTER,
     OREDICTIONIFICATOR,
     QIO_ITEMSTACK_FILTER,
-    QIO_TAG_FILTER;
+    QIO_TAG_FILTER,
+    //TODO - 1.17: Evaluate moving the QIO modid filter above the tag filter. We can't do that now as it uses the index for saving purposes
+    QIO_MODID_FILTER;
 
     private static final FilterType[] FILTERS = values();
 

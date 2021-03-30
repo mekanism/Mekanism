@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -28,7 +29,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
         return new GuiOredictionificatorFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
     }
 
-    private GuiOredictionificatorFilter(IGuiWrapper gui, int x, int y, TileEntityOredictionificator tile, OredictionificatorFilter origFilter) {
+    private GuiOredictionificatorFilter(IGuiWrapper gui, int x, int y, TileEntityOredictionificator tile, @Nullable OredictionificatorFilter origFilter) {
         super(gui, x, y, 152, 100, MekanismLang.OREDICTIONIFICATOR_FILTER.translate(), tile, origFilter);
     }
 

@@ -1,4 +1,4 @@
-package mekanism.common.lib;
+package mekanism.common.lib.collection;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.AbstractCollection;

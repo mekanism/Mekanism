@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.window.filter.qio;
 
+import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
@@ -15,7 +16,7 @@ public class GuiQIOTagFilter extends GuiTagFilter<QIOTagFilter, TileEntityQIOFil
         return new GuiQIOTagFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
     }
 
-    private GuiQIOTagFilter(IGuiWrapper gui, int x, int y, TileEntityQIOFilterHandler tile, QIOTagFilter origFilter) {
+    private GuiQIOTagFilter(IGuiWrapper gui, int x, int y, TileEntityQIOFilterHandler tile, @Nullable QIOTagFilter origFilter) {
         super(gui, x, y, 152, 90, tile, origFilter);
     }
 

@@ -18,7 +18,7 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiFilter<FILTER, TILE> {
 
-    protected GuiItemStackFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, FILTER origFilter) {
+    protected GuiItemStackFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, @Nullable FILTER origFilter) {
         super(gui, x, y, width, height, MekanismLang.ITEM_FILTER.translate(), tile, origFilter);
     }
 
