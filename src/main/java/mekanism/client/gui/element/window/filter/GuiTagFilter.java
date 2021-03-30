@@ -34,7 +34,7 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
     }
 
     @Override
-    protected void setText() {
+    protected boolean setText() {
         String name = text.getText();
         if (name.isEmpty()) {
             filterSaveFailed(getNoFilterSaveError());
@@ -44,7 +44,9 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
             filter.setTagName(name);
             slotDisplay.updateStackList();
             text.setText("");
+            return true;
         }
+        return false;
     }
 
     @Nonnull

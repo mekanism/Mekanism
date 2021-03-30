@@ -223,13 +223,12 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 SorterFilter<?> sorterFilter = (SorterFilter<?>) result;
                 wrapped.put("allowDefault", sorterFilter.allowDefault);
                 wrapped.put("color", wrapReturnType(sorterFilter.color));
+                wrapped.put("size", sorterFilter.sizeMode);
+                wrapped.put("min", sorterFilter.min);
+                wrapped.put("max", sorterFilter.max);
                 if (sorterFilter instanceof SorterItemStackFilter) {
                     SorterItemStackFilter filter = (SorterItemStackFilter) sorterFilter;
                     wrapped.put("fuzzy", filter.fuzzyMode);
-                    //TODO - 10.1: Move size information to main sorter filter
-                    wrapped.put("size", filter.sizeMode);
-                    wrapped.put("min", filter.min);
-                    wrapped.put("max", filter.max);
                 }
             } /*else if (result instanceof QIOFilter) {
                 //No specifics QIO only extra data
@@ -373,16 +372,15 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                         if (rawColor instanceof String) {
                             sorterFilter.color = sanitizeStringToEnum(EnumColor.class, (String) rawColor);
                         }
+                        sorterFilter.sizeMode = getBooleanFromRaw(map.get("size"));
+                        sorterFilter.min = getIntFromRaw(map.get("min"));
+                        sorterFilter.max = getIntFromRaw(map.get("max"));
+                        if (sorterFilter.min < 0 || sorterFilter.max < 0 || sorterFilter.min > sorterFilter.max || sorterFilter.max > 64) {
+                            return null;
+                        }
                         if (sorterFilter instanceof SorterItemStackFilter) {
                             SorterItemStackFilter sorterItemFilter = (SorterItemStackFilter) sorterFilter;
                             sorterItemFilter.fuzzyMode = getBooleanFromRaw(map.get("fuzzy"));
-                            //TODO - 10.1: Move size information to main sorter filter
-                            sorterItemFilter.sizeMode = getBooleanFromRaw(map.get("size"));
-                            sorterItemFilter.min = getIntFromRaw(map.get("min"));
-                            sorterItemFilter.max = getIntFromRaw(map.get("max"));
-                            if (sorterItemFilter.min < 0 || sorterItemFilter.max < 0 || sorterItemFilter.min > sorterItemFilter.max || sorterItemFilter.max > 64) {
-                                return null;
-                            }
                         }
                     } /*else if (filter instanceof QIOFilter) {
                         //No specifics QIO only extra data

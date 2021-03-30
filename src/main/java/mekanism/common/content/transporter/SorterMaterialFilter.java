@@ -44,8 +44,7 @@ public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> imp
 
     @Override
     public int hashCode() {
-        int code = 1;
-        code = 31 * code + super.hashCode();
+        int code = super.hashCode();
         code = 31 * code + materialItem.hashCode();
         return code;
     }
@@ -58,8 +57,7 @@ public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> imp
     @Override
     public SorterMaterialFilter clone() {
         SorterMaterialFilter filter = new SorterMaterialFilter();
-        filter.allowDefault = allowDefault;
-        filter.color = color;
+        copyTo(filter);
         filter.materialItem = materialItem;
         return filter;
     }

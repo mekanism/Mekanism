@@ -71,11 +71,11 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     }
 
     @Override
-    protected void setText() {
+    protected boolean setText() {
         String name = text.getText();
         if (name.isEmpty()) {
             filterSaveFailed(getNoFilterSaveError());
-            return;
+            return false;
         }
         String modid = "forge";
         String newFilter = name.toLowerCase(Locale.ROOT);
@@ -85,12 +85,12 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             newFilter = split[1];
             if (modid.contains("/")) {
                 filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
-                return;
+                return false;
             }
         }
         if (newFilter.contains(":")) {
             filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
-            return;
+            return false;
         }
         ResourceLocation filterLocation = new ResourceLocation(modid, newFilter);
         if (filter.hasFilter() && filter.filterMatches(filterLocation)) {
@@ -99,9 +99,11 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             filter.setFilter(filterLocation);
             slotDisplay.updateStackList();
             text.setText("");
+            return true;
         } else {
             filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
         }
+        return false;
     }
 
     @Override

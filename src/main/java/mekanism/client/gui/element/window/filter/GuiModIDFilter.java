@@ -39,8 +39,8 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     }
 
     @Override
-    protected void setText() {
-        setFilterName(text.getText(), false);
+    protected boolean setText() {
+        return setFilterName(text.getText(), false);
     }
 
     @Nonnull
@@ -97,7 +97,8 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
         setFilterName(registryEntry.getRegistryName().getNamespace(), true);
     }
 
-    private void setFilterName(String name, boolean click) {
+    private boolean setFilterName(String name, boolean click) {
+        boolean success = false;
         if (name.isEmpty()) {
             filterSaveFailed(getNoFilterSaveError());
         } else if (name.equals(filter.getModID())) {
@@ -106,9 +107,11 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             filter.setModID(name);
             slotDisplay.updateStackList();
             text.setText("");
+            success = true;
         }
         if (click) {
             playClickSound();
         }
+        return success;
     }
 }

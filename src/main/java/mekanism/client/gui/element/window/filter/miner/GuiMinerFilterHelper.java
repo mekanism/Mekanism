@@ -9,7 +9,6 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.filter.GuiFilter;
 import mekanism.client.gui.element.window.filter.GuiFilterHelper;
-import mekanism.client.gui.element.window.filter.GuiFilterSelect;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostBlockItemConsumer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.miner.MinerFilter;
@@ -37,7 +36,7 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
     }
 
     @Override
-    default GuiFilterSelect getFilterSelect(IGuiWrapper gui, TileEntityDigitalMiner tile) {
+    default GuiMinerFilerSelect getFilterSelect(IGuiWrapper gui, TileEntityDigitalMiner tile) {
         return new GuiMinerFilerSelect(gui, tile);
     }
 

@@ -844,8 +844,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.FILTER, "Filter");
         add(MekanismLang.FILTER_NEW, "New: %s");
         add(MekanismLang.FILTER_EDIT, "Edit: %s");
-        add(MekanismLang.SIZE_MODE, "Size Mode");
-        add(MekanismLang.SIZE_MODE_CONFLICT, "Size Mode - has no effect currently, because single item mode is turned on.");
+        add(MekanismLang.SORTER_SIZE_MODE, "Size Mode");
+        add(MekanismLang.SORTER_SIZE_MODE_CONFLICT, "Size Mode - has no effect currently, because single item mode is turned on.");
         add(MekanismLang.FUZZY_MODE, "Fuzzy Mode");
         add(MekanismLang.MATERIAL_FILTER, "Material Filter");
         add(MekanismLang.MATERIAL_FILTER_DETAILS, "Using material of:");
@@ -859,10 +859,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODID_FILTER_ID, "ID: %s");
         add(MekanismLang.ITEM_FILTER, "Item Filter");
         add(MekanismLang.ITEM_FILTER_NO_ITEM, "No item");
-        add(MekanismLang.ITEM_FILTER_SIZE_MODE, "%s!");
-        add(MekanismLang.ITEM_FILTER_MAX_LESS_THAN_MIN, "Max < min");
-        add(MekanismLang.ITEM_FILTER_OVER_SIZED, "Max > 64");
-        add(MekanismLang.ITEM_FILTER_SIZE_MISSING, "Max/min");
+        add(MekanismLang.SORTER_FILTER_SIZE_MODE, "%s!");
+        add(MekanismLang.SORTER_FILTER_MAX_LESS_THAN_MIN, "Max < min");
+        add(MekanismLang.SORTER_FILTER_OVER_SIZED, "Max > 64");
+        add(MekanismLang.SORTER_FILTER_SIZE_MISSING, "Max/min");
         add(MekanismLang.OREDICTIONIFICATOR_FILTER, "Oredictionificator Filter");
         add(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG, "Incompatible tag");
         //Seismic Vibrator

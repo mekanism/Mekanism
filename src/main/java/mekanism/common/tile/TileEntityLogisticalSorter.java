@@ -16,7 +16,6 @@ import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.SorterFilter;
-import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -91,19 +90,12 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             //If there is no tile to pull from or the push to, skip doing any checks
             if (InventoryUtils.isItemHandler(back, getDirection()) && front != null) {
                 boolean sentItems = false;
-                int min = 0;
-
                 for (SorterFilter<?> filter : filters) {
                     TransitRequest request = filter.mapInventory(back, getDirection(), singleItem);
                     if (request.isEmpty()) {
                         continue;
                     }
-                    if (!singleItem && filter instanceof SorterItemStackFilter) {
-                        SorterItemStackFilter itemFilter = (SorterItemStackFilter) filter;
-                        if (itemFilter.sizeMode) {
-                            min = itemFilter.min;
-                        }
-                    }
+                    int min = singleItem ? 1 : filter.sizeMode ? filter.min : 0;
                     TransitResponse response = emitItemToTransporter(front, request, filter.color, min);
                     if (!response.isEmpty()) {
                         response.useAll();

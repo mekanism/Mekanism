@@ -33,10 +33,9 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
 
     @Override
     protected void validateAndSave() {
-        if (!text.getText().isEmpty()) {
-            setText();
+        if (text.getText().isEmpty() || setText()) {
+            super.validateAndSave();
         }
-        super.validateAndSave();
     }
 
     protected CharPredicate getInputValidator() {
@@ -44,5 +43,8 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         return InputValidator.or(InputValidator.LETTER, InputValidator.DIGIT, InputValidator.FILTER_CHARS);
     }
 
-    protected abstract void setText();
+    /**
+     * @return {@code true} if it was able to set the text because it is valid, {@code false} if an error occurred.
+     */
+    protected abstract boolean setText();
 }

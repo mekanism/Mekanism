@@ -16,11 +16,13 @@ import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
+import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.network.to_server.PacketEditFilter;
 import mekanism.common.network.to_server.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -134,6 +136,29 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
             saveFilter();
         } else {
             filterSaveFailed(getNoFilterSaveError());
+        }
+    }
+
+    protected static <FILTER extends SorterFilter<FILTER>> void validateAndSaveSorterFilter(GuiFilter<FILTER, ?> guiFilter, GuiTextField minField, GuiTextField maxField) {
+        //Note: This is here not in GuiSorterFilterHelper so that it can access the saveFilter/filterSaveFailed methods
+        if (guiFilter.filter.hasFilter()) {
+            if (minField.getText().isEmpty() || maxField.getText().isEmpty()) {
+                guiFilter.filterSaveFailed(MekanismLang.SORTER_FILTER_SIZE_MISSING);
+            } else {
+                int min = Integer.parseInt(minField.getText());
+                int max = Integer.parseInt(maxField.getText());
+                if (max >= min && max <= 64) {
+                    guiFilter.filter.min = min;
+                    guiFilter.filter.max = max;
+                    guiFilter.saveFilter();
+                } else if (min > max) {
+                    guiFilter.filterSaveFailed(MekanismLang.SORTER_FILTER_MAX_LESS_THAN_MIN);
+                } else { //max > 64 || min > 64
+                    guiFilter.filterSaveFailed(MekanismLang.SORTER_FILTER_OVER_SIZED);
+                }
+            }
+        } else {
+            guiFilter.filterSaveFailed(guiFilter.getNoFilterSaveError());
         }
     }
 
