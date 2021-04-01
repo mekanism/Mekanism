@@ -40,6 +40,17 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
     private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
     private static final ResourceLocation PROTECTED = MekanismUtils.getResource(ResourceType.GUI, "protected.png");
 
+    private static ISecurityObject getItemSecurityObject(@Nonnull Hand hand) {
+        return SecurityUtils.wrapSecurityItem(() -> {
+            ItemStack stack = minecraft.player.getItemInHand(hand);
+            if (stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem)) {
+                minecraft.player.closeContainer();
+                return ItemStack.EMPTY;
+            }
+            return stack;
+        });
+    }
+
     @Nullable
     private final Hand currentHand;
 
@@ -50,17 +61,6 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
     public GuiSecurityTab(IGuiWrapper gui, ISecurityObject securityObject, int y) {
         super(PUBLIC, gui, securityObject, gui.getWidth(), y, 26, 18, false);
         this.currentHand = null;
-    }
-
-    private static ISecurityObject getItemSecurityObject(@Nonnull Hand hand) {
-        return SecurityUtils.wrapSecurityItem(() -> {
-            ItemStack stack = minecraft.player.getItemInHand(hand);
-            if (stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem)) {
-                minecraft.player.closeContainer();
-                return ItemStack.EMPTY;
-            }
-            return stack;
-        });
     }
 
     public GuiSecurityTab(IGuiWrapper gui, @Nonnull Hand hand) {

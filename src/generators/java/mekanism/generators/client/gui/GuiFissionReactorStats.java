@@ -44,7 +44,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
                 return Math.min(1, multiblock.lastBurnRate / multiblock.getMaxBurnRate());
             }
         }, 5, 114, imageWidth - 12));
-        addButton(rateLimitField = new GuiTextField(this, 77, 128, 49, 12));
+        rateLimitField = addButton(new GuiTextField(this, 77, 128, 49, 12));
         rateLimitField.setEnterHandler(this::setRateLimit);
         rateLimitField.setInputValidator(InputValidator.DECIMAL);
         rateLimitField.setMaxStringLength(4);

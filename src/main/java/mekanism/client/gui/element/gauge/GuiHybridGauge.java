@@ -32,8 +32,8 @@ public class GuiHybridGauge extends GuiGauge<Void> implements IJEIIngredientHelp
           IGuiWrapper gui, int x, int y, int width, int height) {
         super(type, gui, x, y, width, height);
         this.gasTankSupplier = gasTankSupplier;
-        gasGauge = new GuiGasGauge(gasTankSupplier, gasTanksSupplier, type, gui, x, y, width, height);
-        fluidGauge = new GuiFluidGauge(fluidTankSupplier, fluidTanksSupplier, type, gui, x, y, width, height);
+        gasGauge = addPositionOnlyChild(new GuiGasGauge(gasTankSupplier, gasTanksSupplier, type, gui, x, y, width, height));
+        fluidGauge = addPositionOnlyChild(new GuiFluidGauge(fluidTankSupplier, fluidTanksSupplier, type, gui, x, y, width, height));
     }
 
     public GuiHybridGauge setLabel(ITextComponent label) {

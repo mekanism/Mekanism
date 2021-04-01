@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.laser.TileEntityLaserTractorBeam;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,12 +12,6 @@ public class GuiLaserTractorBeam extends GuiMekanismTile<TileEntityLaserTractorB
     public GuiLaserTractorBeam(MekanismTileContainer<TileEntityLaserTractorBeam> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         dynamicSlots = true;
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        addButton(new GuiSecurityTab(this, tile));
     }
 
     @Override

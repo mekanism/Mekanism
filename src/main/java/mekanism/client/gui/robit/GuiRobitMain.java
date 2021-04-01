@@ -49,7 +49,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
         addButton(new MekanismImageButton(this, leftPos + 6, topPos + 35, 18, getButtonLocation("drop"),
               () -> Mekanism.packetHandler.sendToServer(new PacketRobit(RobitPacketType.DROP_PICKUP, robit.getId())),
               getOnHover(MekanismLang.ROBIT_TOGGLE_PICKUP)));
-        addButton(renameButton = new MekanismImageButton(this, leftPos + 6, topPos + 54, 18, getButtonLocation("rename"), () -> {
+        renameButton = addButton(new MekanismImageButton(this, leftPos + 6, topPos + 54, 18, getButtonLocation("rename"), () -> {
             GuiWindow window = new GuiRobitRename(this, 27, 16, robit);
             window.setListenerTab(() -> renameButton);
             renameButton.active = false;

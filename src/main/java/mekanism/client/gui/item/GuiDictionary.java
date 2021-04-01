@@ -38,11 +38,11 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     public void init() {
         super.init();
         addButton(new GuiSlot(SlotType.NORMAL, this, 5, 5).setRenderHover(true));
-        addButton(scrollList = new GuiTextScrollList(this, 7, 29, 162, 42));
+        scrollList = addButton(new GuiTextScrollList(this, 7, 29, 162, 42));
         //TODO: Ideally we would eventually replace this with some sort of tab system as it would probably look better
         // and could then be limited to just the tags the target supports
         addButton(new GuiDropdown<>(this, 124, 73, 45, DictionaryTagType.class, () -> currentType, this::setCurrentType));
-        addButton(target = new GuiDictionaryTarget(this, 6, 6, this::updateScrollList));
+        target = addButton(new GuiDictionaryTarget(this, 6, 6, this::updateScrollList));
     }
 
     private void setCurrentType(DictionaryTagType type) {

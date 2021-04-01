@@ -41,15 +41,14 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     @Override
     public void init() {
         super.init();
-
-        addButton(moduleScreen = new GuiModuleScreen(this, 138, 20, stack -> {
+        moduleScreen = addButton(new GuiModuleScreen(this, 138, 20, stack -> {
             int slotId = menu.slots.get(selected).getSlotIndex();
             Mekanism.packetHandler.sendToServer(new PacketUpdateInventorySlot(stack, slotId));
             inventory.player.inventory.setItem(slotId, stack);
         }));
-        addButton(scrollList = new GuiModuleScrollList(this, 30, 20, 108, 116, () -> getStack(selected), this::onModuleSelected));
+        scrollList = addButton(new GuiModuleScrollList(this, 30, 20, 108, 116, () -> getStack(selected), this::onModuleSelected));
         addButton(new GuiElementHolder(this, 30, 136, 108, 18));
-        addButton(optionsButton = new TranslationButton(this, leftPos + 31, topPos + 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
+        optionsButton = addButton(new TranslationButton(this, leftPos + 31, topPos + 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
         optionsButton.active = false;
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {

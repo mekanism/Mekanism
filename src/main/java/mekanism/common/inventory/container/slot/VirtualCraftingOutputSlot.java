@@ -26,7 +26,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     public VirtualCraftingOutputSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, Consumer<ItemStack> uncheckedSetter,
           @Nonnull QIOCraftingWindow craftingWindow) {
-        super(slot, slotOverlay, uncheckedSetter);
+        super(slot, craftingWindow.getWindowData(), slotOverlay, uncheckedSetter);
         this.craftingWindow = craftingWindow;
     }
 

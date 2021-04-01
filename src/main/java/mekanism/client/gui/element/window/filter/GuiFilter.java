@@ -23,6 +23,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.SorterFilter;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.network.to_server.PacketEditFilter;
 import mekanism.common.network.to_server.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -51,7 +52,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     private int ticker;
 
     protected GuiFilter(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, TILE tile, @Nullable FILTER origFilter) {
-        super(gui, x, y, width, height);
+        super(gui, x, y, width, height, SelectedWindowData.UNSPECIFIED);
         this.tile = tile;
         this.origFilter = origFilter;
         this.filterName = filterName;
@@ -110,7 +111,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         }));
         addChild(new TranslationButton(gui(), getLeftButtonX() + 62, getGuiTop() + screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
         addChild(new GuiSlot(SlotType.NORMAL, gui(), relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true).setGhostHandler(getGhostHandler()));
-        addChild(slotDisplay = new GuiSequencedSlotDisplay(gui(), relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
+        slotDisplay = addChild(new GuiSequencedSlotDisplay(gui(), relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
     }
 
     @Nullable

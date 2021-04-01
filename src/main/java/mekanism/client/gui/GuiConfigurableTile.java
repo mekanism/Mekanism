@@ -21,7 +21,7 @@ public abstract class GuiConfigurableTile<TILE extends TileEntityMekanism & ISid
     @Override
     public void init() {
         super.init();
-        addButton(sideConfigTab = new GuiSideConfigurationTab<>(this, tile, () -> sideConfigTab));
-        addButton(transporterConfigTab = new GuiTransporterConfigTab<>(this, tile, () -> transporterConfigTab));
+        sideConfigTab = addButton(new GuiSideConfigurationTab<>(this, tile, () -> sideConfigTab));
+        transporterConfigTab = addButton(new GuiTransporterConfigTab<>(this, tile, () -> transporterConfigTab));
     }
 }

@@ -37,7 +37,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
         this.ySlots = ySlots;
         this.slotList = slotList;
         this.clickHandler = clickHandler;
-        addChild(scrollBar = new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18,
+        scrollBar = addChild(new GuiScrollBar(gui, relativeX + xSlots * 18 + 4, y, ySlots * 18,
               () -> getSlotList() == null ? 0 : (int) Math.ceil((double) getSlotList().size() / xSlots), () -> ySlots));
     }
 
@@ -125,7 +125,7 @@ public class GuiSlotScroll extends GuiRelativeElement {
         if (isSlotEmpty(slot)) {
             return;
         }
-        gui().renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1.0F, "");
+        gui().renderItemWithOverlay(matrix, slot.getItem().getStack(), slotX + 1, slotY + 1, 1, "");
         if (slot.getCount() > 1) {
             renderSlotText(matrix, getCountText(slot.getCount()), slotX + 1, slotY + 1);
         }

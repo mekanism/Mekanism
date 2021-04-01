@@ -28,7 +28,7 @@ public class GuiGraph extends GuiTexturedElement {
 
     public GuiGraph(IGuiWrapper gui, int x, int y, int width, int height, GraphDataHandler handler) {
         super(MekanismUtils.getResource(ResourceType.GUI, "graph.png"), gui, x, y, width, height);
-        innerScreen = new GuiInnerScreen(gui, x - 1, y - 1, width + 2, height + 2);
+        innerScreen = addPositionOnlyChild(new GuiInnerScreen(gui, relativeX - 1, relativeY - 1, width + 2, height + 2));
         dataHandler = handler;
     }
 

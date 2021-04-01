@@ -2,9 +2,11 @@ package mekanism.common.inventory.container.tile;
 
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -21,6 +23,8 @@ import net.minecraftforge.fml.DistExecutor;
 
 public class MekanismTileContainer<TILE extends TileEntityMekanism> extends MekanismContainer {
 
+    private VirtualInventoryContainerSlot upgradeSlot;
+    private VirtualInventoryContainerSlot upgradeOutputSlot;
     @Nonnull
     protected final TILE tile;
 
@@ -46,11 +50,13 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
 
     @Override
     protected void openInventory(@Nonnull PlayerInventory inv) {
+        super.openInventory(inv);
         tile.open(inv.player);
     }
 
     @Override
     protected void closeInventory(@Nonnull PlayerEntity player) {
+        super.closeInventory(player);
         tile.close(player);
     }
 
@@ -77,6 +83,21 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
                 }
             }
         }
+        if (tile.supportsUpgrades()) {
+            //Add the virtual slot for the upgrade
+            addSlot(upgradeSlot = tile.getComponent().getUpgradeSlot().createContainerSlot());
+            addSlot(upgradeOutputSlot = tile.getComponent().getUpgradeOutputSlot().createContainerSlot());
+        }
+    }
+
+    @Nullable
+    public VirtualInventoryContainerSlot getUpgradeSlot() {
+        return upgradeSlot;
+    }
+
+    @Nullable
+    public VirtualInventoryContainerSlot getUpgradeOutputSlot() {
+        return upgradeOutputSlot;
     }
 
     @Nonnull

@@ -58,7 +58,7 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
                     HashedItem itemType = freq.getTypeByUUID(typeUUID);
                     if (itemType != null) {
                         ItemStack ret = freq.removeByType(itemType, itemType.getStack().getMaxStackSize());
-                        ItemStack remainder = container.insertIntoPlayerInventory(ret);
+                        ItemStack remainder = container.insertIntoPlayerInventory(player.getUUID(), ret);
                         if (!remainder.isEmpty()) {
                             remainder = freq.addItem(remainder);
                             if (!remainder.isEmpty()) {

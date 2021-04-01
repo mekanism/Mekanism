@@ -11,9 +11,6 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,14 +26,11 @@ public class GuiElectrolyticSeparator extends GuiConfigurableTile<TileEntityElec
     @Override
     public void init() {
         super.init();
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getEnergyUsed, this));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 5, 10));
         addButton(new GuiGasGauge(() -> tile.leftTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 58, 18));
         addButton(new GuiGasGauge(() -> tile.rightTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 100, 18));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiProgress(tile::getActive, ProgressType.BI, this, 80, 30).jeiCategory(tile));
         addButton(new GuiGasMode(this, leftPos + 7, topPos + 72, false, () -> tile.dumpLeft, tile.getBlockPos(), 0));
         addButton(new GuiGasMode(this, leftPos + 159, topPos + 72, true, () -> tile.dumpRight, tile.getBlockPos(), 1));

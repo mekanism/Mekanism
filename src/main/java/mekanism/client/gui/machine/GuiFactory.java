@@ -9,10 +9,7 @@ import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.tab.GuiSortingTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.registries.MekanismBlocks;
@@ -48,9 +45,6 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     @Override
     public void init() {
         super.init();
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
         addButton(new GuiSortingTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), imageWidth - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getLastUsage, this));

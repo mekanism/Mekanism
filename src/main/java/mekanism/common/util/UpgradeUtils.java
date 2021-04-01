@@ -18,19 +18,23 @@ public class UpgradeUtils {
     }
 
     public static ItemStack getStack(Upgrade upgrade) {
+        return getStack(upgrade, 1);
+    }
+
+    public static ItemStack getStack(Upgrade upgrade, int count) {
         switch (upgrade) {
             case SPEED:
-                return MekanismItems.SPEED_UPGRADE.getItemStack();
+                return MekanismItems.SPEED_UPGRADE.getItemStack(count);
             case ENERGY:
-                return MekanismItems.ENERGY_UPGRADE.getItemStack();
+                return MekanismItems.ENERGY_UPGRADE.getItemStack(count);
             case FILTER:
-                return MekanismItems.FILTER_UPGRADE.getItemStack();
+                return MekanismItems.FILTER_UPGRADE.getItemStack(count);
             case MUFFLING:
-                return MekanismItems.MUFFLING_UPGRADE.getItemStack();
+                return MekanismItems.MUFFLING_UPGRADE.getItemStack(count);
             case GAS:
-                return MekanismItems.GAS_UPGRADE.getItemStack();
+                return MekanismItems.GAS_UPGRADE.getItemStack(count);
             case ANCHOR:
-                return MekanismItems.ANCHOR_UPGRADE.getItemStack();
+                return MekanismItems.ANCHOR_UPGRADE.getItemStack(count);
         }
         return ItemStack.EMPTY;
     }

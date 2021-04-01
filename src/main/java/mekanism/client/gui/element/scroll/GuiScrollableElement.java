@@ -10,12 +10,12 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected double scroll;
     private boolean isDragging;
     private int dragOffset;
-    protected final int barXShift;
-    protected final int barX;
-    protected final int barY;
+    protected final int maxBarHeight;
     protected final int barWidth;
     protected final int barHeight;
-    protected final int maxBarHeight;
+    protected final int barXShift;
+    protected int barX;
+    protected int barY;
 
     protected GuiScrollableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height,
           int barXShift, int barYShift, int barWidth, int barHeight, int maxBarHeight) {
@@ -26,6 +26,20 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         this.barWidth = barWidth;
         this.barHeight = barHeight;
         this.maxBarHeight = maxBarHeight;
+    }
+
+    @Override
+    public void resize(int prevLeft, int prevTop, int left, int top) {
+        super.resize(prevLeft, prevTop, left, top);
+        barX = barX - prevLeft + left;
+        barY = barY - prevTop + top;
+    }
+
+    @Override
+    public void move(int changeX, int changeY) {
+        super.move(changeX, changeY);
+        barX += changeX;
+        barY += changeY;
     }
 
     protected abstract int getMaxElements();

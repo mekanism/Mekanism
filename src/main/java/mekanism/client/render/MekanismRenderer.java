@@ -17,6 +17,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.SpecialColors;
+import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
@@ -338,10 +339,10 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(MatrixStack matrix, int x, int y, int width, int height, int color) {
-        float r = (color >> 24 & 255) / 255.0F;
-        float g = (color >> 16 & 255) / 255.0F;
-        float b = (color >> 8 & 255) / 255.0F;
-        float a = (color & 255) / 255.0F;
+        float r = getRed(color);
+        float g = getGreen(color);
+        float b = getBlue(color);
+        float a = getAlpha(color);
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.disableAlphaTest();
@@ -435,6 +436,7 @@ public class MekanismRenderer {
         parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"));
         SpecialColors.GUI_OBJECTS.parse(Mekanism.rl("textures/colormap/gui_objects.png"));
         SpecialColors.GUI_TEXT.parse(Mekanism.rl("textures/colormap/gui_text.png"));
+        GuiElementHolder.updateBackgroundColor();
     }
 
     private static void parseColorAtlas(ResourceLocation rl) {

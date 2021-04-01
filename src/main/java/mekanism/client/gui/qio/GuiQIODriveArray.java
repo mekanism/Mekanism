@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.custom.GuiQIOFrequencyDataScreen;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.qio.TileEntityQIODriveArray;
@@ -25,7 +24,6 @@ public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, M
     public void init() {
         super.init();
         addButton(new GuiQIOFrequencyTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiQIOFrequencyDataScreen(this, 15, 19, imageWidth - 32, 46, () -> tile.getFrequency(FrequencyType.QIO)));
     }
 

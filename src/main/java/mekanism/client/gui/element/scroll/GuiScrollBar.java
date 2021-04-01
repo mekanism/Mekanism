@@ -22,7 +22,7 @@ public class GuiScrollBar extends GuiScrollableElement {
 
     public GuiScrollBar(IGuiWrapper gui, int x, int y, int height, IntSupplier maxElements, IntSupplier focusedElements) {
         super(BAR, gui, x, y, 14, height, 1, 1, TEXTURE_WIDTH / 2, TEXTURE_HEIGHT, height - 2);
-        holder = new GuiElementHolder(gui, x, y, barWidth + 2, height);
+        holder = addPositionOnlyChild(new GuiElementHolder(gui, x, y, barWidth + 2, height));
         this.maxElements = maxElements;
         this.focusedElements = focusedElements;
     }

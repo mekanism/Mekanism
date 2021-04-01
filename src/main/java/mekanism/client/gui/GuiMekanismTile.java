@@ -3,8 +3,12 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
+import mekanism.client.gui.element.tab.window.GuiUpgradeWindowTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -24,6 +28,11 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER extends MekanismTileContainer<TILE>> extends GuiMekanism<CONTAINER> {
 
     protected final TILE tile;
+    /**
+     * May be null if init hasn't been called yet. Will be null if the tile doesn't support upgrades.
+     */
+    @Nullable
+    private GuiUpgradeWindowTab upgradeWindowTab;
 
     protected GuiMekanismTile(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
@@ -32,6 +41,24 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
 
     public TILE getTileEntity() {
         return tile;
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        addGenericTabs();
+    }
+
+    protected void addGenericTabs() {
+        if (tile.supportsUpgrades()) {
+            upgradeWindowTab = addButton(new GuiUpgradeWindowTab(this, tile, () -> upgradeWindowTab));
+        }
+        if (tile.supportsRedstone()) {
+            addButton(new GuiRedstoneControlTab(this, tile));
+        }
+        if (tile.hasSecurity()) {
+            addButton(new GuiSecurityTab(this, tile));
+        }
     }
 
     @Override

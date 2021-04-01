@@ -8,9 +8,6 @@ import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.client.gui.element.window.filter.transporter.GuiSorterFilerSelect;
 import mekanism.client.gui.element.window.filter.transporter.GuiSorterItemStackFilter;
 import mekanism.client.gui.element.window.filter.transporter.GuiSorterMaterialFilter;
@@ -49,9 +46,6 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     public void init() {
         super.init();
         addButton(new GuiSlot(SlotType.NORMAL, this, 12, 136).setRenderAboveSlots());
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
         addButton(new TranslationButton(this, leftPos + 56, topPos + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiSorterFilerSelect(this, tile))));
         addButton(new MekanismImageButton(this, leftPos + 12, topPos + 58, 14, getButtonLocation("single"),

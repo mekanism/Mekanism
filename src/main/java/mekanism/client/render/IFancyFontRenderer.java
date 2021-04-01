@@ -61,8 +61,12 @@ public interface IFancyFontRenderer {
     }
 
     default void drawCenteredTextScaledBound(MatrixStack matrix, ITextComponent text, float maxLength, float y, int color) {
+        drawCenteredTextScaledBound(matrix, text, maxLength, 0, y, color);
+    }
+
+    default void drawCenteredTextScaledBound(MatrixStack matrix, ITextComponent text, float maxLength, float x, float y, int color) {
         float scale = Math.min(1, maxLength / getStringWidth(text));
-        drawScaledCenteredText(matrix, text, getXSize() / 2F, y, color, scale);
+        drawScaledCenteredText(matrix, text, x + getXSize() / 2F, y, color, scale);
     }
 
     default void drawTextExact(MatrixStack matrix, ITextComponent text, float x, float y, int color) {

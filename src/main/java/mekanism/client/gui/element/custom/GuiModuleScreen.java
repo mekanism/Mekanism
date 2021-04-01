@@ -39,7 +39,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, Consumer<ItemStack> callback) {
         super(gui, x, y, 102, 134);
         this.callback = callback;
-        background = new GuiInnerScreen(gui, x, y, 102, 134);
+        background = addPositionOnlyChild(new GuiInnerScreen(gui, x, y, 102, 134));
     }
 
     @SuppressWarnings("unchecked")

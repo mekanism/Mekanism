@@ -35,7 +35,7 @@ public class FilterButton extends MekanismButton {
         this.index = index;
         this.filterIndex = filterIndex;
         this.filters = filters;
-        slot = new GuiSlot(SlotType.NORMAL, gui, x + 2, y + 2);
+        slot = addPositionOnlyChild(new GuiSlot(SlotType.NORMAL, gui, x + 2, y + 2));
         setButtonBackground(ButtonBackground.NONE);
     }
 

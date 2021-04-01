@@ -1,7 +1,5 @@
 package mekanism.common.inventory.container;
 
-import it.unimi.dsi.fastutil.objects.Object2ByteMap;
-import it.unimi.dsi.fastutil.objects.Object2ByteOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -26,6 +24,7 @@ import mekanism.common.content.qio.SearchQueryParser.ISearchQuery;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.inventory.ISlotClickHandler;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
@@ -33,7 +32,6 @@ import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.to_server.PacketGuiItemDataRequest;
-import mekanism.common.network.to_server.PacketQIOCraftingWindowSelect;
 import mekanism.common.network.to_server.PacketQIOItemViewerSlotInteract;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.InventoryUtils;
@@ -73,16 +71,10 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private Map<String, List<IScrollableSlot>> searchCache = new Object2ObjectOpenHashMap<>();
     private String searchQuery = "";
 
-    /**
-     * Keeps track of which crafting grid the player has open. Only used on the client for use in JEI, so doesn't need to keep track of other players.
-     */
-    private byte selectedCraftingGrid = -1;
-    private Object2ByteMap<UUID> selectedCraftingGrids;
-    private List<InventoryContainerSlot>[] craftingGridInputSlots;
-
     private int doubleClickTransferTicks = 0;
     private int lastSlot = -1;
     private ItemStack lastStack = ItemStack.EMPTY;
+    private List<InventoryContainerSlot>[] craftingGridInputSlots;
     protected final IQIOCraftingWindowHolder craftingWindowHolder;
     private final VirtualInventoryContainerSlot[][] craftingSlots = new VirtualInventoryContainerSlot[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS][10];
 
@@ -105,8 +97,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             }
         }
         if (!remote) {
-            //Only keep track of uuid based selected grids on the server
-            selectedCraftingGrids = new Object2ByteOpenHashMap<>();
             craftingGridInputSlots = new List[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
         }
     }
@@ -131,7 +121,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         container.searchList = searchList;
         container.searchCache = searchCache;
         container.searchQuery = searchQuery;
-        container.selectedCraftingGrid = selectedCraftingGrid;
+        container.selectedWindow = getSelectedWindow();
     }
 
     @Override
@@ -178,7 +168,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     protected void closeInventory(@Nonnull PlayerEntity player) {
         super.closeInventory(player);
         if (!player.level.isClientSide()) {
-            clearSelectedCraftingGrid(player.getUUID());
             QIOFrequency freq = getFrequency();
             if (freq != null) {
                 freq.closeItemViewer((ServerPlayerEntity) player);
@@ -258,19 +247,21 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         // special handling for shift-clicking into GUI
         if (!player.level.isClientSide()) {
             ItemStack slotStack = currentSlot.getItem();
-            byte selectedCraftingGrid = selectedCraftingGrids.getOrDefault(player.getUUID(), (byte) -1);
+            byte selectedCraftingGrid = getSelectedCraftingGrid(player.getUUID());
             if (selectedCraftingGrid != -1) {
                 //If the player has a crafting window open
-                if (!getCraftingWindow(selectedCraftingGrid).isOutput(slotStack)) {
+                QIOCraftingWindow craftingWindow = getCraftingWindow(selectedCraftingGrid);
+                if (!craftingWindow.isOutput(slotStack)) {
                     // and the stack we are trying to transfer was not the output from the crafting window
                     // as then shift clicking should be sending it into the QIO, then try transferring it
                     // into the crafting window before transferring into the frequency
                     ItemStack stackToInsert = slotStack;
                     List<InventoryContainerSlot> craftingGridSlots = getCraftingGridSlots(selectedCraftingGrid);
+                    SelectedWindowData windowData = craftingWindow.getWindowData();
                     //Start by trying to stack it with other things
-                    stackToInsert = insertItem(craftingGridSlots, stackToInsert, true);
+                    stackToInsert = insertItem(craftingGridSlots, stackToInsert, true, windowData);
                     // and if that fails try to insert it into empty slots
-                    stackToInsert = insertItem(craftingGridSlots, stackToInsert, false);
+                    stackToInsert = insertItem(craftingGridSlots, stackToInsert, false, windowData);
                     if (stackToInsert.getCount() != slotStack.getCount()) {
                         //If something changed, decrease the stack by the amount we inserted,
                         // and return it as a new stack for what is now in the slot
@@ -403,14 +394,21 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public byte getSelectedCraftingGrid() {
-        return selectedCraftingGrid;
+        return getSelectedCraftingGrid(getSelectedWindow());
     }
 
     /**
      * @apiNote Only call on server
      */
     public byte getSelectedCraftingGrid(UUID player) {
-        return selectedCraftingGrids.getOrDefault(player, (byte) -1);
+        return getSelectedCraftingGrid(getSelectedWindow(player));
+    }
+
+    private byte getSelectedCraftingGrid(@Nullable SelectedWindowData selectedWindow) {
+        if (selectedWindow != null && selectedWindow.type == WindowType.CRAFTING) {
+            return selectedWindow.extraData;
+        }
+        return (byte) -1;
     }
 
     public QIOCraftingWindow getCraftingWindow(int selectedCraftingGrid) {
@@ -421,39 +419,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     /**
-     * @apiNote Only call on client
-     */
-    public void setSelectedCraftingGrid(byte selectedCraftingGrid) {
-        if (this.selectedCraftingGrid != selectedCraftingGrid) {
-            this.selectedCraftingGrid = selectedCraftingGrid;
-            Mekanism.packetHandler.sendToServer(new PacketQIOCraftingWindowSelect(this.selectedCraftingGrid));
-        }
-    }
-
-    /**
      * @apiNote Only call on server
      */
-    public void setSelectedCraftingGrid(UUID player, byte selectedCraftingGrid) {
-        if (selectedCraftingGrid == -1) {
-            clearSelectedCraftingGrid(player);
-        } else if (selectedCraftingGrid < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
-            //Validate that the packet sent a valid crafting grid
-            selectedCraftingGrids.put(player, selectedCraftingGrid);
-        }
-    }
-
-    /**
-     * @apiNote Only call on server
-     */
-    private void clearSelectedCraftingGrid(UUID player) {
-        selectedCraftingGrids.removeByte(player);
-    }
-
-    public ItemStack insertIntoPlayerInventory(ItemStack stack) {
-        stack = insertItem(hotBarSlots, stack, true);
-        stack = insertItem(mainInventorySlots, stack, true);
-        stack = insertItem(hotBarSlots, stack, false);
-        stack = insertItem(mainInventorySlots, stack, false);
+    public ItemStack insertIntoPlayerInventory(UUID player, ItemStack stack) {
+        SelectedWindowData selectedWindow = getSelectedWindow(player);
+        stack = insertItem(hotBarSlots, stack, true, selectedWindow);
+        stack = insertItem(mainInventorySlots, stack, true, selectedWindow);
+        stack = insertItem(hotBarSlots, stack, false, selectedWindow);
+        stack = insertItem(mainInventorySlots, stack, false, selectedWindow);
         return stack;
     }
 

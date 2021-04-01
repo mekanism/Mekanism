@@ -21,7 +21,7 @@ public abstract class GuiScrollList extends GuiScrollableElement {
     protected GuiScrollList(IGuiWrapper gui, int x, int y, int width, int height, int elementHeight, GuiScalableElement background) {
         super(SCROLL_LIST, gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
         this.elementHeight = elementHeight;
-        this.background = background;
+        this.background = addPositionOnlyChild(background);
     }
 
     @Override
@@ -77,6 +77,6 @@ public abstract class GuiScrollList extends GuiScrollableElement {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return isMouseOver(mouseX, mouseY) && adjustScroll(delta);
+        return isMouseOver(mouseX, mouseY) && adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 }

@@ -9,48 +9,35 @@ import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiCraftingWindow extends GuiWindow {
 
     private final List<GuiVirtualSlot> slots;
     private final byte index;
-    private QIOItemViewerContainer container;
 
     public GuiCraftingWindow(IGuiWrapper gui, int x, int y, QIOItemViewerContainer container, byte index) {
-        super(gui, x, y, 118, 80);
-        this.container = container;
+        super(gui, x, y, 118, 80, new SelectedWindowData(WindowType.CRAFTING, index));
         this.index = index;
         interactionStrategy = InteractionStrategy.ALL;
         slots = new ArrayList<>();
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
-                GuiVirtualSlot slot = new GuiVirtualSlot(SlotType.NORMAL, gui, relativeX + 8 + column * 18, relativeY + 18 + row * 18);
-                slot.updateVirtualSlot(container.getCraftingWindowSlot(this.index, row * 3 + column));
-                addChild(slot);
-                slots.add(slot);
+                slots.add(addChild(new GuiVirtualSlot(SlotType.NORMAL, gui, relativeX + 8 + column * 18, relativeY + 18 + row * 18,
+                      container.getCraftingWindowSlot(this.index, row * 3 + column))));
             }
         }
         addChild(new GuiRightArrow(gui, relativeX + 66, relativeY + 38).jeiCrafting());
-        GuiVirtualSlot slot = new GuiVirtualSlot(SlotType.NORMAL, gui, relativeX + 92, relativeY + 36);
-        slot.updateVirtualSlot(container.getCraftingWindowSlot(this.index, 9));
-        addChild(slot);
-        slots.add(slot);
+        slots.add(addChild(new GuiVirtualSlot(SlotType.NORMAL, gui, relativeX + 92, relativeY + 36, container.getCraftingWindowSlot(this.index, 9))));
     }
 
     public void updateContainer(QIOItemViewerContainer container) {
-        //Update our container reference and lookup the slots again
-        // and update the stored lookup method
-        this.container = container;
+        //Lookup the slots again and update the stored lookup method
         for (int i = 0; i < slots.size(); i++) {
             slots.get(i).updateVirtualSlot(container.getCraftingWindowSlot(index, i));
         }
-    }
-
-    @Override
-    public void onFocused() {
-        super.onFocused();
-        container.setSelectedCraftingGrid(index);
     }
 
     public byte getIndex() {

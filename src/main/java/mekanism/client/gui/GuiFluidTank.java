@@ -5,7 +5,6 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.tab.GuiContainerEditModeTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityFluidTank;
 import net.minecraft.entity.player.PlayerInventory;
@@ -22,7 +21,6 @@ public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, MekanismT
     public void init() {
         super.init();
         addButton(new GuiContainerEditModeTab<>(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 48, 18));
     }
 

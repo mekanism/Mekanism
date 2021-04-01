@@ -27,18 +27,18 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     private static final SlotType SLOT = SlotType.ORE;
 
     private final GuiInnerScreen innerScreen;
-    private final int slotX;
     private final List<ItemStack> iterStacks = new ArrayList<>();
+    private final IOreInfo oreInfo;
     private ItemStack renderStack = ItemStack.EMPTY;
     private int stackSwitch = 0;
     private int stackIndex = 0;
+    private int slotX;
     @Nonnull
     private Slurry prevSlurry = MekanismAPI.EMPTY_SLURRY;
-    private final IOreInfo oreInfo;
 
     public GuiCrystallizerScreen(IGuiWrapper gui, int x, int y, IOreInfo oreInfo) {
         super(SLOT.getTexture(), gui, x, y, 115, 42);
-        innerScreen = new GuiInnerScreen(gui, x, y, width, height, () -> {
+        innerScreen = addPositionOnlyChild(new GuiInnerScreen(gui, x, y, width, height, () -> {
             List<ITextComponent> ret = new ArrayList<>();
             BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
             if (!boxedChemical.isEmpty()) {
@@ -55,10 +55,22 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
                 }
             }
             return ret;
-        });
+        }));
         this.oreInfo = oreInfo;
         this.slotX = this.x + 115 - SLOT.getWidth();
         active = false;
+    }
+
+    @Override
+    public void resize(int prevLeft, int prevTop, int left, int top) {
+        super.resize(prevLeft, prevTop, left, top);
+        slotX = slotX - prevLeft + left;
+    }
+
+    @Override
+    public void move(int changeX, int changeY) {
+        super.move(changeX, changeY);
+        slotX += changeX;
     }
 
     @Override

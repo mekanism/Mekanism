@@ -47,7 +47,7 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
         addButton(new GuiProgress(() -> tile.getMultiblock().isBurning(), ProgressType.SMALL_LEFT, this, 101, 76));
         addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.HEAT));
         addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
-        addButton(injectionRateField = new GuiTextField(this, 98, 115, 26, 11));
+        injectionRateField = addButton(new GuiTextField(this, 98, 115, 26, 11));
         injectionRateField.changeFocus(true);
         injectionRateField.setInputValidator(InputValidator.DIGIT);
         injectionRateField.setEnterHandler(this::setInjection);

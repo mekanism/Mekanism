@@ -21,15 +21,15 @@ import mekanism.client.gui.element.window.GuiConfirmationDialog;
 import mekanism.client.gui.element.window.GuiConfirmationDialog.DialogType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
+import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.util.text.ITextComponent;
 
-public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends GuiMekanism<CONTAINER> {
+public abstract class GuiQIOFrequencySelect<CONTAINER extends MekanismContainer> extends GuiMekanism<CONTAINER> {
 
     private MekanismButton publicButton;
     private MekanismButton privateButton;
@@ -50,17 +50,17 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
     @Override
     public void init() {
         super.init();
-        addButton(scrollList = new GuiTextScrollList(this, 27, 39, 122, 42));
+        scrollList = addButton(new GuiTextScrollList(this, 27, 39, 122, 42));
 
-        addButton(publicButton = new TranslationButton(this, leftPos + 27, topPos + 17, 60, 20, MekanismLang.PUBLIC, () -> {
+        publicButton = addButton(new TranslationButton(this, leftPos + 27, topPos + 17, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, leftPos + 89, topPos + 17, 60, 20, MekanismLang.PRIVATE, () -> {
+        privateButton = addButton(new TranslationButton(this, leftPos + 89, topPos + 17, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, leftPos + 27, topPos + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
+        setButton = addButton(new TranslationButton(this, leftPos + 27, topPos + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 Frequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
@@ -68,7 +68,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, leftPos + 79, topPos + 120, 50, 18, MekanismLang.BUTTON_DELETE,
+        deleteButton = addButton(new TranslationButton(this, leftPos + 79, topPos + 120, 50, 18, MekanismLang.BUTTON_DELETE,
               () -> GuiConfirmationDialog.show(this, MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
                   int selection = scrollList.getSelection();
                   if (selection != -1) {
@@ -83,7 +83,7 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends Container> extends
             QIOFrequency frequency = getFrequency();
             return frequency == null ? null : frequency.getColor();
         }, () -> sendColorUpdate(0), () -> sendColorUpdate(1)));
-        addButton(frequencyField = new GuiTextField(this, 50, 106, 98, 11));
+        frequencyField = addButton(new GuiTextField(this, 50, 106, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);

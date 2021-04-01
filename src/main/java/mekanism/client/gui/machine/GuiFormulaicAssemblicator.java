@@ -11,9 +11,6 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -47,26 +44,23 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 159, 15));
         //Overwrite the output slots with a "combined" slot
         addButton(new GuiSlot(SlotType.OUTPUT_LARGE, this, 115, 16));
         addButton(new GuiProgress(() -> tile.getOperatingTicks() / (double) tile.getTicksRequired(), ProgressType.TALL_RIGHT, this, 86, 43).jeiCrafting());
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
-        addButton(encodeFormulaButton = new MekanismImageButton(this, leftPos + 7, topPos + 45, 14, getButtonLocation("encode_formula"),
+        encodeFormulaButton = addButton(new MekanismImageButton(this, leftPos + 7, topPos + 45, 14, getButtonLocation("encode_formula"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.ENCODE_FORMULA, tile)), getOnHover(MekanismLang.ENCODE_FORMULA)));
-        addButton(stockControlButton = new MekanismImageButton(this, leftPos + 26, topPos + 75, 16, getButtonLocation("stock_control"),
+        stockControlButton = addButton(new MekanismImageButton(this, leftPos + 26, topPos + 75, 16, getButtonLocation("stock_control"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.STOCK_CONTROL_BUTTON, tile)),
               getOnHover(() -> MekanismLang.STOCK_CONTROL.translate(OnOff.of(tile.getStockControl())))));
-        addButton(fillEmptyButton = new MekanismImageButton(this, leftPos + 44, topPos + 75, 16, getButtonLocation("fill_empty"),
+        fillEmptyButton = addButton(new MekanismImageButton(this, leftPos + 44, topPos + 75, 16, getButtonLocation("fill_empty"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_ITEMS, tile)), getOnHover(MekanismLang.FILL_EMPTY)));
-        addButton(craftSingleButton = new MekanismImageButton(this, leftPos + 71, topPos + 75, 16, getButtonLocation("craft_single"),
+        craftSingleButton = addButton(new MekanismImageButton(this, leftPos + 71, topPos + 75, 16, getButtonLocation("craft_single"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_SINGLE, tile)), getOnHover(MekanismLang.CRAFT_SINGLE)));
-        addButton(craftAvailableButton = new MekanismImageButton(this, leftPos + 89, topPos + 75, 16, getButtonLocation("craft_available"),
+        craftAvailableButton = addButton(new MekanismImageButton(this, leftPos + 89, topPos + 75, 16, getButtonLocation("craft_available"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CRAFT_ALL, tile)), getOnHover(MekanismLang.CRAFT_AVAILABLE)));
-        addButton(autoModeButton = new MekanismImageButton(this, leftPos + 107, topPos + 75, 16, getButtonLocation("auto_toggle"),
+        autoModeButton = addButton(new MekanismImageButton(this, leftPos + 107, topPos + 75, 16, getButtonLocation("auto_toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
               getOnHover(() -> MekanismLang.AUTO_MODE.translate(OnOff.of(tile.getAutoMode())))));
         updateEnabledButtons();

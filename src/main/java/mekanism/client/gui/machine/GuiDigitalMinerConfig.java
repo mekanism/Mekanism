@@ -55,18 +55,23 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(new MekanismImageButton(this, leftPos + 11, topPos + 141, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, tile)), getOnHover(MekanismLang.MINER_INVERSE)));
-        addButton(radiusField = new GuiTextField(this, 13, 67, 38, 11));
+        radiusField = addButton(new GuiTextField(this, 13, 67, 38, 11));
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
         radiusField.setInputValidator(InputValidator.DIGIT);
         radiusField.configureDigitalBorderInput(this::setRadius);
-        addButton(minField = new GuiTextField(this, 13, 92, 38, 11));
+        minField = addButton(new GuiTextField(this, 13, 92, 38, 11));
         minField.setMaxStringLength(3);
         minField.setInputValidator(InputValidator.DIGIT);
         minField.configureDigitalBorderInput(this::setMinY);
-        addButton(maxField = new GuiTextField(this, 13, 117, 38, 11));
+        maxField = addButton(new GuiTextField(this, 13, 117, 38, 11));
         maxField.setMaxStringLength(3);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.configureDigitalBorderInput(this::setMaxY);
+    }
+
+    @Override
+    protected void addGenericTabs() {
+        //Don't add the generic tabs when we are in the miner config
     }
 
     @Override

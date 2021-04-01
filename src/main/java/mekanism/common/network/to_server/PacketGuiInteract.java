@@ -12,7 +12,6 @@ import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.interfaces.IHasGasMode;
@@ -20,6 +19,7 @@ import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
@@ -27,7 +27,6 @@ import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.TransporterUtils;
-import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -174,6 +173,11 @@ public class PacketGuiInteract implements IMekanismPacket {
                 ((MekanismContainer) player.containerMenu).startTracking(extra, ((ISideConfiguration) tile).getConfig());
             }
         }),
+        CONTAINER_TRACK_UPGRADES((tile, player, extra) -> {
+            if (player.containerMenu instanceof MekanismContainer) {//tile instanceof IUpgradeTile
+                ((MekanismContainer) player.containerMenu).startTracking(extra, ((IUpgradeTile) tile).getComponent());
+            }
+        }),
         QIO_REDSTONE_ADAPTER_COUNT((tile, player, extra) -> {
             if (tile instanceof TileEntityQIORedstoneAdapter) {
                 ((TileEntityQIORedstoneAdapter) tile).handleCountChange(extra);
@@ -271,11 +275,12 @@ public class PacketGuiInteract implements IMekanismPacket {
 
         REMOVE_UPGRADE((tile, player, extra) -> {
             if (tile.supportsUpgrades()) {
-                TileComponentUpgrade componentUpgrade = tile.getComponent();
-                Upgrade upgradeType = Upgrade.byIndexStatic(extra);
-                if (componentUpgrade.getUpgrades(upgradeType) > 0 && player.inventory.add(UpgradeUtils.getStack(upgradeType))) {
-                    componentUpgrade.removeUpgrade(upgradeType);
-                }
+                tile.getComponent().removeUpgrade(Upgrade.byIndexStatic(extra), false);
+            }
+        }),
+        REMOVE_ALL_UPGRADE((tile, player, extra) -> {
+            if (tile.supportsUpgrades()) {
+                tile.getComponent().removeUpgrade(Upgrade.byIndexStatic(extra), true);
             }
         }),
 

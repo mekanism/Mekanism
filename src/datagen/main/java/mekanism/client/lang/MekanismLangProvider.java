@@ -836,6 +836,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.UPGRADES_SUPPORTED, "Supported:");
         add(MekanismLang.UPGRADE_COUNT, "Amount: %s/%s");
         add(MekanismLang.UPGRADE_TYPE, "%s Upgrade");
+        add(MekanismLang.UPGRADE_NOT_SUPPORTED, "%s (Not Supported)");
+        add(MekanismLang.UPGRADE_UNINSTALL, "Uninstall");
+        add(MekanismLang.UPGRADE_UNINSTALL_TOOLTIP, "Uninstalls a single upgrade, hold shift to uninstall all.");
         //Filter
         add(MekanismLang.CREATE_FILTER_TITLE, "Create New Filter");
         add(MekanismLang.FILTERS, "Filters:");

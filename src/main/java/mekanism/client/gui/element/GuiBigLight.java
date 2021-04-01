@@ -16,7 +16,7 @@ public class GuiBigLight extends GuiTexturedElement {
 
     public GuiBigLight(IGuiWrapper gui, int x, int y, BooleanSupplier lightSupplier) {
         super(LIGHTS, gui, x, y, 14, 14);
-        this.screen = new GuiInnerScreen(gui, x, y, width, height);
+        this.screen = addPositionOnlyChild(new GuiInnerScreen(gui, x, y, width, height));
         this.lightSupplier = lightSupplier;
     }
 

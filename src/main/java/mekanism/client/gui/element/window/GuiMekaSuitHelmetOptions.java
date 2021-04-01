@@ -8,12 +8,13 @@ import mekanism.client.gui.element.GuiSlider;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement.HUDColor;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.lib.Color;
 
 public class GuiMekaSuitHelmetOptions extends GuiWindow {
 
     public GuiMekaSuitHelmetOptions(IGuiWrapper gui, int x, int y) {
-        super(gui, x, y, 140, 115);
+        super(gui, x, y, 140, 115, SelectedWindowData.UNSPECIFIED);
         interactionStrategy = InteractionStrategy.NONE;
         addChild(new GuiColorPickerSlot(gui, x + 12, y + 32, () -> Color.argb(HUDColor.REGULAR.getColor()), color -> {
             MekanismConfig.client.hudColor.set(color.argb());
@@ -31,8 +32,7 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
             MekanismConfig.client.getConfigSpec().save();
         }));
 
-        GuiSlider slider;
-        addChild(slider = new GuiSlider(gui, x + 10, y + 62, 120, value -> MekanismConfig.client.hudOpacity.set((float) value)));
+        GuiSlider slider = addChild(new GuiSlider(gui, x + 10, y + 62, 120, value -> MekanismConfig.client.hudOpacity.set((float) value)));
         slider.setValue(MekanismConfig.client.hudOpacity.get());
 
         addChild(new GuiScreenSwitch(gui, x + 7, y + 87, 126, MekanismLang.COMPASS.translate(), MekanismConfig.client.hudCompassEnabled, () -> {

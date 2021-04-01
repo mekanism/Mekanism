@@ -19,6 +19,8 @@ import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
@@ -86,6 +88,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     public void tick() {
         super.tick();
         children.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
+        windows.forEach(GuiWindow::tick);
     }
 
     protected void initPreSlots() {
@@ -530,6 +533,17 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     protected void lastWindowRemoved() {
+        //Mark that no windows are now selected
+        if (menu instanceof MekanismContainer) {
+            ((MekanismContainer) menu).setSelectedWindow(null);
+        }
+    }
+
+    @Override
+    public void setSelectedWindow(SelectedWindowData selectedWindow) {
+        if (menu instanceof MekanismContainer) {
+            ((MekanismContainer) menu).setSelectedWindow(selectedWindow);
+        }
     }
 
     @Nullable

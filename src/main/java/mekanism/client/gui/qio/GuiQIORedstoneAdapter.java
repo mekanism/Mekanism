@@ -10,7 +10,6 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.Mekanism;
@@ -44,7 +43,6 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     public void init() {
         super.init();
         addButton(new GuiQIOFrequencyTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true));
         addButton(new GuiInnerScreen(this, 7, 16, imageWidth - 15, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
@@ -75,7 +73,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
             }
             return list;
         }).clearFormat());
-        addButton(text = new GuiTextField(this, 29, 70, imageWidth - 39, 12));
+        text = addButton(new GuiTextField(this, 29, 70, imageWidth - 39, 12));
         text.setMaxStringLength(10);
         text.setInputValidator(InputValidator.DIGIT);
         text.setFocused(true);

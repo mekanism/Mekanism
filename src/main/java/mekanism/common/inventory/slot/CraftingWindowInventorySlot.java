@@ -33,6 +33,6 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
     @Nonnull
     @Override
     public VirtualInventoryContainerSlot createContainerSlot() {
-        return new VirtualInventoryContainerSlot(this, getSlotOverlay(), this::setStackUnchecked);
+        return new VirtualInventoryContainerSlot(this, craftingWindow.getWindowData(), getSlotOverlay(), this::setStackUnchecked);
     }
 }

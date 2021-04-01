@@ -15,6 +15,7 @@ public enum ProgressType {
     BI(16, 6, false, "bidirectional.png"),
     FLAME(13, 13, true, "flame.png"),
     INSTALLING(10, 14, true, "installing.png"),
+    UNINSTALLING(12, 12, true, "uninstalling.png"),
     DOWN(8, 20, true, "down.png");
 
     private final int width;

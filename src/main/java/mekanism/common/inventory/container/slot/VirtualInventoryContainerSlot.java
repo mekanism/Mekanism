@@ -4,12 +4,14 @@ import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class VirtualInventoryContainerSlot extends InventoryContainerSlot implements IVirtualSlot {
 
+    private final SelectedWindowData windowData;
     private IntSupplier xPositionSupplier = () -> x;
     private IntSupplier yPositionSupplier = () -> y;
     private ItemStack stackToRender = ItemStack.EMPTY;
@@ -17,8 +19,9 @@ public class VirtualInventoryContainerSlot extends InventoryContainerSlot implem
     private String tooltipOverride;
     private boolean shouldDrawOverlay;
 
-    public VirtualInventoryContainerSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, Consumer<ItemStack> uncheckedSetter) {
+    public VirtualInventoryContainerSlot(BasicInventorySlot slot, SelectedWindowData windowData, @Nullable SlotOverlay slotOverlay, Consumer<ItemStack> uncheckedSetter) {
         super(slot, 0, 0, ContainerSlotType.IGNORED, slotOverlay, uncheckedSetter);
+        this.windowData = windowData;
     }
 
     @Override
@@ -64,5 +67,10 @@ public class VirtualInventoryContainerSlot extends InventoryContainerSlot implem
     @Override
     public Slot getSlot() {
         return this;
+    }
+
+    @Override
+    public boolean exists(@Nullable SelectedWindowData windowData) {
+        return this.windowData.equals(windowData);
     }
 }

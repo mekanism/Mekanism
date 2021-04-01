@@ -10,9 +10,6 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
-import mekanism.client.gui.element.tab.GuiUpgradeTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
 import net.minecraft.entity.player.PlayerInventory;
@@ -29,9 +26,6 @@ public class GuiPrecisionSawmill extends GuiConfigurableTile<TileEntityPrecision
     public void init() {
         super.init();
         addButton(new GuiUpArrow(this, 60, 38));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiUpgradeTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getActive, this));
         //Note: We just draw the wide slot on top of the normal slots so that it looks a bit better

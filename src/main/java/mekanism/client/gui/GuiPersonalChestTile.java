@@ -2,7 +2,6 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.TileEntityPersonalChest;
 import net.minecraft.entity.player.PlayerInventory;
@@ -15,12 +14,6 @@ public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChes
         imageHeight += 64;
         inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
-    }
-
-    @Override
-    public void init() {
-        super.init();
-        addButton(new GuiSecurityTab(this, tile));
     }
 
     @Override

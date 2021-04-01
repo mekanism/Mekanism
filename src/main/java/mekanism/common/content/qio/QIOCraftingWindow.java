@@ -10,6 +10,8 @@ import mekanism.api.IContentsListener;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.slot.BasicInventorySlot;
@@ -35,10 +37,18 @@ import org.jetbrains.annotations.Contract;
 
 public class QIOCraftingWindow implements IContentsListener {
 
+    private static final SelectedWindowData[] WINDOWS = new SelectedWindowData[IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS];
+    static {
+        for (byte tableIndex = 0; tableIndex < WINDOWS.length; tableIndex++) {
+            WINDOWS[tableIndex] = new SelectedWindowData(WindowType.CRAFTING, tableIndex);
+        }
+    }
+
     private final CraftingWindowInventorySlot[] inputSlots = new CraftingWindowInventorySlot[9];
     private final CraftingWindowOutputInventorySlot outputSlot;
     private final QIOCraftingInventory craftingInventory;
     private final IQIOCraftingWindowHolder holder;
+    private final SelectedWindowData windowData;
     private final byte windowIndex;
     @Nullable
     private ICraftingRecipe lastRecipe;
@@ -48,11 +58,16 @@ public class QIOCraftingWindow implements IContentsListener {
     public QIOCraftingWindow(IQIOCraftingWindowHolder holder, byte windowIndex) {
         this.windowIndex = windowIndex;
         this.holder = holder;
+        this.windowData = WINDOWS[windowIndex];
         for (int slotIndex = 0; slotIndex < 9; slotIndex++) {
             inputSlots[slotIndex] = CraftingWindowInventorySlot.input(this);
         }
         outputSlot = CraftingWindowOutputInventorySlot.create(this);
         craftingInventory = new QIOCraftingInventory();
+    }
+
+    public SelectedWindowData getWindowData() {
+        return windowData;
     }
 
     public byte getWindowIndex() {
@@ -301,8 +316,8 @@ public class QIOCraftingWindow implements IContentsListener {
             // the secondary checks afterwards while working on actually inserting into it
             // The reason this is needed is because if we only have space for two more items, but our crafting recipe will
             // produce three more, then we won't have room for that singular extra item and need to exit
-            ItemStack simulatedRemainder = MekanismContainer.insertItem(hotBarSlots, result, false, Action.SIMULATE);
-            simulatedRemainder = MekanismContainer.insertItem(mainInventorySlots, simulatedRemainder, false, Action.SIMULATE);
+            ItemStack simulatedRemainder = MekanismContainer.insertItem(hotBarSlots, result, false, windowData, Action.SIMULATE);
+            simulatedRemainder = MekanismContainer.insertItem(mainInventorySlots, simulatedRemainder, false, windowData, Action.SIMULATE);
             if (!simulatedRemainder.isEmpty()) {
                 //Note: If we aren't able to fit all of the items we are crafting into the player's inventory we exit
                 // instead of attempting to insert the overflow into the QIO as it is easy enough if the player is trying
@@ -318,13 +333,13 @@ public class QIOCraftingWindow implements IContentsListener {
             //Actually transfer the output to the player's inventory now that we know it will fit
             //Insert into stacks that already contain an item in the order hot bar -> main inventory
             ItemStack toInsert = result;
-            toInsert = MekanismContainer.insertItem(hotBarSlots, toInsert, true);
-            toInsert = MekanismContainer.insertItem(mainInventorySlots, toInsert, true);
+            toInsert = MekanismContainer.insertItem(hotBarSlots, toInsert, true, windowData);
+            toInsert = MekanismContainer.insertItem(mainInventorySlots, toInsert, true, windowData);
             //If we still have any left then input into the empty stacks in the order of main inventory -> hot bar
             // Note: Even though we are doing the main inventory, we still need to do both, ignoring empty then not instead of
             // just directly inserting into the main inventory, in case there are empty slots before the one we can stack with
-            toInsert = MekanismContainer.insertItem(hotBarSlots, toInsert, false);
-            toInsert = MekanismContainer.insertItem(mainInventorySlots, toInsert, false);
+            toInsert = MekanismContainer.insertItem(hotBarSlots, toInsert, false, windowData);
+            toInsert = MekanismContainer.insertItem(mainInventorySlots, toInsert, false, windowData);
             if (!toInsert.isEmpty()) {
                 //If something went horribly wrong adding it to the player's inventory given we calculated there was room
                 // and suddenly a few lines down there is no longer room, then just drop the items as the player

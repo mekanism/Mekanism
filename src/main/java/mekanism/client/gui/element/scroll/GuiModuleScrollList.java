@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -100,37 +101,26 @@ public class GuiModuleScrollList extends GuiScrollList {
         if (!ItemStack.matches(currentItem, stack)) {
             updateList(stack, false);
         }
-        for (int i = 0; i < getFocusedElements(); i++) {
-            int index = getCurrentSelection() + i;
-            if (index > currentList.size() - 1) {
-                break;
-            }
-            ModuleData<?> module = currentList.get(index);
-            int multipliedElement = elementHeight * i;
-            //Always render the name and module
+        forEachModule((module, multipliedElement) -> {
             Module instance = Modules.load(currentItem, module);
-            int color = module.isExclusive() ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? titleTextColor() : 0x5E1D1D);
-            drawScaledTextScaledBound(matrix, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
-            renderModule(matrix, module, relativeX + 3, relativeY + 3 + multipliedElement, 0.5F);
-        }
+            if (instance != null) {
+                int color = module.isExclusive() ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? titleTextColor() : 0x5E1D1D);
+                drawScaledTextScaledBound(matrix, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
+            }
+        });
     }
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        for (int i = 0; i < getFocusedElements(); i++) {
-            int index = getCurrentSelection() + i;
-            if (index > currentList.size() - 1) {
-                break;
-            }
-            ModuleData<?> module = currentList.get(index);
-            Module instance = Modules.load(currentItem, module);
-            int multipliedElement = elementHeight * i;
-            if (instance != null && mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1 && mouseY >= relativeY + 1 + multipliedElement &&
-                mouseY < relativeY + 1 + multipliedElement + elementHeight) {
-                ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
-                gui().displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, getGuiWidth());
-            }
+        if (mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1) {
+            forEachModule((module, multipliedElement) -> {
+                Module instance = Modules.load(currentItem, module);
+                if (instance != null && mouseY >= relativeY + 1 + multipliedElement && mouseY < relativeY + 1 + multipliedElement + elementHeight) {
+                    ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
+                    gui().displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, getGuiWidth());
+                }
+            });
         }
     }
 
@@ -138,13 +128,8 @@ public class GuiModuleScrollList extends GuiScrollList {
     public void renderElements(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Draw elements
         minecraft.textureManager.bind(MODULE_SELECTION);
-        for (int i = 0; i < getFocusedElements(); i++) {
-            int index = getCurrentSelection() + i;
-            if (index > currentList.size() - 1) {
-                break;
-            }
-            ModuleData<?> module = currentList.get(index);
-            int shiftedY = y + 1 + elementHeight * i;
+        forEachModule((module, multipliedElement) -> {
+            int shiftedY = y + 1 + multipliedElement;
             int j = 1;
             if (module == getSelection()) {
                 j = 2;
@@ -153,11 +138,20 @@ public class GuiModuleScrollList extends GuiScrollList {
             }
             blit(matrix, x + 1, shiftedY, 0, elementHeight * j, TEXTURE_WIDTH, elementHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
             MekanismRenderer.resetColor();
-        }
+        });
+        //Note: This needs to be in its own loop as rendering the items is likely to cause the texture manager to be bound to a different texture
+        // and thus would make the selection area background get all screwed up
+        forEachModule((module, multipliedElement) -> gui().renderItem(matrix, module.getStack(), x + 3, y + 3 + multipliedElement, 0.5F));
     }
 
-    private void renderModule(MatrixStack matrix, ModuleData<?> type, int x, int y, float size) {
-        gui().renderItem(matrix, type.getStack(), (int) (x / size), (int) (y / size), size);
+    private void forEachModule(ObjIntConsumer<ModuleData<?>> consumer) {
+        for (int i = 0; i < getFocusedElements(); i++) {
+            int index = getCurrentSelection() + i;
+            if (index > currentList.size() - 1) {
+                break;
+            }
+            consumer.accept(currentList.get(index), elementHeight * i);
+        }
     }
 
     @Override

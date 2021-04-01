@@ -14,6 +14,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketConfigurationUpdate;
 import mekanism.common.network.to_server.PacketConfigurationUpdate.ConfigurationPacket;
@@ -31,7 +32,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     private final TILE tile;
 
     public GuiTransporterConfig(IGuiWrapper gui, int x, int y, TILE tile) {
-        super(gui, x, y, 156, 95);
+        super(gui, x, y, 156, 95, SelectedWindowData.UNSPECIFIED);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12));
@@ -48,8 +49,8 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         addSideDataButton(RelativeSide.BACK, 29, 64);
         addSideDataButton(RelativeSide.LEFT, 29, 49);
         addSideDataButton(RelativeSide.RIGHT, 59, 49);
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, this.tile, 0));
-        ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(0, this.tile.getEjector());
+        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_EJECTOR, this.tile, MekanismContainer.TRANSPORTER_CONFIG_WINDOW));
+        ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).startTracking(MekanismContainer.TRANSPORTER_CONFIG_WINDOW, this.tile.getEjector());
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
@@ -61,8 +62,8 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     @Override
     public void close() {
         super.close();
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, 0));
-        ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(0);
+        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.TRANSPORTER_CONFIG_WINDOW));
+        ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(MekanismContainer.TRANSPORTER_CONFIG_WINDOW);
     }
 
     private IHoverable getOnHover(RelativeSide side) {

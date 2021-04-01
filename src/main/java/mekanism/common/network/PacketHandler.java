@@ -33,7 +33,6 @@ import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketNewFilter;
 import mekanism.common.network.to_server.PacketOpenGui;
 import mekanism.common.network.to_server.PacketPortableTeleporterGui;
-import mekanism.common.network.to_server.PacketQIOCraftingWindowSelect;
 import mekanism.common.network.to_server.PacketQIOFillCraftingWindow;
 import mekanism.common.network.to_server.PacketQIOItemViewerSlotInteract;
 import mekanism.common.network.to_server.PacketQIOSetColor;
@@ -43,6 +42,7 @@ import mekanism.common.network.to_server.PacketRobit;
 import mekanism.common.network.to_server.PacketSecurityMode;
 import mekanism.common.network.to_server.PacketTeleporterSetColor;
 import mekanism.common.network.to_server.PacketUpdateInventorySlot;
+import mekanism.common.network.to_server.PacketWindowSelect;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class PacketHandler extends BasePacketHandler {
@@ -72,7 +72,6 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketNewFilter.class, PacketNewFilter::decode);
         registerClientToServer(PacketOpenGui.class, PacketOpenGui::decode);
         registerClientToServer(PacketPortableTeleporterGui.class, PacketPortableTeleporterGui::decode);
-        registerClientToServer(PacketQIOCraftingWindowSelect.class, PacketQIOCraftingWindowSelect::decode);
         registerClientToServer(PacketQIOFillCraftingWindow.class, PacketQIOFillCraftingWindow::decode);
         registerClientToServer(PacketQIOItemViewerSlotInteract.class, PacketQIOItemViewerSlotInteract::decode);
         registerClientToServer(PacketQIOSetColor.class, PacketQIOSetColor::decode);
@@ -82,6 +81,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketSecurityMode.class, PacketSecurityMode::decode);
         registerClientToServer(PacketTeleporterSetColor.class, PacketTeleporterSetColor::decode);
         registerClientToServer(PacketUpdateInventorySlot.class, PacketUpdateInventorySlot::decode);
+        registerClientToServer(PacketWindowSelect.class, PacketWindowSelect::decode);
 
         //Server to client messages
         registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::decode);

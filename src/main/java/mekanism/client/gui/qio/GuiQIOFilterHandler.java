@@ -11,6 +11,7 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
+import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.client.gui.element.window.filter.qio.GuiQIOItemStackFilter;
 import mekanism.client.gui.element.window.filter.qio.GuiQIOModIDFilter;
 import mekanism.client.gui.element.window.filter.qio.GuiQIOTagFilter;
@@ -50,6 +51,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     @Override
     public void init() {
         super.init();
+        addButton(new GuiQIOFrequencyTab(this, tile));
         addButton(new GuiInnerScreen(this, 9, 16, imageWidth - 18, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             QIOFrequency freq = tile.getQIOFrequency();
@@ -76,7 +78,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         addButton(new GuiElementHolder(this, 9, 98, 144, 22));
         addButton(new TranslationButton(this, leftPos + 10, topPos + 99, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiQIOFilerSelect(this, tile))));
-        addButton(scrollBar = new GuiScrollBar(this, 153, 30, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
+        scrollBar = addButton(new GuiScrollBar(this, 153, 30, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
             addButton(new MovableFilterButton(this, 10, 31 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, tile::getFilters, index -> {
@@ -118,7 +120,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, delta) || scrollBar.adjustScroll(delta);
     }
 
     @Override

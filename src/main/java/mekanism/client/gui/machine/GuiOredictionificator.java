@@ -11,8 +11,6 @@ import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.client.gui.element.window.filter.GuiOredictionificatorFilter;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
@@ -48,9 +46,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         addButton(new GuiElementHolder(this, 9, 17, 144, 68));
         //new filter button border
         addButton(new GuiElementHolder(this, 9, 85, 144, 22));
-        addButton(scrollBar = new GuiScrollBar(this, 153, 17, 90, () -> getFilters().size(), () -> FILTER_COUNT));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
+        scrollBar = addButton(new GuiScrollBar(this, 153, 17, 90, () -> getFilters().size(), () -> FILTER_COUNT));
         addButton(new GuiProgress(() -> tile.didProcess, ProgressType.LARGE_RIGHT, this, 64, 119));
         addButton(new TranslationButton(this, leftPos + 10, topPos + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(GuiOredictionificatorFilter.create(this, tile))));
@@ -92,7 +88,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, delta) || scrollBar.adjustScroll(delta);
     }
 
     private void updateRenderStacks() {

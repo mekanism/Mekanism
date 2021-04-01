@@ -10,8 +10,6 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiMergedChemicalBar;
 import mekanism.client.gui.element.button.GuiGasMode;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tier.ChemicalTankTier;
@@ -50,8 +48,6 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
             }
             return ret;
         }));
-        addButton(new GuiRedstoneControlTab(this, tile));
-        addButton(new GuiSecurityTab(this, tile));
         addButton(new GuiGasMode(this, leftPos + 159, topPos + 72, true, () -> tile.dumping, tile.getBlockPos(), 0));
     }
 

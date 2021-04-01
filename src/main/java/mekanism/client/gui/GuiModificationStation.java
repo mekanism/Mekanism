@@ -8,8 +8,6 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.gui.element.tab.GuiRedstoneControlTab;
-import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
@@ -34,12 +32,10 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     @Override
     public void init() {
         super.init();
-        addButton(new GuiSecurityTab(this, tile));
-        addButton(new GuiRedstoneControlTab(this, tile));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 154, 40));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 65, 123));
-        addButton(removeButton = new TranslationButton(this, leftPos + 34, topPos + 96, 108, 17, MekanismLang.BUTTON_REMOVE,
+        removeButton = addButton(new TranslationButton(this, leftPos + 34, topPos + 96, 108, 17, MekanismLang.BUTTON_REMOVE,
               () -> Mekanism.packetHandler.sendToServer(new PacketRemoveModule(tile.getBlockPos(), selectedModule.getData()))));
         removeButton.active = false;
 

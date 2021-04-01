@@ -49,7 +49,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         super.init();
         addButton(new GuiInnerScreen(this, 7, 11, 63, 49));
         addButton(new GuiInnerScreen(this, 74, 11, 51, 159));
-        addButton(scrollBar = new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));
+        scrollBar = addButton(new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));
         addButton(new GuiArrowSelection(this, 76, 81, () -> {
             int currentLayer = scrollBar.getCurrentSelection();
             if (currentLayer >= 0) {
@@ -57,9 +57,9 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             }
             return null;
         }));
-        addButton(upButton = new MekanismImageButton(this, leftPos + 126, topPos + 11, 14,
+        upButton = addButton(new MekanismImageButton(this, leftPos + 126, topPos + 11, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), () -> scrollBar.adjustScroll(1)));
-        addButton(downButton = new MekanismImageButton(this, leftPos + 126, topPos + 156, 14,
+        downButton = addButton(new MekanismImageButton(this, leftPos + 126, topPos + 156, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), () -> scrollBar.adjustScroll(-1)));
         updateEnabledButtons();
     }
@@ -122,6 +122,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        return scrollBar.adjustScroll(delta) || super.mouseScrolled(mouseX, mouseY, delta);
+        return super.mouseScrolled(mouseX, mouseY, delta) || scrollBar.adjustScroll(delta);
     }
 }

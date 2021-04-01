@@ -16,7 +16,7 @@ public class GuiSecurityLight extends GuiTexturedElement {
 
     public GuiSecurityLight(IGuiWrapper gui, int x, int y, IntSupplier lightSupplier) {
         super(LIGHTS, gui, x, y, 8, 8);
-        this.screen = new GuiInnerScreen(gui, x, y, width, height);
+        this.screen = addPositionOnlyChild(new GuiInnerScreen(gui, x, y, width, height));
         this.lightSupplier = lightSupplier;
     }
 

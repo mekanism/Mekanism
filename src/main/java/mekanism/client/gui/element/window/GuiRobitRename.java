@@ -8,6 +8,7 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.network.to_server.PacketRobit;
 
 public class GuiRobitRename extends GuiWindow {
@@ -16,10 +17,10 @@ public class GuiRobitRename extends GuiWindow {
     private final EntityRobit robit;
 
     public GuiRobitRename(IGuiWrapper gui, int x, int y, EntityRobit robit) {
-        super(gui, x, y, 122, 58);
+        super(gui, x, y, 122, 58, SelectedWindowData.UNSPECIFIED);
         this.robit = robit;
         addChild(new TranslationButton(gui, this.x + 31, this.y + 32, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
-        addChild(nameChangeField = new GuiTextField(gui, relativeX + 21, relativeY + 17, 80, 12));
+        nameChangeField = addChild(new GuiTextField(gui, relativeX + 21, relativeY + 17, 80, 12));
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setCanLoseFocus(false);
         nameChangeField.setFocused(true);

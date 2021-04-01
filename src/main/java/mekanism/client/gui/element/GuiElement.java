@@ -35,6 +35,11 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     protected ButtonBackground buttonBackground = ButtonBackground.NONE;
 
     protected final List<GuiElement> children = new ArrayList<>();
+    /**
+     * Children that don't get drawn or checked for beyond transferring data. This is mainly a helper to make it easier to update positioning information of background
+     * helpers.
+     */
+    private final List<GuiElement> positionOnlyChildren = new ArrayList<>();
 
     private IGuiWrapper guiObj;
 
@@ -61,13 +66,23 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     private void transferToNewGuiInternal(IGuiWrapper gui) {
         guiObj = gui;
         children.forEach(child -> child.transferToNewGuiInternal(gui));
+        //Transfer position only children as well
+        positionOnlyChildren.forEach(child -> child.transferToNewGuiInternal(gui));
     }
 
-    protected void addChild(GuiElement element) {
+    protected <ELEMENT extends GuiElement> ELEMENT addChild(ELEMENT element) {
         children.add(element);
         if (isOverlay) {
             element.isOverlay = true;
         }
+        return element;
+    }
+
+    protected <ELEMENT extends GuiElement> ELEMENT addPositionOnlyChild(ELEMENT element) {
+        //TODO - 10.1: Re-evaluate "children" added here. As it may make sense to try and move some of them to being normal children
+        // or it may turn out that some of them are supposed to be ticking or something
+        positionOnlyChildren.add(element);
+        return element;
     }
 
     public final IGuiWrapper gui() {
@@ -105,6 +120,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         x = x - prevLeft + left;
         y = y - prevTop + top;
         children.forEach(child -> child.resize(prevLeft, prevTop, left, top));
+        positionOnlyChildren.forEach(child -> child.resize(prevLeft, prevTop, left, top));
     }
 
     public boolean childrenContainsElement(Predicate<GuiElement> checker) {
@@ -125,6 +141,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         x += changeX;
         y += changeY;
         children.forEach(child -> child.move(changeX, changeY));
+        positionOnlyChildren.forEach(child -> child.move(changeX, changeY));
     }
 
     public void onWindowClose() {
@@ -185,7 +202,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
-        drawButtonText(matrix);
+        drawButtonText(matrix, mouseX, mouseY);
     }
 
     public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
@@ -230,6 +247,11 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     public void onRelease(double mouseX, double mouseY) {
         children.forEach(element -> element.onRelease(mouseX, mouseY));
         super.onRelease(mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        return GuiUtils.checkChildren(children, child -> child.mouseScrolled(mouseX, mouseY, delta)) || super.mouseScrolled(mouseX, mouseY, delta);
     }
 
     @Override
@@ -331,14 +353,16 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
     }
 
-    protected void drawButtonText(MatrixStack matrix) {
-        ITextComponent message = getMessage();
+    protected int getButtonTextColor(int mouseX, int mouseY) {
+        return getFGColor();
+    }
+
+    protected void drawButtonText(MatrixStack matrix, int mouseX, int mouseY) {
+        ITextComponent text = getMessage();
         //Only attempt to draw the message if we have a message to draw
-        if (!message.getString().isEmpty()) {
-            //TODO: Improve the math for this so that it calculates the y value better
-            int halfWidthLeft = width / 2;
-            drawCenteredString(matrix, getFont(), message, x - getGuiLeft() + halfWidthLeft, y - getGuiTop() + (height - 8) / 2,
-                  getFGColor() | MathHelper.ceil(alpha * 255.0F) << 24);
+        if (!text.getString().isEmpty()) {
+            int color = getButtonTextColor(mouseX, mouseY) | MathHelper.ceil(alpha * 255.0F) << 24;
+            drawCenteredTextScaledBound(matrix, text, width - 4, x - getGuiLeft(), y - getGuiTop() + height / 2F - 4, color);
         }
     }
 

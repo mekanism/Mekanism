@@ -12,6 +12,7 @@ import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.button.GuiCloseButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.lib.Color;
 import net.minecraft.inventory.container.Container;
 import org.lwjgl.glfw.GLFW;
@@ -20,17 +21,19 @@ public class GuiWindow extends GuiTexturedElement {
 
     private static final Color OVERLAY_COLOR = Color.rgbai(60, 60, 60, 128);
 
-    private Consumer<GuiWindow> closeListener;
-    private Consumer<GuiWindow> reattachListener;
-
+    private final SelectedWindowData windowData;
     private boolean dragging = false;
     private double dragX, dragY;
     private int prevDX, prevDY;
 
+    private Consumer<GuiWindow> closeListener;
+    private Consumer<GuiWindow> reattachListener;
+
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
-    public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height) {
+    public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height, SelectedWindowData windowData) {
         super(GuiMekanism.BASE_BACKGROUND, gui, x, y, width, height);
+        this.windowData = windowData;
         isOverlay = true;
         active = true;
         if (!isFocusOverlay()) {
@@ -42,6 +45,7 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     public void onFocused() {
+        gui().setSelectedWindow(windowData);
     }
 
     protected void addCloseButton() {

@@ -84,17 +84,17 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 return container.getEnergy().divideToLevel(container.getMaxEnergy());
             }
         }, 158, 26));
-        addButton(scrollList = new GuiTextScrollList(this, 27, 36, 122, 42));
+        scrollList = addButton(new GuiTextScrollList(this, 27, 36, 122, 42));
 
-        addButton(publicButton = new TranslationButton(this, leftPos + 27, topPos + 14, 60, 20, MekanismLang.PUBLIC, () -> {
+        publicButton = addButton(new TranslationButton(this, leftPos + 27, topPos + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
             updateButtons();
         }));
-        addButton(privateButton = new TranslationButton(this, leftPos + 89, topPos + 14, 60, 20, MekanismLang.PRIVATE, () -> {
+        privateButton = addButton(new TranslationButton(this, leftPos + 89, topPos + 14, 60, 20, MekanismLang.PRIVATE, () -> {
             privateMode = true;
             updateButtons();
         }));
-        addButton(setButton = new TranslationButton(this, leftPos + 27, topPos + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
+        setButton = addButton(new TranslationButton(this, leftPos + 27, topPos + 120, 50, 18, MekanismLang.BUTTON_SET, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 TeleporterFrequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
@@ -102,7 +102,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             }
             updateButtons();
         }));
-        addButton(deleteButton = new TranslationButton(this, leftPos + 79, topPos + 120, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
+        deleteButton = addButton(new TranslationButton(this, leftPos + 79, topPos + 120, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
             int selection = scrollList.getSelection();
             if (selection != -1) {
                 TeleporterFrequency freq = privateMode ? getPrivateFrequencies().get(selection) : getPublicFrequencies().get(selection);
@@ -116,14 +116,14 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
               () -> getFrequency() == null ? null : getFrequency().getColor(),
               () -> sendColorUpdate(0),
               () -> sendColorUpdate(1)));
-        addButton(teleportButton = new TranslationButton(this, leftPos + 42, topPos + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
+        teleportButton = addButton(new TranslationButton(this, leftPos + 42, topPos + 140, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             if (getFrequency() != null && clientStatus == 1) {
                 ClientTickHandler.portableTeleport(getMinecraft().player, currentHand, getFrequency());
                 getMinecraft().player.closeContainer();
             }
             updateButtons();
         }));
-        addButton(frequencyField = new GuiTextField(this, 50, 103, 98, 11));
+        frequencyField = addButton(new GuiTextField(this, 50, 103, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);

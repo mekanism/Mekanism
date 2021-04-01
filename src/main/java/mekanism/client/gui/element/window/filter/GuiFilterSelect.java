@@ -8,6 +8,7 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 
@@ -17,7 +18,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
     protected final TILE tile;
 
     protected GuiFilterSelect(IGuiWrapper gui, TILE tile, int filterCount) {
-        super(gui, (gui.getWidth() - 152) / 2, 20, 152, 30 + filterCount * FILTER_HEIGHT);
+        super(gui, (gui.getWidth() - 152) / 2, 20, 152, 30 + filterCount * FILTER_HEIGHT, SelectedWindowData.UNSPECIFIED);
         this.tile = tile;
         addChild(new GuiElementHolder(gui, 23, relativeY + 18, 130, 2 + filterCount * FILTER_HEIGHT));
         int buttonY = this.y + 19;

@@ -3,7 +3,7 @@ package mekanism.client.gui.element.window.filter.transporter;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -26,30 +26,30 @@ import net.minecraft.client.gui.screen.Screen;
 
 public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisticalSorter>, IFancyFontRenderer {
 
-    default void addSorterDefaults(IGuiWrapper gui, SorterFilter<?> filter, int x, int y, int slotOffset, Consumer<GuiElement> childAdder, BooleanSupplier singleItem,
+    default void addSorterDefaults(IGuiWrapper gui, SorterFilter<?> filter, int x, int y, int slotOffset, UnaryOperator<GuiElement> childAdder, BooleanSupplier singleItem,
           BiConsumer<GuiTextField, GuiTextField> rangeSetter) {
         int relativeX = getRelativeX();
         int relativeY = getRelativeY();
         int slotX = relativeX + 7;
         int colorSlotY = relativeY + slotOffset + 25;
-        childAdder.accept(new GuiSlot(SlotType.NORMAL, gui, slotX, colorSlotY));
-        childAdder.accept(new ColorButton(gui, gui.getLeft() + slotX + 1, gui.getTop() + colorSlotY + 1, 16, 16, () -> filter.color,
+        childAdder.apply(new GuiSlot(SlotType.NORMAL, gui, slotX, colorSlotY));
+        childAdder.apply(new ColorButton(gui, gui.getLeft() + slotX + 1, gui.getTop() + colorSlotY + 1, 16, 16, () -> filter.color,
               () -> filter.color = Screen.hasShiftDown() ? null : TransporterUtils.increment(filter.color), () -> filter.color = TransporterUtils.decrement(filter.color)));
-        childAdder.accept(new MekanismImageButton(gui, gui.getLeft() + relativeX + 148, gui.getTop() + relativeY + 18, 11,
+        childAdder.apply(new MekanismImageButton(gui, gui.getLeft() + relativeX + 148, gui.getTop() + relativeY + 18, 11,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "default.png"), () -> filter.allowDefault = !filter.allowDefault,
               (onHover, matrix, xAxis, yAxis) -> gui.displayTooltip(matrix, MekanismLang.FILTER_ALLOW_DEFAULT.translate(), xAxis, yAxis)));
         GuiTextField minField = new GuiTextField(gui, relativeX + 169, relativeY + 31, 20, 11);
         minField.setMaxStringLength(2);
         minField.setInputValidator(InputValidator.DIGIT);
         minField.setText("" + filter.min);
-        childAdder.accept(minField);
+        childAdder.apply(minField);
         GuiTextField maxField = new GuiTextField(gui, relativeX + 169, relativeY + 43, 20, 11);
         maxField.setMaxStringLength(2);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.setText("" + filter.max);
-        childAdder.accept(maxField);
+        childAdder.apply(maxField);
         rangeSetter.accept(minField, maxField);
-        childAdder.accept(new MekanismImageButton(gui, x + 148, y + 56, 11, 14, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "silk_touch.png"),
+        childAdder.apply(new MekanismImageButton(gui, x + 148, y + 56, 11, 14, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "silk_touch.png"),
               () -> filter.sizeMode = !filter.sizeMode, (onHover, matrix, xAxis, yAxis) -> {
             if (singleItem.getAsBoolean() && filter.sizeMode) {
                 gui.displayTooltip(matrix, MekanismLang.SORTER_SIZE_MODE_CONFLICT.translate(), xAxis, yAxis);

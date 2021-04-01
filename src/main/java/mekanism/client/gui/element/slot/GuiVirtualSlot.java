@@ -5,11 +5,24 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.VirtualSlotContainerScreen;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
+import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.item.ItemStack;
 
 public class GuiVirtualSlot extends GuiSlot {
 
     private IVirtualSlot virtualSlot;
+
+    public GuiVirtualSlot(SlotType type, IGuiWrapper gui, int x, int y, VirtualInventoryContainerSlot containerSlot) {
+        this(type, gui, x, y);
+        if (containerSlot != null) {
+            SlotOverlay slotOverlay = containerSlot.getSlotOverlay();
+            if (slotOverlay != null) {
+                with(slotOverlay);
+            }
+            updateVirtualSlot(containerSlot);
+        }
+    }
 
     public GuiVirtualSlot(SlotType type, IGuiWrapper gui, int x, int y) {
         super(type, gui, x, y);

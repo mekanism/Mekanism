@@ -77,7 +77,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             }
             return list;
         }));
-        addButton(searchField = new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10));
+        searchField = addButton(new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10));
         searchField.setOffset(0, -1);
         searchField.setInputValidator(this::isValidSearchChar);
         searchField.setResponder(menu::updateSearch);
@@ -93,7 +93,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         addButton(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, menu::getSortDirection, menu::setSortDirection));
         addButton(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - 20 - topPos, this::resize));
-        addButton(craftingWindowTab = new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
+        craftingWindowTab = addButton(new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
     }
 
     @Override
@@ -125,13 +125,6 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     public void removed() {
         super.removed();
         getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
-    }
-
-    @Override
-    protected void lastWindowRemoved() {
-        super.lastWindowRemoved();
-        //Mark that no crafting grids are now selected
-        menu.setSelectedCraftingGrid((byte) -1);
     }
 
     private boolean isValidSearchChar(char c) {
@@ -184,6 +177,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             if (window instanceof GuiCraftingWindow) {
                 //Updating the references for listeners and the like for crafting windows
                 craftingWindowTab.adoptWindows(window);
+                //Update the container the virtual slots point to be correct
                 ((GuiCraftingWindow) window).updateContainer(menu);
             }
             addWindow(window);

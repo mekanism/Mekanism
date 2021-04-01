@@ -14,6 +14,7 @@ import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.MekanismLang;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.lib.Color;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -41,18 +42,18 @@ public class GuiColorWindow extends GuiWindow {
     private float value = 0.5F;
 
     public GuiColorWindow(IGuiWrapper gui, int x, int y, Consumer<Color> callback) {
-        super(gui, x, y, 160, 140);
+        super(gui, x, y, 160, 140, SelectedWindowData.UNSPECIFIED);
         interactionStrategy = InteractionStrategy.NONE;
         addChild(new GuiElementHolder(gui, x + 6, y + 17, 43, 82));
         addChild(new GuiColorView(gui, x + 7, y + 18, 41, 80));
 
         addChild(new GuiElementHolder(gui, x + 52, y + 17, 102, 82));
-        addChild(shadePicker = new GuiShadePicker(gui, x + 53, y + 18, 100, 80));
+        shadePicker = addChild(new GuiShadePicker(gui, x + 53, y + 18, 100, 80));
 
         addChild(new GuiElementHolder(gui, x + 6, y + 103, 148, 10));
-        addChild(huePicker = new GuiHuePicker(gui, x + 7, y + 104, 146, 8));
+        huePicker = addChild(new GuiHuePicker(gui, x + 7, y + 104, 146, 8));
 
-        addChild(textField = new GuiTextField(gui, x + 30, y + getButtonHeight() - 20, 67, 12));
+        textField = addChild(new GuiTextField(gui, x + 30, y + getButtonHeight() - 20, 67, 12));
         textField.setMaxStringLength(11);
         textField.setInputValidator(InputValidator.DIGIT.or(c -> c == ','));
         textField.setBackground(BackgroundType.ELEMENT_HOLDER);

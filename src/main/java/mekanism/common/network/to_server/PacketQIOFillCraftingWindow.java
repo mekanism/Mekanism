@@ -14,6 +14,7 @@ import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
@@ -295,15 +296,16 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                 //TODO - 10.1: Catch this error during the simulation stage?
             }
         }
+        SelectedWindowData windowData = craftingWindow.getWindowData();
         //Put the items that were in the crafting window in the player's inventory
         for (Byte2ObjectMap.Entry<ItemStack> entry : remainingCraftingGridContents.byte2ObjectEntrySet()) {
             //TODO: Can we somehow batch this, maybe by keeping it as <HashedItem, CombinedStack, Set<FromSlots>>
             ItemStack stack = entry.getValue();
             //Insert into player's inventory
-            stack = MekanismContainer.insertItem(hotBarSlots, stack, true);
-            stack = MekanismContainer.insertItem(mainInventorySlots, stack, true);
-            stack = MekanismContainer.insertItem(hotBarSlots, stack, false);
-            stack = MekanismContainer.insertItem(mainInventorySlots, stack, false);
+            stack = MekanismContainer.insertItem(hotBarSlots, stack, true, windowData);
+            stack = MekanismContainer.insertItem(mainInventorySlots, stack, true, windowData);
+            stack = MekanismContainer.insertItem(hotBarSlots, stack, false, windowData);
+            stack = MekanismContainer.insertItem(mainInventorySlots, stack, false, windowData);
             if (!stack.isEmpty()) {
                 //If we couldn't insert it all, try recombining with the slots they were in the crafting window
                 // (only if the type matches though)

@@ -269,7 +269,11 @@ public class GuiUtils {
                 RenderSystem.enableDepthTest();
                 RenderHelper.turnBackOn();
                 if (scale != 1) {
+                    //Translate before scaling, and then set xAxis and yAxis to zero so that we don't translate a second time
+                    matrix.translate(xAxis, yAxis, 0);
                     matrix.scale(scale, scale, scale);
+                    xAxis = 0;
+                    yAxis = 0;
                 }
                 //Apply our matrix stack to the render system and pass an unmodified one to the render methods
                 // Vanilla still renders the items using render system transformations so this is required to

@@ -106,7 +106,6 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     private void draw(@Nonnull MatrixStack matrix) {
         minecraft.textureManager.bind(getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
-        drawContents(matrix);
         if (overlaySupplier != null) {
             overlay = overlaySupplier.get();
         }
@@ -114,6 +113,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
             minecraft.textureManager.bind(overlay.getTexture());
             blit(matrix, x, y, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }
+        drawContents(matrix);
     }
 
     protected void drawContents(@Nonnull MatrixStack matrix) {
