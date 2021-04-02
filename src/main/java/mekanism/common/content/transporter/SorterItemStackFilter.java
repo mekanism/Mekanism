@@ -5,6 +5,7 @@ import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.lib.inventory.Finder;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -30,7 +31,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
     @Override
     public void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        fuzzyMode = nbtTags.getBoolean(NBTConstants.FUZZY_MODE);
+        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.FUZZY_MODE, fuzzy -> fuzzyMode = fuzzy);
         itemType = ItemStack.of(nbtTags);
     }
 

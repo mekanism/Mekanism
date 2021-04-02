@@ -22,6 +22,8 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.qio.filter.QIOFilter;
+import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.integration.computer.ComputerArgumentHandler;
@@ -230,9 +232,13 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     SorterItemStackFilter filter = (SorterItemStackFilter) sorterFilter;
                     wrapped.put("fuzzy", filter.fuzzyMode);
                 }
-            } /*else if (result instanceof QIOFilter) {
-                //No specifics QIO only extra data
-            }*/ else if (result instanceof OredictionificatorFilter) {
+            } else if (result instanceof QIOFilter) {
+                QIOFilter<?> qioFilter = (QIOFilter<?>) result;
+                if (qioFilter instanceof QIOItemStackFilter) {
+                    QIOItemStackFilter filter = (QIOItemStackFilter) qioFilter;
+                    wrapped.put("fuzzy", filter.fuzzyMode);
+                }
+            } else if (result instanceof OredictionificatorFilter) {
                 OredictionificatorFilter filter = (OredictionificatorFilter) result;
                 wrapped.put("target", filter.getFilterText());
                 wrapped.put("selected", filter.getIndex());
@@ -382,9 +388,13 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                             SorterItemStackFilter sorterItemFilter = (SorterItemStackFilter) sorterFilter;
                             sorterItemFilter.fuzzyMode = getBooleanFromRaw(map.get("fuzzy"));
                         }
-                    } /*else if (filter instanceof QIOFilter) {
-                        //No specifics QIO only extra data
-                    }*/ else if (filter instanceof OredictionificatorFilter) {
+                    } else if (filter instanceof QIOFilter) {
+                        QIOFilter<?> qioFilter = (QIOFilter<?>) filter;
+                        if (qioFilter instanceof QIOItemStackFilter) {
+                            QIOItemStackFilter qioItemFilter = (QIOItemStackFilter) qioFilter;
+                            qioItemFilter.fuzzyMode = getBooleanFromRaw(map.get("fuzzy"));
+                        }
+                    } else if (filter instanceof OredictionificatorFilter) {
                         OredictionificatorFilter oredictionificatorFilter = (OredictionificatorFilter) filter;
                         Object rawTag = map.get("tag");
                         if (!(rawTag instanceof String)) {

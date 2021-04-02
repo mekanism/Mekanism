@@ -35,6 +35,7 @@ import mekanism.common.network.to_client.PacketQIOItemViewerGuiSync;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -51,6 +52,8 @@ public class QIOFrequency extends Frequency {
     private final BiMultimap<String, HashedItem> tagLookupMap = new BiMultimap<>();
     // efficiently keep track of the modids utilized by the items stored
     private final Map<String, Set<HashedItem>> modIDLookupMap = new HashMap<>();
+    // efficiently keep track of the items for use in fuzzy lookup utilized by the items stored
+    private final Map<Item, Set<HashedItem>> fuzzyItemLookupMap = new HashMap<>();
     //Keep track of a UUID for each hashed item
     private final BiMap<HashedItem, UUID> itemTypeLookup = HashBiMap.create();
     // a sensitive cache for wildcard tag lookups (wildcard -> [matching tags])
@@ -136,6 +139,8 @@ public class QIOFrequency extends Frequency {
             failedWildcardModIDs.clear();
             return new HashSet<>();
         }).add(type);
+        //Fuzzy item lookup has no wildcard cache related to it
+        fuzzyItemLookupMap.computeIfAbsent(stack.getItem(), item -> new HashSet<>()).add(type);
         itemTypeLookup.put(type, UUID.randomUUID());
         return new QIOItemTypeData(type);
     }
@@ -185,7 +190,8 @@ public class QIOFrequency extends Frequency {
             tagWildcardCache.clear();
             //Note: We don't need to clear the failed wildcard tags as if we are removing tags they still won't have any matches
         }
-        String modID = MekanismUtils.getModId(type.getStack());
+        ItemStack stack = type.getStack();
+        String modID = MekanismUtils.getModId(stack);
         Set<HashedItem> itemsForMod = modIDLookupMap.get(modID);
         //In theory if we are removing an item and it existed we should have a set corresponding to it,
         // but double check that it is not null just in case
@@ -197,23 +203,31 @@ public class QIOFrequency extends Frequency {
             modIDWildcardCache.clear();
             //Note: We don't need to clear the failed wildcard modids as if we are removing tags they still won't have any matches
         }
+        Item item = stack.getItem();
+        Set<HashedItem> itemsByFuzzy = fuzzyItemLookupMap.get(item);
+        //In theory if we are removing an item and it existed we should have a set corresponding to it,
+        // but double check that it is not null just in case
+        // Next if we removed the item successfully, check if the "fuzzy" items for that item is now empty, and if they are
+        // remove the item completely from the lookup map
+        if (itemsByFuzzy != null && itemsByFuzzy.remove(type) && itemsByFuzzy.isEmpty()) {
+            fuzzyItemLookupMap.remove(item);
+        }
+    }
+
+    public Object2LongMap<HashedItem> getStacksByItem(Item item) {
+        return getStacksWithCounts(fuzzyItemLookupMap.get(item));
     }
 
     public Object2LongMap<HashedItem> getStacksByTag(String tag) {
-        Set<HashedItem> items = tagLookupMap.getValues(tag);
-        if (items.isEmpty()) {
-            return Object2LongMaps.emptyMap();
-        }
-        Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
-        for (HashedItem item : items) {
-            ret.put(item, getStored(item));
-        }
-        return ret;
+        return getStacksWithCounts(tagLookupMap.getValues(tag));
     }
 
     public Object2LongMap<HashedItem> getStacksByModID(String modID) {
-        Set<HashedItem> items = modIDLookupMap.get(modID);
-        if (items == null) {
+        return getStacksWithCounts(modIDLookupMap.get(modID));
+    }
+
+    private Object2LongMap<HashedItem> getStacksWithCounts(@Nullable Set<HashedItem> items) {
+        if (items == null || items.isEmpty()) {
             return Object2LongMaps.emptyMap();
         }
         Object2LongMap<HashedItem> ret = new Object2LongOpenHashMap<>();
