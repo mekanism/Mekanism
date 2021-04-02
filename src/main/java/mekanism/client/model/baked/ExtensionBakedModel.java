@@ -47,7 +47,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     @Nonnull
     @Override
     @Deprecated
-    public List<BakedQuad> getQuads(BlockState state, Direction side, @Nonnull Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand) {
         return original.getQuads(state, side, rand);
     }
 
@@ -195,7 +195,9 @@ public class ExtensionBakedModel<T> implements IBakedModel {
 
     public static class QuadsKey<T> {
 
+        @Nullable
         private final BlockState state;
+        @Nullable
         private final Direction side;
         private final Random random;
         private final RenderType layer;
@@ -206,7 +208,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
         private int dataHash;
         private BiPredicate<T, T> equality;
 
-        public QuadsKey(BlockState state, Direction side, Random random, RenderType layer, List<BakedQuad> quads) {
+        public QuadsKey(@Nullable BlockState state, @Nullable Direction side, Random random, RenderType layer, List<BakedQuad> quads) {
             this.state = state;
             this.side = side;
             this.random = random;
@@ -226,10 +228,12 @@ public class ExtensionBakedModel<T> implements IBakedModel {
             return this;
         }
 
+        @Nullable
         public BlockState getBlockState() {
             return state;
         }
 
+        @Nullable
         public Direction getSide() {
             return side;
         }
@@ -268,7 +272,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
                 return false;
             }
             QuadsKey<?> other = (QuadsKey<?>) obj;
-            if (side != other.side || !state.equals(other.state) || layer != other.layer) {
+            if (side != other.side || !Objects.equals(state, other.state) || layer != other.layer) {
                 return false;
             }
             if (transformation != null && !transformation.equals(other.transformation)) {
