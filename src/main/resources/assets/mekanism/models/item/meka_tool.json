@@ -13,9 +13,16 @@
             "translation": [ 1, -10, -4 ]
         },
         "gui": {
-            "rotation": [ 0, 90, 0 ],
             "rotation": [ 0, 0, 135 ],
             "translation": [ 1, 2, 0 ]
+        },
+        "head": {
+            "rotation": [ 270, 220, 90 ],
+            "translation": [ 0, 2, 0]
+        },
+        "fixed": {
+            "rotation": [ 270, 220, 90 ],
+            "translation": [ -6, -4, -1 ]
         }
     }
 }
