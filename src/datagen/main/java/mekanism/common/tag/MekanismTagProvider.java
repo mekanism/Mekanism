@@ -7,6 +7,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.BlockRegistryObject;
+import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -25,10 +26,12 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.entity.EntityType;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
@@ -37,6 +40,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 public class MekanismTagProvider extends BaseTagProvider {
 
     public static final INamedTag<EntityType<?>> PVI_COMPAT = EntityTypeTags.bind("per-viam-invenire:replace_vanilla_navigator");
+    public static final INamedTag<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.bind("create:no_infinite_draining");
 
     public MekanismTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
         super(gen, Mekanism.MODID, existingFileHelper);
@@ -401,6 +405,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Fluids.SULFUR_TRIOXIDE, MekanismFluids.SULFUR_TRIOXIDE);
         addToTag(MekanismTags.Fluids.SULFURIC_ACID, MekanismFluids.SULFURIC_ACID);
         addToTag(MekanismTags.Fluids.HYDROFLUORIC_ACID, MekanismFluids.HYDROFLUORIC_ACID);
+        //Prevent all our fluids from being duped by create
+        for (FluidRegistryObject<?, ?, ?, ?> fluid : MekanismFluids.FLUIDS.getAllFluids()) {
+            addToTag(CREATE_NO_INFINITE_FLUID, fluid);
+        }
     }
 
     private void addGasTags() {

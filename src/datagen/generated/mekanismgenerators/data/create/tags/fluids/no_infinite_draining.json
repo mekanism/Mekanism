@@ -1,0 +1,12 @@
+{
+  "values": [
+    "mekanismgenerators:bioethanol",
+    "mekanismgenerators:flowing_bioethanol",
+    "mekanismgenerators:deuterium",
+    "mekanismgenerators:flowing_deuterium",
+    "mekanismgenerators:fusion_fuel",
+    "mekanismgenerators:flowing_fusion_fuel",
+    "mekanismgenerators:tritium",
+    "mekanismgenerators:flowing_tritium"
+  ]
+}
