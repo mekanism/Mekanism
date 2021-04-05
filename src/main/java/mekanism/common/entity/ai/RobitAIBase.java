@@ -1,5 +1,6 @@
 package mekanism.common.entity.ai;
 
+import java.util.EnumSet;
 import mekanism.common.entity.EntityRobit;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.goal.Goal;
@@ -30,6 +31,7 @@ public abstract class RobitAIBase extends Goal {
     protected RobitAIBase(EntityRobit entityRobit, float speed) {
         theRobit = entityRobit;
         moveSpeed = speed;
+        setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
     protected PathNavigator getNavigator() {
@@ -86,10 +88,11 @@ public abstract class RobitAIBase extends Goal {
     }
 
     private boolean canNavigate(BlockPos pos) {
-        PathNodeType pathnodetype = WalkNodeProcessor.getBlockPathTypeStatic(getWorld(), pos.mutable());
+        World world = getWorld();
+        PathNodeType pathnodetype = WalkNodeProcessor.getBlockPathTypeStatic(world, pos.mutable());
         if (pathnodetype == PathNodeType.WALKABLE) {
             BlockPos blockpos = pos.subtract(theRobit.blockPosition());
-            return getWorld().noCollision(theRobit, theRobit.getBoundingBox().move(blockpos));
+            return world.noCollision(theRobit, theRobit.getBoundingBox().move(blockpos));
         }
         return false;
     }

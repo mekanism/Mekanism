@@ -1155,7 +1155,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //TODO: If we ever end up using the part of our API that allows for multiple energy containers, it may be worth exposing
     // overloaded versions of these methods that take the container index as a parameter if anyone ends up running into a case
-    // where being able to get a specific container's stored energy would be useful to their program
+    // where being able to get a specific container's stored energy would be useful to their program. Alternatively we could
+    // probably make use of our synthetic computer method wrapper to just add extra methods so then have it basically create
+    // getEnergy, getEnergyFE for us with us only having to define getEnergy
     @ComputerMethod(nameOverride = "getEnergy", restriction = MethodRestriction.ENERGY)
     private FloatingLong getTotalEnergy() {
         return getTotalEnergy(IEnergyContainer::getEnergy);

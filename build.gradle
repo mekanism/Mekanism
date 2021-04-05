@@ -604,7 +604,8 @@ task allJar(type: Jar) {
     //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
     List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project)
-    from(sourceSets.main.output, MergeJars.createExcludeClosure(baseExcludeData))
+    Closure excludeFromMain = MergeJars.createExcludeClosure(baseExcludeData)
+    from(sourceSets.main.output, excludeFromMain)
     Closure excludeFromAll = MergeJars.createExcludeClosure(baseExcludeData, 'logo.png', 'pack.mcmeta')
     from(sourceSets.additions.output, excludeFromAll)
     from(sourceSets.defense.output, excludeFromAll)
