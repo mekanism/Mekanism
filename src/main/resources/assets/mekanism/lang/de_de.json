@@ -487,6 +487,8 @@
   "description.mekanism.isotopic_centrifuge": "Eine Maschine mit einem einzigen Zweck: ihre Inhalte so RICHTIG schnell zu drehen.",
   "description.mekanism.jetpack_unit": "Fügt dem MekaSuit ein wasserstoffbetriebenes Jetpack hinzu.",
   "description.mekanism.laser": "Laser",
+  "description.mekanism.laser_amplifier": "Laserverstärker",
+  "description.mekanism.laser_tractor_beam": "Lasertraktorstrahl",
   "description.mekanism.lead_ore": "Ein mittelmäßig seltenes Metall, welches hervorragend gegen radioaktive Partikel schützt und etwas seltener als Eisen vorkommt.",
   "description.mekanism.locomotive_boosting_unit": "Erhöht die Sprintgeschwindigkeit des Nutzers (und die Sprungweite).",
   "description.mekanism.magnetic_attraction_unit": "Verwendet starke Magnete um weiter entfernte Gegenstände in Richtung des Spielers zu ziehen. Installiere mehrere für eine größere Reichweite.",
