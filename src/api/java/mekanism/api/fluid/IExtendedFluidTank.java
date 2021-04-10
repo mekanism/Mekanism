@@ -27,6 +27,22 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     void setStack(FluidStack stack);
 
     /**
+     * Overrides the stack in this {@link IExtendedFluidTank}.
+     *
+     * @param stack {@link FluidStack} to set this tank's contents to (may be empty).
+     *
+     * @apiNote Unsafe version of {@link #setStack(FluidStack)}. This method is exposed for implementation and code deduplication reasons only and should
+     * <strong>NOT</strong> be directly called outside of your own {@link IExtendedFluidTank} where you already know the given {@link FluidStack} is valid, or on the
+     * client side for purposes of receiving sync data and rendering.
+     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
+     */
+    default void setStackUnchecked(FluidStack stack) {
+        //TODO - 1.17: Remove default implementation. This is mainly here to not be a breaking change on the off-chance anyone actually
+        // has a custom implementation of our extended fluid tank
+        setStack(stack);
+    }
+
+    /**
      * <p>
      * Inserts a {@link FluidStack} into this {@link IExtendedFluidTank} and return the remainder. The {@link FluidStack} <em>should not</em> be modified in this
      * function!

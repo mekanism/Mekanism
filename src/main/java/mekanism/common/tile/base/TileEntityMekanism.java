@@ -655,34 +655,35 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsRedstone()) {
             container.track(SyncableEnum.create(RedstoneControl::byIndexStatic, RedstoneControl.DISABLED, () -> controlType, value -> controlType = value));
         }
+        boolean isClient = isRemote();
         if (canHandleGas() && handles(SubstanceType.GAS)) {
             List<IGasTank> gasTanks = getGasTanks(null);
             for (IGasTank gasTank : gasTanks) {
-                container.track(SyncableGasStack.create(gasTank));
+                container.track(SyncableGasStack.create(gasTank, isClient));
             }
         }
         if (canHandleInfusion() && handles(SubstanceType.INFUSION)) {
             List<IInfusionTank> infusionTanks = getInfusionTanks(null);
             for (IInfusionTank infusionTank : infusionTanks) {
-                container.track(SyncableInfusionStack.create(infusionTank));
+                container.track(SyncableInfusionStack.create(infusionTank, isClient));
             }
         }
         if (canHandlePigment() && handles(SubstanceType.PIGMENT)) {
             List<IPigmentTank> pigmentTanks = getPigmentTanks(null);
             for (IPigmentTank pigmentTank : pigmentTanks) {
-                container.track(SyncablePigmentStack.create(pigmentTank));
+                container.track(SyncablePigmentStack.create(pigmentTank, isClient));
             }
         }
         if (canHandleSlurry() && handles(SubstanceType.SLURRY)) {
             List<ISlurryTank> slurryTanks = getSlurryTanks(null);
             for (ISlurryTank slurryTank : slurryTanks) {
-                container.track(SyncableSlurryStack.create(slurryTank));
+                container.track(SyncableSlurryStack.create(slurryTank, isClient));
             }
         }
         if (canHandleFluid() && handles(SubstanceType.FLUID)) {
             List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
             for (IExtendedFluidTank fluidTank : fluidTanks) {
-                container.track(SyncableFluidStack.create(fluidTank));
+                container.track(SyncableFluidStack.create(fluidTank, isClient));
             }
         }
         if (canHandleHeat() && handles(SubstanceType.HEAT)) {

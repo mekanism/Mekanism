@@ -57,7 +57,8 @@ public interface IChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STACK extend
      * @param stack {@link ChemicalStack} to set this tank's contents to (may be empty).
      *
      * @apiNote Unsafe version of {@link #setStack(ChemicalStack)}. This method is exposed for implementation and code deduplication reasons only and should
-     * <strong>NOT</strong> be directly called outside of your own {@link IChemicalTank} where you already know the given {@link ChemicalStack} is valid.
+     * <strong>NOT</strong> be directly called outside of your own {@link IChemicalTank} where you already know the given {@link ChemicalStack} is valid, or on the client
+     * side for purposes of receiving sync data and rendering.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
     void setStackUnchecked(STACK stack);

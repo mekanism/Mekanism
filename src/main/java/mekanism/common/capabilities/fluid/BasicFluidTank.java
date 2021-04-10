@@ -129,6 +129,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
         }
     }
 
+    @Nonnull
     @Override
     public FluidStack getFluid() {
         return stored;
@@ -154,7 +155,8 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return Integer.MAX_VALUE;
     }
 
-    protected void setStackUnchecked(FluidStack stack) {
+    @Override
+    public void setStackUnchecked(FluidStack stack) {
         setStack(stack, false);
     }
 
