@@ -96,11 +96,11 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
                 if (EnergyCompatUtils.hasStrictEnergyHandler(itemStack)) {
                     return true;
                 }
-                ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.findFirst(null, recipe -> recipe.getInput().testType(itemStack));
+                ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findTypeBasedRecipe(null, itemStack);
                 return foundRecipe != null && !foundRecipe.getOutput(itemStack).isZero();
             }, false));
             //Smelting input slot
-            slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> MekanismRecipeType.SMELTING.contains(null, recipe -> recipe.getInput().testType(itemStack)), false));
+            slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> MekanismRecipeType.SMELTING.getInputCache().containsInput(null, itemStack), false));
             //Smelting output slot
             slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, BasicInventorySlot.alwaysTrue, false));
         } else if (item instanceof ISustainedInventory) {

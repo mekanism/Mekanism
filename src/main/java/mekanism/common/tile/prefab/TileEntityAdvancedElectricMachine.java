@@ -37,15 +37,16 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 
-public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackGasToItemStackRecipe> {
+public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackGasToItemStackRecipe> implements
+      ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe> {
 
     public static final int BASE_TICKS_REQUIRED = 200;
     public static final long MAX_GAS = 210;
@@ -88,7 +89,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipe(recipe -> recipe.getChemicalInput().testType(gas)), this));
+        builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB, recipeCacheLookupMonitor));
         return builder.build();
     }
 
@@ -104,8 +105,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        //TODO - 10.1: Only allow things to be input if they can interact with the currently stored type of gas? (See metallurgic infuser)
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 64, 17));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, gasTank.getStack()), this::containsRecipeA, recipeCacheLookupMonitor, 64, 17));
         builder.addSlot(secondarySlot = GasInventorySlot.fillOrConvert(gasTank, this::getLevel, this, 64, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 39, 35));
@@ -116,10 +116,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     protected void onUpdateServer() {
         energySlot.fillContainerOrConvert();
         secondarySlot.fillTankOrConvert();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
     }
 
     public boolean useStatisticalMechanics() {
@@ -128,17 +125,11 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     @Nullable
     @Override
-    public CachedRecipe<ItemStackGasToItemStackRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
-    }
-
-    @Nullable
-    @Override
     public ItemStackGasToItemStackRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findItemStackChemicalRecipe(this, itemInputHandler, gasInputHandler);
+        return findFirstRecipe(itemInputHandler, gasInputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
         LongSupplier gasUsageMultiplier;

@@ -47,16 +47,18 @@ import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMachine<ChemicalDissolutionRecipe> {
+public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMachine<ChemicalDissolutionRecipe> implements
+      ItemChemicalRecipeLookupHandler<Gas, GasStack, ChemicalDissolutionRecipe> {
 
     private static final long MAX_CHEMICAL = 10_000;
     public static final int BASE_TICKS_REQUIRED = 100;
@@ -115,14 +117,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(injectTank = ChemicalTankBuilder.GAS.input(MAX_CHEMICAL, gas -> {
-            if (!inputSlot.isEmpty()) {
-                ItemStack stack = inputSlot.getStack();
-                return containsRecipe(recipe -> recipe.getItemInput().testType(stack) && recipe.getGasInput().testType(gas));
-            }
-            //Otherwise return true, as we already validated the type was valid
-            return true;
-        }, gas -> containsRecipe(recipe -> recipe.getGasInput().testType(gas)), this));
+        builder.addTank(injectTank = ChemicalTankBuilder.GAS.input(MAX_CHEMICAL, gas -> containsRecipeBA(inputSlot.getStack(), gas), this::containsRecipeB,
+              recipeCacheLookupMonitor));
         builder.addTank(outputTank.getGasTank());
         return builder.build();
     }
@@ -164,13 +160,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(gasInputSlot = GasInventorySlot.fillOrConvert(injectTank, this::getLevel, this, 8, 65));
-        builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
-            if (!injectTank.isEmpty()) {
-                return containsRecipe(recipe -> recipe.getGasInput().testType(injectTank.getType()) && recipe.getItemInput().testType(stack));
-            }
-            //Otherwise return true, as we already validated the type was valid
-            return true;
-        }, item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 28, 36));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, injectTank.getStack()), this::containsRecipeA, recipeCacheLookupMonitor, 28, 36));
         builder.addSlot(outputSlot = MergedChemicalInventorySlot.drain(outputTank, this, 152, 55));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 14));
         gasInputSlot.setSlotOverlay(SlotOverlay.MINUS);
@@ -184,25 +174,22 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
         energySlot.fillContainerOrConvert();
         gasInputSlot.fillTankOrConvert();
         outputSlot.drainChemicalTanks();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
     }
 
     @Nonnull
     @Override
-    public MekanismRecipeType<ChemicalDissolutionRecipe> getRecipeType() {
+    public MekanismRecipeType<ChemicalDissolutionRecipe, ItemChemical<Gas, GasStack, ChemicalDissolutionRecipe>> getRecipeType() {
         return MekanismRecipeType.DISSOLUTION;
     }
 
     @Nullable
     @Override
     public ChemicalDissolutionRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findItemStackChemicalRecipe(this, itemInputHandler, gasInputHandler);
+        return findFirstRecipe(itemInputHandler, gasInputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<ChemicalDissolutionRecipe> createNewCachedRecipe(@Nonnull ChemicalDissolutionRecipe recipe, int cacheIndex) {
         return new ChemicalDissolutionCachedRecipe(recipe, itemInputHandler, gasInputHandler, () -> StatUtils.inversePoisson(injectUsage), outputHandler)

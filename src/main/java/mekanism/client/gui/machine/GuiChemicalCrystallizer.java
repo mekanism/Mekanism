@@ -1,12 +1,12 @@
 package mekanism.client.gui.machine;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.lang.ref.WeakReference;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
-import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.custom.GuiCrystallizerScreen;
@@ -32,21 +32,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     @Override
     public void init() {
         super.init();
-        addButton(new GuiCrystallizerScreen(this, 31, 13, new IOreInfo() {
-            @Nonnull
-            @Override
-            public BoxedChemicalStack getInputChemical() {
-                Current current = tile.inputTank.getCurrent();
-                return current == Current.EMPTY ? BoxedChemicalStack.EMPTY : BoxedChemicalStack.box(tile.inputTank.getTankFromCurrent(current).getStack());
-            }
-
-            @Nullable
-            @Override
-            public ChemicalCrystallizerRecipe getRecipe() {
-                CachedRecipe<ChemicalCrystallizerRecipe> cachedRecipe = tile.getUpdatedCache(0);
-                return cachedRecipe == null ? null : cachedRecipe.getRecipe();
-            }
-        }));
+        addButton(new GuiCrystallizerScreen(this, 31, 13, new OreInfo()));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23));
         addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getActive, this));
         addButton(new GuiMergedChemicalTankGauge<>(() -> tile.inputTank, () -> tile, GaugeType.STANDARD, this, 7, 4));
@@ -57,5 +43,46 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
+    }
+
+    private class OreInfo implements IOreInfo {
+
+        private WeakReference<ChemicalCrystallizerRecipe> cachedRecipe;
+
+        @Nonnull
+        @Override
+        public BoxedChemicalStack getInputChemical() {
+            Current current = tile.inputTank.getCurrent();
+            return current == Current.EMPTY ? BoxedChemicalStack.EMPTY : BoxedChemicalStack.box(tile.inputTank.getTankFromCurrent(current).getStack());
+        }
+
+        @Nullable
+        @Override
+        public ChemicalCrystallizerRecipe getRecipe() {
+            BoxedChemicalStack input = getInputChemical();
+            if (input.isEmpty()) {
+                return null;
+            }
+            ChemicalCrystallizerRecipe recipe;
+            if (cachedRecipe == null) {
+                recipe = getRecipeAndCache();
+            } else {
+                recipe = cachedRecipe.get();
+                if (recipe == null || !recipe.testType(input)) {
+                    recipe = getRecipeAndCache();
+                }
+            }
+            return recipe;
+        }
+
+        private ChemicalCrystallizerRecipe getRecipeAndCache() {
+            ChemicalCrystallizerRecipe recipe = tile.getRecipe(0);
+            if (recipe == null) {
+                cachedRecipe = null;
+            } else {
+                cachedRecipe = new WeakReference<>(recipe);
+            }
+            return recipe;
+        }
     }
 }

@@ -19,6 +19,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
+import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
@@ -43,6 +44,8 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler;
+import mekanism.common.recipe.lookup.monitor.FactoryRecipeCacheLookupMonitor;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -50,7 +53,6 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MachineUpgradeData;
@@ -58,17 +60,15 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import org.jetbrains.annotations.Contract;
 
-public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements ISpecialConfigData,
-      ITileCachedRecipeHolder<RECIPE> {
+public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements ISpecialConfigData, IRecipeLookupHandler<RECIPE> {
 
     /**
      * How many ticks it takes, by default, to run an operation.
      */
     private static final int BASE_TICKS_REQUIRED = 200;
 
-    private final CachedRecipe<RECIPE>[] cachedRecipes;
+    protected FactoryRecipeCacheLookupMonitor<RECIPE>[] recipeCacheLookupMonitors;
     private final boolean[] activeStates;
     protected ProcessInfo[] processInfoSlots;
     /**
@@ -127,8 +127,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
 
         progress = new int[tier.processes];
-        cachedRecipes = new CachedRecipe[tier.processes];
-        activeStates = new boolean[cachedRecipes.length];
+        activeStates = new boolean[tier.processes];
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
@@ -136,16 +135,32 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
      * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again if enabled. This separate from the normal {@link
      * #onContentsChanged()} so as to not cause sorting to happen again just because the energy level of the factory changed.
      */
-    protected void onContentsChangedUpdateSorting() {
+    private void onContentsChangedUpdateSorting() {
         onContentsChanged();
         //Mark sorting as being needed again
         sortingNeeded = true;
+    }
+
+    /**
+     * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again if enabled. This separate from the other {@link
+     * #onContentsChangedUpdateSorting()} so as to not cause recipe lookups to rerun when an output is removed as the raw recipe lookup ignores outputs.
+     */
+    protected void onContentsChangedUpdateSortingAndCache() {
+        onContentsChangedUpdateSorting();
+        for (FactoryRecipeCacheLookupMonitor<RECIPE> cacheLookupMonitor : recipeCacheLookupMonitors) {
+            cacheLookupMonitor.markMayHaveRecipe();
+        }
     }
 
     @Override
     protected void presetVariables() {
         super.presetVariables();
         tier = Attribute.getTier(getBlockType(), FactoryTier.class);
+        Runnable setSortingNeeded = () -> sortingNeeded = true;
+        recipeCacheLookupMonitors = new FactoryRecipeCacheLookupMonitor[tier.processes];
+        for (int i = 0; i < recipeCacheLookupMonitors.length; i++) {
+            recipeCacheLookupMonitors[i] = new FactoryRecipeCacheLookupMonitor<>(this, i, setSortingNeeded);
+        }
     }
 
     @Nonnull
@@ -197,19 +212,18 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             // being required), we want to make sure we are able to fill those slots
             // with other items.
             sortInventory();
-        } else if (!sortingNeeded && invalidateCache()) {
-            //Otherwise if sorting isn't currently needed and the cache is invalid
+        } else if (!sortingNeeded && CommonWorldTickHandler.flushTagAndRecipeCaches) {
+            //Otherwise if sorting isn't currently needed and the recipe cache is invalid
             // Mark sorting as being needed again for the next check as recipes may
             // have changed so our current sort may be incorrect
             sortingNeeded = true;
         }
 
-        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
-        for (int i = 0; i < cachedRecipes.length; i++) {
-            CachedRecipe<RECIPE> cachedRecipe = cachedRecipes[i] = getUpdatedCache(i);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            } else {
+        //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
+        // we can then use minusEqual instead of subtract to remove an extra copy call
+        FloatingLong prev = energyContainer.getEnergy().copy();
+        for (int i = 0; i < recipeCacheLookupMonitors.length; i++) {
+            if (!recipeCacheLookupMonitors[i].updateAndProcess()) {
                 //If we don't have a recipe in that slot make sure that our active state for that position is false
                 activeStates[i] = false;
             }
@@ -224,7 +238,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
         }
         setActive(isActive);
-        lastUsage = prev.subtract(energyContainer.getEnergy());
+        //If none of the recipes are actively processing don't bother with any subtraction
+        lastUsage = isActive ? prev.minusEqual(energyContainer.getEnergy()) : FloatingLong.ZERO;
     }
 
     /**
@@ -243,16 +258,18 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         return outputSlot.isEmpty() || getRecipeForInput(process, fallbackInput, outputSlot, secondaryOutputSlot, updateCache) != null;
     }
 
-    @Contract("null, _ -> false")
     protected abstract boolean isCachedRecipeValid(@Nullable CachedRecipe<RECIPE> cached, @Nonnull ItemStack stack);
 
     @Nullable
     protected RECIPE getRecipeForInput(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
           boolean updateCache) {
-        CachedRecipe<RECIPE> cached = getCachedRecipe(process);
-        if (!invalidateCache() && isCachedRecipeValid(cached, fallbackInput)) {
-            //Our input matches the recipe we have cached for this slot
-            return cached.getRecipe();
+        if (!CommonWorldTickHandler.flushTagAndRecipeCaches) {
+            //If our recipe caches are valid, grab our cached recipe and see if it is still valid
+            CachedRecipe<RECIPE> cached = getCachedRecipe(process);
+            if (cached != null && isCachedRecipeValid(cached, fallbackInput)) {
+                //Our input matches the recipe we have cached for this slot
+                return cached.getRecipe();
+            }
         }
         //If there is no cached item input or it doesn't match our fallback then it is an out of date cache, so we ignore the fact that we have a cache
         RECIPE foundRecipe = findRecipe(process, fallbackInput, outputSlot, secondaryOutputSlot);
@@ -261,14 +278,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             return null;
         }
         if (updateCache) {
-            //If we want to update the cache, then create a new cache with the recipe we found
-            CachedRecipe<RECIPE> newCachedRecipe = createNewCachedRecipe(foundRecipe, process);
-            if (newCachedRecipe == null) {
-                //If we want to update the cache but failed to create a new cache then return that the item is not valid for the slot as something goes wrong
-                // I believe we can actually make createNewCachedRecipe Nonnull which will remove this if statement
-                return null;
-            }
-            updateCachedRecipe(newCachedRecipe, process);
+            //If we want to update the cache, then create a new cache with the recipe we found and update the cache
+            recipeCacheLookupMonitors[process].updateCachedRecipe(foundRecipe);
         }
         return foundRecipe;
     }
@@ -280,15 +291,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected abstract int getNeededInput(RECIPE recipe, ItemStack inputStack);
 
     @Nullable
-    @Override
-    public CachedRecipe<RECIPE> getCachedRecipe(int cacheIndex) {
+    private CachedRecipe<RECIPE> getCachedRecipe(int cacheIndex) {
         //TODO: Sanitize that cacheIndex is in bounds?
-        return cachedRecipes[cacheIndex];
-    }
-
-    protected void updateCachedRecipe(@Nonnull CachedRecipe<RECIPE> newCache, int cacheIndex) {
-        //TODO: Sanitize that cacheIndex is in bounds?
-        cachedRecipes[cacheIndex] = newCache;
+        return recipeCacheLookupMonitors[cacheIndex].getCachedRecipe(cacheIndex);
     }
 
     protected void setActiveState(boolean state, int cacheIndex) {
@@ -474,7 +479,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 RecipeProcessInfo recipeProcessInfo = processes.computeIfAbsent(item, i -> new RecipeProcessInfo());
                 recipeProcessInfo.processes.add(processInfo);
                 recipeProcessInfo.totalCount += inputStack.getCount();
-                if (recipeProcessInfo.lazyMinPerSlot == null && !invalidateCache()) {
+                if (recipeProcessInfo.lazyMinPerSlot == null && !CommonWorldTickHandler.flushTagAndRecipeCaches) {
                     //If we don't have a lazily initialized min per slot calculation set for it yet
                     // and our cache is not invalid/out of date due to a reload
                     CachedRecipe<RECIPE> cachedRecipe = getCachedRecipe(processInfo.getProcess());
@@ -617,7 +622,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
             for (int i = 0; i < processCount; i++) {
                 ProcessInfo processInfo = recipeProcessInfo.processes.get(i);
-                FactoryInputInventorySlot<?> inputSlot = processInfo.getInputSlot();
+                FactoryInputInventorySlot inputSlot = processInfo.getInputSlot();
                 int sizeForSlot = numberPerSlot;
                 if (remainder > 0) {
                     //If we have a remainder, factor it into our slots

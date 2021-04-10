@@ -15,7 +15,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_ENERGY)
 public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManager<ItemStackToEnergyRecipe> {
 
-    protected ItemStackToEnergyRecipeManager(MekanismRecipeType<ItemStackToEnergyRecipe> recipeType) {
+    protected ItemStackToEnergyRecipeManager(MekanismRecipeType<ItemStackToEnergyRecipe, ?> recipeType) {
         super(recipeType);
     }
 

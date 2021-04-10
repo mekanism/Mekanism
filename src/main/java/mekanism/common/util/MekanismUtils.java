@@ -199,6 +199,8 @@ public final class MekanismUtils {
      * @return required operating ticks
      */
     public static int getTicks(IUpgradeTile tile, int def) {
+        //TODO - 10.1: Re-evaluate this especially calls from things like the progress machine. Should we be validating that speed upgrades are even
+        // supported before doing this, or potentially in the fraction upgrades be checking if it supports a given upgrade before factoring it in
         if (tile.supportsUpgrades()) {
             return (int) (def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(tile, Upgrade.SPEED)));
         }

@@ -24,14 +24,14 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
-public abstract class TileEntityElectricMachine extends TileEntityProgressMachine<ItemStackToItemStackRecipe> {
+public abstract class TileEntityElectricMachine extends TileEntityProgressMachine<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     protected final IInputHandler<@NonNull ItemStack> inputHandler;
     protected final IOutputHandler<@NonNull ItemStack> outputHandler;
@@ -69,7 +69,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 64, 17));
+        builder.addSlot(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheLookupMonitor, 64, 17));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 64, 53));
         return builder.build();
@@ -78,25 +78,16 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
     @Override
     protected void onUpdateServer() {
         energySlot.fillContainerOrConvert();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
+        recipeCacheLookupMonitor.updateAndProcess();
     }
 
     @Nullable
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findItemStackRecipe(this, inputHandler);
+        return findFirstRecipe(inputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         return new ItemStackToItemStackCachedRecipe(recipe, inputHandler, outputHandler)

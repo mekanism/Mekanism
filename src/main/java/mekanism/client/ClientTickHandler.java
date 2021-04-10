@@ -33,6 +33,7 @@ import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketPortableTeleporterGui;
 import mekanism.common.network.to_server.PacketPortableTeleporterGui.PortableTeleporterPacketType;
 import mekanism.common.network.to_server.PacketRadialModeChange;
+import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
@@ -53,6 +54,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -338,6 +340,15 @@ public class ClientTickHandler {
             RenderSystem.fogDensity(fog);
             RenderSystem.fogMode(GlStateManager.FogMode.EXP2);
         }
+    }
+
+    @SubscribeEvent
+    public void recipesUpdated(RecipesUpdatedEvent event) {
+        //Note: Dedicated servers first connection the server sends recipes then tags, and on reload sends tags then recipes.
+        // We ignore this fact and only clear the cache in the recipes updated event however, as the cache should already be
+        // empty on our initial connection, and even if it isn't the client has no way to query the recipes and cause the
+        // caches to be initialized before the tags are then received as we lazily initialize our recipe caches.
+        MekanismRecipeType.clearCache();
     }
 
     @SubscribeEvent

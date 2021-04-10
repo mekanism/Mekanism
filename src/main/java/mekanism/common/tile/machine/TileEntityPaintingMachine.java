@@ -33,15 +33,16 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityPaintingMachine extends TileEntityProgressMachine<PaintingRecipe> {
+public class TileEntityPaintingMachine extends TileEntityProgressMachine<PaintingRecipe> implements ItemChemicalRecipeLookupHandler<Pigment, PigmentStack, PaintingRecipe> {
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getPigmentInput", "getPigmentInputCapacity", "getPigmentInputNeeded",
                                                                                         "getPigmentInputFilledPercentage"})
@@ -80,14 +81,8 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     @Override
     public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
         ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(pigmentTank = ChemicalTankBuilder.PIGMENT.input(15_000, pigment -> {
-            if (!inputSlot.isEmpty()) {
-                ItemStack stack = inputSlot.getStack();
-                return containsRecipe(recipe -> recipe.getItemInput().testType(stack) && recipe.getChemicalInput().testType(pigment));
-            }
-            //Otherwise return true, as we already validated the type was valid
-            return true;
-        }, pigment -> containsRecipe(recipe -> recipe.getChemicalInput().testType(pigment)), this));
+        builder.addTank(pigmentTank = ChemicalTankBuilder.PIGMENT.input(15_000, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
+              this::containsRecipeB, recipeCacheLookupMonitor));
         return builder.build();
     }
 
@@ -104,13 +99,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(pigmentInputSlot = PigmentInventorySlot.fill(pigmentTank, this, 6, 56));
-        builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
-            if (!pigmentTank.isEmpty()) {
-                return containsRecipe(recipe -> recipe.getChemicalInput().testType(pigmentTank.getType()) && recipe.getItemInput().testType(stack));
-            }
-            //Otherwise return true, as we already validated the type was valid
-            return true;
-        }, item -> containsRecipe(recipe -> recipe.getItemInput().testType(item)), this, 45, 35));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, pigmentTank.getStack()), this::containsRecipeA, recipeCacheLookupMonitor, 45, 35));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 144, 35));
         pigmentInputSlot.setSlotOverlay(SlotOverlay.MINUS);
@@ -122,25 +111,22 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         pigmentInputSlot.fillTankOrConvert();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
     }
 
     @Nonnull
     @Override
-    public MekanismRecipeType<PaintingRecipe> getRecipeType() {
+    public MekanismRecipeType<PaintingRecipe, ItemChemical<Pigment, PigmentStack, PaintingRecipe>> getRecipeType() {
         return MekanismRecipeType.PAINTING;
     }
 
     @Nullable
     @Override
     public PaintingRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findItemStackChemicalRecipe(this, itemInputHandler, pigmentInputHandler);
+        return findFirstRecipe(itemInputHandler, pigmentInputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<PaintingRecipe> createNewCachedRecipe(@Nonnull PaintingRecipe recipe, int cacheIndex) {
         return new PaintingCachedRecipe(recipe, itemInputHandler, pigmentInputHandler, outputHandler)

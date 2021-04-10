@@ -30,13 +30,14 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
+import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
-import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -44,7 +45,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 
-public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, ITileCachedRecipeHolder<GasToGasRecipe> {
+public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
 
     public static final long MAX_GAS = 10_000;
 
@@ -53,7 +54,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     public IGasTank outputTank;
 
-    private CachedRecipe<GasToGasRecipe> cachedRecipe;
+    private RecipeCacheLookupMonitor<GasToGasRecipe> recipeCacheLookupMonitor;
 
     @SyntheticComputerMethod(getter = "getPeakProductionRate")
     private float peakProductionRate;
@@ -76,12 +77,18 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
 
+    @Override
+    protected void presetVariables() {
+        super.presetVariables();
+        recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
+    }
+
     @Nonnull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSide(this::getDirection);
         builder.addTank(inputTank = ChemicalTankBuilder.GAS.create(MAX_GAS, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
-              gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this), RelativeSide.BOTTOM);
+              this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheLookupMonitor), RelativeSide.BOTTOM);
         builder.addTank(outputTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this), RelativeSide.FRONT);
         return builder.build();
     }
@@ -130,29 +137,20 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         inputSlot.fillTank();
         outputSlot.drainTank();
         productionRate = recalculateProductionRate();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
         ChemicalUtil.emit(EnumSet.of(getDirection()), outputTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
     }
 
     @Nonnull
     @Override
-    public MekanismRecipeType<GasToGasRecipe> getRecipeType() {
+    public MekanismRecipeType<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> getRecipeType() {
         return MekanismRecipeType.ACTIVATING;
     }
 
     @Nullable
     @Override
-    public CachedRecipe<GasToGasRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
-    }
-
-    @Nullable
-    @Override
     public GasToGasRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findChemicalRecipe(this, inputHandler);
+        return findFirstRecipe(inputHandler);
     }
 
     private boolean canFunction() {
@@ -178,7 +176,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         return production;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
         return new GasToGasCachedRecipe(recipe, inputHandler, outputHandler)

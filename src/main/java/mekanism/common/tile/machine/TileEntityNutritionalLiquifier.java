@@ -35,6 +35,7 @@ import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
+import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -104,7 +105,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
                 return food != null && food.getNutrition() > 0;
             }
             return false;
-        }, this, 26, 36));
+        }, recipeCacheLookupMonitor, 26, 36));
         builder.addSlot(outputSlot = GasInventorySlot.drain(gasTank, this, 155, 25));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 155, 5));
         outputSlot.setSlotOverlay(SlotOverlay.PLUS);
@@ -116,23 +117,14 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         outputSlot.drainTank();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
     }
 
     @Nonnull
     @Override
-    public MekanismRecipeType<ItemStackToGasRecipe> getRecipeType() {
+    public MekanismRecipeType<ItemStackToGasRecipe, IInputRecipeCache> getRecipeType() {
         //TODO - V11: See comment in NutritionalLiquifierIRecipe. Note if either containsRecipe and findFirstRecipe get called a null pointer will occur
         return null;
-    }
-
-    @Nullable
-    @Override
-    public CachedRecipe<ItemStackToGasRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
     }
 
     @Nullable
@@ -152,7 +144,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
               MekanismGases.NUTRITIONAL_PASTE.getStack(food.getNutrition() * 50L));
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
         return new ItemStackToGasCachedRecipe(recipe, inputHandler, outputHandler)

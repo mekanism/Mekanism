@@ -15,7 +15,7 @@ import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.ItemStack;
@@ -70,7 +70,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
 
     @Nullable
     @Override
-    protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<InfuseType, InfusionStack>> getConversionRecipeType() {
-        return MekanismRecipeType.INFUSION_CONVERSION;
+    protected ItemStackToInfuseTypeRecipe getConversionRecipe(@Nullable World world, ItemStack stack) {
+        return MekanismRecipeType.INFUSION_CONVERSION.getInputCache().findFirstRecipe(world, stack);
     }
 }

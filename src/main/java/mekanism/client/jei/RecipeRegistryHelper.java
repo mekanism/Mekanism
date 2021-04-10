@@ -49,11 +49,11 @@ public class RecipeRegistryHelper {
         registry.addRecipes(decondensentratorRecipes, decondensentrating);
     }
 
-    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, IBlockProvider mekanismBlock, MekanismRecipeType<RECIPE> type) {
+    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, IBlockProvider mekanismBlock, MekanismRecipeType<RECIPE, ?> type) {
         register(registry, mekanismBlock.getRegistryName(), type);
     }
 
-    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, ResourceLocation id, MekanismRecipeType<RECIPE> type) {
+    public static <RECIPE extends MekanismRecipe> void register(IRecipeRegistration registry, ResourceLocation id, MekanismRecipeType<RECIPE, ?> type) {
         registry.addRecipes(type.getRecipes(getWorld()), id);
     }
 

@@ -14,9 +14,7 @@ import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -66,11 +64,5 @@ public class PigmentInventorySlot extends ChemicalInventorySlot<Pigment, Pigment
     @Override
     protected IChemicalHandler<Pigment, PigmentStack> getCapability() {
         return getCapability(current);
-    }
-
-    @Nullable
-    @Override
-    protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Pigment, PigmentStack>> getConversionRecipeType() {
-        return null;
     }
 }

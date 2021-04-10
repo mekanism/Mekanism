@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
@@ -183,6 +184,13 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             return representations;
         }
 
+        /**
+         * For use in recipe input caching. Do not use this to modify the backing stack.
+         */
+        public Ingredient getInputRaw() {
+            return ingredient;
+        }
+
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnum(IngredientType.SINGLE);
@@ -255,6 +263,19 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
                 representations.addAll(ingredient.getRepresentations());
             }
             return representations;
+        }
+
+        /**
+         * For use in recipe input caching, checks all ingredients even if some match.
+         *
+         * @return {@code true} if any ingredient matches.
+         */
+        public boolean forEachIngredient(Predicate<ItemStackIngredient> checker) {
+            boolean result = false;
+            for (ItemStackIngredient ingredient : ingredients) {
+                result |= checker.test(ingredient);
+            }
+            return result;
         }
 
         @Override

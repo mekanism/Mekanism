@@ -27,16 +27,17 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<SawmillRecipe> {
+public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
     private final IOutputHandler<@NonNull ChanceOutput> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
@@ -76,7 +77,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 56, 17));
+        builder.addSlot(inputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheLookupMonitor, 56, 17));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         builder.addSlot(secondaryOutputSlot = OutputInventorySlot.at(this, 132, 35));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 56, 53));
@@ -87,25 +88,22 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
     }
 
     @Override
     @Nonnull
-    public MekanismRecipeType<SawmillRecipe> getRecipeType() {
+    public MekanismRecipeType<SawmillRecipe, SingleItem<SawmillRecipe>> getRecipeType() {
         return MekanismRecipeType.SAWING;
     }
 
     @Nullable
     @Override
     public SawmillRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findItemStackRecipe(this, inputHandler);
+        return findFirstRecipe(inputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<SawmillRecipe> createNewCachedRecipe(@Nonnull SawmillRecipe recipe, int cacheIndex) {
         return new SawmillCachedRecipe(recipe, inputHandler, outputHandler)

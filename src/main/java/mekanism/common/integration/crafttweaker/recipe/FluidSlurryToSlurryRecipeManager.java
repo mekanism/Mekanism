@@ -17,7 +17,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_FLUID_SLURRY_TO_SLURRY)
 public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeManager<FluidSlurryToSlurryRecipe> {
 
-    protected FluidSlurryToSlurryRecipeManager(MekanismRecipeType<FluidSlurryToSlurryRecipe> recipeType) {
+    protected FluidSlurryToSlurryRecipeManager(MekanismRecipeType<FluidSlurryToSlurryRecipe, ?> recipeType) {
         super(recipeType);
     }
 

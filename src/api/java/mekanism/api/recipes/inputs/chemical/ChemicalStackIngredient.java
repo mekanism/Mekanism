@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
@@ -18,6 +19,7 @@ import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer.Ingre
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ITag;
 
+//TODO - 1.17: Merge this and IChemicalStackIngredient as there isn't much reason to have them be separate
 public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
       IChemicalStackIngredient<CHEMICAL, STACK> {
 
@@ -64,6 +66,13 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
         @Override
         public List<@NonNull STACK> getRepresentations() {
             return Collections.singletonList(chemicalInstance);
+        }
+
+        /**
+         * For use in recipe input caching.
+         */
+        public CHEMICAL getInputRaw() {
+            return chemicalInstance.getType();
         }
 
         @Override
@@ -133,6 +142,13 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
                 representations.add(ingredientInfo.createStack(chemical, amount));
             }
             return representations;
+        }
+
+        /**
+         * For use in recipe input caching.
+         */
+        public List<CHEMICAL> getRawInput() {
+            return tag.getValues();
         }
 
         @Override
@@ -215,6 +231,19 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
                 representations.addAll(ingredient.getRepresentations());
             }
             return representations;
+        }
+
+        /**
+         * For use in recipe input caching, checks all ingredients even if some match.
+         *
+         * @return {@code true} if any ingredient matches.
+         */
+        public boolean forEachIngredient(Predicate<INGREDIENT> checker) {
+            boolean result = false;
+            for (INGREDIENT ingredient : ingredients) {
+                result |= checker.test(ingredient);
+            }
+            return result;
         }
 
         @Override

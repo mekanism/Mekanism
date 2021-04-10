@@ -12,6 +12,7 @@ import mekanism.common.base.IModule;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.to_server.PacketKey;
+import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.PlayerEntity;
@@ -54,6 +55,7 @@ public class MekanismClient {
         RenderSPS.clearBoltRenderers();
         TransmitterNetworkRegistry.getInstance().clearClientNetworks();
         RenderTickHandler.prevRadiation = 0;
+        MekanismRecipeType.clearCache();
 
         for (IModule module : Mekanism.modulesLoaded) {
             module.resetClient();

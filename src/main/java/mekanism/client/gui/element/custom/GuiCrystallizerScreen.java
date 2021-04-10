@@ -94,7 +94,7 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
     public void tick() {
         super.tick();
         BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
-        if (boxedChemical.getChemicalType() == ChemicalType.SLURRY) {
+        if (!boxedChemical.isEmpty() && boxedChemical.getChemicalType() == ChemicalType.SLURRY) {
             Slurry inputSlurry = (Slurry) boxedChemical.getChemicalStack().getType();
             if (prevSlurry != inputSlurry) {
                 prevSlurry = inputSlurry;
@@ -128,6 +128,8 @@ public class GuiCrystallizerScreen extends GuiTexturedElement {
                     renderStack = iterStacks.get(stackIndex);
                 }
             }
+        } else {
+            renderStack = ItemStack.EMPTY;
         }
     }
 

@@ -30,18 +30,20 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
 
 //Compressing, injecting, purifying
-public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IHasDumpButton {
+public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IHasDumpButton,
+      ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe> {
 
     private final ILongInputHandler<@NonNull GasStack> gasInputHandler;
 
@@ -64,9 +66,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
-        // as maybe the valid recipes have changed and we need to sort again
-        builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes,
-              gas -> containsRecipe(recipe -> recipe.getChemicalInput().testType(gas)), this::onContentsChangedUpdateSorting));
+        // as maybe the valid recipes have changed and we need to sort again and have all recipes know they may need to be rechecked
+        // if they are not still valid
+        builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
+              this::onContentsChangedUpdateSortingAndCache));
         return builder.build();
     }
 
@@ -89,7 +92,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
-        return containsRecipe(recipe -> recipe.getItemInput().testType(stack));
+        return containsRecipeA(stack);
     }
 
     @Override
@@ -109,19 +112,11 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Override
     protected ItemStackGasToItemStackRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
-        GasStack gasStack = gasTank.getStack();
-        Gas gas = gasStack.getType();
+        GasStack stored = gasTank.getStack();
         ItemStack output = outputSlot.getStack();
-        return findFirstRecipe(recipe -> {
-            if (recipe.getItemInput().testType(fallbackInput)) {
-                //If we don't have a gas stored ignore checking for a match
-                if (gasStack.isEmpty() || recipe.getChemicalInput().testType(gas)) {
-                    //TODO: Give it something that is not empty when we don't have a stored gas stack?
-                    return InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput, gasStack), output);
-                }
-            }
-            return false;
-        });
+        //TODO: Give it something that is not empty when we don't have a stored gas stack for getting the output?
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, stored,
+              recipe -> InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput, stored), output));
     }
 
     @Override
@@ -131,7 +126,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Nonnull
     @Override
-    public MekanismRecipeType<ItemStackGasToItemStackRecipe> getRecipeType() {
+    public MekanismRecipeType<ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> getRecipeType() {
         switch (type) {
             case INJECTING:
                 return MekanismRecipeType.INJECTING;
@@ -147,9 +142,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Nullable
     @Override
     public ItemStackGasToItemStackRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findItemStackChemicalRecipe(this, inputHandlers[cacheIndex], gasInputHandler);
+        return findFirstRecipe(inputHandlers[cacheIndex], gasInputHandler);
     }
 
+    @Nonnull
     @Override
     public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
         LongSupplier secondaryEnergyUsage;

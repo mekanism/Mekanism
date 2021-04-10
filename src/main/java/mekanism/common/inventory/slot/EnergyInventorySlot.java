@@ -32,7 +32,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      * Gets the energy from ItemStack conversion, ignoring the size of the item stack.
      */
     private static FloatingLong getPotentialConversion(@Nullable World world, ItemStack itemStack) {
-        ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.findFirst(world, recipe -> recipe.getInput().testType(itemStack));
+        ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findTypeBasedRecipe(world, itemStack);
         return foundRecipe == null ? FloatingLong.ZERO : foundRecipe.getOutput(itemStack);
     }
 
@@ -135,7 +135,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             //Fill the container from the item
             if (!fillContainerFromItem()) {
                 //If filling from item failed, try doing it by conversion
-                ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.findFirst(worldSupplier.get(), recipe -> recipe.getInput().test(current));
+                ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
                 if (foundRecipe != null) {
                     ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                     if (!itemInput.isEmpty()) {

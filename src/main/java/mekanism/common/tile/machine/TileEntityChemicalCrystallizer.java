@@ -11,7 +11,6 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
-import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.IPigmentTank;
@@ -25,11 +24,6 @@ import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalCrystallizerCachedRecipe;
 import mekanism.api.recipes.inputs.BoxedChemicalInputHandler;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
-import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -49,6 +43,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.MergedChemicalInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.cache.ChemicalCrystallizerInputRecipeCache;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -94,22 +89,10 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     protected void presetVariables() {
         super.presetVariables();
         inputTank = MergedChemicalTank.create(
-              ChemicalTankBuilder.GAS.input(MAX_CHEMICAL, gas -> containsRecipe(recipe -> {
-                  IChemicalStackIngredient<?, ?> input = recipe.getInput();
-                  return input instanceof GasStackIngredient && ((GasStackIngredient) input).testType(gas);
-              }), this),
-              ChemicalTankBuilder.INFUSION.input(MAX_CHEMICAL, infuseType -> containsRecipe(recipe -> {
-                  IChemicalStackIngredient<?, ?> input = recipe.getInput();
-                  return input instanceof InfusionStackIngredient && ((InfusionStackIngredient) input).testType(infuseType);
-              }), this),
-              ChemicalTankBuilder.PIGMENT.input(MAX_CHEMICAL, pigment -> containsRecipe(recipe -> {
-                  IChemicalStackIngredient<?, ?> input = recipe.getInput();
-                  return input instanceof PigmentStackIngredient && ((PigmentStackIngredient) input).testType(pigment);
-              }), this),
-              ChemicalTankBuilder.SLURRY.input(MAX_CHEMICAL, slurry -> containsRecipe(recipe -> {
-                  IChemicalStackIngredient<?, ?> input = recipe.getInput();
-                  return input instanceof SlurryStackIngredient && ((SlurryStackIngredient) input).testType(slurry);
-              }), this)
+              ChemicalTankBuilder.GAS.input(MAX_CHEMICAL, gas -> getRecipeType().getInputCache().containsInput(level, gas), recipeCacheLookupMonitor),
+              ChemicalTankBuilder.INFUSION.input(MAX_CHEMICAL, infuseType -> getRecipeType().getInputCache().containsInput(level, infuseType), recipeCacheLookupMonitor),
+              ChemicalTankBuilder.PIGMENT.input(MAX_CHEMICAL, pigment -> getRecipeType().getInputCache().containsInput(level, pigment), recipeCacheLookupMonitor),
+              ChemicalTankBuilder.SLURRY.input(MAX_CHEMICAL, slurry -> getRecipeType().getInputCache().containsInput(level, slurry), recipeCacheLookupMonitor)
         );
     }
 
@@ -169,29 +152,22 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         inputSlot.fillChemicalTanks();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
     }
 
     @Nonnull
     @Override
-    public MekanismRecipeType<ChemicalCrystallizerRecipe> getRecipeType() {
+    public MekanismRecipeType<ChemicalCrystallizerRecipe, ChemicalCrystallizerInputRecipeCache> getRecipeType() {
         return MekanismRecipeType.CRYSTALLIZING;
     }
 
     @Nullable
     @Override
     public ChemicalCrystallizerRecipe getRecipe(int cacheIndex) {
-        BoxedChemicalStack boxedChemical = inputHandler.getInput();
-        if (boxedChemical.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(boxedChemical));
+        return getRecipeType().getInputCache().findFirstRecipe(level, inputHandler.getInput());
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<ChemicalCrystallizerRecipe> createNewCachedRecipe(@Nonnull ChemicalCrystallizerRecipe recipe, int cacheIndex) {
         return new ChemicalCrystallizerCachedRecipe(recipe, inputHandler, outputHandler)

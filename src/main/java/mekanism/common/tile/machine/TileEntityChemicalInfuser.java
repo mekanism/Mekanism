@@ -15,7 +15,6 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ChemicalInfuserCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -37,6 +36,8 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.IEitherSideRecipeLookupHandler.EitherSideChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -46,9 +47,8 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 
-public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> {
+public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalInfuserRecipe> implements EitherSideChemicalRecipeLookupHandler<Gas, GasStack, ChemicalInfuserRecipe> {
 
     public static final long MAX_GAS = 10_000;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftInput", "getLeftInputCapacity", "getLeftInputNeeded",
@@ -120,27 +120,10 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(leftTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> isValidGas(gas, rightTank), this::isValidGas, this));
-        builder.addTank(rightTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> isValidGas(gas, leftTank), this::isValidGas, this));
+        builder.addTank(leftTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipe(gas, rightTank.getStack()), this::containsRecipe, recipeCacheLookupMonitor));
+        builder.addTank(rightTank = ChemicalTankBuilder.GAS.input(MAX_GAS, gas -> containsRecipe(gas, leftTank.getStack()), this::containsRecipe, recipeCacheLookupMonitor));
         builder.addTank(centerTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
         return builder.build();
-    }
-
-    private boolean isValidGas(@Nonnull Gas gas) {
-        return containsRecipe(recipe -> recipe.getLeftInput().testType(gas) || recipe.getRightInput().testType(gas));
-    }
-
-    private boolean isValidGas(@Nonnull Gas gas, IGasTank otherTank) {
-        if (otherTank.isEmpty()) {
-            //If the other tank is empty, don't limit what can enter our tank based on it
-            return true;
-        }
-        GasStack stack = otherTank.getStack();
-        return containsRecipe(recipe -> {
-            GasStackIngredient leftInput = recipe.getLeftInput();
-            GasStackIngredient rightInput = recipe.getRightInput();
-            return rightInput.testType(gas) && leftInput.testType(stack) || leftInput.testType(gas) && rightInput.testType(stack);
-        });
     }
 
     @Nonnull
@@ -155,7 +138,6 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        //TODO: Should our gas checking, also check the other tank's contents so we don't let putting the same gas in on both sides
         builder.addSlot(leftInputSlot = GasInventorySlot.fill(leftTank, this, 6, 56));
         builder.addSlot(rightInputSlot = GasInventorySlot.fill(rightTank, this, 154, 56));
         builder.addSlot(outputSlot = GasInventorySlot.drain(centerTank, this, 80, 65));
@@ -176,13 +158,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
         leftInputSlot.fillTank();
         rightInputSlot.fillTank();
         outputSlot.drainTank();
-        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
-        //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-        clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
+        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
     }
 
     @Nonnull
@@ -193,17 +169,17 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
 
     @Nonnull
     @Override
-    public MekanismRecipeType<ChemicalInfuserRecipe> getRecipeType() {
+    public MekanismRecipeType<ChemicalInfuserRecipe, EitherSideChemical<Gas, GasStack, ChemicalInfuserRecipe>> getRecipeType() {
         return MekanismRecipeType.CHEMICAL_INFUSING;
     }
 
     @Nullable
     @Override
     public ChemicalInfuserRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findChemicalChemicalRecipe(this, leftInputHandler, rightInputHandler);
+        return findFirstRecipe(leftInputHandler, rightInputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<ChemicalInfuserRecipe> createNewCachedRecipe(@Nonnull ChemicalInfuserRecipe recipe, int cacheIndex) {
         return new ChemicalInfuserCachedRecipe(recipe, leftInputHandler, rightInputHandler, outputHandler)

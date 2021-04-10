@@ -7,8 +7,6 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.ElectrolysisRecipe;
-import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityElectrolyticSeparator;
 
@@ -29,11 +27,7 @@ public class ElectrolyticSeparatorEnergyContainer extends MachineEnergyContainer
 
     @Override
     public FloatingLong getBaseEnergyPerTick() {
-        CachedRecipe<ElectrolysisRecipe> recipe = tile.getUpdatedCache(0);
-        if (recipe == null) {
-            return super.getBaseEnergyPerTick();
-        }
-        return super.getBaseEnergyPerTick().multiply(recipe.getRecipe().getEnergyMultiplier());
+        return super.getBaseEnergyPerTick().multiply(tile.getRecipeEnergyMultiplier());
     }
 
     @Override

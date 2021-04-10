@@ -1,6 +1,7 @@
 package mekanism.client.gui.machine;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.lang.ref.WeakReference;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
@@ -64,7 +65,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
     private abstract class PigmentColorDetails implements ColorDetails {
 
-        private PigmentMixingRecipe cachedRecipe;
+        private WeakReference<PigmentMixingRecipe> cachedRecipe;
 
         @Override
         public abstract int getColorFrom();
@@ -80,11 +81,17 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
                 if (!tile.leftInputTank.isEmpty() && !tile.rightInputTank.isEmpty()) {
                     PigmentStack leftInput = tile.leftInputTank.getStack();
                     PigmentStack rightInput = tile.rightInputTank.getStack();
-                    if (cachedRecipe == null || !isValid(leftInput, rightInput)) {
-                        cachedRecipe = tile.getRecipe(0);
+                    PigmentMixingRecipe recipe;
+                    if (cachedRecipe == null) {
+                        recipe = getRecipeAndCache();
+                    } else {
+                        recipe = cachedRecipe.get();
+                        if (recipe == null || !isValid(recipe, leftInput, rightInput)) {
+                            recipe = getRecipeAndCache();
+                        }
                     }
-                    if (cachedRecipe != null) {
-                        return getColor(cachedRecipe.getOutput(leftInput, rightInput).getChemicalTint());
+                    if (recipe != null) {
+                        return getColor(recipe.getOutput(leftInput, rightInput).getChemicalTint());
                     }
                 }
                 return 0xFFFFFFFF;
@@ -92,9 +99,19 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
             return getColor(tile.outputTank.getType().getTint());
         }
 
-        private boolean isValid(PigmentStack leftInput, PigmentStack rightInput) {
-            return (cachedRecipe.getLeftInput().testType(leftInput) && cachedRecipe.getRightInput().testType(rightInput)) ||
-                   (cachedRecipe.getLeftInput().testType(rightInput) && cachedRecipe.getRightInput().testType(leftInput));
+        private PigmentMixingRecipe getRecipeAndCache() {
+            PigmentMixingRecipe recipe = tile.getRecipe(0);
+            if (recipe == null) {
+                cachedRecipe = null;
+            } else {
+                cachedRecipe = new WeakReference<>(recipe);
+            }
+            return recipe;
+        }
+
+        private boolean isValid(PigmentMixingRecipe recipe, PigmentStack leftInput, PigmentStack rightInput) {
+            return (recipe.getLeftInput().testType(leftInput) && recipe.getRightInput().testType(rightInput)) ||
+                   (recipe.getLeftInput().testType(rightInput) && recipe.getRightInput().testType(leftInput));
         }
 
         protected int getColor(int tint) {

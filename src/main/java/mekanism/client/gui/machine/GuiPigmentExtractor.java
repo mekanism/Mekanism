@@ -1,6 +1,7 @@
 package mekanism.client.gui.machine;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.lang.ref.WeakReference;
 import javax.annotation.Nonnull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
@@ -43,7 +44,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
 
     private class PigmentColorDetails implements ColorDetails {
 
-        private ItemStackToPigmentRecipe cachedRecipe;
+        private WeakReference<ItemStackToPigmentRecipe> cachedRecipe;
 
         @Override
         public int getColorFrom() {
@@ -61,16 +62,32 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                 IInventorySlot inputSlot = tile.getInputSlot();
                 if (!inputSlot.isEmpty()) {
                     ItemStack input = inputSlot.getStack();
-                    if (cachedRecipe == null || !cachedRecipe.getInput().testType(input)) {
-                        cachedRecipe = tile.getRecipe(0);
+                    ItemStackToPigmentRecipe recipe;
+                    if (cachedRecipe == null) {
+                        recipe = getRecipeAndCache();
+                    } else {
+                        recipe = cachedRecipe.get();
+                        if (recipe == null || !recipe.getInput().testType(input)) {
+                            recipe = getRecipeAndCache();
+                        }
                     }
-                    if (cachedRecipe != null) {
-                        return getColor(cachedRecipe.getOutput(input).getChemicalTint());
+                    if (recipe != null) {
+                        return getColor(recipe.getOutput(input).getChemicalTint());
                     }
                 }
                 return 0xFFFFFFFF;
             }
             return getColor(tile.pigmentTank.getType().getTint());
+        }
+
+        private ItemStackToPigmentRecipe getRecipeAndCache() {
+            ItemStackToPigmentRecipe recipe = tile.getRecipe(0);
+            if (recipe == null) {
+                cachedRecipe = null;
+            } else {
+                cachedRecipe = new WeakReference<>(recipe);
+            }
+            return recipe;
         }
 
         private int getColor(int tint) {

@@ -9,14 +9,16 @@ import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
 //Smelting, enriching, crushing
-public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> {
+public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> implements
+      ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     public TileEntityItemStackToItemStackFactory(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -24,7 +26,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
-        return containsRecipe(recipe -> recipe.getInput().testType(stack));
+        return containsRecipe(stack);
     }
 
     @Override
@@ -41,12 +43,13 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     protected ItemStackToItemStackRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
         ItemStack output = outputSlot.getStack();
-        return findFirstRecipe(recipe -> recipe.getInput().testType(fallbackInput) && InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput), output));
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput,
+              recipe -> InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput), output));
     }
 
     @Nonnull
     @Override
-    public MekanismRecipeType<ItemStackToItemStackRecipe> getRecipeType() {
+    public MekanismRecipeType<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
         switch (type) {
             case ENRICHING:
                 return MekanismRecipeType.ENRICHING;
@@ -62,9 +65,10 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     @Nullable
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findItemStackRecipe(this, inputHandlers[cacheIndex]);
+        return findFirstRecipe(inputHandlers[cacheIndex]);
     }
 
+    @Nonnull
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         return new ItemStackToItemStackCachedRecipe(recipe, inputHandlers[cacheIndex], outputHandlers[cacheIndex])

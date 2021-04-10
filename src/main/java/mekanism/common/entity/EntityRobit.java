@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -27,13 +26,11 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ICachedRecipeHolder;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
-import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -55,6 +52,9 @@ import mekanism.common.item.ItemRobit;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
+import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -106,8 +106,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, ISecurityObject, ICachedRecipeHolder<ItemStackToItemStackRecipe>,
-      IMekanismStrictEnergyHandler {
+public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, ISecurityObject, IMekanismStrictEnergyHandler,
+      ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, 20);
     private static final DataParameter<String> OWNER_UUID = EntityDataManager.defineId(EntityRobit.class, DataSerializers.STRING);
@@ -129,7 +129,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
      */
     private final Set<PlayerEntity> playersUsing = new ObjectOpenHashSet<>();
 
-    private CachedRecipe<ItemStackToItemStackRecipe> cachedRecipe = null;
+    private final RecipeCacheLookupMonitor<ItemStackToItemStackRecipe> recipeCacheLookupMonitor;
 
     private final IInputHandler<@NonNull ItemStack> inputHandler;
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
@@ -152,6 +152,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         super(type, world);
         getNavigation().setCanFloat(false);
         setCustomNameVisible(true);
+        recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
         energyContainers = Collections.singletonList(energyContainer = BasicEnergyContainer.input(MAX_ENERGY, this));
 
         inventorySlots = new ArrayList<>();
@@ -164,7 +165,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             }
         }
         inventorySlots.add(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getCommandSenderWorld, this, 153, 17));
-        inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getInput().testType(item)), this, 51, 35));
+        inventorySlots.add(smeltingInputSlot = InputInventorySlot.at(this::containsRecipe, recipeCacheLookupMonitor, 51, 35));
         //TODO: Previously used FurnaceResultSlot, check if we need to replicate any special logic it had (like if it had xp logic or something)
         // Yes we probably do want this to allow for experience. Though maybe we should allow for experience for all our recipes/smelting recipes? V10
         inventorySlots.add(smeltingOutputSlot = OutputInventorySlot.at(this, 116, 35));
@@ -268,10 +269,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
             }
 
             energySlot.fillContainerOrConvert();
-            cachedRecipe = getUpdatedCache(0);
-            if (cachedRecipe != null) {
-                cachedRecipe.process();
-            }
+            recipeCacheLookupMonitor.updateAndProcess();
         }
     }
 
@@ -594,30 +592,15 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Nonnull
-    public MekanismRecipeType<ItemStackToItemStackRecipe> getRecipeType() {
-        return MekanismRecipeType.SMELTING;
-    }
-
-    public boolean containsRecipe(@Nonnull Predicate<ItemStackToItemStackRecipe> matchCriteria) {
-        return getRecipeType().contains(getCommandSenderWorld(), matchCriteria);
-    }
-
-    @Nullable
-    public ItemStackToItemStackRecipe findFirstRecipe(@Nonnull Predicate<ItemStackToItemStackRecipe> matchCriteria) {
-        return getRecipeType().findFirst(getCommandSenderWorld(), matchCriteria);
-    }
-
-    @Nullable
     @Override
-    public CachedRecipe<ItemStackToItemStackRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
+    public MekanismRecipeType<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
+        return MekanismRecipeType.SMELTING;
     }
 
     @Nullable
     @Override
     public ItemStackToItemStackRecipe getRecipe(int cacheIndex) {
-        ItemStack stack = inputHandler.getInput();
-        return stack.isEmpty() ? null : findFirstRecipe(recipe -> recipe.test(stack));
+        return findFirstRecipe(inputHandler);
     }
 
     public IEnergyContainer getEnergyContainer() {
@@ -625,16 +608,11 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     @Override
-    public boolean invalidateCache() {
-        return CommonWorldTickHandler.flushTagAndRecipeCaches;
-    }
-
-    @Override
     public ItemStack getPickedResult(RayTraceResult target) {
         return getItemVariant();
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<ItemStackToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackToItemStackRecipe recipe, int cacheIndex) {
         //TODO: Make a robit specific smelting energy usage config

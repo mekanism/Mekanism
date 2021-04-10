@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
@@ -158,6 +159,13 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             return Collections.singletonList(fluidInstance);
         }
 
+        /**
+         * For use in recipe input caching. Do not use this to modify the backing stack.
+         */
+        public FluidStack getInputRaw() {
+            return fluidInstance;
+        }
+
         @Override
         public void write(PacketBuffer buffer) {
             buffer.writeEnum(IngredientType.SINGLE);
@@ -226,6 +234,13 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 representations.add(new FluidStack(fluid, amount));
             }
             return representations;
+        }
+
+        /**
+         * For use in recipe input caching.
+         */
+        public List<Fluid> getRawInput() {
+            return tag.getValues();
         }
 
         @Override
@@ -298,6 +313,19 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 representations.addAll(ingredient.getRepresentations());
             }
             return representations;
+        }
+
+        /**
+         * For use in recipe input caching, checks all ingredients even if some match.
+         *
+         * @return {@code true} if any ingredient matches.
+         */
+        public boolean forEachIngredient(Predicate<FluidStackIngredient> checker) {
+            boolean result = false;
+            for (FluidStackIngredient ingredient : ingredients) {
+                result |= checker.test(ingredient);
+            }
+            return result;
         }
 
         @Override

@@ -15,7 +15,6 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.PigmentMixingCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -37,6 +36,8 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.PigmentInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.IEitherSideRecipeLookupHandler.EitherSideChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -47,13 +48,13 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
-public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixingRecipe> implements IBoundingBlock {
+public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixingRecipe> implements IBoundingBlock,
+      EitherSideChemicalRecipeLookupHandler<Pigment, PigmentStack, PigmentMixingRecipe> {
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getLeftInput", "getLeftInputCapacity", "getLeftInputNeeded",
                                                                                         "getLeftInputFilledPercentage"})
@@ -124,27 +125,12 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @Override
     public IChemicalTankHolder<Pigment, PigmentStack, IPigmentTank> getInitialPigmentTanks() {
         ChemicalTankHelper<Pigment, PigmentStack, IPigmentTank> builder = ChemicalTankHelper.forSidePigmentWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(leftInputTank = ChemicalTankBuilder.PIGMENT.input(1_000, pigment -> isValidPigment(pigment, rightInputTank), this::isValidPigment, this));
-        builder.addTank(rightInputTank = ChemicalTankBuilder.PIGMENT.input(1_000, pigment -> isValidPigment(pigment, leftInputTank), this::isValidPigment, this));
+        builder.addTank(leftInputTank = ChemicalTankBuilder.PIGMENT.input(1_000, pigment -> containsRecipe(pigment, rightInputTank.getStack()),
+              this::containsRecipe, recipeCacheLookupMonitor));
+        builder.addTank(rightInputTank = ChemicalTankBuilder.PIGMENT.input(1_000, pigment -> containsRecipe(pigment, leftInputTank.getStack()),
+              this::containsRecipe, recipeCacheLookupMonitor));
         builder.addTank(outputTank = ChemicalTankBuilder.PIGMENT.output(2_000, this));
         return builder.build();
-    }
-
-    private boolean isValidPigment(@Nonnull Pigment pigment) {
-        return containsRecipe(recipe -> recipe.getLeftInput().testType(pigment) || recipe.getRightInput().testType(pigment));
-    }
-
-    private boolean isValidPigment(@Nonnull Pigment pigment, IPigmentTank otherTank) {
-        if (otherTank.isEmpty()) {
-            //If the other tank is empty, don't limit what can enter our tank based on it
-            return true;
-        }
-        PigmentStack stack = otherTank.getStack();
-        return containsRecipe(recipe -> {
-            PigmentStackIngredient leftInput = recipe.getLeftInput();
-            PigmentStackIngredient rightInput = recipe.getRightInput();
-            return rightInput.testType(pigment) && leftInput.testType(stack) || leftInput.testType(pigment) && rightInput.testType(stack);
-        });
     }
 
     @Nonnull
@@ -159,7 +145,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        //TODO: Should our pigment checking, also check the other tank's contents so we don't let putting the same pigment in on both sides
         builder.addSlot(leftInputSlot = PigmentInventorySlot.fill(leftInputTank, this, 6, 56));
         builder.addSlot(rightInputSlot = PigmentInventorySlot.fill(rightInputTank, this, 154, 56));
         builder.addSlot(outputSlot = PigmentInventorySlot.drain(outputTank, this, 80, 65));
@@ -180,13 +165,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
         leftInputSlot.fillTank();
         rightInputSlot.fillTank();
         outputSlot.drainTank();
-        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
-        //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-        clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
+        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
     }
 
     @Nonnull
@@ -197,17 +176,17 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
 
     @Nonnull
     @Override
-    public MekanismRecipeType<PigmentMixingRecipe> getRecipeType() {
+    public MekanismRecipeType<PigmentMixingRecipe, EitherSideChemical<Pigment, PigmentStack, PigmentMixingRecipe>> getRecipeType() {
         return MekanismRecipeType.PIGMENT_MIXING;
     }
 
     @Nullable
     @Override
     public PigmentMixingRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findChemicalChemicalRecipe(this, leftInputHandler, rightInputHandler);
+        return findFirstRecipe(leftInputHandler, rightInputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<PigmentMixingRecipe> createNewCachedRecipe(@Nonnull PigmentMixingRecipe recipe, int cacheIndex) {
         return new PigmentMixingCachedRecipe(recipe, leftInputHandler, rightInputHandler, outputHandler)

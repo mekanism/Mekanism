@@ -3,9 +3,9 @@ package mekanism.common.lib.inventory;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
  * A wrapper of an ItemStack which tests equality and hashes based on item type and NBT data, ignoring stack size.
@@ -60,7 +60,7 @@ public class HashedItem {
         }
         if (obj instanceof HashedItem) {
             HashedItem other = (HashedItem) obj;
-            return InventoryUtils.areItemsStackable(itemStack, other.itemStack);
+            return ItemHandlerHelper.canItemStacksStack(itemStack, other.itemStack);
         }
         return false;
     }

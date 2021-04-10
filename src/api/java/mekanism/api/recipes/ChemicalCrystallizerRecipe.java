@@ -58,8 +58,20 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
         return chemicalType == ChemicalType.getTypeFor(stack) && testInternal(stack);
     }
 
+    public boolean testType(ChemicalStack<?> stack) {
+        return chemicalType == ChemicalType.getTypeFor(stack) && testTypeInternal(stack);
+    }
+
+    public boolean testType(BoxedChemicalStack stack) {
+        return chemicalType == stack.getChemicalType() && testTypeInternal(stack.getChemicalStack());
+    }
+
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean testInternal(STACK stack) {
         return ((IChemicalStackIngredient<CHEMICAL, STACK>) input).test(stack);
+    }
+
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean testTypeInternal(STACK stack) {
+        return ((IChemicalStackIngredient<CHEMICAL, STACK>) input).testType(stack);
     }
 
     public IChemicalStackIngredient<?, ?> getInput() {

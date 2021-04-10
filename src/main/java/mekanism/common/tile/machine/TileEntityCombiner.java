@@ -25,16 +25,17 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.DoubleItemRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe> {
+public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe> implements DoubleItemRecipeLookupHandler<CombinerRecipe> {
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
@@ -76,9 +77,10 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        //TODO - 10.1: Limit insertion to make sure it matches with the secondary type (similar to metallurgic infusers and the like)
-        builder.addSlot(mainInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getMainInput().testType(item)), this, 64, 17));
-        builder.addSlot(extraInputSlot = InputInventorySlot.at(item -> containsRecipe(recipe -> recipe.getExtraInput().testType(item)), this, 64, 53));
+        builder.addSlot(mainInputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, extraInputSlot.getStack()), this::containsRecipeA, recipeCacheLookupMonitor,
+              64, 17));
+        builder.addSlot(extraInputSlot = InputInventorySlot.at(item -> containsRecipeBA(mainInputSlot.getStack(), item), this::containsRecipeB, recipeCacheLookupMonitor,
+              64, 53));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 116, 35));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 39, 35));
         extraInputSlot.setSlotType(ContainerSlotType.EXTRA);
@@ -89,25 +91,22 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     protected void onUpdateServer() {
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
     }
 
     @Nonnull
     @Override
-    public MekanismRecipeType<CombinerRecipe> getRecipeType() {
+    public MekanismRecipeType<CombinerRecipe, DoubleItem<CombinerRecipe>> getRecipeType() {
         return MekanismRecipeType.COMBINING;
     }
 
     @Nullable
     @Override
     public CombinerRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findCombinerRecipe(this, inputHandler, extraInputHandler);
+        return findFirstRecipe(inputHandler, extraInputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
         return new CombinerCachedRecipe(recipe, inputHandler, extraInputHandler, outputHandler)

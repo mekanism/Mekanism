@@ -44,6 +44,8 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.SlurryInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.FluidChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.FluidChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -51,7 +53,8 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import net.minecraftforge.fluids.FluidStack;
 
-public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurryToSlurryRecipe> {
+public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurryToSlurryRecipe> implements
+      FluidChemicalRecipeLookupHandler<Slurry, SlurryStack, FluidSlurryToSlurryRecipe> {
 
     private static final long MAX_SLURRY = 10_000;
     private static final int MAX_FLUID = 10_000;
@@ -100,8 +103,8 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Override
     public IChemicalTankHolder<Slurry, SlurryStack, ISlurryTank> getInitialSlurryTanks() {
         ChemicalTankHelper<Slurry, SlurryStack, ISlurryTank> builder = ChemicalTankHelper.forSideSlurryWithConfig(this::getDirection, this::getConfig);
-        //TODO - 10.1: Only allow things to be input if they can interact with the currently stored type of fluid? (See metallurgic infuser)
-        builder.addTank(inputTank = ChemicalTankBuilder.SLURRY.input(MAX_SLURRY, slurry -> containsRecipe(recipe -> recipe.getChemicalInput().testType(slurry)), this));
+        builder.addTank(inputTank = ChemicalTankBuilder.SLURRY.input(MAX_SLURRY,  slurry -> containsRecipeBA(fluidTank.getFluid(), slurry), this::containsRecipeB,
+              recipeCacheLookupMonitor));
         builder.addTank(outputTank = ChemicalTankBuilder.SLURRY.output(MAX_SLURRY, this));
         return builder.build();
     }
@@ -110,7 +113,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Override
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipe(recipe -> recipe.getFluidInput().testType(fluid)), this));
+        builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipeAB(fluid, inputTank.getStack()), this::containsRecipeA, recipeCacheLookupMonitor));
         return builder.build();
     }
 
@@ -142,13 +145,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
         energySlot.fillContainerOrConvert();
         fluidSlot.fillTank(fluidOutputSlot);
         slurryOutputSlot.drainTank();
-        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
-        //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-        clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
+        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
     }
 
     @Nonnull
@@ -159,25 +156,17 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
 
     @Nonnull
     @Override
-    public MekanismRecipeType<FluidSlurryToSlurryRecipe> getRecipeType() {
+    public MekanismRecipeType<FluidSlurryToSlurryRecipe, FluidChemical<Slurry, SlurryStack, FluidSlurryToSlurryRecipe>> getRecipeType() {
         return MekanismRecipeType.WASHING;
     }
 
     @Nullable
     @Override
     public FluidSlurryToSlurryRecipe getRecipe(int cacheIndex) {
-        SlurryStack slurryStack = slurryInputHandler.getInput();
-        if (slurryStack.isEmpty()) {
-            return null;
-        }
-        FluidStack fluid = fluidInputHandler.getInput();
-        if (fluid.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(fluid, slurryStack));
+        return getRecipeType().getInputCache().findFirstRecipe(level, fluidInputHandler.getInput(), slurryInputHandler.getInput(), false);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<FluidSlurryToSlurryRecipe> createNewCachedRecipe(@Nonnull FluidSlurryToSlurryRecipe recipe, int cacheIndex) {
         return new FluidSlurryToSlurryCachedRecipe(recipe, fluidInputHandler, slurryInputHandler, outputHandler)

@@ -7,8 +7,6 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.PressurizedReactionRecipe;
-import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityPressurizedReactionChamber;
 
@@ -29,10 +27,6 @@ public class PRCEnergyContainer extends MachineEnergyContainer<TileEntityPressur
 
     @Override
     public FloatingLong getBaseEnergyPerTick() {
-        CachedRecipe<PressurizedReactionRecipe> recipe = tile.getUpdatedCache(0);
-        if (recipe == null) {
-            return super.getBaseEnergyPerTick();
-        }
-        return super.getBaseEnergyPerTick().add(recipe.getRecipe().getEnergyRequired());
+        return super.getBaseEnergyPerTick().add(tile.getRecipeEnergyRequired());
     }
 }

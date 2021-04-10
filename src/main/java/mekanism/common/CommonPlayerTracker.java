@@ -3,7 +3,6 @@ package mekanism.common;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
-import mekanism.common.network.to_client.PacketClearRecipeCache;
 import mekanism.common.network.to_client.PacketPlayerData;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
@@ -39,7 +38,6 @@ public class CommonPlayerTracker {
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         if (!event.getPlayer().level.isClientSide) {
             Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), (ServerPlayerEntity) event.getPlayer());
-            Mekanism.packetHandler.sendTo(new PacketClearRecipeCache(), (ServerPlayerEntity) event.getPlayer());
             event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) event.getPlayer()));
         }
     }

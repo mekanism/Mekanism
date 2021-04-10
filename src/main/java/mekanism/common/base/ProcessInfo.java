@@ -8,14 +8,14 @@ import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 public class ProcessInfo {
 
     @Nonnull
-    private final FactoryInputInventorySlot<?> inputSlot;
+    private final FactoryInputInventorySlot inputSlot;
     @Nonnull
     private final IInventorySlot outputSlot;
     @Nullable
     private final IInventorySlot secondaryOutputSlot;
     private final int process;
 
-    public ProcessInfo(int process, @Nonnull FactoryInputInventorySlot<?> inputSlot, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    public ProcessInfo(int process, @Nonnull FactoryInputInventorySlot inputSlot, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         this.inputSlot = inputSlot;
         this.outputSlot = outputSlot;
         this.secondaryOutputSlot = secondaryOutputSlot;
@@ -27,7 +27,7 @@ public class ProcessInfo {
     }
 
     @Nonnull
-    public FactoryInputInventorySlot<?> getInputSlot() {
+    public FactoryInputInventorySlot getInputSlot() {
         return inputSlot;
     }
 

@@ -19,7 +19,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_ITEM_STACK)
 public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeManager<ItemStackToItemStackRecipe> {
 
-    protected ItemStackToItemStackRecipeManager(MekanismRecipeType<ItemStackToItemStackRecipe> recipeType) {
+    protected ItemStackToItemStackRecipeManager(MekanismRecipeType<ItemStackToItemStackRecipe, ?> recipeType) {
         super(recipeType);
     }
 

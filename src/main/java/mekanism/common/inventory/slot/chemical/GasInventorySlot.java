@@ -17,7 +17,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.IMekanismInventory;
-import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
+import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.item.ItemStack;
@@ -119,7 +119,7 @@ public class GasInventorySlot extends ChemicalInventorySlot<Gas, GasStack> {
 
     @Nullable
     @Override
-    protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Gas, GasStack>> getConversionRecipeType() {
-        return MekanismRecipeType.GAS_CONVERSION;
+    protected ItemStackToGasRecipe getConversionRecipe(@Nullable World world, ItemStack stack) {
+        return MekanismRecipeType.GAS_CONVERSION.getInputCache().findFirstRecipe(world, stack);
     }
 }

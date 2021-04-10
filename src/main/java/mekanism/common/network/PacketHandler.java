@@ -1,7 +1,6 @@
 package mekanism.common.network;
 
 import mekanism.common.Mekanism;
-import mekanism.common.network.to_client.PacketClearRecipeCache;
 import mekanism.common.network.to_client.PacketFlyingSync;
 import mekanism.common.network.to_client.PacketFrequencyItemGuiUpdate;
 import mekanism.common.network.to_client.PacketLaserHitBlock;
@@ -84,7 +83,6 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketWindowSelect.class, PacketWindowSelect::decode);
 
         //Server to client messages
-        registerServerToClient(PacketClearRecipeCache.class, PacketClearRecipeCache::decode);
         registerServerToClient(PacketFlyingSync.class, PacketFlyingSync::decode);
         registerServerToClient(PacketFrequencyItemGuiUpdate.class, PacketFrequencyItemGuiUpdate::decode);
         registerServerToClient(PacketLaserHitBlock.class, PacketLaserHitBlock::decode);

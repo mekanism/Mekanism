@@ -50,6 +50,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -120,12 +121,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         //Only allow extraction
         builder.addTank(gasTank = ChemicalTankBuilder.GAS.create(CAPACITY, (gas, automationType) -> automationType == AutomationType.MANUAL || mode,
-              (gas, automationType) -> automationType == AutomationType.INTERNAL || !mode, this::isValidGas, this));
+              (gas, automationType) -> automationType == AutomationType.INTERNAL || !mode, this::isValidGas, recipeCacheLookupMonitor));
         return builder.build();
     }
 
     private boolean isValidGas(@Nonnull Gas gas) {
-        return containsRecipe(recipe -> recipe.hasGasToFluid() && recipe.getGasInput().testType(gas));
+        return getRecipeType().getInputCache().containsInput(level, gas.getStack(1));
     }
 
     @Nonnull
@@ -133,12 +134,12 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     protected IFluidTankHolder getInitialFluidTanks() {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addTank(fluidTank = BasicFluidTank.create(CAPACITY, (fluid, automationType) -> automationType == AutomationType.MANUAL || !mode,
-              (fluid, automationType) -> automationType == AutomationType.INTERNAL || mode, this::isValidFluid, this));
+              (fluid, automationType) -> automationType == AutomationType.INTERNAL || mode, this::isValidFluid, recipeCacheLookupMonitor));
         return builder.build();
     }
 
     private boolean isValidFluid(@Nonnull FluidStack fluidStack) {
-        return containsRecipe(recipe -> recipe.hasFluidToGas() && recipe.getFluidInput().testType(fluidStack));
+        return getRecipeType().getInputCache().containsInput(level, fluidStack);
     }
 
     @Nonnull
@@ -188,13 +189,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
                 FluidUtils.emit(config.getAllOutputtingSides(), fluidTank, this, MekanismConfig.general.fluidAutoEjectRate.get());
             }
         }
-        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
-        //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-        clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
+        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
     }
 
     @Override
@@ -233,33 +228,22 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     @Nonnull
     @Override
-    public MekanismRecipeType<RotaryRecipe> getRecipeType() {
+    public MekanismRecipeType<RotaryRecipe, RotaryInputRecipeCache> getRecipeType() {
         return MekanismRecipeType.ROTARY;
     }
 
     @Nullable
     @Override
     public RotaryRecipe getRecipe(int cacheIndex) {
-        if (mode) {//Fluid to Gas
-            FluidStack fluid = fluidInputHandler.getInput();
-            if (fluid.isEmpty()) {
-                return null;
-            }
-            return findFirstRecipe(recipe -> recipe.test(fluid));
-        }
-        //Gas to Fluid
-        GasStack gas = gasInputHandler.getInput();
-        if (gas.isEmpty()) {
-            return null;
-        }
-        return findFirstRecipe(recipe -> recipe.test(gas));
+        RotaryInputRecipeCache inputCache = getRecipeType().getInputCache();
+        return mode ? inputCache.findFirstRecipe(level, fluidInputHandler.getInput()) : inputCache.findFirstRecipe(level, gasInputHandler.getInput());
     }
 
     public MachineEnergyContainer<TileEntityRotaryCondensentrator> getEnergyContainer() {
         return energyContainer;
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<RotaryRecipe> createNewCachedRecipe(@Nonnull RotaryRecipe recipe, int cacheIndex) {
         return new RotaryCachedRecipe(recipe, fluidInputHandler, gasInputHandler, gasOutputHandler, fluidOutputHandler, () -> mode)

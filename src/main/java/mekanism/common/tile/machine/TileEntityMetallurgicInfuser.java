@@ -34,6 +34,8 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.InfusionInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
@@ -41,10 +43,10 @@ import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<MetallurgicInfuserRecipe> implements IHasDumpButton {
+public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<MetallurgicInfuserRecipe> implements IHasDumpButton,
+      ItemChemicalRecipeLookupHandler<InfuseType, InfusionStack, MetallurgicInfuserRecipe> {
 
     public static final long MAX_INFUSE = 1_000;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getInfuseType", "getInfuseTypeCapacity", "getInfuseTypeNeeded",
@@ -84,14 +86,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     @Override
     public IChemicalTankHolder<InfuseType, InfusionStack, IInfusionTank> getInitialInfusionTanks() {
         ChemicalTankHelper<InfuseType, InfusionStack, IInfusionTank> builder = ChemicalTankHelper.forSideInfusionWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.create(MAX_INFUSE, ChemicalTankBuilder.INFUSION.alwaysTrueBi, (type, automationType) -> {
-            if (!inputSlot.isEmpty()) {
-                ItemStack stack = inputSlot.getStack();
-                return containsRecipe(recipe -> recipe.getItemInput().testType(stack) && recipe.getChemicalInput().testType(type));
-            }
-            //Otherwise return true, as we already validated the type was valid
-            return true;
-        }, type -> containsRecipe(recipe -> recipe.getChemicalInput().testType(type)), this));
+        builder.addTank(infusionTank = ChemicalTankBuilder.INFUSION.create(MAX_INFUSE, ChemicalTankBuilder.INFUSION.alwaysTrueBi,
+              (infuseType, automationType) -> containsRecipeBA(inputSlot.getStack(), infuseType), this::containsRecipeB, recipeCacheLookupMonitor));
         return builder.build();
     }
 
@@ -108,13 +104,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(infusionSlot = InfusionInventorySlot.fillOrConvert(infusionTank, this::getLevel, this, 17, 35));
-        builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
-            if (!infusionTank.isEmpty()) {
-                return containsRecipe(recipe -> recipe.getChemicalInput().testType(infusionTank.getType()) && recipe.getItemInput().testType(stack));
-            }
-            //Otherwise return true, as we already validated the type was valid
-            return true;
-        }, stack -> containsRecipe(recipe -> recipe.getItemInput().testType(stack)), this, 51, 43));
+        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, infusionTank.getStack()), this::containsRecipeA, recipeCacheLookupMonitor, 51, 43));
         builder.addSlot(outputSlot = OutputInventorySlot.at(this, 109, 43));
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 143, 35));
         return builder.build();
@@ -125,25 +115,22 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
         super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         infusionSlot.fillTankOrConvert();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
     }
 
     @Nonnull
     @Override
-    public MekanismRecipeType<MetallurgicInfuserRecipe> getRecipeType() {
+    public MekanismRecipeType<MetallurgicInfuserRecipe, ItemChemical<InfuseType, InfusionStack, MetallurgicInfuserRecipe>> getRecipeType() {
         return MekanismRecipeType.METALLURGIC_INFUSING;
     }
 
     @Nullable
     @Override
     public MetallurgicInfuserRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findItemStackChemicalRecipe(this, itemInputHandler, infusionInputHandler);
+        return findFirstRecipe(itemInputHandler, infusionInputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
         return new MetallurgicInfuserCachedRecipe(recipe, infusionInputHandler, itemInputHandler, outputHandler)

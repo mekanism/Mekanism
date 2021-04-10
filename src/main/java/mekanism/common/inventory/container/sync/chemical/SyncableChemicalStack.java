@@ -35,6 +35,9 @@ public abstract class SyncableChemicalStack<CHEMICAL extends Chemical<CHEMICAL>,
     }
 
     public void set(@Nonnull STACK value) {
+        //TODO - 10.1: On the client side we should replace our setters with unchecked setters, so that if a recipe is removed
+        // then the client doesn't have issues trying to render the contents of a tank that has stuff that shouldn't be valid
+        // for it. This should also probably be done for our syncable fluid stacks
         setter.accept(value);
     }
 

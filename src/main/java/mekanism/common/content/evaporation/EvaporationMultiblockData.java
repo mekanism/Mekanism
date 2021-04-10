@@ -32,12 +32,13 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.recipe.MekanismRecipeType;
-import mekanism.common.tile.interfaces.ITileCachedRecipeHolder;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
+import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -46,7 +47,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 
-public class EvaporationMultiblockData extends MultiblockData implements ITileCachedRecipeHolder<FluidToFluidRecipe>, IValveHandler {
+public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe> {
 
     private static final int MAX_OUTPUT = 10_000;
     public static final int MAX_HEIGHT = 18;
@@ -74,7 +75,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
     public double totalLoss;
 
-    private CachedRecipe<FluidToFluidRecipe> cachedRecipe;
+    private final RecipeCacheLookupMonitor<FluidToFluidRecipe> recipeCacheLookupMonitor;
 
     private IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
@@ -92,7 +93,8 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
 
     public EvaporationMultiblockData(TileEntityThermalEvaporationBlock tile) {
         super(tile);
-        fluidTanks.add(inputTank = MultiblockFluidTank.input(this, tile, this::getMaxFluid, fluid -> containsRecipe(recipe -> recipe.getInput().testType(fluid))));
+        recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
+        fluidTanks.add(inputTank = MultiblockFluidTank.input(this, tile, this::getMaxFluid, this::containsRecipe, recipeCacheLookupMonitor));
         fluidTanks.add(outputTank = MultiblockFluidTank.output(this, tile, () -> MAX_OUTPUT, BasicFluidTank.alwaysTrue));
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
@@ -119,10 +121,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
         updateTemperature(world);
         inputOutputSlot.drainTank(outputOutputSlot);
         inputInputSlot.fillTank(outputInputSlot);
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
+        recipeCacheLookupMonitor.updateAndProcess();
         float scale = MekanismUtils.getScale(prevScale, inputTank);
         if (scale != prevScale) {
             prevScale = scale;
@@ -183,23 +182,17 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
 
     @Nonnull
     @Override
-    public MekanismRecipeType<FluidToFluidRecipe> getRecipeType() {
+    public MekanismRecipeType<FluidToFluidRecipe, SingleFluid<FluidToFluidRecipe>> getRecipeType() {
         return MekanismRecipeType.EVAPORATING;
     }
 
     @Nullable
     @Override
-    public CachedRecipe<FluidToFluidRecipe> getCachedRecipe(int cacheIndex) {
-        return cachedRecipe;
-    }
-
-    @Nullable
-    @Override
     public FluidToFluidRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findFluidRecipe(this, inputHandler);
+        return findFirstRecipe(inputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<FluidToFluidRecipe> createNewCachedRecipe(@Nonnull FluidToFluidRecipe recipe, int cacheIndex) {
         return new FluidToFluidCachedRecipe(recipe, inputHandler, outputHandler)
@@ -228,7 +221,7 @@ public class EvaporationMultiblockData extends MultiblockData implements ITileCa
     }
 
     @Override
-    public World getTileWorld() {
+    public World getHandlerWorld() {
         return getWorld();
     }
 

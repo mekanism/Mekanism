@@ -16,7 +16,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_PIGMENT)
 public abstract class ItemStackToPigmentRecipeManager extends MekanismRecipeManager<ItemStackToPigmentRecipe> {
 
-    protected ItemStackToPigmentRecipeManager(MekanismRecipeType<ItemStackToPigmentRecipe> recipeType) {
+    protected ItemStackToPigmentRecipeManager(MekanismRecipeType<ItemStackToPigmentRecipe, ?> recipeType) {
         super(recipeType);
     }
 

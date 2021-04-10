@@ -57,6 +57,15 @@ public class BasicFluidTank implements IExtendedFluidTank {
         return new BasicFluidTank(capacity, notExternal, alwaysTrueBi, validator, listener);
     }
 
+    public static BasicFluidTank input(int capacity, Predicate<@NonNull FluidStack> canInsert, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be at least zero");
+        }
+        Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
+        Objects.requireNonNull(validator, "Fluid validity check cannot be null");
+        return new BasicFluidTank(capacity, notExternal, (stack, automationType) -> canInsert.test(stack), validator, listener);
+    }
+
     public static BasicFluidTank output(int capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");

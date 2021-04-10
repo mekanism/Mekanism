@@ -37,19 +37,20 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
-public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock {
+public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
 
     public static final int MAX_GAS = 10_000;
 
@@ -90,7 +91,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(inputTank = ChemicalTankBuilder.GAS.create(MAX_GAS, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
-              gas -> containsRecipe(recipe -> recipe.getInput().testType(gas)), ChemicalAttributeValidator.ALWAYS_ALLOW, this));
+              this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheLookupMonitor));
         builder.addTank(outputTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
         return builder.build();
     }
@@ -123,13 +124,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         energySlot.fillContainerOrConvert();
         inputSlot.fillTank();
         outputSlot.drainTank();
-        FloatingLong prev = energyContainer.getEnergy().copyAsConst();
-        cachedRecipe = getUpdatedCache(0);
-        if (cachedRecipe != null) {
-            cachedRecipe.process();
-        }
-        //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-        clientEnergyUsed = prev.subtract(energyContainer.getEnergy());
+        clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
     }
 
     @Nonnull
@@ -140,17 +135,17 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
 
     @Nonnull
     @Override
-    public MekanismRecipeType<GasToGasRecipe> getRecipeType() {
+    public MekanismRecipeType<GasToGasRecipe, SingleChemical<Gas, GasStack, GasToGasRecipe>> getRecipeType() {
         return MekanismRecipeType.CENTRIFUGING;
     }
 
     @Nullable
     @Override
     public GasToGasRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findChemicalRecipe(this, inputHandler);
+        return findFirstRecipe(inputHandler);
     }
 
-    @Nullable
+    @Nonnull
     @Override
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
         return new GasToGasCachedRecipe(recipe, inputHandler, outputHandler)

@@ -3,6 +3,7 @@ package mekanism.api.chemical;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -40,6 +41,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
         this.hidden = builder.isHidden();
     }
 
+    @Nonnull
     @Override
     public CHEMICAL getChemical() {
         return (CHEMICAL) this;

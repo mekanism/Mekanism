@@ -191,15 +191,15 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return code;
     }
 
-    /**
-     * Default equality comparison for a ChemicalStack. Same functionality as isTypeEqual().
-     *
-     * This is included for use in data structures.
-     */
     @Override
     public boolean equals(Object o) {
-        //TODO - 10.1: Evaluate if this should be comparing amounts as well, if not we should remove it from the hashcode
-        return o == this || o != null && getClass() == o.getClass() && isTypeEqual((ChemicalStack) o);
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChemicalStack<?> other = (ChemicalStack<?>) o;
+        return getType() == other.getType() && getAmount() == other.getAmount();
     }
 
     @Override

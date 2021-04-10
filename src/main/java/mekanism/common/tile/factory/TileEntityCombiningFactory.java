@@ -19,14 +19,15 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.DoubleItemRecipeLookupHandler;
+import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.RecipeLookupUtil;
 import net.minecraft.item.ItemStack;
 
-public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> {
+public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> implements DoubleItemRecipeLookupHandler<CombinerRecipe> {
 
     private final IInputHandler<@NonNull ItemStack> extraInputHandler;
 
@@ -41,7 +42,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Override
     protected void addSlots(InventorySlotHelper builder, IContentsListener updateSortingListener) {
         super.addSlots(builder, updateSortingListener);
-        builder.addSlot(extraSlot = InputInventorySlot.at(stack -> containsRecipe(recipe -> recipe.getExtraInput().testType(stack)), updateSortingListener, 7, 57));
+        builder.addSlot(extraSlot = InputInventorySlot.at(this::containsRecipeB, this::onContentsChangedUpdateSortingAndCache, 7, 57));
         extraSlot.setSlotType(ContainerSlotType.EXTRA);
     }
 
@@ -53,7 +54,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     @Override
     public boolean isValidInputItem(@Nonnull ItemStack stack) {
-        return containsRecipe(recipe -> recipe.getMainInput().testType(stack));
+        return containsRecipeA(stack);
     }
 
     @Override
@@ -74,28 +75,24 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     protected CombinerRecipe findRecipe(int process, @Nonnull ItemStack fallbackInput, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         ItemStack extra = extraSlot.getStack();
         ItemStack output = outputSlot.getStack();
-        return findFirstRecipe(recipe -> {
-            if (recipe.getMainInput().testType(fallbackInput)) {
-                if (extra.isEmpty() || recipe.getExtraInput().testType(extra)) {
-                    return InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput, extra), output);
-                }
-            }
-            return false;
-        });
+        //TODO: Give it something that is not empty when we don't have a stored secondary stack for getting the output?
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, extra,
+              recipe -> InventoryUtils.areItemsStackable(recipe.getOutput(fallbackInput, extra), output));
     }
 
     @Nonnull
     @Override
-    public MekanismRecipeType<CombinerRecipe> getRecipeType() {
+    public MekanismRecipeType<CombinerRecipe, DoubleItem<CombinerRecipe>> getRecipeType() {
         return MekanismRecipeType.COMBINING;
     }
 
     @Nullable
     @Override
     public CombinerRecipe getRecipe(int cacheIndex) {
-        return RecipeLookupUtil.findCombinerRecipe(this, inputHandlers[cacheIndex], extraInputHandler);
+        return findFirstRecipe(inputHandlers[cacheIndex], extraInputHandler);
     }
 
+    @Nonnull
     @Override
     public CachedRecipe<CombinerRecipe> createNewCachedRecipe(@Nonnull CombinerRecipe recipe, int cacheIndex) {
         return new CombinerCachedRecipe(recipe, inputHandlers[cacheIndex], extraInputHandler, outputHandlers[cacheIndex])
