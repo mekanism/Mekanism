@@ -26,9 +26,11 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.util.ChemicalUtil;
+import mezz.jei.api.helpers.IColorHelper;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -37,6 +39,13 @@ import net.minecraft.world.World;
 
 public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IIngredientHelper<STACK>,
       IEmptyStackProvider<CHEMICAL, STACK> {
+
+    @Nullable
+    private IColorHelper colorHelper;
+
+    void setColorHelper(IColorHelper colorHelper) {
+        this.colorHelper = colorHelper;
+    }
 
     protected abstract String getType();
 
@@ -72,12 +81,15 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         return ingredient.getTypeRegistryName().getNamespace();
     }
 
-    /*@Override
+    @Override
     public Iterable<Integer> getColors(STACK ingredient) {
+        if (colorHelper == null) {
+            return IIngredientHelper.super.getColors(ingredient);
+        }
         CHEMICAL chemical = ingredient.getType();
         //TODO: Does tint need alpha applied/factored in to getting the color, Either way this is waiting on https://github.com/mezz/JustEnoughItems/issues/1886
-        return ColorGetter.getColors(MekanismRenderer.getChemicalTexture(chemical), chemical.getTint(), 1);
-    }*/
+        return colorHelper.getColors(MekanismRenderer.getChemicalTexture(chemical), chemical.getTint(), 1);
+    }
 
     @Override
     public String getResourceId(STACK ingredient) {

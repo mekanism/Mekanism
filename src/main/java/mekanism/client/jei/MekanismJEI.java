@@ -63,7 +63,7 @@ import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
-import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
+import mezz.jei.api.ingredients.subtypes.IIngredientSubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
@@ -99,13 +99,9 @@ public class MekanismJEI implements IModPlugin {
     private static final ResourceLocation GAS_CONVERSION = Mekanism.rl("gas_conversion");
     private static final ResourceLocation INFUSION_CONVERSION = Mekanism.rl("infusion_conversion");
 
-    private static final ISubtypeInterpreter MEKANISM_NBT_INTERPRETER = new ISubtypeInterpreter() {
-        @Override
-        public String apply(ItemStack stack) {
-            if (!stack.hasTag()) {
-                return ISubtypeInterpreter.NONE;
-            }
-            String nbtRepresentation = addInterpretation("", getChemicalComponent(stack, Capabilities.GAS_HANDLER_CAPABILITY));
+    private static final IIngredientSubtypeInterpreter<ItemStack> MEKANISM_NBT_INTERPRETER = (stack, context) -> {
+        if (context == UidContext.Ingredient && stack.hasTag()) {
+            String nbtRepresentation = getChemicalComponent(stack, Capabilities.GAS_HANDLER_CAPABILITY);
             nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.INFUSION_HANDLER_CAPABILITY));
             nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.PIGMENT_HANDLER_CAPABILITY));
             nbtRepresentation = addInterpretation(nbtRepresentation, getChemicalComponent(stack, Capabilities.SLURRY_HANDLER_CAPABILITY));
@@ -113,12 +109,7 @@ public class MekanismJEI implements IModPlugin {
             nbtRepresentation = addInterpretation(nbtRepresentation, getEnergyComponent(stack));
             return nbtRepresentation;
         }
-
-        @Override
-        public String apply(ItemStack stack, UidContext context) {
-            //Only use the old method if we are an ingredient, for recipes ignore all the NBT
-            return context == UidContext.Ingredient ? apply(stack) : ISubtypeInterpreter.NONE;
-        }
+        return IIngredientSubtypeInterpreter.NONE;
     };
 
     private static String addInterpretation(String nbtRepresentation, String component) {
@@ -140,7 +131,7 @@ public class MekanismJEI implements IModPlugin {
             }
             return component;
         }
-        return ISubtypeInterpreter.NONE;
+        return IIngredientSubtypeInterpreter.NONE;
     }
 
     private static String getFluidComponent(ItemStack stack) {
@@ -158,7 +149,7 @@ public class MekanismJEI implements IModPlugin {
             }
             return component;
         }
-        return ISubtypeInterpreter.NONE;
+        return IIngredientSubtypeInterpreter.NONE;
     }
 
     private static String getEnergyComponent(ItemStack stack) {
@@ -177,7 +168,7 @@ public class MekanismJEI implements IModPlugin {
             }
             return component;
         }
-        return ISubtypeInterpreter.NONE;
+        return IIngredientSubtypeInterpreter.NONE;
     }
 
     @Nonnull
@@ -221,6 +212,7 @@ public class MekanismJEI implements IModPlugin {
               .filter(chemical -> !chemical.isEmptyType() && !chemical.isHidden())
               .map(chemical -> stackCreator.createStack(chemical, FluidAttributes.BUCKET_VOLUME))
               .collect(Collectors.toList());
+        stackHelper.setColorHelper(registry.getColorHelper());
         registry.register(ingredientType, types, stackHelper, new ChemicalStackRenderer<>());
     }
 
