@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
@@ -55,6 +56,18 @@ public class CrTInfusionStackIngredient {
     public static InfusionStackIngredient from(MCTag<ICrTInfuseType> infuseTypeTag, long amount) {
         ITag<InfuseType> tag = CrTIngredientHelper.assertValidAndGet(infuseTypeTag, amount, CrTInfuseTypeTagManager.INSTANCE::getInternal, "InfusionStackIngredients");
         return InfusionStackIngredient.from(tag, amount);
+    }
+
+    /**
+     * Creates a {@link InfusionStackIngredient} that matches a given infuse type tag with amount.
+     *
+     * @param infuseTypeTag Tag and amount to match
+     *
+     * @return A {@link InfusionStackIngredient} that matches a given infuse type tag with amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static InfusionStackIngredient from(MCTagWithAmount<ICrTInfuseType> infuseTypeTag) {
+        return from(infuseTypeTag.getTag(), infuseTypeTag.getAmount());
     }
 
     /**

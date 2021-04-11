@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
@@ -55,6 +56,18 @@ public class CrTSlurryStackIngredient {
     public static SlurryStackIngredient from(MCTag<ICrTSlurry> slurryTag, long amount) {
         ITag<Slurry> tag = CrTIngredientHelper.assertValidAndGet(slurryTag, amount, CrTSlurryTagManager.INSTANCE::getInternal, "SlurryStackIngredients");
         return SlurryStackIngredient.from(tag, amount);
+    }
+
+    /**
+     * Creates a {@link SlurryStackIngredient} that matches a given slurry tag with amount.
+     *
+     * @param slurryTag Tag and amount to match
+     *
+     * @return A {@link SlurryStackIngredient} that matches a given slurry tag with amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static SlurryStackIngredient from(MCTagWithAmount<ICrTSlurry> slurryTag) {
+        return from(slurryTag.getTag(), slurryTag.getAmount());
     }
 
     /**

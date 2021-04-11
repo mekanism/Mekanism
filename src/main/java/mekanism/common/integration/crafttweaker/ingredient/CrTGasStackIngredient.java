@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
@@ -55,6 +56,18 @@ public class CrTGasStackIngredient {
     public static GasStackIngredient from(MCTag<ICrTGas> gasTag, long amount) {
         ITag<Gas> tag = CrTIngredientHelper.assertValidAndGet(gasTag, amount, CrTGasTagManager.INSTANCE::getInternal, "GasStackIngredients");
         return GasStackIngredient.from(tag, amount);
+    }
+
+    /**
+     * Creates a {@link GasStackIngredient} that matches a given gas tag with amount.
+     *
+     * @param gasTag Tag and amount to match
+     *
+     * @return A {@link GasStackIngredient} that matches a given gas tag with amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static GasStackIngredient from(MCTagWithAmount<ICrTGas> gasTag) {
+        return from(gasTag.getTag(), gasTag.getAmount());
     }
 
     /**

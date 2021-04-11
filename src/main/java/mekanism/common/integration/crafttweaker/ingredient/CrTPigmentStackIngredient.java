@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
@@ -55,6 +56,18 @@ public class CrTPigmentStackIngredient {
     public static PigmentStackIngredient from(MCTag<ICrTPigment> pigmentTag, long amount) {
         ITag<Pigment> tag = CrTIngredientHelper.assertValidAndGet(pigmentTag, amount, CrTPigmentTagManager.INSTANCE::getInternal, "PigmentStackIngredients");
         return PigmentStackIngredient.from(tag, amount);
+    }
+
+    /**
+     * Creates a {@link PigmentStackIngredient} that matches a given pigment tag with amount.
+     *
+     * @param pigmentTag Tag and amount to match
+     *
+     * @return A {@link PigmentStackIngredient} that matches a given pigment tag with amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static PigmentStackIngredient from(MCTagWithAmount<ICrTPigment> pigmentTag) {
+        return from(pigmentTag.getTag(), pigmentTag.getAmount());
     }
 
     /**

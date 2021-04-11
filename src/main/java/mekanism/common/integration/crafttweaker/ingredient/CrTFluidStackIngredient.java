@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker.impl.tag.manager.TagManagerFluid;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
@@ -62,6 +63,18 @@ public class CrTFluidStackIngredient {
     public static FluidStackIngredient from(MCTag<Fluid> fluidTag, int amount) {
         ITag<Fluid> tag = CrTIngredientHelper.assertValidAndGet(fluidTag, amount, TagManagerFluid.INSTANCE::getInternal, "FluidStackIngredients");
         return FluidStackIngredient.from(tag, amount);
+    }
+
+    /**
+     * Creates a {@link FluidStackIngredient} that matches a given fluid tag with amount.
+     *
+     * @param fluidTag Tag and amount to match
+     *
+     * @return A {@link FluidStackIngredient} that matches a given fluid tag with amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static FluidStackIngredient from(MCTagWithAmount<Fluid> fluidTag) {
+        return from(fluidTag.getTag(), fluidTag.getAmount());
     }
 
     /**

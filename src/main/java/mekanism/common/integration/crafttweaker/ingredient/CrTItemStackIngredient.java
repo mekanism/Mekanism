@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCIngredientList;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker.impl.tag.manager.TagManagerItem;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.ArrayList;
@@ -85,6 +86,18 @@ public class CrTItemStackIngredient {
     public static ItemStackIngredient from(MCTag<Item> itemTag, int amount) {
         ITag<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
         return ItemStackIngredient.from(tag, amount);
+    }
+
+    /**
+     * Creates a {@link ItemStackIngredient} that matches a given item tag with amount.
+     *
+     * @param itemTag Tag and amount to match
+     *
+     * @return A {@link ItemStackIngredient} that matches a given item tag with amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static ItemStackIngredient from(MCTagWithAmount<Item> itemTag) {
+        return from(itemTag.getTag(), itemTag.getAmount());
     }
 
     /**
