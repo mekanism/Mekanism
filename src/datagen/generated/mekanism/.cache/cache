@@ -2406,6 +2406,7 @@ c49ad8abf247bb37ddcb64d0ab2cfa6ab9a76ef5 data/mekanism/recipes/sawing/log/birch.
 4a9acdbf0552f52ae783d8e6366919347ecb904f data/mekanism/recipes/sawing/log/oak.json
 009a576714b6aaaab3cedee299c8fc0d10dfdeb2 data/mekanism/recipes/sawing/log/spruce.json
 ade5c6f433093cb3f7fa4745db1c307c0d2500b5 data/mekanism/recipes/sawing/log/warped.json
+9719178486daa5cbe26abf36c424094009ce76c7 data/mekanism/recipes/sawing/melon.json
 8ee3cfcae18ec1e9ed41120e54a2926a93f397cf data/mekanism/recipes/sawing/note_block.json
 1104cb9db63a7fe529a4b4c0fcaf7b4fcbcb2b93 data/mekanism/recipes/sawing/planks.json
 f9e39acd2e7a82d910b3492439775ec72e9484e8 data/mekanism/recipes/sawing/pressure_plate/acacia.json
