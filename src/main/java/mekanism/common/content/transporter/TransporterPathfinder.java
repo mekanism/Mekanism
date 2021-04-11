@@ -430,19 +430,19 @@ public final class TransporterPathfinder {
                     // then this is the proper path so we mark it as so and return true indicating that we found and marked the ideal path
                     side = direction;
                     results = reconstructPath(navMap, start);
+                    finalScore = gScore.getDouble(start) + WorldUtils.distanceBetween(start, finalNode);
                     return true;
                 }
             }
             return false;
         }
 
-        private List<BlockPos> reconstructPath(Map<BlockPos, BlockPos> navMap, BlockPos currentNode) {
+        private List<BlockPos> reconstructPath(Map<BlockPos, BlockPos> navMap, BlockPos nextNode) {
             List<BlockPos> path = new ArrayList<>();
-            path.add(currentNode);
-            if (navMap.containsKey(currentNode)) {
-                path.addAll(reconstructPath(navMap, navMap.get(currentNode)));
+            while (nextNode != null) {
+                path.add(nextNode);
+                nextNode = navMap.get(nextNode);
             }
-            finalScore = gScore.getDouble(currentNode) + WorldUtils.distanceBetween(currentNode, finalNode);
             return path;
         }
 
