@@ -41,7 +41,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient from(ICrTGasStack instance) {
         CrTIngredientHelper.assertValid(instance, "GasStackIngredients");
-        return GasStackIngredient.from(instance.getInternal());
+        return GasStackIngredient.from(instance.getImmutableInternal());
     }
 
     /**

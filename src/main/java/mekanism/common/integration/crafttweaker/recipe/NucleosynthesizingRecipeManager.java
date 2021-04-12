@@ -22,6 +22,16 @@ public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<Nucle
         super(MekanismRecipeType.NUCLEOSYNTHESIZING);
     }
 
+    /**
+     * Adds a nucleosynthesizing recipe that uses a gas and massive amounts of energy to convert an item into another item. Antiprotonic Nucleosynthesizers can process
+     * this recipe type.
+     *
+     * @param name      Name of the new recipe.
+     * @param itemInput {@link ItemStackIngredient} representing the item input of the recipe.
+     * @param gasInput  {@link GasStackIngredient} representing the gas input of the recipe.
+     * @param output    {@link IItemStack} representing the output of the recipe.
+     * @param duration  Duration in ticks that it takes the recipe to complete. Must be greater than zero.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient itemInput, GasStackIngredient gasInput, IItemStack output, int duration) {
         if (duration <= 0) {

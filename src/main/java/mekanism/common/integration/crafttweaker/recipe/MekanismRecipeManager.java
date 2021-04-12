@@ -22,7 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
-//TODO - 10.1: Go through and validate we get an immutable instance of each ingredient so that people can't somehow make them change at runtime
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER)
 public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> implements IRecipeManager {
@@ -70,21 +69,21 @@ public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> imple
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("Output stack cannot be empty.");
         }
-        return stack.getInternal();
+        return stack.getImmutableInternal();
     }
 
     protected FluidStack getAndValidateNotEmpty(IFluidStack stack) {
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("Output stack cannot be empty.");
         }
-        return stack.getInternal();
+        return stack.getImmutableInternal();
     }
 
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> STACK getAndValidateNotEmpty(ICrTChemicalStack<CHEMICAL, STACK, ?, ?> stack) {
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("Output stack cannot be empty.");
         }
-        return stack.getInternal();
+        return stack.getImmutableInternal();
     }
 
     protected abstract class ActionAddMekanismRecipe extends ActionAddRecipe {

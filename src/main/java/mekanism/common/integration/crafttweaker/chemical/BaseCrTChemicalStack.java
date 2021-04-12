@@ -58,9 +58,7 @@ public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, 
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        STACK otherStack = ((BaseCrTChemicalStack<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>) o).stack;
-        //TODO - 10.1: If we decide to make equals care about amount (which we probably will do), then we can remove comparing the stack size here
-        return stack.equals(otherStack) && stack.getAmount() == otherStack.getAmount();
+        return stack.equals(((BaseCrTChemicalStack<?, ?, ?, ?>) o).stack);
     }
 
     @Override

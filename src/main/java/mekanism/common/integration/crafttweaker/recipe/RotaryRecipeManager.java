@@ -23,16 +23,49 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
         super(MekanismRecipeType.ROTARY);
     }
 
+    /**
+     * Adds a rotary recipe that converts a fluid into a gas. Rotary Condensers set to Decondensentrating can process this recipe type.
+     *
+     * @param name       Name of the new recipe.
+     * @param fluidInput {@link FluidStackIngredient} representing the input of the recipe.
+     * @param gasOutput  {@link ICrTGasStack} representing the output of the recipe.
+     *
+     * @apiNote It is recommended to use {@link #addRecipe(String, FluidStackIngredient, GasStackIngredient, ICrTGasStack, IFluidStack)} over this method in combination
+     * with {@link #addRecipe(String, GasStackIngredient, IFluidStack)} if the conversion will be possible in both directions.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient fluidInput, ICrTGasStack gasOutput) {
         addRecipe(new RotaryIRecipe(getAndValidateName(name), fluidInput, getAndValidateNotEmpty(gasOutput)));
     }
 
+    /**
+     * Adds a rotary recipe that converts a gas into a fluid. Rotary Condensers set to Condensentrating can process this recipe type.
+     *
+     * @param name        Name of the new recipe.
+     * @param gasInput    {@link GasStackIngredient} representing the input of the recipe.
+     * @param fluidOutput {@link IFluidStack} representing the output of the recipe.
+     *
+     * @apiNote It is recommended to use {@link #addRecipe(String, FluidStackIngredient, GasStackIngredient, ICrTGasStack, IFluidStack)} over this method in combination
+     * with {@link #addRecipe(String, FluidStackIngredient, ICrTGasStack)} if the conversion will be possible in both directions.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, GasStackIngredient gasInput, IFluidStack fluidOutput) {
         addRecipe(new RotaryIRecipe(getAndValidateName(name), gasInput, getAndValidateNotEmpty(fluidOutput)));
     }
 
+    /**
+     * Adds a rotary recipe that is capable of converting a fluid into a gas and a gas into a fluid. Rotary Condensers can process this recipe type, converting from fluid
+     * to gas when set to Decondensentrating and converting from gas to fluid when set to Condensentrating.
+     *
+     * @param name        Name of the new recipe.
+     * @param fluidInput  {@link FluidStackIngredient} representing the input of the recipe when converting from a fluid to a gas.
+     * @param gasInput    {@link GasStackIngredient} representing the input of the recipe when converting from a gas to a fluid.
+     * @param gasOutput   {@link ICrTGasStack} representing the output of the recipe when converting from a fluid to a gas.
+     * @param fluidOutput {@link IFluidStack} representing the output of the recipe when converting from a gas to a fluid.
+     *
+     * @apiNote It is recommended to use this method over using {@link #addRecipe(String, FluidStackIngredient, ICrTGasStack)} and {@link #addRecipe(String,
+     * GasStackIngredient, IFluidStack)} in combination if the conversion will be possible in both directions.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient fluidInput, GasStackIngredient gasInput, ICrTGasStack gasOutput, IFluidStack fluidOutput) {
         addRecipe(new RotaryIRecipe(getAndValidateName(name), fluidInput, gasInput, getAndValidateNotEmpty(gasOutput),

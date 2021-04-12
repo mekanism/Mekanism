@@ -73,16 +73,14 @@ public class CrTContentUtils {
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, BUILDER extends ChemicalBuilder<CHEMICAL, BUILDER>> void queueChemicalForRegistration(String type,
           @Nullable Map<ResourceLocation, BUILDER> queuedChemicals, ResourceLocation registryName, BUILDER builder) {
-        if (CraftTweakerAPI.getCurrentRun().isFirstRun()) {//TODO - 10.1: Add more validation about the current run?
-            //Only queue our chemicals for registration on the first run of our loader
-            if (queuedChemicals == null) {
-                CraftTweakerAPI.logError("Cannot register %s '%s' since it was called too late. Registering must be done during '#loader mekanismcontent'!",
-                      type, registryName);
-            } else if (queuedChemicals.put(registryName, builder) == null) {
-                CraftTweakerAPI.logInfo("Queueing %s '%s' for registration.", type, registryName);
-            } else {
-                CraftTweakerAPI.logWarning("Registration for %s '%s' is already queued, skipping duplicate.", type, registryName);
-            }
+        //Only queue our chemicals for registration on the first run of our loader
+        if (queuedChemicals == null) {
+            CraftTweakerAPI.logError("Cannot register %s '%s' since it was called too late. Registering must be done during '#loader mekanismcontent'!",
+                  type, registryName);
+        } else if (queuedChemicals.put(registryName, builder) == null) {
+            CraftTweakerAPI.logInfo("Queueing %s '%s' for registration.", type, registryName);
+        } else {
+            CraftTweakerAPI.logWarning("Registration for %s '%s' is already queued, skipping duplicate.", type, registryName);
         }
     }
 

@@ -42,6 +42,30 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         super(recipeType);
     }
 
+    /**
+     * Adds a recipe that converts an item and a chemical into an item.
+     * <br>
+     * If this is called from the compressing recipe manager, this will be a compressing recipe and the chemical input must be a {@link GasStackIngredient} that will be
+     * used at a constant rate over the duration of the recipe. Osmium Compressors and Compressing Factories can process this recipe type.
+     * <br>
+     * If this is called from the injecting recipe manager, this will be an injecting recipe and the chemical input must be a {@link GasStackIngredient} that will be used
+     * at a near constant rate over the duration of the recipe. Chemical Injection Chambers and Injecting Factories can process this recipe type.
+     * <br>
+     * If this is called from the purifying recipe manager, this will be a purifying recipe and the chemical input must be a {@link GasStackIngredient} that will be used
+     * at a near constant rate over the duration of the recipe. Purification Chambers and Purifying Factories can process this recipe type.
+     * <br>
+     * If this is called from the metallurgic infusing recipe manager, this will be a metallurgic infusing recipe and the chemical input must be an {@link
+     * InfusionStackIngredient} that will be consumed at the end along with the item input. Metallurgic Infusers and Infusing Factories can process this recipe type.
+     * <br>
+     * If this is called from the painting recipe manager, this will be a painting recipe and the chemical input must be a {@link PigmentStackIngredient} that will be
+     * consumed at the end along with the item input. Painting Machines can process this recipe type.
+     *
+     * @param name          Name of the new recipe.
+     * @param itemInput     {@link ItemStackIngredient} representing the item input of the recipe.
+     * @param chemicalInput {@link IChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
+     *                      called from.
+     * @param output        {@link IItemStack} representing the output of the recipe.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient itemInput, INGREDIENT chemicalInput, IItemStack output) {
         addRecipe(makeRecipe(getAndValidateName(name), itemInput, chemicalInput, getAndValidateNotEmpty(output)));
@@ -76,22 +100,6 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_PURIFYING)
-    public static class PurificationRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Gas, GasStack, GasStackIngredient, ItemStackGasToItemStackRecipe> {
-
-        public static final PurificationRecipeManager INSTANCE = new PurificationRecipeManager();
-
-        private PurificationRecipeManager() {
-            super(MekanismRecipeType.PURIFYING);
-        }
-
-        @Override
-        protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
-            return new PurifyingIRecipe(id, itemInput, gasInput, output);
-        }
-    }
-
-    @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_INJECTING)
     public static class ChemicalInjectionRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Gas, GasStack, GasStackIngredient, ItemStackGasToItemStackRecipe> {
 
@@ -104,6 +112,22 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
         @Override
         protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
             return new InjectingIRecipe(id, itemInput, gasInput, output);
+        }
+    }
+
+    @ZenRegister
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_PURIFYING)
+    public static class PurificationRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Gas, GasStack, GasStackIngredient, ItemStackGasToItemStackRecipe> {
+
+        public static final PurificationRecipeManager INSTANCE = new PurificationRecipeManager();
+
+        private PurificationRecipeManager() {
+            super(MekanismRecipeType.PURIFYING);
+        }
+
+        @Override
+        protected ItemStackGasToItemStackRecipe makeRecipe(ResourceLocation id, ItemStackIngredient itemInput, GasStackIngredient gasInput, ItemStack output) {
+            return new PurifyingIRecipe(id, itemInput, gasInput, output);
         }
     }
 

@@ -18,6 +18,7 @@ public final class MekanismHooks {
     public static final String FLUX_NETWORKS_MOD_ID = "fluxnetworks";
     public static final String IC2_MOD_ID = "ic2";
     public static final String JEI_MOD_ID = "jei";
+    public static final String JEITWEAKER_MOD_ID = "jeitweaker";
     public static final String PROJECTE_MOD_ID = "projecte";
     public static final String TOP_MOD_ID = "theoneprobe";
 
@@ -26,6 +27,7 @@ public final class MekanismHooks {
     public boolean FluxNetworksLoaded;
     public boolean IC2Loaded;
     public boolean JEILoaded;
+    public boolean JEITweakerLoaded;
     public boolean ProjectELoaded;
     public boolean TOPLoaded;
 
@@ -39,6 +41,7 @@ public final class MekanismHooks {
         CCLoaded = modList.isLoaded(CC_MOD_ID);
         IC2Loaded = modList.isLoaded(IC2_MOD_ID);
         JEILoaded = modList.isLoaded(JEI_MOD_ID);
+        JEITweakerLoaded = modList.isLoaded(JEITWEAKER_MOD_ID);
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);

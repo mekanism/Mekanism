@@ -21,6 +21,15 @@ public class ChemicalInfuserRecipeManager extends MekanismRecipeManager<Chemical
         super(MekanismRecipeType.CHEMICAL_INFUSING);
     }
 
+    /**
+     * Adds a chemical infuser recipe that converts two gases into another gas. Chemical Infusers can process this recipe type and the gases can be put in any order into
+     * the infuser.
+     *
+     * @param name       Name of the new recipe.
+     * @param leftInput  {@link GasStackIngredient} representing the "left" gas input of the recipe.
+     * @param rightInput {@link GasStackIngredient} representing the "right" gas input of the recipe.
+     * @param output     {@link ICrTGasStack} representing the output of the recipe.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, GasStackIngredient leftInput, GasStackIngredient rightInput, ICrTGasStack output) {
         addRecipe(new ChemicalInfuserIRecipe(getAndValidateName(name), leftInput, rightInput, getAndValidateNotEmpty(output)));

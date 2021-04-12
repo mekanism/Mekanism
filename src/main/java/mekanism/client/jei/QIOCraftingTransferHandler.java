@@ -201,7 +201,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             }
             if (!missingSlots.isEmpty()) {
                 //If we have any missing slots, report that they are missing to the user and don't allow transferring
-                return handlerHelper.createUserErrorForSlots(MekanismLang.JEI_MISSING_ITEMS.translate().getString(), missingSlots);
+                return handlerHelper.createUserErrorForSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), missingSlots);
             }
         }
         //TODO - 10.1: Validate we have room to shuffle items around to their final locations, maybe make use of a similar system as we

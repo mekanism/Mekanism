@@ -124,6 +124,8 @@ public class CrTItemStackIngredient {
     public static ItemStackIngredient from(IIngredient ingredient, int amount) {
         CrTIngredientHelper.assertValidAmount("ItemStackIngredients", amount);
         //Note: the IIngredient cases also handle item tags/item stacks
+        //TODO - 10.1: Update min CrT version to ensure this is properly immutable
+        // Currently MCMutableItemStack#asVanillaIngredient returns an ingredient while letting the stack be modified
         Ingredient vanillaIngredient = ingredient.asVanillaIngredient();
         if (vanillaIngredient == Ingredient.EMPTY) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be made using the empty ingredient: " + amount);

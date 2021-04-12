@@ -41,7 +41,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static InfusionStackIngredient from(ICrTInfusionStack instance) {
         CrTIngredientHelper.assertValid(instance, "InfusionStackIngredients");
-        return InfusionStackIngredient.from(instance.getInternal());
+        return InfusionStackIngredient.from(instance.getImmutableInternal());
     }
 
     /**

@@ -21,6 +21,14 @@ public class CombinerRecipeManager extends MekanismRecipeManager<CombinerRecipe>
         super(MekanismRecipeType.COMBINING);
     }
 
+    /**
+     * Adds a combining recipe that combines multiple items into a new item. Combiners and Combining Factories can process this recipe type.
+     *
+     * @param name       Name of the new recipe.
+     * @param mainInput  {@link ItemStackIngredient} representing the main item input of the recipe.
+     * @param extraInput {@link ItemStackIngredient} representing the secondary item input of the recipe.
+     * @param output     {@link IItemStack} representing the output of the recipe.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient mainInput, ItemStackIngredient extraInput, IItemStack output) {
         addRecipe(new CombinerIRecipe(getAndValidateName(name), mainInput, extraInput, getAndValidateNotEmpty(output)));

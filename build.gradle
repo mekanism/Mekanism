@@ -320,6 +320,7 @@ repositories {
         url "https://maven.blamejared.com"
         content {
             includeGroup 'com.blamejared.crafttweaker'
+            includeGroup 'com.blamejared.jeitweaker'
         }
     }
     maven {
@@ -373,6 +374,7 @@ repositories {
                         excludeGroup 'appeng'
                         excludeGroup 'org.squiddev'
                         excludeGroup 'com.blamejared.crafttweaker'
+                        excludeGroup 'com.blamejared.jeitweaker'
                     }
                     println("Adding exclusions to ${it.url}")
                 } catch (Exception ignored) {
@@ -411,6 +413,7 @@ dependencies {
     //TODO: Double check if putting implementation here instead of compileOnly and runtimeOnly
     // pollutes the dependencies for our artifact on maven
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
+    runtimeOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
@@ -822,6 +825,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "i-like-wood-biomes-o-plenty-plugin"
                     optionalDependency "jade"
                     optionalDependency "jei"
+                    optionalDependency "jeitweaker"
                     optionalDependency "perviaminvenire"
                     optionalDependency "projecte"
                     optionalDependency "the-one-probe"

@@ -11,7 +11,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.tags.ITag;
-import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -44,11 +43,10 @@ public class CrTFluidStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static FluidStackIngredient from(IFluidStack instance) {
-        FluidStack fluidStack = instance.getInternal();
-        if (fluidStack.isEmpty()) {
+        if (instance.isEmpty()) {
             throw new IllegalArgumentException("FluidStackIngredients cannot be created from an empty stack.");
         }
-        return FluidStackIngredient.from(fluidStack);
+        return FluidStackIngredient.from(instance.getImmutableInternal());
     }
 
     /**

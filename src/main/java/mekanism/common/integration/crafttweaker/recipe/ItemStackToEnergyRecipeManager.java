@@ -19,6 +19,16 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
         super(recipeType);
     }
 
+    /**
+     * Adds a recipe that an item into energy.
+     * <br>
+     * If this is called from the energy conversion recipe manager, this will be an energy conversion recipe and be able to be used in energy slots in Mekanism machines
+     * to convert items to energy.
+     *
+     * @param name   Name of the new recipe.
+     * @param input  {@link ItemStackIngredient} representing the input of the recipe.
+     * @param output Energy output, must be greater than zero.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, FloatingLong output) {
         if (output.isZero()) {

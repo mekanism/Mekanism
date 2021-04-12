@@ -1,6 +1,5 @@
 package mekanism.common.integration.crafttweaker.chemical;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import java.util.function.Function;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -12,7 +11,6 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTMutableChemicalStack.CrTMutableGasStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTMutableChemicalStack.CrTMutableInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTMutableChemicalStack.CrTMutablePigmentStack;
@@ -22,7 +20,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTInfuse
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTPigment;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTSlurry;
 import mekanism.common.util.ChemicalUtil;
-import org.openzen.zencode.java.ZenCodeType;
 
 public abstract class CrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       CRT_CHEMICAL extends ICrTChemical<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>>
@@ -41,12 +38,20 @@ public abstract class CrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STAC
     }
 
     @Override
-    public CRT_STACK mutable() {
+    public CRT_STACK asMutable() {
         return mutableStackConverter.apply(stack);
     }
 
-    @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_GAS_STACK_IMPL)
+    @Override
+    public CRT_STACK asImmutable() {
+        return (CRT_STACK) this;
+    }
+
+    @Override
+    public STACK getImmutableInternal() {
+        return getInternal();
+    }
+
     public static class CrTGasStack extends CrTChemicalStack<Gas, GasStack, ICrTGas, ICrTGasStack> implements ICrTGasStack {
 
         public CrTGasStack(GasStack stack) {
@@ -54,8 +59,6 @@ public abstract class CrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STAC
         }
     }
 
-    @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_INFUSION_STACK_IMPL)
     public static class CrTInfusionStack extends CrTChemicalStack<InfuseType, InfusionStack, ICrTInfuseType, ICrTInfusionStack> implements ICrTInfusionStack {
 
         public CrTInfusionStack(InfusionStack stack) {
@@ -63,8 +66,6 @@ public abstract class CrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STAC
         }
     }
 
-    @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_PIGMENT_STACK_IMPL)
     public static class CrTPigmentStack extends CrTChemicalStack<Pigment, PigmentStack, ICrTPigment, ICrTPigmentStack> implements ICrTPigmentStack {
 
         public CrTPigmentStack(PigmentStack stack) {
@@ -72,8 +73,6 @@ public abstract class CrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STAC
         }
     }
 
-    @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_SLURRY_STACK_IMPL)
     public static class CrTSlurryStack extends CrTChemicalStack<Slurry, SlurryStack, ICrTSlurry, ICrTSlurryStack> implements ICrTSlurryStack {
 
         public CrTSlurryStack(SlurryStack stack) {

@@ -21,6 +21,13 @@ public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<Che
         super(MekanismRecipeType.CRYSTALLIZING);
     }
 
+    /**
+     * Adds a crystallizing recipe that converts a chemical into an item. Chemical Crystallizers can process this recipe type.
+     *
+     * @param name   Name of the new recipe.
+     * @param input  {@link IChemicalStackIngredient} representing the input of the recipe.
+     * @param output {@link IItemStack} representing the output of the recipe.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, IChemicalStackIngredient<?, ?> input, IItemStack output) {
         addRecipe(new ChemicalCrystallizerIRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));

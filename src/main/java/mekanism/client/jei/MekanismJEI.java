@@ -1,5 +1,6 @@
 package mekanism.client.jei;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,6 +51,7 @@ import mekanism.client.jei.machine.SPSRecipeCategory;
 import mekanism.client.jei.machine.SawmillRecipeCategory;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.integration.crafttweaker.jeitweaker.JEITweakerHelper;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
@@ -73,6 +75,8 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
+import mezz.jei.api.runtime.IIngredientManager;
+import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
@@ -274,7 +278,6 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registry) {
-        //Register the recipes and their catalysts if enabled
         RecipeRegistryHelper.register(registry, MekanismBlocks.ENERGIZED_SMELTER, MekanismRecipeType.SMELTING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER, MekanismRecipeType.ENRICHING);
         RecipeRegistryHelper.register(registry, MekanismBlocks.CRUSHER, MekanismRecipeType.CRUSHING);
@@ -305,6 +308,14 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, GAS_CONVERSION, MekanismRecipeType.GAS_CONVERSION);
         RecipeRegistryHelper.register(registry, INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
         //TODO - 10.1: Do something similar as we do to fission, and make it so that the boiler can shows that it can work?
+
+        if (Mekanism.hooks.JEITweakerLoaded) {
+            //JEI Tweaker compat
+            JEITweakerHelper.getGasDescriptions().forEach((gas, descriptions) -> registry.addIngredientInfo(gas, TYPE_GAS, descriptions));
+            JEITweakerHelper.getInfusionDescriptions().forEach((infuseType, descriptions) -> registry.addIngredientInfo(infuseType, TYPE_INFUSION, descriptions));
+            JEITweakerHelper.getPigmentDescriptions().forEach((pigment, descriptions) -> registry.addIngredientInfo(pigment, TYPE_PIGMENT, descriptions));
+            JEITweakerHelper.getSlurryDescriptions().forEach((slurry, descriptions) -> registry.addIngredientInfo(slurry, TYPE_SLURRY, descriptions));
+        }
     }
 
     @Override
@@ -356,5 +367,23 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 19, 9, 35, 36);
         registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, QIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
         registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, PortableQIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
+    }
+
+    @Override
+    public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
+        if (Mekanism.hooks.JEITweakerLoaded) {
+            //JEI Tweaker compat
+            IIngredientManager ingredientManager = jeiRuntime.getIngredientManager();
+            removeIfNotEmpty(ingredientManager, TYPE_GAS, JEITweakerHelper.getHiddenGasStacks());
+            removeIfNotEmpty(ingredientManager, TYPE_INFUSION, JEITweakerHelper.getHiddenInfusionStacks());
+            removeIfNotEmpty(ingredientManager, TYPE_PIGMENT, JEITweakerHelper.getHiddenPigmentStacks());
+            removeIfNotEmpty(ingredientManager, TYPE_SLURRY, JEITweakerHelper.getHiddenSlurryStacks());
+        }
+    }
+
+    private <T> void removeIfNotEmpty(IIngredientManager ingredientManager, IIngredientType<T> ingredientType, Collection<T> ingredients) {
+        if (!ingredients.isEmpty()) {
+            ingredientManager.removeIngredientsAtRuntime(ingredientType, ingredients);
+        }
     }
 }

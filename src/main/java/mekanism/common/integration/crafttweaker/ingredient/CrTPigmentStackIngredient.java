@@ -41,7 +41,7 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static PigmentStackIngredient from(ICrTPigmentStack instance) {
         CrTIngredientHelper.assertValid(instance, "PigmentStackIngredients");
-        return PigmentStackIngredient.from(instance.getInternal());
+        return PigmentStackIngredient.from(instance.getImmutableInternal());
     }
 
     /**

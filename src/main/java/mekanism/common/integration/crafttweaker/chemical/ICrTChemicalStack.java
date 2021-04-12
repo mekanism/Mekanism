@@ -147,7 +147,15 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      * @return A new Stack, that is mutable.
      */
     @ZenCodeType.Method
-    CRT_STACK mutable();
+    CRT_STACK asMutable();
+
+    /**
+     * Makes this stack immutable
+     *
+     * @return An immutable Stack. This is either a new stack if the current stack is mutable, or the same stack if it is already immutable.
+     */
+    @ZenCodeType.Method
+    CRT_STACK asImmutable();
 
     /**
      * Copies the stack. Only needed when mutable stacks are involved.
@@ -173,6 +181,15 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      * @return The actual ChemicalStack.
      */
     STACK getInternal();
+
+    /**
+     * Mod devs should use this to get the actual ChemicalStack.
+     *
+     * @return The actual ChemicalStack.
+     */
+    default STACK getImmutableInternal() {
+        return copy().getInternal();
+    }
 
     /**
      * Whether or not this ChemicalStack's chemical type is equal to the other defined ChemicalStack.

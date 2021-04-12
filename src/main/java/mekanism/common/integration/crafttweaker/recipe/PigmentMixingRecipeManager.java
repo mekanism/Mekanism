@@ -21,6 +21,15 @@ public class PigmentMixingRecipeManager extends MekanismRecipeManager<PigmentMix
         super(MekanismRecipeType.PIGMENT_MIXING);
     }
 
+    /**
+     * Adds a pigment mixing recipe that converts two pigments into another pigment. Pigment mixers can process this recipe type and the pigments can be put in any order
+     * into the mixer.
+     *
+     * @param name       Name of the new recipe.
+     * @param leftInput  {@link PigmentStackIngredient} representing the "left" pigment input of the recipe.
+     * @param rightInput {@link PigmentStackIngredient} representing the "right" pigment input of the recipe.
+     * @param output     {@link ICrTPigmentStack} representing the output of the recipe.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, PigmentStackIngredient leftInput, PigmentStackIngredient rightInput, ICrTPigmentStack output) {
         addRecipe(new PigmentMixingIRecipe(getAndValidateName(name), leftInput, rightInput, getAndValidateNotEmpty(output)));

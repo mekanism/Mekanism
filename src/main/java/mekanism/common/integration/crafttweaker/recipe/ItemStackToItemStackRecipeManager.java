@@ -23,6 +23,20 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
         super(recipeType);
     }
 
+    /**
+     * Adds a recipe that converts an item into another item.
+     * <br>
+     * If this is called from the crushing recipe manager, this will be a crushing recipe. Crushers and Crushing Factories can process this recipe type.
+     * <br>
+     * If this is called from the enriching recipe manager, this will be an enriching recipe. Enrichment Chambers and Enriching Factories can process this recipe type.
+     * <br>
+     * If this is called from the smelting recipe manager, this will be a smelting recipe. Energized Smelters, Smelting Factories, and Robits can process this recipe
+     * type.
+     *
+     * @param name   Name of the new recipe.
+     * @param input  {@link ItemStackIngredient} representing the input of the recipe.
+     * @param output {@link IItemStack} representing the output of the recipe.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, IItemStack output) {
         addRecipe(makeRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));
@@ -80,7 +94,6 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
 
         private EnergizedSmelterRecipeManager() {
             super(MekanismRecipeType.SMELTING);
-            //TODO - 10.1: Allow removing regular smelting recipes from the energized smelter just like we allowed in 1.12
         }
 
         @Override

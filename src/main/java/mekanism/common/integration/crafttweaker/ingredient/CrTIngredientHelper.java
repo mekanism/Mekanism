@@ -44,7 +44,7 @@ public class CrTIngredientHelper {
      * Validates that the chemical stack is not empty. If it is, an error is thrown.
      */
     static void assertValid(ICrTChemicalStack<?, ?, ?, ?> instance, String ingredientType) {
-        if (instance.getInternal().isEmpty()) {
+        if (instance.isEmpty()) {
             throw new IllegalArgumentException(ingredientType + " cannot be created from an empty stack.");
         }
     }

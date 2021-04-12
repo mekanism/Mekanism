@@ -41,7 +41,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static SlurryStackIngredient from(ICrTSlurryStack instance) {
         CrTIngredientHelper.assertValid(instance, "SlurryStackIngredients");
-        return SlurryStackIngredient.from(instance.getInternal());
+        return SlurryStackIngredient.from(instance.getImmutableInternal());
     }
 
     /**

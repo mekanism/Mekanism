@@ -21,6 +21,16 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
         super(recipeType);
     }
 
+    /**
+     * Adds a recipe that converts a fluid and slurry to another slurry.
+     * <br>
+     * If this is called from the washing recipe manager, this will be a washing recipe and able to be processed in a chemical washer.
+     *
+     * @param name        Name of the new recipe.
+     * @param fluidInput  {@link FluidStackIngredient} representing the fluid input of the recipe.
+     * @param slurryInput {@link SlurryStackIngredient} representing the slurry input of the recipe.
+     * @param output      {@link ICrTSlurryStack} representing the output of the recipe.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient fluidInput, SlurryStackIngredient slurryInput, ICrTSlurryStack output) {
         addRecipe(makeRecipe(getAndValidateName(name), fluidInput, slurryInput, getAndValidateNotEmpty(output)));

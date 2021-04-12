@@ -20,6 +20,15 @@ public abstract class ItemStackToPigmentRecipeManager extends MekanismRecipeMana
         super(recipeType);
     }
 
+    /**
+     * Adds a recipe that an item into a pigment.
+     * <br>
+     * If this is called from the pigment extracting recipe manager, this will be a pigment extracting recipe. Pigment Extractors can process this recipe type.
+     *
+     * @param name   Name of the new recipe.
+     * @param input  {@link ItemStackIngredient} representing the input of the recipe.
+     * @param output {@link ICrTPigmentStack} representing the output of the recipe.
+     */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, ICrTPigmentStack output) {
         addRecipe(makeRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));

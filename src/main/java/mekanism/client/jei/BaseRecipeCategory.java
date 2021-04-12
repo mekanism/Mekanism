@@ -117,8 +117,14 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
+    @Deprecated
     public String getTitle() {
-        return component.getString();
+        return getTitleAsTextComponent().getString();
+    }
+
+    @Override
+    public ITextComponent getTitleAsTextComponent() {
+        return component;
     }
 
     @Override

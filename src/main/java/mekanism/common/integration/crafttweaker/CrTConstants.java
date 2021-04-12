@@ -1,5 +1,8 @@
 package mekanism.common.integration.crafttweaker;
 
+/**
+ * Constants we use throughout our CraftTweaker integration.
+ */
 public class CrTConstants {
 
     public static final String BRACKET_GAS = "gas";
@@ -11,35 +14,16 @@ public class CrTConstants {
     public static final String CLASS_BRACKET_HANDLER = "mekanism.api.BracketHandlers";
     public static final String CLASS_BRACKET_VALIDATORS = "mekanism.api.BracketValidators";
 
-    //TODO - 10.1: Figure out properly which things need registration and annotation and which don't in terms of concrete vs interfaces
-    // We may be registering more things than needed currently, or at least naming more things than needed
-    //TODO - 10.1: We also should re-evaluate all the paths we use, as the impl stuff potentially shouldn't be in an api package
-    public static final String CLASS_CHEMICAL = "mekanism.api.chemical.IChemical";
-    public static final String CLASS_CHEMICAL_STACK = "mekanism.api.chemical.IChemicalStack";
-
-    public static final String CLASS_GAS = "mekanism.api.chemical.gas.IGas";
-    public static final String CLASS_GAS_IMPL = "mekanism.api.chemical.gas.Gas";
-    public static final String CLASS_GAS_STACK = "mekanism.api.chemical.gas.IGasStack";
-    public static final String CLASS_GAS_STACK_IMPL = "mekanism.api.chemical.gas.GasStack";
-    public static final String CLASS_GAS_STACK_MUTABLE = "mekanism.api.chemical.gas.MutableGasStack";
-
-    public static final String CLASS_INFUSE_TYPE = "mekanism.api.chemical.infuse.IInfuseType";
-    public static final String CLASS_INFUSE_TYPE_IMPL = "mekanism.api.chemical.infuse.InfuseType";
-    public static final String CLASS_INFUSION_STACK = "mekanism.api.chemical.infuse.IInfusionStack";
-    public static final String CLASS_INFUSION_STACK_IMPL = "mekanism.api.chemical.infuse.InfusionStack";
-    public static final String CLASS_INFUSION_STACK_MUTABLE = "mekanism.api.chemical.infuse.MutableInfusionStack";
-
-    public static final String CLASS_PIGMENT = "mekanism.api.chemical.pigment.IPigment";
-    public static final String CLASS_PIGMENT_IMPL = "mekanism.api.chemical.pigment.Pigment";
-    public static final String CLASS_PIGMENT_STACK = "mekanism.api.chemical.pigment.IPigmentStack";
-    public static final String CLASS_PIGMENT_STACK_IMPL = "mekanism.api.chemical.pigment.PigmentStack";
-    public static final String CLASS_PIGMENT_STACK_MUTABLE = "mekanism.api.chemical.pigment.MutablePigmentStack";
-
-    public static final String CLASS_SLURRY = "mekanism.api.chemical.slurry.ISlurry";
-    public static final String CLASS_SLURRY_IMPL = "mekanism.api.chemical.slurry.Slurry";
-    public static final String CLASS_SLURRY_STACK = "mekanism.api.chemical.slurry.ISlurryStack";
-    public static final String CLASS_SLURRY_STACK_IMPL = "mekanism.api.chemical.slurry.SlurryStack";
-    public static final String CLASS_SLURRY_STACK_MUTABLE = "mekanism.api.chemical.slurry.MutableSlurryStack";
+    public static final String CLASS_CHEMICAL = "mekanism.api.chemical.Chemical";
+    public static final String CLASS_GAS = "mekanism.api.chemical.Gas";
+    public static final String CLASS_INFUSE_TYPE = "mekanism.api.chemical.InfuseType";
+    public static final String CLASS_PIGMENT = "mekanism.api.chemical.Pigment";
+    public static final String CLASS_SLURRY = "mekanism.api.chemical.Slurry";
+    public static final String CLASS_CHEMICAL_STACK = "mekanism.api.chemical.ChemicalStack";
+    public static final String CLASS_GAS_STACK = "mekanism.api.chemical.GasStack";
+    public static final String CLASS_INFUSION_STACK = "mekanism.api.chemical.InfusionStack";
+    public static final String CLASS_PIGMENT_STACK = "mekanism.api.chemical.PigmentStack";
+    public static final String CLASS_SLURRY_STACK = "mekanism.api.chemical.SlurryStack";
 
     public static final String CLASS_CHEMICAL_TAG_MANAGER = "mekanism.api.tag.ChemicalTagManager";
     public static final String CLASS_GAS_TAG_MANAGER = "mekanism.api.tag.GasTagManager";
@@ -110,6 +94,7 @@ public class CrTConstants {
 
     //Expansions, declared below classes we we can reference the partial string parts of our other types
     public static final String EXPANSION_TARGET_NSS_RESOLVER = "mods.projecte.NSSResolver";
+    public static final String EXPANSION_TARGET_JEITWEAKER = "mods.jei.JEI";
     public static final String EXPANSION_TARGET_INGREDIENT_LIST = "crafttweaker.api.item.IngredientList";
     public static final String EXPANSION_TARGET_ITEM_TAG = "crafttweaker.api.tag.MCTag<crafttweaker.api.item.MCItemDefinition>";
     public static final String EXPANSION_TARGET_GAS_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_GAS + ">";

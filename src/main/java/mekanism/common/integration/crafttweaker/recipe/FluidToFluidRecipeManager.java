@@ -20,9 +20,18 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
         super(recipeType);
     }
 
+    /**
+     * Adds a recipe that converts a fluid into another fluid.
+     * <br>
+     * If this is called from the evaporating recipe manager, this will be an evaporating recipe and able to be processed in a thermal evaporation plant.
+     *
+     * @param name   Name of the new recipe.
+     * @param input  {@link FluidStackIngredient} representing the input of the recipe.
+     * @param output {@link IFluidStack} representing the output of the recipe.
+     */
     @ZenCodeType.Method
-    public void addRecipe(String name, FluidStackIngredient fluidInput, IFluidStack output) {
-        addRecipe(makeRecipe(getAndValidateName(name), fluidInput, getAndValidateNotEmpty(output)));
+    public void addRecipe(String name, FluidStackIngredient input, IFluidStack output) {
+        addRecipe(makeRecipe(getAndValidateName(name), input, getAndValidateNotEmpty(output)));
     }
 
     protected abstract FluidToFluidIRecipe makeRecipe(ResourceLocation id, FluidStackIngredient input, FluidStack output);
