@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**Describe the the feature you'd like**
+**Describe the feature you'd like**
 A clear and concise description of what you want.
 
 **Describe alternatives you've considered**
