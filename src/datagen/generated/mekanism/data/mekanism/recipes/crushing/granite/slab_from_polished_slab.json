@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:polished_granite_slab"
+    }
+  },
+  "output": {
+    "item": "minecraft:granite_slab"
+  }
+}

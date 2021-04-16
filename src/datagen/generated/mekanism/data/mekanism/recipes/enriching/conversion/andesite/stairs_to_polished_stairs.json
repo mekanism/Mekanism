@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:andesite_stairs"
+    }
+  },
+  "output": {
+    "item": "minecraft:polished_andesite_stairs"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:polished_andesite"
+    }
+  },
+  "output": {
+    "item": "minecraft:andesite"
+  }
+}

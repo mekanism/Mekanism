@@ -6,6 +6,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.openzen.zencode.java.ZenCodeType;
 public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TYPE>> extends CrTBaseExampleRecipeComponent {
 
     private final List<RecipeMethod> methods = new ArrayList<>();
+    private final List<RecipeExample> examples = new ArrayList<>();
     private final BUILDER_TYPE parent;
 
     public CrTExampleRecipeComponentBuilder(BUILDER_TYPE parent, MekanismRecipeManager<?> recipeManager, String... methodNames) {
@@ -64,6 +66,16 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
             throw new RuntimeException("Recipe manager: '" + recipeManagerClass.getSimpleName() + "' does not contain any implementations for methods with names: ["
                                        + String.join(", ", missingMethods) + "].");
         }
+        //Sort the methods into a predetermined order by method name, number of parameters, rough estimation of the signature
+        methods.sort(Comparator.comparing((RecipeMethod method) -> method.methodName)
+              .thenComparingInt((RecipeMethod method) -> method.parameterTypes.size())
+              .thenComparing((RecipeMethod method) -> {
+                  StringBuilder pseudoPath = new StringBuilder();
+                  for (Class<?> parameterType : method.parameterTypes) {
+                      pseudoPath.append(parameterType.getName());
+                  }
+                  return pseudoPath.toString();
+              }));
     }
 
     public CrTExampleRecipeComponentBuilder<BUILDER_TYPE> addExample(Object... params) {
@@ -87,7 +99,8 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
                     }
                 }
                 if (matches) {
-                    method.examples.add(params);
+                    examples.add(new RecipeExample(method, params));
+                    method.hasExample = true;
                     return this;
                 }
             }
@@ -111,24 +124,22 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         }
         //And an extra newline before implementations
         stringBuilder.append('\n');
-        for (RecipeMethod method : methods) {
-            for (Object[] exampleParams : method.examples) {
-                int paramCount = method.parameterTypes.size();
-                if (paramCount == 0) {
-                    appendRecipeMethodStart(stringBuilder, method.methodName);
-                    stringBuilder.append(");\n");
-                } else {
-                    List<String>[] parameterRepresentations = new List[paramCount];
-                    for (int i = 0; i < paramCount; i++) {
-                        Object exampleParam = exampleParams[i];
-                        List<String> representations = parent.getExampleProvider().getConversionRepresentations(method.parameterTypes.get(i), exampleParam);
-                        if (representations.isEmpty()) {
-                            throw new RuntimeException("No matching representations found for parameter " + i + " of type " + exampleParam.getClass().getSimpleName());
-                        }
-                        parameterRepresentations[i] = representations;
+        for (RecipeExample example : examples) {
+            int paramCount = example.method.parameterTypes.size();
+            if (paramCount == 0) {
+                appendRecipeMethodStart(stringBuilder, example.method.methodName);
+                stringBuilder.append(");\n");
+            } else {
+                List<String>[] parameterRepresentations = new List[paramCount];
+                for (int i = 0; i < paramCount; i++) {
+                    Object exampleParam = example.params[i];
+                    List<String> representations = parent.getExampleProvider().getConversionRepresentations(example.method.parameterTypes.get(i), exampleParam);
+                    if (representations.isEmpty()) {
+                        throw new RuntimeException("No matching representations found for parameter " + i + " of type " + exampleParam.getClass().getSimpleName());
                     }
-                    examplesAndVariation(stringBuilder, method.methodName, parameterRepresentations);
+                    parameterRepresentations[i] = representations;
                 }
+                examplesAndVariation(stringBuilder, example.method.methodName, parameterRepresentations);
             }
         }
         return stringBuilder.toString();
@@ -204,7 +215,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
 
     private void validate() {
         for (RecipeMethod method : methods) {
-            if (method.examples.isEmpty()) {
+            if (!method.hasExample) {
                 StringBuilder signature = new StringBuilder(method.methodName);
                 signature.append("(");
                 method.appendParameters(signature, (sb, name, type) -> sb
@@ -240,7 +251,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         for (Annotation annotation : parameter.getAnnotations()) {
             if (annotation instanceof ZenCodeType.Optional || annotation instanceof ZenCodeType.OptionalInt ||
                 annotation instanceof ZenCodeType.OptionalLong || annotation instanceof ZenCodeType.OptionalFloat ||
-                annotation instanceof ZenCodeType.OptionalDouble ||annotation instanceof ZenCodeType.OptionalString ||
+                annotation instanceof ZenCodeType.OptionalDouble || annotation instanceof ZenCodeType.OptionalString ||
                 annotation instanceof ZenCodeType.OptionalBoolean || annotation instanceof ZenCodeType.OptionalChar) {
                 return true;
             }
@@ -250,10 +261,10 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
 
     private static class RecipeMethod {
 
-        private final List<Object[]> examples = new ArrayList<>();
         private final List<String> parameterNames = new ArrayList<>();
         private final List<Class<?>> parameterTypes = new ArrayList<>();
         private final String methodName;
+        private boolean hasExample;
 
         public RecipeMethod(String methodName, LinkedHashMap<String, Class<?>> parameters) {
             this.methodName = methodName;
@@ -270,6 +281,17 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
                 }
                 parameterWriter.accept(stringBuilder, parameterNames.get(i), parameterTypes.get(i));
             }
+        }
+    }
+
+    private static class RecipeExample {
+
+        private final RecipeMethod method;
+        private final Object[] params;
+
+        public RecipeExample(RecipeMethod method, Object[] params) {
+            this.method = method;
+            this.params = params;
         }
     }
 }
