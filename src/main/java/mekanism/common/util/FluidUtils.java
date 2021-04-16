@@ -125,7 +125,7 @@ public final class FluidUtils {
                         if (player.isCreative()) {
                             filled = true;
                         } else if (!container.isEmpty()) {
-                            if (container.getCount() == 1) {
+                            if (itemStack.getCount() == 1) {
                                 player.setItemInHand(hand, container);
                                 filled = true;
                             } else if (player.inventory.add(container)) {
