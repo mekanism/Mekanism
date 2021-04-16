@@ -40,6 +40,7 @@ import net.minecraft.item.Items;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 @ParametersAreNonnullByDefault
 public class GeneratorsRecipeProvider extends BaseRecipeProvider {
@@ -52,13 +53,12 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     private static final char COPPER_CHAR = 'C';
     private static final char FURNACE_CHAR = 'F';
 
-    public GeneratorsRecipeProvider(DataGenerator gen) {
-        super(gen, MekanismGenerators.MODID);
+    public GeneratorsRecipeProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
+        super(gen, existingFileHelper, MekanismGenerators.MODID);
     }
 
     @Override
-    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
-        super.buildShapelessRecipes(consumer);
+    protected void addRecipes(Consumer<IFinishedRecipe> consumer) {
         addGeneratorRecipes(consumer);
         addFissionReactorRecipes(consumer);
         addFusionReactorRecipes(consumer);

@@ -17,7 +17,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentBuilder;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryBuilder;
-import mekanism.common.Mekanism;
+import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 
@@ -75,8 +75,8 @@ public class CrTContentUtils {
           @Nullable Map<ResourceLocation, BUILDER> queuedChemicals, ResourceLocation registryName, BUILDER builder) {
         //Only queue our chemicals for registration on the first run of our loader
         if (queuedChemicals == null) {
-            CraftTweakerAPI.logError("Cannot register %s '%s' since it was called too late. Registering must be done during '#loader mekanismcontent'!",
-                  type, registryName);
+            CraftTweakerAPI.logError("Cannot register %s '%s' since it was called too late. Registering must be done during '#loader " +
+                                     CrTConstants.CONTENT_LOADER + "'!", type, registryName);
         } else if (queuedChemicals.put(registryName, builder) == null) {
             CraftTweakerAPI.logInfo("Queueing %s '%s' for registration.", type, registryName);
         } else {
@@ -88,7 +88,7 @@ public class CrTContentUtils {
         //We register and load our content scripts here in the first registry event of ours for our types of content
         // to make sure that the new registry events have fired and that the registries exist and the bracket handler
         // validators won't choke
-        CraftTweakerAPI.loadScripts(new ScriptLoadingOptions().setLoaderName(Mekanism.MODID + "content").execute());
+        CraftTweakerAPI.loadScripts(new ScriptLoadingOptions().setLoaderName(CrTConstants.CONTENT_LOADER).execute());
         registerQueuedChemicals(event, queuedGases, () -> queuedGases = null, Gas::new, "Gas", "gases");
     }
 

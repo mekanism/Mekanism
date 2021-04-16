@@ -1,9 +1,13 @@
 package mekanism.common.integration.crafttweaker;
 
+import mekanism.common.Mekanism;
+
 /**
  * Constants we use throughout our CraftTweaker integration.
  */
 public class CrTConstants {
+
+    public static final String CONTENT_LOADER = Mekanism.MODID + "content";
 
     public static final String BRACKET_GAS = "gas";
     public static final String BRACKET_INFUSE_TYPE = "infuse_type";

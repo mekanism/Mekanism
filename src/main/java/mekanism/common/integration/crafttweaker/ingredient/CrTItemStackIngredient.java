@@ -2,6 +2,7 @@ package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCIngredientList;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
@@ -63,18 +64,6 @@ public class CrTItemStackIngredient {
     }
 
     /**
-     * Creates a {@link ItemStackIngredient} that matches a given item tag with an amount of one.
-     *
-     * @param itemTag Tag to match
-     *
-     * @return A {@link ItemStackIngredient} that matches a given item tag with an amount of one.
-     */
-    @ZenCodeType.StaticExpansionMethod
-    public static ItemStackIngredient from(MCTag<Item> itemTag) {
-        return from(itemTag, 1);
-    }
-
-    /**
      * Creates a {@link ItemStackIngredient} that matches a given item tag with a given amount.
      *
      * @param itemTag Tag to match
@@ -86,6 +75,18 @@ public class CrTItemStackIngredient {
     public static ItemStackIngredient from(MCTag<Item> itemTag, int amount) {
         ITag<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
         return ItemStackIngredient.from(tag, amount);
+    }
+
+    /**
+     * Creates a {@link ItemStackIngredient} that matches a given item tag with an amount of one.
+     *
+     * @param itemTag Tag to match
+     *
+     * @return A {@link ItemStackIngredient} that matches a given item tag with an amount of one.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static ItemStackIngredient from(MCTag<Item> itemTag) {
+        return from(itemTag, 1);
     }
 
     /**
@@ -113,6 +114,18 @@ public class CrTItemStackIngredient {
     }
 
     /**
+     * Creates a {@link ItemStackIngredient} that matches a given ingredient with amount.
+     *
+     * @param ingredient Ingredient and amount to match
+     *
+     * @return A {@link ItemStackIngredient} that matches a given ingredient with amount.
+     */
+    @ZenCodeType.StaticExpansionMethod
+    public static ItemStackIngredient from(IIngredientWithAmount ingredient) {
+        return from(ingredient.getIngredient(), ingredient.getAmount());
+    }
+
+    /**
      * Creates a {@link ItemStackIngredient} that matches a given ingredient and amount.
      *
      * @param ingredient Ingredient to match
@@ -124,8 +137,6 @@ public class CrTItemStackIngredient {
     public static ItemStackIngredient from(IIngredient ingredient, int amount) {
         CrTIngredientHelper.assertValidAmount("ItemStackIngredients", amount);
         //Note: the IIngredient cases also handle item tags/item stacks
-        //TODO - 10.1: Update min CrT version to ensure this is properly immutable
-        // Currently MCMutableItemStack#asVanillaIngredient returns an ingredient while letting the stack be modified
         Ingredient vanillaIngredient = ingredient.asVanillaIngredient();
         if (vanillaIngredient == Ingredient.EMPTY) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be made using the empty ingredient: " + amount);

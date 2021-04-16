@@ -205,7 +205,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             if (amount > 1) {
                 json.addProperty(JsonConstants.AMOUNT, amount);
             }
-            json.add("ingredient", ingredient.toJson());
+            json.add(JsonConstants.INGREDIENT, ingredient.toJson());
             return json;
         }
 

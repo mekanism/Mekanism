@@ -147,7 +147,6 @@ public class JEITweakerExpansion {
             this.stack = stack.asImmutable();
             this.descriptions = new ITextComponent[descriptions.length];
             for (int i = 0; i < descriptions.length; i++) {
-                //TODO - 10.1: Update min CrT version to ensure this is properly immutable https://github.com/CraftTweaker/CraftTweaker/issues/1236
                 this.descriptions[i] = descriptions[i].getInternal();
             }
         }

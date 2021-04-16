@@ -1,4 +1,4 @@
-package mekanism.common.integration;
+package mekanism.common.integration.projecte;
 
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
@@ -18,7 +18,6 @@ public class MekanismCustomConversions extends CustomConversionProvider {
 
     @Override
     protected void addCustomConversions() {
-        //A lot of these values are based on ProjectE's 1.12 values
         createConversionBuilder(Mekanism.rl("defaults"))
               .comment("Default values for Mekanism items.")
               .before(MekanismItems.SALT, 8)

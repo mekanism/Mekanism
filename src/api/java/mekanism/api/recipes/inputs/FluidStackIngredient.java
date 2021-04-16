@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NonNull;
+import mekanism.api.providers.IFluidProvider;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.FluidTags;
@@ -32,6 +33,10 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
 
     public static FluidStackIngredient from(@Nonnull Fluid instance, int amount) {
         return from(new FluidStack(instance, amount));
+    }
+
+    public static FluidStackIngredient from(@Nonnull IFluidProvider provider, int amount) {
+        return from(provider.getFluidStack(amount));
     }
 
     public static FluidStackIngredient from(@Nonnull FluidStack instance) {

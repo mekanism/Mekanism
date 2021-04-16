@@ -3,6 +3,7 @@ package mekanism.common.integration.crafttweaker;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.item.MCIngredientList;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
@@ -45,6 +46,19 @@ public class CrTIngredientExpansion {
          */
         @ZenCodeType.Caster(implicit = true)
         public static ItemStackIngredient asItemStackIngredient(IIngredient _this) {
+            return CrTItemStackIngredient.from(_this);
+        }
+    }
+
+    @ZenRegister
+    @TypedExpansion(IIngredientWithAmount.class)
+    public static class IIngredientWithAmountExpansion {
+
+        /**
+         * Allows for casting {@link IIngredientWithAmount}s to {@link ItemStackIngredient} without even needing to specify the cast.
+         */
+        @ZenCodeType.Caster(implicit = true)
+        public static ItemStackIngredient asItemStackIngredient(IIngredientWithAmount _this) {
             return CrTItemStackIngredient.from(_this);
         }
     }
