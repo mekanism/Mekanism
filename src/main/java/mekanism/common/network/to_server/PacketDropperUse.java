@@ -16,7 +16,10 @@ import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
@@ -29,6 +32,7 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -70,6 +74,15 @@ public class PacketDropperUse implements IMekanismPacket {
                         handleTankType(structure, player, stack, Coord4D.get(tile));
                     }
                 } else {
+                    if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
+                        //If the dropper is being used to dump the tank and the player is not in creative
+                        // check if the block the tank is in is a tiered block and if it is and it is creative
+                        // don't allow clearing the tank
+                        Block block = tile.getBlockType();
+                        if (Attribute.has(block, AttributeTier.class) && Attribute.get(block, AttributeTier.class).getTier().getBaseTier() == BaseTier.CREATIVE) {
+                            return;
+                        }
+                    }
                     handleTankType(tile, player, stack, Coord4D.get(tile));
                 }
             }
