@@ -112,17 +112,20 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return builder.build();
     }
 
-    public static void alignPlayer(ServerPlayerEntity player, BlockPos position) {
+    public static void alignPlayer(ServerPlayerEntity player, BlockPos target, TileEntityTeleporter teleporter) {
         Direction side = null;
-        float yaw = player.yRot;
-        BlockPos upperPos = position.above();
-        for (Direction iterSide : MekanismUtils.SIDE_DIRS) {
-            if (player.level.isEmptyBlock(upperPos.relative(iterSide))) {
-                side = iterSide;
-                break;
+        if (teleporter.frameDirection != null && teleporter.frameDirection.getAxis().isHorizontal()) {
+            //If the frame is horizontal always face towards the other portion of the frame
+            side = teleporter.frameDirection;
+        } else {
+            for (Direction iterSide : MekanismUtils.SIDE_DIRS) {
+                if (player.level.isEmptyBlock(target.relative(iterSide))) {
+                    side = iterSide;
+                    break;
+                }
             }
         }
-
+        float yaw = player.yRot;
         if (side != null) {
             switch (side) {
                 case NORTH:
@@ -230,6 +233,30 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return 1;
     }
 
+    public BlockPos getTeleporterTargetPos() {
+        if (frameDirection == null) {
+            return worldPosition.above();
+        } else if (frameDirection == Direction.DOWN) {
+            return worldPosition.below(2);
+        }
+        return worldPosition.relative(frameDirection);
+    }
+
+    /**
+     * @apiNote Only call this from the server
+     */
+    public void sendTeleportParticles() {
+        BlockPos teleporterTargetPos = getTeleporterTargetPos();
+        Direction offsetDirection;
+        if (frameDirection == null || frameDirection.getAxis().isVertical()) {
+            //Down is up as well because we have the bottom pos be the bottom of the two spots
+            offsetDirection = Direction.UP;
+        } else {
+            offsetDirection = frameDirection;
+        }
+        Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(teleporterTargetPos, offsetDirection), level, teleporterTargetPos);
+    }
+
     /**
      * @apiNote Only call this from the server
      */
@@ -247,6 +274,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             List<Entity> entitiesToTeleport = getToTeleport(sameDimension);
             if (!entitiesToTeleport.isEmpty()) {
                 Set<Coord4D> activeCoords = getFrequency(FrequencyType.TELEPORTER).getActiveCoords();
+                BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
                 for (Entity entity : entitiesToTeleport) {
                     markTeleported(teleporter, entity, sameDimension);
                     teleporter.teleDelay = 5;
@@ -256,18 +284,15 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     double oldX = entity.getX();
                     double oldY = entity.getY();
                     double oldZ = entity.getZ();
-                    Entity teleportedEntity = teleportEntityTo(entity, closestCoords, teleporter);
+                    Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporterTargetPos);
                     if (teleportedEntity instanceof ServerPlayerEntity) {
-                        alignPlayer((ServerPlayerEntity) teleportedEntity, closestPos);
+                        alignPlayer((ServerPlayerEntity) teleportedEntity, teleporterTargetPos, teleporter);
                     }
                     for (Coord4D coords : activeCoords) {
-                        BlockPos coordsPos = coords.getPos();
-                        TileEntityTeleporter tile = WorldUtils.getTileEntity(TileEntityTeleporter.class, level, coordsPos);
+                        World world = level.dimension() == coords.dimension ? level : currentServer.getLevel(coords.dimension);
+                        TileEntityTeleporter tile = WorldUtils.getTileEntity(TileEntityTeleporter.class, world, coords.getPos());
                         if (tile != null) {
-                            if (tile.frameDirection != null) {
-                                coordsPos = coordsPos.below().relative(tile.frameDirection);
-                            }
-                            Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(coordsPos), currentServer.getLevel(coords.dimension), coordsPos);
+                            tile.sendTeleportParticles();
                         }
                     }
                     energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.INTERNAL);
@@ -296,16 +321,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Nullable
-    public static Entity teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
-        BlockPos target = coord.getPos();
-        if (teleporter.frameDirection == null) {
-            target = target.above();
-        } else if (teleporter.frameDirection == Direction.DOWN) {
-            target = target.below(2);
-        } else {
-            target = target.relative(teleporter.frameDirection);
-        }
-        if (entity.getCommandSenderWorld().dimension() == coord.dimension) {
+    public static Entity teleportEntityTo(Entity entity, World targetWorld, BlockPos target) {
+        if (entity.getCommandSenderWorld().dimension() == targetWorld.dimension()) {
             entity.teleportTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
             if (!entity.getPassengers().isEmpty()) {
                 //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
@@ -313,36 +330,32 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             }
             return entity;
         }
-        ServerWorld newWorld = ((ServerWorld) teleporter.getLevel()).getServer().getLevel(coord.dimension);
-        if (newWorld != null) {
-            Vector3d destination = new Vector3d(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
-            //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
-            List<Entity> passengers = entity.getPassengers();
-            return entity.changeDimension(newWorld, new ITeleporter() {
-                @Override
-                public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                    Entity repositionedEntity = repositionEntity.apply(false);
-                    if (repositionedEntity != null) {
-                        //Teleport all passengers to the other dimension and then make them start riding the entity again
-                        for (Entity passenger : passengers) {
-                            teleportPassenger(destWorld, destination, repositionedEntity, passenger);
-                        }
+        Vector3d destination = new Vector3d(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+        //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
+        List<Entity> passengers = entity.getPassengers();
+        return entity.changeDimension((ServerWorld) targetWorld, new ITeleporter() {
+            @Override
+            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                Entity repositionedEntity = repositionEntity.apply(false);
+                if (repositionedEntity != null) {
+                    //Teleport all passengers to the other dimension and then make them start riding the entity again
+                    for (Entity passenger : passengers) {
+                        teleportPassenger(destWorld, destination, repositionedEntity, passenger);
                     }
-                    return repositionedEntity;
                 }
+                return repositionedEntity;
+            }
 
-                @Override
-                public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
-                    return new PortalInfo(destination, entity.getDeltaMovement(), entity.yRot, entity.xRot);
-                }
+            @Override
+            public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
+                return new PortalInfo(destination, entity.getDeltaMovement(), entity.yRot, entity.xRot);
+            }
 
-                @Override
-                public boolean playTeleportSound(ServerPlayerEntity player, ServerWorld sourceWorld, ServerWorld destWorld) {
-                    return false;
-                }
-            });
-        }
-        return null;
+            @Override
+            public boolean playTeleportSound(ServerPlayerEntity player, ServerWorld sourceWorld, ServerWorld destWorld) {
+                return false;
+            }
+        });
     }
 
     private static void teleportPassenger(ServerWorld destWorld, Vector3d destination, Entity repositionedEntity, Entity passenger) {
