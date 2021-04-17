@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -64,6 +65,7 @@ import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ITeleporter;
+import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
@@ -219,7 +221,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             return 3;
         }
         FloatingLong sum = FloatingLong.ZERO;
-        for (Entity entity : getToTeleport()) {
+        for (Entity entity : getToTeleport(level.dimension() == closestCoords.dimension)) {
             sum = sum.plusEqual(calculateEnergyCost(entity, closestCoords));
         }
         if (energyContainer.extract(sum, Action.SIMULATE, AutomationType.INTERNAL).smallerThan(sum)) {
@@ -241,11 +243,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         BlockPos closestPos = closestCoords.getPos();
         TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestPos);
         if (teleporter != null) {
-            List<Entity> entitiesToTeleport = getToTeleport();
+            boolean sameDimension = level.dimension() == closestCoords.dimension;
+            List<Entity> entitiesToTeleport = getToTeleport(sameDimension);
             if (!entitiesToTeleport.isEmpty()) {
                 Set<Coord4D> activeCoords = getFrequency(FrequencyType.TELEPORTER).getActiveCoords();
                 for (Entity entity : entitiesToTeleport) {
-                    entity.getSelfAndPassengers().forEach(e -> teleporter.didTeleport.add(e.getUUID()));
+                    markTeleported(teleporter, entity, sameDimension);
                     teleporter.teleDelay = 5;
                     //Calculate energy cost before teleporting the entity, as after teleporting it
                     // the cost will be negligible due to being on top of the destination
@@ -281,6 +284,17 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         }
     }
 
+    private void markTeleported(TileEntityTeleporter teleporter, Entity entity, boolean sameDimension) {
+        if (sameDimension || entity.canChangeDimensions()) {
+            //Only mark the entity as teleported if it will teleport, it is in the same dimension or is able to change dimensions
+            // This is mainly important for the passengers as we teleport all entities and passengers up to one that can't change dimensions
+            teleporter.didTeleport.add(entity.getUUID());
+            for (Entity passenger : entity.getPassengers()) {
+                markTeleported(teleporter, passenger, sameDimension);
+            }
+        }
+    }
+
     @Nullable
     public static Entity teleportEntityTo(Entity entity, Coord4D coord, TileEntityTeleporter teleporter) {
         BlockPos target = coord.getPos();
@@ -311,7 +325,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     if (repositionedEntity != null) {
                         //Teleport all passengers to the other dimension and then make them start riding the entity again
                         for (Entity passenger : passengers) {
-                            teleportPassenger(destWorld, repositionedEntity, passenger);
+                            teleportPassenger(destWorld, destination, repositionedEntity, passenger);
                         }
                     }
                     return repositionedEntity;
@@ -331,22 +345,37 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return null;
     }
 
-    private static void teleportPassenger(ServerWorld destWorld, Entity repositionedEntity, Entity passenger) {
+    private static void teleportPassenger(ServerWorld destWorld, Vector3d destination, Entity repositionedEntity, Entity passenger) {
+        if (!passenger.canChangeDimensions()) {
+            //If the passenger can't change dimensions just let it peacefully stay after dismounting rather than trying to teleport it
+            return;
+        }
         //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
         List<Entity> passengers = passenger.getPassengers();
         passenger.changeDimension(destWorld, new ITeleporter() {
             @Override
             public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+                boolean invulnerable = entity.isInvulnerable();
+                //Make the entity invulnerable so that when we teleport it it doesn't take damage
+                // we revert this state to the previous state after teleporting
+                entity.setInvulnerable(true);
                 Entity repositionedPassenger = repositionEntity.apply(false);
                 if (repositionedPassenger != null) {
                     //Force our passenger to start riding the new entity again
                     repositionedPassenger.startRiding(repositionedEntity, true);
                     //Teleport "nested" passengers
                     for (Entity passenger : passengers) {
-                        teleportPassenger(destWorld, repositionedPassenger, passenger);
+                        teleportPassenger(destWorld, destination, repositionedPassenger, passenger);
                     }
                 }
+                entity.setInvulnerable(invulnerable);
                 return repositionedPassenger;
+            }
+
+            @Override
+            public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
+                //This is needed to ensure the passenger starts getting tracked after teleporting
+                return new PortalInfo(destination, entity.getDeltaMovement(), entity.yRot, entity.xRot);
             }
 
             @Override
@@ -356,11 +385,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         });
     }
 
-    private List<Entity> getToTeleport() {
-        //Don't get entities that are currently spectator, are a passenger, or recently teleported
+    private List<Entity> getToTeleport(boolean sameDimension) {
+        //Don't get entities that are currently spectator, are a passenger, are part entities (as the parent entity should be what we teleport),
+        // entities that cannot change dimensions if we are teleporting to another dimension, or entities that recently teleported
         //Note: Passengers get handled separately
         return level == null || teleportBounds == null ? Collections.emptyList() : level.getEntitiesOfClass(Entity.class, teleportBounds,
-              entity -> !entity.isSpectator() && !entity.isPassenger() && !didTeleport.contains(entity.getUUID()));
+              entity -> !entity.isSpectator() && !entity.isPassenger() && !(entity instanceof PartEntity) &&
+                        (sameDimension || entity.canChangeDimensions()) && !didTeleport.contains(entity.getUUID()));
     }
 
     @Nonnull
@@ -372,8 +403,19 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             energyCost = energyCost.add(MekanismConfig.usage.teleporterDimensionPenalty.get());
         }
         //Factor the number of passengers of this entity into the teleportation energy cost
-        int passengerCount = entity.getIndirectPassengers().size();
+        Set<Entity> passengers = new HashSet<>();
+        fillIndirectPassengers(entity, entity.level.dimension() == coords.dimension, passengers);
+        int passengerCount = passengers.size();
         return passengerCount > 0 ? energyCost.multiply(passengerCount) : energyCost;
+    }
+
+    private static void fillIndirectPassengers(Entity base, boolean sameDimension, Set<Entity> passengers) {
+        for (Entity entity : base.getPassengers()) {
+            if (sameDimension || entity.canChangeDimensions()) {
+                passengers.add(entity);
+                fillIndirectPassengers(entity, sameDimension, passengers);
+            }
+        }
     }
 
     /**
