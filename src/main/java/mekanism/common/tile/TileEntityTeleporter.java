@@ -367,6 +367,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     for (Entity passenger : passengers) {
                         teleportPassenger(destWorld, destination, repositionedPassenger, passenger);
                     }
+                    repositionedPassenger.setInvulnerable(invulnerable);
                 }
                 entity.setInvulnerable(invulnerable);
                 return repositionedPassenger;
