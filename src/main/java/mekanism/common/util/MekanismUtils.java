@@ -513,7 +513,7 @@ public final class MekanismUtils {
             Mekanism.logger.warn("Failed to retrieve username for UUID {}, you might want to add it to the JSON cache", uuid);
             warnedFails.add(uuid);
         }
-        return ret != null ? ret : "<???>";
+        return ret != null ? ret : "<" + uuid + ">";
     }
 
     /**

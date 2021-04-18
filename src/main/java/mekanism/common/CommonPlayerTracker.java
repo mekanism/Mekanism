@@ -36,9 +36,10 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
-        if (!event.getPlayer().level.isClientSide) {
-            Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), (ServerPlayerEntity) event.getPlayer());
-            event.getPlayer().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) event.getPlayer()));
+        PlayerEntity player = event.getPlayer();
+        if (!player.level.isClientSide) {
+            Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), (ServerPlayerEntity) player);
+            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) player));
         }
     }
 

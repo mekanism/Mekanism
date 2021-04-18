@@ -44,6 +44,27 @@ public class OwnerDisplay implements IHasTextComponent {
         //TODO: If the name is supposed to be gotten differently server side, then do so
         //Allows for the name to be overridden by a passed value
         String name = ownerName == null ? MekanismClient.clientUUIDMap.get(ownerUUID) : ownerName;
+        if (ownerName == null) {
+            //If the name is still null, see if the uuid is the same as the client uuid
+            if (player.getUUID().equals(ownerUUID)) {
+                //If it is set the name to the name of the player
+                name = player.getGameProfile().getName();
+                //And cache the name
+                MekanismClient.clientUUIDMap.put(ownerUUID, name);
+            } else {
+                //Otherwise see if there is a player that the client knows about with the UUID
+                PlayerEntity owner = player.getCommandSenderWorld().getPlayerByUUID(ownerUUID);
+                if (owner == null) {
+                    //If there isn't just display the UUID
+                    name = "<" + ownerUUID + ">";
+                } else {
+                    //If there is display the player's name
+                    name = owner.getGameProfile().getName();
+                    // and cache the name so that it continues to display if the player disconnects
+                    MekanismClient.clientUUIDMap.put(ownerUUID, name);
+                }
+            }
+        }
         if (player == null) {
             return MekanismLang.OWNER.translateColored(EnumColor.DARK_GRAY, name);
         }

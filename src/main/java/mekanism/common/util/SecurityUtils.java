@@ -93,7 +93,8 @@ public final class SecurityUtils {
         return false;
     }
 
-    public static SecurityFrequency getFrequency(UUID uuid) {
+    @Nullable
+    public static SecurityFrequency getFrequency(@Nullable UUID uuid) {
         return uuid == null ? null : FrequencyType.SECURITY.getManager(null).getFrequency(uuid);
     }
 
