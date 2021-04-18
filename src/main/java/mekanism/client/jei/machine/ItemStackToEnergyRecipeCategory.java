@@ -1,9 +1,11 @@
 package mekanism.client.jei.machine;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -19,8 +21,11 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 
 public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStackToEnergyRecipe> {
 
@@ -66,7 +71,12 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     public List<ITextComponent> getTooltipStrings(ItemStackToEnergyRecipe recipe, double mouseX, double mouseY) {
         if (gauge.isMouseOver(mouseX, mouseY) && !recipe.getOutputDefinition().isZero()) {
             //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
-            return Collections.singletonList(EnergyDisplay.of(recipe.getOutputDefinition()).getTextComponent());
+            ITextComponent energyOutput = EnergyDisplay.of(recipe.getOutputDefinition()).getTextComponent();
+            if (Minecraft.getInstance().options.advancedItemTooltips || Screen.hasShiftDown()) {
+                return Arrays.asList(energyOutput,
+                      TextComponentUtil.build(TextFormatting.DARK_GRAY, MekanismLang.JEI_RECIPE_ID.translate(recipe.getId())));
+            }
+            return Collections.singletonList(energyOutput);
         }
         return Collections.emptyList();
     }
