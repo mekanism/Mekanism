@@ -69,7 +69,11 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
 
     @Override
     public boolean structuralGuiAccessAllowed() {
-        return hasFormedMultiblock() && !clientActiveMultiblock.contains("fusion") && !clientActiveMultiblock.contains("evaporation");
+        return hasFormedMultiblock() && structuralGuiAccessAllowed(clientActiveMultiblock);
+    }
+
+    protected boolean structuralGuiAccessAllowed(@Nonnull String multiblock) {
+        return !multiblock.contains("fusion") && !multiblock.contains("evaporation");
     }
 
     @Override
@@ -103,7 +107,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
             IMultiblock<?> master = entry.getValue().getController();
-            if (master != null && getMultiblockData(entry.getKey()).isFormed()) {
+            if (master != null && getMultiblockData(entry.getKey()).isFormed() && structuralGuiAccessAllowed(master.getManager().getName().toLowerCase(Locale.ROOT))) {
                 // make sure this block is on the structure first
                 if (entry.getValue().getMultiblockData().getBounds().getRelativeLocation(getBlockPos()).isWall()) {
                     return master.onActivate(player, hand, stack);
