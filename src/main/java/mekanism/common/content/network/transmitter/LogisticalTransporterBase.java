@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.IntConsumer;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
@@ -24,7 +25,6 @@ import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.network.to_client.PacketTransporterUpdate;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
@@ -76,7 +76,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public boolean canReceiveFrom(Direction side) {
-        return canConnect(side) && getConnectionType(side) == ConnectionType.NORMAL;
+        if (canConnect(side)) {
+            ConnectionType connectionType = getConnectionType(side);
+            return connectionType == ConnectionType.NORMAL || connectionType == ConnectionType.PULL;
+        }
+        return false;
     }
 
     @Override
@@ -130,6 +134,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     }
                 }
             }
+            InventoryNetwork network = getTransmitterNetwork();
             //Update stack positions
             IntSet deletes = new IntOpenHashSet();
             //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
@@ -157,9 +162,9 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                         BlockPos next = stack.getPath().get(currentIndex - 1);
                         if (next != null) {
                             if (!stack.isFinal(this)) {
-                                TileEntityLogisticalTransporterBase tile = WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, getTileWorld(), next);
-                                if (stack.canInsertToTransporter(tile, stack.getSide(this), getTransmitterTile())) {
-                                    tile.getTransmitter().entityEntering(stack, stack.progress % 100);
+                                LogisticalTransporterBase transmitter = network.getTransmitter(next);
+                                if (stack.canInsertToTransporter(transmitter, stack.getSide(this), this)) {
+                                    transmitter.entityEntering(stack, stack.progress % 100);
                                     deletes.add(stackId);
                                     continue;
                                 }
@@ -209,8 +214,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                             tryRecalculate = pathType == Path.NONE;
                         }
                     } else {
-                        tryRecalculate = !stack.canInsertToTransporter(WorldUtils.getTileEntity(TileEntityLogisticalTransporterBase.class, getTileWorld(),
-                              stack.getNext(this)), stack.getSide(this), getTransmitterTile());
+                        tryRecalculate = !stack.canInsertToTransporter(network.getTransmitter(stack.getNext(this)), stack.getSide(this), this);
                     }
                     if (tryRecalculate && !recalculate(stackId, stack, null)) {
                         deletes.add(stackId);
@@ -381,23 +385,24 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
-        BlockPos outputterPos = outputter.getBlockPos();
-        Direction from = WorldUtils.sideDifference(getTilePos(), outputterPos);
-        TransporterStack stack = insertStack(outputterPos, color);
-        if (!stack.canInsertToTransporterNN(this, from, outputter)) {
-            return request.getEmptyResponse();
-        }
-        return updateTransit(doEmit, stack, stack.recalculatePath(request, this, min));
+        return insert(outputter, request, color, doEmit, stack -> stack.recalculatePath(request, this, min));
     }
 
     public TransitResponse insertRR(TileEntityLogisticalSorter outputter, TransitRequest request, EnumColor color, boolean doEmit, int min) {
+        return insert(outputter, request, color, doEmit, stack -> stack.recalculateRRPath(request, outputter, this, min));
+    }
+
+    private TransitResponse insert(TileEntity outputter, TransitRequest request, EnumColor color, boolean doEmit,
+          Function<TransporterStack, TransitResponse> pathCalculator) {
         BlockPos outputterPos = outputter.getBlockPos();
         Direction from = WorldUtils.sideDifference(getTilePos(), outputterPos);
-        TransporterStack stack = insertStack(outputterPos, color);
-        if (!canReceiveFrom(from.getOpposite()) || !stack.canInsertToTransporterNN(this, from, outputter)) {
-            return request.getEmptyResponse();
+        if (from != null && canReceiveFrom(from.getOpposite())) {
+            TransporterStack stack = insertStack(outputterPos, color);
+            if (stack.canInsertToTransporterNN(this, from, outputter)) {
+                return updateTransit(doEmit, stack, pathCalculator.apply(stack));
+            }
         }
-        return updateTransit(doEmit, stack, stack.recalculateRRPath(request, outputter, this, min));
+        return request.getEmptyResponse();
     }
 
     private TransporterStack insertStack(BlockPos outputterCoord, EnumColor color) {

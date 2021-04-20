@@ -57,16 +57,16 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
         }
         heatLost = newHeatLost;
         heatTransferred = newHeatTransferred;
-        meanTemp = newSumTemp / transmitters.size();
+        meanTemp = newSumTemp / transmittersSize();
     }
 
     @Override
     public String toString() {
-        return "[HeatNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
+        return "[HeatNetwork] " + transmittersSize() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.HEAT_NETWORK, transmitters.size(), getAcceptorCount());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.HEAT_NETWORK, transmittersSize(), getAcceptorCount());
     }
 }

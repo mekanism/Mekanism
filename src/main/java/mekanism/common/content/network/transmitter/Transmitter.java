@@ -357,6 +357,14 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return !(cachedTile instanceof TileEntityTransmitter) || ((TileEntityTransmitter) cachedTile).getTransmitter().canConnect(side.getOpposite());
     }
 
+    public boolean canConnectMutual(Direction side, @Nullable TRANSMITTER cachedTransmitter) {
+        if (!canConnect(side)) {
+            return false;
+        }
+        //Return true if the other transmitter is null (some other tile is there) or the transmitter can connect both directions
+        return cachedTransmitter == null || cachedTransmitter.canConnect(side.getOpposite());
+    }
+
     public boolean canConnect(Direction side) {
         if (getConnectionTypeRaw(side) == ConnectionType.NONE) {
             return false;

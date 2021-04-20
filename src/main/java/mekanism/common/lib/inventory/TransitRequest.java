@@ -3,6 +3,7 @@ package mekanism.common.lib.inventory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
@@ -151,6 +152,29 @@ public abstract class TransitRequest {
         public ItemStack useAll() {
             return use(getSendingAmount());
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            TransitResponse other = (TransitResponse) o;
+            return (inserted == other.inserted || ItemStack.matches(inserted, other.inserted)) && slotData.equals(other.slotData);
+        }
+
+        @Override
+        public int hashCode() {
+            int code = 1;
+            code = 31 * code + inserted.getItem().hashCode();
+            code = 31 * code + inserted.getCount();
+            if (inserted.hasTag()) {
+                code = 31 * code + inserted.getTag().hashCode();
+            }
+            code = 31 * code + slotData.hashCode();
+            return code;
+        }
     }
 
     public static class ItemData {
@@ -177,6 +201,22 @@ public abstract class TransitRequest {
         public ItemStack use(int amount) {
             Mekanism.logger.error("Can't 'use' with this type of TransitResponse: {}", getClass().getName());
             return ItemStack.EMPTY;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            } else if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ItemData itemData = (ItemData) o;
+            return totalCount == itemData.totalCount && itemType.equals(itemData.itemType);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(itemType, totalCount);
         }
     }
 

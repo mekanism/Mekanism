@@ -12,7 +12,6 @@ import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
@@ -248,22 +247,20 @@ public class TransporterStack {
     }
 
     @Contract("null, _, _ -> false")
-    public boolean canInsertToTransporter(TileEntity tile, Direction from, @Nullable TileEntity tileFrom) {
-        return tile instanceof TileEntityLogisticalTransporterBase && canInsertToTransporterNN((TileEntityLogisticalTransporterBase) tile, from, tileFrom);
-    }
-
-    @Contract("null, _, _ -> false")
-    public boolean canInsertToTransporter(@Nullable TileEntityLogisticalTransporterBase transporter, Direction from, @Nullable TileEntity tileFrom) {
-        return transporter != null && canInsertToTransporterNN(transporter, from, tileFrom);
-    }
-
-    public boolean canInsertToTransporterNN(@Nonnull TileEntityLogisticalTransporterBase transporter, Direction from, @Nullable TileEntity tileFrom) {
-        return canInsertToTransporterNN(transporter.getTransmitter(), from, tileFrom);
+    public boolean canInsertToTransporter(@Nullable LogisticalTransporterBase transmitter, Direction from, @Nullable LogisticalTransporterBase transporterFrom) {
+        return transmitter != null && canInsertToTransporterNN(transmitter, from, transporterFrom);
     }
 
     public boolean canInsertToTransporterNN(@Nonnull LogisticalTransporterBase transporter, Direction from, @Nullable TileEntity tileFrom) {
         //If the color is valid, make sure that the connection is valid
-        return (transporter.getColor() == null || transporter.getColor() == color) && transporter.canConnectMutual(from.getOpposite(), tileFrom);
+        EnumColor color = transporter.getColor();
+        return (color == null || color == this.color) && transporter.canConnectMutual(from.getOpposite(), tileFrom);
+    }
+
+    public boolean canInsertToTransporterNN(@Nonnull LogisticalTransporterBase transporter, Direction from, @Nullable LogisticalTransporterBase transporterFrom) {
+        //If the color is valid, make sure that the connection is valid
+        EnumColor color = transporter.getColor();
+        return (color == null || color == this.color) && transporter.canConnectMutual(from.getOpposite(), transporterFrom);
     }
 
     public BlockPos getDest() {

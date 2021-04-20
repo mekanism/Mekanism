@@ -167,7 +167,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     public String toString() {
-        return "[EnergyNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
+        return "[EnergyNetwork] " + transmittersSize() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
@@ -219,7 +219,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmitters.size(), getAcceptorCount());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.ENERGY_NETWORK, transmittersSize(), getAcceptorCount());
     }
 
     @Nonnull

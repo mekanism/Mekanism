@@ -24,6 +24,7 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.slot.InternalInventorySlot;
+import mekanism.common.lib.SidedBlockPos;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
@@ -58,7 +59,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     private boolean autoEject;
     private boolean roundRobin;
     private boolean singleItem;
-    public int rrIndex = 0;
+    @Nullable
+    public SidedBlockPos rrTarget;
     private int delayTicks;
 
     public TileEntityLogisticalSorter() {
@@ -178,7 +180,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
 
     public void toggleRoundRobin() {
         roundRobin = !roundRobin;
-        rrIndex = 0;
+        rrTarget = null;
         markDirty(false);
     }
 
@@ -221,7 +223,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         nbtTags.putBoolean(NBTConstants.EJECT, autoEject);
         nbtTags.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
         nbtTags.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
-        nbtTags.putInt(NBTConstants.INDEX, rrIndex);
+        if (rrTarget != null) {
+            nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
+        }
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (SorterFilter<?> filter : filters) {
@@ -238,7 +242,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         autoEject = nbtTags.getBoolean(NBTConstants.EJECT);
         roundRobin = nbtTags.getBoolean(NBTConstants.ROUND_ROBIN);
         singleItem = nbtTags.getBoolean(NBTConstants.SINGLE_ITEM);
-        rrIndex = nbtTags.getInt(NBTConstants.INDEX);
+        if (nbtTags.contains(NBTConstants.ROUND_ROBIN_TARGET, NBT.TAG_COMPOUND)) {
+            rrTarget = SidedBlockPos.deserialize(nbtTags.getCompound(NBTConstants.ROUND_ROBIN_TARGET));
+        }
         if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {

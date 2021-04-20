@@ -220,7 +220,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
 
     @Override
     public String toString() {
-        return "[FluidNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
+        return "[FluidNetwork] " + transmittersSize() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
@@ -253,7 +253,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmitters.size(), getAcceptorCount());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmittersSize(), getAcceptorCount());
     }
 
     @Nonnull

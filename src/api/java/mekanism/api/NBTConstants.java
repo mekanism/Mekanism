@@ -159,6 +159,7 @@ public final class NBTConstants {
     public static final String REPLACE_STACK = "replaceStack";
     public static final String REQUIRE_STACK = "requireStack";
     public static final String ROUND_ROBIN = "roundRobin";
+    public static final String ROUND_ROBIN_TARGET = "rrTarget";
     public static final String RUNNING = "running";
     public static final String SECURITY_MODE = "securityMode";
     public static final String SELECTED = "selected";

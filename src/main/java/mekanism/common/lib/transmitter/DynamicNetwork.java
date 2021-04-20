@@ -104,7 +104,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                 }
             }
         }
-        transmitters.clear();
         deregister();
     }
 

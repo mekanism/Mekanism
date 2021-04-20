@@ -370,12 +370,12 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     @Override
     public ITextComponent getTextComponent() {
-        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.CHEMICAL_NETWORK, transmitters.size(), getAcceptorCount());
+        return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.CHEMICAL_NETWORK, transmittersSize(), getAcceptorCount());
     }
 
     @Override
     public String toString() {
-        return "[ChemicalNetwork] " + transmitters.size() + " transmitters, " + getAcceptorCount() + " acceptors.";
+        return "[ChemicalNetwork] " + transmittersSize() + " transmitters, " + getAcceptorCount() + " acceptors.";
     }
 
     @Override
