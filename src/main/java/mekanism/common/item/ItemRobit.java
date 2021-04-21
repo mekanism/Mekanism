@@ -3,7 +3,6 @@ package mekanism.common.item;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.Nonnull;
-import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
@@ -65,7 +64,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
                     if (robit == null) {
                         return ActionResultType.FAIL;
                     }
-                    robit.setHome(Coord4D.get(chargepad));
+                    robit.setHome(chargepad.getTileCoord());
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                     if (energyContainer != null) {
                         robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());

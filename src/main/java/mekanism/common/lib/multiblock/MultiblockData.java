@@ -318,7 +318,8 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public Set<Direction> getDirectionsToEmit(BlockPos pos) {
         Set<Direction> directionsToEmit = EnumSet.noneOf(Direction.class);
         for (Direction direction : EnumUtils.DIRECTIONS) {
-            if (!locations.contains(pos.relative(direction))) {
+            BlockPos neighborPos = pos.relative(direction);
+            if (!locations.contains(neighborPos) && !internalLocations.contains(neighborPos)) {
                 directionsToEmit.add(direction);
             }
         }

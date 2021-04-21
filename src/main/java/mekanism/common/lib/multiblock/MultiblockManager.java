@@ -67,7 +67,7 @@ public class MultiblockManager<T extends MultiblockData> {
     public void invalidate(IMultiblock<?> multiblock) {
         CacheWrapper cache = inventories.get(multiblock.getCacheID());
         if (cache != null) {
-            cache.locations.remove(Coord4D.get((TileEntity) multiblock));
+            cache.locations.remove(multiblock.getTileCoord());
             if (cache.locations.isEmpty()) {
                 inventories.remove(multiblock.getCacheID());
             }
@@ -118,7 +118,7 @@ public class MultiblockManager<T extends MultiblockData> {
         }
 
         public void update(IMultiblock<T> tile, T multiblock) {
-            locations.add(Coord4D.get((TileEntity) tile));
+            locations.add(tile.getTileCoord());
             if (multiblock.isFormed()) {
                 if (tile.isMaster()) {
                     // create a new cache for the tile if it needs one
@@ -129,14 +129,12 @@ public class MultiblockManager<T extends MultiblockData> {
                     tile.getCache().sync(multiblock);
                     cache = tile.getCache();
                 }
-            } else {
-                if (tile.hasCache()) {
-                    // if the tile doesn't have a formed multiblock but has a cache, update our reference
-                    cache = tile.getCache();
-                } else if (cache != null) {
-                    // if the tile doesn't have a cache but we do, update the tile's reference
-                    tile.setCache(cache);
-                }
+            } else if (tile.hasCache()) {
+                // if the tile doesn't have a formed multiblock but has a cache, update our reference
+                cache = tile.getCache();
+            } else if (cache != null) {
+                // if the tile doesn't have a cache but we do, update the tile's reference
+                tile.setCache(cache);
             }
         }
     }

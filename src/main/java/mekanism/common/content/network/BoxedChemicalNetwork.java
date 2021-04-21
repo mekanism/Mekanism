@@ -11,7 +11,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -260,12 +259,10 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void disperse(@Nonnull BoxedPressurizedTube triggerTransmitter, STACK chemical) {
-        if (chemical instanceof GasStack) {
-            if (chemical.has(GasAttributes.Radiation.class)) {
-                // Handle radiation leakage
-                double radioactivity = chemical.get(GasAttributes.Radiation.class).getRadioactivity();
-                Mekanism.radiationManager.radiate(new Coord4D(triggerTransmitter.getTilePos(), triggerTransmitter.getTileWorld()), chemical.getAmount() * radioactivity);
-            }
+        if (chemical instanceof GasStack && chemical.has(GasAttributes.Radiation.class)) {
+            // Handle radiation leakage
+            double radioactivity = chemical.get(GasAttributes.Radiation.class).getRadioactivity();
+            Mekanism.radiationManager.radiate(triggerTransmitter.getTileCoord(), chemical.getAmount() * radioactivity);
         }
     }
 

@@ -24,7 +24,7 @@ public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockDa
     private final List<TileEntityInductionProvider> providers = new ArrayList<>();
 
     @Override
-    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+    protected CasingType getCasingType(BlockState state) {
         Block block = state.getBlock();
         if (BlockType.is(block, MekanismBlockTypes.INDUCTION_CASING)) {
             return CasingType.FRAME;

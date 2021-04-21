@@ -44,8 +44,8 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
             if (world != null) {
                 world.updateNeighborsAt(getBlockPos(), getBlockType());
             }
+            prevOutputting = outputting;
         }
-        prevOutputting = outputting;
     }
 
     public boolean checkMode() {

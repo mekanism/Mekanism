@@ -94,6 +94,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         super(MekanismBlocks.TELEPORTER);
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.TELEPORTER, true, true, false);
+        cacheCoord();
     }
 
     @Nonnull
@@ -181,7 +182,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Nullable
     private Coord4D getClosest() {
         TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
-        return frequency == null ? null : frequency.getClosestCoords(Coord4D.get(this));
+        return frequency == null ? null : frequency.getClosestCoords(getTileCoord());
     }
 
     private void cleanTeleportCache() {

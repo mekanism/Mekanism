@@ -71,7 +71,7 @@ public class PacketDropperUse implements IMekanismPacket {
                     MultiblockData structure = ((TileEntityMultiblock<?>) tile).getMultiblock();
                     if (structure.isFormed()) {
                         //TODO: Decide if we want to release the radiation from a different point in the multiblock
-                        handleTankType(structure, player, stack, Coord4D.get(tile));
+                        handleTankType(structure, player, stack, tile.getTileCoord());
                     }
                 } else {
                     if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
@@ -83,7 +83,7 @@ public class PacketDropperUse implements IMekanismPacket {
                             return;
                         }
                     }
-                    handleTankType(tile, player, stack, Coord4D.get(tile));
+                    handleTankType(tile, player, stack, tile.getTileCoord());
                 }
             }
         }

@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -299,9 +298,7 @@ public class ChemicalUtil {
         });
         int curHandlers = target.getHandlers().size();
         if (curHandlers > 0) {
-            Set<ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>>> targets = new ObjectOpenHashSet<>();
-            targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), ChemicalUtil.copy(stack));
+            return EmitUtils.sendToAcceptors(Collections.singleton(target), curHandlers, stack.getAmount(), ChemicalUtil.copy(stack));
         }
         return 0;
     }

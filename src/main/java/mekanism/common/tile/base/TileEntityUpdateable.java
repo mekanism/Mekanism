@@ -3,6 +3,7 @@ package mekanism.common.tile.base;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Coord4D;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.to_client.PacketUpdateTile;
@@ -24,8 +25,21 @@ import net.minecraft.world.World;
  */
 public abstract class TileEntityUpdateable extends TileEntity implements ITileWrapper {
 
+    @Nullable
+    private Coord4D cachedCoord;
+    private boolean cacheCoord;
+
     public TileEntityUpdateable(TileEntityType<?> type) {
         super(type);
+    }
+
+    /**
+     * Call this for tiles that we may call {@link #getTileCoord()} a fair amount on to cache the coord when position/world information changes.
+     */
+    protected void cacheCoord() {
+        //Mark that we want to cache the coord and then update the coord if needed
+        cacheCoord = true;
+        updateCoord();
     }
 
     /**
@@ -131,17 +145,46 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
 
     @Override
     public World getTileWorld() {
-        return getLevel();
+        return level;
     }
 
     @Override
     public BlockPos getTilePos() {
-        return getBlockPos();
+        return worldPosition;
     }
 
     @Override
     public double getViewDistance() {
         //Override and change the default range for TERs for mekanism tiles to the value defined in the config
         return MekanismConfig.client.terRange.get();
+    }
+
+    @Override
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbt) {
+        super.load(state, nbt);
+        updateCoord();
+    }
+
+    @Override
+    public void setLevelAndPosition(@Nonnull World world, @Nonnull BlockPos pos) {
+        super.setLevelAndPosition(world, pos);
+        updateCoord();
+    }
+
+    @Override
+    public void setPosition(@Nonnull BlockPos pos) {
+        super.setPosition(pos);
+        updateCoord();
+    }
+
+    private void updateCoord() {
+        if (cacheCoord && level != null) {
+            cachedCoord = new Coord4D(worldPosition, level);
+        }
+    }
+
+    @Override
+    public Coord4D getTileCoord() {
+        return cacheCoord && cachedCoord != null ? cachedCoord : ITileWrapper.super.getTileCoord();
     }
 }

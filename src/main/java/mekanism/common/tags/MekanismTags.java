@@ -7,7 +7,6 @@ import java.util.Map;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.Mekanism;
 import mekanism.common.resource.OreType;
@@ -28,10 +27,26 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class MekanismTags {
 
+    /**
+     * Call to force make sure this is all initialized
+     */
+    public static void init() {
+        Items.init();
+        Blocks.init();
+        Fluids.init();
+        Gases.init();
+        InfuseTypes.init();
+        Slurries.init();
+        TileEntityTypes.init();
+    }
+
     private MekanismTags() {
     }
 
     public static class Items {
+
+        private static void init() {
+        }
 
         private Items() {
         }
@@ -168,6 +183,9 @@ public class MekanismTags {
 
     public static class Blocks {
 
+        private static void init() {
+        }
+
         private Blocks() {
         }
 
@@ -209,6 +227,9 @@ public class MekanismTags {
 
     public static class Fluids {
 
+        private static void init() {
+        }
+
         private Fluids() {
         }
 
@@ -234,6 +255,9 @@ public class MekanismTags {
 
     public static class Gases {
 
+        private static void init() {
+        }
+
         private Gases() {
         }
 
@@ -248,6 +272,9 @@ public class MekanismTags {
     }
 
     public static class InfuseTypes {
+
+        private static void init() {
+        }
 
         private InfuseTypes() {
         }
@@ -266,17 +293,10 @@ public class MekanismTags {
         }
     }
 
-    public static class Pigments {
-
-        private Pigments() {
-        }
-
-        private static INamedTag<Pigment> tag(String name) {
-            return ChemicalTags.PIGMENT.tag(Mekanism.rl(name));
-        }
-    }
-
     public static class Slurries {
+
+        private static void init() {
+        }
 
         private Slurries() {
         }
@@ -290,6 +310,9 @@ public class MekanismTags {
     }
 
     public static class TileEntityTypes {
+
+        private static void init() {
+        }
 
         private TileEntityTypes() {
         }

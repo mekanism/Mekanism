@@ -87,7 +87,12 @@ public class MekanismAdditions implements IModule {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(SpawnHelper::setupEntities);
+        event.enqueueWork(() -> {
+            //Ensure our tags are all initialized
+            AdditionsTags.init();
+            //Setup some stuff related to entities
+            SpawnHelper.setupEntities();
+        });
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }
 

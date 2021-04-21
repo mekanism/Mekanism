@@ -10,10 +10,22 @@ import net.minecraft.tags.ItemTags;
 
 public class AdditionsTags {
 
+    /**
+     * Call to force make sure this is all initialized
+     */
+    public static void init() {
+        Items.init();
+        Blocks.init();
+        Entities.init();
+    }
+
     private AdditionsTags() {
     }
 
     public static class Items {
+
+        private static void init() {
+        }
 
         private Items() {
         }
@@ -50,6 +62,9 @@ public class AdditionsTags {
 
     public static class Blocks {
 
+        private static void init() {
+        }
+
         private Blocks() {
         }
 
@@ -82,6 +97,9 @@ public class AdditionsTags {
     }
 
     public static class Entities {
+
+        private static void init() {
+        }
 
         private Entities() {
         }

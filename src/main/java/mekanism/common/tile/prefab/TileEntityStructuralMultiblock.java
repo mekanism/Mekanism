@@ -1,6 +1,7 @@
 package mekanism.common.tile.prefab;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -81,22 +82,44 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
         return structures;
     }
 
+    private MultiblockData getMultiblockData(Structure structure) {
+        //Like the getMultiblockData(MultiblockManager) method except can assume the structure is indeed in our structures map
+        // so we can slightly short circuit lookup
+        MultiblockData data = structure.getMultiblockData();
+        if (data != null && data.isFormed()) {
+            return data;
+        }
+        return getDefaultData();
+    }
+
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        structures.entrySet().removeIf(entry -> !entry.getValue().isValid());
-        if (ticker >= 3 && structures.isEmpty()) {
-            invalidStructure.tick(this);
-        }
-        // this could potentially fail if this structural multiblock tracks multiple structures, but 99.99% of the time this will be accurate
         String activeMultiblock = null;
-        for (Structure s : structures.values()) {
-            IMultiblock<?> master = s.getController();
-            if (master != null && getMultiblockData(s.getManager()).isFormed()) {
-                activeMultiblock = master.getManager().getName().toLowerCase(Locale.ROOT);
-                break;
+        Iterator<Map.Entry<MultiblockManager<?>, Structure>> iterator = structures.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<MultiblockManager<?>, Structure> entry = iterator.next();
+            Structure structure = entry.getValue();
+            if (structure.isValid()) {
+                if (activeMultiblock == null && structure.getController() != null && getMultiblockData(structure).isFormed()) {
+                    activeMultiblock = entry.getKey().getName().toLowerCase(Locale.ROOT);
+                }
+            } else {
+                iterator.remove();
             }
         }
+        if (ticker >= 3 && structures.isEmpty()) {
+            invalidStructure.tick(this);
+            //If we managed to find any structures check which one is active
+            for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
+                Structure structure = entry.getValue();
+                if (structure.getController() != null && getMultiblockData(structure).isFormed()) {
+                    activeMultiblock = entry.getKey().getName().toLowerCase(Locale.ROOT);
+                    break;
+                }
+            }
+        }
+        // this could potentially fail if this structural multiblock tracks multiple structures, but 99.99% of the time this will be accurate
         if (!Objects.equals(activeMultiblock, clientActiveMultiblock)) {
             clientActiveMultiblock = activeMultiblock;
             sendUpdatePacket();
@@ -106,11 +129,15 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
         for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
-            IMultiblock<?> master = entry.getValue().getController();
-            if (master != null && getMultiblockData(entry.getKey()).isFormed() && structuralGuiAccessAllowed(master.getManager().getName().toLowerCase(Locale.ROOT))) {
-                // make sure this block is on the structure first
-                if (entry.getValue().getMultiblockData().getBounds().getRelativeLocation(getBlockPos()).isWall()) {
-                    return master.onActivate(player, hand, stack);
+            Structure structure = entry.getValue();
+            IMultiblock<?> master = structure.getController();
+            if (master != null) {
+                MultiblockData data = getMultiblockData(structure);
+                if (data.isFormed() && structuralGuiAccessAllowed(entry.getKey().getName().toLowerCase(Locale.ROOT))) {
+                    // make sure this block is on the structure first
+                    if (data.getBounds().getRelativeLocation(getBlockPos()).isWall()) {
+                        return master.onActivate(player, hand, stack);
+                    }
                 }
             }
         }
@@ -128,7 +155,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             for (Structure s : structures.values()) {
                 //For each structure this structural multiblock is a part of
                 if (s.getController() != null) {
-                    MultiblockData multiblockData = getMultiblockData(s.getManager());
+                    MultiblockData multiblockData = getMultiblockData(s);
                     if (multiblockData.isPositionInsideBounds(s, neighborPos)) {
                         if (!multiblockData.innerNodes.contains(neighborPos) || level.isEmptyBlock(neighborPos)) {
                             //And we are not already an internal part of the structure, or we are changing an internal part to air
@@ -147,8 +174,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public ActionResultType onRightClick(PlayerEntity player, Direction side) {
         if (!isRemote()) {
             for (Structure s : structures.values()) {
-                IMultiblock<?> master = s.getController();
-                if (master != null && !getMultiblockData(s.getManager()).isFormed()) {
+                if (s.getController() != null && !getMultiblockData(s).isFormed()) {
                     FormationResult result = s.runUpdate(this);
                     if (!result.isFormed() && result.getResultText() != null) {
                         player.sendMessage(result.getResultText(), Util.NIL_UUID);

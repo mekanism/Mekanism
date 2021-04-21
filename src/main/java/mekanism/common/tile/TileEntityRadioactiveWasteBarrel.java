@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import java.util.EnumSet;
+import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
@@ -68,7 +68,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                 gasTank.shrinkStack(MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get(), Action.EXECUTE);
             }
             if (getActive()) {
-                ChemicalUtil.emit(EnumSet.of(Direction.DOWN), gasTank, this);
+                ChemicalUtil.emit(Collections.singleton(Direction.DOWN), gasTank, this);
             }
 
             float scale = getGasScale();

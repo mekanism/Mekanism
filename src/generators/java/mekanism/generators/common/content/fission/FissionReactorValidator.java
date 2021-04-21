@@ -34,7 +34,7 @@ import net.minecraft.world.chunk.IChunk;
 public class FissionReactorValidator extends CuboidStructureValidator<FissionReactorMultiblockData> {
 
     @Override
-    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+    protected CasingType getCasingType(BlockState state) {
         Block block = state.getBlock();
         if (BlockType.is(block, GeneratorsBlockTypes.FISSION_REACTOR_CASING)) {
             return CasingType.FRAME;

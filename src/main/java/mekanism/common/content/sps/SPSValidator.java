@@ -41,6 +41,7 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
         if (relative.isWall()) {
             Axis axis = Axis.get(cuboid.getSide(pos));
             Axis h = axis.horizontal(), v = axis.vertical();
+            //Note: This ends up becoming immutable by doing this but that is fine and doesn't really matter
             pos = pos.subtract(cuboid.getMinPos());
             return StructureRequirement.REQUIREMENTS[ALLOWED_GRID[h.getCoord(pos)][v.getCoord(pos)]];
         }
@@ -48,7 +49,7 @@ public class SPSValidator extends CuboidStructureValidator<SPSMultiblockData> {
     }
 
     @Override
-    protected CasingType getCasingType(BlockPos pos, BlockState state) {
+    protected CasingType getCasingType(BlockState state) {
         Block block = state.getBlock();
         if (BlockType.is(block, MekanismBlockTypes.SPS_CASING)) {
             return CasingType.FRAME;

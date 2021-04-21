@@ -3,7 +3,6 @@ package mekanism.common.tile.machine;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -161,7 +160,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         suckedLastOperation = sucked;
 
         if (!fluidTank.isEmpty()) {
-            FluidUtils.emit(EnumSet.of(Direction.UP), fluidTank, this, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
+            FluidUtils.emit(Collections.singleton(Direction.UP), fluidTank, this, 256 * (1 + upgradeComponent.getUpgrades(Upgrade.SPEED)));
         }
     }
 

@@ -98,10 +98,9 @@ public class FormationProtocol<T extends MultiblockData> {
             structureFound.inventoryID = idToUse;
             structureFound.onCreated(pointer.getTileWorld());
             return FormationResult.SUCCESS;
-        } else {
-            pointer.getStructure().removeMultiblock(pointer.getTileWorld());
-            return result.getFormationResult();
         }
+        pointer.getStructure().removeMultiblock(pointer.getTileWorld());
+        return result.getFormationResult();
     }
 
     protected static ITextComponent text(BlockPos pos) {

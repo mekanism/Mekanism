@@ -81,6 +81,7 @@ import mekanism.common.registries.MekanismRecipeSerializers;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCallback;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.DispenserBlock;
@@ -331,6 +332,8 @@ public class Mekanism {
         setRecipeCacheManager(new ReloadListener());
 
         event.enqueueWork(() -> {
+            //Ensure our tags are all initialized
+            MekanismTags.init();
             //Register the mod's world generators
             GenHandler.setupWorldGenFeatures();
             //Collect annotation scan data

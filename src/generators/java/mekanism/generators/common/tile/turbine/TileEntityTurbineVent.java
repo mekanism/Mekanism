@@ -24,7 +24,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     protected void onUpdateServer(TurbineMultiblockData multiblock) {
         super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
-            FluidUtils.emit(multiblock.ventTank, this);
+            FluidUtils.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.ventTank, this);
         }
     }
 

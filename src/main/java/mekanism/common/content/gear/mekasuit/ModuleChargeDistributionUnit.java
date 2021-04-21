@@ -44,7 +44,7 @@ public class ModuleChargeDistributionUnit extends ModuleMekaSuit {
     }
 
     private void chargeSuit(PlayerEntity player) {
-        Set<EnergySaveTarget> saveTargets = new ObjectOpenHashSet<>();
+        Set<EnergySaveTarget> saveTargets = new ObjectOpenHashSet<>(player.inventory.armor.size());
         FloatingLong total = FloatingLong.ZERO;
         for (ItemStack stack : player.inventory.armor) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);

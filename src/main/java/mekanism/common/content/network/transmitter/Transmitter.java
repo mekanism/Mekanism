@@ -2,11 +2,13 @@ package mekanism.common.content.network.transmitter;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -36,7 +38,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
       TRANSMITTER extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER>> implements ITileWrapper {
 
     public static boolean connectionMapContainsSide(byte connections, Direction side) {
-        byte tester = (byte) (1 << side.ordinal());
+        return connectionMapContainsSide(connections, side.ordinal());
+    }
+
+    private static boolean connectionMapContainsSide(byte connections, int sideOrdinal) {
+        byte tester = (byte) (1 << sideOrdinal);
         return (connections & tester) > 0;
     }
 
@@ -44,13 +50,14 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return (byte) ((connections & ~(byte) (1 << side.ordinal())) | (byte) ((toSet ? 1 : 0) << side.ordinal()));
     }
 
-    public static ConnectionType getConnectionType(Direction side, byte allConnections, byte transmitterConnections, ConnectionType[] types) {
-        if (!connectionMapContainsSide(allConnections, side)) {
+    private static ConnectionType getConnectionType(Direction side, byte allConnections, byte transmitterConnections, ConnectionType[] types) {
+        int sideOrdinal = side.ordinal();
+        if (!connectionMapContainsSide(allConnections, sideOrdinal)) {
             return ConnectionType.NONE;
-        } else if (connectionMapContainsSide(transmitterConnections, side)) {
+        } else if (connectionMapContainsSide(transmitterConnections, sideOrdinal)) {
             return ConnectionType.NORMAL;
         }
-        return types[side.ordinal()];
+        return types[sideOrdinal];
     }
 
     private ConnectionType[] connectionTypes = {ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL, ConnectionType.NORMAL,
@@ -115,12 +122,17 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     @Override
     public BlockPos getTilePos() {
-        return transmitterTile.getBlockPos();
+        return transmitterTile.getTilePos();
     }
 
     @Override
     public World getTileWorld() {
-        return transmitterTile.getLevel();
+        return transmitterTile.getTileWorld();
+    }
+
+    @Override
+    public Coord4D getTileCoord() {
+        return transmitterTile.getTileCoord();
     }
 
     public boolean isRemote() {
@@ -608,13 +620,18 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public Set<Direction> getConnections(ConnectionType type) {
-        Set<Direction> sides = EnumSet.noneOf(Direction.class);
+        Set<Direction> sides = null;
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (getConnectionType(side) == type) {
+                if (sides == null) {
+                    //Lazy init the set so that if there are none we can just use an empty set
+                    // instead of having to initialize an enum set
+                    sides =  EnumSet.noneOf(Direction.class);
+                }
                 sides.add(side);
             }
         }
-        return sides;
+        return sides == null ? Collections.emptySet() : sides;
     }
 
     public ActionResultType onConfigure(PlayerEntity player, Direction side) {

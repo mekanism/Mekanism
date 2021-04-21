@@ -1,6 +1,6 @@
 package mekanism.common.util;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 import mekanism.api.Action;
@@ -55,9 +55,7 @@ public final class CableUtils {
 
         int curHandlers = target.getHandlers().size();
         if (curHandlers > 0) {
-            Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
-            targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, energyToSend);
+            return EmitUtils.sendToAcceptors(Collections.singleton(target), curHandlers, energyToSend);
         }
         return FloatingLong.ZERO;
     }

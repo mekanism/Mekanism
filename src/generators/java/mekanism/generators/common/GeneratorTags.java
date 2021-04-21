@@ -9,10 +9,21 @@ import net.minecraft.tags.ITag.INamedTag;
 
 public class GeneratorTags {
 
+    /**
+     * Call to force make sure this is all initialized
+     */
+    public static void init() {
+        Fluids.init();
+        Gases.init();
+    }
+
     private GeneratorTags() {
     }
 
     public static class Fluids {
+
+        private static void init() {
+        }
 
         private Fluids() {
         }
@@ -28,6 +39,9 @@ public class GeneratorTags {
     }
 
     public static class Gases {
+
+        private static void init() {
+        }
 
         private Gases() {
         }

@@ -2,7 +2,6 @@ package mekanism.common.tile.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
@@ -34,6 +33,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
 
     public TileEntitySeismicVibrator() {
         super(MekanismBlocks.SEISMIC_VIBRATOR);
+        cacheCoord();
     }
 
     @Nonnull
@@ -81,16 +81,16 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
 
     private void updateActiveVibrators() {
         if (getActive()) {
-            Mekanism.activeVibrators.add(Coord4D.get(this));
+            Mekanism.activeVibrators.add(getTileCoord());
         } else {
-            Mekanism.activeVibrators.remove(Coord4D.get(this));
+            Mekanism.activeVibrators.remove(getTileCoord());
         }
     }
 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        Mekanism.activeVibrators.remove(Coord4D.get(this));
+        Mekanism.activeVibrators.remove(getTileCoord());
     }
 
     @Override

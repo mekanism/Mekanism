@@ -1,9 +1,9 @@
 package mekanism.client.render.tileentity;
 
-import com.google.common.base.Objects;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -78,7 +78,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
                               .size(0.01F * getBoundedScale(energyScale, 0.5F, 5))
                               .lifespan(8)
                               .spawn(SpawnFunction.NO_DELAY);
-                        bolts.update(Objects.hashCode(side.hashCode(), endPos.hashCode()), bolt, partialTick);
+                        bolts.update(Objects.hash(side, endPos), bolt, partialTick);
                     }
                     targetEffectCount = (int) getBoundedScale(energyScale, 10, 120);
                 }

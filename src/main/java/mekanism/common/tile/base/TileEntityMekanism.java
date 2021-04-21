@@ -12,7 +12,6 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
@@ -557,7 +556,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 GasStack stack = gasTank.getStack();
                 if (stack.has(GasAttributes.Radiation.class)) {
                     double radioactivity = stack.get(GasAttributes.Radiation.class).getRadioactivity();
-                    Mekanism.radiationManager.radiate(Coord4D.get(this), radioactivity * stack.getAmount());
+                    Mekanism.radiationManager.radiate(getTileCoord(), radioactivity * stack.getAmount());
                 }
             }
         }

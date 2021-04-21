@@ -25,6 +25,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
     private final int y;
     private final int z;
     public final RegistryKey<World> dimension;
+    private final int hashCode;
 
     /**
      * Creates a Coord4D from an entity's position, rounded down.
@@ -32,11 +33,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @param entity - entity to create the Coord4D from
      */
     public Coord4D(Entity entity) {
-        BlockPos entityPosition = entity.blockPosition();
-        this.x = entityPosition.getX();
-        this.y = entityPosition.getY();
-        this.z = entityPosition.getZ();
-        this.dimension = entity.level.dimension();
+        this(entity.blockPosition(), entity.level);
     }
 
     /**
@@ -52,6 +49,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
         this.y = MathHelper.floor(y);
         this.z = MathHelper.floor(z);
         this.dimension = dimension;
+        this.hashCode = initHashCode();
     }
 
     public Coord4D(BlockPos pos, World world) {
@@ -216,11 +214,14 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
 
     @Override
     public int hashCode() {
+        return hashCode;
+    }
+
+    private int initHashCode() {
         int code = 1;
         code = 31 * code + x;
         code = 31 * code + y;
         code = 31 * code + z;
-        code = 31 * code + dimension.hashCode();
-        return code;
+        return 31 * code + dimension.hashCode();
     }
 }

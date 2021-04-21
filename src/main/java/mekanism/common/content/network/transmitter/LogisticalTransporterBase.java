@@ -134,105 +134,107 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     }
                 }
             }
-            InventoryNetwork network = getTransmitterNetwork();
-            //Update stack positions
-            IntSet deletes = new IntOpenHashSet();
-            //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
-            // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
-            // collection to occur actually causing the tick time to go up slightly.
-            for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
-                int stackId = entry.getIntKey();
-                TransporterStack stack = entry.getValue();
-                if (!stack.initiatedPath) {
-                    if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, null)) {
-                        deletes.add(stackId);
-                        continue;
-                    }
-                }
-
-                stack.progress += tier.getSpeed();
-                if (stack.progress >= 100) {
-                    BlockPos prevSet = null;
-                    if (stack.hasPath()) {
-                        int currentIndex = stack.getPath().indexOf(getTilePos());
-                        if (currentIndex == 0) { //Necessary for transition reasons, not sure why
+            if (!transit.isEmpty()) {
+                InventoryNetwork network = getTransmitterNetwork();
+                //Update stack positions
+                IntSet deletes = new IntOpenHashSet();
+                //Note: Our calls to getTileEntity are not done with a chunkMap as we don't tend to have that many tiles we
+                // are checking at once from here and given this gets called each tick, it would cause unnecessary garbage
+                // collection to occur actually causing the tick time to go up slightly.
+                for (Int2ObjectMap.Entry<TransporterStack> entry : transit.int2ObjectEntrySet()) {
+                    int stackId = entry.getIntKey();
+                    TransporterStack stack = entry.getValue();
+                    if (!stack.initiatedPath) {
+                        if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, null)) {
                             deletes.add(stackId);
                             continue;
                         }
-                        BlockPos next = stack.getPath().get(currentIndex - 1);
-                        if (next != null) {
-                            if (!stack.isFinal(this)) {
-                                LogisticalTransporterBase transmitter = network.getTransmitter(next);
-                                if (stack.canInsertToTransporter(transmitter, stack.getSide(this), this)) {
-                                    transmitter.entityEntering(stack, stack.progress % 100);
-                                    deletes.add(stackId);
-                                    continue;
-                                }
-                                prevSet = next;
-                            } else if (stack.getPathType() != Path.NONE) {
-                                TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), next);
-                                if (tile != null) {
-                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this),
-                                          stack.getPathType() == Path.HOME);
-                                    if (!response.isEmpty()) {
-                                        //We were able to add at least part of the stack to the inventory
-                                        ItemStack rejected = response.getRejected();
-                                        if (rejected.isEmpty()) {
-                                            //Nothing was rejected (it was all accepted); remove the stack from the prediction
-                                            // tracker and schedule this stack for deletion. Continue the loop thereafter
-                                            TransporterManager.remove(getTileWorld(), stack);
-                                            deletes.add(stackId);
-                                            continue;
-                                        }
-                                        //Some portion of the stack got rejected; save the remainder and
-                                        // let the recalculate below sort out what to do next
-                                        stack.itemStack = rejected;
-                                    }//else the entire stack got rejected (Note: we don't need to update the stack to point to itself)
+                    }
+
+                    stack.progress += tier.getSpeed();
+                    if (stack.progress >= 100) {
+                        BlockPos prevSet = null;
+                        if (stack.hasPath()) {
+                            int currentIndex = stack.getPath().indexOf(getTilePos());
+                            if (currentIndex == 0) { //Necessary for transition reasons, not sure why
+                                deletes.add(stackId);
+                                continue;
+                            }
+                            BlockPos next = stack.getPath().get(currentIndex - 1);
+                            if (next != null) {
+                                if (!stack.isFinal(this)) {
+                                    LogisticalTransporterBase transmitter = network.getTransmitter(next);
+                                    if (stack.canInsertToTransporter(transmitter, stack.getSide(this), this)) {
+                                        transmitter.entityEntering(stack, stack.progress % 100);
+                                        deletes.add(stackId);
+                                        continue;
+                                    }
                                     prevSet = next;
+                                } else if (stack.getPathType() != Path.NONE) {
+                                    TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), next);
+                                    if (tile != null) {
+                                        TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this),
+                                              stack.getPathType() == Path.HOME);
+                                        if (!response.isEmpty()) {
+                                            //We were able to add at least part of the stack to the inventory
+                                            ItemStack rejected = response.getRejected();
+                                            if (rejected.isEmpty()) {
+                                                //Nothing was rejected (it was all accepted); remove the stack from the prediction
+                                                // tracker and schedule this stack for deletion. Continue the loop thereafter
+                                                TransporterManager.remove(getTileWorld(), stack);
+                                                deletes.add(stackId);
+                                                continue;
+                                            }
+                                            //Some portion of the stack got rejected; save the remainder and
+                                            // let the recalculate below sort out what to do next
+                                            stack.itemStack = rejected;
+                                        }//else the entire stack got rejected (Note: we don't need to update the stack to point to itself)
+                                        prevSet = next;
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (!recalculate(stackId, stack, prevSet)) {
-                        deletes.add(stackId);
-                    } else if (prevSet == null) {
-                        stack.progress = 50;
-                    } else {
-                        stack.progress = 0;
-                    }
-                } else if (stack.progress == 50) {
-                    boolean tryRecalculate;
-                    if (stack.isFinal(this)) {
-                        Path pathType = stack.getPathType();
-                        if (pathType == Path.DEST || pathType == Path.HOME) {
-                            Direction side = stack.getSide(this);
-                            ConnectionType connectionType = getConnectionType(side);
-                            tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH ||
-                                             !TransporterUtils.canInsert(WorldUtils.getTileEntity(getTileWorld(), stack.getDest()), stack.color, stack.itemStack,
-                                                   side, pathType == Path.HOME);
+                        if (!recalculate(stackId, stack, prevSet)) {
+                            deletes.add(stackId);
+                        } else if (prevSet == null) {
+                            stack.progress = 50;
                         } else {
-                            tryRecalculate = pathType == Path.NONE;
+                            stack.progress = 0;
                         }
-                    } else {
-                        tryRecalculate = !stack.canInsertToTransporter(network.getTransmitter(stack.getNext(this)), stack.getSide(this), this);
-                    }
-                    if (tryRecalculate && !recalculate(stackId, stack, null)) {
-                        deletes.add(stackId);
+                    } else if (stack.progress == 50) {
+                        boolean tryRecalculate;
+                        if (stack.isFinal(this)) {
+                            Path pathType = stack.getPathType();
+                            if (pathType == Path.DEST || pathType == Path.HOME) {
+                                Direction side = stack.getSide(this);
+                                ConnectionType connectionType = getConnectionType(side);
+                                tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH ||
+                                                 !TransporterUtils.canInsert(WorldUtils.getTileEntity(getTileWorld(), stack.getDest()), stack.color, stack.itemStack,
+                                                       side, pathType == Path.HOME);
+                            } else {
+                                tryRecalculate = pathType == Path.NONE;
+                            }
+                        } else {
+                            tryRecalculate = !stack.canInsertToTransporter(network.getTransmitter(stack.getNext(this)), stack.getSide(this), this);
+                        }
+                        if (tryRecalculate && !recalculate(stackId, stack, null)) {
+                            deletes.add(stackId);
+                        }
                     }
                 }
-            }
 
-            if (!deletes.isEmpty() || !needsSync.isEmpty()) {
-                //Notify clients, so that we send the information before we start clearing our lists
-                Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), getTransmitterTile());
-                // Now remove any entries from transit that have been deleted
-                deletes.forEach((IntConsumer) (this::deleteStack));
+                if (!deletes.isEmpty() || !needsSync.isEmpty()) {
+                    //Notify clients, so that we send the information before we start clearing our lists
+                    Mekanism.packetHandler.sendToAllTracking(new PacketTransporterUpdate(this, needsSync, deletes), getTransmitterTile());
+                    // Now remove any entries from transit that have been deleted
+                    deletes.forEach((IntConsumer) (this::deleteStack));
 
-                // Clear the pending sync packets
-                needsSync.clear();
+                    // Clear the pending sync packets
+                    needsSync.clear();
 
-                // Finally, mark chunk for save
-                WorldUtils.saveChunk(getTransmitterTile());
+                    // Finally, mark chunk for save
+                    WorldUtils.saveChunk(getTransmitterTile());
+                }
             }
         }
     }

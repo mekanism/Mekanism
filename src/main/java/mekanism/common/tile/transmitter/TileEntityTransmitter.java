@@ -62,6 +62,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public TileEntityTransmitter(IBlockProvider blockProvider) {
         super(((IHasTileEntity<? extends TileEntityTransmitter>) blockProvider.getBlock()).getTileType());
         this.transmitter = createTransmitter(blockProvider);
+        cacheCoord();
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION_CAPABILITY, this));
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }

@@ -42,8 +42,8 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
             if (world != null) {
                 world.updateNeighborsAt(getBlockPos(), getBlockType());
             }
+            prevStatus = status;
         }
-        prevStatus = status;
     }
 
     @Override

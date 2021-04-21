@@ -1,6 +1,6 @@
 package mekanism.common.util;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
@@ -70,9 +70,7 @@ public final class FluidUtils {
 
         int curHandlers = target.getHandlers().size();
         if (curHandlers > 0) {
-            Set<FluidHandlerTarget> targets = new ObjectOpenHashSet<>();
-            targets.add(target);
-            return EmitUtils.sendToAcceptors(targets, curHandlers, stack.getAmount(), toSend);
+            return EmitUtils.sendToAcceptors(Collections.singleton(target), curHandlers, stack.getAmount(), toSend);
         }
         return 0;
     }

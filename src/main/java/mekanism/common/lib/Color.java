@@ -1,6 +1,6 @@
 package mekanism.common.lib;
 
-import com.google.common.base.Objects;
+import java.util.Objects;
 import mekanism.common.util.StatUtils;
 
 public class Color {
@@ -241,7 +241,7 @@ public class Color {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(r, g, b, a);
+        return Objects.hash(r, g, b, a);
     }
 
     @Override

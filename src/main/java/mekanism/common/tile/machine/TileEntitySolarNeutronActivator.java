@@ -1,6 +1,6 @@
 package mekanism.common.tile.machine;
 
-import java.util.EnumSet;
+import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -138,7 +138,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         outputSlot.drainTank();
         productionRate = recalculateProductionRate();
         recipeCacheLookupMonitor.updateAndProcess();
-        ChemicalUtil.emit(EnumSet.of(getDirection()), outputTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
+        ChemicalUtil.emit(Collections.singleton(getDirection()), outputTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
     }
 
     @Nonnull

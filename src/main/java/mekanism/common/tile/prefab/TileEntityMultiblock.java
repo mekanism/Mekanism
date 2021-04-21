@@ -45,7 +45,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class TileEntityMultiblock<T extends MultiblockData> extends TileEntityMekanism implements IMultiblock<T>, IConfigurable {
@@ -80,6 +79,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     public TileEntityMultiblock(IBlockProvider blockProvider) {
         super(blockProvider);
+        cacheCoord();
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
@@ -354,16 +354,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public boolean persistInventory() {
         return false;
-    }
-
-    @Override
-    public BlockPos getTilePos() {
-        return getBlockPos();
-    }
-
-    @Override
-    public World getTileWorld() {
-        return getLevel();
     }
 
     @Nonnull

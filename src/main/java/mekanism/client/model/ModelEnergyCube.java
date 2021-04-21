@@ -2,6 +2,7 @@ package mekanism.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -436,7 +437,7 @@ public class ModelEnergyCube extends MekanismJavaModel {
             if (tier == EnergyCubeTier.CREATIVE) {
                 outputSides = EnumSet.allOf(RelativeSide.class);
             } else {
-                outputSides = EnumSet.of(RelativeSide.FRONT);
+                outputSides = Collections.singleton(RelativeSide.FRONT);
             }
         }
         renderSidesBatched(matrix, renderer, light, overlayLight, enabledSides, outputSides, hasEffect);

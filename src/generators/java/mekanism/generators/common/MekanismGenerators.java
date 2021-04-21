@@ -86,8 +86,12 @@ public class MekanismGenerators implements IModule {
               () -> MekanismConfig.general.FROM_H2.get().add(MekanismGeneratorsConfig.generators.bioGeneration.get()
                     .multiply(2L * MekanismConfig.general.ETHENE_BURN_TIME.get()))));
 
-        //Register dispenser behaviors
-        event.enqueueWork(GeneratorsFluids.FLUIDS::registerBucketDispenserBehavior);
+        event.enqueueWork(() -> {
+            //Ensure our tags are all initialized
+            GeneratorTags.init();
+            //Register dispenser behaviors
+            GeneratorsFluids.FLUIDS.registerBucketDispenserBehavior();
+        });
 
         BuildCommand.register("turbine", GeneratorsLang.TURBINE, new TurbineBuilder());
         BuildCommand.register("fission", GeneratorsLang.FISSION_REACTOR, new FissionReactorBuilder());

@@ -1,6 +1,6 @@
 package mekanism.common.tile;
 
-import java.util.EnumSet;
+import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -131,7 +131,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         }
         inputSlot.handleTank(outputSlot, editMode);
         if (getActive()) {
-            FluidUtils.emit(EnumSet.of(Direction.DOWN), fluidTank, this, tier.getOutput());
+            FluidUtils.emit(Collections.singleton(Direction.DOWN), fluidTank, this, tier.getOutput());
         }
         if (needsPacket) {
             sendUpdatePacket();
