@@ -57,7 +57,7 @@ public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> imple
 
     @Override
     @Deprecated
-    public void removeRecipe(IItemStack output) {
+    public void removeRecipe(IIngredient output) {
         throw new UnsupportedOperationException("Mekanism's recipe managers don't support removal by output, please remove by recipe name.");
     }
 
