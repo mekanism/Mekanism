@@ -9,7 +9,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.TileEntityTeleporter;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -52,7 +51,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         Map<Direction, Model3D> cache = rotated ? rotatedModelCache : modelCache;
         if (!cache.containsKey(direction)) {
             Model3D model = new Model3D();
-            model.setTexture(MekanismRenderer.getChemicalTexture(MekanismGases.HYDROGEN.getChemical()));
+            model.setTexture(MekanismRenderer.teleporterPortal);
             cache.put(direction, model);
             if (direction == Direction.UP) {
                 model.minY = 1;
