@@ -1,5 +1,7 @@
 package mekanism.generators.common.registries;
 
+import java.util.EnumSet;
+import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.AttributeParticleFX;
@@ -59,6 +61,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(() -> STORAGE)
           .withCustomShape(BlockShapes.HEAT_GENERATOR)
           .withSound(GeneratorsSounds.HEAT_GENERATOR)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .withComputerSupport("heatGenerator")
           .with(new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
@@ -71,6 +74,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(() -> STORAGE)
           .withCustomShape(BlockShapes.BIO_GENERATOR)
           .withSound(GeneratorsSounds.BIO_GENERATOR)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .withComputerSupport("bioGenerator")
           .with(new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(0, 0.3, -0.25)))
@@ -82,6 +86,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(() -> SOLAR_STORAGE)
           .withCustomShape(BlockShapes.SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .withComputerSupport("solarGenerator")
           .replace(Attributes.ACTIVE)
           .build();
@@ -93,6 +98,7 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.WIND_GENERATOR)
           .with(AttributeCustomSelectionBox.JAVA)
           .withSound(GeneratorsSounds.WIND_GENERATOR)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .withComputerSupport("windGenerator")
           .build();
     // Gas Burning Generator
@@ -103,6 +109,7 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.GAS_BURNING_GENERATOR)
           .with(AttributeCustomSelectionBox.JSON)
           .withSound(GeneratorsSounds.GAS_BURNING_GENERATOR)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .withComputerSupport("gasBurningGenerator")
           .build();
     // Advanced Solar Generator
@@ -112,6 +119,7 @@ public class GeneratorsBlockTypes {
           .withEnergyConfig(() -> STORAGE2)
           .withCustomShape(BlockShapes.ADVANCED_SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
+          .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
           .withComputerSupport("advancedSolarGenerator")
           .replace(Attributes.ACTIVE)
           .build();

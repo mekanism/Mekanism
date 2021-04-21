@@ -72,11 +72,6 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                         int added = addUpgrades(type, upgradeSlot.getCount());
                         if (added > 0) {
                             MekanismUtils.logMismatchedStackSize(upgradeSlot.shrinkStack(added, Action.EXECUTE), added);
-                            if (type == Upgrade.MUFFLING) {
-                                //Send an update packet to the client to update the number of muffling upgrades installed
-                                tile.sendUpdatePacket();
-                            }
-                            tile.markDirty(false);
                         }
                     }
                 }
@@ -108,6 +103,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
      * @param maxAvailable Max number of upgrades to install.
      *
      * @return Actual number of upgrades installed.
+     *
+     * @apiNote Call from the server
      */
     public int addUpgrades(Upgrade upgrade, int maxAvailable) {
         int installed = getUpgrades(upgrade);
@@ -116,6 +113,11 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
             if (toAdd > 0) {
                 this.upgrades.put(upgrade, installed + toAdd);
                 tile.recalculateUpgrades(upgrade);
+                if (upgrade == Upgrade.MUFFLING) {
+                    //Send an update packet to the client to update the number of muffling upgrades installed
+                    tile.sendUpdatePacket();
+                }
+                tile.markDirty(false);
                 return toAdd;
             }
         }
