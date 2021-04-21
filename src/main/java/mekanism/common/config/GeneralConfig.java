@@ -39,6 +39,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
     public final CachedBooleanValue logPackets;
     public final CachedBooleanValue allowChunkloading;
+    public final CachedBooleanValue easyMinerFilters;
     public final CachedIntValue blockDeactivationDelay;
     public final CachedConfigValue<List<String>> cardboardModBlacklist;
     public final CachedBooleanValue transmitterAlloyUpgrade;
@@ -120,6 +121,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("logPackets", false));
         allowChunkloading = CachedBooleanValue.wrap(this, builder.comment("Disable to make the anchor upgrade not do anything.")
               .define("allowChunkloading", true));
+        easyMinerFilters = CachedBooleanValue.wrap(this, builder.comment("Enable this to allow dragging items from JEI into the target slot of Digital Miner filters.")
+              .define("easyMinerFilters", false));
         blockDeactivationDelay = CachedIntValue.wrap(this, builder.comment("How many ticks must pass until a block's active state is synced with the client, if it has been rapidly changing.")
               .define("blockDeactivationDelay", 60));
         cardboardModBlacklist = CachedConfigValue.wrap(this, builder.comment("Any mod ids added to this list will not be able to have any of their blocks, picked up by the cardboard box. For example: [\"mekanism\"]")

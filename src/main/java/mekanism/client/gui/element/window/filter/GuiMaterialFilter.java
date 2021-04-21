@@ -62,7 +62,7 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
                super.mouseClicked(mouseX, mouseY, button);
     }
 
-    private void setFilterStack(@Nonnull ItemStack stack) {
+    protected void setFilterStack(@Nonnull ItemStack stack) {
         filter.setMaterialItem(stack);
         slotDisplay.updateStackList();
         playClickSound();

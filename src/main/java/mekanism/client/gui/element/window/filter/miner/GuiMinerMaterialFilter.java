@@ -5,8 +5,11 @@ import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiMaterialFilter;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostBlockItemConsumer;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.miner.MinerMaterialFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
+import mekanism.common.util.StackUtils;
+import net.minecraft.item.ItemStack;
 
 public class GuiMinerMaterialFilter extends GuiMaterialFilter<MinerMaterialFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 
@@ -42,8 +45,18 @@ public class GuiMinerMaterialFilter extends GuiMaterialFilter<MinerMaterialFilte
     @Nullable
     @Override
     protected IGhostBlockItemConsumer getGhostHandler() {
-        //Note: The miner requires the player to actually get targets
-        return null;
+        return new IGhostBlockItemConsumer() {
+            @Override
+            public boolean supportsIngredient(Object ingredient) {
+                //Note: The miner requires the player to actually get targets, unless configured server side to be "easy"
+                return MekanismConfig.general.easyMinerFilters.get() && IGhostBlockItemConsumer.super.supportsIngredient(ingredient);
+            }
+
+            @Override
+            public void accept(Object ingredient) {
+                setFilterStack(StackUtils.size((ItemStack) ingredient, 1));
+            }
+        };
     }
 
     @Override

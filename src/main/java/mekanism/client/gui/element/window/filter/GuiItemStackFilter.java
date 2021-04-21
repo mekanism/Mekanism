@@ -55,7 +55,7 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
                super.mouseClicked(mouseX, mouseY, button);
     }
 
-    private void setFilterStack(@Nonnull ItemStack stack) {
+    protected void setFilterStack(@Nonnull ItemStack stack) {
         filter.setItemStack(stack);
         slotDisplay.updateStackList();
         playClickSound();
