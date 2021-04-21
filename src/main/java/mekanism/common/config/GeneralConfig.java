@@ -45,6 +45,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue maxUpgradeMultiplier;
     public final CachedDoubleValue boilerWaterConductivity;
     public final CachedDoubleValue heatPerFuelTick;
+    public final CachedIntValue fuelwoodTickMultiplier;
     public final CachedDoubleValue resistiveHeaterEfficiency;
     public final CachedDoubleValue superheatingHeatTransfer;
     public final CachedEnumValue<TempType> tempUnit;
@@ -132,6 +133,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("boilerWaterConductivity", 0.7));
         heatPerFuelTick = CachedDoubleValue.wrap(this, builder.comment("Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater.")
               .define("heatPerFuelTick", 400D));
+        fuelwoodTickMultiplier = CachedIntValue.wrap(this, builder.comment("Number of ticks to burn an item at in a Fuelwood Heater. Use this config option to effectively make Fuelwood Heater's burn faster but produce the same amount of heat per item.")
+              .defineInRange("fuelwoodTickMultiplier", 1, 1, 1_000));
         resistiveHeaterEfficiency = CachedDoubleValue.wrap(this, builder.comment("How much heat energy is created from one Joule of regular energy in the Resistive Heater.")
               .defineInRange("resistiveHeaterEfficiency", 0.6, 0, 1));
         superheatingHeatTransfer = CachedDoubleValue.wrap(this, builder.comment("Amount of heat each Boiler heating element produces.")

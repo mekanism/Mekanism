@@ -58,22 +58,19 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        boolean burning = false;
-        if (burnTime > 0) {
-            burnTime--;
-            burning = true;
-        } else {
+        if (burnTime == 0) {
             maxBurnTime = burnTime = fuelSlot.burn();
-            if (burnTime > 0) {
-                burning = true;
-            }
         }
-        if (burning) {
-            heatCapacitor.handleHeat(MekanismConfig.general.heatPerFuelTick.get());
+        if (burnTime > 0) {
+            int ticks = Math.min(burnTime, MekanismConfig.general.fuelwoodTickMultiplier.get());
+            burnTime -= ticks;
+            heatCapacitor.handleHeat(MekanismConfig.general.heatPerFuelTick.get() * ticks);
+            setActive(true);
+        } else {
+            setActive(false);
         }
         HeatTransfer loss = simulate();
         lastEnvironmentLoss = loss.getEnvironmentTransfer();
-        setActive(burning);
     }
 
     @ComputerMethod(nameOverride = "getEnvironmentalLoss")

@@ -46,8 +46,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityHeatGenerator extends TileEntityGenerator {
 
-    private static final int MAX_FLUID = 24_000;
-    private static final int FLUID_RATE = 10;
+    public static final int MAX_FLUID = 24_000;
     private static final double THERMAL_EFFICIENCY = 0.5;
     private static final FloatingLong MAX_PRODUCTION = FloatingLong.createConst(500);
     /**
@@ -106,11 +105,15 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         fuelSlot.fillOrBurn();
         FloatingLong prev = getEnergyContainer().getEnergy().copyAsConst();
         heatCapacitor.handleHeat(getBoost().doubleValue());
-        if (MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero() &&
-            lavaTank.extract(FLUID_RATE, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == FLUID_RATE) {
-            setActive(true);
-            lavaTank.extract(FLUID_RATE, Action.EXECUTE, AutomationType.INTERNAL);
-            heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.heatGeneration.get().doubleValue());
+        if (MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {
+            int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
+            if (lavaTank.extract(fluidRate, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == fluidRate) {
+                setActive(true);
+                lavaTank.extract(fluidRate, Action.EXECUTE, AutomationType.INTERNAL);
+                heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.heatGeneration.get().doubleValue());
+            } else {
+                setActive(false);
+            }
         } else {
             setActive(false);
         }

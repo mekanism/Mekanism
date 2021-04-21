@@ -8,6 +8,7 @@ import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
+import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -27,6 +28,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue heatGeneration;
     public final CachedFloatingLongValue heatGenerationLava;
     public final CachedFloatingLongValue heatGenerationNether;
+    public final CachedIntValue heatGenerationFluidRate;
     public final CachedFloatingLongValue solarGeneration;
     public final CachedIntValue turbineBladesPerCoil;
     public final CachedDoubleValue turbineVentGasFlow;
@@ -76,6 +78,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               "heatGenerationLava", FloatingLong.createConst(30));
         heatGenerationNether = CachedFloatingLongValue.define(this, builder, "Add this amount of Joules to the energy produced by a heat generator if it is in an 'ultrawarm' dimension, in vanilla this is just the Nether.",
               "heatGenerationNether", FloatingLong.createConst(100));
+        heatGenerationFluidRate = CachedIntValue.wrap(this, builder.comment("The amount of lava in mB that gets consumed to transfer heatGeneration Joules to the Heat Generator.")
+              .defineInRange("heatGenerationFluidRate", 10, 1, TileEntityHeatGenerator.MAX_FLUID));
         builder.pop();
 
         builder.comment("Turbine Settings").push(TURBINE_CATEGORY);
