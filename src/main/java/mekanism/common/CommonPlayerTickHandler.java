@@ -111,7 +111,10 @@ public class CommonPlayerTickHandler {
         if (isFlamethrowerOn(player, currentItem)) {
             EntityFlame flame = EntityFlame.create(player);
             if (flame != null) {
-                player.level.addFreshEntity(flame);
+                if (flame.isAlive()) {
+                    //If the flame is alive (and didn't just instantly hit a block while trying to spawn add it to the world)
+                    player.level.addFreshEntity(flame);
+                }
                 if (MekanismUtils.isPlayingMode(player)) {
                     ((ItemFlamethrower) currentItem.getItem()).useGas(currentItem, 1);
                 }

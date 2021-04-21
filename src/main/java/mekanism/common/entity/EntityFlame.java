@@ -84,6 +84,13 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         ItemStack selected = player.inventory.getSelected();
         flame.mode = ((ItemFlamethrower) selected.getItem()).getMode(selected);
         flame.shootFromRotation(player, player.xRot, player.yRot, 0, 0.5F, 1);
+        //Attempt to ray trace the area between the player and where the flame would actually start
+        // if it hits a block instead just have the flame hit the block directly so as to avoid
+        // being able to shoot a flamethrower through one thick walls.
+        BlockRayTraceResult blockRayTrace = player.level.clip(new RayTraceContext(playerPos, mergedVec, BlockMode.OUTLINE, FluidMode.NONE, flame));
+        if (blockRayTrace.getType() != Type.MISS) {
+            flame.onHit(blockRayTrace);
+        }
         return flame;
     }
 
