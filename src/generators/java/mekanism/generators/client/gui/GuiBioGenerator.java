@@ -5,6 +5,7 @@ import java.util.Arrays;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.bar.GuiFluidBar;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.MekanismLang;
@@ -36,7 +37,7 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
               GeneratorsLang.PRODUCING_AMOUNT.translate(tile.getActive() ? EnergyDisplay.of(MekanismGeneratorsConfig.generators.bioGeneration.get()) : EnergyDisplay.ZERO),
               MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiVerticalPowerBar(this, () -> tile.bioFuelTank.getFluidAmount() / (double) tile.bioFuelTank.getCapacity(), 7, 15));
+        addButton(new GuiFluidBar(this, GuiFluidBar.getProvider(tile.bioFuelTank, tile.getFluidTanks(null)), 7, 15, 4, 52, false));
     }
 
     @Override
