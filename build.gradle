@@ -6,7 +6,7 @@ buildscript {
     repositories {
         maven {
             name "forge"
-            url "https://files.minecraftforge.net/maven"
+            url "https://maven.minecraftforge.net/"
         }
     }
     dependencies {
@@ -282,7 +282,7 @@ minecraft {
 repositories {
     maven {
         name 'ForgeFS'
-        url 'https://files.minecraftforge.net/maven'
+        url 'https://maven.minecraftforge.net/'
         content {
             includeGroupByRegex 'net\\.minecraftforge.*'
             includeGroup 'de.oceanlabs.mcp'
