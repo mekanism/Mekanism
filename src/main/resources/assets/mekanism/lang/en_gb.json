@@ -210,6 +210,7 @@
   "key.mekanism.module_tweaker": "Module Tweaker",
   "module.mekanism.attack_amplification_unit": "Attack Amplification Unit",
   "module.mekanism.attack_damage": "Attack Damage",
+  "module.mekanism.breathing.held":"Fill Held",
   "module.mekanism.charge_distribution_unit": "Charge Distribution Unit",
   "module.mekanism.charge_inventory": "Charge Inventory",
   "module.mekanism.charge_suit": "Charge Suit",
