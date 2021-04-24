@@ -23,8 +23,8 @@ d5bd6c407c9250a90e22e1f2c8805738b3830abf assets/mekanism/blockstates/lithium.jso
 c1be0ed56a542f711719367cf1e508f10063c695 assets/mekanism/blockstates/sulfuric_acid.json
 f5e3eb6799a15d0b72969547614dfc51dac53419 assets/mekanism/blockstates/tin_ore.json
 246c1904e7699b01a3a20f2a2b79b35b5d99aec9 assets/mekanism/blockstates/uranium_ore.json
-3007c55b61d0f98bfde05ef9563812c53723f77e assets/mekanism/lang/en_ud.json
-9db124f3360fc6b8399e39a6a24dcb9b4cd82a2d assets/mekanism/lang/en_us.json
+c54db2c07a4c96924eb1794b98eabfde09309f60 assets/mekanism/lang/en_ud.json
+1b9839f0d14bc1d1ad9db7997f5359dd4864997e assets/mekanism/lang/en_us.json
 beea3be5a8af802be66d456a7a648678bede0f02 assets/mekanism/models/block/brine.json
 beea3be5a8af802be66d456a7a648678bede0f02 assets/mekanism/models/block/chlorine.json
 beea3be5a8af802be66d456a7a648678bede0f02 assets/mekanism/models/block/ethene.json

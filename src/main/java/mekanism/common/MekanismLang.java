@@ -769,6 +769,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_FARMING_UNIT("module", "farming_unit"),
     MODULE_TELEPORTATION_UNIT("module", "teleportation_unit"),
     MODULE_ELECTROLYTIC_BREATHING_UNIT("module", "electrolytic_breathing_unit"),
+    MODULE_BREATHING_HELD("module", "breathing.held"),
     MODULE_INHALATION_PURIFICATION_UNIT("module", "inhalation_purification_unit"),
     MODULE_VISION_ENHANCEMENT_UNIT("module", "vision_enhancement_unit"),
     MODULE_SOLAR_RECHARGING_UNIT("module", "solar_recharging_unit"),

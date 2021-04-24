@@ -1228,6 +1228,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_CHARGE_INVENTORY, "Charge Inventory");
         add(MekanismLang.MODULE_SPEED_BOOST, "Speed Boost");
         add(MekanismLang.MODULE_VISION_ENHANCEMENT, "Vision Enhancement");
+        add(MekanismLang.MODULE_BREATHING_HELD, "Fill Held");
         add(MekanismLang.MODULE_PURIFICATION_BENEFICIAL, "Remove Beneficial");
         add(MekanismLang.MODULE_PURIFICATION_NEUTRAL, "Remove Neutral");
         add(MekanismLang.MODULE_PURIFICATION_HARMFUL, "Remove Harmful");
