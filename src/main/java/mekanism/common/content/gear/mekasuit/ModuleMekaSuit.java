@@ -47,17 +47,13 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
 public abstract class ModuleMekaSuit extends Module {
-
     public static class ModuleElectrolyticBreathingUnit extends ModuleMekaSuit {
-    	
         private ModuleConfigItem<Boolean> fillHeld;
         @Override
     	public void init() {
     		super.init();
-    		addConfigItem(fillHeld = new ModuleConfigItem<>(this, "fill_held", MekanismLang.MODULE_BREATHING_HELD,
-    				new BooleanData(), true));
+    		addConfigItem(fillHeld = new ModuleConfigItem<>(this, "fill_held", MekanismLang.MODULE_BREATHING_HELD, new BooleanData(), true));
     	}
-        
         @Override
         public void tickServer(PlayerEntity player) {
             super.tickServer(player);
