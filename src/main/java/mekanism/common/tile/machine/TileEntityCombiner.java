@@ -34,6 +34,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 
 public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe> implements DoubleItemRecipeLookupHandler<CombinerRecipe> {
 
@@ -126,6 +127,12 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
 
     public MachineEnergyContainer<TileEntityCombiner> getEnergyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+        //Allow exact match or factories of the same type (as we will just ignore the extra data)
+        return super.isConfigurationDataCompatible(tileType) || MekanismUtils.isSameTypeFactory(getBlockType(), tileType);
     }
 
     //Methods relating to IComputerTile

@@ -44,6 +44,7 @@ import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackGasToItemStackRecipe> implements
       ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe> {
@@ -164,6 +165,12 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     public MachineEnergyContainer<TileEntityAdvancedElectricMachine> getEnergyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+        //Allow exact match or factories of the same type (as we will just ignore the extra data)
+        return super.isConfigurationDataCompatible(tileType) || MekanismUtils.isSameTypeFactory(getBlockType(), tileType);
     }
 
     //Methods relating to IComputerTile

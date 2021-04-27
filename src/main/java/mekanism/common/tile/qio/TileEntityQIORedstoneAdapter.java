@@ -2,6 +2,8 @@ package mekanism.common.tile.qio;
 
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -13,6 +15,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -35,6 +38,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     public TileEntityQIORedstoneAdapter() {
         super(MekanismBlocks.QIO_REDSTONE_ADAPTER);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     public boolean isPowering() {
@@ -79,6 +83,23 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public IModelData getModelData() {
         return new ModelDataMap.Builder().withInitial(POWERING_PROPERTY, prevPowering).build();
+    }
+
+    @Override
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        CompoundNBT data = super.getConfigurationData(player);
+        if (itemType != null) {
+            data.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
+        }
+        data.putLong(NBTConstants.AMOUNT, count);
+        return data;
+    }
+
+    @Override
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        NBTUtils.setItemStackIfPresent(data, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
+        NBTUtils.setLongIfPresent(data, NBTConstants.AMOUNT, value -> count = value);
     }
 
     @Nonnull

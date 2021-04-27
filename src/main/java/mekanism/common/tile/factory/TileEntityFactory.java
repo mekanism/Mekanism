@@ -9,7 +9,6 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -24,13 +23,11 @@ import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -46,6 +43,7 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
 import mekanism.common.recipe.lookup.monitor.FactoryRecipeCacheLookupMonitor;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
@@ -56,12 +54,16 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MachineUpgradeData;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntityType;
 
-public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements ISpecialConfigData, IRecipeLookupHandler<RECIPE> {
+public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
     /**
      * How many ticks it takes, by default, to run an operation.
@@ -128,7 +130,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
         progress = new int[tier.processes];
         activeStates = new boolean[tier.processes];
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     /**
@@ -374,19 +375,32 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        nbtTags.putBoolean(NBTConstants.SORTING, isSorting());
-        return nbtTags;
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        CompoundNBT data = super.getConfigurationData(player);
+        data.putBoolean(NBTConstants.SORTING, isSorting());
+        return data;
     }
 
     @Override
-    public void setConfigurationData(CompoundNBT nbtTags) {
-        sorting = nbtTags.getBoolean(NBTConstants.SORTING);
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        NBTUtils.setBooleanIfPresent(data, NBTConstants.SORTING, value -> sorting = value);
     }
 
     @Override
-    public String getDataType() {
-        return getName().getString();
+    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+        if (super.isConfigurationDataCompatible(tileType)) {
+            //Check exact match first
+            return true;
+        }
+        //Then check other factory tiers
+        for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
+            if (factoryTier != tier && MekanismTileEntityTypes.getFactoryTile(factoryTier, type).get() == tileType) {
+                return true;
+            }
+        }
+        //And finally check if it is the non factory version (it will be missing sorting data but we can gracefully ignore that)
+        return type.getBaseMachine().getTileType() == tileType;
     }
 
     public boolean hasSecondaryResourceBar() {

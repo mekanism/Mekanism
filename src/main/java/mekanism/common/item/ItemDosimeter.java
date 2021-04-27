@@ -27,10 +27,12 @@ public class ItemDosimeter extends Item {
     @Override
     public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!player.isShiftKeyDown() && !world.isClientSide()) {
-            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c ->
-                  player.sendMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(c.getRadiation()),
-                        UnitDisplayUtils.getDisplayShort(c.getRadiation(), RadiationUnit.SV, 3)), Util.NIL_UUID));
+        if (!player.isShiftKeyDown()) {
+            if (!world.isClientSide()) {
+                player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c ->
+                      player.sendMessage(MekanismLang.RADIATION_DOSE.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(c.getRadiation()),
+                            UnitDisplayUtils.getDisplayShort(c.getRadiation(), RadiationUnit.SV, 3)), Util.NIL_UUID));
+            }
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.PASS, stack);

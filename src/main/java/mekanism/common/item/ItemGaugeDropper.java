@@ -64,22 +64,24 @@ public class ItemGaugeDropper extends Item {
     @Override
     public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown() && !world.isClientSide) {
-            Optional<IFluidHandlerItem> fluidCapability = FluidUtil.getFluidHandler(stack).resolve();
-            if (fluidCapability.isPresent()) {
-                IFluidHandlerItem fluidHandler = fluidCapability.get();
-                if (fluidHandler instanceof IExtendedFluidHandler) {
-                    IExtendedFluidHandler fluidHandlerItem = (IExtendedFluidHandler) fluidHandler;
-                    for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
-                        fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);
+        if (player.isShiftKeyDown()) {
+            if (!world.isClientSide) {
+                Optional<IFluidHandlerItem> fluidCapability = FluidUtil.getFluidHandler(stack).resolve();
+                if (fluidCapability.isPresent()) {
+                    IFluidHandlerItem fluidHandler = fluidCapability.get();
+                    if (fluidHandler instanceof IExtendedFluidHandler) {
+                        IExtendedFluidHandler fluidHandlerItem = (IExtendedFluidHandler) fluidHandler;
+                        for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
+                            fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);
+                        }
                     }
                 }
+                clearChemicalTanks(stack, GasStack.EMPTY);
+                clearChemicalTanks(stack, InfusionStack.EMPTY);
+                clearChemicalTanks(stack, PigmentStack.EMPTY);
+                clearChemicalTanks(stack, SlurryStack.EMPTY);
+                ((ServerPlayerEntity) player).refreshContainer(player.containerMenu);
             }
-            clearChemicalTanks(stack, GasStack.EMPTY);
-            clearChemicalTanks(stack, InfusionStack.EMPTY);
-            clearChemicalTanks(stack, PigmentStack.EMPTY);
-            clearChemicalTanks(stack, SlurryStack.EMPTY);
-            ((ServerPlayerEntity) player).refreshContainer(player.containerMenu);
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
         return new ActionResult<>(ActionResultType.PASS, stack);

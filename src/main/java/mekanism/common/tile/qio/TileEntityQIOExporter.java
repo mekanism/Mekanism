@@ -32,9 +32,11 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -68,8 +70,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
 
     private void tryEject() {
         QIOFrequency freq = getQIOFrequency();
-        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
-        if (freq == null || !InventoryUtils.isItemHandler(back, getDirection())) {
+        Direction direction = getDirection();
+        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
+        if (freq == null || !InventoryUtils.isItemHandler(back, direction)) {
             return;
         }
         if (!exportWithoutFilter && getFilters().isEmpty()) {
@@ -140,16 +143,16 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
-        super.getConfigurationData(nbtTags);
+    protected CompoundNBT getGeneralPersistentData(CompoundNBT nbtTags) {
+        super.getGeneralPersistentData(nbtTags);
         nbtTags.putBoolean(NBTConstants.AUTO, exportWithoutFilter);
         return nbtTags;
     }
 
     @Override
-    public void setConfigurationData(CompoundNBT nbtTags) {
-        super.setConfigurationData(nbtTags);
-        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.AUTO, value -> exportWithoutFilter = value);
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        NBTUtils.setBooleanIfPresent(data, NBTConstants.AUTO, value -> exportWithoutFilter = value);
     }
 
     //Methods relating to IComputerTile

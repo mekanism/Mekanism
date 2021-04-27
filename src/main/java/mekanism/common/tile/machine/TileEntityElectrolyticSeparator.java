@@ -62,6 +62,7 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
@@ -208,11 +209,11 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
 
         long dumpAmount = 8 * (long) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-        handleTank(leftTank, false, dumpLeft, getLeftSide(), dumpAmount);
-        handleTank(rightTank, true, dumpRight, getRightSide(), dumpAmount);
+        handleTank(leftTank, false, dumpLeft, dumpAmount);
+        handleTank(rightTank, true, dumpRight, dumpAmount);
     }
 
-    private void handleTank(IGasTank tank, boolean right, GasMode mode, Direction side, long dumpAmount) {
+    private void handleTank(IGasTank tank, boolean right, GasMode mode, long dumpAmount) {
         if (!tank.isEmpty()) {
             if (mode == GasMode.DUMPING) {
                 tank.shrinkStack(dumpAmount, Action.EXECUTE);
@@ -284,6 +285,21 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
             dumpRight = dumpRight.getNext();
             markDirty(false);
         }
+    }
+
+    @Override
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        CompoundNBT data = super.getConfigurationData(player);
+        data.putInt(NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
+        data.putInt(NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
+        return data;
+    }
+
+    @Override
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
+        NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);
     }
 
     @Override

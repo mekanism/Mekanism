@@ -44,6 +44,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 
 public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<MetallurgicInfuserRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<InfuseType, InfusionStack, MetallurgicInfuserRecipe> {
@@ -151,6 +152,12 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
 
     public MachineEnergyContainer<TileEntityMetallurgicInfuser> getEnergyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+        //Allow exact match or factories of the same type (as we will just ignore the extra data)
+        return super.isConfigurationDataCompatible(tileType) || MekanismUtils.isSameTypeFactory(getBlockType(), tileType);
     }
 
     @Override

@@ -72,6 +72,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public TileEntityFluidTank(IBlockProvider blockProvider) {
         super(blockProvider);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Override
@@ -137,6 +138,19 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             sendUpdatePacket();
             needsPacket = false;
         }
+    }
+
+    @Override
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        CompoundNBT data = super.getConfigurationData(player);
+        data.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
+        return data;
+    }
+
+    @Override
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        NBTUtils.setEnumIfPresent(data, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
     }
 
     @Nonnull

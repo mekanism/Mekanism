@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -42,14 +41,15 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISpecialConfigData, ISustainedData, ITileFilterHolder<SorterFilter<?>>,
-      IHasSortableFilters {
+public class TileEntityLogisticalSorter extends TileEntityMekanism implements ISustainedData, ITileFilterHolder<SorterFilter<?>>, IHasSortableFilters {
 
     private HashList<SorterFilter<?>> filters = new HashList<>();
     private final Finder strictFinder = stack -> filters.stream().noneMatch(filter -> !filter.allowDefault && filter.getFinder().modifies(stack));
@@ -67,7 +67,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         super(MekanismBlocks.LOGISTICAL_SORTER);
         delaySupplier = () -> 3;
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Nonnull
@@ -87,13 +86,14 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         }
 
         if (MekanismUtils.canFunction(this) && delayTicks == 0) {
-            TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
-            TileEntity front = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getDirection()));
+            Direction direction = getDirection();
+            TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
+            TileEntity front = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction));
             //If there is no tile to pull from or the push to, skip doing any checks
-            if (InventoryUtils.isItemHandler(back, getDirection()) && front != null) {
+            if (InventoryUtils.isItemHandler(back, direction) && front != null) {
                 boolean sentItems = false;
                 for (SorterFilter<?> filter : filters) {
-                    TransitRequest request = filter.mapInventory(back, getDirection(), singleItem);
+                    TransitRequest request = filter.mapInventory(back, direction, singleItem);
                     if (request.isEmpty()) {
                         continue;
                     }
@@ -109,7 +109,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 }
 
                 if (!sentItems && autoEject) {
-                    TransitRequest request = TransitRequest.definedItem(back, getDirection(), singleItem ? 1 : 64, strictFinder);
+                    TransitRequest request = TransitRequest.definedItem(back, direction, singleItem ? 1 : 64, strictFinder);
                     TransitResponse response = emitItemToTransporter(front, request, color, 0);
                     if (!response.isEmpty()) {
                         response.useAll();
@@ -137,13 +137,20 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
         super.save(nbtTags);
-        return getConfigurationData(nbtTags);
+        getGeneralPersistentData(nbtTags);
+        if (rrTarget != null) {
+            nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
+        }
+        return nbtTags;
     }
 
     @Override
     public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.load(state, nbtTags);
-        setConfigurationData(nbtTags);
+        setGeneralPersistentData(nbtTags);
+        if (nbtTags.contains(NBTConstants.ROUND_ROBIN_TARGET, NBT.TAG_COMPOUND)) {
+            rrTarget = SidedBlockPos.deserialize(nbtTags.getCompound(NBTConstants.ROUND_ROBIN_TARGET));
+        }
     }
 
     @Override
@@ -197,19 +204,22 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     public boolean canSendHome(ItemStack stack) {
-        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
-        return TransporterUtils.canInsert(back, null, stack, getOppositeDirection(), true);
+        Direction oppositeDirection = getOppositeDirection();
+        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(oppositeDirection));
+        return TransporterUtils.canInsert(back, null, stack, oppositeDirection, true);
     }
 
     public boolean hasConnectedInventory() {
-        TileEntity tile = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
-        return TransporterUtils.isValidAcceptorOnSide(tile, getOppositeDirection());
+        Direction oppositeDirection = getOppositeDirection();
+        TileEntity tile = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(oppositeDirection));
+        return TransporterUtils.isValidAcceptorOnSide(tile, oppositeDirection);
     }
 
     @Nonnull
     public TransitResponse sendHome(TransitRequest request) {
-        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(getOppositeDirection()));
-        return request.addToInventory(back, getOppositeDirection(), true);
+        Direction oppositeDirection = getOppositeDirection();
+        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(oppositeDirection));
+        return request.addToInventory(back, oppositeDirection, true);
     }
 
     @Override
@@ -218,14 +228,15 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        return getGeneralPersistentData(super.getConfigurationData(player));
+    }
+
+    private CompoundNBT getGeneralPersistentData(CompoundNBT nbtTags) {
         nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
         nbtTags.putBoolean(NBTConstants.EJECT, autoEject);
         nbtTags.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
         nbtTags.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
-        if (rrTarget != null) {
-            nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
-        }
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (SorterFilter<?> filter : filters) {
@@ -237,16 +248,18 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public void setConfigurationData(CompoundNBT nbtTags) {
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
-        autoEject = nbtTags.getBoolean(NBTConstants.EJECT);
-        roundRobin = nbtTags.getBoolean(NBTConstants.ROUND_ROBIN);
-        singleItem = nbtTags.getBoolean(NBTConstants.SINGLE_ITEM);
-        if (nbtTags.contains(NBTConstants.ROUND_ROBIN_TARGET, NBT.TAG_COMPOUND)) {
-            rrTarget = SidedBlockPos.deserialize(nbtTags.getCompound(NBTConstants.ROUND_ROBIN_TARGET));
-        }
-        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        setGeneralPersistentData(data);
+    }
+
+    private void setGeneralPersistentData(CompoundNBT data) {
+        NBTUtils.setEnumIfPresent(data, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
+        autoEject = data.getBoolean(NBTConstants.EJECT);
+        roundRobin = data.getBoolean(NBTConstants.ROUND_ROBIN);
+        singleItem = data.getBoolean(NBTConstants.SINGLE_ITEM);
+        if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof SorterFilter) {
@@ -254,11 +267,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
                 }
             }
         }
-    }
-
-    @Override
-    public String getDataType() {
-        return getBlockType().getDescriptionId();
     }
 
     @Override

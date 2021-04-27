@@ -33,6 +33,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
 
     @Override
     public void onPlace() {
+        super.onPlace();
         if (level != null) {
             BlockPos pos = getBlockPos();
             WorldUtils.makeBoundingBlock(level, pos.offset(0, 1, 0), pos);

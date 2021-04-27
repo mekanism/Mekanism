@@ -3,7 +3,6 @@ package mekanism.common.tile.qio;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
@@ -22,20 +21,19 @@ import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ISpecialConfigData, ISustainedData, ITileFilterHolder<QIOFilter<?>>,
-      IHasSortableFilters {
+public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ISustainedData, ITileFilterHolder<QIOFilter<?>>, IHasSortableFilters {
 
     private HashList<QIOFilter<?>> filters = new HashList<>();
 
     public TileEntityQIOFilterHandler(IBlockProvider blockProvider) {
         super(blockProvider);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Override
@@ -76,7 +74,11 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     }
 
     @Override
-    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        return getGeneralPersistentData(super.getConfigurationData(player));
+    }
+
+    protected CompoundNBT getGeneralPersistentData(CompoundNBT nbtTags) {
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (QIOFilter<?> filter : filters) {
@@ -88,9 +90,14 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     }
 
     @Override
-    public void setConfigurationData(CompoundNBT nbtTags) {
-        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        setGeneralPersistentData(data);
+    }
+
+    private void setGeneralPersistentData(CompoundNBT data) {
+        if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof QIOFilter) {
@@ -100,22 +107,18 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
         }
     }
 
-    @Override
-    public String getDataType() {
-        return getBlockType().getDescriptionId();
-    }
-
     @Nonnull
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
         super.save(nbtTags);
-        return getConfigurationData(nbtTags);
+        getGeneralPersistentData(nbtTags);
+        return nbtTags;
     }
 
     @Override
     public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.load(state, nbtTags);
-        setConfigurationData(nbtTags);
+        setGeneralPersistentData(nbtTags);
     }
 
     @Override

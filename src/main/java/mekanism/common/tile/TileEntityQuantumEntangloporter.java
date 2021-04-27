@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
@@ -39,7 +38,6 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.heat.QuantumEntangloporterHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.QuantumEntangloporterInventorySlotHolder;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -77,15 +75,16 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
 
-public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IFrequencyHandler, ISustainedData, IChunkLoader, ISpecialConfigData {
+public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IFrequencyHandler, ISustainedData, IChunkLoader {
 
-    public final TileComponentChunkLoader<TileEntityQuantumEntangloporter> chunkLoaderComponent;
+    private final TileComponentChunkLoader<TileEntityQuantumEntangloporter> chunkLoaderComponent;
 
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
@@ -118,7 +117,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.INVENTORY, true, true, true);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     private <T> void setupConfig(TransmissionType type, ProxySlotInfoCreator<T> proxyCreator, Supplier<List<T>> supplier) {
@@ -289,27 +287,24 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     @Override
-    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        CompoundNBT data = super.getConfigurationData(player);
         InventoryFrequency freq = getFreq();
         if (freq != null) {
-            nbtTags.put(NBTConstants.FREQUENCY, freq.serializeIdentity());
+            data.put(NBTConstants.FREQUENCY, freq.serializeIdentity());
         }
-        return nbtTags;
+        return data;
     }
 
     @Override
-    public void setConfigurationData(CompoundNBT nbtTags) {
-        FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, nbtTags.getCompound(NBTConstants.FREQUENCY));
-        if (freq != null) {
-            setFrequency(FrequencyType.INVENTORY, freq);
-        } else {
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, data.getCompound(NBTConstants.FREQUENCY));
+        if (freq == null) {
             unsetFrequency(FrequencyType.INVENTORY);
+        } else {
+            setFrequency(FrequencyType.INVENTORY, freq);
         }
-    }
-
-    @Override
-    public String getDataType() {
-        return getBlockType().getDescriptionId();
     }
 
     //Methods relating to IComputerTile

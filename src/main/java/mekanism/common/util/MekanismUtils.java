@@ -20,16 +20,22 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.GenericWrench;
 import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
+import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.interfaces.IRedstoneControl;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.UpgradeDisplay;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -42,6 +48,7 @@ import net.minecraft.network.play.server.SPlayEntityEffectPacket;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
@@ -530,6 +537,21 @@ public final class MekanismUtils {
             ((ServerPlayerEntity) entity).connection.send(new SPlayEntityEffectPacket(entity.getId(), id));
             CriteriaTriggers.EFFECTS_CHANGED.trigger(((ServerPlayerEntity) entity));
         }
+    }
+
+    public static boolean isSameTypeFactory(Block block, TileEntityType<?> factoryTileType) {
+        AttributeFactoryType attribute = Attribute.get(block, AttributeFactoryType.class);
+        if (attribute == null) {
+            return false;
+        }
+        FactoryType factoryType = attribute.getFactoryType();
+        //Check all factory types
+        for (FactoryTier factoryTier : EnumUtils.FACTORY_TIERS) {
+            if (MekanismTileEntityTypes.getFactoryTile(factoryTier, factoryType).get() == factoryTileType) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

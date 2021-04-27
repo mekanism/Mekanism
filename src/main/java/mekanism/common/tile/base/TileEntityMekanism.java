@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
+import mekanism.api.IConfigCardAccess;
 import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
@@ -124,6 +125,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -136,7 +138,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
-public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional,
+public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional, IConfigCardAccess,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
       ITrackableContainer, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile,
       IComputerTile {
@@ -210,11 +212,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End variables ISlurryTile
 
     //Variables for handling IMekanismFluidHandler
-    protected final FluidHandlerManager fluidHandlerManager;
+    private final FluidHandlerManager fluidHandlerManager;
     //End variables IMekanismFluidHandler
 
     //Variables for handling IMekanismStrictEnergyHandler
-    protected final EnergyHandlerManager energyHandlerManager;
+    private final EnergyHandlerManager energyHandlerManager;
     private FloatingLong lastEnergyReceived = FloatingLong.ZERO;
     //End variables IMekanismStrictEnergyHandler
 
@@ -478,7 +480,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
             //Pass on this activation if the player is using a configuration card (and this tile supports the capability)
-            if (CapabilityUtils.getCapability(this, Capabilities.CONFIG_CARD_CAPABILITY, null).isPresent()) {
+            if (getCapability(Capabilities.CONFIG_CARD_CAPABILITY, null).isPresent()) {
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard) {
                     return ActionResultType.PASS;
                 }
@@ -1013,6 +1015,42 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return heatHandlerManager.getContainers(side);
     }
     //End methods for IInWorldHeatHandler
+
+    //Methods for implementing IConfigCardAccess
+    @Override
+    public String getConfigCardName() {
+        return getBlockType().getDescriptionId();
+    }
+
+    @Override
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        CompoundNBT data = new CompoundNBT();
+        if (supportsRedstone()) {
+            data.putInt(NBTConstants.CONTROL_TYPE, controlType.ordinal());
+        }
+        return data;
+    }
+
+    @Override
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        if (supportsRedstone()) {
+            NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
+        }
+    }
+
+    @Override
+    public TileEntityType<?> getConfigurationDataType() {
+        return getType();
+    }
+
+    @Override
+    public void configurationDataSet() {
+        markDirty(false);
+        invalidateCachedCapabilities();
+        sendUpdatePacket();
+        WorldUtils.notifyLoadedNeighborsOfTileChange(getLevel(), getTilePos());
+    }
+    //End methods IConfigCardAccess
 
     //Methods for implementing ITileSecurity
     @Override

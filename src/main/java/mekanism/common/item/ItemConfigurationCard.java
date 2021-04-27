@@ -3,16 +3,13 @@ package mekanism.common.item;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import mekanism.api.IConfigCardAccess.ISpecialConfigData;
+import javax.annotation.Nullable;
+import mekanism.api.IConfigCardAccess;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.IRedstoneControl;
-import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
-import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.SecurityUtils;
@@ -25,14 +22,19 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Contract;
 
 public class ItemConfigurationCard extends Item {
 
@@ -43,116 +45,81 @@ public class ItemConfigurationCard extends Item {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@Nonnull ItemStack stack, World world, List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        tooltip.add(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, TextComponentUtil.translate(getDataType(stack))));
+        tooltip.add(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getConfigCardName(getData(stack))));
     }
 
     @Nonnull
     @Override
     public ActionResultType useOn(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
+        if (player == null) {
+            return ActionResultType.PASS;
+        }
         World world = context.getLevel();
-        if (!world.isClientSide && player != null) {
-            BlockPos pos = context.getClickedPos();
-            Direction side = context.getClickedFace();
-            TileEntity tile = WorldUtils.getTileEntity(world, pos);
-            if (CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).isPresent()) {
-                if (SecurityUtils.canAccess(player, tile)) {
-                    ItemStack stack = context.getItemInHand();
-                    if (player.isShiftKeyDown()) {
-                        Optional<ISpecialConfigData> configData = CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).resolve();
-                        CompoundNBT data = configData.isPresent() ? configData.get().getConfigurationData(getBaseData(tile)) : getBaseData(tile);
-                        if (data != null) {
-                            data.putString(NBTConstants.DATA_TYPE, getNameFromTile(tile, side));
-                            setData(stack, data);
-                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                                  MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(data.getString(NBTConstants.DATA_TYPE)))),
-                                  Util.NIL_UUID);
-                        }
-                        return ActionResultType.SUCCESS;
+        BlockPos pos = context.getClickedPos();
+        Direction side = context.getClickedFace();
+        TileEntity tile = WorldUtils.getTileEntity(world, pos);
+        Optional<IConfigCardAccess> configCardSupport = CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).resolve();
+        if (configCardSupport.isPresent()) {
+            if (SecurityUtils.canAccess(player, tile)) {
+                ItemStack stack = context.getItemInHand();
+                if (player.isShiftKeyDown()) {
+                    if (!world.isClientSide) {
+                        IConfigCardAccess configCardAccess = configCardSupport.get();
+                        String translationKey = configCardAccess.getConfigCardName();
+                        CompoundNBT data = configCardAccess.getConfigurationData(player);
+                        data.putString(NBTConstants.DATA_NAME, translationKey);
+                        data.putString(NBTConstants.DATA_TYPE, configCardAccess.getConfigurationDataType().getRegistryName().toString());
+                        ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
+                        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
+                              MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey))), Util.NIL_UUID);
                     }
+                } else {
                     CompoundNBT data = getData(stack);
-                    if (data != null) {
-                        if (getNameFromTile(tile, side).equals(getDataType(stack))) {
-                            setBaseData(data, tile);
-                            CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).ifPresent(special -> special.setConfigurationData(data));
-
-                            if (tile instanceof TileEntityMekanism) {
-                                TileEntityMekanism mekanismTile = (TileEntityMekanism) tile;
-                                mekanismTile.invalidateCachedCapabilities();
-                                mekanismTile.sendUpdatePacket();
-                                WorldUtils.notifyLoadedNeighborsOfTileChange(world, pos);
-                            }
+                    TileEntityType<?> storedType = getStoredTileType(data);
+                    if (storedType == null) {
+                        return ActionResultType.PASS;
+                    }
+                    if (!world.isClientSide) {
+                        IConfigCardAccess configCardAccess = configCardSupport.get();
+                        if (configCardAccess.isConfigurationDataCompatible(storedType)) {
+                            configCardAccess.setConfigurationData(player, data);
+                            configCardAccess.configurationDataSet();
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.DARK_GREEN,
-                                  MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO, TextComponentUtil.translate(getDataType(stack)))), Util.NIL_UUID);
+                                  MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO, getConfigCardName(data))), Util.NIL_UUID);
                         } else {
                             player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED,
                                   MekanismLang.CONFIG_CARD_UNEQUAL), Util.NIL_UUID);
                         }
-                        return ActionResultType.SUCCESS;
                     }
-                } else {
-                    SecurityUtils.displayNoAccess(player);
                 }
+                return ActionResultType.SUCCESS;
+            } else {
+                SecurityUtils.displayNoAccess(player);
             }
         }
         return ActionResultType.PASS;
     }
 
-    private CompoundNBT getBaseData(TileEntity tile) {
-        CompoundNBT nbtTags = new CompoundNBT();
-        if (tile instanceof IRedstoneControl) {
-            nbtTags.putInt(NBTConstants.CONTROL_TYPE, ((IRedstoneControl) tile).getControlType().ordinal());
-        }
-        if (tile instanceof ISideConfiguration) {
-            ((ISideConfiguration) tile).getConfig().write(nbtTags);
-            ((ISideConfiguration) tile).getEjector().write(nbtTags);
-        }
-        return nbtTags;
-    }
-
-    private void setBaseData(CompoundNBT nbtTags, TileEntity tile) {
-        if (tile instanceof IRedstoneControl) {
-            ((IRedstoneControl) tile).setControlType(RedstoneControl.byIndexStatic(nbtTags.getInt(NBTConstants.CONTROL_TYPE)));
-        }
-        if (tile instanceof ISideConfiguration) {
-            ((ISideConfiguration) tile).getConfig().read(nbtTags);
-            ((ISideConfiguration) tile).getEjector().read(nbtTags);
-        }
-    }
-
-    private String getNameFromTile(TileEntity tile, Direction side) {
-        Optional<ISpecialConfigData> capability = CapabilityUtils.getCapability(tile, Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, side).resolve();
-        if (capability.isPresent()) {
-            return capability.get().getDataType();
-        }
-        String ret = Integer.toString(tile.hashCode());
-        if (tile instanceof TileEntityMekanism) {
-            ret = ((TileEntityMekanism) tile).getBlockType().getDescriptionId();
-        }
-        return ret;
-    }
-
-    private void setData(ItemStack stack, CompoundNBT data) {
-        if (data == null) {
-            ItemDataUtils.removeData(stack, NBTConstants.DATA);
-        } else {
-            ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
-        }
-    }
-
     private CompoundNBT getData(ItemStack stack) {
         CompoundNBT data = ItemDataUtils.getCompound(stack, NBTConstants.DATA);
-        if (data.isEmpty()) {
-            return null;
-        }
-        return ItemDataUtils.getCompound(stack, NBTConstants.DATA);
+        return data.isEmpty() ? null : data;
     }
 
-    public String getDataType(ItemStack stack) {
-        CompoundNBT data = getData(stack);
-        if (data == null) {
-            return MekanismLang.NONE.getTranslationKey();
+    @Nullable
+    @Contract("null -> null")
+    private TileEntityType<?> getStoredTileType(@Nullable CompoundNBT data) {
+        if (data == null || !data.contains(NBTConstants.DATA_TYPE, NBT.TAG_STRING)) {
+            return null;
         }
-        return data.getString(NBTConstants.DATA_TYPE);
+        ResourceLocation tileRegistryName = ResourceLocation.tryParse(data.getString(NBTConstants.DATA_TYPE));
+        return tileRegistryName == null ? null : ForgeRegistries.TILE_ENTITIES.getValue(tileRegistryName);
+    }
+
+    private ITextComponent getConfigCardName(@Nullable CompoundNBT data) {
+        if (data == null || !data.contains(NBTConstants.DATA_NAME, NBT.TAG_STRING)) {
+            return MekanismLang.NONE.translate();
+        }
+        return TextComponentUtil.translate(data.getString(NBTConstants.DATA_NAME));
     }
 }

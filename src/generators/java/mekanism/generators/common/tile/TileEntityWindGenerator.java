@@ -110,6 +110,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     public void onPlace() {
+        super.onPlace();
         if (level != null) {
             BlockPos pos = getBlockPos();
             WorldUtils.makeBoundingBlock(level, pos.above(), pos);

@@ -6,11 +6,13 @@ import mekanism.api.RelativeSide;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
@@ -34,6 +36,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     public TileEntitySeismicVibrator() {
         super(MekanismBlocks.SEISMIC_VIBRATOR);
         cacheCoord();
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Nonnull
@@ -95,6 +98,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
 
     @Override
     public void onPlace() {
+        super.onPlace();
         WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
     }
 

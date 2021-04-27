@@ -84,6 +84,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     public TileEntityFluidicPlenisher() {
         super(MekanismBlocks.FLUIDIC_PLENISHER);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Nonnull

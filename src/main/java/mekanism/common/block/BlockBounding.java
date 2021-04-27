@@ -103,9 +103,9 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         if (mainPos == null) {
             return ActionResultType.FAIL;
         }
-        BlockState state1 = world.getBlockState(mainPos);
+        BlockState mainState = world.getBlockState(mainPos);
         //TODO: Use proper ray trace result, currently is using the one we got but we probably should make one with correct position information
-        return state1.getBlock().use(state1, world, mainPos, player, hand, hit);
+        return mainState.getBlock().use(mainState, world, mainPos, player, hand, hit);
     }
 
     @Override
@@ -197,14 +197,35 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Deprecated
     public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
           boolean isMoving) {
-        TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
-        if (tile != null) {
-            tile.onNeighborChange(state);
+        if (!world.isClientSide) {
+            TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
+            if (tile != null) {
+                tile.onNeighborChange(neighborBlock, neighborPos);
+            }
         }
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
             world.getBlockState(mainPos).neighborChanged(world, mainPos, neighborBlock, neighborPos, isMoving);
         }
+    }
+
+    @Override
+    @Deprecated
+    public boolean hasAnalogOutputSignal(@Nonnull BlockState blockState) {
+        //TODO: Figure out if there is a better way to do this so it doesn't have to return true for all bounding blocks
+        return true;
+    }
+
+    @Override
+    @Deprecated
+    public int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull World world, @Nonnull BlockPos pos) {
+        if (!world.isClientSide) {
+            TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
+            if (tile != null) {
+                return tile.getComparatorSignal();
+            }
+        }
+        return 0;
     }
 
     @Override

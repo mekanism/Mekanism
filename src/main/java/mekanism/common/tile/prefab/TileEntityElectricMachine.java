@@ -30,6 +30,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 
 public abstract class TileEntityElectricMachine extends TileEntityProgressMachine<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
@@ -107,6 +108,12 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
 
     public MachineEnergyContainer<TileEntityElectricMachine> getEnergyContainer() {
         return energyContainer;
+    }
+
+    @Override
+    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+        //Allow exact match or factories of the same type (as we will just ignore the extra data)
+        return super.isConfigurationDataCompatible(tileType) || MekanismUtils.isSameTypeFactory(getBlockType(), tileType);
     }
 
     //Methods relating to IComputerTile

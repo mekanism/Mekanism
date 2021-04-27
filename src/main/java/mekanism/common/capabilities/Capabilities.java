@@ -2,7 +2,6 @@ package mekanism.common.capabilities;
 
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigCardAccess;
-import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -22,7 +21,6 @@ import mekanism.common.capabilities.basic.DefaultConfigurable;
 import mekanism.common.capabilities.basic.DefaultEvaporationSolar;
 import mekanism.common.capabilities.basic.DefaultHeatHandler;
 import mekanism.common.capabilities.basic.DefaultLaserReceptor;
-import mekanism.common.capabilities.basic.DefaultSpecialConfigData;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyHandler;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
 import mekanism.common.lib.radiation.capability.DefaultRadiationShielding;
@@ -63,9 +61,6 @@ public class Capabilities {
     @CapabilityInject(IConfigCardAccess.class)
     public static Capability<IConfigCardAccess> CONFIG_CARD_CAPABILITY;
 
-    @CapabilityInject(ISpecialConfigData.class)
-    public static Capability<ISpecialConfigData> SPECIAL_CONFIG_DATA_CAPABILITY;
-
     @CapabilityInject(IEvaporationSolar.class)
     public static Capability<IEvaporationSolar> EVAPORATION_SOLAR_CAPABILITY;
 
@@ -89,7 +84,6 @@ public class Capabilities {
         DefaultConfigurable.register();
         DefaultAlloyInteraction.register();
         DefaultConfigCardAccess.register();
-        DefaultSpecialConfigData.register();
         DefaultEvaporationSolar.register();
         DefaultLaserReceptor.register();
 

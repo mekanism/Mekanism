@@ -6,11 +6,13 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.block.attribute.Attribute;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.IModuleItem;
 import mekanism.common.content.gear.Modules;
@@ -52,6 +54,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     public TileEntityModificationStation() {
         super(MekanismBlocks.MODIFICATION_STATION);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     @Nonnull
@@ -158,6 +161,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     @Override
     public void onPlace() {
+        super.onPlace();
         WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
         Direction side = getRightSide();
         WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().relative(side), getBlockPos());

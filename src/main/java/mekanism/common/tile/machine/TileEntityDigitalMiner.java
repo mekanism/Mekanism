@@ -52,8 +52,8 @@ import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
-import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.chunkloading.IChunkLoader;
+import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest;
@@ -62,7 +62,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
-import mekanism.common.tile.interfaces.IAdvancedBoundingBlock;
+import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
@@ -99,7 +99,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IAdvancedBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
+public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
       IHasSortableFilters {
 
     public Long2ObjectMap<BitSet> oresToMine = new Long2ObjectOpenHashMap<>();
@@ -135,7 +135,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         super(MekanismBlocks.DIGITAL_MINER);
         radius = 10;
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
         //Return some capabilities as disabled, and handle them with offset capabilities instead
         addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
@@ -276,16 +275,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
 
         if (doEject && delayTicks == 0) {
-            TileEntity ejectInv = getEjectInv();
-            TileEntity ejectTile = getEjectTile();
+            Direction oppositeDirection = getOppositeDirection();
+            TileEntity ejectInv = WorldUtils.getTileEntity(level, getBlockPos().above().relative(oppositeDirection, 2));
+            TileEntity ejectTile = WorldUtils.getTileEntity(getLevel(), getBlockPos().above().relative(oppositeDirection));
             if (ejectInv != null && ejectTile != null) {
-                TransitRequest ejectMap = getEjectItemMap(ejectTile, getOppositeDirection());
+                TransitRequest ejectMap = getEjectItemMap(ejectTile, oppositeDirection);
                 if (!ejectMap.isEmpty()) {
                     TransitResponse response;
                     if (ejectInv instanceof TileEntityLogisticalTransporterBase) {
                         response = ((TileEntityLogisticalTransporterBase) ejectInv).getTransmitter().insert(ejectTile, ejectMap, null, true, 0);
                     } else {
-                        response = ejectMap.addToInventory(ejectInv, getOppositeDirection(), false);
+                        response = ejectMap.addToInventory(ejectInv, oppositeDirection, false);
                     }
                     if (!response.isEmpty()) {
                         response.useAll();
@@ -561,10 +561,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return WorldUtils.getTileEntity(getLevel(), getBlockPos().above(2));
     }
 
-    private TileEntity getEjectInv() {
-        return WorldUtils.getTileEntity(level, getBlockPos().above().relative(getOppositeDirection(), 2));
-    }
-
     private void add(List<ItemStack> stacks) {
         //TODO: Improve this and the simulated insertion, to try to first complete stacks
         // before inserting into empty stacks, as this will give better results for various
@@ -634,7 +630,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         delay = nbtTags.getInt(NBTConstants.DELAY);
         numPowering = nbtTags.getInt(NBTConstants.NUM_POWERING);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.STATE, State::byIndexStatic, s -> searcher.state = s);
-        setConfigurationData(nbtTags);
+        setGeneralPersistentData(nbtTags);
+        //Update energy per tick in case any of the values changed. It would be slightly cleaner to also validate the fact
+        // the values changed, but it would make the code a decent bit messier as we couldn't use NBTUtils, and it is a
+        // rather quick check to update the energy per tick, and in most cases at least one of the settings will not be at
+        // the default value
+        energyContainer.updateMinerEnergyPerTick();
     }
 
     @Nonnull
@@ -648,7 +649,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         nbtTags.putInt(NBTConstants.DELAY, delay);
         nbtTags.putInt(NBTConstants.NUM_POWERING, numPowering);
         nbtTags.putInt(NBTConstants.STATE, searcher.state.ordinal());
-        return getConfigurationData(nbtTags);
+        return getGeneralPersistentData(nbtTags);
     }
 
     public int getTotalSize() {
@@ -686,6 +687,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public void onPlace() {
+        super.onPlace();
         if (level != null) {
             BlockPos pos = getBlockPos();
             for (int x = -1; x <= +1; x++) {
@@ -715,22 +717,42 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    private TileEntity getEjectTile() {
-        return WorldUtils.getTileEntity(getLevel(), getBlockPos().above().relative(getOppositeDirection()));
+    @Override
+    public void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel) {
+        if (oldLevel > 0) {
+            if (newLevel == 0) {
+                numPowering--;
+            }
+        } else if (newLevel > 0) {
+            numPowering++;
+        }
     }
 
     @Override
-    public void onPower() {
-        numPowering++;
+    public int getBoundingComparatorSignal(Vector3i offset) {
+        //Return the comparator signal if it is one of the horizontal ports
+        Direction facing = getDirection();
+        Direction back = facing.getOpposite();
+        if (offset.equals(new Vector3i(back.getStepX(), 1, back.getStepZ()))) {
+            return getCurrentRedstoneLevel();
+        }
+        Direction left = MekanismUtils.getLeft(facing);
+        if (offset.equals(new Vector3i(left.getStepX(), 0, left.getStepZ()))) {
+            return getCurrentRedstoneLevel();
+        }
+        Direction right = left.getOpposite();
+        if (offset.equals(new Vector3i(right.getStepX(), 0, right.getStepZ()))) {
+            return getCurrentRedstoneLevel();
+        }
+        return 0;
     }
 
     @Override
-    public void onNoPower() {
-        numPowering--;
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        return getGeneralPersistentData(super.getConfigurationData(player));
     }
 
-    @Override
-    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
+    private CompoundNBT getGeneralPersistentData(CompoundNBT nbtTags) {
         nbtTags.putInt(NBTConstants.RADIUS, getRadius());
         nbtTags.putInt(NBTConstants.MIN, getMinY());
         nbtTags.putInt(NBTConstants.MAX, getMaxY());
@@ -749,19 +771,35 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void setConfigurationData(CompoundNBT nbtTags) {
-        //TODO - 10.1: Re-evaluate this stuff, should we force stop reset and start miner again if needed
-        // as otherwise I believe there may end up being a desync in the energy cost
-        setRadius(Math.min(nbtTags.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
-        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MIN, this::setMinY);
-        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.MAX, this::setMaxY);
-        doEject = nbtTags.getBoolean(NBTConstants.EJECT);
-        doPull = nbtTags.getBoolean(NBTConstants.PULL);
-        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.SILK_TOUCH, this::setSilkTouch);
-        inverse = nbtTags.getBoolean(NBTConstants.INVERSE);
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        setGeneralPersistentData(data);
+    }
+
+    @Override
+    public void configurationDataSet() {
+        super.configurationDataSet();
+        if (isRunning()) {
+            //If it was running when we updated the configuration data, stop it, reset it, and start it again
+            // to ensure that there are no desyncs in energy cost due to things like the radius changing but
+            // it having had the blocks to mine calculated based on the old radius
+            stop();
+            reset();
+            start();
+        }
+    }
+
+    private void setGeneralPersistentData(CompoundNBT data) {
+        setRadius(Math.min(data.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
+        NBTUtils.setIntIfPresent(data, NBTConstants.MIN, this::setMinY);
+        NBTUtils.setIntIfPresent(data, NBTConstants.MAX, this::setMaxY);
+        doEject = data.getBoolean(NBTConstants.EJECT);
+        doPull = data.getBoolean(NBTConstants.PULL);
+        NBTUtils.setBooleanIfPresent(data, NBTConstants.SILK_TOUCH, this::setSilkTouch);
+        inverse = data.getBoolean(NBTConstants.INVERSE);
         filters.clear();
-        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
+        if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof MinerFilter) {
@@ -769,19 +807,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 }
             }
         }
-        if (!hasLevel()) {
-            //If we don't have a world yet (reading from save), update the energy per tick in case any of the values changed.
-            // It would be slightly cleaner to also validate the fact the values changed, but it would make the code a decent
-            // bit messier as we couldn't use NBTUtils, and it is a rather quick check to update the energy per tick, and in
-            // most cases at least one of the settings will not be at the default value
-            //TODO - 10.1: Should this just be moved into the read method then
-            energyContainer.updateMinerEnergyPerTick();
-        }
-    }
-
-    @Override
-    public String getDataType() {
-        return getBlockType().getDescriptionId();
     }
 
     @Override
@@ -862,18 +887,15 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vector3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            if (hasInventory()) {
-                return itemHandlerManager.resolve(capability, side);
-            }
-            return LazyOptional.empty();
-        } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
-            if (canHandleEnergy()) {
-                return energyHandlerManager.resolve(capability, side);
-            }
-            return LazyOptional.empty();
+            //Get item handler cap directly from here as we disable it entirely for the main block as we only have it enabled from ports
+            return itemHandlerManager.resolve(capability, side);
         }
-        //Fallback to checking the normal capabilities
+        //Otherwise we can just grab the capability from the tile normally
         return getCapability(capability, side);
+    }
+
+    private boolean canAccessFromAnySide(@Nonnull Capability<?> capability) {
+        return capability == Capabilities.CONFIG_CARD_CAPABILITY;
     }
 
     @Override
@@ -882,11 +904,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return notItemPort(side, offset);
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return notEnergyPort(side, offset);
-        } else if (canEverResolve(capability)) {
+        } else if (canEverResolve(capability) && !canAccessFromAnySide(capability)) {
             //If we are not an item handler or energy capability and it is a capability that we can support,
-            // for example our fallback to allow access to things like computer integration capabilities,
-            // then we treat the capability as disabled if it is not against one of our ports
-            return notItemPort(side, offset) && notEnergyPort(side, offset);
+            // but it is not one that we can access from any side so is only a capability that we want to expose
+            // via our ports for things like computer integration capabilities, then we treat the capability as
+            // disabled if it is not against one of our ports
+            return canAccessFromAnySide(capability) || notItemPort(side, offset) && notEnergyPort(side, offset);
         }
         return false;
     }
@@ -910,11 +933,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             return side != Direction.DOWN;
         }
         Direction left = getLeftSide();
-        Direction right = getRightSide();
         if (offset.equals(new Vector3i(left.getStepX(), 0, left.getStepZ()))) {
             //Disable if left power port but wrong side of the port
             return side != left;
-        } else if (offset.equals(new Vector3i(right.getStepX(), 0, right.getStepZ()))) {
+        }
+        Direction right = left.getOpposite();
+        if (offset.equals(new Vector3i(right.getStepX(), 0, right.getStepZ()))) {
             //Disable if right power port but wrong side of the port
             return side != right;
         }

@@ -10,13 +10,10 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.IConfigCardAccess.ISpecialConfigData;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IFilter;
@@ -42,6 +39,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -57,7 +55,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 //TODO - V11: Make this support other tag types, such as fluids
-public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ISpecialConfigData, ISustainedData, ITileFilterHolder<OredictionificatorFilter> {
+public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ISustainedData, ITileFilterHolder<OredictionificatorFilter> {
 
     public static final Map<String, List<String>> possibleFilters = new Object2ObjectOpenHashMap<>();
 
@@ -81,8 +79,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
-
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.SPECIAL_CONFIG_DATA_CAPABILITY, this));
     }
 
     @Nonnull
@@ -157,33 +153,40 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     @Nonnull
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
-        getConfigurationData(nbtTags);
-        return nbtTags;
+        return getGeneralPersistentData(super.save(nbtTags));
     }
 
     @Override
     public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.load(state, nbtTags);
-        setConfigurationData(nbtTags);
+        setGeneralPersistentData(nbtTags);
     }
 
     @Override
-    public CompoundNBT getConfigurationData(CompoundNBT nbtTags) {
+    public CompoundNBT getConfigurationData(PlayerEntity player) {
+        return getGeneralPersistentData(super.getConfigurationData(player));
+    }
+
+    private CompoundNBT getGeneralPersistentData(CompoundNBT data) {
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (OredictionificatorFilter filter : filters) {
                 filterTags.add(filter.write(new CompoundNBT()));
             }
-            nbtTags.put(NBTConstants.FILTERS, filterTags);
+            data.put(NBTConstants.FILTERS, filterTags);
         }
-        return nbtTags;
+        return data;
     }
 
     @Override
-    public void setConfigurationData(CompoundNBT nbtTags) {
-        if (nbtTags.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
+    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+        super.setConfigurationData(player, data);
+        setGeneralPersistentData(data);
+    }
+
+    private void setGeneralPersistentData(CompoundNBT data) {
+        if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
+            ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof OredictionificatorFilter) {
@@ -191,11 +194,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
                 }
             }
         }
-    }
-
-    @Override
-    public String getDataType() {
-        return getBlockType().getDescriptionId();
     }
 
     @Override
