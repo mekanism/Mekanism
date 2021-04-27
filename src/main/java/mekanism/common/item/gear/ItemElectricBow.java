@@ -16,6 +16,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.util.ITooltipFlag;
@@ -179,8 +180,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
             boolean newState = !getFireState(stack);
             setFireState(stack, newState);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                      MekanismLang.FIRE_MODE.translate(OnOff.of(newState, true))), Util.NIL_UUID);
+                player.sendMessage(MekanismUtils.logFormat(MekanismLang.FIRE_MODE.translate(OnOff.of(newState, true))), Util.NIL_UUID);
             }
         }
     }

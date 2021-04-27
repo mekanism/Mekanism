@@ -99,7 +99,7 @@ public final class SecurityUtils {
     }
 
     public static void displayNoAccess(PlayerEntity player) {
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.RED, MekanismLang.NO_ACCESS), Util.NIL_UUID);
+        player.sendMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_ACCESS), Util.NIL_UUID);
     }
 
     public static SecurityMode getSecurity(ISecurityObject security, Dist side) {
@@ -141,8 +141,7 @@ public final class SecurityUtils {
         if (stack.getItem() instanceof IOwnerItem) {
             ((IOwnerItem) stack.getItem()).setOwnerUUID(stack, player.getUUID());
             Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.NOW_OWN),
-                  Util.NIL_UUID);
+            player.sendMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN), Util.NIL_UUID);
         }
     }
 

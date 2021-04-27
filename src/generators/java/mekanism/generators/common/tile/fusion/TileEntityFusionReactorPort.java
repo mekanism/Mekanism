@@ -8,8 +8,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.text.EnumColor;
-import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -21,6 +19,7 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
@@ -108,8 +107,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                  GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
+            player.sendMessage(MekanismUtils.logFormat(GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }

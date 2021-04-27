@@ -23,6 +23,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -113,8 +114,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         if (mode != newMode) {
             setMode(stack, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                      MekanismLang.FREE_RUNNER_MODE_CHANGE.translate(newMode)), Util.NIL_UUID);
+                player.sendMessage(MekanismUtils.logFormat(MekanismLang.FREE_RUNNER_MODE_CHANGE.translate(newMode)), Util.NIL_UUID);
             }
         }
     }

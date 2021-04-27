@@ -12,6 +12,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.tier.TransporterTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -98,8 +99,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     public ActionResultType onConfigure(PlayerEntity player, Direction side) {
         DiversionControl newMode = modes[side.ordinal()].getNext();
         updateMode(side, newMode);
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-              MekanismLang.TOGGLE_DIVERTER.translate(EnumColor.RED, newMode)), Util.NIL_UUID);
+        player.sendMessage(MekanismUtils.logFormat(MekanismLang.TOGGLE_DIVERTER.translate(EnumColor.RED, newMode)), Util.NIL_UUID);
         return ActionResultType.SUCCESS;
     }
 

@@ -71,8 +71,7 @@ public class ItemDictionary extends Item {
                     Set<ResourceLocation> blockTags = world.getBlockState(pos).getBlock().getTags();
                     Set<ResourceLocation> tileTags = tile == null ? Collections.emptySet() : tile.getType().getTags();
                     if (blockTags.isEmpty() && tileTags.isEmpty()) {
-                        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.DICTIONARY_NO_KEY),
-                              Util.NIL_UUID);
+                        player.sendMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), Util.NIL_UUID);
                     } else {
                         //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
                         sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockTags);
@@ -127,8 +126,7 @@ public class ItemDictionary extends Item {
 
     private void sendTagsOrEmptyToPlayer(PlayerEntity player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
         if (tags.isEmpty()) {
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.DICTIONARY_NO_KEY),
-                  Util.NIL_UUID);
+            player.sendMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), Util.NIL_UUID);
         } else {
             sendTagsToPlayer(player, tagsFoundEntry, tags);
         }
@@ -136,7 +134,7 @@ public class ItemDictionary extends Item {
 
     private void sendTagsToPlayer(PlayerEntity player, ILangEntry tagsFoundEntry, Set<ResourceLocation> tags) {
         if (!tags.isEmpty()) {
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, tagsFoundEntry), Util.NIL_UUID);
+            player.sendMessage(MekanismUtils.logFormat(tagsFoundEntry), Util.NIL_UUID);
             for (ResourceLocation tag : tags) {
                 player.sendMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag), Util.NIL_UUID);
             }

@@ -6,9 +6,9 @@ import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
-import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -84,8 +84,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
             if (channel != newChannel) {
                 setChannel(stack, newChannel);
                 if (displayChangeMessage) {
-                    player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                          AdditionsLang.CHANNEL_CHANGE.translate(newChannel)), Util.NIL_UUID);
+                    player.sendMessage(MekanismUtils.logFormat(AdditionsLang.CHANNEL_CHANGE.translate(newChannel)), Util.NIL_UUID);
                 }
             }
         }

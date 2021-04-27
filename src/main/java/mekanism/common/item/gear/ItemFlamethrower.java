@@ -26,6 +26,7 @@ import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
@@ -128,8 +129,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
         if (mode != newMode) {
             setMode(stack, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                      MekanismLang.FLAMETHROWER_MODE_CHANGE.translate(newMode)), Util.NIL_UUID);
+                player.sendMessage(MekanismUtils.logFormat(MekanismLang.FLAMETHROWER_MODE_CHANGE.translate(newMode)), Util.NIL_UUID);
             }
         }
     }

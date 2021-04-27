@@ -14,7 +14,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -313,7 +312,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.PUMP_RESET), Util.NIL_UUID);
+        player.sendMessage(MekanismUtils.logFormat(MekanismLang.PUMP_RESET), Util.NIL_UUID);
         return ActionResultType.SUCCESS;
     }
 

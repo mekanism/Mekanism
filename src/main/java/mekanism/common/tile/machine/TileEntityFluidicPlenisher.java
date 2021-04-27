@@ -12,7 +12,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -274,8 +273,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
         reset();
-        player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY, MekanismLang.PLENISHER_RESET),
-              Util.NIL_UUID);
+        player.sendMessage(MekanismUtils.logFormat(MekanismLang.PLENISHER_RESET), Util.NIL_UUID);
         return ActionResultType.SUCCESS;
     }
 

@@ -18,6 +18,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -97,6 +98,14 @@ public final class MekanismUtils {
         if (!actual.isZero()) {
             Mekanism.logger.error("Energy value changed by a different amount ({}) than requested (zero).", actual, new Exception());
         }
+    }
+
+    public static ITextComponent logFormat(Object message) {
+        return logFormat(EnumColor.GRAY, message);
+    }
+
+    public static ITextComponent logFormat(EnumColor messageColor, Object message) {
+        return MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, messageColor, message);
     }
 
     /**

@@ -102,9 +102,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
                         DataType dataType = info.getDataType(relativeSide);
                         if (!player.isShiftKeyDown()) {
-                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                                  MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType, dataType.getColor().getColoredName())),
-                                  Util.NIL_UUID);
+                            player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_VIEW_MODE.translate(transmissionType, dataType.getColor(), dataType,
+                                  dataType.getColor().getColoredName())), Util.NIL_UUID);
                         } else if (SecurityUtils.canAccess(player, tile)) {
                             if (!player.isCreative()) {
                                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
@@ -115,9 +114,8 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
                                 energyContainer.extract(energyPerConfigure, Action.EXECUTE, AutomationType.MANUAL);
                             }
                             dataType = info.incrementDataType(relativeSide);
-                            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                                  MekanismLang.CONFIGURATOR_TOGGLE_MODE.translate(transmissionType, dataType.getColor(), dataType, dataType.getColor().getColoredName())),
-                                  Util.NIL_UUID);
+                            player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translate(transmissionType, dataType.getColor(), dataType,
+                                  dataType.getColor().getColoredName())), Util.NIL_UUID);
                             config.getConfig().sideChanged(transmissionType, relativeSide);
                         } else {
                             SecurityUtils.displayNoAccess(player);
@@ -218,8 +216,7 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
         if (mode != newMode) {
             setMode(stack, player, newMode);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                      MekanismLang.CONFIGURE_STATE.translate(newMode)), Util.NIL_UUID);
+                player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURE_STATE.translate(newMode)), Util.NIL_UUID);
             }
         }
     }

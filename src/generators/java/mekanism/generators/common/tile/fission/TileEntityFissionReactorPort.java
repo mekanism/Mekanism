@@ -8,7 +8,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -16,6 +15,7 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
@@ -101,8 +101,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         if (!isRemote()) {
             FissionPortMode mode = getMode().getNext();
             setMode(mode);
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.NIL_UUID);
+            player.sendMessage(MekanismUtils.logFormat(MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }

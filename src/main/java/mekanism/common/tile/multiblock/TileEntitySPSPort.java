@@ -6,7 +6,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.inventory.AutomationType;
-import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -17,6 +16,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
@@ -73,8 +73,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                  MekanismLang.SPS_PORT_MODE.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
+            player.sendMessage(MekanismUtils.logFormat(MekanismLang.SPS_PORT_MODE.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }

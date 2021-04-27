@@ -6,7 +6,6 @@ import mekanism.api.Action;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode;
 import mekanism.common.block.attribute.AttributeStateBoilerValveMode.BoilerValveMode;
@@ -17,6 +16,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -85,8 +85,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         if (!isRemote()) {
             BoilerValveMode mode = getMode().getNext();
             setMode(mode);
-            player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                  MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.NIL_UUID);
+            player.sendMessage(MekanismUtils.logFormat(MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.NIL_UUID);
         }
         return ActionResultType.SUCCESS;
     }

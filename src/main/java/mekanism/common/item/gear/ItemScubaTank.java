@@ -23,6 +23,7 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.client.util.ITooltipFlag;
@@ -106,8 +107,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
             boolean newState = !getFlowing(stack);
             setFlowing(stack, newState);
             if (displayChangeMessage) {
-                player.sendMessage(MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, EnumColor.GRAY,
-                      MekanismLang.FLOWING.translate(OnOff.of(newState, true))), Util.NIL_UUID);
+                player.sendMessage(MekanismUtils.logFormat(MekanismLang.FLOWING.translate(OnOff.of(newState, true))), Util.NIL_UUID);
             }
         }
     }
