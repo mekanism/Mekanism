@@ -6,21 +6,20 @@
 # Mekanism for Minecraft 1.16 #
 
 Mekanism is an independent Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 
-armor, and weapons. You can find more detail on the features at the [**Official Website**](http://aidancbrady.com/mekanism/).
-With features ranging from jetpacks and balloons to factories and energy cubes, the mod does not have any unifying goal. However,
-all of the content still feels coherent.
+armor, and weapons. You can find more detail on the features on the [**Official Website**](http://aidancbrady.com/mekanism/).
+With features ranging from jetpacks and balloons to factories and energy cubes, the mod does not have any unifying goal. Nevertheless,
+these features combine coherently to create a rich gameplay experience that players will enjoy.
 
-Mekanism uses a tier-based system when organizing the majority of its core features, like energy 
-cubes and factories. There are four tiers: basic, advanced, elite, and ultimate. Players can upgrade 
-tiers by placing the component in a crafting grid and surrounding it with the necessary resources 
-for the next upgrade.
+Mekanism uses a tier-based system to organize the majority of its core features, like energy 
+cubes and factories. There are four tiers: basic, advanced, elite, and ultimate. Players can upgrade their components to the next tier
+by placing each component in a crafting grid and surrounding it with the necessary resources for the upgrade.
 
 After using Mechanism for a while, players can obtain a near-indestructible suit of Obsidian Armor, receive four 
 ingots for each ore mined, fly with hydrogen-powered jetpacks, and have cute robotic friends following them around while they mine. :)
 
 # Discord #
 
-Mekanism has a [discord](https://discord.gg/nmSjMGc) where you can chat with other Mekanism users and the developers. Join us!
+Mekanism has a [discord server](https://discord.gg/nmSjMGc) where you can chat with other Mekanism users and the developers. Join us!
 
 # Translating #
 
