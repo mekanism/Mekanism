@@ -3,6 +3,7 @@ package mekanism.client.gui.qio;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
+import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -24,6 +25,7 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
     public void init() {
         super.init();
         addButton(new GuiQIOFrequencyTab(this, tile));
+        addButton(new GuiSecurityTab(this, tile));
     }
 
     @Override
