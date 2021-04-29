@@ -178,7 +178,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End variables ITileRedstone
 
     //Variables for handling IComparatorSupport
-    protected int currentRedstoneLevel;
+    private int currentRedstoneLevel;
+    private boolean updateComparators;
     //End variables IComparatorSupport
 
     //Variables for handling ITileUpgradable
@@ -424,13 +425,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void markDirtyComparator() {
-        //Only update the comparator state if we support comparators
-        if (supportsComparator() && !getBlockState().isAir(level, worldPosition)) {
-            int newRedstoneLevel = getRedstoneLevel();
-            if (newRedstoneLevel != currentRedstoneLevel) {
-                currentRedstoneLevel = newRedstoneLevel;
-                notifyComparatorChange();
-            }
+        //Only mark our comparators as needing update if we support comparators
+        if (supportsComparator()) {
+            updateComparators = true;
         }
     }
 
@@ -518,6 +515,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 updateHeatCapacitors(null);
             }
             lastEnergyReceived = FloatingLong.ZERO;
+            //Only update the comparator state if we support comparators and need to update comparators
+            if (supportsComparator() && updateComparators && !getBlockState().isAir(level, worldPosition)) {
+                int newRedstoneLevel = getRedstoneLevel();
+                if (newRedstoneLevel != currentRedstoneLevel) {
+                    currentRedstoneLevel = newRedstoneLevel;
+                    notifyComparatorChange();
+                }
+                updateComparators = false;
+            }
         }
         ticker++;
         if (supportsRedstone()) {

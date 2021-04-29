@@ -57,7 +57,9 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
     }
 
     /**
-     * Used for checking if we need to update comparators. Note only called on the server
+     * Used for checking if we need to update comparators.
+     *
+     * @apiNote Only call on the server
      */
     public void markDirtyComparator() {
     }

@@ -15,7 +15,7 @@ import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import net.minecraft.util.Direction;
 
 public class QuantumEntangloporterChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      TANK extends IChemicalTank<CHEMICAL, STACK>> extends QuantumEntangloporterConfigHolder implements IChemicalTankHolder<CHEMICAL, STACK, TANK> {
+      TANK extends IChemicalTank<CHEMICAL, STACK>> extends QuantumEntangloporterConfigHolder<TANK> implements IChemicalTankHolder<CHEMICAL, STACK, TANK> {
 
     private final BiFunction<InventoryFrequency, Direction, List<TANK>> tankResolver;
     private final TransmissionType transmissionType;

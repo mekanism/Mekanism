@@ -10,7 +10,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import net.minecraft.util.Direction;
 
-public class QuantumEntangloporterEnergyContainerHolder extends QuantumEntangloporterConfigHolder implements IEnergyContainerHolder {
+public class QuantumEntangloporterEnergyContainerHolder extends QuantumEntangloporterConfigHolder<IEnergyContainer> implements IEnergyContainerHolder {
 
     public QuantumEntangloporterEnergyContainerHolder(TileEntityQuantumEntangloporter entangloporter) {
         super(entangloporter);

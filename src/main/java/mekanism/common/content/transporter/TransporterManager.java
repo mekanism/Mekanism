@@ -1,9 +1,8 @@
 package mekanism.common.content.transporter;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.Coord4D;
@@ -15,7 +14,6 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
 
@@ -62,12 +60,12 @@ public class TransporterManager {
      */
     private static int simulateInsert(IItemHandler handler, InventoryInfo inventoryInfo, ItemStack stack, int count, boolean inFlight) {
         int maxStackSize = stack.getMaxStackSize();
-        for (int slot = 0; slot < handler.getSlots(); slot++) {
+        for (int slot = 0; slot < inventoryInfo.slots; slot++) {
             if (count == 0) {
                 // Nothing more to insert
                 break;
             }
-            int max = handler.getSlotLimit(slot);
+            int max = inventoryInfo.getSlotLimit(handler, slot);
             //If no items are allowed in the slot, pass it up before checking anything about the items
             if (max == 0) {
                 continue;
@@ -83,13 +81,13 @@ public class TransporterManager {
             // how the inventory would look after the insertion
 
             // Number of items in the destination
-            int destCount = inventoryInfo.stackSizes.getInt(slot);
+            int destCount = inventoryInfo.stackSizes[slot];
 
             int mergedCount = count + destCount;
             int toAccept = count;
             boolean needsSimulation = false;
             if (destCount > 0) {
-                if (!InventoryUtils.areItemsStackable(inventoryInfo.inventory.get(slot), stack) || destCount >= max) {
+                if (!InventoryUtils.areItemsStackable(inventoryInfo.inventory[slot], stack) || destCount >= max) {
                     //If the destination isn't empty and not stackable or it is currently full, move along
                     continue;
                 } else if (max > maxStackSize && mergedCount > maxStackSize) {
@@ -147,28 +145,26 @@ public class TransporterManager {
                     //If we accepted less than the amount we expected to, the slot actually has a lower limit
                     // so we mark the amount we accepted plus the amount already in the slot as the slot's
                     // actual limit
-                    //Note: We are not able to just use inventoryInfo.inventory.get(slot) as we want to go based
-                    // on the actual amount stored, and the inventory info may have gotten updated with a stack
-                    // that we inserted and isn't actually the source stack. If eventually this ends up showing
-                    // from profiling to be a hotspot, then we can adjust it by also keeping track in inventoryInfo
-                    // of if the slot is the source or is just "type information" that we set
-                    max = handler.getStackInSlot(slot).getCount() + accepted;
+                    //Note: We are use the actual stack size in a slot as we may have adjusted the "stored" amount
+                    max = inventoryInfo.actualStackSizes[slot] + accepted;
                 }
                 if (destCount == 0) {
                     //If we actually are going to insert it, because there are currently no items
                     // in the destination, we set the item to the one we are sending so that we can compare
                     // it with InventoryUtils.areItemsStackable. This makes it so that we do not send multiple
-                    // items of different types to the same slot just because they are not there yet
-                    inventoryInfo.inventory.set(slot, StackUtils.size(stack, 1));
+                    // items of different types to the same slot just because they are not there yet. We don't
+                    // need to make a copy of this stack as it is not modified during any of the operations and
+                    // we only make use of it for type data
+                    inventoryInfo.inventory[slot] = stack;
                 }
             }
             if (mergedCount > max) {
                 // Not all the items will fit; put max in and save leftovers
-                inventoryInfo.stackSizes.set(slot, max);
+                inventoryInfo.stackSizes[slot] = max;
                 count = mergedCount - max;
             } else {
                 // All items will fit; set the destination count as the new combined amount
-                inventoryInfo.stackSizes.set(slot, mergedCount);
+                inventoryInfo.stackSizes[slot] = mergedCount;
                 return 0;
             }
         }
@@ -244,21 +240,37 @@ public class TransporterManager {
     /**
      * Information about the inventory, keeps track of the size of a stack a slot will have, and a cache of what {@link IItemHandler#getStackInSlot(int)} returns (as it
      * has to call it anyways to get the stack size). This cache allows potentially expensive {@link IItemHandler#getStackInSlot(int)} implementations to only have to be
-     * called once instead of potentially many times.
+     * called once instead of potentially many times as well as allowing for lazily caching slot limits.
      */
     private static class InventoryInfo {
 
-        private final NonNullList<ItemStack> inventory;
-        private final IntList stackSizes = new IntArrayList();
+        private final ItemStack[] inventory;
+        private final int[] stackSizes;
+        private final int[] actualStackSizes;
+        private final int[] slotLimits;
+        private final int slots;
 
         public InventoryInfo(IItemHandler handler) {
-            int slots = handler.getSlots();
-            inventory = NonNullList.withSize(slots, ItemStack.EMPTY);
+            slots = handler.getSlots();
+            inventory = new ItemStack[slots];
+            stackSizes = new int[slots];
+            actualStackSizes = new int[slots];
+            //Slot limits are lazily initialized
+            slotLimits = new int[slots];
+            Arrays.fill(slotLimits, -1);
             for (int i = 0; i < slots; i++) {
                 ItemStack stack = handler.getStackInSlot(i);
-                inventory.set(i, stack);
-                stackSizes.add(stack.getCount());
+                inventory[i] = stack;
+                actualStackSizes[i] = stackSizes[i] = stack.getCount();
             }
+        }
+
+        public int getSlotLimit(IItemHandler handler, int slot) {
+            int limit = slotLimits[slot];
+            if (limit == -1) {
+                return slotLimits[slot] = handler.getSlotLimit(slot);
+            }
+            return limit;
         }
     }
 }

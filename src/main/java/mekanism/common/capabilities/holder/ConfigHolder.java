@@ -1,5 +1,6 @@
 package mekanism.common.capabilities.holder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -13,10 +14,11 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import net.minecraft.util.Direction;
 
-public abstract class ConfigHolder implements IHolder {
+public abstract class ConfigHolder<TYPE> implements IHolder {
 
     protected final Supplier<TileComponentConfig> configSupplier;
     protected final Supplier<Direction> facingSupplier;
+    protected final List<TYPE> slots = new ArrayList<>();
 
     protected ConfigHolder(Supplier<Direction> facingSupplier, Supplier<TileComponentConfig> configSupplier) {
         this.facingSupplier = facingSupplier;
@@ -55,20 +57,20 @@ public abstract class ConfigHolder implements IHolder {
     }
 
     @Nonnull
-    protected <TYPE> List<TYPE> getSlots(@Nullable Direction direction, @Nonnull List<TYPE> allSlots, @Nonnull Function<ISlotInfo, List<TYPE>> slotInfoParser) {
+    protected List<TYPE> getSlots(@Nullable Direction direction, @Nonnull Function<ISlotInfo, List<TYPE>> slotInfoParser) {
         if (direction == null) {
             //If we want the internal, give all of our slots
-            return allSlots;
+            return slots;
         }
         TileComponentConfig config = configSupplier.get();
         if (config == null) {
             //If we don't have a config (most likely case is it hasn't been setup yet), just return all slots
-            return allSlots;
+            return slots;
         }
         ConfigInfo configInfo = config.getConfig(getTransmissionType());
         if (configInfo == null) {
             //We don't support items in our configuration at all so just return all
-            return allSlots;
+            return slots;
         }
         RelativeSide side = RelativeSide.fromDirections(facingSupplier.get(), direction);
         return slotInfoParser.apply(configInfo.getSlotInfo(side));
