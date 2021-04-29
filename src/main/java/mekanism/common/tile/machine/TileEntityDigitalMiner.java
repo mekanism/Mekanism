@@ -748,6 +748,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
+    protected void notifyComparatorChange() {
+        super.notifyComparatorChange();
+        Direction facing = getDirection();
+        Direction left = MekanismUtils.getLeft(facing);
+        //Proxy the comparator updates to the various ports we expose comparators to
+        level.updateNeighbourForOutputSignal(worldPosition.relative(left), MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock());
+        level.updateNeighbourForOutputSignal(worldPosition.relative(left.getOpposite()), MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock());
+        level.updateNeighbourForOutputSignal(worldPosition.relative(facing.getOpposite()).above(), MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock());
+    }
+
+    @Override
     public CompoundNBT getConfigurationData(PlayerEntity player) {
         return getGeneralPersistentData(super.getConfigurationData(player));
     }
