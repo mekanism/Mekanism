@@ -2,6 +2,7 @@ package mekanism.common.network.to_client;
 
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
@@ -37,7 +38,7 @@ public class PacketRadiationData implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         if (type == RadiationPacketType.SCALE) {
-            Mekanism.radiationManager.setClientScale(scale);
+            RadiationManager.INSTANCE.setClientScale(scale);
         } else if (type == RadiationPacketType.PLAYER) {
             ClientPlayerEntity player = Minecraft.getInstance().player;
             if (player != null) {

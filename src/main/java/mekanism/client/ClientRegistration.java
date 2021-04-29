@@ -114,6 +114,7 @@ import mekanism.common.integration.MekanismHooks;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.block.ItemBlockCardboardBox;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -273,7 +274,7 @@ public class ClientRegistration {
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity) -> {
                 if (entity instanceof PlayerEntity) {
-                    return Mekanism.radiationManager.getClientScale().ordinal();
+                    return RadiationManager.INSTANCE.getClientScale().ordinal();
                 }
                 return 0;
             });

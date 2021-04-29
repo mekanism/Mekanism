@@ -24,8 +24,8 @@ import mekanism.common.capabilities.basic.DefaultLaserReceptor;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyHandler;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
 import mekanism.common.lib.radiation.capability.DefaultRadiationShielding;
-import mekanism.common.lib.radiation.capability.IRadiationEntity;
-import mekanism.common.lib.radiation.capability.IRadiationShielding;
+import mekanism.api.radiation.capability.IRadiationEntity;
+import mekanism.api.radiation.capability.IRadiationShielding;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 

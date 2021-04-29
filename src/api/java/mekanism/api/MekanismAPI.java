@@ -9,6 +9,7 @@ import mekanism.api.chemical.pigment.EmptyPigment;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.EmptySlurry;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.radiation.IRadiationManager;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 import org.apache.logging.log4j.LogManager;
@@ -35,9 +36,11 @@ public class MekanismAPI {
     private static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY;
     private static IForgeRegistry<Pigment> PIGMENT_REGISTRY;
     private static IForgeRegistry<Slurry> SLURRY_REGISTRY;
+    private static IRadiationManager RADIATION_MANAGER;
 
     //Note: None of the empty variants support registry replacement
-    //TODO - 1.17: Rename registry names for the empty types to just being mekanism:empty instead of mekanism:empty_type
+    //TODO - 1.17: Rename registry names for the empty types to just being mekanism:empty instead of mekanism:empty_type,
+    // and also potentially define these with ObjectHolder for purposes of fully defining them outside of the API
     @Nonnull
     public static final Gas EMPTY_GAS = new EmptyGas();
     @Nonnull
@@ -111,5 +114,21 @@ public class MekanismAPI {
             SLURRY_REGISTRY = RegistryManager.ACTIVE.getRegistry(Slurry.class);
         }
         return SLURRY_REGISTRY;
+    }
+
+    /**
+     * Gets Mekanism's {@link IRadiationManager}.
+     */
+    public static IRadiationManager getRadiationManager() {
+        // Harmless race
+        if (RADIATION_MANAGER == null) {
+            try {
+                Class<?> clazz = Class.forName("mekanism.common.lib.radiation.RadiationManager");
+                RADIATION_MANAGER = (IRadiationManager) clazz.getField("INSTANCE").get(null);
+            } catch (ReflectiveOperationException ex) {
+                logger.fatal("Error retrieving RadiationManager, Mekanism may be absent, damaged, or outdated.");
+            }
+        }
+        return RADIATION_MANAGER;
     }
 }

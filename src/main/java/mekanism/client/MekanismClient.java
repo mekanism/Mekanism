@@ -9,6 +9,7 @@ import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModule;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.to_server.PacketKey;
@@ -50,7 +51,7 @@ public class MekanismClient {
 
         Mekanism.playerState.clear(true);
         Mekanism.activeVibrators.clear();
-        Mekanism.radiationManager.resetClient();
+        RadiationManager.INSTANCE.resetClient();
         SoundHandler.radiationSoundMap.clear();
         RenderSPS.clearBoltRenderers();
         TransmitterNetworkRegistry.getInstance().clearClientNetworks();

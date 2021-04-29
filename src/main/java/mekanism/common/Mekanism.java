@@ -153,10 +153,6 @@ public class Mekanism {
     public static final MultiblockManager<EvaporationMultiblockData> evaporationManager = new MultiblockManager<>("evaporation", MultiblockCache::new, EvaporationValidator::new);
     public static final MultiblockManager<SPSMultiblockData> spsManager = new MultiblockManager<>("sps", SPSCache::new, SPSValidator::new);
     /**
-     * RadiationManager for handling radiation across all dimensions
-     */
-    public static final RadiationManager radiationManager = new RadiationManager();
-    /**
      * Mekanism creative tab
      */
     public static final CreativeTabMekanism tabMekanism = new CreativeTabMekanism();
@@ -246,18 +242,22 @@ public class Mekanism {
 
     //Register the empty chemicals
     private void registerGases(RegistryEvent.Register<Gas> event) {
+        MekanismAPI.EMPTY_GAS.setRegistryName(rl("empty_gas"));
         event.getRegistry().register(MekanismAPI.EMPTY_GAS);
     }
 
     private void registerInfuseTypes(RegistryEvent.Register<InfuseType> event) {
+        MekanismAPI.EMPTY_INFUSE_TYPE.setRegistryName(rl("empty_infuse_type"));
         event.getRegistry().register(MekanismAPI.EMPTY_INFUSE_TYPE);
     }
 
     private void registerPigments(RegistryEvent.Register<Pigment> event) {
+        MekanismAPI.EMPTY_PIGMENT.setRegistryName(rl("empty_pigment"));
         event.getRegistry().register(MekanismAPI.EMPTY_PIGMENT);
     }
 
     private void registerSlurries(RegistryEvent.Register<Slurry> event) {
+        MekanismAPI.EMPTY_SLURRY.setRegistryName(rl("empty_slurry"));
         event.getRegistry().register(MekanismAPI.EMPTY_SLURRY);
     }
 
@@ -314,7 +314,7 @@ public class Mekanism {
         BoilerMultiblockData.hotMap.clear();
 
         //Reset consistent managers
-        radiationManager.reset();
+        RadiationManager.INSTANCE.reset();
         MultiblockManager.reset();
         FrequencyManager.reset();
         TransporterManager.reset();
@@ -351,7 +351,7 @@ public class Mekanism {
         MinecraftForge.EVENT_BUS.register(new CommonPlayerTickHandler());
         MinecraftForge.EVENT_BUS.register(Mekanism.worldTickHandler);
 
-        MinecraftForge.EVENT_BUS.register(radiationManager);
+        MinecraftForge.EVENT_BUS.register(RadiationManager.INSTANCE);
 
         //Set up module container tooltips
         Modules.processSupportedContainers();

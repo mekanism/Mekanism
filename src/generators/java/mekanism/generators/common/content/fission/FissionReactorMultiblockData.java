@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.GasStack;
@@ -15,11 +16,10 @@ import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.Mekanism;
+import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerHeatCapacitorWrapper;
@@ -29,6 +29,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
@@ -242,8 +243,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                     radiation += wasteTank.getStored() * wasteTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
                 }
                 radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
-                Mekanism.radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), radiation);
-                Mekanism.radiationManager.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
+                MekanismAPI.getRadiationManager().radiate(new Coord4D(getBounds().getCenter(), world), radiation);
+                RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
             }
         }
     }
@@ -298,7 +299,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0) {
                 double radioactivity = wasteToAdd.getType().get(GasAttributes.Radiation.class).getRadioactivity();
-                Mekanism.radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * radioactivity);
+                MekanismAPI.getRadiationManager().radiate(new Coord4D(getBounds().getCenter(), world), leftoverWaste * radioactivity);
             }
         }
         // update previous burn
@@ -306,7 +307,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private void radiateEntities(World world) {
-        if (MekanismConfig.general.radiationEnabled.get() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
+        IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
+        if (radiationManager.isRadiationEnabled() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
             List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesOfClass(LivingEntity.class, hotZone);
             for (LivingEntity entity : entitiesToRadiate) {
                 double wasteRadiation = 0;
@@ -316,7 +318,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                         wasteRadiation = r.getRadioactivity() * wasteTank.getStored() / 3_600F; // divide down to Sv/s
                     }
                 }
-                Mekanism.radiationManager.radiate(entity, lastBurnRate + wasteRadiation);
+                radiationManager.radiate(entity, lastBurnRate + wasteRadiation);
             }
         }
     }

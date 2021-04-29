@@ -28,6 +28,7 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IRadialModeItem;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketPortableTeleporterGui;
@@ -174,7 +175,7 @@ public class ClientTickHandler {
                 scrollDelta = 0;
             }
 
-            Mekanism.radiationManager.tickClient(minecraft.player);
+            RadiationManager.INSTANCE.tickClient(minecraft.player);
 
             UUID playerUUID = minecraft.player.getUUID();
             // Update player's state for various items; this also automatically notifies server if something changed and
@@ -263,7 +264,7 @@ public class ClientTickHandler {
             }
 
             if (MekanismConfig.client.enablePlayerSounds.get()) {
-                RadiationScale scale = Mekanism.radiationManager.getClientScale();
+                RadiationScale scale = RadiationManager.INSTANCE.getClientScale();
                 if (scale != RadiationScale.NONE && !SoundHandler.radiationSoundMap.containsKey(scale)) {
                     GeigerSound sound = GeigerSound.create(minecraft.player, scale);
                     SoundHandler.radiationSoundMap.put(scale, sound);

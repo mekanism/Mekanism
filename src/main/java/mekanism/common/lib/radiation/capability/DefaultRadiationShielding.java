@@ -1,5 +1,6 @@
 package mekanism.common.lib.radiation.capability;
 
+import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.common.capabilities.basic.DefaultStorageHelper.NullStorage;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 

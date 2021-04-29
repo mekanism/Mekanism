@@ -1,9 +1,12 @@
-package mekanism.common.lib.radiation.capability;
+package mekanism.api.radiation.capability;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.INBTSerializable;
 
+/**
+ * Base capability definition for handling radiation for entities.
+ */
 public interface IRadiationEntity extends INBTSerializable<CompoundNBT> {
 
     /**

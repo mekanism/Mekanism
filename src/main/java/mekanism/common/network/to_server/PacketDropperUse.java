@@ -5,19 +5,17 @@ import java.util.List;
 import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
@@ -70,8 +68,7 @@ public class PacketDropperUse implements IMekanismPacket {
                 if (tile instanceof TileEntityMultiblock) {
                     MultiblockData structure = ((TileEntityMultiblock<?>) tile).getMultiblock();
                     if (structure.isFormed()) {
-                        //TODO: Decide if we want to release the radiation from a different point in the multiblock
-                        handleTankType(structure, player, stack, tile.getTileCoord());
+                        handleTankType(structure, player, stack, new Coord4D(structure.getBounds().getCenter(), player.level));
                     }
                 } else {
                     if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
@@ -113,26 +110,14 @@ public class PacketDropperUse implements IMekanismPacket {
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void handleChemicalTank(
-          PlayerEntity player, ItemStack stack, List<TANK> tanks, int tankId, Coord4D coord) {
-        if (tankId < tanks.size()) {
-            handleChemicalTank(player, stack, tanks.get(tankId), coord);
-        }
-    }
-
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(PlayerEntity player, ItemStack stack,
           IChemicalTank<CHEMICAL, STACK> tank, Coord4D coord) {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             if (!tank.isEmpty()) {
                 if (tank instanceof IGasTank) {
-                    //If the tank is a gas tank and has radioactive substances in it make sure we properly emit the radiation
-                    // to the environment
-                    GasStack gasStack = ((IGasTank) tank).getStack();
-                    if (gasStack.has(GasAttributes.Radiation.class)) {
-                        double radioactivity = gasStack.get(GasAttributes.Radiation.class).getRadioactivity();
-                        Mekanism.radiationManager.radiate(coord, radioactivity * gasStack.getAmount());
-                    }
+                    //If the tank is a gas tank and has radioactive substances in it make sure we properly emit the radiation to the environment
+                    MekanismAPI.getRadiationManager().dumpRadiation(coord, ((IGasTank) tank).getStack());
                 }
                 tank.setEmpty();
             }

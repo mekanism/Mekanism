@@ -3,10 +3,11 @@ package mekanism.common.command;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
@@ -86,7 +87,7 @@ public class RadiationCommand {
                     )
               ).then(Commands.literal("removeAll")
                     .executes(ctx -> {
-                        Mekanism.radiationManager.clearSources();
+                        RadiationManager.INSTANCE.clearSources();
                         ctx.getSource().sendSuccess(MekanismLang.COMMAND_RADIATION_REMOVE_ALL.translateColored(EnumColor.GRAY), true);
                         return 0;
                     })
@@ -99,7 +100,7 @@ public class RadiationCommand {
 
     private static int addRadiation(CommandSource source, Vector3d pos, World world, double magnitude) {
         Coord4D location = new Coord4D(pos.x, pos.y, pos.z, world.dimension());
-        Mekanism.radiationManager.radiate(location, magnitude);
+        MekanismAPI.getRadiationManager().radiate(location, magnitude);
         source.sendSuccess(MekanismLang.COMMAND_RADIATION_ADD.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
               UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3), EnumColor.INDIGO, getPosition(location.getPos()), EnumColor.INDIGO,
               location.dimension.location()), true);
@@ -112,7 +113,7 @@ public class RadiationCommand {
 
     private static int getRadiationLevel(CommandSource source, Vector3d pos, World world) {
         Coord4D location = new Coord4D(pos.x, pos.y, pos.z, world.dimension());
-        double magnitude = Mekanism.radiationManager.getRadiationLevel(location);
+        double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(location);
         source.sendSuccess(MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location.getPos()), EnumColor.INDIGO,
               location.dimension.location(), RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
               true);

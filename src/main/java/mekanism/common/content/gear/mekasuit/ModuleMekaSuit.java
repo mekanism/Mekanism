@@ -24,7 +24,7 @@ import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.lib.radiation.capability.IRadiationEntity;
+import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.CapabilityUtils;

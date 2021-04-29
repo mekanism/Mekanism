@@ -15,11 +15,10 @@ import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IMekWrench;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
@@ -543,25 +542,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (isRemote() && hasSound()) {
             updateSound();
         }
-        if (!isRemote() && MekanismConfig.general.radiationEnabled.get()) {
+        if (!isRemote() && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
             //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
             dumpRadiation();
         }
     }
 
     protected void dumpRadiation() {
-        List<IGasTank> gasTanks = getGasTanks(null);
-        for (IGasTank gasTank : gasTanks) {
-            //For each tank in this tile, if it isn't empty and the stored gas is radioactive
-            // then dump that radioactivity into the air
-            if (!gasTank.isEmpty()) {
-                GasStack stack = gasTank.getStack();
-                if (stack.has(GasAttributes.Radiation.class)) {
-                    double radioactivity = stack.get(GasAttributes.Radiation.class).getRadioactivity();
-                    Mekanism.radiationManager.radiate(getTileCoord(), radioactivity * stack.getAmount());
-                }
-            }
-        }
+        //We handle clearing radioactive contents later in drop calculation due to when things are written to NBT
+        MekanismAPI.getRadiationManager().dumpRadiation(getTileCoord(), getGasTanks(null), false);
     }
 
     @Override

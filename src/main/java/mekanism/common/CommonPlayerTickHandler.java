@@ -24,6 +24,7 @@ import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemScubaTank;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
@@ -104,7 +105,7 @@ public class CommonPlayerTickHandler {
     private void tickEnd(PlayerEntity player) {
         Mekanism.playerState.updateStepAssist(player);
         if (player instanceof ServerPlayerEntity) {
-            Mekanism.radiationManager.tickServer((ServerPlayerEntity) player);
+            RadiationManager.INSTANCE.tickServer((ServerPlayerEntity) player);
         }
 
         ItemStack currentItem = player.inventory.getSelected();

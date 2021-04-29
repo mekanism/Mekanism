@@ -10,6 +10,7 @@ import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.lib.chunkloading.ChunkManager;
 import mekanism.common.lib.frequency.FrequencyManager;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.world.GenHandler;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.RegistryKey;
@@ -57,7 +58,7 @@ public class CommonWorldTickHandler {
     public void worldLoadEvent(WorldEvent.Load event) {
         if (!event.getWorld().isClientSide()) {
             FrequencyManager.load();
-            Mekanism.radiationManager.createOrLoad();
+            RadiationManager.INSTANCE.createOrLoad();
             if (event.getWorld() instanceof ServerWorld) {
                 ChunkManager.worldLoad((ServerWorld) event.getWorld());
             }
@@ -80,12 +81,12 @@ public class CommonWorldTickHandler {
 
     private void serverTick() {
         FrequencyManager.tick();
-        Mekanism.radiationManager.tickServer();
+        RadiationManager.INSTANCE.tickServer();
     }
 
     private void tickEnd(ServerWorld world) {
         if (!world.isClientSide) {
-            Mekanism.radiationManager.tickServerWorld(world);
+            RadiationManager.INSTANCE.tickServerWorld(world);
             if (flushTagAndRecipeCaches) {
                 //Loop all open containers and if it is a portable qio dashboard force refresh the window's recipes
                 for (ServerPlayerEntity player : world.players()) {

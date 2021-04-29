@@ -15,6 +15,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.network.to_client.PacketFlyingSync;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
 import mekanism.common.network.to_client.PacketStepHeightSync;
@@ -63,7 +64,7 @@ public class PlayerState {
                 SoundHandler.radiationSoundMap.clear();
             }
         }
-        Mekanism.radiationManager.resetPlayer(uuid);
+        RadiationManager.INSTANCE.resetPlayer(uuid);
         if (!isRemote) {
             Mekanism.packetHandler.sendToAll(new PacketResetPlayerClient(uuid));
         }

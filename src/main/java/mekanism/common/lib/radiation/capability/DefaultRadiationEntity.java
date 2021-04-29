@@ -3,6 +3,7 @@ package mekanism.common.lib.radiation.capability;
 import java.util.Random;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
+import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.CapabilityCache;

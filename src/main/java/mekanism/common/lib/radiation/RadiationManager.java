@@ -13,16 +13,23 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.chemical.gas.GasStack;
+import mekanism.api.chemical.gas.IGasHandler;
+import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
+import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.radiation.capability.IRadiationEntity;
+import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.math.voxel.Chunk3D;
-import mekanism.common.lib.radiation.capability.IRadiationEntity;
-import mekanism.common.lib.radiation.capability.IRadiationShielding;
 import mekanism.common.network.to_client.PacketRadiationData;
+import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;
@@ -36,6 +43,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -71,8 +79,12 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
  *
  * @author aidancbrady
  */
-public class RadiationManager {
+public class RadiationManager implements IRadiationManager {
 
+    /**
+     * RadiationManager for handling radiation across all dimensions
+     */
+    public static final RadiationManager INSTANCE = new RadiationManager();
     private static final String DATA_HANDLER_NAME = "radiation_manager";
     private static final IntSupplier MAX_RANGE = () -> MekanismConfig.general.radiationChunkCheckRadius.get() * 16;
     private static final Random RAND = new Random();
@@ -83,6 +95,7 @@ public class RadiationManager {
     private boolean loaded;
 
     private final Map<Chunk3D, Map<Coord4D, RadiationSource>> radiationMap = new Object2ObjectOpenHashMap<>();
+    //TODO - 10.1: Re-evaluate the fact this doesn't seem to be persisted between saving and opening
     private final Map<ResourceLocation, List<Meltdown>> meltdowns = new Object2ObjectOpenHashMap<>();
 
     private final Map<UUID, RadiationScale> playerExposureMap = new Object2ObjectOpenHashMap<>();
@@ -96,61 +109,88 @@ public class RadiationManager {
     @Nullable
     private RadiationDataHandler dataHandler;
 
+    @Override
+    public boolean isRadiationEnabled() {
+        return MekanismConfig.general.radiationEnabled.get();
+    }
+
+    @Override
+    public DamageSource getRadiationDamageSource() {
+        return MekanismDamageSource.RADIATION;
+    }
+
+    @Override
     public double getRadiationLevel(Entity entity) {
         return getRadiationLevel(new Coord4D(entity));
     }
 
-    /**
-     * Get the radiation level (in sV/h) at a certain location.
-     *
-     * @param coord - location
-     *
-     * @return radiation level (in sV)
-     */
+    @Override
     public double getRadiationLevel(Coord4D coord) {
         Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get());
         double level = BASELINE;
-
         for (Chunk3D chunk : checkChunks) {
             if (radiationMap.containsKey(chunk)) {
                 for (RadiationSource src : radiationMap.get(chunk).values()) {
                     // we only compute exposure when within the MAX_RANGE bounds
                     if (src.getPos().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
-                        double add = computeExposure(coord, src);
-                        level += add;
+                        level += computeExposure(coord, src);
                     }
                 }
             }
         }
-
         return level;
     }
 
+    @Override
     public void radiate(Coord4D coord, double magnitude) {
-        if (!MekanismConfig.general.radiationEnabled.get()) {
+        if (!isRadiationEnabled()) {
             return;
         }
-        Chunk3D chunk = new Chunk3D(coord);
-        boolean found = false;
-        if (radiationMap.containsKey(chunk)) {
-            RadiationSource src = radiationMap.get(chunk).get(coord);
-            if (src != null) {
-                src.radiate(magnitude);
-                found = true;
-            }
-        }
-        if (!found) {
-            radiationMap.computeIfAbsent(new Chunk3D(coord), c -> new Object2ObjectOpenHashMap<>()).put(coord, new RadiationSource(coord, magnitude));
+        Map<Coord4D, RadiationSource> radiationSourceMap = radiationMap.computeIfAbsent(new Chunk3D(coord), c -> new Object2ObjectOpenHashMap<>());
+        RadiationSource src = radiationSourceMap.get(coord);
+        if (src == null) {
+            radiationSourceMap.put(coord, new RadiationSource(coord, magnitude));
+        } else {
+            src.radiate(magnitude);
         }
     }
 
+    @Override
     public void radiate(LivingEntity entity, double magnitude) {
-        if (!MekanismConfig.general.radiationEnabled.get()) {
+        if (!isRadiationEnabled()) {
             return;
         }
         if (!(entity instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) entity)) {
             entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity)))));
         }
+    }
+
+    @Override
+    public void dumpRadiation(Coord4D coord, IGasHandler gasHandler, boolean clearRadioactive) {
+        for (int tank = 0, gasTanks = gasHandler.getTanks(); tank < gasTanks; tank++) {
+            if (dumpRadiation(coord, gasHandler.getChemicalInTank(tank)) && clearRadioactive) {
+                gasHandler.setChemicalInTank(tank, GasStack.EMPTY);
+            }
+        }
+    }
+
+    @Override
+    public void dumpRadiation(Coord4D coord, List<IGasTank> gasTanks, boolean clearRadioactive) {
+        for (IGasTank gasTank : gasTanks) {
+            if (dumpRadiation(coord, gasTank.getStack()) && clearRadioactive) {
+                gasTank.setEmpty();
+            }
+        }
+    }
+
+    @Override
+    public boolean dumpRadiation(Coord4D coord, GasStack stack) {
+        if (!stack.isEmpty() && stack.has(Radiation.class)) {
+            double radioactivity = stack.get(Radiation.class).getRadioactivity();
+            radiate(coord, radioactivity * stack.getAmount());
+            return true;
+        }
+        return false;
     }
 
     public void createMeltdown(World world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance) {
@@ -203,9 +243,9 @@ public class RadiationManager {
         updateEntityRadiation(player);
     }
 
-    public void updateEntityRadiation(LivingEntity entity) {
+    private void updateEntityRadiation(LivingEntity entity) {
         // terminate early if we're disabled
-        if (!MekanismConfig.general.radiationEnabled.get()) {
+        if (!isRadiationEnabled()) {
             return;
         }
         LazyOptional<IRadiationEntity> radiationCap = entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY);
@@ -233,7 +273,7 @@ public class RadiationManager {
 
     public void tickServerWorld(World world) {
         // terminate early if we're disabled
-        if (!MekanismConfig.general.radiationEnabled.get()) {
+        if (!isRadiationEnabled()) {
             return;
         }
         if (!loaded) {
@@ -249,7 +289,7 @@ public class RadiationManager {
 
     public void tickServer() {
         // terminate early if we're disabled
-        if (!MekanismConfig.general.radiationEnabled.get()) {
+        if (!isRadiationEnabled()) {
             return;
         }
         // each tick, there's a 1/20 chance we'll decay radiation sources (averages to 1 decay operation per second)
@@ -329,9 +369,8 @@ public class RadiationManager {
                 return ELEVATED;
             } else if (magnitude < 100) {
                 return HIGH;
-            } else {
-                return EXTREME;
             }
+            return EXTREME;
         }
 
         /**
@@ -348,9 +387,8 @@ public class RadiationManager {
                 return EnumColor.ORANGE;
             } else if (magnitude < 10) { // 100 Sv/h
                 return EnumColor.RED;
-            } else {
-                return EnumColor.DARK_RED;
             }
+            return EnumColor.DARK_RED;
         }
 
         private static final double LOG_BASELINE = Math.log10(MIN_MAGNITUDE);
@@ -399,7 +437,7 @@ public class RadiationManager {
 
         public void syncManager() {
             // don't sync the manager if radiation has been disabled
-            if (loadedSources != null && MekanismConfig.general.radiationEnabled.get()) {
+            if (loadedSources != null && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
                 for (RadiationSource source : loadedSources) {
                     Chunk3D chunk = new Chunk3D(source.getPos());
                     manager.radiationMap.computeIfAbsent(chunk, c -> new Object2ObjectOpenHashMap<>()).put(source.getPos(), source);
