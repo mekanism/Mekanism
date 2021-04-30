@@ -12,6 +12,8 @@ import mekanism.common.lib.distribution.Target;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.util.Direction;
 
+import java.util.Collection;
+
 public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>
       extends Target<BoxedPressurizedTube, Long, @NonNull STACK> {
 
@@ -42,18 +44,20 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
         return Math.min(chemicalStack.getAmount(), transmitter.getCapacity() - currentStored.getAmount());
     }
 
-    public void saveShare(Direction handlerDirection) {
-        BoxedPressurizedTube tube = handlers.get(handlerDirection);
-        boolean shouldSave = false;
-        if (currentStored.isEmpty() != tube.saveShare.isEmpty()) {
-            shouldSave = true;
-        } else if (!currentStored.isEmpty()) {
-            ChemicalType chemicalType = ChemicalType.getTypeFor(currentStored);
-            shouldSave = chemicalType != tube.saveShare.getChemicalType() || !currentStored.isStackIdentical((STACK) tube.saveShare.getChemicalStack());
-        }
-        if (shouldSave) {
-            tube.saveShare = currentStored.isEmpty() ? BoxedChemicalStack.EMPTY : BoxedChemicalStack.box(currentStored);
-            tube.getTransmitterTile().markDirty(false);
+    public void saveShare() {
+        for (BoxedPressurizedTube tube : handlers) {
+            boolean shouldSave = false;
+            if (currentStored.isEmpty() != tube.saveShare.isEmpty()) {
+                shouldSave = true;
+            } else if (!currentStored.isEmpty()) {
+                ChemicalType chemicalType = ChemicalType.getTypeFor(currentStored);
+                shouldSave = chemicalType != tube.saveShare.getChemicalType() || !currentStored.isStackIdentical((STACK) tube.saveShare
+                        .getChemicalStack());
+            }
+            if (shouldSave) {
+                tube.saveShare = currentStored.isEmpty() ? BoxedChemicalStack.EMPTY : BoxedChemicalStack.box(currentStored);
+                tube.getTransmitterTile().markDirty(false);
+            }
         }
     }
 }

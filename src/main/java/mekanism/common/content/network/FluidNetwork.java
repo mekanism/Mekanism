@@ -1,12 +1,10 @@
 package mekanism.common.content.network;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -154,37 +152,25 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         if (size > 0) {
             FluidStack fluidType = fluidTank.getFluid();
             //Just pretend we are always accessing it from the north
-            Direction side = Direction.NORTH;
-            Set<FluidTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
+            FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType);
             for (MechanicalPipe transmitter : transmitters) {
-                FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType);
-                saveTarget.addHandler(side, transmitter);
-                saveTargets.add(saveTarget);
+                saveTarget.addHandler(transmitter);
             }
-            EmitUtils.sendToAcceptors(saveTargets, size, fluidType.getAmount(), fluidType);
-            for (FluidTransmitterSaveTarget saveTarget : saveTargets) {
-                saveTarget.saveShare(side);
-            }
+            EmitUtils.sendToAcceptors(saveTarget, fluidType.getAmount(), fluidType);
+            saveTarget.saveShare();
         }
     }
 
     private int tickEmit(@Nonnull FluidStack fluidToSend) {
-        Set<FluidHandlerTarget> availableAcceptors = new ObjectOpenHashSet<>();
-        int totalHandlers = 0;
+        FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
         for (Entry<BlockPos, Map<Direction, LazyOptional<IFluidHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
-            FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
             entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
                 if (FluidUtils.canFill(acceptor, fluidToSend)) {
-                    target.addHandler(side, acceptor);
+                    target.addHandler(acceptor);
                 }
             }));
-            int curHandlers = target.getHandlers().size();
-            if (curHandlers > 0) {
-                availableAcceptors.add(target);
-                totalHandlers += curHandlers;
-            }
         }
-        return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, fluidToSend.getAmount(), fluidToSend);
+        return EmitUtils.sendToAcceptors(target, fluidToSend.getAmount(), fluidToSend);
     }
 
     @Override

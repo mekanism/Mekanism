@@ -20,7 +20,6 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
 
 @ParametersAreNonnullByDefault
 public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeDistributionUnit> {
@@ -47,21 +46,17 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
     }
 
     private void chargeSuit(PlayerEntity player) {
-        Set<EnergySaveTarget> saveTargets = new ObjectOpenHashSet<>(player.inventory.armor.size());
         FloatingLong total = FloatingLong.ZERO;
+        EnergySaveTarget saveTarget = new EnergySaveTarget();
         for (ItemStack stack : player.inventory.armor) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
             if (energyContainer != null) {
-                EnergySaveTarget saveTarget = new EnergySaveTarget();
-                saveTarget.addHandler(Direction.NORTH, energyContainer);
-                saveTargets.add(saveTarget);
+                saveTarget.addHandler(energyContainer);
                 total = total.plusEqual(energyContainer.getEnergy());
             }
         }
-        EmitUtils.sendToAcceptors(saveTargets, saveTargets.size(), total.copy());
-        for (EnergySaveTarget saveTarget : saveTargets) {
-            saveTarget.save(Direction.NORTH);
-        }
+        EmitUtils.sendToAcceptors(saveTarget, total.copy());
+        saveTarget.save();
     }
 
     private void chargeInventory(IModule<ModuleChargeDistributionUnit> module, PlayerEntity player) {

@@ -1,12 +1,10 @@
 package mekanism.common.content.network;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -228,27 +226,22 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
         super.updateSaveShares(triggerTransmitter);
         int size = transmittersSize();
         if (size > 0) {
-            updateSaveShares(triggerTransmitter, size, getCurrentTankWithFallback().getStack());
+            updateSaveShares(triggerTransmitter, getCurrentTankWithFallback().getStack());
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void updateSaveShares(@Nullable BoxedPressurizedTube triggerTransmitter, int size,
-          STACK chemical) {
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void updateSaveShares(@Nullable BoxedPressurizedTube triggerTransmitter,
+                                                                                                               STACK chemical) {
         STACK empty = ChemicalUtil.getEmptyStack(chemical);
-        Direction side = Direction.NORTH;
-        Set<BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK>> saveTargets = new ObjectOpenHashSet<>(size);
+        BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget = new BoxedChemicalTransmitterSaveTarget<>(empty, chemical);
         for (BoxedPressurizedTube transmitter : transmitters) {
-            BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget = new BoxedChemicalTransmitterSaveTarget<>(empty, chemical);
-            saveTarget.addHandler(side, transmitter);
-            saveTargets.add(saveTarget);
+            saveTarget.addHandler(transmitter);
         }
-        long sent = EmitUtils.sendToAcceptors(saveTargets, size, chemical.getAmount(), chemical);
+        long sent = EmitUtils.sendToAcceptors(saveTarget, chemical.getAmount(), chemical);
         if (triggerTransmitter != null && sent < chemical.getAmount()) {
             disperse(triggerTransmitter, ChemicalUtil.copyWithAmount(chemical, chemical.getAmount() - sent));
         }
-        for (BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK> saveTarget : saveTargets) {
-            saveTarget.saveShare(side);
-        }
+        saveTarget.saveShare();
     }
 
     @Override
@@ -268,23 +261,16 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> long tickEmit(@Nonnull STACK stack) {
         ChemicalType chemicalType = ChemicalType.getTypeFor(stack);
-        Set<ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>>> availableAcceptors = new ObjectOpenHashSet<>();
-        int totalHandlers = 0;
+        ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack);
         for (Entry<BlockPos, Map<Direction, LazyOptional<BoxedChemicalHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
-            ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack);
             entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
                 IChemicalHandler<CHEMICAL, STACK> handler = acceptor.getHandlerFor(chemicalType);
                 if (handler != null && ChemicalUtil.canInsert(handler, stack)) {
-                    target.addHandler(side, handler);
+                    target.addHandler(handler);
                 }
             }));
-            int curHandlers = target.getHandlers().size();
-            if (curHandlers > 0) {
-                availableAcceptors.add(target);
-                totalHandlers += curHandlers;
-            }
         }
-        return EmitUtils.sendToAcceptors(availableAcceptors, totalHandlers, stack.getAmount(), stack);
+        return EmitUtils.sendToAcceptors(target, stack.getAmount(), stack);
     }
 
     @Override

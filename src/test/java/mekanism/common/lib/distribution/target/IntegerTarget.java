@@ -1,16 +1,18 @@
 package mekanism.common.lib.distribution.target;
 
+import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
+import mekanism.common.lib.distribution.handler.IntegerHandler;
 
-public abstract class IntegerTarget extends Target<Integer, Integer, Integer> {
+public final class IntegerTarget extends Target<IntegerHandler, Integer, Integer> {
 
-    private int accepted;
-
-    protected void accept(int amount) {
-        accepted += amount;
+    @Override
+    protected void acceptAmount(IntegerHandler integerHandler, SplitInfo<Integer> splitInfo, Integer amount) {
+        splitInfo.send(integerHandler.perform(amount, false));
     }
 
-    public int getAccepted() {
-        return accepted;
+    @Override
+    protected Integer simulate(IntegerHandler integerHandler, Integer offered) {
+        return integerHandler.perform(offered, true);
     }
 }

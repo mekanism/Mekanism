@@ -22,11 +22,12 @@ public class EnergyTransmitterSaveTarget extends Target<UniversalCable, Floating
         return energyToSend.copy().min(transmitter.getCapacityAsFloatingLong().subtract(currentStored));
     }
 
-    public void saveShare(Direction handlerDirection) {
-        UniversalCable cable = handlers.get(handlerDirection);
-        if (!currentStored.isZero() || !cable.lastWrite.isZero()) {
-            cable.lastWrite = currentStored;
-            cable.getTransmitterTile().markDirty(false);
-        }
+    public void saveShare() {
+        for (UniversalCable cable : handlers) {
+			if (!currentStored.isZero() || !cable.lastWrite.isZero()) {
+				cable.lastWrite = currentStored;
+				cable.getTransmitterTile().markDirty(false);
+			}
+		}
     }
 }

@@ -1,12 +1,10 @@
 package mekanism.common.content.network;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -132,37 +130,25 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         int size = transmittersSize();
         if (size > 0) {
             //Just pretend we are always accessing it from the north
-            Direction side = Direction.NORTH;
-            Set<EnergyTransmitterSaveTarget> saveTargets = new ObjectOpenHashSet<>(size);
+            EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget();
             for (UniversalCable transmitter : transmitters) {
-                EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget();
-                saveTarget.addHandler(side, transmitter);
-                saveTargets.add(saveTarget);
+                saveTarget.addHandler(transmitter);
             }
-            EmitUtils.sendToAcceptors(saveTargets, size, energyContainer.getEnergy().copy());
-            for (EnergyTransmitterSaveTarget saveTarget : saveTargets) {
-                saveTarget.saveShare(side);
-            }
+            EmitUtils.sendToAcceptors(saveTarget, energyContainer.getEnergy().copy());
+            saveTarget.saveShare();
         }
     }
 
     private FloatingLong tickEmit(FloatingLong energyToSend) {
-        Set<EnergyAcceptorTarget> targets = new ObjectOpenHashSet<>();
-        int totalHandlers = 0;
+        EnergyAcceptorTarget target = new EnergyAcceptorTarget();
         for (Entry<BlockPos, Map<Direction, LazyOptional<IStrictEnergyHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
-            EnergyAcceptorTarget target = new EnergyAcceptorTarget();
             entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
                 if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
-                    target.addHandler(side, acceptor);
+                    target.addHandler(acceptor);
                 }
             }));
-            int curHandlers = target.getHandlers().size();
-            if (curHandlers > 0) {
-                targets.add(target);
-                totalHandlers += curHandlers;
-            }
         }
-        return EmitUtils.sendToAcceptors(targets, totalHandlers, energyToSend.copy());
+        return EmitUtils.sendToAcceptors(target, energyToSend.copy());
     }
 
     @Override

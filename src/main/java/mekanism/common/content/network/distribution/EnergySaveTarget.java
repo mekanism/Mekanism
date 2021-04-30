@@ -22,10 +22,11 @@ public class EnergySaveTarget extends Target<IEnergyContainer, FloatingLong, Flo
         return energyToSend.copy().min(container.getMaxEnergy().subtract(currentStored));
     }
 
-    public void save(Direction fakeDirection) {
-        IEnergyContainer container = handlers.get(fakeDirection);
-        if (container != null) {
-            container.setEnergy(currentStored);
+    public void save() {
+        for (IEnergyContainer container : handlers) {
+            if (container != null) {
+                container.setEnergy(currentStored);
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
@@ -63,14 +62,14 @@ public final class FluidUtils {
             //Collect cap
             CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
                 if (canFill(handler, toSend)) {
-                    target.addHandler(accessSide, handler);
+                    target.addHandler(handler);
                 }
             });
         });
 
-        int curHandlers = target.getHandlers().size();
+        int curHandlers = target.getHandlerCount();
         if (curHandlers > 0) {
-            return EmitUtils.sendToAcceptors(Collections.singleton(target), curHandlers, stack.getAmount(), toSend);
+            return EmitUtils.sendToAcceptors(target, stack.getAmount(), toSend);
         }
         return 0;
     }

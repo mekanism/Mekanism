@@ -291,13 +291,13 @@ public class ChemicalUtil {
             //Collect cap
             CapabilityUtils.getCapability(acceptor, capability, accessSide).ifPresent(handler -> {
                 if (canInsert(handler, stack)) {
-                    target.addHandler(accessSide, handler);
+                    target.addHandler(handler);
                 }
             });
         });
-        int curHandlers = target.getHandlers().size();
+        int curHandlers = target.getHandlerCount();
         if (curHandlers > 0) {
-            return EmitUtils.sendToAcceptors(Collections.singleton(target), curHandlers, stack.getAmount(), ChemicalUtil.copy(stack));
+            return EmitUtils.sendToAcceptors(target, stack.getAmount(), ChemicalUtil.copy(stack));
         }
         return 0;
     }

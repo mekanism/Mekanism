@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 import mekanism.api.Action;
@@ -50,12 +49,12 @@ public final class CableUtils {
             //Insert to access side
             Direction accessSide = side.getOpposite();
             //Collect cap
-            EnergyCompatUtils.getLazyStrictEnergyHandler(acceptor, accessSide).ifPresent(strictEnergyHandler -> target.addHandler(accessSide, strictEnergyHandler));
+            EnergyCompatUtils.getLazyStrictEnergyHandler(acceptor, accessSide).ifPresent(target::addHandler);
         });
 
-        int curHandlers = target.getHandlers().size();
+        int curHandlers = target.getHandlerCount();
         if (curHandlers > 0) {
-            return EmitUtils.sendToAcceptors(Collections.singleton(target), curHandlers, energyToSend);
+            return EmitUtils.sendToAcceptors(target, energyToSend);
         }
         return FloatingLong.ZERO;
     }

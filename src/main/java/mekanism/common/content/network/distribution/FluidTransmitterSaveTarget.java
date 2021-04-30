@@ -38,11 +38,12 @@ public class FluidTransmitterSaveTarget extends Target<MechanicalPipe, Integer, 
         return Math.min(fluidStack.getAmount(), MathUtils.clampToInt(transmitter.getCapacity() - currentStored.getAmount()));
     }
 
-    public void saveShare(Direction handlerDirection) {
-        MechanicalPipe pipe = handlers.get(handlerDirection);
-        if (currentStored.isEmpty() != pipe.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isFluidStackIdentical(pipe.saveShare))) {
-            pipe.saveShare = currentStored;
-            pipe.getTransmitterTile().markDirty(false);
+    public void saveShare() {
+        for (MechanicalPipe pipe : handlers) {
+            if (currentStored.isEmpty() != pipe.saveShare.isEmpty() || (!currentStored.isEmpty() && !currentStored.isFluidStackIdentical(pipe.saveShare))) {
+                pipe.saveShare = currentStored;
+                pipe.getTransmitterTile().markDirty(false);
+            }
         }
     }
 }
