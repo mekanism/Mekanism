@@ -20,6 +20,9 @@ public class CrTPigmentBuilder extends CrTChemicalBuilder<Pigment, PigmentBuilde
      *                        Pigment} texture.
      *
      * @return A builder for creating a custom {@link Pigment}.
+     *
+     * @apiNote If a custom texture is used it is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination
+     * with {@link #color(int)} due to the texture not needing tinting.
      */
     @ZenCodeType.Method
     public static CrTPigmentBuilder builder(@ZenCodeType.Optional ResourceLocation textureLocation) {
@@ -32,6 +35,18 @@ public class CrTPigmentBuilder extends CrTChemicalBuilder<Pigment, PigmentBuilde
 
     @Override
     protected void build(ResourceLocation registryName) {
-        CrTContentUtils.queuePigmentForRegistration(registryName, getInternal());
+        Pigment pigment;
+        if (colorRepresentation == null) {
+            pigment = new Pigment(getInternal());
+        } else {
+            int color = colorRepresentation;
+            pigment = new Pigment(getInternal()) {
+                @Override
+                public int getColorRepresentation() {
+                    return color;
+                }
+            };
+        }
+        CrTContentUtils.queuePigmentForRegistration(registryName, pigment);
     }
 }

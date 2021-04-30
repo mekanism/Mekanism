@@ -1,6 +1,7 @@
 package mekanism.common.integration.crafttweaker.content.builder;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -15,6 +16,8 @@ public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BU
       ATTRIBUTE extends ICrTChemicalAttribute, CRT_BUILDER extends CrTChemicalBuilder<CHEMICAL, BUILDER, ATTRIBUTE, CRT_BUILDER>> {
 
     private final BUILDER builder;
+    @Nullable
+    protected Integer colorRepresentation;
 
     protected CrTChemicalBuilder(BUILDER builder) {
         this.builder = builder;
@@ -39,6 +42,18 @@ public abstract class CrTChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BU
     @ZenCodeType.Method
     public CRT_BUILDER color(int color) {
         getInternal().color(color);
+        return getThis();
+    }
+
+    /**
+     * Sets the color representation to apply to this chemical when used for things like durability bars. Mostly for use in combination with custom textures that are not
+     * tinted.
+     *
+     * @param color Color in RRGGBB format
+     */
+    @ZenCodeType.Method
+    public CRT_BUILDER colorRepresentation(int color) {
+        colorRepresentation = color;
         return getThis();
     }
 

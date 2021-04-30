@@ -30,6 +30,11 @@ public class InfuseTypeBuilder extends ChemicalBuilder<InfuseType, InfuseTypeBui
      * @param texture A {@link ResourceLocation} representing the texture this {@link InfuseType} will use.
      *
      * @return A builder for creating an {@link InfuseType}.
+     *
+     * @apiNote The texture will be automatically stitched.
+     * <br>
+     * It is recommended to override {@link InfuseType#getColorRepresentation()} if this builder method is not used in combination with {@link #color(int)} due to the
+     * texture not needing tinting.
      */
     public static InfuseTypeBuilder builder(ResourceLocation texture) {
         return new InfuseTypeBuilder(Objects.requireNonNull(texture));

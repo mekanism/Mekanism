@@ -41,6 +41,9 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
      * @param textureLocation A {@link ResourceLocation} representing the texture this {@link Slurry} will use.
      *
      * @return A builder for creating a custom {@link Slurry}.
+     *
+     * @apiNote It is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination with {@link #color(int)}
+     * due to the texture not needing tinting.
      */
     @ZenCodeType.Method
     public static CrTSlurryBuilder builder(ResourceLocation textureLocation) {
@@ -77,6 +80,18 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
 
     @Override
     protected void build(ResourceLocation registryName) {
-        CrTContentUtils.queueSlurryForRegistration(registryName, getInternal());
+        Slurry slurry;
+        if (colorRepresentation == null) {
+            slurry = new Slurry(getInternal());
+        } else {
+            int color = colorRepresentation;
+            slurry = new Slurry(getInternal()) {
+                @Override
+                public int getColorRepresentation() {
+                    return color;
+                }
+            };
+        }
+        CrTContentUtils.queueSlurryForRegistration(registryName, slurry);
     }
 }

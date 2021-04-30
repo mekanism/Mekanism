@@ -205,7 +205,6 @@ public class ChemicalUtil {
     }
 
     public static int getRGBDurabilityForDisplay(ItemStack stack) {
-        //TODO: Technically doesn't support things where the color is part of the texture such as lava
         GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
         if (!gasStack.isEmpty()) {
             return gasStack.getChemicalColorRepresentation();

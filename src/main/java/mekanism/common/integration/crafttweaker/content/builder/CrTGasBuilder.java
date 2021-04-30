@@ -20,6 +20,9 @@ public class CrTGasBuilder extends CrTChemicalBuilder<Gas, GasBuilder, ICrTGasAt
      *                        texture.
      *
      * @return A builder for creating a custom {@link Gas}.
+     *
+     * @apiNote If a custom texture is used it is recommended to override to use {@link #colorRepresentation(int)} if this builder method is not being used in combination
+     * with {@link #color(int)} due to the texture not needing tinting.
      */
     @ZenCodeType.Method
     public static CrTGasBuilder builder(@ZenCodeType.Optional ResourceLocation textureLocation) {
@@ -32,6 +35,18 @@ public class CrTGasBuilder extends CrTChemicalBuilder<Gas, GasBuilder, ICrTGasAt
 
     @Override
     protected void build(ResourceLocation registryName) {
-        CrTContentUtils.queueGasForRegistration(registryName, getInternal());
+        Gas gas;
+        if (colorRepresentation == null) {
+            gas = new Gas(getInternal());
+        } else {
+            int color = colorRepresentation;
+            gas = new Gas(getInternal()) {
+                @Override
+                public int getColorRepresentation() {
+                    return color;
+                }
+            };
+        }
+        CrTContentUtils.queueGasForRegistration(registryName, gas);
     }
 }

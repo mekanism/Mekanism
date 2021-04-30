@@ -52,9 +52,11 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
-        //TODO: Technically doesn't support things where the color is part of the texture such as lava
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         if (!fluidStack.isEmpty()) {
+            //TODO: Technically doesn't support things where the color is part of the texture such as lava
+            // for chemicals it is supported via allowing people to override getColorRepresentation in their
+            // chemicals
             return fluidStack.getFluid().getAttributes().getColor(fluidStack);
         }
         return ChemicalUtil.getRGBDurabilityForDisplay(stack);

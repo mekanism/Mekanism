@@ -46,6 +46,11 @@ public class SlurryBuilder extends ChemicalBuilder<Slurry, SlurryBuilder> {
      * @param texture A {@link ResourceLocation} representing the texture this {@link Slurry} will use.
      *
      * @return A builder for creating a {@link Slurry}.
+     *
+     * @apiNote The texture will be automatically stitched.
+     * <br>
+     * It is recommended to override {@link Slurry#getColorRepresentation()} if this builder method is not used in combination with {@link #color(int)} due to the texture
+     * not needing tinting.
      */
     public static SlurryBuilder builder(ResourceLocation texture) {
         return new SlurryBuilder(Objects.requireNonNull(texture));
