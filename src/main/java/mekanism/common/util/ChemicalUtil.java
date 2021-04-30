@@ -208,19 +208,19 @@ public class ChemicalUtil {
         //TODO: Technically doesn't support things where the color is part of the texture such as lava
         GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
         if (!gasStack.isEmpty()) {
-            return gasStack.getChemicalTint();
+            return gasStack.getChemicalColorRepresentation();
         }
         InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
         if (!infusionStack.isEmpty()) {
-            return infusionStack.getChemicalTint();
+            return infusionStack.getChemicalColorRepresentation();
         }
         PigmentStack pigmentStack = StorageUtils.getStoredPigmentFromNBT(stack);
         if (!pigmentStack.isEmpty()) {
-            return pigmentStack.getChemicalTint();
+            return pigmentStack.getChemicalColorRepresentation();
         }
         SlurryStack slurryStack = StorageUtils.getStoredSlurryFromNBT(stack);
         if (!slurryStack.isEmpty()) {
-            return slurryStack.getChemicalTint();
+            return slurryStack.getChemicalColorRepresentation();
         }
         return 0;
     }

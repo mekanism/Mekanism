@@ -54,7 +54,7 @@ public class ItemStackToPigmentRecipeCategory extends ItemStackToChemicalRecipeC
             if (currentRecipe == null) {
                 return 0xFFFFFFFF;
             }
-            int tint = currentRecipe.getOutputDefinition().getChemicalTint();
+            int tint = currentRecipe.getOutputDefinition().getChemicalColorRepresentation();
             if ((tint & 0xFF000000) == 0) {
                 return 0xFF000000 | tint;
             }

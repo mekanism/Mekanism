@@ -48,7 +48,7 @@ public class GuiPaintingMachine extends GuiConfigurableTile<TileEntityPaintingMa
                 //Should never actually be null, but just in case check it to make intellij happy
                 return 0xFFFFFFFF;
             }
-            int tint = tile.pigmentTank.getType().getTint();
+            int tint = tile.pigmentTank.getType().getColorRepresentation();
             if ((tint & 0xFF000000) == 0) {
                 return 0xFF000000 | tint;
             }

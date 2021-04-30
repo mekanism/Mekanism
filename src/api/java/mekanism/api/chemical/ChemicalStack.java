@@ -79,6 +79,18 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return getType().getTint();
     }
 
+    /**
+     * Helper to get the color representation of the stored chemical. This is equivalent to calling {@code getType().getColorRepresentation()} and is used for things like
+     * durability bars of chemical tanks.
+     *
+     * @return The color representation of the stored chemical.
+     *
+     * @apiNote Does not have any special handling for when the stack is empty.
+     */
+    public int getChemicalColorRepresentation() {
+        return getType().getColorRepresentation();
+    }
+
     public final CHEMICAL getRaw() {
         return chemicalDelegate.get();
     }

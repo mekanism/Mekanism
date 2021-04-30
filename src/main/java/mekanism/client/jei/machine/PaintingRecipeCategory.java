@@ -92,7 +92,7 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
             if (ingredient != null) {
                 PigmentStack stack = ingredient.getDisplayedIngredient();
                 if (stack != null) {
-                    int tint = stack.getChemicalTint();
+                    int tint = stack.getChemicalColorRepresentation();
                     if ((tint & 0xFF000000) == 0) {
                         return 0xFF000000 | tint;
                     }

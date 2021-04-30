@@ -105,12 +105,12 @@ public class PigmentMixerRecipeCategory extends BaseRecipeCategory<PigmentMixing
 
         @Override
         public int getColorFrom() {
-            return getColor(getCurrent(ingredient).getChemicalTint());
+            return getColor(getCurrent(ingredient).getChemicalColorRepresentation());
         }
 
         @Override
         public int getColorTo() {
-            return getColor(getCurrent(outputIngredient).getChemicalTint());
+            return getColor(getCurrent(outputIngredient).getChemicalColorRepresentation());
         }
 
         private int getColor(int tint) {

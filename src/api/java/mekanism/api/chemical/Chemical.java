@@ -141,6 +141,15 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
     }
 
     /**
+     * Get the color representation used for displaying in things like durability bars of chemical tanks.
+     *
+     * @return int representation of color in 0xRRGGBB format
+     */
+    public int getColorRepresentation() {
+        return getTint();
+    }
+
+    /**
      * Whether or not this chemical is hidden.
      *
      * @return if this chemical is hidden
