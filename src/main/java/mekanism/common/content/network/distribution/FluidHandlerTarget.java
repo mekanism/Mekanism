@@ -8,9 +8,21 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
+import java.util.Collection;
+
 public class FluidHandlerTarget extends Target<IFluidHandler, Integer, @NonNull FluidStack> {
 
     public FluidHandlerTarget(@Nonnull FluidStack type) {
+        this.extra = type;
+    }
+
+    public FluidHandlerTarget(@Nonnull FluidStack type, Collection<IFluidHandler> allHandlers) {
+        super(allHandlers);
+        this.extra = type;
+    }
+
+    public FluidHandlerTarget(@Nonnull FluidStack type, int expectedSize) {
+        super(expectedSize);
         this.extra = type;
     }
 

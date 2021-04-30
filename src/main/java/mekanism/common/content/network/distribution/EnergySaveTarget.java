@@ -6,9 +6,22 @@ import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import net.minecraft.util.Direction;
 
+import java.util.Collection;
+
 public class EnergySaveTarget extends Target<IEnergyContainer, FloatingLong, FloatingLong> {
 
     private FloatingLong currentStored = FloatingLong.ZERO;
+
+    public EnergySaveTarget() {
+    }
+
+    public EnergySaveTarget(Collection<IEnergyContainer> allHandlers) {
+        super(allHandlers);
+    }
+
+    public EnergySaveTarget(int expectedSize) {
+        super(expectedSize);
+    }
 
     @Override
     protected void acceptAmount(IEnergyContainer container, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {

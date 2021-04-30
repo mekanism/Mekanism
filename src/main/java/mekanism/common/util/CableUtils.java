@@ -43,8 +43,7 @@ public final class CableUtils {
         if (energyToSend.isZero() || sides.isEmpty()) {
             return FloatingLong.ZERO;
         }
-        //Fake that we have one target given we know that no sides will overlap This allows us to have slightly better performance
-        EnergyAcceptorTarget target = new EnergyAcceptorTarget();
+        EnergyAcceptorTarget target = new EnergyAcceptorTarget(6);
         EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
             //Insert to access side
             Direction accessSide = side.getOpposite();

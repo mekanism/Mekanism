@@ -6,11 +6,24 @@ import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import net.minecraft.util.Direction;
 
+import java.util.Collection;
+
 public class EnergyTransmitterSaveTarget extends Target<UniversalCable, FloatingLong, FloatingLong> {
 
     private FloatingLong currentStored = FloatingLong.ZERO;
 
-    @Override
+	public EnergyTransmitterSaveTarget() {
+	}
+
+	public EnergyTransmitterSaveTarget(Collection<UniversalCable> allHandlers) {
+		super(allHandlers);
+	}
+
+	public EnergyTransmitterSaveTarget(int expectedSize) {
+		super(expectedSize);
+	}
+
+	@Override
     protected void acceptAmount(UniversalCable transmitter, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {
         amount = amount.min(transmitter.getCapacityAsFloatingLong().subtract(currentStored));
         currentStored = currentStored.plusEqual(amount);

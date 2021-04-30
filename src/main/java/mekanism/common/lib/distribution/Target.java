@@ -39,6 +39,16 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
         needed = new LinkedList<>();
     }
 
+    protected Target(Collection<HANDLER> allHandlers) {
+        this.handlers = Collections.unmodifiableCollection(allHandlers);
+        this.needed = new ArrayList<>(allHandlers.size() / 2);
+    }
+
+    protected Target(int expectedSize) {
+        this.handlers = new ArrayList<>(expectedSize);
+        this.needed = new ArrayList<>(expectedSize / 2);
+    }
+
     public void addHandler(HANDLER handler) {
         handlers.add(handler);
         handlerCount++;

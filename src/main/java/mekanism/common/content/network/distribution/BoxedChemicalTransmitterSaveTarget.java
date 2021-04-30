@@ -19,7 +19,8 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
 
     private STACK currentStored;
 
-    public BoxedChemicalTransmitterSaveTarget(@Nonnull STACK empty, @Nonnull STACK type) {
+    public BoxedChemicalTransmitterSaveTarget(@Nonnull STACK empty, @Nonnull STACK type, Collection<BoxedPressurizedTube> transmitters) {
+        super(transmitters);
         this.currentStored = empty;
         this.extra = type;
     }

@@ -130,17 +130,14 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         int size = transmittersSize();
         if (size > 0) {
             //Just pretend we are always accessing it from the north
-            EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget();
-            for (UniversalCable transmitter : transmitters) {
-                saveTarget.addHandler(transmitter);
-            }
+            EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(transmitters);
             EmitUtils.sendToAcceptors(saveTarget, energyContainer.getEnergy().copy());
             saveTarget.saveShare();
         }
     }
 
     private FloatingLong tickEmit(FloatingLong energyToSend) {
-        EnergyAcceptorTarget target = new EnergyAcceptorTarget();
+        EnergyAcceptorTarget target = new EnergyAcceptorTarget(acceptorCache.getAcceptorEntrySet().size()*2);
         for (Entry<BlockPos, Map<Direction, LazyOptional<IStrictEnergyHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
                 if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {

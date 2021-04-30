@@ -6,7 +6,19 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 
+import java.util.Collection;
+
 public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, FloatingLong, FloatingLong> {
+    public EnergyAcceptorTarget() {
+    }
+
+    public EnergyAcceptorTarget(Collection<IStrictEnergyHandler> allHandlers) {
+        super(allHandlers);
+    }
+
+    public EnergyAcceptorTarget(int expectedSize) {
+        super(expectedSize);
+    }
 
     @Override
     protected void acceptAmount(IStrictEnergyHandler handler, SplitInfo<FloatingLong> splitInfo, FloatingLong amount) {

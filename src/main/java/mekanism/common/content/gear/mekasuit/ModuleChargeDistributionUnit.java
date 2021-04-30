@@ -47,7 +47,7 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
 
     private void chargeSuit(PlayerEntity player) {
         FloatingLong total = FloatingLong.ZERO;
-        EnergySaveTarget saveTarget = new EnergySaveTarget();
+        EnergySaveTarget saveTarget = new EnergySaveTarget(4);
         for (ItemStack stack : player.inventory.armor) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
             if (energyContainer != null) {

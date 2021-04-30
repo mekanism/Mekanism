@@ -55,7 +55,7 @@ public final class FluidUtils {
         FluidStack toSend = stack.copy();
         //Fake that we have one target given we know that no sides will overlap
         // This allows us to have slightly better performance
-        FluidHandlerTarget target = new FluidHandlerTarget(stack);
+        FluidHandlerTarget target = new FluidHandlerTarget(stack, 6);
         EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
             //Insert to access side
             Direction accessSide = side.getOpposite();

@@ -152,17 +152,14 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         if (size > 0) {
             FluidStack fluidType = fluidTank.getFluid();
             //Just pretend we are always accessing it from the north
-            FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType);
-            for (MechanicalPipe transmitter : transmitters) {
-                saveTarget.addHandler(transmitter);
-            }
+            FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(fluidType, transmitters);
             EmitUtils.sendToAcceptors(saveTarget, fluidType.getAmount(), fluidType);
             saveTarget.saveShare();
         }
     }
 
     private int tickEmit(@Nonnull FluidStack fluidToSend) {
-        FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend);
+        FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, acceptorCache.getAcceptorEntrySet().size()*2);
         for (Entry<BlockPos, Map<Direction, LazyOptional<IFluidHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
             entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
                 if (FluidUtils.canFill(acceptor, fluidToSend)) {

@@ -9,12 +9,24 @@ import mekanism.common.lib.distribution.Target;
 import net.minecraft.util.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Collection;
+
 //TODO: Improve handling for fluid storage as longs
 public class FluidTransmitterSaveTarget extends Target<MechanicalPipe, Integer, @NonNull FluidStack> {
 
     private FluidStack currentStored = FluidStack.EMPTY;
 
     public FluidTransmitterSaveTarget(@Nonnull FluidStack type) {
+        this.extra = type;
+    }
+
+    public FluidTransmitterSaveTarget(@Nonnull FluidStack type, Collection<MechanicalPipe> allHandlers) {
+        super(allHandlers);
+        this.extra = type;
+    }
+
+    public FluidTransmitterSaveTarget(@Nonnull FluidStack type, int expectedSize) {
+        super(expectedSize);
         this.extra = type;
     }
 
