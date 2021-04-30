@@ -248,7 +248,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     public void readSustainedData(ItemStack itemStack) {
         //TODO - 10.1: Re-evaluate the entirety of BlockMekanism#onBlockPlacedBy and see what parts potentially should not be getting
         // called at all when on the client side. My guess is that read sustained data isn't one of these but for now I am just catching
-        // the issue here
+        // the issue here. While we are at it also re-evaluate writeSustainedData as the client doesn't know the proper information but
+        // when they are in creative their itemstack is the "source" one so it overrides the one with the correct data thus making it so
+        // the frequency doesn't transfer to it
         if (!isRemote()) {
             FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
             if (freq != null) {

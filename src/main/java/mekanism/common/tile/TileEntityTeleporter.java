@@ -2,12 +2,14 @@ package mekanism.common.tile;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -42,7 +44,9 @@ import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
+import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -50,6 +54,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.server.MinecraftServer;
@@ -68,7 +73,7 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
+public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader, ISustainedData {
 
     public final Set<UUID> didTeleport = new ObjectOpenHashSet<>();
     private AxisAlignedBB teleportBounds;
@@ -573,6 +578,32 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     public EnumColor getColor() {
         return color;
+    }
+
+    @Override
+    public void writeSustainedData(ItemStack itemStack) {
+        TeleporterFrequency freq = frequencyComponent.getFrequency(FrequencyType.TELEPORTER);
+        if (freq != null) {
+            ItemDataUtils.setCompound(itemStack, NBTConstants.FREQUENCY, freq.serializeIdentity());
+        }
+    }
+
+    @Override
+    public void readSustainedData(ItemStack itemStack) {
+        if (!isRemote()) {
+            FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.TELEPORTER, ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
+            if (freq != null) {
+                setFrequency(FrequencyType.TELEPORTER, freq);
+            }
+        }
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
+        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.NAME, NBTConstants.FREQUENCY + "." + NBTConstants.NAME);
+        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY, NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY);
+        return remap;
     }
 
     @Override

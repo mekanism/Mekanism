@@ -1,6 +1,5 @@
 package mekanism.common.tile.qio;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
@@ -17,7 +16,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.block.BlockState;
@@ -27,7 +25,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ISustainedData, ITileFilterHolder<QIOFilter<?>>, IHasSortableFilters {
+public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ITileFilterHolder<QIOFilter<?>>, IHasSortableFilters {
 
     private HashList<QIOFilter<?>> filters = new HashList<>();
 
@@ -44,6 +42,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
+        super.writeSustainedData(itemStack);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (QIOFilter<?> filter : filters) {
@@ -55,6 +54,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
+        super.readSustainedData(itemStack);
         if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
@@ -68,7 +68,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
 
     @Override
     public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
+        Map<String, String> remap = super.getTileDataRemap();
         remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
         return remap;
     }

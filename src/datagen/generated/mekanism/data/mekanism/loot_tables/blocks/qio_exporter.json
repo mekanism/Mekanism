@@ -38,6 +38,16 @@
                   "op": "replace"
                 },
                 {
+                  "source": "frequency.name",
+                  "target": "mekData.frequency.name",
+                  "op": "replace"
+                },
+                {
+                  "source": "frequency.publicFreq",
+                  "target": "mekData.frequency.publicFreq",
+                  "op": "replace"
+                },
+                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"

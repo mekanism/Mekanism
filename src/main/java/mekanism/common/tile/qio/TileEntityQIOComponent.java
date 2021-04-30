@@ -1,6 +1,8 @@
 package mekanism.common.tile.qio;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
@@ -12,12 +14,15 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.interfaces.ISustainedData;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder {
+public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder, ISustainedData {
 
     private EnumColor lastColor;
 
@@ -42,6 +47,32 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         if (level.getGameTime() % 10 == 0) {
             setActive(frequency != null);
         }
+    }
+
+    @Override
+    public void writeSustainedData(ItemStack itemStack) {
+        QIOFrequency freq = frequencyComponent.getFrequency(FrequencyType.QIO);
+        if (freq != null) {
+            ItemDataUtils.setCompound(itemStack, NBTConstants.FREQUENCY, freq.serializeIdentity());
+        }
+    }
+
+    @Override
+    public void readSustainedData(ItemStack itemStack) {
+        if (!isRemote()) {
+            FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.QIO, ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
+            if (freq != null) {
+                setFrequency(FrequencyType.QIO, freq);
+            }
+        }
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
+        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.NAME, NBTConstants.FREQUENCY + "." + NBTConstants.NAME);
+        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY, NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY);
+        return remap;
     }
 
     @Nonnull

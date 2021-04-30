@@ -21,6 +21,26 @@
                   "source": "componentSecurity.securityMode",
                   "target": "mekData.securityMode",
                   "op": "replace"
+                },
+                {
+                  "source": "amount",
+                  "target": "mekData.amount",
+                  "op": "replace"
+                },
+                {
+                  "source": "singleItem",
+                  "target": "mekData.singleItem",
+                  "op": "replace"
+                },
+                {
+                  "source": "frequency.name",
+                  "target": "mekData.frequency.name",
+                  "op": "replace"
+                },
+                {
+                  "source": "frequency.publicFreq",
+                  "target": "mekData.frequency.publicFreq",
+                  "op": "replace"
                 }
               ]
             }

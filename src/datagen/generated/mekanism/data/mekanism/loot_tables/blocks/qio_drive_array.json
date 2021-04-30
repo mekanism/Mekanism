@@ -23,6 +23,16 @@
                   "op": "replace"
                 },
                 {
+                  "source": "frequency.name",
+                  "target": "mekData.frequency.name",
+                  "op": "replace"
+                },
+                {
+                  "source": "frequency.publicFreq",
+                  "target": "mekData.frequency.publicFreq",
+                  "op": "replace"
+                },
+                {
                   "source": "Items",
                   "target": "mekData.Items",
                   "op": "replace"
