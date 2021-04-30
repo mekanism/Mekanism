@@ -49,6 +49,14 @@ import net.minecraft.util.text.StringTextComponent;
 public abstract class ModuleMekaSuit extends Module {
 
     public static class ModuleElectrolyticBreathingUnit extends ModuleMekaSuit {
+    	
+    	private ModuleConfigItem<Boolean> fillHeld;
+    	
+    	 @Override
+         public void init() {
+             super.init();
+             addConfigItem(fillHeld = new ModuleConfigItem<>(this, "fill_held", MekanismLang.MODULE_BREATHING_HELD, new BooleanData(), true));
+         }
 
         @Override
         public void tickServer(PlayerEntity player) {
@@ -78,10 +86,12 @@ public abstract class ModuleMekaSuit extends Module {
                     hydrogenUsed = maxRate * 2L - chestCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
                     hydrogenStack.shrink(hydrogenUsed);
                 }
-                ItemStack handStack = player.getItemBySlot(EquipmentSlotType.MAINHAND);
-                Optional<IGasHandler> handCapability = handStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
-                if (handCapability.isPresent()) {
-                    hydrogenUsed = maxRate * 2L - handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                if (fillHeld.get()) {
+                	ItemStack handStack = player.getItemBySlot(EquipmentSlotType.MAINHAND);
+                	Optional<IGasHandler> handCapability = handStack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+                	if (handCapability.isPresent()) {
+                		hydrogenUsed = maxRate * 2L - handCapability.get().insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                	}
                 }
                 int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());
                 long used = Math.max((int) Math.ceil(hydrogenUsed / 2D), oxygenUsed);
