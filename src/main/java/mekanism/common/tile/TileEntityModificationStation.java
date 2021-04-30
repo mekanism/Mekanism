@@ -5,7 +5,6 @@ import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.inventory.AutomationType;
-import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -36,7 +35,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
+import net.minecraft.util.math.BlockPos;
 
 public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
 
@@ -169,14 +168,13 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     }
 
     @Override
-    public void onBreak(BlockState oldState) {
-        World world = getLevel();
-        if (world != null) {
-            Direction side = MekanismUtils.getRight(Attribute.getFacing(oldState));
-            world.removeBlock(getBlockPos().above(), false);
-            world.removeBlock(getBlockPos(), false);
-            world.removeBlock(getBlockPos().relative(side).above(), false);
-            world.removeBlock(getBlockPos().relative(side), false);
+    public void setRemoved() {
+        super.setRemoved();
+        if (level != null) {
+            level.removeBlock(getBlockPos().above(), false);
+            BlockPos rightPos = getBlockPos().relative(getRightSide());
+            level.removeBlock(rightPos, false);
+            level.removeBlock(rightPos.above(), false);
         }
     }
 }

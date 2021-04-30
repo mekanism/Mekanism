@@ -49,9 +49,7 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
 
 public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixingRecipe> implements IBoundingBlock,
       EitherSideChemicalRecipeLookupHandler<Pigment, PigmentStack, PigmentMixingRecipe> {
@@ -210,11 +208,10 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     }
 
     @Override
-    public void onBreak(BlockState oldState) {
-        World world = getLevel();
-        if (world != null) {
-            world.removeBlock(getBlockPos().above(), false);
-            world.removeBlock(getBlockPos(), false);
+    public void setRemoved() {
+        super.setRemoved();
+        if (level != null) {
+            level.removeBlock(getBlockPos().above(), false);
         }
     }
 

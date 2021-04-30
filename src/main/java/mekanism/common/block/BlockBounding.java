@@ -136,8 +136,8 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         if (mainPos == null) {
             return ItemStack.EMPTY;
         }
-        BlockState state1 = world.getBlockState(mainPos);
-        return state1.getBlock().getPickBlock(state1, target, world, mainPos, player);
+        BlockState mainState = world.getBlockState(mainPos);
+        return mainState.getBlock().getPickBlock(mainState, target, world, mainPos, player);
     }
 
     @Override

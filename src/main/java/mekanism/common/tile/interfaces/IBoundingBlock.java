@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IOffsetCapability;
 import mekanism.common.lib.security.ISecurityTile;
-import net.minecraft.block.BlockState;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3i;
@@ -25,13 +24,6 @@ public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport,
     //TODO: Evaluate this, onPlace is a method in TileEntityMekanism now, so it always gets called via that exposure
     // So having this here may not be needed anymore
     void onPlace();
-
-    /**
-     * Called when any part of the structure is broken.
-     *
-     * @param oldState TODO
-     */
-    void onBreak(BlockState oldState);
 
     default void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel) {
     }

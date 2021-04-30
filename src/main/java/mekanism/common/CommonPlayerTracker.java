@@ -9,12 +9,10 @@ import mekanism.common.network.to_client.PacketResetPlayerClient;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
@@ -28,7 +26,6 @@ public class CommonPlayerTracker {
     /*private static final ITextComponent ALPHA_WARNING = MekanismLang.LOG_FORMAT.translateColored(EnumColor.RED, MekanismLang.MEKANISM, EnumColor.GRAY,
           MekanismLang.ALPHA_WARNING.translate(EnumColor.INDIGO, TextFormatting.UNDERLINE, new ClickEvent(Action.OPEN_URL,
                 "https://github.com/mekanism/Mekanism#alpha-status"), MekanismLang.ALPHA_WARNING_HERE));*/
-    public static boolean monitoringCardboardBox;
 
     public CommonPlayerTracker() {
         MinecraftForge.EVENT_BUS.register(this);
@@ -100,15 +97,6 @@ public class CommonPlayerTracker {
         if (blockEvent.getPlayer().isShiftKeyDown() && blockEvent.getWorld().getBlockState(blockEvent.getPos()).getBlock() instanceof BlockCardboardBox) {
             blockEvent.setUseBlock(Event.Result.ALLOW);
             blockEvent.setUseItem(Event.Result.DENY);
-        }
-    }
-
-    @SubscribeEvent
-    public void onEntitySpawn(EntityJoinWorldEvent event) {
-        //TODO: What is the point of this/should we check if it is close to the location things are happening?
-        // This is just how it used to be in 1.12
-        if (event.getEntity() instanceof ItemEntity && monitoringCardboardBox) {
-            event.setCanceled(true);
         }
     }
 }

@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
-import mekanism.common.CommonPlayerTracker;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
@@ -89,14 +88,14 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     if (!player.isCreative()) {
                         stack.shrink(1);
                     }
-                    CommonPlayerTracker.monitoringCardboardBox = true;
-                    // First, set the block to air to give the underlying block a chance to process
-                    // any updates (esp. if it's a tile entity backed block). Ideally, we could avoid
-                    // double updates, but if the block we are wrapping has multiple stacked blocks,
-                    // we need to make sure it has a chance to update.
-                    //world.removeBlock(pos, false);
+                    //Start by removing the tile entity so that there is no backing inventory to have dropped
+                    // when we change the block to a cardboard box.
+                    // Note: If this starts causing issues switch back to a monitorCardboardBox styled system
+                    // for stopping item drops and try to find a way of getting it to work properly with custom
+                    // item entities that are added a tick later (such as trying to get forge to change their
+                    // listener from highest to high)
+                    world.removeBlockEntity(pos);
                     world.setBlockAndUpdate(pos, getBlock().defaultBlockState().setValue(BlockStateHelper.storageProperty, true));
-                    CommonPlayerTracker.monitoringCardboardBox = false;
                     TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
                     if (box != null) {
                         box.storedData = data;

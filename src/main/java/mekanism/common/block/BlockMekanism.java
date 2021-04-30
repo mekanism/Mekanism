@@ -25,7 +25,6 @@ import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
@@ -318,18 +317,6 @@ public abstract class BlockMekanism extends Block {
             }
         }
         super.onPlace(state, world, pos, oldState, isMoving);
-    }
-
-    @Override
-    @Deprecated
-    public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
-        if (state.hasTileEntity() && (!state.is(newState.getBlock()) || !newState.hasTileEntity())) {
-            TileEntity tile = WorldUtils.getTileEntity(world, pos);
-            if (tile instanceof IBoundingBlock) {
-                ((IBoundingBlock) tile).onBreak(state);
-            }
-        }
-        super.onRemove(state, world, pos, newState, isMoving);
     }
 
     @Override

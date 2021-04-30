@@ -28,7 +28,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -158,11 +157,10 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     @Override
-    public void onBreak(BlockState oldState) {
-        World world = getLevel();
-        if (world != null) {
-            world.removeBlock(getBlockPos().above(), false);
-            world.removeBlock(getBlockPos(), false);
+    public void setRemoved() {
+        super.setRemoved();
+        if (level != null) {
+            level.removeBlock(getBlockPos().above(), false);
         }
     }
 

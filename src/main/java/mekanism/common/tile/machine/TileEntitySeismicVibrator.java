@@ -21,9 +21,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
 
 public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBoundingBlock {
 
@@ -94,21 +92,15 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     public void setRemoved() {
         super.setRemoved();
         Mekanism.activeVibrators.remove(getTileCoord());
+        if (level != null) {
+            level.removeBlock(getBlockPos().above(), false);
+        }
     }
 
     @Override
     public void onPlace() {
         super.onPlace();
         WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
-    }
-
-    @Override
-    public void onBreak(BlockState oldState) {
-        World world = getLevel();
-        if (world != null) {
-            world.removeBlock(getBlockPos().above(), false);
-            world.removeBlock(getBlockPos(), false);
-        }
     }
 
     @Nonnull

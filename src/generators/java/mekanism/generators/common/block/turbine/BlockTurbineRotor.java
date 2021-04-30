@@ -31,7 +31,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
 
     @Override
     @Deprecated
-    public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+    public void onRemove(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         if (!world.isClientSide && state.hasTileEntity() && (!state.is(newState.getBlock()) || !newState.hasTileEntity())) {
             TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
             if (tile != null) {

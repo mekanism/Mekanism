@@ -10,7 +10,6 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.block.BlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
@@ -46,16 +45,15 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    public void onBreak(BlockState oldState) {
+    public void setRemoved() {
+        super.setRemoved();
         if (level != null) {
-            level.removeBlock(getBlockPos().offset(0, 1, 0), false);
+            level.removeBlock(getBlockPos().above(), false);
             for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
                     level.removeBlock(getBlockPos().offset(x, 2, z), false);
                 }
             }
-            setRemoved();
-            level.removeBlock(getBlockPos(), false);
         }
     }
 
