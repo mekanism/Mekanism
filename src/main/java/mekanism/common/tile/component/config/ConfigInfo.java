@@ -1,6 +1,7 @@
 package mekanism.common.tile.component.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -135,13 +135,23 @@ public class ConfigInfo {
     }
 
     public Set<Direction> getSidesForData(@Nonnull DataType dataType) {
-        return getSides(type -> type.equals(dataType));
+        return getSides(type -> type == dataType);
     }
 
     public Set<Direction> getSides(Predicate<DataType> predicate) {
         Direction facing = facingSupplier.get();
-        return sideConfig.entrySet().stream().filter(entry -> predicate.test(entry.getValue())).map(entry ->
-              entry.getKey().getDirection(facing)).collect(Collectors.toCollection(() -> EnumSet.noneOf(Direction.class)));
+        Set<Direction> directions = null;
+        for (Map.Entry<RelativeSide, DataType> entry : sideConfig.entrySet()) {
+            if (predicate.test(entry.getValue())) {
+                if (directions == null) {
+                    //Lazy init the set so that if there are none that match we can just use an empty set
+                    // instead of having to initialize an enum set
+                    directions = EnumSet.noneOf(Direction.class);
+                }
+                directions.add(entry.getKey().getDirection(facing));
+            }
+        }
+        return directions == null ? Collections.emptySet() : directions;
     }
 
     public Set<Direction> getAllOutputtingSides() {
@@ -149,7 +159,7 @@ public class ConfigInfo {
     }
 
     public Set<Direction> getSidesForOutput(DataType outputType) {
-        return getSides(type -> type.equals(outputType) || type.equals(DataType.INPUT_OUTPUT));
+        return getSides(type -> type == outputType || type == DataType.INPUT_OUTPUT);
     }
 
     /**

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
@@ -55,6 +56,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     public final TileEntityMekanism tile;
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
+    private final Map<TransmissionType, List<Consumer<Direction>>> configChangeListeners = new EnumMap<>(TransmissionType.class);
     //TODO: See if we can come up with a way of not needing this. The issue is we want this to be sorted, but getting the keySet of configInfo doesn't work for us
     private final List<TransmissionType> transmissionTypes = new ArrayList<>();
 
@@ -64,6 +66,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
             addSupported(type);
         }
         tile.addComponent(this);
+    }
+
+    public void addConfigChangeListener(TransmissionType transmissionType, Consumer<Direction> listener) {
+        //Note: We set the initial capacity to one as currently the only place that really uses this is ConfigHolders
+        // and each tile should really only have one holder per transmission type, but we have this as a list for
+        // expandability and in case any of the tiles end up needing to make use of this
+        configChangeListeners.computeIfAbsent(transmissionType, type -> new ArrayList<>(1)).add(listener);
     }
 
     public void sideChanged(TransmissionType transmissionType, RelativeSide side) {
@@ -98,6 +107,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         tile.markDirty(false);
         //Notify the neighbor on that side our state changed
         WorldUtils.notifyNeighborOfChange(tile.getLevel(), direction, tile.getBlockPos());
+        //And invalidate any "listeners" we may have that the side changed for a specific transmission type
+        List<Consumer<Direction>> changeListeners = configChangeListeners.get(transmissionType);
+        if (changeListeners != null) {
+            for (Consumer<Direction> listener : changeListeners) {
+                listener.accept(direction);
+            }
+        }
     }
 
     private RelativeSide getSide(Direction direction) {
@@ -407,8 +423,11 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         if (!config.getSupportedDataTypes().contains(mode)) {
             throw new ComputerException("This machine does not support mode '%s' for transmission type '%s'.", mode, type);
         }
-        config.setDataType(mode, side);
-        sideChanged(type, side);
+        DataType currentMode = config.getDataType(side);
+        if (mode != currentMode) {
+            config.setDataType(mode, side);
+            sideChanged(type, side);
+        }
     }
 
     @ComputerMethod

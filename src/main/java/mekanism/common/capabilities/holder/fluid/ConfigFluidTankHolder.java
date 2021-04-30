@@ -30,11 +30,6 @@ public class ConfigFluidTankHolder extends ConfigHolder<IExtendedFluidTank> impl
     @Nonnull
     @Override
     public List<IExtendedFluidTank> getTanks(@Nullable Direction direction) {
-        return getSlots(direction, slotInfo -> {
-            if (slotInfo instanceof FluidSlotInfo && slotInfo.isEnabled()) {
-                return ((FluidSlotInfo) slotInfo).getTanks();
-            }
-            return Collections.emptyList();
-        });
+        return getSlots(direction, slotInfo -> slotInfo instanceof FluidSlotInfo ? ((FluidSlotInfo) slotInfo).getTanks() : Collections.emptyList());
     }
 }

@@ -87,8 +87,9 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
                         if (info.getDataType(inputSide) == DataType.NONE) {
                             //If it was already none, we don't need to invalidate capabilities
                             changed = false;
+                        } else {
+                            info.setDataType(DataType.NONE, inputSide);
                         }
-                        info.setDataType(DataType.NONE, inputSide);
                     }
                     if (changed) {
                         configComponent.sideChanged(transmission, inputSide);

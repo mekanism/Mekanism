@@ -47,12 +47,7 @@ public abstract class ConfigChemicalTankHolder<CHEMICAL extends Chemical<CHEMICA
     @Nonnull
     @Override
     public List<TANK> getTanks(@Nullable Direction direction) {
-        return getSlots(direction, slotInfo -> {
-            if (slotInfo != null && slotInfo.isEnabled()) {
-                return getTanksFromSlot(slotInfo);
-            }
-            return Collections.emptyList();
-        });
+        return getSlots(direction, this::getTanksFromSlot);
     }
 
     public static class ConfigGasTankHolder extends ConfigChemicalTankHolder<Gas, GasStack, IGasTank> {

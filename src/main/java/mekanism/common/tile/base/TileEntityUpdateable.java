@@ -64,6 +64,10 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
     public void markDirtyComparator() {
     }
 
+    protected void updateBlockState(@Nonnull BlockState newState) {
+        this.blockState = newState;
+    }
+
     @Override
     public void setChanged() {
         markDirty(true);
@@ -79,7 +83,7 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
         // and if our block supports having a comparator signal, instead of always doing it
         if (level != null) {
             if (recheckBlockState) {
-                blockState = level.getBlockState(worldPosition);
+                updateBlockState(level.getBlockState(worldPosition));
             }
             WorldUtils.markChunkDirty(level, worldPosition);
             if (!isRemote()) {

@@ -87,6 +87,9 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         ConfigInfo info = configInfo.get(type);
         if (info != null && info.isEjecting()) {
             for (DataType dataType : info.getSupportedDataTypes()) {
+                //TODO - 10.1: Re-evaluate this as strictly speaking we should output evenly if there is a data type set to output
+                // and one set to input/output instead of outputting to one and then outputting to the other after we potentially
+                // already sent it all to the first one
                 if (dataType.canOutput()) {
                     ISlotInfo slotInfo = info.getSlotInfo(dataType);
                     if (slotInfo != null) {

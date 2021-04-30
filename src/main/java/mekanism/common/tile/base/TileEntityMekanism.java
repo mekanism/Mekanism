@@ -167,6 +167,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean hasSound;
     private boolean hasGui;
 
+    //Methods for implementing ITileDirectional
+    @Nullable
+    private Direction cachedDirection;
+    //End variables ITileRedstone
+
     //Variables for handling ITileRedstone
     //TODO: Move these to private variables?
     public boolean redstone = false;
@@ -583,6 +588,23 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
+    protected void updateBlockState(@Nonnull BlockState newState) {
+        super.updateBlockState(newState);
+        if (isDirectional()) {
+            //Clear the cached direction so that we can lazily get it when we need it again
+            cachedDirection = null;
+        }
+    }
+
+    @Override
+    public void clearCache() {
+        super.clearCache();
+        if (isDirectional()) {
+            cachedDirection = null;
+        }
+    }
+
+    @Override
     public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.load(state, nbtTags);
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.REDSTONE, value -> redstone = value);
@@ -755,12 +777,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Nonnull
     @Override
     @ComputerMethod(restriction = MethodRestriction.DIRECTIONAL)
-    public Direction getDirection() {
+    public final Direction getDirection() {
         if (isDirectional()) {
+            if (cachedDirection != null) {
+                return cachedDirection;
+            }
             BlockState state = getBlockState();
-            Direction facing = Attribute.getFacing(state);
-            if (facing != null) {
-                return facing;
+            cachedDirection = Attribute.getFacing(state);
+            if (cachedDirection != null) {
+                return cachedDirection;
             } else if (!getType().isValid(state.getBlock())) {
                 //This is probably always true if we couldn't get the direction it is facing
                 // but double check just in case before logging
@@ -775,9 +800,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void setFacing(@Nonnull Direction direction) {
-        if (isDirectional()) {
+        if (isDirectional() && direction != cachedDirection && level != null) {
+            cachedDirection = direction;
             BlockState state = Attribute.setFacing(getBlockState(), direction);
-            if (level != null && state != null) {
+            if (state != null) {
                 level.setBlockAndUpdate(worldPosition, state);
             }
         }

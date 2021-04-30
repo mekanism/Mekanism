@@ -30,11 +30,6 @@ public class ConfigEnergyContainerHolder extends ConfigHolder<IEnergyContainer> 
     @Nonnull
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction direction) {
-        return getSlots(direction, slotInfo -> {
-            if (slotInfo instanceof EnergySlotInfo && slotInfo.isEnabled()) {
-                return ((EnergySlotInfo) slotInfo).getContainers();
-            }
-            return Collections.emptyList();
-        });
+        return getSlots(direction, slotInfo -> slotInfo instanceof EnergySlotInfo ? ((EnergySlotInfo) slotInfo).getContainers() : Collections.emptyList());
     }
 }
