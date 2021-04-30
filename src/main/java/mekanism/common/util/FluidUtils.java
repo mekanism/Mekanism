@@ -53,22 +53,16 @@ public final class FluidUtils {
             return 0;
         }
         FluidStack toSend = stack.copy();
-        //Fake that we have one target given we know that no sides will overlap
-        // This allows us to have slightly better performance
         FluidHandlerTarget target = new FluidHandlerTarget(stack, 6);
         EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
-            //Insert to access side
-            Direction accessSide = side.getOpposite();
-            //Collect cap
-            CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, accessSide).ifPresent(handler -> {
+            //Insert to access side and collect the cap if it is present and we can insert the type of the stack into it
+            CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                 if (canFill(handler, toSend)) {
                     target.addHandler(handler);
                 }
             });
         });
-
-        int curHandlers = target.getHandlerCount();
-        if (curHandlers > 0) {
+        if (target.getHandlerCount() > 0) {
             return EmitUtils.sendToAcceptors(target, stack.getAmount(), toSend);
         }
         return 0;

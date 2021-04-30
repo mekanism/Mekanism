@@ -45,14 +45,10 @@ public final class CableUtils {
         }
         EnergyAcceptorTarget target = new EnergyAcceptorTarget(6);
         EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
-            //Insert to access side
-            Direction accessSide = side.getOpposite();
-            //Collect cap
-            EnergyCompatUtils.getLazyStrictEnergyHandler(acceptor, accessSide).ifPresent(target::addHandler);
+            //Insert to access side and collect the cap if it is present
+            EnergyCompatUtils.getLazyStrictEnergyHandler(acceptor, side.getOpposite()).ifPresent(target::addHandler);
         });
-
-        int curHandlers = target.getHandlerCount();
-        if (curHandlers > 0) {
+        if (target.getHandlerCount() > 0) {
             return EmitUtils.sendToAcceptors(target, energyToSend);
         }
         return FloatingLong.ZERO;

@@ -3,13 +3,8 @@ package mekanism.common.lib.distribution;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import net.minecraft.util.Direction;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
@@ -22,11 +17,11 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA> {
 
     /**
-     * Map of the sides to the handler for that side.
+     * Collection of handlers
      */
     protected final Collection<HANDLER> handlers;
     /**
-     * Map of sides that want more than we can/are willing to provide. Value is the amount they want.
+     * Collection of handler type pairs that want more than we can/are willing to provide. Value is the amount they want.
      */
     protected final Collection<ImmutablePair<HANDLER, TYPE>> needed;
 

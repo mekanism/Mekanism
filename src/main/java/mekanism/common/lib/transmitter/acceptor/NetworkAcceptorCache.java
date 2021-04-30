@@ -1,6 +1,7 @@
 package mekanism.common.lib.transmitter.acceptor;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
@@ -70,6 +71,13 @@ public class NetworkAcceptorCache<ACCEPTOR> {
      */
     public Set<Map.Entry<BlockPos, Map<Direction, LazyOptional<ACCEPTOR>>>> getAcceptorEntrySet() {
         return cachedAcceptors.entrySet();
+    }
+
+    /**
+     * @apiNote Listeners should not be added to these LazyOptionals here as they may not correspond to an actual handler and may not get invalidated.
+     */
+    public Collection<Map<Direction, LazyOptional<ACCEPTOR>>> getAcceptorValues() {
+        return cachedAcceptors.values();
     }
 
     public int getAcceptorCount() {

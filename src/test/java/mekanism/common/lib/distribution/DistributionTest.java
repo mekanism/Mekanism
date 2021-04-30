@@ -1,38 +1,32 @@
 package mekanism.common.lib.distribution;
 
+import java.util.Locale;
+import java.util.function.Supplier;
 import mekanism.common.lib.distribution.handler.InfiniteIntegerHandler;
 import mekanism.common.lib.distribution.handler.IntegerHandler;
 import mekanism.common.lib.distribution.handler.PartialIntegerHandler;
 import mekanism.common.lib.distribution.handler.SpecificAmountIntegerHandler;
 import mekanism.common.lib.distribution.target.IntegerTarget;
 import mekanism.common.util.EmitUtils;
-import net.minecraft.util.Direction;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Locale;
-import java.util.function.Supplier;
 
 @DisplayName("Test Distribution via EmitUtils")
 class DistributionTest {
 
     public static IntegerTarget getTargets(int infinite, int some, int none) {
-        Direction side = Direction.NORTH;
         IntegerTarget target = new IntegerTarget();
-        int index = addTargets(target, InfiniteIntegerHandler::new, infinite, 0);
-        index = addTargets(target, PartialIntegerHandler::new, some, index);
-        addTargets(target, () -> new SpecificAmountIntegerHandler(0), none, index);
+        addTargets(target, InfiniteIntegerHandler::new, infinite);
+        addTargets(target, PartialIntegerHandler::new, some);
+        addTargets(target, () -> new SpecificAmountIntegerHandler(0), none);
         return target;
     }
 
-    private static int addTargets(IntegerTarget targets, Supplier<IntegerHandler> targetSupplier, int count,
-                                  int index) {
+    private static void addTargets(IntegerTarget targets, Supplier<IntegerHandler> targetSupplier, int count) {
         for (int i = 0; i < count; i++) {
-            IntegerHandler handler = targetSupplier.get();
-            targets.addHandler(handler);
+            targets.addHandler(targetSupplier.get());
         }
-        return index + count;
     }
 
     @Test
@@ -70,11 +64,10 @@ class DistributionTest {
         //Three targets so that we have a split of one and a remainder of two (initial)
         //First one can accept exactly one
         //total to send -> 4, to split among -> 2, to send -> 2 (remainder none)
-        Direction side = Direction.NORTH;
         IntegerTarget availableAcceptors = new IntegerTarget();
         IntegerHandler handler = new SpecificAmountIntegerHandler(1);
         availableAcceptors.addHandler(handler);
-        addTargets(availableAcceptors, () -> new SpecificAmountIntegerHandler(3), 2, 1);
+        addTargets(availableAcceptors, () -> new SpecificAmountIntegerHandler(3), 2);
         int sent = EmitUtils.sendToAcceptors(availableAcceptors, toSend, toSend);
         if (sent > toSend) {
             Assertions.fail(String.format(Locale.ROOT, "expected: <%s> to be greater or equal to: <%s>", toSend, sent));

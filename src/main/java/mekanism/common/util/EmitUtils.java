@@ -29,8 +29,8 @@ public class EmitUtils {
      * @return The amount that actually got sent.
      */
     private static <HANDLER, TYPE extends Number & Comparable<TYPE>, EXTRA, TARGET extends Target<HANDLER, TYPE, EXTRA>> TYPE sendToAcceptors(
-            TARGET availableTargets, SplitInfo<TYPE> splitInfo, EXTRA toSend) {
-        if ( availableTargets.getHandlerCount() == 0) {
+          TARGET availableTargets, SplitInfo<TYPE> splitInfo, EXTRA toSend) {
+        if (availableTargets.getHandlerCount() == 0) {
             return splitInfo.getTotalSent();
         }
 
@@ -62,8 +62,7 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(TARGET availableTargets, int amountToSplit,
-                                                                                                       EXTRA toSend) {
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Integer, EXTRA>> int sendToAcceptors(TARGET availableTargets, int amountToSplit, EXTRA toSend) {
         return sendToAcceptors(availableTargets, new IntegerSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend);
     }
 
@@ -77,8 +76,7 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Long, EXTRA>> long sendToAcceptors(TARGET availableTargets, long amountToSplit,
-                                                                                                     EXTRA toSend) {
+    public static <HANDLER, EXTRA, TARGET extends Target<HANDLER, Long, EXTRA>> long sendToAcceptors(TARGET availableTargets, long amountToSplit, EXTRA toSend) {
         return sendToAcceptors(availableTargets, new LongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend);
     }
 
@@ -88,8 +86,7 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent
      */
-    public static <HANDLER, TARGET extends Target<HANDLER, FloatingLong, FloatingLong>> FloatingLong sendToAcceptors(TARGET availableTargets,
-                                                                                                                     FloatingLong amountToSplit) {
+    public static <HANDLER, TARGET extends Target<HANDLER, FloatingLong, FloatingLong>> FloatingLong sendToAcceptors(TARGET availableTargets, FloatingLong amountToSplit) {
         return sendToAcceptors(availableTargets, new FloatingLongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), amountToSplit);
     }
 

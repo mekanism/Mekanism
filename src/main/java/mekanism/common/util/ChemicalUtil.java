@@ -282,21 +282,16 @@ public class ChemicalUtil {
             return 0;
         }
         Capability<IChemicalHandler<CHEMICAL, STACK>> capability = getCapabilityForChemical(stack);
-        //Fake that we have one target given we know that no sides will overlap
-        // This allows us to have slightly better performance
         ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack, 6);
         EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
-            //Insert to access side
-            Direction accessSide = side.getOpposite();
-            //Collect cap
-            CapabilityUtils.getCapability(acceptor, capability, accessSide).ifPresent(handler -> {
+            //Insert to access side and collect the cap if it is present and we can insert the type of the stack into it
+            CapabilityUtils.getCapability(acceptor, capability, side.getOpposite()).ifPresent(handler -> {
                 if (canInsert(handler, stack)) {
                     target.addHandler(handler);
                 }
             });
         });
-        int curHandlers = target.getHandlerCount();
-        if (curHandlers > 0) {
+        if (target.getHandlerCount() > 0) {
             return EmitUtils.sendToAcceptors(target, stack.getAmount(), ChemicalUtil.copy(stack));
         }
         return 0;

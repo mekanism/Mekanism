@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,7 +23,6 @@ import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
@@ -127,9 +125,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     @Override
     protected void updateSaveShares(@Nullable UniversalCable triggerTransmitter) {
         super.updateSaveShares(triggerTransmitter);
-        int size = transmittersSize();
-        if (size > 0) {
-            //Just pretend we are always accessing it from the north
+        if (!isEmpty()) {
             EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(transmitters);
             EmitUtils.sendToAcceptors(saveTarget, energyContainer.getEnergy().copy());
             saveTarget.saveShare();
@@ -137,13 +133,16 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     }
 
     private FloatingLong tickEmit(FloatingLong energyToSend) {
-        EnergyAcceptorTarget target = new EnergyAcceptorTarget(acceptorCache.getAcceptorEntrySet().size()*2);
-        for (Entry<BlockPos, Map<Direction, LazyOptional<IStrictEnergyHandler>>> entry : acceptorCache.getAcceptorEntrySet()) {
-            entry.getValue().forEach((side, lazyAcceptor) -> lazyAcceptor.ifPresent(acceptor -> {
-                if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
-                    target.addHandler(acceptor);
-                }
-            }));
+        Collection<Map<Direction, LazyOptional<IStrictEnergyHandler>>> acceptorValues = acceptorCache.getAcceptorValues();
+        EnergyAcceptorTarget target = new EnergyAcceptorTarget(acceptorValues.size() * 2);
+        for (Map<Direction, LazyOptional<IStrictEnergyHandler>> acceptors : acceptorValues) {
+            for (LazyOptional<IStrictEnergyHandler> lazyAcceptor : acceptors.values()) {
+                lazyAcceptor.ifPresent(acceptor -> {
+                    if (acceptor.insertEnergy(energyToSend, Action.SIMULATE).smallerThan(energyToSend)) {
+                        target.addHandler(acceptor);
+                    }
+                });
+            }
         }
         return EmitUtils.sendToAcceptors(target, energyToSend.copy());
     }

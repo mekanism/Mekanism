@@ -1,8 +1,5 @@
 package mekanism.common.lib.distribution.handler;
 
-import mekanism.common.lib.distribution.SplitInfo;
-import mekanism.common.lib.distribution.handler.IntegerHandler;
-
 public class PartialIntegerHandler extends IntegerHandler {
 
     @Override
