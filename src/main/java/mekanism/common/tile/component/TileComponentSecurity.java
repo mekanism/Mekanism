@@ -70,7 +70,6 @@ public class TileComponentSecurity implements ITileComponent {
         }
     }
 
-    @Override
     public void tick() {
         if (!tile.isRemote()) {
             if (getFrequency() == null && ownerUUID != null) {

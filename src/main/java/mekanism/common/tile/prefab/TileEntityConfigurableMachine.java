@@ -14,7 +14,7 @@ import net.minecraft.nbt.CompoundNBT;
 public abstract class TileEntityConfigurableMachine extends TileEntityMekanism implements ISideConfiguration, IConfigCardAccess {
 
     public TileComponentEjector ejectorComponent;
-    public TileComponentConfig configComponent;
+    public TileComponentConfig configComponent;//does not tick!
 
     public TileEntityConfigurableMachine(IBlockProvider blockProvider) {
         super(blockProvider);
@@ -44,5 +44,13 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
         super.setConfigurationData(player, data);
         getConfig().read(data);
         getEjector().read(data);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (ejectorComponent != null) {
+            ejectorComponent.tick();
+        }
     }
 }

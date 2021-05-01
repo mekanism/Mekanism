@@ -67,7 +67,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return this;
     }
 
-    @Override
     public void tick() {
         if (!tile.isRemote()) {
             if (tickDelay == 0) {

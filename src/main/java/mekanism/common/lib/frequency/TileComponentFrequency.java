@@ -31,7 +31,6 @@ public class TileComponentFrequency implements ITileComponent {
         tile.addComponent(this);
     }
 
-    @Override
     public void tick() {
         if (!tile.isRemote()) {
             for (FrequencyType<?> type : heldFrequencies.keySet()) {

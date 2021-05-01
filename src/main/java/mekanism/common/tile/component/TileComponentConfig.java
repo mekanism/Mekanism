@@ -266,10 +266,6 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void tick() {
-    }
-
-    @Override
     public void read(CompoundNBT nbtTags) {
         if (nbtTags.contains(NBTConstants.COMPONENT_CONFIG, NBT.TAG_COMPOUND)) {
             CompoundNBT configNBT = nbtTags.getCompound(NBTConstants.COMPONENT_CONFIG);

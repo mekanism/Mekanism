@@ -172,7 +172,6 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         }
     }
 
-    @Override
     public void tick() {
         World world = tile.getLevel();
         if (world != null && !world.isClientSide) {

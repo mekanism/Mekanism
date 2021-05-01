@@ -85,6 +85,7 @@ import mekanism.common.inventory.container.sync.chemical.SyncableSlurryStack;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
 import mekanism.common.lib.security.ISecurityTile;
@@ -165,6 +166,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean hasSecurity;
     private boolean hasSound;
     private boolean hasGui;
+    private boolean hasChunkloader;
 
     //Methods for implementing ITileDirectional
     @Nullable
@@ -293,6 +295,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         isActivatable = hasSound || Attribute.has(block, AttributeStateActive.class);
         supportsComparator = Attribute.has(block, AttributeComparator.class);
         supportsComputers = Mekanism.hooks.computerCompatEnabled() && Attribute.has(block, AttributeComputerIntegration.class);
+        hasChunkloader = this instanceof IChunkLoader;
     }
 
     /**
@@ -489,8 +492,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void tick() {
-        for (ITileComponent component : components) {
-            component.tick();
+        frequencyComponent.tick();
+        if (supportsUpgrades()) {
+            upgradeComponent.tick();
+        }
+        if (hasSecurity()) {
+            securityComponent.tick();
+        }
+        if (hasChunkloader) {
+            ((IChunkLoader)this).getChunkLoader().tick();
         }
         if (isRemote()) {
             if (hasSound()) {

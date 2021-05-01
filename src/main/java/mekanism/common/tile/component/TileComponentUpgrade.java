@@ -58,7 +58,6 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         tile.addComponent(this);
     }
 
-    @Override
     public void tick() {
         if (!tile.isRemote()) {
             ItemStack stack = upgradeSlot.getStack();
