@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.list.SyncableFrequencyList;
@@ -33,8 +35,9 @@ public class TileComponentFrequency implements ITileComponent {
 
     public void tick() {
         if (!tile.isRemote()) {
-            for (FrequencyType<?> type : heldFrequencies.keySet()) {
-                updateFrequency(type);
+            for (Entry<FrequencyType<?>, Frequency> entry : heldFrequencies.entrySet()) {
+                //noinspection unchecked,rawtypes
+                updateFrequency((FrequencyType)entry.getKey(), entry.getValue());
             }
 
             if (needsNotify) {
@@ -91,9 +94,8 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    private <FREQ extends Frequency> void updateFrequency(FrequencyType<FREQ> type) {
+    private <FREQ extends Frequency> void updateFrequency(FrequencyType<FREQ> type, FREQ frequency) {
         //TODO: Instead of doing all of this every tick try and see if we can make a system to mark frequencies as being in need of an update?
-        FREQ frequency = getFrequency(type);
         Frequency lastFreq = frequency;
         FrequencyManager<FREQ> manager = getManager(type, frequency);
         if (manager != null) {
