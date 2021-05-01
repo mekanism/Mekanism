@@ -152,11 +152,6 @@ public class EnumUtils {
     public static final SubstanceType[] SUBSTANCES = SubstanceType.values();
 
     /**
-     * Cached value of {@link CacheSubstance#values()}. DO NOT MODIFY THIS LIST.
-     */
-    public static final CacheSubstance[] CACHE_SUBSTANCES = CacheSubstance.values();
-
-    /**
      * Cached value of {@link OreType#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final OreType[] ORE_TYPES = OreType.values();
