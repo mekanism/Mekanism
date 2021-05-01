@@ -126,23 +126,29 @@ public class MultiblockManager<T extends MultiblockData> {
         }
 
         public void update(IMultiblock<T> tile, T multiblock) {
-            locations.add(tile.getTileCoord());
             if (multiblock.isFormed()) {
                 if (tile.isMaster()) {
                     // create a new cache for the tile if it needs one
                     if (!tile.hasCache()) {
                         tile.setCache(createCache());
+                        locations.add(tile.getTileCoord());
+                    } else if (cache != tile.getCache()) {
+                        locations.add(tile.getTileCoord());
                     }
                     // if this is the master tile, sync the cache with the multiblock and then update our reference
                     tile.getCache().sync(multiblock);
                     cache = tile.getCache();
                 }
             } else if (tile.hasCache()) {
-                // if the tile doesn't have a formed multiblock but has a cache, update our reference
-                cache = tile.getCache();
+                if (cache != tile.getCache()) {
+                    // if the tile doesn't have a formed multiblock but has a cache, update our reference
+                    cache = tile.getCache();
+                    locations.add(tile.getTileCoord());
+                }
             } else if (cache != null) {
                 // if the tile doesn't have a cache but we do, update the tile's reference
                 tile.setCache(cache);
+                locations.add(tile.getTileCoord());
             }
         }
     }
