@@ -94,34 +94,38 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
-        String activeMultiblock = null;
-        Iterator<Map.Entry<MultiblockManager<?>, Structure>> iterator = structures.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<MultiblockManager<?>, Structure> entry = iterator.next();
-            Structure structure = entry.getValue();
-            if (structure.isValid()) {
-                if (activeMultiblock == null && structure.getController() != null && getMultiblockData(structure).isFormed()) {
-                    activeMultiblock = entry.getKey().getNameLower();
-                }
-            } else {
-                iterator.remove();
-            }
-        }
-        if (ticker >= 3 && structures.isEmpty()) {
-            invalidStructure.tick(this);
-            //If we managed to find any structures check which one is active
-            for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
-                Structure structure = entry.getValue();
-                if (structure.getController() != null && getMultiblockData(structure).isFormed()) {
-                    activeMultiblock = entry.getKey().getNameLower();
-                    break;
+        if (ticker % 10 == 0) {
+            String activeMultiblock = null;
+            if (!structures.isEmpty()) {
+                Iterator<Map.Entry<MultiblockManager<?>, Structure>> iterator = structures.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<MultiblockManager<?>, Structure> entry = iterator.next();
+                    Structure structure = entry.getValue();
+                    if (structure.isValid()) {
+                        if (activeMultiblock == null && structure.getController() != null && getMultiblockData(structure).isFormed()) {
+                            activeMultiblock = entry.getKey().getNameLower();
+                        }
+                    } else {
+                        iterator.remove();
+                    }
                 }
             }
-        }
-        // this could potentially fail if this structural multiblock tracks multiple structures, but 99.99% of the time this will be accurate
-        if (!Objects.equals(activeMultiblock, clientActiveMultiblock)) {
-            clientActiveMultiblock = activeMultiblock;
-            sendUpdatePacket();
+            if (ticker >= 3 && structures.isEmpty()) {
+                invalidStructure.tick(this);
+                //If we managed to find any structures check which one is active
+                for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
+                    Structure structure = entry.getValue();
+                    if (structure.getController() != null && getMultiblockData(structure).isFormed()) {
+                        activeMultiblock = entry.getKey().getNameLower();
+                        break;
+                    }
+                }
+            }
+            // this could potentially fail if this structural multiblock tracks multiple structures, but 99.99% of the time this will be accurate
+            if (!Objects.equals(activeMultiblock, clientActiveMultiblock)) {
+                clientActiveMultiblock = activeMultiblock;
+                sendUpdatePacket();
+            }
         }
     }
 
