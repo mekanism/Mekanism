@@ -1253,6 +1253,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit");
         add(MekanismLang.MODULE_CHARGE_DISTRIBUTION_UNIT, "Charge Distribution Unit");
         add(MekanismLang.MODULE_DOSIMETER_UNIT, "Dosimeter Unit");
+        add(MekanismLang.MODULE_GEIGER_UNIT, "Geiger Unit");
         add(MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, "Locomotive Boosting Unit");
         add(MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit");
         add(MekanismLang.MODULE_MAGNETIC_ATTRACTION_UNIT, "Magnetic Attraction Unit");
@@ -1276,6 +1277,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT, "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");
         add(MekanismLang.DESCRIPTION_CHARGE_DISTRIBUTION_UNIT, "Evenly distributes charge throughout all worn MekaSuit armor.");
         add(MekanismLang.DESCRIPTION_DOSIMETER_UNIT, "Displays the user's current radiation dose in the HUD.");
+        add(MekanismLang.DESCRIPTION_GEIGER_UNIT, "Displays the ambient radiation level in the HUD.");
         add(MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, "Increases the user's sprinting speed (and jumping distance).");
         add(MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, "Allows the user to both step and jump higher.");
         add(MekanismLang.DESCRIPTION_MAGNETIC_ATTRACTION_UNIT, "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");

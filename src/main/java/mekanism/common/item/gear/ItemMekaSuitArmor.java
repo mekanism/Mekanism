@@ -81,7 +81,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                   gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
             absorption = 0.15F;
         } else if (slot == EquipmentSlotType.CHEST) {
-            Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT, Modules.DOSIMETER_UNIT);
+            Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT, Modules.DOSIMETER_UNIT, Modules.GEIGER_UNIT);
             gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, MekanismConfig.gear.mekaSuitJetpackMaxStorage,
                   gas -> gas == MekanismGases.HYDROGEN.get()));
             absorption = 0.4F;

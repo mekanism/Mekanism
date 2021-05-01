@@ -779,6 +779,7 @@ public enum MekanismLang implements ILangEntry {
     MODULE_GRAVITATIONAL_MODULATING_UNIT("module", "gravitational_modulating_unit"),
     MODULE_CHARGE_DISTRIBUTION_UNIT("module", "charge_distribution_unit"),
     MODULE_DOSIMETER_UNIT("module", "dosimeter_unit"),
+    MODULE_GEIGER_UNIT("module", "geiger_unit"),
     MODULE_LOCOMOTIVE_BOOSTING_UNIT("module", "locomotive_boosting_unit"),
     MODULE_HYDRAULIC_PROPULSION_UNIT("module", "hydraulic_propulsion_unit"),
     MODULE_MAGNETIC_ATTRACTION_UNIT("module", "magnetic_attraction_unit"),
@@ -800,6 +801,7 @@ public enum MekanismLang implements ILangEntry {
     DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT("description", "gravitational_modulating_unit"),
     DESCRIPTION_CHARGE_DISTRIBUTION_UNIT("description", "charge_distribution_unit"),
     DESCRIPTION_DOSIMETER_UNIT("description", "dosimeter_unit"),
+    DESCRIPTION_GEIGER_UNIT("description", "geiger_unit"),
     DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT("description", "locomotive_boosting_unit"),
     DESCRIPTION_HYDRAULIC_PROPULSION_UNIT("description", "hydraulic_propulsion_unit"),
     DESCRIPTION_MAGNETIC_ATTRACTION_UNIT("description", "magnetic_attraction_unit");

@@ -11,7 +11,10 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.EnumColor;
+import mekanism.api.MekanismAPI;
 import mekanism.common.MekanismLang;
+import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement;
@@ -24,6 +27,7 @@ import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit.SprintBoost;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
@@ -45,6 +49,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.Util;
+import net.minecraft.world.World;
 
 public abstract class ModuleMekaSuit extends Module {
 
@@ -396,6 +402,20 @@ public abstract class ModuleMekaSuit extends Module {
                 HUDColor color = radiation < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (radiation < 0.1 ? HUDColor.WARNING : HUDColor.DANGER);
                 list.add(e.color(color));
             }
+        }
+    }
+    
+    public static class ModuleGeigerUnit extends ModuleMekaSuit {
+        private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "geiger_counter.png");
+        @Override
+        public void addHUDElements(List<HUDElement> list) {
+            if (!isEnabled()) {
+                return;
+            }
+                double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(Minecraft.getInstance().player);
+                HUDElement e = HUDElement.of(icon, UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2));
+                HUDColor color = magnitude < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (magnitude < 0.1 ? HUDColor.WARNING : HUDColor.DANGER);
+                list.add(e.color(color));
         }
     }
 }
