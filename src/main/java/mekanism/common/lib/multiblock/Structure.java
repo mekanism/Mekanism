@@ -97,12 +97,12 @@ public class Structure {
         }
     }
 
-    public <TILE extends TileEntity & IMultiblockBase> void tick(TILE tile) {
+    public <TILE extends TileEntity & IMultiblockBase> void tick(TILE tile, boolean tryValidate) {
         if (!didUpdate && updateTimestamp == tile.getLevel().getGameTime() - 1) {
             didUpdate = true;
             runUpdate(tile);
         }
-        if (!isValid()) {
+        if (tryValidate && !isValid()) {
             validate(tile, new Long2ObjectOpenHashMap<>());
         }
     }

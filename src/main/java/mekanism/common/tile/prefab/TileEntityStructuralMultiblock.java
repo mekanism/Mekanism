@@ -111,7 +111,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 }
             }
             if (ticker >= 3 && structures.isEmpty()) {
-                invalidStructure.tick(this);
+                invalidStructure.tick(this, true);
                 //If we managed to find any structures check which one is active
                 for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
                     Structure structure = entry.getValue();

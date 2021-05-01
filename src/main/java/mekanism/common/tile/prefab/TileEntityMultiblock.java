@@ -117,7 +117,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (ticker >= 3) {
-            structure.tick(this);
+            structure.tick(this, ticker % 10 == 0);
         }
         T multiblock = getMultiblock();
         if (multiblock.isFormed()) {
