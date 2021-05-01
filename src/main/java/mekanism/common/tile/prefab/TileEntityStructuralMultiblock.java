@@ -2,7 +2,6 @@ package mekanism.common.tile.prefab;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -102,7 +101,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             Structure structure = entry.getValue();
             if (structure.isValid()) {
                 if (activeMultiblock == null && structure.getController() != null && getMultiblockData(structure).isFormed()) {
-                    activeMultiblock = entry.getKey().getName().toLowerCase(Locale.ROOT);
+                    activeMultiblock = entry.getKey().getNameLower();
                 }
             } else {
                 iterator.remove();
@@ -114,7 +113,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             for (Map.Entry<MultiblockManager<?>, Structure> entry : structures.entrySet()) {
                 Structure structure = entry.getValue();
                 if (structure.getController() != null && getMultiblockData(structure).isFormed()) {
-                    activeMultiblock = entry.getKey().getName().toLowerCase(Locale.ROOT);
+                    activeMultiblock = entry.getKey().getNameLower();
                     break;
                 }
             }
@@ -133,7 +132,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
             IMultiblock<?> master = structure.getController();
             if (master != null) {
                 MultiblockData data = getMultiblockData(structure);
-                if (data.isFormed() && structuralGuiAccessAllowed(entry.getKey().getName().toLowerCase(Locale.ROOT))) {
+                if (data.isFormed() && structuralGuiAccessAllowed(entry.getKey().getNameLower())) {
                     // make sure this block is on the structure first
                     if (data.getBounds().getRelativeLocation(getBlockPos()).isWall()) {
                         return master.onActivate(player, hand, stack);

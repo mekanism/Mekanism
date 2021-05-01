@@ -13,6 +13,6 @@ public class TileEntityStructuralGlass extends TileEntityStructuralMultiblock {
 
     @Override
     public boolean canInterface(MultiblockManager<?> manager) {
-        return !manager.getName().toLowerCase(Locale.ROOT).contains("reactor");
+        return !manager.getNameLower().contains("reactor");
     }
 }

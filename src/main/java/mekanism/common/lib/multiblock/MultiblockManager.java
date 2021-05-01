@@ -2,6 +2,8 @@ package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -18,6 +20,7 @@ public class MultiblockManager<T extends MultiblockData> {
     private static final Set<MultiblockManager<?>> managers = new ObjectOpenHashSet<>();
 
     private final String name;
+    private final String nameLower;
 
     private final Supplier<MultiblockCache<T>> cacheSupplier;
     private final Supplier<IStructureValidator<T>> validatorSupplier;
@@ -29,6 +32,7 @@ public class MultiblockManager<T extends MultiblockData> {
 
     public MultiblockManager(String name, Supplier<MultiblockCache<T>> cacheSupplier, Supplier<IStructureValidator<T>> validatorSupplier) {
         this.name = name;
+        this.nameLower = name.toLowerCase(Locale.ROOT);
         this.cacheSupplier = cacheSupplier;
         this.validatorSupplier = validatorSupplier;
         managers.add(this);
@@ -44,6 +48,10 @@ public class MultiblockManager<T extends MultiblockData> {
 
     public String getName() {
         return name;
+    }
+
+    public String getNameLower() {
+        return nameLower;
     }
 
     @Nullable
