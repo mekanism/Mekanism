@@ -412,11 +412,10 @@ public abstract class ModuleMekaSuit extends Module {
             if (!isEnabled()) {
                 return;
             }
-            {
-                double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(Minecraft.getInstance().player);HUDElement e = HUDElement.of(icon, UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 3));
+                double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(Minecraft.getInstance().player);
+                HUDElement e = HUDElement.of(icon, UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 3));
                 HUDColor color = magnitude < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (magnitude < 0.1 ? HUDColor.WARNING : HUDColor.DANGER);
                 list.add(e.color(color));
-            }
         }
     }
 }
