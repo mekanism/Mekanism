@@ -2,8 +2,6 @@ package mekanism.common.lib.multiblock;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
@@ -31,7 +29,6 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.item.ItemStack;
@@ -53,7 +50,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     public void apply(T data) {
-        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.values) {
+        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
             List<? extends INBTSerializable<CompoundNBT>> containers = type.getContainerList(data);
             if (containers != null) {
                 List<? extends INBTSerializable<CompoundNBT>> cacheContainers = type.getContainerList(this);
@@ -68,7 +65,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     }
 
     public void sync(T data) {
-        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.values) {
+        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
             List<? extends INBTSerializable<CompoundNBT>> containersToCopy = type.getContainerList(data);
             if (containersToCopy != null) {
                 List<? extends INBTSerializable<CompoundNBT>> cacheContainers = type.getContainerList(this);
@@ -83,14 +80,14 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     }
 
     public void load(CompoundNBT nbtTags) {
-        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.values) {
+        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
             type.prefab(this, nbtTags.getInt(type.getTagKey() + "_stored"));
             DataHandlerUtils.readContainers(type.getContainerList(this), nbtTags.getList(type.getTagKey(), NBT.TAG_COMPOUND));
         }
     }
 
     public void save(CompoundNBT nbtTags) {
-        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.values) {
+        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
             nbtTags.putInt(type.getTagKey() + "_stored", type.getContainerList(this).size());
             nbtTags.put(type.getTagKey(), DataHandlerUtils.writeContainers(type.getContainerList(this)));
         }
@@ -98,7 +95,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     public void merge(MultiblockCache<T> mergeCache, List<ItemStack> rejectedItems) {
         // prefab enough containers for each substance type to support the merge cache
-        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.values) {
+        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
             type.preHandleMerge(this, mergeCache);
         }
 
@@ -335,7 +332,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         };
 
         @SuppressWarnings({"unchecked"})
-        public static final CacheSubstance<?, INBTSerializable<CompoundNBT>>[] values = new CacheSubstance[] {
+        public static final CacheSubstance<?, INBTSerializable<CompoundNBT>>[] VALUES = new CacheSubstance[] {
                 ITEMS,
                 FLUID,
                 GAS,
