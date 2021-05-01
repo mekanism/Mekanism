@@ -19,6 +19,7 @@ import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMagneticAttractionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleDosimeterUnit;
+import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGeigerUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleElectrolyticBreathingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
@@ -100,6 +101,9 @@ public class Modules {
     public static final ModuleData<ModuleDosimeterUnit> DOSIMETER_UNIT = register("dosimeter_unit",
           MekanismLang.MODULE_DOSIMETER_UNIT, MekanismLang.DESCRIPTION_DOSIMETER_UNIT, ModuleDosimeterUnit::new)
           .rarity(Rarity.UNCOMMON).setRendersHUD();
+    public static final ModuleData<ModuleGeigerUnit> GEIGER_UNIT = register("geiger_unit",
+            MekanismLang.MODULE_GEIGER_UNIT, MekanismLang.DESCRIPTION_GEIGER_UNIT, ModuleGeigerUnit::new)
+            .rarity(Rarity.UNCOMMON).setRendersHUD();
     public static final ModuleData<ModuleJetpackUnit> JETPACK_UNIT = register("jetpack_unit",
           MekanismLang.MODULE_JETPACK_UNIT, MekanismLang.DESCRIPTION_JETPACK_UNIT, ModuleJetpackUnit::new)
           .rarity(Rarity.RARE).setHandlesModeChange().setRendersHUD().setExclusive();
