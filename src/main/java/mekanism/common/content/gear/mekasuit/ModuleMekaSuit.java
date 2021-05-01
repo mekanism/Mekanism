@@ -29,6 +29,7 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.api.radiation.capability.IRadiationEntity;
+import mekanism.common.lib.radiation.capability.IRadiationEntity;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.CapabilityUtils;
@@ -414,6 +415,7 @@ public abstract class ModuleMekaSuit extends Module {
             }
             else {
             	double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(Minecraft.getInstance().player);HUDElement e = HUDElement.of(icon, UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 3));
+                double magnitude = Mekanism.radiationManager.getRadiationLevel(Minecraft.getInstance().player);HUDElement e = HUDElement.of(icon, UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 3));
                 HUDColor color = magnitude < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (magnitude < 0.1 ? HUDColor.WARNING : HUDColor.DANGER);
                 list.add(e.color(color));
             }
