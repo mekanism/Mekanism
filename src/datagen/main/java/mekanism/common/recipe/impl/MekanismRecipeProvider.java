@@ -1214,6 +1214,17 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, MekanismItems.DOSIMETER)
               .key(Pattern.PREVIOUS, MekanismItems.HDPE_SHEET)
               .build(consumer);
+        //Geiger Module
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.GEIGER_UNIT))
+        .pattern(RecipePattern.createPattern(
+              TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
+              TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
+              TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
+        ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ADVANCED)
+        .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+        .key(Pattern.CONSTANT, MekanismItems.GEIGER_COUNTER)
+        .key(Pattern.PREVIOUS, MekanismItems.HDPE_SHEET)
+        .build(consumer);
         //Energy Module
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.ENERGY_UNIT))
               .pattern(RecipePattern.createPattern(
