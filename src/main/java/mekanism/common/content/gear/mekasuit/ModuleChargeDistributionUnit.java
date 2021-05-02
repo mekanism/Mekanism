@@ -51,7 +51,7 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
         for (ItemStack stack : player.inventory.armor) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
             if (energyContainer != null) {
-                saveTarget.addHandler(energyContainer);
+                saveTarget.addDelegate(energyContainer);
                 total = total.plusEqual(energyContainer.getEnergy());
             }
         }
