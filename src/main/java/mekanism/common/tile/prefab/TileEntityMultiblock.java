@@ -133,7 +133,10 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                         sendUpdatePacket();
                     }
                     // mark the chunk dirty each tick to make sure we save
-                    markDirty(false);
+                    // TODO remove this and have it happen when the contents change
+                    if (ticker % 20 == 0) {
+                        markDirty(false);
+                    }
                 }
             }
         } else {
