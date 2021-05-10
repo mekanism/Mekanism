@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
+import mekanism.api.gear.IModule;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
@@ -17,8 +19,7 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
-import mekanism.common.content.gear.Modules;
-import mekanism.common.content.gear.Modules.ModuleData;
+import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.item.ItemStack;
@@ -33,12 +34,12 @@ public class GuiModuleScrollList extends GuiScrollList {
 
     private int selectIndex = -1;
 
-    private final Consumer<Module> callback;
+    private final Consumer<Module<?>> callback;
     private final List<ModuleData<?>> currentList = new ArrayList<>();
     private final Supplier<ItemStack> itemSupplier;
     private ItemStack currentItem;
 
-    public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module> callback) {
+    public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
         super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, new GuiElementHolder(gui, x, y, width, height));
         this.itemSupplier = itemSupplier;
         this.callback = callback;
@@ -49,10 +50,10 @@ public class GuiModuleScrollList extends GuiScrollList {
         ModuleData<?> prevSelect = getSelection();
         this.currentItem = currentItem;
         currentList.clear();
-        currentList.addAll(Modules.loadAll(currentItem).stream().map(Module::getData).collect(Collectors.toList()));
+        currentList.addAll(MekanismAPI.getModuleHelper().loadAllTypes(currentItem));
         boolean selected = false;
         if (!forceReset && prevSelect != null) {
-            for (int i = 0; i < currentList.size(); i++) {
+            for (int i = 0, size = currentList.size(); i < size; i++) {
                 if (currentList.get(i) == prevSelect) {
                     setSelected(i);
                     selected = true;
@@ -79,7 +80,7 @@ public class GuiModuleScrollList extends GuiScrollList {
     protected void setSelected(int index) {
         if (index >= 0 && index < currentList.size()) {
             selectIndex = index;
-            callback.accept(Modules.load(currentItem, currentList.get(index)));
+            callback.accept(ModuleHelper.INSTANCE.load(currentItem, currentList.get(index)));
         }
     }
 
@@ -102,7 +103,7 @@ public class GuiModuleScrollList extends GuiScrollList {
             updateList(stack, false);
         }
         forEachModule((module, multipliedElement) -> {
-            Module instance = Modules.load(currentItem, module);
+            IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
             if (instance != null) {
                 int color = module.isExclusive() ? (instance.isEnabled() ? 0x635BD4 : 0x2E2A69) : (instance.isEnabled() ? titleTextColor() : 0x5E1D1D);
                 drawScaledTextScaledBound(matrix, TextComponentUtil.build(module), relativeX + 13, relativeY + 3 + multipliedElement, color, 86, 0.7F);
@@ -115,7 +116,7 @@ public class GuiModuleScrollList extends GuiScrollList {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1) {
             forEachModule((module, multipliedElement) -> {
-                Module instance = Modules.load(currentItem, module);
+                IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
                 if (instance != null && mouseY >= relativeY + 1 + multipliedElement && mouseY < relativeY + 1 + multipliedElement + elementHeight) {
                     ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
                     gui().displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, getGuiWidth());
@@ -141,7 +142,7 @@ public class GuiModuleScrollList extends GuiScrollList {
         });
         //Note: This needs to be in its own loop as rendering the items is likely to cause the texture manager to be bound to a different texture
         // and thus would make the selection area background get all screwed up
-        forEachModule((module, multipliedElement) -> gui().renderItem(matrix, module.getStack(), x + 3, y + 3 + multipliedElement, 0.5F));
+        forEachModule((module, multipliedElement) -> gui().renderItem(matrix, module.getItemProvider().getItemStack(), x + 3, y + 3 + multipliedElement, 0.5F));
     }
 
     private void forEachModule(ObjIntConsumer<ModuleData<?>> consumer) {

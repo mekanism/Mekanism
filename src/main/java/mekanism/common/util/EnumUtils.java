@@ -40,6 +40,11 @@ public class EnumUtils {
                                                                                   EquipmentSlotType.FEET};
 
     /**
+     * Cached collection of hand slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
+     */
+    public static final EquipmentSlotType[] HAND_SLOTS = new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND};
+
+    /**
      * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final Direction[] DIRECTIONS = Direction.values();

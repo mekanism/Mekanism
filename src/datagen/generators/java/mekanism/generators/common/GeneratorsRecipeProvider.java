@@ -15,7 +15,6 @@ import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
-import mekanism.common.content.gear.Modules;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
@@ -250,7 +249,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
 
     private void addGearModuleRecipes(Consumer<IFinishedRecipe> consumer) {
         //Solar Recharging Unit
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULES.get(Modules.SOLAR_RECHARGING_UNIT))
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_SOLAR_RECHARGING)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
                     TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),

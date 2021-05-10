@@ -175,7 +175,7 @@ public class MekanismBlocks {
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Mekanism.MODID);
 
     public static final Map<PrimaryResource, BlockRegistryObject<?, ?>> PROCESSED_RESOURCE_BLOCKS = new LinkedHashMap<>();
-    public static final Map<OreType, BlockRegistryObject<?, ?>> ORES = new LinkedHashMap<>();
+    public static final Map<OreType, BlockRegistryObject<BlockOre, ?>> ORES = new LinkedHashMap<>();
 
     private static final Table<FactoryTier, FactoryType, BlockRegistryObject<BlockFactory<?>, ItemBlockFactory>> FACTORIES = HashBasedTable.create();
 

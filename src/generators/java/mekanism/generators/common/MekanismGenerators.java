@@ -2,7 +2,7 @@ package mekanism.generators.common;
 
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IModule;
+import mekanism.common.base.IModModule;
 import mekanism.common.command.builders.BuildCommand;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.MekanismModConfig;
@@ -39,7 +39,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismGenerators.MODID)
-public class MekanismGenerators implements IModule {
+public class MekanismGenerators implements IModModule {
 
     public static final String MODID = "mekanismgenerators";
 

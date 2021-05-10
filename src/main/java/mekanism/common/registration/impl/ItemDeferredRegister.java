@@ -9,6 +9,8 @@ import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
+import mekanism.common.content.gear.ModuleHelper;
+import mekanism.common.item.ItemModule;
 import mekanism.common.registration.WrappedDeferredRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -48,6 +50,12 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
                 return TextComponentUtil.build(color, super.getName(stack));
             }
         });
+    }
+
+    public ItemRegistryObject<ItemModule> registerModule(ModuleRegistryObject<?> moduleDataSupplier) {
+        //Note: We use the internal helper just in case we end up needing to know it is an ItemModule instead of just an Item somewhere
+        return register("module_" + moduleDataSupplier.getInternalRegistryName(),
+              () -> ModuleHelper.INSTANCE.createModuleItem(moduleDataSupplier, getMekBaseProperties()));
     }
 
     public <ITEM extends Item> ItemRegistryObject<ITEM> register(String name, Function<Item.Properties, ITEM> sup) {

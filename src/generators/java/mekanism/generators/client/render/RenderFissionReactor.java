@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityFissionReactorCasing> {
 
     private static final Map<RenderData, Model3D> cachedHeatedCoolantModels = new Object2ObjectOpenHashMap<>();
+    private static final int GLOW_ARGB = MekanismRenderer.getColorARGB(0.466F, 0.882F, 0.929F, 0.6F);
     private static Model3D glowModel;
 
     public static void resetCachedModels() {
@@ -63,8 +64,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                         matrix.pushPose();
                         matrix.translate(assembly.getPos().getX() - pos.getX(), assembly.getPos().getY() - pos.getY(), assembly.getPos().getZ() - pos.getZ());
                         matrix.scale(1, assembly.getHeight(), 1);
-                        int argb = MekanismRenderer.getColorARGB(0.466F, 0.882F, 0.929F, 0.6F);
-                        MekanismRenderer.renderObject(glowModel, matrix, buffer, argb, MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
+                        MekanismRenderer.renderObject(glowModel, matrix, buffer, GLOW_ARGB, MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
                         matrix.popPose();
                     }
                 }

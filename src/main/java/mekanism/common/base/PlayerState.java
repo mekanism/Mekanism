@@ -7,20 +7,22 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import mekanism.api.MekanismAPI;
+import mekanism.api.gear.IModule;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.Modules;
-import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.network.to_client.PacketFlyingSync;
 import mekanism.common.network.to_client.PacketResetPlayerClient;
 import mekanism.common.network.to_client.PacketStepHeightSync;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -266,14 +268,16 @@ public class PlayerState {
             flightInfo.wasFlyingAllowed = player.abilities.mayfly;
             if (player.abilities.flying && hasGravitationalModulator) {
                 //If the player is actively flying (not just allowed to), and has the gravitational modulator ready then apply movement boost if active, and use energy
-                FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-                boolean boostKey = Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST);
-                ModuleGravitationalModulatingUnit module = Modules.load(player.getItemBySlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
-                player.setSprinting(false);
-                if (boostKey) {
-                    player.moveRelative(module.getBoost(), new Vector3d(0, 0, 1));
+                IModule<ModuleGravitationalModulatingUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlotType.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
+                if (module != null) {//Should not be null but double check
+                    FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
+                    boolean boostKey = Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST);
+                    player.setSprinting(false);
+                    if (boostKey) {
+                        player.moveRelative(module.getCustomInstance().getBoost(), new Vector3d(0, 0, 1));
+                    }
+                    module.useEnergy(player, boostKey ? usage.multiply(4) : usage);
                 }
-                module.useEnergy(player, boostKey ? usage.multiply(4) : usage);
             }
         } else {
             if (flightInfo.hadFlightItem) {

@@ -2,14 +2,18 @@ package mekanism.common.content.gear.mekasuit;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
+import mekanism.api.gear.ICustomModule;
+import mekanism.api.gear.IModule;
+import mekanism.api.gear.config.IModuleConfigItem;
+import mekanism.api.gear.config.ModuleBooleanData;
+import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.ModuleConfigItem;
-import mekanism.common.content.gear.ModuleConfigItem.BooleanData;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.EmitUtils;
@@ -18,24 +22,23 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 
-public class ModuleChargeDistributionUnit extends ModuleMekaSuit {
+@ParametersAreNonnullByDefault
+public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeDistributionUnit> {
 
-    private ModuleConfigItem<Boolean> chargeSuit;
-    private ModuleConfigItem<Boolean> chargeInventory;
+    private IModuleConfigItem<Boolean> chargeSuit;
+    private IModuleConfigItem<Boolean> chargeInventory;
 
     @Override
-    public void init() {
-        super.init();
-        chargeSuit = addConfigItem(new ModuleConfigItem<>(this, "charge_suit", MekanismLang.MODULE_CHARGE_SUIT, new BooleanData(), true));
-        chargeInventory = addConfigItem(new ModuleConfigItem<>(this, "charge_inventory", MekanismLang.MODULE_CHARGE_INVENTORY, new BooleanData(), false));
+    public void init(IModule<ModuleChargeDistributionUnit> module, ModuleConfigItemCreator configItemCreator) {
+        chargeSuit = configItemCreator.createConfigItem("charge_suit", MekanismLang.MODULE_CHARGE_SUIT, new ModuleBooleanData());
+        chargeInventory = configItemCreator.createConfigItem("charge_inventory", MekanismLang.MODULE_CHARGE_INVENTORY, new ModuleBooleanData(false));
     }
 
     @Override
-    public void tickServer(PlayerEntity player) {
-        super.tickServer(player);
+    public void tickServer(IModule<ModuleChargeDistributionUnit> module, PlayerEntity player) {
         // charge inventory first
         if (chargeInventory.get()) {
-            chargeInventory(player);
+            chargeInventory(module, player);
         }
         // distribute suit charge next
         if (chargeSuit.get()) {
@@ -61,11 +64,11 @@ public class ModuleChargeDistributionUnit extends ModuleMekaSuit {
         }
     }
 
-    private void chargeInventory(PlayerEntity player) {
+    private void chargeInventory(IModule<ModuleChargeDistributionUnit> module, PlayerEntity player) {
         FloatingLong toCharge = MekanismConfig.gear.mekaSuitInventoryChargeRate.get();
         // first try to charge mainhand/offhand item
-        toCharge = charge(player, player.getMainHandItem(), toCharge);
-        toCharge = charge(player, player.getOffhandItem(), toCharge);
+        toCharge = charge(module, player, player.getMainHandItem(), toCharge);
+        toCharge = charge(module, player, player.getOffhandItem(), toCharge);
 
         for (ItemStack stack : player.inventory.items) {
             if (stack == player.getMainHandItem() || stack == player.getOffhandItem()) {
@@ -74,18 +77,18 @@ public class ModuleChargeDistributionUnit extends ModuleMekaSuit {
             if (toCharge.isZero()) {
                 break;
             }
-            toCharge = charge(player, stack, toCharge);
+            toCharge = charge(module, player, stack, toCharge);
         }
     }
 
     /** return rejects */
-    private FloatingLong charge(PlayerEntity player, ItemStack stack, FloatingLong amount) {
+    private FloatingLong charge(IModule<ModuleChargeDistributionUnit> module, PlayerEntity player, ItemStack stack, FloatingLong amount) {
         IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
         if (handler != null) {
             FloatingLong remaining = handler.insertEnergy(amount, Action.SIMULATE);
             if (remaining.smallerThan(amount)) {
                 //If we can actually insert any energy into
-                return handler.insertEnergy(useEnergy(player, amount.subtract(remaining), false), Action.EXECUTE).add(remaining);
+                return handler.insertEnergy(module.useEnergy(player, amount.subtract(remaining), false), Action.EXECUTE).add(remaining);
             }
         }
         return amount;

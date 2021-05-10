@@ -9,7 +9,7 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.additions.common.voice.VoiceServerManager;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IModule;
+import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import net.minecraft.util.ResourceLocation;
@@ -25,7 +25,7 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismAdditions.MODID)
-public class MekanismAdditions implements IModule {
+public class MekanismAdditions implements IModModule {
 
     public static final String MODID = "mekanismadditions";
 

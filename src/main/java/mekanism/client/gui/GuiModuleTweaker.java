@@ -65,7 +65,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         }
     }
 
-    private void onModuleSelected(Module module) {
+    private void onModuleSelected(Module<?> module) {
         moduleScreen.setModule(module);
     }
 

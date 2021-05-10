@@ -1,6 +1,5 @@
 package mekanism.common.item.gear;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -13,10 +12,10 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.gear.IModule;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
-import mekanism.api.text.ILangEntry;
 import mekanism.client.MekKeyHandler;
 import mekanism.client.MekanismKeyHandler;
 import mekanism.client.render.armor.CustomArmor;
@@ -31,13 +30,12 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.HUDElement;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
-import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -72,24 +70,17 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     public ItemMekaSuitArmor(EquipmentSlotType slot, Properties properties) {
         super(MEKASUIT_MATERIAL, slot, properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1));
-        Modules.setSupported(this, Modules.ENERGY_UNIT, Modules.RADIATION_SHIELDING_UNIT);
-
         if (slot == EquipmentSlotType.HEAD) {
-            Modules.setSupported(this, Modules.ELECTROLYTIC_BREATHING_UNIT, Modules.INHALATION_PURIFICATION_UNIT, Modules.VISION_ENHANCEMENT_UNIT,
-                  Modules.SOLAR_RECHARGING_UNIT, Modules.NUTRITIONAL_INJECTION_UNIT);
             gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
                   gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
             absorption = 0.15F;
         } else if (slot == EquipmentSlotType.CHEST) {
-            Modules.setSupported(this, Modules.JETPACK_UNIT, Modules.GRAVITATIONAL_MODULATING_UNIT, Modules.CHARGE_DISTRIBUTION_UNIT, Modules.DOSIMETER_UNIT, Modules.GEIGER_UNIT);
             gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, MekanismConfig.gear.mekaSuitJetpackMaxStorage,
                   gas -> gas == MekanismGases.HYDROGEN.get()));
             absorption = 0.4F;
         } else if (slot == EquipmentSlotType.LEGS) {
-            Modules.setSupported(this, Modules.LOCOMOTIVE_BOOSTING_UNIT);
             absorption = 0.3F;
         } else if (slot == EquipmentSlotType.FEET) {
-            Modules.setSupported(this, Modules.HYDRAULIC_PROPULSION_UNIT, Modules.MAGNETIC_ATTRACTION_UNIT);
             absorption = 0.15F;
         }
     }
@@ -104,15 +95,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
         if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
-            for (Module module : getModules(stack)) {
-                ILangEntry langEntry = module.getData().getLangEntry();
-                if (module.getInstalledCount() > 1) {
-                    ITextComponent amount = MekanismLang.GENERIC_FRACTION.translate(module.getInstalledCount(), module.getData().getMaxStackSize());
-                    tooltip.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, langEntry, amount));
-                } else {
-                    tooltip.add(langEntry.translateColored(EnumColor.GRAY));
-                }
-            }
+            addModuleDetails(stack, tooltip);
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);
             if (!gasTankSpecs.isEmpty()) {
@@ -160,7 +143,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public void onArmorTick(ItemStack stack, World world, PlayerEntity player) {
         super.onArmorTick(stack, world, player);
-        for (Module module : getModules(stack)) {
+        for (Module<?> module : getModules(stack)) {
             module.tick(player);
         }
     }
@@ -175,7 +158,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         // Internal is used by the "null" side, which is what will get used for most items
         ItemCapabilityWrapper wrapper = new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(() -> getChargeRate(stack), () -> getMaxEnergy(stack),
               BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue),
-              RadiationShieldingHandler.create(item -> isModuleEnabled(item, Modules.RADIATION_SHIELDING_UNIT) ? ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
+              RadiationShieldingHandler.create(item -> isModuleEnabled(item, MekanismModules.RADIATION_SHIELDING_UNIT) ? ItemHazmatSuitArmor.getShieldingByArmor(slot) : 0));
         if (!gasTankSpecs.isEmpty()) {
             wrapper.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
         }
@@ -208,7 +191,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
-        for (Module module : getModules(stack)) {
+        for (Module<?> module : getModules(stack)) {
             if (module.handlesModeChange()) {
                 module.changeMode(player, stack, shift, displayChangeMessage);
                 return;
@@ -238,13 +221,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     private FloatingLong getMaxEnergy(ItemStack stack) {
-        ModuleEnergyUnit module = getModule(stack, Modules.ENERGY_UNIT);
-        return module != null ? module.getEnergyCapacity() : MekanismConfig.gear.mekaToolBaseEnergyCapacity.get();
+        IModule<ModuleEnergyUnit> module = getModule(stack, MekanismModules.ENERGY_UNIT);
+        return module == null ? MekanismConfig.gear.mekaSuitBaseEnergyCapacity.get() : module.getCustomInstance().getEnergyCapacity(module);
     }
 
     private FloatingLong getChargeRate(ItemStack stack) {
-        ModuleEnergyUnit module = getModule(stack, Modules.ENERGY_UNIT);
-        return module != null ? module.getChargeRate() : MekanismConfig.gear.mekaToolBaseChargeRate.get();
+        IModule<ModuleEnergyUnit> module = getModule(stack, MekanismModules.ENERGY_UNIT);
+        return module == null ? MekanismConfig.gear.mekaSuitBaseChargeRate.get() : module.getCustomInstance().getChargeRate(module);
     }
 
     public float getDamageAbsorbed(ItemStack stack, DamageSource source, float amount) {
@@ -268,16 +251,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             }
         }
         return 0;
-    }
-
-    public List<HUDElement> getHUDElements(ItemStack stack) {
-        List<HUDElement> ret = new ArrayList<>();
-        for (Module module : getModules(stack)) {
-            if (module.renderHUD()) {
-                module.addHUDElements(ret);
-            }
-        }
-        return ret;
     }
 
     // This is unused for the most part; toughness / damage reduction is handled manually

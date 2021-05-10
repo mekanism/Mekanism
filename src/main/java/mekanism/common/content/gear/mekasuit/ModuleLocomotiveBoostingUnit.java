@@ -1,49 +1,51 @@
 package mekanism.common.content.gear.mekasuit;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.IIncrementalEnum;
+import mekanism.api.gear.ICustomModule;
+import mekanism.api.gear.IModule;
+import mekanism.api.gear.config.IModuleConfigItem;
+import mekanism.api.gear.config.ModuleConfigItemCreator;
+import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.ModuleConfigItem;
-import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 
-public class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {
+@ParametersAreNonnullByDefault
+public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomotiveBoostingUnit> {
 
-    private ModuleConfigItem<SprintBoost> sprintBoost;
+    private IModuleConfigItem<SprintBoost> sprintBoost;
 
     @Override
-    public void init() {
-        super.init();
-        addConfigItem(sprintBoost = new ModuleConfigItem<>(this, "sprint_boost", MekanismLang.MODULE_SPRINT_BOOST, new EnumData<>(SprintBoost.class, getInstalledCount() + 1), SprintBoost.LOW));
+    public void init(IModule<ModuleLocomotiveBoostingUnit> module, ModuleConfigItemCreator configItemCreator) {
+        sprintBoost = configItemCreator.createConfigItem("sprint_boost", MekanismLang.MODULE_SPRINT_BOOST,
+              new ModuleEnumData<>(SprintBoost.class, module.getInstalledCount() + 1, SprintBoost.LOW));
     }
 
     @Override
-    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
-        if (!isEnabled()) {
-            return;
-        }
-        SprintBoost newMode = sprintBoost.get().adjust(shift);
-        if (sprintBoost.get() != newMode) {
-            sprintBoost.set(newMode, null);
-            if (displayChangeMessage) {
-                displayModeChange(player, MekanismLang.MODULE_SPRINT_BOOST.translate(), newMode);
+    public void changeMode(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
+        if (module.isEnabled()) {
+            SprintBoost newMode = sprintBoost.get().adjust(shift);
+            if (sprintBoost.get() != newMode) {
+                sprintBoost.set(newMode);
+                if (displayChangeMessage) {
+                    module.displayModeChange(player, MekanismLang.MODULE_SPRINT_BOOST.translate(), newMode);
+                }
             }
         }
     }
 
     @Override
-    public void tickServer(PlayerEntity player) {
-        super.tickServer(player);
-
-        if (canFunction(player)) {
+    public void tickServer(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
+        if (canFunction(module, player)) {
             float boost = getBoost();
             if (!player.isOnGround()) {
                 boost /= 5F; // throttle if we're in the air
@@ -52,15 +54,13 @@ public class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {
                 boost /= 5F; // throttle if we're in the water
             }
             player.moveRelative(boost, new Vector3d(0, 0, 1));
-            useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
+            module.useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
         }
     }
 
     @Override
-    public void tickClient(PlayerEntity player) {
-        super.tickClient(player);
-
-        if (canFunction(player)) {
+    public void tickClient(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
+        if (canFunction(module, player)) {
             float boost = getBoost();
             if (!player.isOnGround()) {
                 boost /= 5F; // throttle if we're in the air
@@ -73,9 +73,9 @@ public class ModuleLocomotiveBoostingUnit extends ModuleMekaSuit {
         }
     }
 
-    public boolean canFunction(PlayerEntity player) {
+    public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F);
-        return player.isSprinting() && getContainerEnergy().greaterOrEqual(usage);
+        return player.isSprinting() && module.getContainerEnergy().greaterOrEqual(usage);
     }
 
     public float getBoost() {

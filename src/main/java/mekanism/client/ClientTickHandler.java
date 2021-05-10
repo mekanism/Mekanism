@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.UUID;
+import mekanism.api.MekanismAPI;
+import mekanism.api.gear.IModule;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.GeigerSound;
@@ -17,9 +19,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.Modules;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
-import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleVisionEnhancementUnit;
+import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemJetpack;
@@ -35,6 +36,7 @@ import mekanism.common.network.to_server.PacketPortableTeleporterGui;
 import mekanism.common.network.to_server.PacketPortableTeleporterGui.PortableTeleporterPacketType;
 import mekanism.common.network.to_server.PacketRadialModeChange;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
@@ -118,7 +120,7 @@ public class ClientTickHandler {
     }
 
     public static boolean isVisionEnhancementOn(PlayerEntity player) {
-        ModuleVisionEnhancementUnit module = Modules.load(player.getItemBySlot(EquipmentSlotType.HEAD), Modules.VISION_ENHANCEMENT_UNIT);
+        IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlotType.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
         return module != null && module.isEnabled() && module.getContainerEnergy().greaterThan(MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get());
     }
 
@@ -202,7 +204,7 @@ public class ClientTickHandler {
             }
 
             ItemStack chestStack = minecraft.player.getItemBySlot(EquipmentSlotType.CHEST);
-            ModuleJetpackUnit jetpackModule = Modules.load(chestStack, Modules.JETPACK_UNIT);
+            IModule<ModuleJetpackUnit> jetpackModule = MekanismAPI.getModuleHelper().load(chestStack, MekanismModules.JETPACK_UNIT);
 
             if (!chestStack.isEmpty() && (chestStack.getItem() instanceof ItemJetpack || jetpackModule != null)) {
                 MekanismClient.updateKey(minecraft.options.keyJump, KeySync.ASCEND);
@@ -334,7 +336,7 @@ public class ClientTickHandler {
     public void onFog(EntityViewRenderEvent.RenderFogEvent event) {
         if (visionEnhancement) {
             float fog = 0.1F;
-            ModuleVisionEnhancementUnit module = Modules.load(minecraft.player.getItemBySlot(EquipmentSlotType.HEAD), Modules.VISION_ENHANCEMENT_UNIT);
+            IModule<ModuleVisionEnhancementUnit> module = MekanismAPI.getModuleHelper().load(minecraft.player.getItemBySlot(EquipmentSlotType.HEAD), MekanismModules.VISION_ENHANCEMENT_UNIT);
             if (module != null) {
                 fog -= module.getInstalledCount() * 0.022F;
             }

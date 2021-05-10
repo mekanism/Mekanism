@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.api.gear.IModule;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.progress.GuiProgress;
@@ -10,7 +11,6 @@ import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.content.gear.Module;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.to_server.PacketRemoveModule;
 import mekanism.common.tile.TileEntityModificationStation;
@@ -19,7 +19,7 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiModificationStation extends GuiMekanismTile<TileEntityModificationStation, MekanismTileContainer<TileEntityModificationStation>> {
 
-    private Module selectedModule;
+    private IModule<?> selectedModule;
     private TranslationButton removeButton;
 
     public GuiModificationStation(MekanismTileContainer<TileEntityModificationStation> container, PlayerInventory inv, ITextComponent title) {
@@ -42,7 +42,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         addButton(new GuiModuleScrollList(this, 34, 20, 108, 74, () -> tile.containerSlot.getStack().copy(), this::onModuleSelected));
     }
 
-    public void onModuleSelected(Module module) {
+    public void onModuleSelected(IModule<?> module) {
         selectedModule = module;
         removeButton.active = module != null;
     }

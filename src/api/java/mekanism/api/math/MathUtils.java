@@ -1,5 +1,7 @@
 package mekanism.api.math;
 
+import java.util.List;
+
 public class MathUtils {
 
     private MathUtils() {
@@ -109,5 +111,12 @@ public class MathUtils {
             return elements[Math.floorMod(index, elements.length)];
         }
         return elements[index % elements.length];
+    }
+
+    public static <TYPE> TYPE getByIndexMod(List<TYPE> elements, int index) {
+        if (index < 0) {
+            return elements.get(Math.floorMod(index, elements.size()));
+        }
+        return elements.get(index % elements.size());
     }
 }

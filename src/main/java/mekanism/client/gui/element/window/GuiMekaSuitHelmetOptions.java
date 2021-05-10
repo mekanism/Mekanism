@@ -9,24 +9,23 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement.HUDColor;
 import mekanism.common.inventory.container.SelectedWindowData;
-import mekanism.common.lib.Color;
 
 public class GuiMekaSuitHelmetOptions extends GuiWindow {
 
     public GuiMekaSuitHelmetOptions(IGuiWrapper gui, int x, int y) {
         super(gui, x, y, 140, 115, SelectedWindowData.UNSPECIFIED);
         interactionStrategy = InteractionStrategy.NONE;
-        addChild(new GuiColorPickerSlot(gui, x + 12, y + 32, () -> Color.argb(HUDColor.REGULAR.getColor()), color -> {
+        addChild(new GuiColorPickerSlot(gui, x + 12, y + 32, HUDColor.REGULAR::getColor, color -> {
             MekanismConfig.client.hudColor.set(color.argb());
             // save the updated config info
             MekanismConfig.client.getConfigSpec().save();
         }));
-        addChild(new GuiColorPickerSlot(gui, x + 61, y + 32, () -> Color.argb(HUDColor.WARNING.getColor()), color -> {
+        addChild(new GuiColorPickerSlot(gui, x + 61, y + 32, HUDColor.WARNING::getColor, color -> {
             MekanismConfig.client.hudWarningColor.set(color.argb());
             // save the updated config info
             MekanismConfig.client.getConfigSpec().save();
         }));
-        addChild(new GuiColorPickerSlot(gui, x + 110, y + 32, () -> Color.argb(HUDColor.DANGER.getColor()), color -> {
+        addChild(new GuiColorPickerSlot(gui, x + 110, y + 32, HUDColor.DANGER::getColor, color -> {
             MekanismConfig.client.hudDangerColor.set(color.argb());
             // save the updated config info
             MekanismConfig.client.getConfigSpec().save();

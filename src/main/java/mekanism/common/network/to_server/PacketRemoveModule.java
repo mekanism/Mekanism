@@ -1,8 +1,6 @@
 package mekanism.common.network.to_server;
 
-import mekanism.common.content.gear.Modules;
-import mekanism.common.content.gear.Modules.ModuleData;
-import mekanism.common.network.BasePacketHandler;
+import mekanism.api.gear.ModuleData;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.util.WorldUtils;
@@ -35,10 +33,10 @@ public class PacketRemoveModule implements IMekanismPacket {
     @Override
     public void encode(PacketBuffer buffer) {
         buffer.writeBlockPos(pos);
-        buffer.writeUtf(moduleType.getName());
+        buffer.writeRegistryId(moduleType);
     }
 
     public static PacketRemoveModule decode(PacketBuffer buffer) {
-        return new PacketRemoveModule(buffer.readBlockPos(), Modules.get(BasePacketHandler.readString(buffer)));
+        return new PacketRemoveModule(buffer.readBlockPos(), buffer.readRegistryId());
     }
 }

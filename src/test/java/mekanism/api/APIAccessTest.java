@@ -12,4 +12,10 @@ class APIAccessTest {
     void testGetRadiationManager() {
         Assertions.assertNotNull(MekanismAPI.getRadiationManager());
     }
+
+    @Test
+    @DisplayName("Test getting Module Helper")
+    void testGetModuleHelper() {
+        Assertions.assertNotNull(MekanismAPI.getModuleHelper());
+    }
 }

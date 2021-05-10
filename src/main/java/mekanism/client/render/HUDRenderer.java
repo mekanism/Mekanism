@@ -4,15 +4,18 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.MekanismAPI;
+import mekanism.api.gear.IHUDElement;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.HUDElement;
 import mekanism.common.content.gear.HUDElement.HUDColor;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
+import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.inventory.EquipmentSlotType;
@@ -40,10 +43,10 @@ public class HUDRenderer {
 
     public void renderHUD(MatrixStack matrix, float partialTick) {
         update();
-        int color = HUDColor.REGULAR.getColor();
         if (MekanismConfig.client.hudOpacity.get() < 0.05F) {
             return;
         }
+        int color = HUDColor.REGULAR.getColorARGB();
         matrix.pushPose();
         float yawJitter = -absSqrt(minecraft.player.yHeadRot - prevRotationYaw);
         float pitchJitter = -absSqrt(minecraft.player.xRot - prevRotationPitch);
@@ -80,31 +83,37 @@ public class HUDRenderer {
         matrix.pushPose();
         matrix.translate(10, 10, 0);
         int posX = 0;
-        if (getStack(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
-            renderHUDElement(matrix, posX, 0, HUDElement.energyPercent(HEAD_ICON, getStack(EquipmentSlotType.HEAD)), color, false);
-            posX += 48;
-        }
-        if (getStack(EquipmentSlotType.CHEST).getItem() instanceof ItemMekaSuitArmor) {
-            renderHUDElement(matrix, posX, 0, HUDElement.energyPercent(CHEST_ICON, getStack(EquipmentSlotType.CHEST)), color, false);
-            posX += 48;
-        }
-        if (getStack(EquipmentSlotType.LEGS).getItem() instanceof ItemMekaSuitArmor) {
-            renderHUDElement(matrix, posX, 0, HUDElement.energyPercent(LEGS_ICON, getStack(EquipmentSlotType.LEGS)), color, false);
-            posX += 48;
-        }
-        if (getStack(EquipmentSlotType.FEET).getItem() instanceof ItemMekaSuitArmor) {
-            renderHUDElement(matrix, posX, 0, HUDElement.energyPercent(BOOTS_ICON, getStack(EquipmentSlotType.FEET)), color, false);
-        }
+        posX += renderMekaSuitEnergyIcon(matrix, posX, color, HEAD_ICON, EquipmentSlotType.HEAD);
+        posX += renderMekaSuitEnergyIcon(matrix, posX, color, CHEST_ICON, EquipmentSlotType.CHEST);
+        posX += renderMekaSuitEnergyIcon(matrix, posX, color, LEGS_ICON, EquipmentSlotType.LEGS);
+        renderMekaSuitEnergyIcon(matrix, posX, color, BOOTS_ICON, EquipmentSlotType.FEET);
         matrix.popPose();
+    }
+
+    private int renderMekaSuitEnergyIcon(MatrixStack matrix, int posX, int color, ResourceLocation icon, EquipmentSlotType slot) {
+        ItemStack stack = getStack(slot);
+        if (stack.getItem() instanceof ItemMekaSuitArmor) {
+            renderHUDElement(matrix, posX, 0, MekanismAPI.getModuleHelper().hudElementPercent(icon, StorageUtils.getEnergyRatio(stack)), color, false);
+            return 48;
+        }
+        return 0;
     }
 
     private void renderMekaSuitModuleIcons(MatrixStack matrix, float partialTick, int color) {
         // create list of all elements to render
-        List<HUDElement> elements = new ArrayList<>();
+        List<IHUDElement> elements = new ArrayList<>();
+        //Add any elements that might be on modules in the meka suit while worn
         for (EquipmentSlotType type : EnumUtils.ARMOR_SLOTS) {
             ItemStack stack = getStack(type);
             if (stack.getItem() instanceof ItemMekaSuitArmor) {
                 elements.addAll(((ItemMekaSuitArmor) stack.getItem()).getHUDElements(stack));
+            }
+        }
+        //Add any elements that might be on modules in the meka tool when it is held
+        for (EquipmentSlotType type : EnumUtils.HAND_SLOTS) {
+            ItemStack stack = getStack(type);
+            if (stack.getItem() instanceof ItemMekaTool) {
+                elements.addAll(((ItemMekaTool) stack.getItem()).getHUDElements(stack));
             }
         }
 
@@ -112,7 +121,7 @@ public class HUDRenderer {
         int curY = minecraft.getWindow().getGuiScaledHeight() - 10;
 
         matrix.pushPose();
-        for (HUDElement element : elements) {
+        for (IHUDElement element : elements) {
             int elementWidth = 24 + minecraft.font.width(element.getText());
             curY -= 18;
             renderHUDElement(matrix, startX - elementWidth, curY, element, color, true);
@@ -120,7 +129,7 @@ public class HUDRenderer {
         matrix.popPose();
     }
 
-    private void renderHUDElement(MatrixStack matrix, int x, int y, HUDElement element, int color, boolean iconRight) {
+    private void renderHUDElement(MatrixStack matrix, int x, int y, IHUDElement element, int color, boolean iconRight) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         MekanismRenderer.color(color);

@@ -1,9 +1,8 @@
 package mekanism.client.model;
 
 import com.google.common.collect.Table.Cell;
-import java.util.Map;
+import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismFluids;
@@ -36,8 +35,11 @@ public class MekanismItemModelProvider extends BaseItemModelProvider {
             }
         }
 
-        for (Map.Entry<ModuleData<?>, ItemRegistryObject<? extends ItemModule>> entry : MekanismItems.MODULES.entrySet()) {
-            generated(entry.getValue());
+        for (IItemProvider itemProvider : MekanismItems.ITEMS.getAllItems()) {
+            Item item = itemProvider.asItem();
+            if (item instanceof ItemModule) {
+                generated(itemProvider);
+            }
         }
     }
 }

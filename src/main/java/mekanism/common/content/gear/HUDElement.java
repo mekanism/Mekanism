@@ -1,67 +1,49 @@
 package mekanism.common.content.gear;
 
 import java.util.function.IntSupplier;
+import javax.annotation.Nonnull;
+import mekanism.api.gear.IHUDElement;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
-import mekanism.common.util.StorageUtils;
-import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import mekanism.common.util.text.TextUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
-public class HUDElement {
+public class HUDElement implements IHUDElement {
 
     private final ResourceLocation icon;
     private final ITextComponent text;
-    private HUDColor color;
+    private final HUDColor color;
 
-    private HUDElement(ResourceLocation icon, ITextComponent text) {
+    private HUDElement(ResourceLocation icon, ITextComponent text, HUDColor color) {
         this.icon = icon;
         this.text = text;
-    }
-
-    public HUDElement color(HUDColor color) {
         this.color = color;
-        return this;
     }
 
-    public static HUDElement of(ResourceLocation rl, ITextComponent text) {
-        return new HUDElement(rl, text);
-    }
-
-    public static HUDElement enabled(ResourceLocation rl, boolean enabled) {
-        HUDElement ret = of(rl, OnOff.caps(enabled, false).getTextComponent());
-        ret.color(enabled ? HUDColor.REGULAR : HUDColor.FADED);
-        return ret;
-    }
-
-    public static HUDElement percent(ResourceLocation rl, double ratio) {
-        HUDElement ret = of(rl, new StringTextComponent(TextUtils.getPercent(ratio)));
-        ret.color(ratio > 0.2 ? HUDColor.REGULAR : (ratio > 0.1 ? HUDColor.WARNING : HUDColor.DANGER));
-        return ret;
-    }
-
-    public static HUDElement energyPercent(ResourceLocation rl, ItemStack stack) {
-        return percent(rl, StorageUtils.getEnergyRatio(stack));
-    }
-
+    @Nonnull
+    @Override
     public ResourceLocation getIcon() {
         return icon;
     }
 
+    @Nonnull
+    @Override
     public ITextComponent getText() {
         return text;
     }
 
+    @Override
     public int getColor() {
-        return color.getColor();
+        return color.getColorARGB();
+    }
+
+    public static HUDElement of(ResourceLocation icon, ITextComponent text, HUDColor color) {
+        return new HUDElement(icon, text, color);
     }
 
     public enum HUDColor {
         REGULAR(MekanismConfig.client.hudColor),
-        FADED(() -> Color.argb(REGULAR.getColor()).darken(0.5).argb()),
+        FADED(() -> REGULAR.getColor().darken(0.5).argb()),
         WARNING(MekanismConfig.client.hudWarningColor),
         DANGER(MekanismConfig.client.hudDangerColor);
 
@@ -71,8 +53,26 @@ public class HUDElement {
             this.color = color;
         }
 
-        public int getColor() {
-            return Color.rgb(color.getAsInt()).alpha(MekanismConfig.client.hudOpacity.get()).argb();
+        public Color getColor() {
+            return Color.rgb(color.getAsInt()).alpha(MekanismConfig.client.hudOpacity.get());
+        }
+
+        public int getColorARGB() {
+            return getColor().argb();
+        }
+
+        public static HUDColor from(IHUDElement.HUDColor apiColor) {
+            switch (apiColor) {
+                default:
+                case REGULAR:
+                    return REGULAR;
+                case FADED:
+                    return FADED;
+                case WARNING:
+                    return WARNING;
+                case DANGER:
+                    return DANGER;
+            }
         }
     }
 }

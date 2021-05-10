@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
+import mekanism.common.block.BlockOre;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -276,7 +277,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addOres() {
-        for (Map.Entry<OreType, BlockRegistryObject<?, ?>> entry : MekanismBlocks.ORES.entrySet()) {
+        for (Map.Entry<OreType, BlockRegistryObject<BlockOre, ?>> entry : MekanismBlocks.ORES.entrySet()) {
             addToTags(MekanismTags.Items.ORES.get(entry.getKey()), MekanismTags.Blocks.ORES.get(entry.getKey()), entry.getValue());
             getItemBuilder(Tags.Items.ORES).add(MekanismTags.Items.ORES.get(entry.getKey()));
             getBlockBuilder(Tags.Blocks.ORES).add(MekanismTags.Blocks.ORES.get(entry.getKey()));

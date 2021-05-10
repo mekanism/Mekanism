@@ -7,7 +7,7 @@ import mekanism.common.lib.Version;
  *
  * @author aidancbrady
  */
-public interface IModule {
+public interface IModModule {
 
     /**
      * Gets the version of the module.

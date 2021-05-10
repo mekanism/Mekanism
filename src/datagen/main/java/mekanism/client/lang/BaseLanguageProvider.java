@@ -3,7 +3,9 @@ package mekanism.client.lang;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.common.block.attribute.Attribute;
@@ -46,6 +48,12 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
             }
         }
         add(key.getTranslationKey(), value);
+    }
+
+    protected void add(IModuleDataProvider<?> moduleDataProvider, String name, String description) {
+        ModuleData<?> moduleData = moduleDataProvider.getModuleData();
+        add(moduleData.getTranslationKey(), name);
+        add(moduleData.getDescriptionTranslationKey(), description);
     }
 
     protected void addFluid(FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO, String name) {

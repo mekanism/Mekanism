@@ -1,7 +1,6 @@
 package mekanism.client.lang;
 
 import com.google.common.collect.Table.Cell;
-import java.util.Locale;
 import java.util.Map;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.pigment.Pigment;
@@ -11,6 +10,7 @@ import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.BlockOre;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -23,6 +23,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
@@ -280,9 +281,12 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         add(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, "Advanced Bounding Block");
         //Ores
-        for (OreType ore : EnumUtils.ORE_TYPES) {
-            add(MekanismBlocks.ORES.get(ore), formatAndCapitalize(ore.getResource().getRegistrySuffix()) + " Ore");
-        }
+        addOre(OreType.OSMIUM, "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
+        addOre(OreType.COPPER, "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
+        addOre(OreType.TIN, "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
+        addOre(OreType.FLUORITE, "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
+        addOre(OreType.URANIUM, "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occurring form, it is not radioactive enough to cause harm.");
+        addOre(OreType.LEAD, "A somewhat rare metal that is excellent at resisting radioactive particles, spawning slightly less frequently than iron.");
         //Storage blocks
         add(MekanismBlocks.BRONZE_BLOCK, "Bronze Block");
         add(MekanismBlocks.REFINED_OBSIDIAN_BLOCK, "Refined Obsidian");
@@ -1224,6 +1228,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_MODE_CHANGE, "%s bumped to: %s");
         add(MekanismLang.MODULE_JETPACK_MODE, "Jetpack Mode");
         add(MekanismLang.MODULE_GRAVITATIONAL_MODULATION, "Gravitational Modulation");
+        add(MekanismLang.MODULE_MAGNETIC_ATTRACTION, "Magnetic Attraction");
         add(MekanismLang.MODULE_CHARGE_SUIT, "Charge Suit");
         add(MekanismLang.MODULE_CHARGE_INVENTORY, "Charge Inventory");
         add(MekanismLang.MODULE_SPEED_BOOST, "Speed Boost");
@@ -1234,60 +1239,40 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_PURIFICATION_HARMFUL, "Remove Harmful");
         add(MekanismLang.MODULE_TELEPORT_REQUIRES_BLOCK, "Requires Block Target");
 
-        add(MekanismLang.MODULE_ENERGY_UNIT, "Energy Unit");
+        add(MekanismModules.ENERGY_UNIT, "Energy Unit", "Increases maximum energy capacity.");
+        add(MekanismModules.RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit",
+              "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
 
-        add(MekanismLang.MODULE_EXCAVATION_ESCALATION_UNIT, "Excavation Escalation Unit");
-        add(MekanismLang.MODULE_ATTACK_AMPLIFICATION_UNIT, "Attack Amplification Unit");
-        add(MekanismLang.MODULE_SILK_TOUCH_UNIT, "Silk Touch Unit");
-        add(MekanismLang.MODULE_VEIN_MINING_UNIT, "Vein Mining Unit");
-        add(MekanismLang.MODULE_FARMING_UNIT, "Farming Unit");
-        add(MekanismLang.MODULE_TELEPORTATION_UNIT, "Teleportation Unit");
+        add(MekanismModules.EXCAVATION_ESCALATION_UNIT, "Excavation Escalation Unit", "Increases digging speed on any block.");
+        add(MekanismModules.ATTACK_AMPLIFICATION_UNIT, "Attack Amplification Unit", "Amplifies melee attacks on players or mobs.");
+        add(MekanismModules.SILK_TOUCH_UNIT, "Silk Touch Unit", "Allows all mined blocks to drop as themselves.");
+        add(MekanismModules.VEIN_MINING_UNIT, "Vein Mining Unit", "Allows for quick mining of ore deposits and rapid felling of trees.");
+        add(MekanismModules.FARMING_UNIT, "Farming Unit", "Allows for soil tilling, log stripping, and soil flattening.");
+        add(MekanismModules.TELEPORTATION_UNIT, "Teleportation Unit", "Provides for quick travel to nearby blocks.");
 
-        add(MekanismLang.MODULE_ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit");
-        add(MekanismLang.MODULE_INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit");
-        add(MekanismLang.MODULE_VISION_ENHANCEMENT_UNIT, "Vision Enhancement Unit");
-        add(MekanismLang.MODULE_SOLAR_RECHARGING_UNIT, "Solar Recharging Unit");
-        add(MekanismLang.MODULE_NUTRITIONAL_INJECTION_UNIT, "Nutritional Injection Unit");
-        add(MekanismLang.MODULE_RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit");
-        add(MekanismLang.MODULE_JETPACK_UNIT, "Jetpack Unit");
-        add(MekanismLang.MODULE_GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit");
-        add(MekanismLang.MODULE_CHARGE_DISTRIBUTION_UNIT, "Charge Distribution Unit");
-        add(MekanismLang.MODULE_DOSIMETER_UNIT, "Dosimeter Unit");
-        add(MekanismLang.MODULE_GEIGER_UNIT, "Geiger Unit");
-        add(MekanismLang.MODULE_LOCOMOTIVE_BOOSTING_UNIT, "Locomotive Boosting Unit");
-        add(MekanismLang.MODULE_HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit");
-        add(MekanismLang.MODULE_MAGNETIC_ATTRACTION_UNIT, "Magnetic Attraction Unit");
+        add(MekanismModules.ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit",
+              "Uses electrolysis to create breathable oxygen from water. Will also fill a jetpack module with hydrogen when necessary.");
+        add(MekanismModules.INHALATION_PURIFICATION_UNIT, "Inhalation Purification Unit",
+              "Applies a miniature electromagnetic field around the breathing apparatus, preventing selected potion effect types.");
+        add(MekanismModules.VISION_ENHANCEMENT_UNIT, "Vision Enhancement Unit",
+              "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective night vision.");
+        add(MekanismModules.SOLAR_RECHARGING_UNIT, "Solar Recharging Unit",
+              "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging. Requires Mekanism: Generators.");
+        add(MekanismModules.NUTRITIONAL_INJECTION_UNIT, "Nutritional Injection Unit", "Automatically feeds the player Nutritional Paste when hungry.");
+        add(MekanismModules.JETPACK_UNIT, "Jetpack Unit", "Applies a hydrogen-fueled jetpack to the MekaSuit.");
+        add(MekanismModules.GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit", "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");
+        add(MekanismModules.CHARGE_DISTRIBUTION_UNIT, "Charge Distribution Unit", "Evenly distributes charge throughout all worn MekaSuit armor.");
+        add(MekanismModules.DOSIMETER_UNIT, "Dosimeter Unit", "Displays the user's current radiation dose in the HUD.");
+        add(MekanismModules.GEIGER_UNIT, "Geiger Unit", "Displays the ambient radiation level in the HUD.");
+        add(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT, "Locomotive Boosting Unit", "Increases the user's sprinting speed (and jumping distance).");
+        add(MekanismModules.HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit", "Allows the user to both step and jump higher.");
+        add(MekanismModules.MAGNETIC_ATTRACTION_UNIT, "Magnetic Attraction Unit", "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");
+    }
 
-        add(MekanismLang.DESCRIPTION_ENERGY_UNIT, "Increases maximum energy capacity.");
-
-        add(MekanismLang.DESCRIPTION_EXCAVATION_ESCALATION_UNIT, "Increases digging speed on any block.");
-        add(MekanismLang.DESCRIPTION_ATTACK_AMPLIFICATION_UNIT, "Amplifies melee attacks on players or mobs.");
-        add(MekanismLang.DESCRIPTION_SILK_TOUCH_UNIT, "Allows all mined blocks to drop as themselves.");
-        add(MekanismLang.DESCRIPTION_VEIN_MINING_UNIT, "Allows for quick mining of ore deposits and rapid felling of trees.");
-        add(MekanismLang.DESCRIPTION_FARMING_UNIT, "Allows for soil tilling, log stripping, and soil flattening.");
-        add(MekanismLang.DESCRIPTION_TELEPORTATION_UNIT, "Provides for quick travel to nearby blocks.");
-
-        add(MekanismLang.DESCRIPTION_ELECTROLYTIC_BREATHING_UNIT, "Uses electrolysis to create breathable oxygen from water. Will also fill a jetpack module with hydrogen when necessary.");
-        add(MekanismLang.DESCRIPTION_INHALATION_PURIFICATION_UNIT, "Applies a miniature electromagnetic field around the breathing apparatus, preventing selected potion effect types.");
-        add(MekanismLang.DESCRIPTION_RADIATION_SHIELDING_UNIT, "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
-        add(MekanismLang.DESCRIPTION_VISION_ENHANCEMENT_UNIT, "Brightens the surrounding environment, allowing the user to see through darkness. Install multiple for more effective night vision.");
-        add(MekanismLang.DESCRIPTION_SOLAR_RECHARGING_UNIT, "Harnesses the power of the sun to charge your MekaSuit. Install multiple for faster charging. Requires Mekanism: Generators.");
-        add(MekanismLang.DESCRIPTION_NUTRITIONAL_INJECTION_UNIT, "Automatically feeds the player Nutritional Paste when hungry.");
-        add(MekanismLang.DESCRIPTION_JETPACK_UNIT, "Applies a hydrogen-fueled jetpack to the MekaSuit.");
-        add(MekanismLang.DESCRIPTION_GRAVITATIONAL_MODULATING_UNIT, "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");
-        add(MekanismLang.DESCRIPTION_CHARGE_DISTRIBUTION_UNIT, "Evenly distributes charge throughout all worn MekaSuit armor.");
-        add(MekanismLang.DESCRIPTION_DOSIMETER_UNIT, "Displays the user's current radiation dose in the HUD.");
-        add(MekanismLang.DESCRIPTION_GEIGER_UNIT, "Displays the ambient radiation level in the HUD.");
-        add(MekanismLang.DESCRIPTION_LOCOMOTIVE_BOOSTING_UNIT, "Increases the user's sprinting speed (and jumping distance).");
-        add(MekanismLang.DESCRIPTION_HYDRAULIC_PROPULSION_UNIT, "Allows the user to both step and jump higher.");
-        add(MekanismLang.DESCRIPTION_MAGNETIC_ATTRACTION_UNIT, "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");
-
-        add("description.mekanism.osmium_ore", "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
-        add("description.mekanism.copper_ore", "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
-        add("description.mekanism.tin_ore", "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
-        add("description.mekanism.fluorite_ore", "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
-        add("description.mekanism.uranium_ore", "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occurring form, it is not radioactive enough to cause harm.");
-        add("description.mekanism.lead_ore", "A somewhat rare metal that is excellent at resisting radioactive particles, spawning slightly less frequently than iron.");
+    private void addOre(OreType type, String description) {
+        BlockRegistryObject<BlockOre, ?> oreRO = MekanismBlocks.ORES.get(type);
+        add(oreRO, formatAndCapitalize(type.getResource().getRegistrySuffix()) + " Ore");
+        add(oreRO.getBlock().getDescriptionTranslationKey(), description);
     }
 
     private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, String name) {
@@ -1300,9 +1285,5 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, IItemProvider creative, String name) {
         addTiered(basic, advanced, elite, ultimate, name);
         add(creative, "Creative " + name);
-    }
-
-    private String capitalize(String s) {
-        return s.substring(0, 1).toUpperCase(Locale.ROOT) + s.substring(1).toLowerCase(Locale.ROOT);
     }
 }

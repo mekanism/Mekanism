@@ -3,7 +3,7 @@ package mekanism.tools.common;
 import java.util.Random;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IModule;
+import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.tools.common.config.MekanismToolsConfig;
@@ -27,7 +27,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismTools.MODID)
-public class MekanismTools implements IModule {
+public class MekanismTools implements IModModule {
 
     public static final String MODID = "mekanismtools";
 

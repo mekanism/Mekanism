@@ -2,19 +2,20 @@ package mekanism.common;
 
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.gear.IModule;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
-import mekanism.common.content.gear.Modules;
+import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
+import mekanism.common.content.gear.mekasuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
-import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleGravitationalModulatingUnit;
-import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleHydraulicPropulsionUnit;
-import mekanism.common.content.gear.mekasuit.ModuleMekaSuit.ModuleInhalationPurificationUnit;
 import mekanism.common.entity.EntityFlame;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
@@ -26,6 +27,7 @@ import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemScubaTank;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -87,9 +89,9 @@ public class CommonPlayerTickHandler {
                     return 0.5F;
                 }
             }
-            ModuleHydraulicPropulsionUnit module = Modules.load(stack, Modules.HYDRAULIC_PROPULSION_UNIT);
+            IModule<ModuleHydraulicPropulsionUnit> module = MekanismAPI.getModuleHelper().load(stack, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (module != null && module.isEnabled()) {
-                return module.getStepHeight();
+                return module.getCustomInstance().getStepHeight();
             }
         }
         return 0;
@@ -194,7 +196,7 @@ public class CommonPlayerTickHandler {
     }
 
     public static boolean isGravitationalModulationReady(PlayerEntity player) {
-        ModuleGravitationalModulatingUnit module = Modules.load(player.getItemBySlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT);
+        IModule<ModuleGravitationalModulatingUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlotType.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
         return MekanismUtils.isPlayingMode(player) && module != null && module.isEnabled() && module.getContainerEnergy().greaterOrEqual(usage);
     }
@@ -208,9 +210,9 @@ public class CommonPlayerTickHandler {
         if (stack.getItem() instanceof ItemJetpack && ChemicalUtil.hasGas(stack)) {
             return ((ItemJetpack) stack.getItem()).getMode(stack);
         } else if (stack.getItem() instanceof IModuleContainerItem && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get())) {
-            ModuleJetpackUnit module = Modules.load(stack, Modules.JETPACK_UNIT);
+            IModule<ModuleJetpackUnit> module = MekanismAPI.getModuleHelper().load(stack, MekanismModules.JETPACK_UNIT);
             if (module != null && module.isEnabled()) {
-                return module.getMode();
+                return module.getCustomInstance().getMode();
             }
         }
         return null;
@@ -241,7 +243,7 @@ public class CommonPlayerTickHandler {
                 } else {
                     //Note: We have this here in addition to listening to LivingHurt, so as if we can fully block the damage
                     // then we don't play the hurt effect/sound, as cancelling LivingHurtEvent still causes that to happen
-                    ModuleInhalationPurificationUnit module = Modules.load(headStack, Modules.INHALATION_PURIFICATION_UNIT);
+                    IModule<ModuleInhalationPurificationUnit> module = MekanismAPI.getModuleHelper().load(headStack, MekanismModules.INHALATION_PURIFICATION_UNIT);
                     if (module != null && module.isEnabled()) {
                         FloatingLong energyRequirement = MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce.get().multiply(event.getAmount());
                         if (module.canUseEnergy(base, energyRequirement)) {
@@ -308,7 +310,7 @@ public class CommonPlayerTickHandler {
         } else if (event.getSource().isMagic()) {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlotType.HEAD);
             if (!headStack.isEmpty()) {
-                ModuleInhalationPurificationUnit module = Modules.load(headStack, Modules.INHALATION_PURIFICATION_UNIT);
+                IModule<ModuleInhalationPurificationUnit> module = MekanismAPI.getModuleHelper().load(headStack, MekanismModules.INHALATION_PURIFICATION_UNIT);
                 if (module != null && module.isEnabled()) {
                     FloatingLong energyRequirement = MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce.get().multiply(event.getAmount());
                     FloatingLong extracted = module.useEnergy(entity, energyRequirement);
@@ -357,14 +359,14 @@ public class CommonPlayerTickHandler {
     public void onLivingJump(LivingJumpEvent event) {
         if (event.getEntityLiving() instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-            ModuleHydraulicPropulsionUnit module = Modules.load(player.getItemBySlot(EquipmentSlotType.FEET), Modules.HYDRAULIC_PROPULSION_UNIT);
+            IModule<ModuleHydraulicPropulsionUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlotType.FEET), MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (module != null && module.isEnabled() && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
-                FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get().multiply(module.getBoost() / 0.1F);
+                float boost = module.getCustomInstance().getBoost();
+                FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get().multiply(boost / 0.1F);
                 if (module.getContainerEnergy().greaterOrEqual(usage)) {
-                    float boost = module.getBoost();
                     // if we're sprinting with the boost module, limit the height
-                    ModuleLocomotiveBoostingUnit boostModule = Modules.load(player.getItemBySlot(EquipmentSlotType.LEGS), Modules.LOCOMOTIVE_BOOSTING_UNIT);
-                    if (boostModule != null && boostModule.isEnabled() && boostModule.canFunction(player)) {
+                    IModule<ModuleLocomotiveBoostingUnit> boostModule = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlotType.LEGS), MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
+                    if (boostModule != null && boostModule.isEnabled() && boostModule.getCustomInstance().canFunction(boostModule, player)) {
                         boost = (float) Math.sqrt(boost);
                     }
                     player.setDeltaMovement(player.getDeltaMovement().add(0, boost, 0));

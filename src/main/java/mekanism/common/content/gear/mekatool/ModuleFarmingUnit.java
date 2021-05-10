@@ -1,16 +1,21 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.Objects;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.gear.ICustomModule;
+import mekanism.api.gear.IModule;
+import mekanism.api.gear.config.IModuleConfigItem;
+import mekanism.api.gear.config.ModuleConfigItemCreator;
+import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.ModuleConfigItem;
-import mekanism.common.content.gear.ModuleConfigItem.EnumData;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.util.MekanismUtils;
@@ -36,18 +41,20 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 
-public class ModuleFarmingUnit extends ModuleMekaTool {
+@ParametersAreNonnullByDefault
+public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
 
-    private ModuleConfigItem<FarmingRadius> farmingRadius;
+    private IModuleConfigItem<FarmingRadius> farmingRadius;
 
     @Override
-    public void init() {
-        super.init();
-        addConfigItem(farmingRadius = new ModuleConfigItem<>(this, "farming_radius", MekanismLang.MODULE_FARMING_RADIUS, new EnumData<>(FarmingRadius.class, getInstalledCount() + 1), FarmingRadius.LOW));
+    public void init(IModule<ModuleFarmingUnit> module, ModuleConfigItemCreator configItemCreator) {
+        farmingRadius = configItemCreator.createConfigItem("farming_radius", MekanismLang.MODULE_FARMING_RADIUS,
+              new ModuleEnumData<>(FarmingRadius.class, module.getInstalledCount() + 1, FarmingRadius.LOW));
     }
 
+    @Nonnull
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) {
+    public ActionResultType onItemUse(IModule<ModuleFarmingUnit> module, ItemUseContext context) {
         return MekanismUtils.performActions(
               //First try to use the disassembler as an axe
               stripLogsAOE(context),

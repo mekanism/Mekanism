@@ -21,6 +21,10 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
+import mekanism.api.gear.IModuleHelper;
+import mekanism.api.gear.ModuleData;
+import mekanism.api.providers.IModuleDataProvider;
 import mekanism.client.model.BaseModelCache.ModelData;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderType;
@@ -29,13 +33,12 @@ import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.obj.TransmitterBakedModel.QuickHash;
 import mekanism.common.Mekanism;
-import mekanism.common.content.gear.Modules;
-import mekanism.common.content.gear.Modules.ModuleData;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemMekaTool;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -78,9 +81,9 @@ public class MekaSuitArmor extends CustomArmor {
     private static final Map<UUID, BoltRenderer> boltRenderMap = new Object2ObjectOpenHashMap<>();
 
     static {
-        registerModule("solar_helmet", Modules.SOLAR_RECHARGING_UNIT, EquipmentSlotType.HEAD);
-        registerModule("jetpack", Modules.JETPACK_UNIT, EquipmentSlotType.CHEST);
-        registerModule("modulator", Modules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlotType.CHEST);
+        registerModule("solar_helmet", MekanismModules.SOLAR_RECHARGING_UNIT, EquipmentSlotType.HEAD);
+        registerModule("jetpack", MekanismModules.JETPACK_UNIT, EquipmentSlotType.CHEST);
+        registerModule("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlotType.CHEST);
     }
 
     private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vector3d(-1, 0.5, 0)));
@@ -130,7 +133,7 @@ public class MekaSuitArmor extends CustomArmor {
 
         if (type == EquipmentSlotType.CHEST) {
             BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUUID(), id -> new BoltRenderer());
-            if (Modules.isEnabled(entity.getItemBySlot(EquipmentSlotType.CHEST), Modules.GRAVITATIONAL_MODULATING_UNIT)) {
+            if (MekanismAPI.getModuleHelper().isEnabled(entity.getItemBySlot(EquipmentSlotType.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT)) {
                 BoltEffect leftBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3d(-0.01, 0.35, 0.37), new Vector3d(-0.01, 0.15, 0.37), 10)
                       .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
                 BoltEffect rightBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vector3d(0.025, 0.35, 0.37), new Vector3d(0.025, 0.15, 0.37), 10)
@@ -405,7 +408,8 @@ public class MekaSuitArmor extends CustomArmor {
         return part.replace(OVERRIDDEN_TAG, "").replace(name + "_", "");
     }
 
-    private static void registerModule(String name, ModuleData<?> module, EquipmentSlotType slotType) {
+    private static void registerModule(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlotType slotType) {
+        ModuleData<?> module = moduleDataProvider.getModuleData();
         moduleModelSpec.put(slotType, module, new ModuleModelSpec(module, slotType, name));
     }
 
@@ -413,12 +417,13 @@ public class MekaSuitArmor extends CustomArmor {
         Set<ModuleModelSpec> modules = new ObjectOpenHashSet<>();
         Set<EquipmentSlotType> wornParts = EnumSet.noneOf(EquipmentSlotType.class);
         boolean hasMekaTool = player.getItemBySlot(EquipmentSlotType.MAINHAND).getItem() instanceof ItemMekaTool;
+        IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
         for (EquipmentSlotType slotType : EnumUtils.ARMOR_SLOTS) {
             if (player.getItemBySlot(slotType).getItem() instanceof ItemMekaSuitArmor) {
                 wornParts.add(slotType);
             }
             for (ModuleData<?> module : moduleModelSpec.row(slotType).keySet()) {
-                if (Modules.isEnabled(player.getItemBySlot(slotType), module)) {
+                if (moduleHelper.isEnabled(player.getItemBySlot(slotType), module)) {
                     modules.add(moduleModelSpec.get(slotType, module));
                 }
             }

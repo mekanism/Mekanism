@@ -11,6 +11,8 @@ import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.lasers.ILaserReceptor;
+import mekanism.api.radiation.capability.IRadiationEntity;
+import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.common.capabilities.basic.DefaultAlloyInteraction;
 import mekanism.common.capabilities.basic.DefaultChemicalHandler.DefaultGasHandler;
 import mekanism.common.capabilities.basic.DefaultChemicalHandler.DefaultInfusionHandler;
@@ -24,8 +26,6 @@ import mekanism.common.capabilities.basic.DefaultLaserReceptor;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyHandler;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
 import mekanism.common.lib.radiation.capability.DefaultRadiationShielding;
-import mekanism.api.radiation.capability.IRadiationEntity;
-import mekanism.api.radiation.capability.IRadiationShielding;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 

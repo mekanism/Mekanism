@@ -243,7 +243,7 @@ public class QIOCraftingWindow implements IContentsListener {
     }
 
     private void useInput(IInventorySlot inputSlot) {
-        MekanismUtils.logMismatchedStackSize(1, inputSlot.shrinkStack(1, Action.EXECUTE));
+        MekanismUtils.logMismatchedStackSize(inputSlot.shrinkStack(1, Action.EXECUTE), 1);
     }
 
     /**

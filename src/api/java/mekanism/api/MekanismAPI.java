@@ -9,6 +9,8 @@ import mekanism.api.chemical.pigment.EmptyPigment;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.EmptySlurry;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.gear.IModuleHelper;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.radiation.IRadiationManager;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
@@ -36,7 +38,9 @@ public class MekanismAPI {
     private static IForgeRegistry<InfuseType> INFUSE_TYPE_REGISTRY;
     private static IForgeRegistry<Pigment> PIGMENT_REGISTRY;
     private static IForgeRegistry<Slurry> SLURRY_REGISTRY;
+    private static IForgeRegistry<ModuleData<?>> MODULE_REGISTRY;
     private static IRadiationManager RADIATION_MANAGER;
+    private static IModuleHelper MODULE_HELPER;
 
     //Note: None of the empty variants support registry replacement
     //TODO - 1.17: Rename registry names for the empty types to just being mekanism:empty instead of mekanism:empty_type,
@@ -114,6 +118,40 @@ public class MekanismAPI {
             SLURRY_REGISTRY = RegistryManager.ACTIVE.getRegistry(Slurry.class);
         }
         return SLURRY_REGISTRY;
+    }
+
+    /**
+     * Gets the Forge Registry for {@link ModuleData}.
+     *
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister<ModuleData>} instead of {@link
+     * net.minecraftforge.event.RegistryEvent.Register<ModuleData>} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(Class, String)} rather
+     * than passing the result of this method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link
+     * net.minecraftforge.event.RegistryEvent.NewRegistry} events have been fired. For convenience the class can be gotten via {@link ModuleData#getClassWithGeneric()} as
+     * to reduce the unchecked cast warnings. This method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code
+     * null}.
+     */
+    @Nonnull
+    public static IForgeRegistry<ModuleData<?>> moduleRegistry() {
+        if (MODULE_REGISTRY == null) {
+            MODULE_REGISTRY = RegistryManager.ACTIVE.getRegistry(ModuleData.class);
+        }
+        return MODULE_REGISTRY;
+    }
+
+    /**
+     * Gets Mekanism's {@link IModuleHelper} that provides various utility methods for implementing custom modules.
+     */
+    public static IModuleHelper getModuleHelper() {
+        // Harmless race
+        if (MODULE_HELPER == null) {
+            try {
+                Class<?> clazz = Class.forName("mekanism.common.content.gear.ModuleHelper");
+                MODULE_HELPER = (IModuleHelper) clazz.getField("INSTANCE").get(null);
+            } catch (ReflectiveOperationException ex) {
+                logger.fatal("Error retrieving RadiationManager, Mekanism may be absent, damaged, or outdated.");
+            }
+        }
+        return MODULE_HELPER;
     }
 
     /**

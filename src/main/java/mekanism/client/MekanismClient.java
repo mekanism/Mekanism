@@ -8,7 +8,7 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.base.IModule;
+import mekanism.common.base.IModModule;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
@@ -58,13 +58,13 @@ public class MekanismClient {
         RenderTickHandler.prevRadiation = 0;
         MekanismRecipeType.clearCache();
 
-        for (IModule module : Mekanism.modulesLoaded) {
+        for (IModModule module : Mekanism.modulesLoaded) {
             module.resetClient();
         }
     }
 
     public static void launchClient() {
-        for (IModule module : Mekanism.modulesLoaded) {
+        for (IModModule module : Mekanism.modulesLoaded) {
             module.launchClient();
         }
     }

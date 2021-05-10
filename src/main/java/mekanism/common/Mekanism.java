@@ -10,13 +10,14 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismIMC;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
-import mekanism.common.base.IModule;
+import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.base.PlayerState;
@@ -35,7 +36,7 @@ import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.boiler.BoilerValidator;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.content.evaporation.EvaporationValidator;
-import mekanism.common.content.gear.Modules;
+import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.content.matrix.MatrixValidator;
 import mekanism.common.content.network.BoxedChemicalNetwork.ChemicalTransferEvent;
@@ -74,6 +75,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismPlacements;
@@ -110,6 +112,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
@@ -159,7 +162,7 @@ public class Mekanism {
     /**
      * List of Mekanism modules loaded
      */
-    public static final List<IModule> modulesLoaded = new ArrayList<>();
+    public static final List<IModModule> modulesLoaded = new ArrayList<>();
     /**
      * The server's world tick handler.
      */
@@ -195,6 +198,7 @@ public class Mekanism {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
         modEventBus.addListener(this::imcQueue);
+        modEventBus.addListener(this::imcHandle);
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);
         MekanismFluids.FLUIDS.register(modEventBus);
@@ -210,6 +214,7 @@ public class Mekanism {
         MekanismInfuseTypes.INFUSE_TYPES.createAndRegisterWithTags(modEventBus, "infuse_type", "infuse_types");
         MekanismPigments.PIGMENTS.createAndRegisterWithTags(modEventBus, "pigment", "pigments");
         MekanismSlurries.SLURRIES.createAndRegisterWithTags(modEventBus, "slurry", "slurries");
+        MekanismModules.MODULES.createAndRegister(modEventBus, "module");
         modEventBus.addGenericListener(Gas.class, this::registerGases);
         modEventBus.addGenericListener(InfuseType.class, this::registerInfuseTypes);
         modEventBus.addGenericListener(Pigment.class, this::registerPigments);
@@ -323,7 +328,23 @@ public class Mekanism {
     }
 
     private void imcQueue(InterModEnqueueEvent event) {
+        //IMC messages we send to other mods
         hooks.sendIMCMessages(event);
+        //IMC messages that we are sending to ourselves
+        MekanismIMC.addModulesToAll(MekanismModules.ENERGY_UNIT);
+        MekanismIMC.addMekaSuitModules(MekanismModules.RADIATION_SHIELDING_UNIT);
+        MekanismIMC.addMekaToolModules(MekanismModules.ATTACK_AMPLIFICATION_UNIT, MekanismModules.SILK_TOUCH_UNIT, MekanismModules.VEIN_MINING_UNIT,
+              MekanismModules.FARMING_UNIT, MekanismModules.TELEPORTATION_UNIT, MekanismModules.EXCAVATION_ESCALATION_UNIT);
+        MekanismIMC.addMekaSuitHelmetModules(MekanismModules.ELECTROLYTIC_BREATHING_UNIT, MekanismModules.INHALATION_PURIFICATION_UNIT,
+              MekanismModules.VISION_ENHANCEMENT_UNIT, MekanismModules.SOLAR_RECHARGING_UNIT, MekanismModules.NUTRITIONAL_INJECTION_UNIT);
+        MekanismIMC.addMekaSuitBodyarmorModules(MekanismModules.JETPACK_UNIT, MekanismModules.GRAVITATIONAL_MODULATING_UNIT, MekanismModules.CHARGE_DISTRIBUTION_UNIT,
+              MekanismModules.DOSIMETER_UNIT, MekanismModules.GEIGER_UNIT);
+        MekanismIMC.addMekaSuitPantsModules(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
+        MekanismIMC.addMekaSuitBootsModules(MekanismModules.HYDRAULIC_PROPULSION_UNIT, MekanismModules.MAGNETIC_ATTRACTION_UNIT);
+    }
+
+    private void imcHandle(InterModProcessEvent event) {
+        ModuleHelper.INSTANCE.processIMC();
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
@@ -353,8 +374,8 @@ public class Mekanism {
 
         MinecraftForge.EVENT_BUS.register(RadiationManager.INSTANCE);
 
-        //Set up module container tooltips
-        Modules.processSupportedContainers();
+        //Check which modules are legacy
+        ModuleHelper.INSTANCE.gatherLegacyModules();
 
         //Initialization notification
         logger.info("Version {} initializing...", versionNumber);
