@@ -34,4 +34,11 @@ public @interface WrappingComputerMethod {
      * Whether or not the generated wrapped methods are thread-safe or needs to be queued to run on the main thread.
      */
     boolean threadSafe() default false;
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @interface WrappingComputerMethodIndex {
+
+        int value();
+    }
 }

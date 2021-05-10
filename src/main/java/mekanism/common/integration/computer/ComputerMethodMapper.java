@@ -7,6 +7,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
@@ -21,6 +22,7 @@ import mekanism.common.integration.computer.BoundComputerMethod.ThreadAwareMetho
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod.WrappingComputerMethodIndex;
 import mekanism.common.lib.MekAnnotationScanner.BaseAnnotationScanner;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileRedstone;
@@ -93,7 +95,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                     }
                 } else {//data.getTargetType() == ElementType.METHOD
                     //Note: Signature is methodName followed by the method descriptor
-                    // For example this method is: collectScanDataUnsafe(Ljava/util/Map;)V
+                    // For example this method is: collectScanDataUnsafe(Ljava/util/Map;Ljava/util/Map;)V
                     String methodSignature = data.getMemberName();
                     int descriptorStart = methodSignature.indexOf('(');
                     if (descriptorStart == -1) {
@@ -185,8 +187,25 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                     List<WrappingMethodHelper> helpers = new ArrayList<>();
                     try {
                         Method[] methods = clazz.getDeclaredMethods();
+                        Arrays.sort(methods, (a, b) -> {
+                            WrappingComputerMethodIndex aIndex = a.getAnnotation(WrappingComputerMethodIndex.class);
+                            WrappingComputerMethodIndex bIndex = b.getAnnotation(WrappingComputerMethodIndex.class);
+                            return Integer.compare(aIndex == null ? 0 : aIndex.value(), bIndex == null ? 0 : bIndex.value());
+                        });
+                        boolean hasFaultyOrder = false;
                         for (Method method : methods) {
+                            WrappingComputerMethodIndex index = method.getAnnotation(WrappingComputerMethodIndex.class);
+                            if (index == null) {
+                                if (!helpers.isEmpty()) {
+                                    hasFaultyOrder = true;
+                                }
+                            } else if (index.value() < helpers.size()) {
+                                hasFaultyOrder = true;
+                            }
                             helpers.add(new WrappingMethodHelper(PUBLIC_LOOKUP.unreflect(method)));
+                        }
+                        if (hasFaultyOrder) {
+                            Mekanism.logger.error("Faulty method index annotations in class '{}'", clazz.getSimpleName());
                         }
                     } catch (IllegalAccessException e) {
                         Mekanism.logger.error("Failed to retrieve method handle for methods in class '{}'.", clazz.getSimpleName());
