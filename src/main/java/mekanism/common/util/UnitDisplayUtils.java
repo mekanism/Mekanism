@@ -209,7 +209,7 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
         FEMTO("Femto", "f", 0.000000000000001D),
         PICO("Pico", "p", 0.000000000001D),
         NANO("Nano", "n", 0.000000001D),
-        MICRO("Micro", "u", 0.000001D),
+        MICRO("Micro", "\u00B5", 0.000001D),
         MILLI("Milli", "m", 0.001D),
         BASE("", "", 1),
         KILO("Kilo", "k", 1_000D),
