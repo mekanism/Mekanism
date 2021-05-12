@@ -81,8 +81,6 @@ public class TurbineMultiblockData extends MultiblockData {
     public long lastSteamInput;
     public long newSteamInput;
 
-    @ContainerSync(getter = "getDispersers")
-    public int clientDispersers;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getFlowRate")
     public long clientFlow;
@@ -227,14 +225,14 @@ public class TurbineMultiblockData extends MultiblockData {
     public FloatingLong getMaxProduction() {
         FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
               .multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-        double rate = lowerVolume * (clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+        double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
         rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
         return energyMultiplier.multiply(rate);
     }
 
     @ComputerMethod
     public long getMaxFlowRate() {
-        double rate = lowerVolume * (clientDispersers * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
+        double rate = lowerVolume * (getDispersers() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get());
         rate = Math.min(rate, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
         return MathUtils.clampToLong(rate);
     }
