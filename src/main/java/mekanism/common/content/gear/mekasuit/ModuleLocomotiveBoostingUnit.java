@@ -11,13 +11,13 @@ import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 @ParametersAreNonnullByDefault
 public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomotiveBoostingUnit> {
@@ -96,7 +96,7 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
 
         SprintBoost(float boost) {
             this.boost = boost;
-            this.label = new StringTextComponent(Float.toString(boost));
+            this.label = TextComponentUtil.getString(Float.toString(boost));
         }
 
         @Nonnull

@@ -37,6 +37,12 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
         this.outputSerializer = outputSerializer;
     }
 
+    /**
+     * Creates a Gas Conversion recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static ItemStackToChemicalRecipeBuilder<Gas, GasStack> gasConversion(ItemStackIngredient input, GasStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This gas conversion recipe requires a non empty gas output.");
@@ -44,6 +50,12 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
         return new ItemStackToChemicalRecipeBuilder<>(mekSerializer("gas_conversion"), input, output, ChemicalIngredientDeserializer.GAS);
     }
 
+    /**
+     * Creates an Oxidizing recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static ItemStackToChemicalRecipeBuilder<Gas, GasStack> oxidizing(ItemStackIngredient input, GasStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This oxidizing recipe requires a non empty gas output.");
@@ -51,6 +63,12 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
         return new ItemStackToChemicalRecipeBuilder<>(mekSerializer("oxidizing"), input, output, ChemicalIngredientDeserializer.GAS);
     }
 
+    /**
+     * Creates an Infusion Conversion recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static ItemStackToChemicalRecipeBuilder<InfuseType, InfusionStack> infusionConversion(ItemStackIngredient input, InfusionStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This infusion conversion recipe requires a non empty infusion output.");
@@ -58,6 +76,12 @@ public class ItemStackToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL
         return new ItemStackToChemicalRecipeBuilder<>(mekSerializer("infusion_conversion"), input, output, ChemicalIngredientDeserializer.INFUSION);
     }
 
+    /**
+     * Creates a Pigment Extracting recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static ItemStackToChemicalRecipeBuilder<Pigment, PigmentStack> pigmentExtracting(ItemStackIngredient input, PigmentStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This pigment extracting recipe requires a non empty pigment output.");

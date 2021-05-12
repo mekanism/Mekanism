@@ -5,6 +5,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -41,7 +42,7 @@ public abstract class ItemStackToPigmentRecipeManager extends MekanismRecipeMana
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return new CrTPigmentStack(getRecipe().getOutputDefinition()).toString();
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinitionNew(), CrTPigmentStack::new);
             }
         };
     }

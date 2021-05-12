@@ -26,7 +26,7 @@ public class UpgradeDisplay implements IHasTextComponent {
 
     @Override
     public ITextComponent getTextComponent() {
-        if (upgrade.canMultiply() && level > 0) {
+        if (upgrade.getMax() > 1 && level > 0) {
             return MekanismLang.UPGRADE_DISPLAY_LEVEL.translateColored(upgrade.getColor(), upgrade, EnumColor.GRAY, level);
         }
         return MekanismLang.UPGRADE_DISPLAY.translateColored(upgrade.getColor(), upgrade);

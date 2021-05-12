@@ -54,13 +54,13 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
     @Override
     public void setIngredients(FluidToFluidRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutput(VanillaTypes.FLUID, recipe.getOutputRepresentation());
+        ingredients.setOutputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getOutputDefinition()));
     }
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, FluidToFluidRecipe recipe, IIngredients ingredients) {
         IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
         initFluid(fluidStacks, 0, true, input, recipe.getInput().getRepresentations());
-        initFluid(fluidStacks, 1, false, output, Collections.singletonList(recipe.getOutputRepresentation()));
+        initFluid(fluidStacks, 1, false, output, recipe.getOutputDefinition());
     }
 }

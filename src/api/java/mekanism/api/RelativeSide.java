@@ -17,6 +17,11 @@ public enum RelativeSide implements IHasTranslationKey {
 
     private static final RelativeSide[] SIDES = values();
 
+    /**
+     * Gets a side by index.
+     *
+     * @param index Index of the side.
+     */
     public static RelativeSide byIndex(int index) {
         return MathUtils.getByIndexMod(SIDES, index);
     }

@@ -11,11 +11,11 @@ import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.api.text.TextComponentUtil;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -115,11 +115,14 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
      */
     public abstract CompoundNBT write(CompoundNBT nbtTags);
 
+    /**
+     * Gets the default translation key for this chemical.
+     */
     protected abstract String getDefaultTranslationKey();
 
     @Override
     public ITextComponent getTextComponent() {
-        return new TranslationTextComponent(getTranslationKey());
+        return TextComponentUtil.translate(getTranslationKey());
     }
 
     /**
@@ -178,5 +181,10 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
         return reverseTags.getTagNames();
     }
 
+    /**
+     * Gets whether or not this chemical is the empty instance.
+     *
+     * @return {@code true} if this chemical is the empty instance, {@code false} otherwise.
+     */
     public abstract boolean isEmptyType();
 }

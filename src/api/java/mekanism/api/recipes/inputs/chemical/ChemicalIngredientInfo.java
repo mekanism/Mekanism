@@ -46,6 +46,9 @@ class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK extends 
         this.tags = tags;
     }
 
+    /**
+     * Gets the constant that is used in serializing this chemical type to json.
+     */
     public String getSerializationKey() {
         return serializationKey;
     }
@@ -56,14 +59,33 @@ class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK extends 
         return emptyStack;
     }
 
+    /**
+     * Creates a new ChemicalStack with a defined chemical type and quantity.
+     *
+     * @param chemical - provides the chemical type of the stack
+     * @param amount   - amount of chemical to be referenced in this ChemicalStack
+     */
     public STACK createStack(CHEMICAL chemical, long amount) {
         return chemicalToStackCreator.createStack(chemical, amount);
     }
 
+    /**
+     * Creates a new ChemicalStack with a defined chemical type and quantity.
+     *
+     * @param stack  - provides the chemical type of the stack
+     * @param amount - amount of chemical to be referenced in this ChemicalStack
+     */
     public STACK createStack(STACK stack, long amount) {
         return stackToStackCreator.createStack(stack, amount);
     }
 
+    /**
+     * Helper to look up the name of a tag, and get a decent estimate in LAN of the actual tag name.
+     *
+     * @param tag Tag to lookup.
+     *
+     * @return Name of the tag.
+     */
     public ResourceLocation getTagLocation(ITag<CHEMICAL> tag) {
         return tags.lookupTag(tag);
     }

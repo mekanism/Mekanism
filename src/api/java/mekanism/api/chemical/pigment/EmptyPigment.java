@@ -3,7 +3,6 @@ package mekanism.api.chemical.pigment;
 import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import mekanism.api.MekanismAPI;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.ResourceLocation;
 

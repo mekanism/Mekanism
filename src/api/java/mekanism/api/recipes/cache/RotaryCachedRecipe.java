@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache;
 
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -10,6 +11,9 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraftforge.fluids.FluidStack;
 
+/**
+ * Base class to help implement handling of rotary recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
@@ -20,14 +24,22 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
     private final BooleanSupplier modeSupplier;
 
+    /**
+     * @param recipe             Recipe.
+     * @param fluidInputHandler  Fluid input handler.
+     * @param gasInputHandler    Gas input handler.
+     * @param gasOutputHandler   Gas output handler.
+     * @param fluidOutputHandler Fluid output handler.
+     * @param modeSupplier       Machine handling mode. Returns {@code true} for fluid to gas, and {@code false} for gas to fluid.
+     */
     public RotaryCachedRecipe(RotaryRecipe recipe, IInputHandler<@NonNull FluidStack> fluidInputHandler, IInputHandler<@NonNull GasStack> gasInputHandler,
           IOutputHandler<@NonNull GasStack> gasOutputHandler, IOutputHandler<@NonNull FluidStack> fluidOutputHandler, BooleanSupplier modeSupplier) {
         super(recipe);
-        this.fluidInputHandler = fluidInputHandler;
-        this.gasInputHandler = gasInputHandler;
-        this.gasOutputHandler = gasOutputHandler;
-        this.fluidOutputHandler = fluidOutputHandler;
-        this.modeSupplier = modeSupplier;
+        this.fluidInputHandler = Objects.requireNonNull(fluidInputHandler, "Fluid input handler cannot be null.");
+        this.gasInputHandler = Objects.requireNonNull(gasInputHandler, "Gas input handler cannot be null.");
+        this.gasOutputHandler = Objects.requireNonNull(gasOutputHandler, "Gas output handler cannot be null.");
+        this.fluidOutputHandler = Objects.requireNonNull(fluidOutputHandler, "Fluid output handler cannot be null.");
+        this.modeSupplier = Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null.");
     }
 
     @Override

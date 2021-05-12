@@ -12,7 +12,6 @@ import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 
 public enum Upgrade implements IHasTranslationKey {
@@ -39,6 +38,13 @@ public enum Upgrade implements IHasTranslationKey {
         this.color = color;
     }
 
+    /**
+     * Reads and builds a map of upgrades to their amounts from NBT.
+     *
+     * @param nbtTags Stored upgrades.
+     *
+     * @return Installed upgrade map.
+     */
     public static Map<Upgrade, Integer> buildMap(@Nullable CompoundNBT nbtTags) {
         Map<Upgrade, Integer> upgrades = new EnumMap<>(Upgrade.class);
         if (nbtTags != null && nbtTags.contains(NBTConstants.UPGRADES, NBT.TAG_LIST)) {
@@ -52,14 +58,31 @@ public enum Upgrade implements IHasTranslationKey {
         return upgrades;
     }
 
+    /**
+     * Writes a map of upgrades to their amounts to NBT.
+     *
+     * @param upgrades Upgrades to store.
+     * @param nbtTags  Tag to write to.
+     */
     public static void saveMap(Map<Upgrade, Integer> upgrades, CompoundNBT nbtTags) {
         ListNBT list = new ListNBT();
         for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-            list.add(getTagFor(entry.getKey(), entry.getValue()));
+            list.add(entry.getKey().getTag(entry.getValue()));
         }
         nbtTags.put(NBTConstants.UPGRADES, list);
     }
 
+    /**
+     * Writes an upgrade with given amount to NBT.
+     *
+     * @param upgrade Upgrade.
+     * @param amount  Amount.
+     *
+     * @return NBT.
+     *
+     * @deprecated use {@link #getTag(int)} instead.
+     */
+    @Deprecated//TODO - 1.17: Remove this
     public static CompoundNBT getTagFor(Upgrade upgrade, int amount) {
         CompoundNBT compound = new CompoundNBT();
         compound.putInt(NBTConstants.TYPE, upgrade.ordinal());
@@ -67,6 +90,23 @@ public enum Upgrade implements IHasTranslationKey {
         return compound;
     }
 
+    /**
+     * Writes this upgrade with given amount to NBT.
+     *
+     * @param amount Amount.
+     *
+     * @return NBT.
+     */
+    public CompoundNBT getTag(int amount) {
+        CompoundNBT compound = new CompoundNBT();
+        compound.putInt(NBTConstants.TYPE, ordinal());
+        compound.putInt(NBTConstants.AMOUNT, amount);
+        return compound;
+    }
+
+    /**
+     * Gets the "raw" name of this upgrade for use in registry names.
+     */
     public String getRawName() {
         return name;
     }
@@ -76,22 +116,42 @@ public enum Upgrade implements IHasTranslationKey {
         return langKey.getTranslationKey();
     }
 
+    /**
+     * Gets the description for this upgrade.
+     */
     public ITextComponent getDescription() {
-        return new TranslationTextComponent(descLangKey.getTranslationKey());
+        return descLangKey.translate();
     }
 
+    /**
+     * Gets the max number of upgrades of this type that can be installed.
+     */
     public int getMax() {
         return maxStack;
     }
 
+    /**
+     * Gets the color to use when rendering various information related to this upgrade.
+     */
     public EnumColor getColor() {
         return color;
     }
 
+    /**
+     * Gets whether or not this upgrade has multiple levels
+     *
+     * @return {@code true} if the upgrade has multiple levels.
+     */
+    @Deprecated//TODO - 1.17: Remove this
     public boolean canMultiply() {
         return getMax() > 1;
     }
 
+    /**
+     * Gets an upgrade by index.
+     *
+     * @param index Index of the upgrade.
+     */
     public static Upgrade byIndexStatic(int index) {
         return MathUtils.getByIndexMod(UPGRADES, index);
     }

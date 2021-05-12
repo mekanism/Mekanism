@@ -25,6 +25,12 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
         this.output = output;
     }
 
+    /**
+     * Creates an Energy Conversion recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static ItemStackToEnergyRecipeBuilder energyConversion(ItemStackIngredient input, FloatingLong output) {
         if (output.isZero()) {
             throw new IllegalArgumentException("This energy conversion recipe requires an energy output greater than zero");

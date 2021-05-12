@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 public class ChemicalInfuserRecipeBuilder extends ChemicalChemicalToChemicalRecipeBuilder<Gas, GasStack, GasStackIngredient> {
 
     protected ChemicalInfuserRecipeBuilder(GasStackIngredient leftInput, GasStackIngredient rightInput, GasStack output) {
-        super(mekSerializer("chemical_infusing"), leftInput, rightInput, output,  ChemicalIngredientDeserializer.GAS);
+        super(mekSerializer("chemical_infusing"), leftInput, rightInput, output, ChemicalIngredientDeserializer.GAS);
     }
 
     /**

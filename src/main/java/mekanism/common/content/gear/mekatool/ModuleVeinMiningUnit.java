@@ -13,6 +13,7 @@ import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -24,7 +25,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 
 @ParametersAreNonnullByDefault
@@ -102,7 +102,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
 
         ExcavationRange(int range) {
             this.range = range;
-            this.label = new StringTextComponent(Integer.toString(range));
+            this.label = TextComponentUtil.getString(Integer.toString(range));
         }
 
         @Override

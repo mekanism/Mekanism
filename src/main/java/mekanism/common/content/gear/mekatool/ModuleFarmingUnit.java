@@ -13,6 +13,7 @@ import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -36,7 +37,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.Constants.BlockFlags;
@@ -79,7 +79,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
 
         FarmingRadius(int radius) {
             this.radius = radius;
-            this.label = new StringTextComponent(Integer.toString(radius));
+            this.label = TextComponentUtil.getString(Integer.toString(radius));
         }
 
         @Override

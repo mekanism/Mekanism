@@ -6,6 +6,7 @@ import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -43,7 +44,7 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return new CrTSlurryStack(getRecipe().getOutputRepresentation()).toString();
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), CrTSlurryStack::new);
             }
         };
     }

@@ -71,7 +71,10 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
     public void setIngredients(GasToGasRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(getWaterInput()));
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutputs(MekanismJEI.TYPE_GAS, Arrays.asList(MekanismGases.STEAM.getStack(1_000), recipe.getOutputRepresentation()));
+        ingredients.setOutputLists(MekanismJEI.TYPE_GAS, Arrays.asList(
+              Collections.singletonList(MekanismGases.STEAM.getStack(1_000)),
+              recipe.getOutputDefinition())
+        );
     }
 
     @Override
@@ -81,6 +84,6 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<GasToGasRec
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initChemical(gasStacks, 0, true, fuelTank, recipe.getInput().getRepresentations());
         initChemical(gasStacks, 1, false, heatedCoolantTank, Collections.singletonList(MekanismGases.STEAM.getStack(1_000)));
-        initChemical(gasStacks, 2, false, wasteTank, Collections.singletonList(recipe.getOutputRepresentation()));
+        initChemical(gasStacks, 2, false, wasteTank, recipe.getOutputDefinition());
     }
 }

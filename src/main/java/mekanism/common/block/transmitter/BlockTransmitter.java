@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.IMekWrench;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.block.states.TransmitterType.Size;
@@ -57,11 +56,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         ItemStack stack = player.getItemInHand(hand);
-        if (stack.isEmpty()) {
-            return ActionResultType.PASS;
-        }
-        IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);
-        if (wrenchHandler != null && wrenchHandler.canUseWrench(stack, player, hit.getBlockPos()) && player.isShiftKeyDown()) {
+        if (!stack.isEmpty() && MekanismUtils.canUseAsWrench(stack) && player.isShiftKeyDown()) {
             if (!world.isClientSide) {
                 WorldUtils.dismantleBlock(state, world, pos);
             }

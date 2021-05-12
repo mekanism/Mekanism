@@ -6,6 +6,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
+/**
+ * NO-OP IInventory
+ */
 @MethodsReturnNonnullByDefault
 public final class IgnoredIInventory implements IInventory {
 

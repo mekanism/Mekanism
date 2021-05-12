@@ -2,6 +2,7 @@ package mekanism.api.recipes.chemical;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -18,6 +19,17 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
+/**
+ * Base class for defining item chemical to item recipes.
+ * <br>
+ * Input: ItemStack
+ * <br>
+ * Input: Chemical
+ * <br>
+ * Output: ItemStack
+ *
+ * @param <INGREDIENT> Input Ingredient type
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -28,21 +40,49 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
     private final INGREDIENT chemicalInput;
     private final ItemStack output;
 
+    /**
+     * @param id            Recipe name.
+     * @param itemInput     Item input.
+     * @param chemicalInput Chemical input.
+     * @param output        Output.
+     */
     public ItemStackChemicalToItemStackRecipe(ResourceLocation id, ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output) {
         super(id);
-        this.itemInput = itemInput;
-        this.chemicalInput = chemicalInput;
-        this.output = output;
+        this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
+        this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
+        Objects.requireNonNull(output, "Output cannot be null.");
+        if (output.isEmpty()) {
+            throw new IllegalArgumentException("Output cannot be empty.");
+        }
+        this.output = output.copy();
     }
 
+    /**
+     * Gets the input item ingredient.
+     */
     public ItemStackIngredient getItemInput() {
         return itemInput;
     }
 
+    /**
+     * Gets the input chemical ingredient.
+     */
     public INGREDIENT getChemicalInput() {
         return chemicalInput;
     }
 
+    /**
+     * Gets a new output based on the given inputs.
+     *
+     * @param inputItem     Specific item input.
+     * @param inputChemical Specific chemical input.
+     *
+     * @return New output.
+     *
+     * @apiNote While Mekanism does not currently make use of the inputs, it is important to support it and pass the proper value in case any addons define input based
+     * outputs where things like NBT may be different.
+     * @implNote The passed in inputs should <strong>NOT</strong> be modified.
+     */
     @Contract(value = "_, _ -> new", pure = true)
     public ItemStack getOutput(ItemStack inputItem, STACK inputChemical) {
         return output.copy();
@@ -59,8 +99,13 @@ public abstract class ItemStackChemicalToItemStackRecipe<CHEMICAL extends Chemic
         return itemInput.test(itemStack) && chemicalInput.test(gasStack);
     }
 
-    public @NonNull List<@NonNull ItemStack> getOutputDefinition() {
-        return output.isEmpty() ? Collections.emptyList() : Collections.singletonList(output);
+    /**
+     * For JEI, gets the output representations to display.
+     *
+     * @return Representation of the output, <strong>MUST NOT</strong> be modified.
+     */
+    public List<@NonNull ItemStack> getOutputDefinition() {
+        return Collections.singletonList(output);
     }
 
     @Override

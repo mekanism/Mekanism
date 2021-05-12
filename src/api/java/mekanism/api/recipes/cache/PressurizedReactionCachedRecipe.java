@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -11,6 +12,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
+/**
+ * Base class to help implement handling of reaction recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedReactionRecipe> {
@@ -20,14 +24,21 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    /**
+     * @param recipe            Recipe.
+     * @param itemInputHandler  Item input handler.
+     * @param fluidInputHandler Fluid input handler.
+     * @param gasInputHandler   Gas input handler.
+     * @param outputHandler     Output handler, handles both the item and gas outputs.
+     */
     public PressurizedReactionCachedRecipe(PressurizedReactionRecipe recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
           IInputHandler<@NonNull FluidStack> fluidInputHandler, IInputHandler<@NonNull GasStack> gasInputHandler,
           IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> outputHandler) {
         super(recipe);
-        this.itemInputHandler = itemInputHandler;
-        this.fluidInputHandler = fluidInputHandler;
-        this.gasInputHandler = gasInputHandler;
-        this.outputHandler = outputHandler;
+        this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
+        this.fluidInputHandler = Objects.requireNonNull(fluidInputHandler, "Fluid input handler cannot be null.");
+        this.gasInputHandler = Objects.requireNonNull(gasInputHandler, "Gas input handler cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Override

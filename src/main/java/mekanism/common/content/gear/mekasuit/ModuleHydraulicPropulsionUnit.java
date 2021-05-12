@@ -7,9 +7,9 @@ import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 @ParametersAreNonnullByDefault
 public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydraulicPropulsionUnit> {
@@ -45,7 +45,7 @@ public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydrau
 
         JumpBoost(float boost) {
             this.boost = boost;
-            this.label = new StringTextComponent(Float.toString(boost));
+            this.label = TextComponentUtil.getString(Float.toString(boost));
         }
 
         @Override
@@ -70,7 +70,7 @@ public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydrau
 
         StepAssist(float height) {
             this.height = height;
-            this.label = new StringTextComponent(Float.toString(height));
+            this.label = TextComponentUtil.getString(Float.toString(height));
         }
 
         @Override

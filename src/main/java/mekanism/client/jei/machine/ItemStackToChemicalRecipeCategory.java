@@ -43,12 +43,12 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
     @Override
     public void setIngredients(RECIPE recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutput(ingredientType, recipe.getOutputDefinition());
+        ingredients.setOutputLists(ingredientType, Collections.singletonList(recipe.getOutputDefinitionNew()));
     }
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, RECIPE recipe, IIngredients ingredients) {
         initItem(recipeLayout.getItemStacks(), 0, true, input, recipe.getInput().getRepresentations());
-        initChemical(recipeLayout.getIngredientsGroup(ingredientType), 0, false, output, Collections.singletonList(recipe.getOutputDefinition()));
+        initChemical(recipeLayout.getIngredientsGroup(ingredientType), 0, false, output, recipe.getOutputDefinitionNew());
     }
 }

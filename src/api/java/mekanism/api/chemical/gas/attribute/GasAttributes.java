@@ -70,10 +70,17 @@ public class GasAttributes {
             this.conductivity = conductivity;
         }
 
+        /**
+         * Gets the thermal enthalpy of this coolant. Thermal Enthalpy defines how much energy one mB of the chemical can store.
+         */
         public double getThermalEnthalpy() {
             return thermalEnthalpy;
         }
 
+        /**
+         * Gets the conductivity of this coolant. 'Conductivity' defines the proportion of a reactor's available heat that can be used at an instant to convert this
+         * coolant's cool variant to its heated variant.
+         */
         public double getConductivity() {
             return conductivity;
         }
@@ -102,6 +109,9 @@ public class GasAttributes {
             this.heatedGas = heatedGas;
         }
 
+        /**
+         * Gets the heated version of this coolant.
+         */
         public Gas getHeatedGas() {
             return heatedGas.getChemical();
         }
@@ -121,6 +131,9 @@ public class GasAttributes {
             this.cooledGas = cooledGas;
         }
 
+        /**
+         * Gets the cooled version of this coolant.
+         */
         public Gas getCooledGas() {
             return cooledGas.getChemical();
         }
@@ -142,10 +155,16 @@ public class GasAttributes {
             this.energyDensity = energyDensity;
         }
 
+        /**
+         * Gets the number of ticks this fuel burns for.
+         */
         public int getBurnTicks() {
             return burnTicks.getAsInt();
         }
 
+        /**
+         * Gets the amount of energy produced per tick of this fuel.
+         */
         public FloatingLong getEnergyPerTick() {
             int ticks = getBurnTicks();
             //If we have less than 2 ticks, the density is the

@@ -27,37 +27,77 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
- * Created by Thiakil on 12/07/2019.
+ * Base implementation for how Mekanism handle's FluidStack Ingredients.
  */
 public abstract class FluidStackIngredient implements InputIngredient<@NonNull FluidStack> {
 
+    /**
+     * Creates a Fluid Stack Ingredient that matches a given fluid and amount.
+     *
+     * @param instance Fluid to match.
+     * @param amount   Amount needed.
+     */
     public static FluidStackIngredient from(@Nonnull Fluid instance, int amount) {
         return from(new FluidStack(instance, amount));
     }
 
+    /**
+     * Creates a Fluid Stack Ingredient that matches a provided fluid and amount.
+     *
+     * @param provider Fluid provider that provides the fluid to match.
+     * @param amount   Amount needed.
+     */
     public static FluidStackIngredient from(@Nonnull IFluidProvider provider, int amount) {
         return from(provider.getFluidStack(amount));
     }
 
+    /**
+     * Creates a Fluid Stack Ingredient that matches a given fluid stack.
+     *
+     * @param instance Fluid stack to match.
+     */
     public static FluidStackIngredient from(@Nonnull FluidStack instance) {
         return new Single(instance);
     }
 
-    public static FluidStackIngredient from(@Nonnull ITag<Fluid> fluidTag, int amount) {
-        return new Tagged(fluidTag, amount);
+    /**
+     * Creates a Fluid Stack Ingredient that matches a given fluid tag and amount.
+     *
+     * @param tag    Tag to match.
+     * @param amount Amount needed.
+     */
+    public static FluidStackIngredient from(@Nonnull ITag<Fluid> tag, int amount) {
+        return new Tagged(tag, amount);
     }
 
+    /**
+     * Reads a Fluid Stack Ingredient from a Packet Buffer.
+     *
+     * @param buffer Buffer to read from.
+     *
+     * @return Fluid Stack Ingredient.
+     */
     public static FluidStackIngredient read(PacketBuffer buffer) {
-        //TODO: Allow supporting serialization of different types than just the ones we implement?
         IngredientType type = buffer.readEnum(IngredientType.class);
         if (type == IngredientType.SINGLE) {
-            return Single.read(buffer);
+            return from(FluidStack.readFromPacket(buffer));
         } else if (type == IngredientType.TAGGED) {
-            return Tagged.read(buffer);
+            return from(FluidTags.bind(buffer.readResourceLocation().toString()), buffer.readVarInt());
         }
-        return Multi.read(buffer);
+        FluidStackIngredient[] ingredients = new FluidStackIngredient[buffer.readVarInt()];
+        for (int i = 0; i < ingredients.length; i++) {
+            ingredients[i] = FluidStackIngredient.read(buffer);
+        }
+        return createMulti(ingredients);
     }
 
+    /**
+     * Helper to deserialize a Json Object into a Fluid Stack Ingredient.
+     *
+     * @param json Json object to deserialize.
+     *
+     * @return Fluid Stack Ingredient.
+     */
     public static FluidStackIngredient deserialize(@Nullable JsonElement json) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Ingredient cannot be null");
@@ -108,9 +148,16 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         throw new JsonSyntaxException("Expected to receive a resource location representing either a tag or a fluid.");
     }
 
+    /**
+     * Combines multiple Fluid Stack Ingredients into a single Fluid Stack Ingredient.
+     *
+     * @param ingredients Ingredients to combine.
+     *
+     * @return Combined Fluid Stack Ingredient.
+     */
     public static FluidStackIngredient createMulti(FluidStackIngredient... ingredients) {
         if (ingredients.length == 0) {
-            //TODO: Throw error
+            throw new IllegalArgumentException("Cannot create a multi ingredient out of no ingredients.");
         } else if (ingredients.length == 1) {
             return ingredients[0];
         }
@@ -133,7 +180,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         @Nonnull
         private final FluidStack fluidInstance;
 
-        public Single(@Nonnull FluidStack fluidInstance) {
+        private Single(@Nonnull FluidStack fluidInstance) {
             this.fluidInstance = Objects.requireNonNull(fluidInstance);
         }
 
@@ -150,7 +197,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         @Nonnull
         @Override
         public FluidStack getMatchingInstance(@Nonnull FluidStack fluidStack) {
-            return test(fluidStack) ? fluidInstance : FluidStack.EMPTY;
+            return test(fluidStack) ? fluidInstance.copy() : FluidStack.EMPTY;
         }
 
         @Override
@@ -188,10 +235,6 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             }
             return json;
         }
-
-        public static Single read(PacketBuffer buffer) {
-            return new Single(FluidStack.readFromPacket(buffer));
-        }
     }
 
     public static class Tagged extends FluidStackIngredient {
@@ -200,7 +243,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         private final ITag<Fluid> tag;
         private final int amount;
 
-        public Tagged(@Nonnull ITag<Fluid> tag, int amount) {
+        private Tagged(@Nonnull ITag<Fluid> tag, int amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -263,17 +306,13 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
             json.addProperty(JsonConstants.TAG, TagCollectionManager.getInstance().getFluids().getIdOrThrow(tag).toString());
             return json;
         }
-
-        public static Tagged read(PacketBuffer buffer) {
-            return new Tagged(FluidTags.bind(buffer.readResourceLocation().toString()), buffer.readVarInt());
-        }
     }
 
     public static class Multi extends FluidStackIngredient {
 
         private final FluidStackIngredient[] ingredients;
 
-        protected Multi(@Nonnull FluidStackIngredient... ingredients) {
+        private Multi(@Nonnull FluidStackIngredient... ingredients) {
             this.ingredients = ingredients;
         }
 
@@ -350,14 +389,6 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 json.add(ingredient.serialize());
             }
             return json;
-        }
-
-        public static FluidStackIngredient read(PacketBuffer buffer) {
-            FluidStackIngredient[] ingredients = new FluidStackIngredient[buffer.readVarInt()];
-            for (int i = 0; i < ingredients.length; i++) {
-                ingredients[i] = FluidStackIngredient.read(buffer);
-            }
-            return createMulti(ingredients);
         }
     }
 

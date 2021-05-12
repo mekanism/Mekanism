@@ -9,7 +9,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
-import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -63,7 +62,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
+public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
 
     public ItemConfigurator(Properties properties) {
         super(MekanismConfig.gear.configuratorChargeRate, MekanismConfig.gear.configuratorMaxEnergy, properties.rarity(Rarity.UNCOMMON));
@@ -192,11 +191,6 @@ public class ItemConfigurator extends ItemEnergized implements IMekWrench, IRadi
 
     public EnumColor getColor(ConfiguratorMode mode) {
         return mode.getColor();
-    }
-
-    @Override
-    public boolean canUseWrench(ItemStack stack, PlayerEntity player, BlockPos pos) {
-        return getMode(stack) == ConfiguratorMode.WRENCH;
     }
 
     @Override

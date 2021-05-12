@@ -22,7 +22,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
     }
 
     /**
-     * Adds a seperating recipe that separates a fluid into two gases. Electrolytic Separators can process this recipe type.
+     * Adds a separating recipe that separates a fluid into two gases. Electrolytic Separators can process this recipe type.
      *
      * @param name             Name of the new recipe.
      * @param input            {@link FluidStackIngredient} representing the input of the recipe.

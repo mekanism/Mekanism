@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.IConfigCardAccess;
-import mekanism.api.IMekWrench;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
@@ -442,25 +441,20 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty()) {
-            IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);
-            if (wrenchHandler != null) {
-                if (wrenchHandler.canUseWrench(stack, player, rayTrace.getBlockPos())) {
-                    if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
-                        SecurityUtils.displayNoAccess(player);
-                        return WrenchResult.NO_SECURITY;
-                    }
-                    if (player.isShiftKeyDown()) {
-                        WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this);
-                        return WrenchResult.DISMANTLED;
-                    }
-                    //Special ITileDirectional handling
-                    if (isDirectional() && Attribute.get(getBlockType(), AttributeStateFacing.class).canRotate()) {
-                        setFacing(getDirection().getClockWise());
-                    }
-                    return WrenchResult.SUCCESS;
-                }
+        if (!stack.isEmpty() && MekanismUtils.canUseAsWrench(stack)) {
+            if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
+                SecurityUtils.displayNoAccess(player);
+                return WrenchResult.NO_SECURITY;
             }
+            if (player.isShiftKeyDown()) {
+                WorldUtils.dismantleBlock(state, getLevel(), worldPosition, this);
+                return WrenchResult.DISMANTLED;
+            }
+            //Special ITileDirectional handling
+            if (isDirectional() && Attribute.get(getBlockType(), AttributeStateFacing.class).canRotate()) {
+                setFacing(getDirection().getClockWise());
+            }
+            return WrenchResult.SUCCESS;
         }
         return WrenchResult.PASS;
     }
@@ -1137,6 +1131,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End methods ITileActive
 
     //Methods for implementing ITileSound
+
     /**
      * Used to check if this tile should attempt to play its sound
      */

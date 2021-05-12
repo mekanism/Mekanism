@@ -229,6 +229,7 @@ public enum MekanismLang implements ILangEntry {
     WARNING("gui", "warning"),
     DANGER("gui", "danger"),
     COMPASS("gui", "compass"),
+    RADIAL_SCREEN("gui", "radial_screen"),
     //Laser Amplifier
     ENTITY_DETECTION("laser_amplifier", "entity_detection"),
     ENERGY_CONTENTS("laser_amplifier", "energy_contents"),

@@ -10,7 +10,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.IMekWrench;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
@@ -25,12 +24,13 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.blocktype.FactoryType;
-import mekanism.common.integration.GenericWrench;
 import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
+import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.tile.interfaces.IRedstoneControl;
+import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -48,7 +48,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPlayEntityEffectPacket;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -302,26 +301,25 @@ public final class MekanismUtils {
     }
 
     /**
-     * Whether or not a certain TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity implements IRedstoneControl.
+     * Whether or not a certain Mekanism TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity supports redstone.
      *
      * @param tile - TileEntity to check
      *
      * @return if the TileEntity can function with redstone logic
      */
-    public static boolean canFunction(TileEntity tile) {
-        if (!(tile instanceof IRedstoneControl)) {
+    public static boolean canFunction(TileEntityMekanism tile) {
+        if (!tile.supportsRedstone()) {
             return true;
         }
-        IRedstoneControl control = (IRedstoneControl) tile;
-        switch (control.getControlType()) {
+        switch (tile.getControlType()) {
             case DISABLED:
                 return true;
             case HIGH:
-                return control.isPowered();
+                return tile.isPowered();
             case LOW:
-                return !control.isPowered();
+                return !tile.isPowered();
             case PULSE:
-                return control.isPowered() && !control.wasPowered();
+                return tile.isPowered() && !tile.wasPowered();
         }
         return false;
     }
@@ -502,15 +500,12 @@ public final class MekanismUtils {
     /**
      * Gets the wrench if the item is an IMekWrench, or a generic implementation if the item is in the forge wrenches tag
      */
-    @Nullable
-    public static IMekWrench getWrench(ItemStack it) {
-        Item item = it.getItem();
-        if (item instanceof IMekWrench) {
-            return (IMekWrench) item;
-        } else if (item.is(MekanismTags.Items.CONFIGURATORS)) {
-            return GenericWrench.INSTANCE;
+    public static boolean canUseAsWrench(ItemStack stack) {
+        Item item = stack.getItem();
+        if (item instanceof ItemConfigurator) {
+            return ((ItemConfigurator) item).getMode(stack) == ConfiguratorMode.WRENCH;
         }
-        return null;
+        return item.is(MekanismTags.Items.CONFIGURATORS);
     }
 
     @Nonnull

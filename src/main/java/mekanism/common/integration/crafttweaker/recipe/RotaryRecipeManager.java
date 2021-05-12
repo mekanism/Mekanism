@@ -7,6 +7,7 @@ import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -80,13 +81,15 @@ public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
                 RotaryRecipe recipe = getRecipe();
                 StringBuilder builder = new StringBuilder();
                 if (recipe.hasFluidToGas()) {
-                    builder.append(new MCFluidStack(recipe.getFluidOutputRepresentation())).append(" for fluid to gas");
+                    builder.append(CrTUtils.describeOutputs(recipe.getFluidOutputDefinition(), MCFluidStack::new))
+                          .append(" for fluid to gas");
                 }
                 if (recipe.hasGasToFluid()) {
                     if (recipe.hasFluidToGas()) {
                         builder.append(" and ");
                     }
-                    builder.append(new CrTGasStack(recipe.getGasOutputRepresentation())).append(" for gas to fluid");
+                    builder.append(CrTUtils.describeOutputs(recipe.getGasOutputDefinition(), CrTGasStack::new))
+                          .append(" for gas to fluid");
                 }
                 return builder.toString();
             }

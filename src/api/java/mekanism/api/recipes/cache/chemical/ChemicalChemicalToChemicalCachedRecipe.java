@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache.chemical;
 
+import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -13,6 +14,9 @@ import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
+/**
+ * Base class to help implement handling of chemical chemical to chemical recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
@@ -23,12 +27,18 @@ public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CH
     private final IInputHandler<@NonNull STACK> leftInputHandler;
     private final IInputHandler<@NonNull STACK> rightInputHandler;
 
+    /**
+     * @param recipe            Recipe.
+     * @param leftInputHandler  Left input handler.
+     * @param rightInputHandler Right input handler.
+     * @param outputHandler     Output handler.
+     */
     public ChemicalChemicalToChemicalCachedRecipe(RECIPE recipe, IInputHandler<@NonNull STACK> leftInputHandler, IInputHandler<@NonNull STACK> rightInputHandler,
           IOutputHandler<@NonNull STACK> outputHandler) {
         super(recipe);
-        this.leftInputHandler = leftInputHandler;
-        this.rightInputHandler = rightInputHandler;
-        this.outputHandler = outputHandler;
+        this.leftInputHandler = Objects.requireNonNull(leftInputHandler, "Left input handler cannot be null.");
+        this.rightInputHandler = Objects.requireNonNull(rightInputHandler, "Right input handler cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Nullable

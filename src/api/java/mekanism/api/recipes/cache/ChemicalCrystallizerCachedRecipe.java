@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -9,6 +10,9 @@ import mekanism.api.recipes.inputs.BoxedChemicalInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Base class to help implement handling of crystallizing recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCrystallizerRecipe> {
@@ -16,10 +20,15 @@ public class ChemicalCrystallizerCachedRecipe extends CachedRecipe<ChemicalCryst
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final BoxedChemicalInputHandler inputHandler;
 
+    /**
+     * @param recipe        Recipe.
+     * @param inputHandler  Input handler.
+     * @param outputHandler Output handler.
+     */
     public ChemicalCrystallizerCachedRecipe(ChemicalCrystallizerRecipe recipe, BoxedChemicalInputHandler inputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
-        this.inputHandler = inputHandler;
-        this.outputHandler = outputHandler;
+        this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Override

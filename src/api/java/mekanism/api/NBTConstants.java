@@ -1,5 +1,8 @@
 package mekanism.api;
 
+/**
+ * Class for storing constants that are used in various NBT related storage, to reduce the chances of typos
+ */
 public final class NBTConstants {
 
     private NBTConstants() {

@@ -7,6 +7,9 @@ import net.minecraft.util.text.ITextComponent;
 
 public interface IEntityTypeProvider extends IBaseProvider {
 
+    /**
+     * Gets the entity type this provider represents.
+     */
     @Nonnull
     EntityType<?> getEntityType();
 

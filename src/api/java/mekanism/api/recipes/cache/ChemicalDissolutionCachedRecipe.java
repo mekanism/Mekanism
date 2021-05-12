@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache;
 
+import java.util.Objects;
 import java.util.function.LongSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -11,6 +12,9 @@ import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.outputs.BoxedChemicalOutputHandler;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Base class to help implement handling of chemical dissolution recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissolutionRecipe> {
@@ -21,13 +25,20 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
     private final LongSupplier gasUsage;
     private long gasUsageMultiplier;
 
+    /**
+     * @param recipe           Recipe.
+     * @param itemInputHandler Item input handler.
+     * @param gasInputHandler  Chemical input handler.
+     * @param gasUsage         Gas usage multiplier, must return values of at least one.
+     * @param outputHandler    Output handler.
+     */
     public ChemicalDissolutionCachedRecipe(ChemicalDissolutionRecipe recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
-          ILongInputHandler<@NonNull GasStack> chemicalInputHandler, LongSupplier gasUsage, BoxedChemicalOutputHandler outputHandler) {
+          ILongInputHandler<@NonNull GasStack> gasInputHandler, LongSupplier gasUsage, BoxedChemicalOutputHandler outputHandler) {
         super(recipe);
-        this.itemInputHandler = itemInputHandler;
-        this.gasInputHandler = chemicalInputHandler;
-        this.gasUsage = gasUsage;
-        this.outputHandler = outputHandler;
+        this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
+        this.gasInputHandler = Objects.requireNonNull(gasInputHandler, "Gas input handler cannot be null.");
+        this.gasUsage = Objects.requireNonNull(gasUsage, "Gas usage cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Input handler cannot be null.");
     }
 
     @Override

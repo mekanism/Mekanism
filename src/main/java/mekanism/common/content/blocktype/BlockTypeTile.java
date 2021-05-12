@@ -6,7 +6,6 @@ import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.ILangEntry;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute.TileAttribute;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -81,8 +80,7 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
         }
 
         public T withCustomContainerProvider(Function<TileEntityMekanism, IContainerProvider> providerFunction) {
-            return withNamedContainerProvider(tile -> new ContainerProvider(TextComponentUtil.translate(tile.getBlockType().getDescriptionId()),
-                  providerFunction.apply(tile)));
+            return withNamedContainerProvider(tile -> new ContainerProvider(tile.getName(), providerFunction.apply(tile)));
         }
 
         public T withEmptyContainer(ContainerTypeRegistryObject<?> container) {

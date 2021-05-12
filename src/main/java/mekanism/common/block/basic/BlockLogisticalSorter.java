@@ -2,7 +2,6 @@ package mekanism.common.block.basic;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.IMekWrench;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.registries.MekanismBlockTypes;
@@ -62,33 +61,28 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         }
         //TODO: Make this be moved into the logistical sorter tile
         ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty()) {
-            IMekWrench wrenchHandler = MekanismUtils.getWrench(stack);
-            if (wrenchHandler != null) {
-                if (wrenchHandler.canUseWrench(stack, player, hit.getBlockPos())) {
-                    if (SecurityUtils.canAccess(player, tile)) {
-                        if (player.isShiftKeyDown()) {
-                            WorldUtils.dismantleBlock(state, world, pos);
-                            return ActionResultType.SUCCESS;
-                        }
-                        Direction change = tile.getDirection().getClockWise();
-                        if (!tile.hasConnectedInventory()) {
-                            for (Direction dir : EnumUtils.DIRECTIONS) {
-                                TileEntity tileEntity = WorldUtils.getTileEntity(world, pos.relative(dir));
-                                if (InventoryUtils.isItemHandler(tileEntity, dir)) {
-                                    change = dir.getOpposite();
-                                    break;
-                                }
-                            }
-                        }
-                        tile.setFacing(change);
-                        world.updateNeighborsAt(pos, this);
-                    } else {
-                        SecurityUtils.displayNoAccess(player);
-                    }
+        if (!stack.isEmpty() && MekanismUtils.canUseAsWrench(stack)) {
+            if (SecurityUtils.canAccess(player, tile)) {
+                if (player.isShiftKeyDown()) {
+                    WorldUtils.dismantleBlock(state, world, pos);
                     return ActionResultType.SUCCESS;
                 }
+                Direction change = tile.getDirection().getClockWise();
+                if (!tile.hasConnectedInventory()) {
+                    for (Direction dir : EnumUtils.DIRECTIONS) {
+                        TileEntity tileEntity = WorldUtils.getTileEntity(world, pos.relative(dir));
+                        if (InventoryUtils.isItemHandler(tileEntity, dir)) {
+                            change = dir.getOpposite();
+                            break;
+                        }
+                    }
+                }
+                tile.setFacing(change);
+                world.updateNeighborsAt(pos, this);
+            } else {
+                SecurityUtils.displayNoAccess(player);
             }
+            return ActionResultType.SUCCESS;
         }
         return tile.openGui(player);
     }

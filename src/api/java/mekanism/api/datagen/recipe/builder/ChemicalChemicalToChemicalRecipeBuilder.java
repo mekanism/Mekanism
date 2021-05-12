@@ -39,6 +39,13 @@ public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<C
         this.outputSerializer = outputSerializer;
     }
 
+    /**
+     * Creates a Chemical Infusing recipe builder.
+     *
+     * @param leftInput  Left input.
+     * @param rightInput Right input.
+     * @param output     Output.
+     */
     public static ChemicalChemicalToChemicalRecipeBuilder<Gas, GasStack, GasStackIngredient> chemicalInfusing(GasStackIngredient leftInput, GasStackIngredient rightInput,
           GasStack output) {
         if (output.isEmpty()) {
@@ -47,6 +54,13 @@ public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<C
         return new ChemicalChemicalToChemicalRecipeBuilder<>(mekSerializer("chemical_infusing"), leftInput, rightInput, output, ChemicalIngredientDeserializer.GAS);
     }
 
+    /**
+     * Creates a Pigment Mixing recipe builder.
+     *
+     * @param leftInput  Left input.
+     * @param rightInput Right input.
+     * @param output     Output.
+     */
     public static ChemicalChemicalToChemicalRecipeBuilder<Pigment, PigmentStack, PigmentStackIngredient> pigmentMixing(PigmentStackIngredient leftInput,
           PigmentStackIngredient rightInput, PigmentStack output) {
         if (output.isEmpty()) {

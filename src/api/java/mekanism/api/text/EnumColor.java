@@ -10,7 +10,6 @@ import net.minecraft.tags.ITag;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.Tags;
 
 /**
@@ -72,22 +71,36 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
         this.dyeTag = dyeTag;
     }
 
+    /**
+     * Gets the prefix to use in registry names for this color.
+     */
     public String getRegistryPrefix() {
         return registryPrefix;
     }
 
+    /**
+     * Gets the English name of this color.
+     */
     public String getEnglishName() {
         return englishName;
     }
 
+    /**
+     * Gets the material or map color that most closely corresponds to this color.
+     */
     public MaterialColor getMapColor() {
         return mapColor;
     }
 
+    /**
+     * Gets the item tag that corresponds to the dye this color corresponds to.
+     */
     public ITag<Item> getDyeTag() {
+        //TODO - 1.17: Make this nullable and replace hasDyeName with just null checking this
         return dyeTag;
     }
 
+    @Deprecated
     public boolean hasDyeName() {
         return hasCorrespondingDye;
     }
@@ -107,7 +120,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      * @return the color's name
      */
     public IFormattableTextComponent getName() {
-        return new TranslationTextComponent(langEntry.getTranslationKey());
+        return langEntry.translate();
     }
 
     /**
@@ -128,6 +141,9 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
         return rgbCode[index] / 255F;
     }
 
+    /**
+     * Gets the corresponding text color for this color.
+     */
     public Color getColor() {
         return color;
     }
@@ -137,6 +153,11 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
         return code;
     }
 
+    /**
+     * Gets a color by index.
+     *
+     * @param index Index of the color.
+     */
     public static EnumColor byIndexStatic(int index) {
         return MathUtils.getByIndexMod(COLORS, index);
     }
@@ -147,6 +168,13 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
         return byIndexStatic(index);
     }
 
+    /**
+     * Sets the internal color representation of this color from the color atlas.
+     *
+     * @param color Color data.
+     *
+     * @apiNote This method is mostly for <strong>INTERNAL</strong> usage.
+     */
     public void setColorFromAtlas(int[] color) {
         rgbCode = color;
         this.color = Color.fromRgb(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);

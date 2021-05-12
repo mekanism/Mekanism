@@ -13,11 +13,26 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
+/**
+ * Input: ItemStack
+ * <br>
+ * Input: Infuse Type
+ * <br>
+ * Output: ItemStack
+ *
+ * @apiNote Metallurgic Infusers and Infusing Factories can process this recipe type.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemStackRecipe<InfuseType, InfusionStack, InfusionStackIngredient> {
 
+    /**
+     * @param id            Recipe name.
+     * @param itemInput     Item input.
+     * @param infusionInput Infusion input.
+     * @param output        Output.
+     */
     public MetallurgicInfuserRecipe(ResourceLocation id, ItemStackIngredient itemInput, InfusionStackIngredient infusionInput, ItemStack output) {
         super(id, itemInput, infusionInput, output);
     }

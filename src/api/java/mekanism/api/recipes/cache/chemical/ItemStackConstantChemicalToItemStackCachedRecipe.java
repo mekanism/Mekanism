@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache.chemical;
 
+import java.util.Objects;
 import java.util.function.LongSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -15,7 +16,8 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
 /**
- * Unlike {@link ItemStackChemicalToItemStackCachedRecipe} this variant has constant chemical usage.
+ * Base class to help implement handling of chemical chemical to chemical recipes. Unlike {@link ItemStackChemicalToItemStackCachedRecipe} this variant has constant
+ * chemical usage.
  */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -29,13 +31,20 @@ public class ItemStackConstantChemicalToItemStackCachedRecipe<CHEMICAL extends C
     private final LongSupplier chemicalUsage;
     private long chemicalUsageMultiplier;
 
+    /**
+     * @param recipe               Recipe.
+     * @param itemInputHandler     Item input handler.
+     * @param chemicalInputHandler Chemical input handler.
+     * @param chemicalUsage        Chemical usage multiplier, must return values of at least one.
+     * @param outputHandler        Output handler.
+     */
     public ItemStackConstantChemicalToItemStackCachedRecipe(RECIPE recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
           ILongInputHandler<@NonNull STACK> chemicalInputHandler, LongSupplier chemicalUsage, IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
-        this.itemInputHandler = itemInputHandler;
-        this.chemicalInputHandler = chemicalInputHandler;
-        this.chemicalUsage = chemicalUsage;
-        this.outputHandler = outputHandler;
+        this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
+        this.chemicalInputHandler = Objects.requireNonNull(chemicalInputHandler, "Chemical input handler cannot be null.");
+        this.chemicalUsage = Objects.requireNonNull(chemicalUsage, "Chemical usage cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Override

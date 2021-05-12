@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -8,6 +9,9 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Base class to help implement handling of combining recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CombinerCachedRecipe extends CachedRecipe<CombinerRecipe> {
@@ -16,12 +20,18 @@ public class CombinerCachedRecipe extends CachedRecipe<CombinerRecipe> {
     private final IInputHandler<@NonNull ItemStack> inputHandler;
     private final IInputHandler<@NonNull ItemStack> extraInputHandler;
 
+    /**
+     * @param recipe            Recipe.
+     * @param inputHandler      Main input handler.
+     * @param extraInputHandler Secondary/Extra input handler.
+     * @param outputHandler     Output handler.
+     */
     public CombinerCachedRecipe(CombinerRecipe recipe, IInputHandler<@NonNull ItemStack> inputHandler, IInputHandler<@NonNull ItemStack> extraInputHandler,
           IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
-        this.inputHandler = inputHandler;
-        this.extraInputHandler = extraInputHandler;
-        this.outputHandler = outputHandler;
+        this.inputHandler = Objects.requireNonNull(inputHandler, "Main input handler cannot be null.");
+        this.extraInputHandler = Objects.requireNonNull(extraInputHandler, "Secondary/Extra input handler cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Override

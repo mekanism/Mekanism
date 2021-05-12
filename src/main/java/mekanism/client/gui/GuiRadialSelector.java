@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.IDisableableEnum;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,7 +17,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.opengl.GL11;
 
 public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> extends Screen {
@@ -35,7 +35,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     private TYPE selection = null;
 
     public GuiRadialSelector(Class<TYPE> enumClass, Supplier<TYPE> curSupplier, Consumer<TYPE> changeHandler) {
-        super(new StringTextComponent("Radial Selector Screen"));
+        super(MekanismLang.RADIAL_SCREEN.translate());
         this.enumClass = enumClass;
         this.curSupplier = curSupplier;
         this.changeHandler = changeHandler;

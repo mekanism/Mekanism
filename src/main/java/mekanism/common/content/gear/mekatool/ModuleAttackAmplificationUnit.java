@@ -9,9 +9,9 @@ import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 @ParametersAreNonnullByDefault
 public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttackAmplificationUnit> {
@@ -48,7 +48,7 @@ public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttack
 
         AttackDamage(int damage) {
             this.damage = damage;
-            this.label = new StringTextComponent(Integer.toString(damage));
+            this.label = TextComponentUtil.getString(Integer.toString(damage));
         }
 
         @Override

@@ -263,7 +263,7 @@ public abstract class BasicChemicalTank<CHEMICAL extends Chemical<CHEMICAL>, STA
 
     @Override
     public ChemicalAttributeValidator getAttributeValidator() {
-        return attributeValidator != null ? attributeValidator : IChemicalTank.super.getAttributeValidator();
+        return attributeValidator == null ? IChemicalTank.super.getAttributeValidator() : attributeValidator;
     }
 
     /**

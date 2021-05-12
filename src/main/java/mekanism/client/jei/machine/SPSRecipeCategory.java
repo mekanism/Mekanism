@@ -57,13 +57,13 @@ public class SPSRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
     @Override
     public void setIngredients(GasToGasRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.getOutputRepresentation());
+        ingredients.setOutputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getOutputDefinition()));
     }
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, GasToGasRecipe recipe, @Nonnull IIngredients ingredients) {
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initChemical(gasStacks, 0, true, input, recipe.getInput().getRepresentations());
-        initChemical(gasStacks, 2, false, output, Collections.singletonList(recipe.getOutputRepresentation()));
+        initChemical(gasStacks, 2, false, output, recipe.getOutputDefinition());
     }
 }

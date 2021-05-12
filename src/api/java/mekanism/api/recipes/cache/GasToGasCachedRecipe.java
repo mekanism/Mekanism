@@ -11,10 +11,18 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 
+/**
+ * Base class to help implement handling of gas to gas recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GasToGasCachedRecipe extends ChemicalToChemicalCachedRecipe<Gas, GasStack, GasStackIngredient, GasToGasRecipe> {
 
+    /**
+     * @param recipe        Recipe.
+     * @param inputHandler  Input handler.
+     * @param outputHandler Output handler.
+     */
     public GasToGasCachedRecipe(GasToGasRecipe recipe, IInputHandler<@NonNull GasStack> inputHandler, IOutputHandler<@NonNull GasStack> outputHandler) {
         super(recipe, inputHandler, outputHandler);
     }

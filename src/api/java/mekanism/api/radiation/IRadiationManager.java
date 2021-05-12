@@ -12,7 +12,10 @@ import net.minecraft.util.DamageSource;
 
 /**
  * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
- * equivalent dose. For reference, here are examples of equivalent dose (credit: wikipedia)
+ * equivalent dose. Get an instance from {@link mekanism.api.MekanismAPI#getRadiationManager()}.
+ *
+ * <br><br>
+ * For reference, here are examples of equivalent dose (credit: wikipedia)
  * <ul>
  * <li>100 nSv: baseline dose (banana equivalent dose)</li>
  * <li>250 nSv: airport security screening</li>

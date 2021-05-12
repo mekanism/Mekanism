@@ -11,6 +11,7 @@ import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -21,7 +22,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 @ParametersAreNonnullByDefault
 public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneticAttractionUnit> {
@@ -93,7 +93,7 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
 
         Range(float boost) {
             this.range = boost;
-            this.label = new StringTextComponent(Float.toString(boost));
+            this.label = TextComponentUtil.getString(Float.toString(boost));
         }
 
         @Override

@@ -26,6 +26,12 @@ public class FluidToFluidRecipeBuilder extends MekanismRecipeBuilder<FluidToFlui
         this.output = output;
     }
 
+    /**
+     * Creates an Evaporating recipe builder.
+     *
+     * @param input  Input.
+     * @param output Output.
+     */
     public static FluidToFluidRecipeBuilder evaporating(FluidStackIngredient input, FluidStack output) {
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This evaporating recipe requires a non empty fluid output.");

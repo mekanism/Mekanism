@@ -23,6 +23,7 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IModuleDataProvider;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registries.MekanismItems;
@@ -34,7 +35,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.InterModComms;
 
@@ -209,7 +209,7 @@ public class ModuleHelper implements IModuleHelper {
 
     @Override
     public IHUDElement hudElementPercent(ResourceLocation icon, double ratio) {
-        return hudElement(icon, new StringTextComponent(TextUtils.getPercent(ratio)), ratio > 0.2 ? HUDColor.REGULAR : (ratio > 0.1 ? HUDColor.WARNING : HUDColor.DANGER));
+        return hudElement(icon, TextComponentUtil.getString(TextUtils.getPercent(ratio)), ratio > 0.2 ? HUDColor.REGULAR : (ratio > 0.1 ? HUDColor.WARNING : HUDColor.DANGER));
     }
 
     @Override

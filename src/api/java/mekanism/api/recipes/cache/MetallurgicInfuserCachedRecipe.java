@@ -11,12 +11,21 @@ import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Base class to help implement handling of item infuse type to item recipes.
+ */
 @ParametersAreNonnullByDefault
 public class MetallurgicInfuserCachedRecipe extends ItemStackChemicalToItemStackCachedRecipe<InfuseType, InfusionStack, InfusionStackIngredient, MetallurgicInfuserRecipe> {
 
-    //TODO - 1.17: Change the order of infusion input handler and item input handler
+    /**
+     * @param recipe               Recipe.
+     * @param itemInputHandler     Item input handler.
+     * @param infusionInputHandler Infusion input handler.
+     * @param outputHandler        Output handler.
+     */
     public MetallurgicInfuserCachedRecipe(MetallurgicInfuserRecipe recipe, IInputHandler<@NonNull InfusionStack> infusionInputHandler,
           IInputHandler<@NonNull ItemStack> itemInputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe, itemInputHandler, infusionInputHandler, outputHandler);
+        //TODO - 1.17: Change the order of infusion input handler and item input handler
     }
 }

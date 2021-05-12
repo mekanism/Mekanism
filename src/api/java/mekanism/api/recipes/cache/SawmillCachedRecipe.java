@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -9,6 +10,9 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Base class to help implement handling of sawing recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class SawmillCachedRecipe extends CachedRecipe<SawmillRecipe> {
@@ -16,10 +20,15 @@ public class SawmillCachedRecipe extends CachedRecipe<SawmillRecipe> {
     private final IOutputHandler<@NonNull ChanceOutput> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
+    /**
+     * @param recipe        Recipe.
+     * @param inputHandler  Input handler.
+     * @param outputHandler Output handler.
+     */
     public SawmillCachedRecipe(SawmillRecipe recipe, IInputHandler<@NonNull ItemStack> inputHandler, IOutputHandler<@NonNull ChanceOutput> outputHandler) {
         super(recipe);
-        this.inputHandler = inputHandler;
-        this.outputHandler = outputHandler;
+        this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Override

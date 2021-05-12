@@ -40,6 +40,7 @@ public class WrappedDeferredRegister<T extends IForgeRegistryEntry<T>> {
      * Only call this from mekanism and for custom registries
      */
     public void createAndRegisterWithTags(IEventBus bus, String name, String tagFolder) {
+        //TODO - 10.1: Should we set a default key for chemicals
         internal.makeRegistry(name, () -> new RegistryBuilder<T>().tagFolder(tagFolder));
         register(bus);
     }

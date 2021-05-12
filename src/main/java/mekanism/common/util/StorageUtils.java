@@ -36,7 +36,6 @@ import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -258,7 +257,7 @@ public class StorageUtils {
     public static ITextComponent getStoragePercent(double ratio, boolean colorText) {
         String text = TextUtils.getPercent(ratio);
         if (!colorText) {
-            return new StringTextComponent(text);
+            return TextComponentUtil.getString(text);
         }
         EnumColor color;
         if (ratio < 0.01F) {

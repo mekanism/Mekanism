@@ -47,6 +47,13 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         this.chemicalInputKey = chemicalInputKey;
     }
 
+    /**
+     * Creates a Compressing recipe builder.
+     *
+     * @param itemInput Item Input.
+     * @param gasInput  Gas Input, used at a constant rate over the duration of the recipe.
+     * @param output    Output.
+     */
     public static ItemStackChemicalToItemStackRecipeBuilder<Gas, GasStack, GasStackIngredient> compressing(ItemStackIngredient itemInput, GasStackIngredient gasInput,
           ItemStack output) {
         if (output.isEmpty()) {
@@ -55,6 +62,13 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("compressing"), itemInput, gasInput, output, JsonConstants.GAS_INPUT);
     }
 
+    /**
+     * Creates a Purifying recipe builder.
+     *
+     * @param itemInput Item Input.
+     * @param gasInput  Gas Input, used at a near constant rate over the duration of the recipe.
+     * @param output    Output.
+     */
     public static ItemStackChemicalToItemStackRecipeBuilder<Gas, GasStack, GasStackIngredient> purifying(ItemStackIngredient itemInput, GasStackIngredient gasInput,
           ItemStack output) {
         if (output.isEmpty()) {
@@ -63,6 +77,13 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("purifying"), itemInput, gasInput, output, JsonConstants.GAS_INPUT);
     }
 
+    /**
+     * Creates an Injecting recipe builder.
+     *
+     * @param itemInput Item Input.
+     * @param gasInput  Gas Input, used at a near constant rate over the duration of the recipe.
+     * @param output    Output.
+     */
     public static ItemStackChemicalToItemStackRecipeBuilder<Gas, GasStack, GasStackIngredient> injecting(ItemStackIngredient itemInput, GasStackIngredient gasInput,
           ItemStack output) {
         if (output.isEmpty()) {
@@ -71,6 +92,13 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("injecting"), itemInput, gasInput, output, JsonConstants.GAS_INPUT);
     }
 
+    /**
+     * Creates a Metallurgic Infusing recipe builder.
+     *
+     * @param itemInput     Item Input.
+     * @param infusionInput Infusion Input.
+     * @param output        Output.
+     */
     public static ItemStackChemicalToItemStackRecipeBuilder<InfuseType, InfusionStack, InfusionStackIngredient> metallurgicInfusing(ItemStackIngredient itemInput,
           InfusionStackIngredient infusionInput, ItemStack output) {
         if (output.isEmpty()) {
@@ -79,6 +107,13 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("metallurgic_infusing"), itemInput, infusionInput, output, JsonConstants.INFUSION_INPUT);
     }
 
+    /**
+     * Creates a Painting recipe builder.
+     *
+     * @param itemInput    Item Input.
+     * @param pigmentInput Pigment Input.
+     * @param output       Output.
+     */
     public static ItemStackChemicalToItemStackRecipeBuilder<Pigment, PigmentStack, PigmentStackIngredient> painting(ItemStackIngredient itemInput,
           PigmentStackIngredient pigmentInput, ItemStack output) {
         if (output.isEmpty()) {
@@ -92,6 +127,11 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         return new ItemStackChemicalToItemStackRecipeResult(id);
     }
 
+    /**
+     * Builds this recipe using the output item's name as the recipe name.
+     *
+     * @param consumer Finished Recipe Consumer.
+     */
     public void build(Consumer<IFinishedRecipe> consumer) {
         build(consumer, output.getItem().getRegistryName());
     }

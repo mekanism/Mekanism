@@ -4,10 +4,10 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.SpecialColors;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface IFancyFontRenderer {
@@ -82,7 +82,7 @@ public interface IFancyFontRenderer {
     }
 
     default void drawTextScaledBound(MatrixStack matrix, String text, float x, float y, int color, float maxLength) {
-        drawTextScaledBound(matrix, new StringTextComponent(text), x, y, color, maxLength);
+        drawTextScaledBound(matrix, TextComponentUtil.getString(text), x, y, color, maxLength);
     }
 
     default void drawTextScaledBound(MatrixStack matrix, ITextComponent component, float x, float y, int color, float maxLength) {
@@ -148,7 +148,7 @@ public interface IFancyFontRenderer {
                 addWord(maxLength);
             }
             if (lineBuilder.length() > 0) {
-                linesToDraw.add(Pair.of(new StringTextComponent(lineBuilder.toString()), lineLength));
+                linesToDraw.add(Pair.of(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
             }
             float startY = y;
             for (Pair<ITextComponent, Float> p : linesToDraw) {
@@ -161,7 +161,7 @@ public interface IFancyFontRenderer {
             // ignore spacing if this is the first word of the line
             float spacingLength = lineBuilder.length() == 0 ? 0 : SPACE_LENGTH;
             if (lineLength + spacingLength + wordLength > maxLength) {
-                linesToDraw.add(Pair.of(new StringTextComponent(lineBuilder.toString()), lineLength));
+                linesToDraw.add(Pair.of(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
                 lineBuilder = new StringBuilder(wordBuilder);
                 lineLength = wordLength;
             } else {

@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache.chemical;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -12,6 +13,9 @@ import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.item.ItemStack;
 
+/**
+ * Base class to help implement handling of item chemical to item recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
@@ -22,12 +26,18 @@ public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<
     private final IInputHandler<@NonNull STACK> chemicalInputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
 
+    /**
+     * @param recipe               Recipe.
+     * @param itemInputHandler     Item input handler.
+     * @param chemicalInputHandler Chemical input handler.
+     * @param outputHandler        Output handler.
+     */
     public ItemStackChemicalToItemStackCachedRecipe(RECIPE recipe, IInputHandler<@NonNull ItemStack> itemInputHandler, IInputHandler<@NonNull STACK> chemicalInputHandler,
           IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
-        this.chemicalInputHandler = chemicalInputHandler;
-        this.itemInputHandler = itemInputHandler;
-        this.outputHandler = outputHandler;
+        this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
+        this.chemicalInputHandler = Objects.requireNonNull(chemicalInputHandler, "Chemical input handler cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Override

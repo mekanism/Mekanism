@@ -1,5 +1,6 @@
 package mekanism.api.recipes.inputs;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
@@ -19,13 +20,19 @@ public class InputHelper {
     private InputHelper() {
     }
 
-    public static IInputHandler<@NonNull ItemStack> getInputHandler(IInventorySlot inventorySlot) {
+    /**
+     * Wrap an inventory slot into an {@link IInputHandler}.
+     *
+     * @param slot Slot to wrap.
+     */
+    public static IInputHandler<@NonNull ItemStack> getInputHandler(IInventorySlot slot) {
+        Objects.requireNonNull(slot, "Slot cannot be null.");
         return new IInputHandler<@NonNull ItemStack>() {
 
             @Nonnull
             @Override
             public ItemStack getInput() {
-                return inventorySlot.getStack();
+                return slot.getStack();
             }
 
             @Nonnull
@@ -47,7 +54,7 @@ public class InputHelper {
                 }
                 if (!recipeInput.isEmpty()) {
                     int amount = recipeInput.getCount() * operations;
-                    logMismatchedStackSize(inventorySlot.shrinkStack(amount, Action.EXECUTE), amount);
+                    logMismatchedStackSize(slot.shrinkStack(amount, Action.EXECUTE), amount);
                 }
             }
 
@@ -68,7 +75,13 @@ public class InputHelper {
         };
     }
 
+    /**
+     * Wrap a chemical tank into an {@link ILongInputHandler}.
+     *
+     * @param tank Tank to wrap.
+     */
     public static <STACK extends ChemicalStack<?>> ILongInputHandler<@NonNull STACK> getInputHandler(IChemicalTank<?, STACK> tank) {
+        Objects.requireNonNull(tank, "Tank cannot be null.");
         return new ILongInputHandler<@NonNull STACK>() {
 
             @Nonnull
@@ -120,13 +133,19 @@ public class InputHelper {
         };
     }
 
-    public static IInputHandler<@NonNull FluidStack> getInputHandler(IExtendedFluidTank fluidTank) {
+    /**
+     * Wrap a fluid tank into an {@link IInputHandler}.
+     *
+     * @param tank Tank to wrap.
+     */
+    public static IInputHandler<@NonNull FluidStack> getInputHandler(IExtendedFluidTank tank) {
+        Objects.requireNonNull(tank, "Tank cannot be null.");
         return new IInputHandler<@NonNull FluidStack>() {
 
             @Nonnull
             @Override
             public FluidStack getInput() {
-                return fluidTank.getFluid();
+                return tank.getFluid();
             }
 
             @Nonnull
@@ -150,7 +169,7 @@ public class InputHelper {
                 FluidStack inputFluid = getInput();
                 if (!inputFluid.isEmpty()) {
                     int amount = recipeInput.getAmount() * operations;
-                    logMismatchedStackSize(fluidTank.shrinkStack(amount, Action.EXECUTE), amount);
+                    logMismatchedStackSize(tank.shrinkStack(amount, Action.EXECUTE), amount);
                 }
             }
 

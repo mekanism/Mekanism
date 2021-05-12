@@ -4,6 +4,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
 
+/**
+ * Interface for helping implementing objects that can handle cached recipes.
+ */
 public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
 
     /**

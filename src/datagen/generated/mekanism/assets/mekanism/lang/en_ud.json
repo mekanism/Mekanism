@@ -781,6 +781,7 @@
   "gui.mekanism.process_rate": "%s :\u01DD\u0287\u0250\u1D1A ss\u01DD\u0254o\u0279\u0500",
   "gui.mekanism.process_rate_mb": "\u0287/\u15FA\u026F %s :\u01DD\u0287\u0250\u1D1A ss\u01DD\u0254o\u0279\u0500",
   "gui.mekanism.progress": "%s :ss\u01DD\u0279\u1D77o\u0279\u0500",
+  "gui.mekanism.radial_screen": "u\u01DD\u01DD\u0279\u0254S \u0279o\u0287\u0254\u01DD\uA781\u01DDS \uA781\u0250\u1D09p\u0250\u1D1A",
   "gui.mekanism.radiation_dose": "%s :\u01DDso\u15E1 uo\u1D09\u0287\u0250\u1D09p\u0250\u1D1A",
   "gui.mekanism.radiation_exposure": "%s :\u01DD\u0279nsodx\u018E uo\u1D09\u0287\u0250\u1D09p\u0250\u1D1A",
   "gui.mekanism.rgb": ":\u15FA\u2141\u1D1A",

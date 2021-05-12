@@ -141,7 +141,7 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
             MekanismRecipeType<? extends ItemStackToChemicalRecipe<CHEMICAL, STACK>, ?> recipeType = getConversionRecipeType();
             if (recipeType != null) {
                 for (ItemStackToChemicalRecipe<CHEMICAL, STACK> recipe : recipeType.getRecipes(world)) {
-                    if (recipe.getOutputDefinition().isTypeEqual(type)) {
+                    if (recipe.getOutputDefinitionNew().stream().anyMatch(output -> output.isTypeEqual(type))) {
                         stacks.addAll(recipe.getInput().getRepresentations());
                     }
                 }

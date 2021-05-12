@@ -22,12 +22,28 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.crafting.NBTIngredient;
 
+/**
+ * Base implementation for how Mekanism handle's ItemStack Ingredients.
+ */
 public abstract class ItemStackIngredient implements InputIngredient<@NonNull ItemStack> {
 
+    /**
+     * Creates an Item Stack Ingredient that matches a given item stack.
+     *
+     * @param stack Item stack to match.
+     */
     public static ItemStackIngredient from(@Nonnull ItemStack stack) {
         return from(stack, stack.getCount());
     }
 
+    /**
+     * Creates an Item Stack Ingredient that matches a given item stack with a specified amount.
+     *
+     * @param stack  Item stack to match.
+     * @param amount Amount needed.
+     *
+     * @apiNote If the amount needed is the same as the stack's size, {@link #from(ItemStack)} can be used instead.
+     */
     public static ItemStackIngredient from(@Nonnull ItemStack stack, int amount) {
         //Support NBT that is on the stack in case it matters
         //It is a protected constructor so pretend we are extending it and implementing it via the {}
@@ -36,39 +52,89 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         return from(ingredient, amount);
     }
 
+    /**
+     * Creates an Item Stack Ingredient that matches a provided item.
+     *
+     * @param item Item provider that provides the item to match.
+     */
     public static ItemStackIngredient from(@Nonnull IItemProvider item) {
         return from(item, 1);
     }
 
+    /**
+     * Creates an Item Stack Ingredient that matches a provided item and amount.
+     *
+     * @param item   Item provider that provides the item to match.
+     * @param amount Amount needed.
+     */
     public static ItemStackIngredient from(@Nonnull IItemProvider item, int amount) {
         return from(new ItemStack(item), amount);
     }
 
-    public static ItemStackIngredient from(@Nonnull ITag<Item> itemTag) {
-        return from(itemTag, 1);
+    /**
+     * Creates an Item Stack Ingredient that matches a given item tag.
+     *
+     * @param tag Tag to match.
+     */
+    public static ItemStackIngredient from(@Nonnull ITag<Item> tag) {
+        return from(tag, 1);
     }
 
-    public static ItemStackIngredient from(@Nonnull ITag<Item> itemTag, int amount) {
-        return from(Ingredient.of(itemTag), amount);
+    /**
+     * Creates an Item Stack Ingredient that matches a given item tag and amount.
+     *
+     * @param tag    Tag to match.
+     * @param amount Amount needed.
+     */
+    public static ItemStackIngredient from(@Nonnull ITag<Item> tag, int amount) {
+        return from(Ingredient.of(tag), amount);
     }
 
+    /**
+     * Creates an Item Stack Ingredient that matches a given ingredient.
+     *
+     * @param ingredient Ingredient to match.
+     */
     public static ItemStackIngredient from(@Nonnull Ingredient ingredient) {
         return from(ingredient, 1);
     }
 
+    /**
+     * Creates an Item Stack Ingredient that matches a given ingredient and amount.
+     *
+     * @param ingredient Ingredient to match.
+     * @param amount     Amount needed.
+     */
     public static ItemStackIngredient from(@Nonnull Ingredient ingredient, int amount) {
         return new Single(ingredient, amount);
     }
 
+    /**
+     * Reads an Item Stack Ingredient from a Packet Buffer.
+     *
+     * @param buffer Buffer to read from.
+     *
+     * @return Item Stack Ingredient.
+     */
     public static ItemStackIngredient read(PacketBuffer buffer) {
-        //TODO: Allow supporting serialization of different types than just the ones we implement?
         IngredientType type = buffer.readEnum(IngredientType.class);
         if (type == IngredientType.SINGLE) {
-            return Single.read(buffer);
+            return from(Ingredient.fromNetwork(buffer), buffer.readVarInt());
         }
-        return Multi.read(buffer);
+        ItemStackIngredient[] ingredients = new ItemStackIngredient[buffer.readVarInt()];
+        for (int i = 0; i < ingredients.length; i++) {
+            ingredients[i] = ItemStackIngredient.read(buffer);
+        }
+        return createMulti(ingredients);
     }
 
+    /**
+     * Helper to deserialize a Json Object into an Item Stack Ingredient.
+     *
+     * @param json Json object to deserialize.
+     *
+     * @return Item Stack Ingredient.
+     */
     public static ItemStackIngredient deserialize(@Nullable JsonElement json) {
         if (json == null || json.isJsonNull()) {
             throw new JsonSyntaxException("Ingredient cannot be null");
@@ -110,9 +176,16 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         return from(ingredient, amount);
     }
 
+    /**
+     * Combines multiple Item Stack Ingredients into a single Item Stack Ingredient.
+     *
+     * @param ingredients Ingredients to combine.
+     *
+     * @return Combined Item Stack Ingredient.
+     */
     public static ItemStackIngredient createMulti(ItemStackIngredient... ingredients) {
         if (ingredients.length == 0) {
-            //TODO: Throw error
+            throw new IllegalArgumentException("Cannot create a multi ingredient out of no ingredients.");
         } else if (ingredients.length == 1) {
             return ingredients[0];
         }
@@ -136,7 +209,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         private final Ingredient ingredient;
         private final int amount;
 
-        public Single(@Nonnull Ingredient ingredient, int amount) {
+        private Single(@Nonnull Ingredient ingredient, int amount) {
             this.ingredient = Objects.requireNonNull(ingredient);
             this.amount = amount;
         }
@@ -208,17 +281,13 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
             json.add(JsonConstants.INGREDIENT, ingredient.toJson());
             return json;
         }
-
-        public static Single read(PacketBuffer buffer) {
-            return new Single(Ingredient.fromNetwork(buffer), buffer.readVarInt());
-        }
     }
 
     public static class Multi extends ItemStackIngredient {
 
         private final ItemStackIngredient[] ingredients;
 
-        protected Multi(@Nonnull ItemStackIngredient... ingredients) {
+        private Multi(@Nonnull ItemStackIngredient... ingredients) {
             this.ingredients = ingredients;
         }
 
@@ -295,14 +364,6 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
                 json.add(ingredient.serialize());
             }
             return json;
-        }
-
-        public static ItemStackIngredient read(PacketBuffer buffer) {
-            ItemStackIngredient[] ingredients = new ItemStackIngredient[buffer.readVarInt()];
-            for (int i = 0; i < ingredients.length; i++) {
-                ingredients[i] = ItemStackIngredient.read(buffer);
-            }
-            return createMulti(ingredients);
         }
     }
 

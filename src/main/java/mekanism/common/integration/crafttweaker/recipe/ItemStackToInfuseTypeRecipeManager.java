@@ -5,6 +5,7 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.ItemStackToInfuseTypeRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -42,7 +43,7 @@ public abstract class ItemStackToInfuseTypeRecipeManager extends MekanismRecipeM
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return new CrTInfusionStack(getRecipe().getOutputDefinition()).toString();
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinitionNew(), CrTInfusionStack::new);
             }
         };
     }

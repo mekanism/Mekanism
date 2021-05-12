@@ -45,12 +45,24 @@ public class MekanismAPI {
     //Note: None of the empty variants support registry replacement
     //TODO - 1.17: Rename registry names for the empty types to just being mekanism:empty instead of mekanism:empty_type,
     // and also potentially define these with ObjectHolder for purposes of fully defining them outside of the API
+    /**
+     * Empty Gas instance.
+     */
     @Nonnull
     public static final Gas EMPTY_GAS = new EmptyGas();
+    /**
+     * Empty Infuse Type instance.
+     */
     @Nonnull
     public static final InfuseType EMPTY_INFUSE_TYPE = new EmptyInfuseType();
+    /**
+     * Empty Pigment instance.
+     */
     @Nonnull
     public static final Pigment EMPTY_PIGMENT = new EmptyPigment();
+    /**
+     * Empty Slurry instance.
+     */
     @Nonnull
     public static final Slurry EMPTY_SLURRY = new EmptySlurry();
 

@@ -5,17 +5,18 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.annotation.Nullable;
+import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.gauge.GuiPigmentGauge;
-import mekanism.client.gui.element.progress.GuiProgress.ColorDetails;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.JEIColorDetails;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
@@ -82,24 +83,18 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
         this.ingredients.put(recipe, pigmentStacks);
     }
 
-    private static class PigmentColorDetails implements ColorDetails {
+    private static class PigmentColorDetails extends JEIColorDetails<Pigment, PigmentStack> {
 
         @Nullable
         private IGuiIngredient<PigmentStack> ingredient;
 
+        private PigmentColorDetails() {
+            super(PigmentStack.EMPTY);
+        }
+
         @Override
         public int getColorFrom() {
-            if (ingredient != null) {
-                PigmentStack stack = ingredient.getDisplayedIngredient();
-                if (stack != null) {
-                    int tint = stack.getChemicalColorRepresentation();
-                    if ((tint & 0xFF000000) == 0) {
-                        return 0xFF000000 | tint;
-                    }
-                    return tint;
-                }
-            }
-            return 0xFFFFFFFF;
+            return getColor(ingredient);
         }
 
         @Override

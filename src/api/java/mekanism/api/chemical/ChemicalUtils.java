@@ -23,6 +23,12 @@ import net.minecraftforge.registries.IForgeRegistry;
 @MethodsReturnNonnullByDefault
 public class ChemicalUtils {
 
+    /**
+     * Writes a Chemical Stack to a Packet Buffer.
+     *
+     * @param buffer Buffer to write to.
+     * @param stack  Stack to write.
+     */
     public static void writeChemicalStack(PacketBuffer buffer, ChemicalStack<?> stack) {
         if (stack.isEmpty()) {
             buffer.writeBoolean(false);
@@ -32,22 +38,60 @@ public class ChemicalUtils {
         }
     }
 
+    /**
+     * Reads a Gas Stack from a buffer.
+     *
+     * @param buffer Buffer to read from.
+     *
+     * @return Gas Stack.
+     */
     public static GasStack readGasStack(PacketBuffer buffer) {
         return buffer.readBoolean() ? GasStack.readFromPacket(buffer) : GasStack.EMPTY;
     }
 
+    /**
+     * Reads an Infusion Stack from a buffer.
+     *
+     * @param buffer Buffer to read from.
+     *
+     * @return Infusion Stack.
+     */
     public static InfusionStack readInfusionStack(PacketBuffer buffer) {
         return buffer.readBoolean() ? InfusionStack.readFromPacket(buffer) : InfusionStack.EMPTY;
     }
 
+    /**
+     * Reads a Pigment Stack from a buffer.
+     *
+     * @param buffer Buffer to read from.
+     *
+     * @return Pigment Stack.
+     */
     public static PigmentStack readPigmentStack(PacketBuffer buffer) {
         return buffer.readBoolean() ? PigmentStack.readFromPacket(buffer) : PigmentStack.EMPTY;
     }
 
+    /**
+     * Reads a Slurry Stack from a buffer.
+     *
+     * @param buffer Buffer to read from.
+     *
+     * @return Slurry Stack.
+     */
     public static SlurryStack readSlurryStack(PacketBuffer buffer) {
         return buffer.readBoolean() ? SlurryStack.readFromPacket(buffer) : SlurryStack.EMPTY;
     }
 
+    /**
+     * Helper to read a chemical from NBT and if it isn't present fallback to the empty chemical.
+     *
+     * @param nbtTags        NBT.
+     * @param empty          Empty instance.
+     * @param nbtName        Name of the chemical.
+     * @param registryLookup Registry lookup.
+     *
+     * @return Chemical.
+     */
     public static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL readChemicalFromNBT(@Nullable CompoundNBT nbtTags, CHEMICAL empty, String nbtName,
           Function<ResourceLocation, CHEMICAL> registryLookup) {
         if (nbtTags == null || nbtTags.isEmpty()) {
@@ -56,6 +100,15 @@ public class ChemicalUtils {
         return registryLookup.apply(new ResourceLocation(nbtTags.getString(nbtName)));
     }
 
+    /**
+     * Helper to read a chemical from a registry and if it isn't present fallback to the empty chemical.
+     *
+     * @param name     Name of the chemical.
+     * @param empty    Empty instance.
+     * @param registry Registry.
+     *
+     * @return Chemical.
+     */
     public static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL readChemicalFromRegistry(@Nullable ResourceLocation name, CHEMICAL empty,
           IForgeRegistry<CHEMICAL> registry) {
         if (name == null) {

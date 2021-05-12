@@ -12,11 +12,11 @@ import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 
 @ParametersAreNonnullByDefault
 public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcavationEscalationUnit> {
@@ -68,7 +68,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
 
         ExcavationMode(int efficiency) {
             this.efficiency = efficiency;
-            this.label = new StringTextComponent(Integer.toString(efficiency));
+            this.label = TextComponentUtil.getString(Integer.toString(efficiency));
         }
 
         @Nonnull

@@ -22,11 +22,22 @@ public class TextComponentUtil {
     private TextComponentUtil() {
     }
 
-    @Deprecated//TODO - 10.1: Remove this
+    /**
+     * @deprecated Use {@link ITextComponent#copy()}.
+     */
+    @Deprecated//TODO - 1.17: Remove this
     public static IFormattableTextComponent getFormattableComponent(ITextComponent component) {
-        return component instanceof IFormattableTextComponent ? (IFormattableTextComponent) component : component.copy();
+        return component.copy();
     }
 
+    /**
+     * Builds a formattable text component out of a list of components using a "smart" combination system to allow for automatic replacements, and coloring to take
+     * place.
+     *
+     * @param components Argument components.
+     *
+     * @return Formattable Text Component.
+     */
     public static IFormattableTextComponent build(Object... components) {
         //TODO: Verify that just appending them to the first text component works properly.
         // My suspicion is we will need to chain downwards and append it that way so that the formatting matches
@@ -112,6 +123,13 @@ public class TextComponentUtil {
         return getString(direction.toString());
     }
 
+    /**
+     * Helper to call the constructor for string text components and also convert any non-breaking spaces to spaces so that they render properly.
+     *
+     * @param component String
+     *
+     * @return String Text Component.
+     */
     public static StringTextComponent getString(String component) {
         return new StringTextComponent(cleanString(component));
     }
@@ -120,10 +138,27 @@ public class TextComponentUtil {
         return component.replace("\u00A0", " ");
     }
 
+    /**
+     * Helper to call the constructor for translation text components in case we end up ever needing to do any extra processing.
+     *
+     * @param key  Translation Key.
+     * @param args Arguments.
+     *
+     * @return Translation Text Component.
+     */
     public static TranslationTextComponent translate(String key, Object... args) {
         return new TranslationTextComponent(key, args);
     }
 
+    /**
+     * Smarter version of {@link #translate(String, Object...)} that uses a "smart" replacement scheme for parameters to allow for automatic replacements, and coloring to
+     * take place.
+     *
+     * @param key        Translation Key.
+     * @param components Argument components.
+     *
+     * @return Translation Text Component.
+     */
     public static TranslationTextComponent smartTranslate(String key, Object... components) {
         if (components.length == 0) {
             //If we don't have any args just short circuit to creating the translation key

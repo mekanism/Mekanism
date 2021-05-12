@@ -12,10 +12,19 @@ import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraftforge.fluids.FluidStack;
 
+/**
+ * Base class to help implement handling of fluid slurry to slurry recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class FluidSlurryToSlurryCachedRecipe extends FluidChemicalToChemicalCachedRecipe<Slurry, SlurryStack, SlurryStackIngredient, FluidSlurryToSlurryRecipe> {
 
+    /**
+     * @param recipe             Recipe.
+     * @param fluidInputHandler  Fluid input handler.
+     * @param slurryInputHandler Slurry input handler.
+     * @param outputHandler      Output handler.
+     */
     public FluidSlurryToSlurryCachedRecipe(FluidSlurryToSlurryRecipe recipe, IInputHandler<@NonNull FluidStack> fluidInputHandler,
           IInputHandler<@NonNull SlurryStack> slurryInputHandler, IOutputHandler<@NonNull SlurryStack> outputHandler) {
         super(recipe, fluidInputHandler, slurryInputHandler, outputHandler);

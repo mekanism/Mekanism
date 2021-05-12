@@ -50,11 +50,11 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
         if (condensentrating) {
             if (recipe.hasGasToFluid()) {
                 ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getGasInput().getRepresentations()));
-                ingredients.setOutput(VanillaTypes.FLUID, recipe.getFluidOutputRepresentation());
+                ingredients.setOutputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getFluidOutputDefinition()));
             }
         } else if (recipe.hasFluidToGas()) {
             ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getFluidInput().getRepresentations()));
-            ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.getGasOutputRepresentation());
+            ingredients.setOutputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getGasOutputDefinition()));
         }
     }
 
@@ -65,14 +65,13 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
                 //Setup gas
                 initChemical(recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS), 0, true, gasGauge, recipe.getGasInput().getRepresentations());
                 //Setup fluid
-                initFluid(recipeLayout.getFluidStacks(), 0, true, fluidGauge, Collections.singletonList(recipe.getFluidOutputRepresentation()));
+                initFluid(recipeLayout.getFluidStacks(), 0, true, fluidGauge, recipe.getFluidOutputDefinition());
             }
         } else if (recipe.hasFluidToGas()) {
             //Setup fluid
             initFluid(recipeLayout.getFluidStacks(), 0, false, fluidGauge, recipe.getFluidInput().getRepresentations());
             //Setup gas
-            initChemical(recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS), 0, false, gasGauge,
-                  Collections.singletonList(recipe.getGasOutputRepresentation()));
+            initChemical(recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS), 0, false, gasGauge, recipe.getGasOutputDefinition());
         }
     }
 }

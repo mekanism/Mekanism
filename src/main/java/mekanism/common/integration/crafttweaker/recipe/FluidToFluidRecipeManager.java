@@ -6,6 +6,7 @@ import com.blamejared.crafttweaker.impl.fluid.MCFluidStack;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.FluidToFluidIRecipe;
 import net.minecraft.util.ResourceLocation;
@@ -41,7 +42,7 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return new MCFluidStack(getRecipe().getOutputRepresentation()).toString();
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), MCFluidStack::new);
             }
         };
     }

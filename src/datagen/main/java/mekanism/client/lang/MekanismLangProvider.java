@@ -706,6 +706,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.WARNING, "Warning");
         add(MekanismLang.DANGER, "Danger");
         add(MekanismLang.COMPASS, "Compass");
+        add(MekanismLang.RADIAL_SCREEN, "Radial Selector Screen");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");

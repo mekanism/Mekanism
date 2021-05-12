@@ -5,6 +5,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -44,7 +45,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return new CrTGasStack(getRecipe().getOutputRepresentation()).toString();
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), CrTGasStack::new);
             }
         };
     }

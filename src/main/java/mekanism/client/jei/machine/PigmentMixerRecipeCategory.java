@@ -6,16 +6,17 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.annotation.Nullable;
+import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.gauge.GuiPigmentGauge;
-import mekanism.client.gui.element.progress.GuiProgress.ColorDetails;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
+import mekanism.client.jei.JEIColorDetails;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
@@ -88,36 +89,25 @@ public class PigmentMixerRecipeCategory extends BaseRecipeCategory<PigmentMixing
         this.ingredients.put(recipe, pigmentStacks);
     }
 
-    private static class PigmentColorDetails implements ColorDetails {
+    private static class PigmentColorDetails extends JEIColorDetails<Pigment, PigmentStack> {
 
         @Nullable
         private IGuiIngredient<PigmentStack> ingredient;
         @Nullable
         private IGuiIngredient<PigmentStack> outputIngredient;
 
-        private PigmentStack getCurrent(@Nullable IGuiIngredient<PigmentStack> ingredient) {
-            if (ingredient == null) {
-                return PigmentStack.EMPTY;
-            }
-            PigmentStack stack = ingredient.getDisplayedIngredient();
-            return stack == null ? PigmentStack.EMPTY : stack;
+        private PigmentColorDetails() {
+            super(PigmentStack.EMPTY);
         }
 
         @Override
         public int getColorFrom() {
-            return getColor(getCurrent(ingredient).getChemicalColorRepresentation());
+            return getColor(ingredient);
         }
 
         @Override
         public int getColorTo() {
-            return getColor(getCurrent(outputIngredient).getChemicalColorRepresentation());
-        }
-
-        private int getColor(int tint) {
-            if ((tint & 0xFF000000) == 0) {
-                return 0xFF000000 | tint;
-            }
-            return tint;
+            return getColor(outputIngredient);
         }
     }
 }

@@ -24,7 +24,9 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.registries.ForgeRegistries;
 
-//TODO: We may also want to validate inputs, currently we are not validating our input ingredients as being valid, and are just validating the other parameters
+/**
+ * Base recipe builder that declares various common methods between our different builders.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -40,31 +42,69 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
 
     protected MekanismRecipeBuilder(ResourceLocation serializerName) {
         this.serializerName = serializerName;
+        //TODO: We may also want to validate inputs, currently we are not validating our input ingredients as being valid, and are just validating the other parameters
     }
 
+    /**
+     * Adds a criterion to this recipe.
+     *
+     * @param criterion Criterion to add.
+     */
     public BUILDER addCriterion(RecipeCriterion criterion) {
         return addCriterion(criterion.name, criterion.criterion);
     }
 
+    /**
+     * Adds a criterion to this recipe.
+     *
+     * @param name      Name of the criterion.
+     * @param criterion Criterion to add.
+     */
     public BUILDER addCriterion(String name, ICriterionInstance criterion) {
         advancementBuilder.addCriterion(name, criterion);
         return (BUILDER) this;
     }
 
+    /**
+     * Adds a condition to this recipe.
+     *
+     * @param condition Condition to add.
+     */
     public BUILDER addCondition(ICondition condition) {
         conditions.add(condition);
         return (BUILDER) this;
     }
 
+    /**
+     * Checks if this recipe has any criteria.
+     *
+     * @return {@code true} if this recipe has any criteria.
+     */
     protected boolean hasCriteria() {
         return !advancementBuilder.getCriteria().isEmpty();
     }
 
+    /**
+     * Gets a recipe result object.
+     *
+     * @param id ID of the recipe being built.
+     */
     protected abstract RecipeResult getResult(ResourceLocation id);
 
+    /**
+     * Performs any extra validation.
+     *
+     * @param id ID of the recipe validation is being performed on.
+     */
     protected void validate(ResourceLocation id) {
     }
 
+    /**
+     * Builds this recipe.
+     *
+     * @param consumer Finished Recipe Consumer.
+     * @param id       Name of the recipe being built.
+     */
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
         validate(id);
         if (hasCriteria()) {
@@ -75,6 +115,9 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         consumer.accept(getResult(id));
     }
 
+    /**
+     * Base recipe result.
+     */
     protected abstract class RecipeResult implements IFinishedRecipe {
 
         private final ResourceLocation id;

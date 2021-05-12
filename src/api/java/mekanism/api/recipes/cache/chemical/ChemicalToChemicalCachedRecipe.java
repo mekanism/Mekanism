@@ -1,5 +1,6 @@
 package mekanism.api.recipes.cache.chemical;
 
+import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -11,6 +12,9 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 
+/**
+ * Base class to help implement handling of chemical to chemical recipes.
+ */
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
@@ -19,10 +23,15 @@ public class ChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>,
     private final IOutputHandler<@NonNull STACK> outputHandler;
     private final IInputHandler<@NonNull STACK> inputHandler;
 
+    /**
+     * @param recipe        Recipe.
+     * @param inputHandler  Input handler.
+     * @param outputHandler Output handler.
+     */
     public ChemicalToChemicalCachedRecipe(RECIPE recipe, IInputHandler<@NonNull STACK> inputHandler, IOutputHandler<@NonNull STACK> outputHandler) {
         super(recipe);
-        this.inputHandler = inputHandler;
-        this.outputHandler = outputHandler;
+        this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
+        this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
     }
 
     @Override

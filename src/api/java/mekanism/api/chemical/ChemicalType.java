@@ -48,19 +48,45 @@ public enum ChemicalType implements IStringSerializable {
         return name;
     }
 
+    /**
+     * Checks if the given chemical is an instance of this Chemical Type.
+     *
+     * @param chemical Chemical to check.
+     *
+     * @return {@code true} if the given chemical is an instance.
+     */
     public boolean isInstance(Chemical<?> chemical) {
         return instanceCheck.test(chemical);
     }
 
+    /**
+     * Writes a Chemical Type to NBT.
+     *
+     * @param nbt Tag to write to.
+     */
     public void write(@Nonnull CompoundNBT nbt) {
         nbt.putString(NBTConstants.CHEMICAL_TYPE, getSerializedName());
     }
 
+    /**
+     * Gets a chemical type by name.
+     *
+     * @param name Name of the chemical type.
+     *
+     * @return Chemical Type.
+     */
     @Nullable
     public static ChemicalType fromString(String name) {
         return nameToType.get(name);
     }
 
+    /**
+     * Reads a Chemical Type from NBT.
+     *
+     * @param nbt NBT.
+     *
+     * @return Chemical Type.
+     */
     @Nullable
     public static ChemicalType fromNBT(@Nullable CompoundNBT nbt) {
         if (nbt != null && nbt.contains(NBTConstants.CHEMICAL_TYPE, NBT.TAG_STRING)) {
@@ -69,6 +95,13 @@ public enum ChemicalType implements IStringSerializable {
         return null;
     }
 
+    /**
+     * Gets the Chemical Type of a chemical.
+     *
+     * @param chemical Chemical.
+     *
+     * @return Chemical Type.
+     */
     public static ChemicalType getTypeFor(Chemical<?> chemical) {
         if (chemical instanceof Gas) {
             return GAS;
@@ -82,10 +115,24 @@ public enum ChemicalType implements IStringSerializable {
         throw new IllegalStateException("Unknown chemical type");
     }
 
+    /**
+     * Gets the Chemical Type of a chemical stack.
+     *
+     * @param stack Stack.
+     *
+     * @return Chemical Type.
+     */
     public static ChemicalType getTypeFor(ChemicalStack<?> stack) {
         return getTypeFor(stack.getType());
     }
 
+    /**
+     * Gets the Chemical Type of a chemical stack ingredient.
+     *
+     * @param ingredient Ingredient.
+     *
+     * @return Chemical Type.
+     */
     public static ChemicalType getTypeFor(IChemicalStackIngredient<?, ?> ingredient) {
         if (ingredient instanceof GasStackIngredient) {
             return GAS;

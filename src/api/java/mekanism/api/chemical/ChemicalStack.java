@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.IRegistryDelegate;
 
-//TODO - 10.1: Make the subclasses of this final
+//TODO - 1.17: Make the subclasses of this final
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey {
@@ -36,10 +36,21 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      */
     protected abstract IRegistryDelegate<CHEMICAL> getDelegate(CHEMICAL chemical);
 
+    /**
+     * Helper ot get the empty version of this chemical.
+     */
     protected abstract CHEMICAL getEmptyChemical();
 
+    /**
+     * Copies this chemical stack into a new chemical stack.
+     */
     public abstract ChemicalStack<CHEMICAL> copy();
 
+    /**
+     * Gets the chemical represented by this stack.
+     *
+     * @return Backing chemical.
+     */
     public final CHEMICAL getType() {
         return isEmpty ? getEmptyChemical() : getRaw();
     }
@@ -55,6 +66,13 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return isTypeEqual(stack.getType());
     }
 
+    /**
+     * Whether or not this ChemicalStack's chemical type is equal to the other defined Chemical.
+     *
+     * @param chemical - Chemical to check
+     *
+     * @return if the ChemicalStack's type is the same as the given chemical
+     */
     public boolean isTypeEqual(CHEMICAL chemical) {
         return getType() == chemical;
     }
@@ -256,7 +274,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      *
      * @param nbtTags - tag compound to write to
      *
-     * @return tag compound with this GasStack's data
+     * @return tag compound with this ChemicalStack's data
      */
     public CompoundNBT write(CompoundNBT nbtTags) {
         getType().write(nbtTags);
@@ -264,8 +282,13 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
         return nbtTags;
     }
 
-    public void writeToPacket(PacketBuffer buf) {
-        buf.writeRegistryId(getType());
-        buf.writeVarLong(getAmount());
+    /**
+     * Writes this ChemicalStack to a Packet Buffer.
+     *
+     * @param buffer - Buffer to write to.
+     */
+    public void writeToPacket(PacketBuffer buffer) {
+        buffer.writeRegistryId(getType());
+        buffer.writeVarLong(getAmount());
     }
 }
