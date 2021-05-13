@@ -70,11 +70,9 @@ public class TileComponentSecurity implements ITileComponent {
         }
     }
 
-    public void tick() {
-        if (!tile.isRemote()) {
-            if (getFrequency() == null && ownerUUID != null) {
-                tile.getFrequencyComponent().setFrequencyFromData(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, true));
-            }
+    public void tickServer() {
+        if (getFrequency() == null && ownerUUID != null) {
+            tile.getFrequencyComponent().setFrequencyFromData(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, true));
         }
     }
 

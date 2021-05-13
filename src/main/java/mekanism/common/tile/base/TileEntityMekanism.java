@@ -492,22 +492,22 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void tick() {
-        frequencyComponent.tick();
-        if (supportsUpgrades()) {
-            upgradeComponent.tick();
-        }
-        if (hasSecurity()) {
-            securityComponent.tick();
-        }
-        if (hasChunkloader) {
-            ((IChunkLoader)this).getChunkLoader().tick();
-        }
         if (isRemote()) {
             if (hasSound()) {
                 updateSound();
             }
             onUpdateClient();
         } else {
+            frequencyComponent.tickServer();
+            if (supportsUpgrades()) {
+                upgradeComponent.tickServer();
+            }
+            if (hasSecurity()) {
+                securityComponent.tickServer();
+            }
+            if (hasChunkloader) {
+                ((IChunkLoader) this).getChunkLoader().tickServer();
+            }
             if (isActivatable()) {
                 if (updateDelay > 0) {
                     updateDelay--;

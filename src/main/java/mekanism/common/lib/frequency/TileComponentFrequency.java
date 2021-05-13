@@ -33,19 +33,16 @@ public class TileComponentFrequency implements ITileComponent {
         tile.addComponent(this);
     }
 
-    public void tick() {
-        if (!tile.isRemote()) {
-            for (Entry<FrequencyType<?>, Frequency> entry : heldFrequencies.entrySet()) {
-                //noinspection unchecked,rawtypes
-                updateFrequency((FrequencyType)entry.getKey(), entry.getValue());
-            }
-
-            if (needsNotify) {
-                tile.invalidateCachedCapabilities();
-                WorldUtils.notifyLoadedNeighborsOfTileChange(tile.getLevel(), tile.getBlockPos());
-                tile.markDirty(false);
-                needsNotify = false;
-            }
+    public void tickServer() {
+        for (Entry<FrequencyType<?>, Frequency> entry : heldFrequencies.entrySet()) {
+            //noinspection unchecked,rawtypes
+            updateFrequency((FrequencyType)entry.getKey(), entry.getValue());
+        }
+        if (needsNotify) {
+            tile.invalidateCachedCapabilities();
+            WorldUtils.notifyLoadedNeighborsOfTileChange(tile.getLevel(), tile.getBlockPos());
+            tile.markDirty(false);
+            needsNotify = false;
         }
     }
 

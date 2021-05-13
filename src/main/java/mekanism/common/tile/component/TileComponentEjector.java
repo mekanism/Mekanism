@@ -67,19 +67,17 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return this;
     }
 
-    public void tick() {
-        if (!tile.isRemote()) {
-            if (tickDelay == 0) {
-                outputItems();
-            } else {
-                tickDelay--;
-            }
-            eject(TransmissionType.GAS);
-            eject(TransmissionType.INFUSION);
-            eject(TransmissionType.SLURRY);
-            eject(TransmissionType.PIGMENT);
-            eject(TransmissionType.FLUID);
+    public void tickServer() {
+        if (tickDelay == 0) {
+            outputItems();
+        } else {
+            tickDelay--;
         }
+        eject(TransmissionType.GAS);
+        eject(TransmissionType.INFUSION);
+        eject(TransmissionType.SLURRY);
+        eject(TransmissionType.PIGMENT);
+        eject(TransmissionType.FLUID);
     }
 
     private void eject(TransmissionType type) {

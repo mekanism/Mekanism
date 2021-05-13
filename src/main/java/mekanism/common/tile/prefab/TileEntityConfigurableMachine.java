@@ -47,10 +47,10 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    protected void onUpdateServer() {
+        super.onUpdateServer();
         if (ejectorComponent != null) {
-            ejectorComponent.tick();
+            ejectorComponent.tickServer();
         }
     }
 }

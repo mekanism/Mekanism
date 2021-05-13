@@ -5,8 +5,6 @@ import net.minecraft.nbt.CompoundNBT;
 
 public interface ITileComponent {
 
-    //void tick();
-
     void read(CompoundNBT nbtTags);
 
     void write(CompoundNBT nbtTags);

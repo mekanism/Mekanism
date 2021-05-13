@@ -172,9 +172,9 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         }
     }
 
-    public void tick() {
+    public void tickServer() {
         World world = tile.getLevel();
-        if (world != null && !world.isClientSide) {
+        if (world != null) {
             if (isFirstTick) {
                 //TODO - 1.17: Remove this if branch - as it is only needed to validate loading old data
                 isFirstTick = false;

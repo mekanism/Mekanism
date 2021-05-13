@@ -58,25 +58,23 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         tile.addComponent(this);
     }
 
-    public void tick() {
-        if (!tile.isRemote()) {
-            ItemStack stack = upgradeSlot.getStack();
-            if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeItem) {
-                Upgrade type = ((IUpgradeItem) stack.getItem()).getUpgradeType(stack);
-                if (supports(type) && getUpgrades(type) < type.getMax()) {
-                    if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
-                        upgradeTicks++;
-                        return;
-                    } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
-                        int added = addUpgrades(type, upgradeSlot.getCount());
-                        if (added > 0) {
-                            MekanismUtils.logMismatchedStackSize(upgradeSlot.shrinkStack(added, Action.EXECUTE), added);
-                        }
+    public void tickServer() {
+        ItemStack stack = upgradeSlot.getStack();
+        if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeItem) {
+            Upgrade type = ((IUpgradeItem) stack.getItem()).getUpgradeType(stack);
+            if (supports(type) && getUpgrades(type) < type.getMax()) {
+                if (upgradeTicks < UPGRADE_TICKS_REQUIRED) {
+                    upgradeTicks++;
+                    return;
+                } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
+                    int added = addUpgrades(type, upgradeSlot.getCount());
+                    if (added > 0) {
+                        MekanismUtils.logMismatchedStackSize(upgradeSlot.shrinkStack(added, Action.EXECUTE), added);
                     }
                 }
             }
-            upgradeTicks = 0;
         }
+        upgradeTicks = 0;
     }
 
     public UpgradeInventorySlot getUpgradeSlot() {
