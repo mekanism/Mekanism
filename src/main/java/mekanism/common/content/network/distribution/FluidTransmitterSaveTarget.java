@@ -1,5 +1,6 @@
 package mekanism.common.content.network.distribution;
 
+import java.util.Collection;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.math.MathUtils;
@@ -8,19 +9,13 @@ import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
-
 //TODO: Improve handling for fluid storage as longs
 public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarget.SaveHandler, Integer, @NonNull FluidStack> {
 
-    public FluidTransmitterSaveTarget(@Nonnull FluidStack type) {
+    public FluidTransmitterSaveTarget(@Nonnull FluidStack type, Collection<MechanicalPipe> transmitters) {
+        super(transmitters.size());
         this.extra = type;
-    }
-
-    public FluidTransmitterSaveTarget(@Nonnull FluidStack type, int expectedSize) {
-        super(expectedSize);
-        this.extra = type;
+        transmitters.forEach(transmitter -> addHandler(new SaveHandler(transmitter)));
     }
 
     @Override
@@ -39,11 +34,8 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
         }
     }
 
-    public void addDelegate(MechanicalPipe pipe) {
-        this.addHandler(new SaveHandler(pipe));
-    }
-
     public class SaveHandler {
+
         private FluidStack currentStored = FluidStack.EMPTY;
         private final MechanicalPipe transmitter;
 
@@ -53,9 +45,8 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
 
         protected void acceptAmount(SplitInfo<Integer> splitInfo, Integer amount) {
             amount = Math.min(amount, MathUtils.clampToInt(transmitter.getCapacity() - currentStored.getAmount()));
-            FluidStack newFluid = new FluidStack(extra, amount);
             if (currentStored.isEmpty()) {
-                currentStored = newFluid;
+                currentStored = new FluidStack(extra, amount);
             } else {
                 currentStored.grow(amount);
             }

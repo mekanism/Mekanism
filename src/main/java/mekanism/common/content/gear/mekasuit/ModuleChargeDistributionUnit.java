@@ -55,7 +55,7 @@ public class ModuleChargeDistributionUnit implements ICustomModule<ModuleChargeD
                 total = total.plusEqual(energyContainer.getEnergy());
             }
         }
-        EmitUtils.sendToAcceptors(saveTarget, total.copy());
+        EmitUtils.sendToAcceptors(saveTarget, total);
         saveTarget.save();
     }
 

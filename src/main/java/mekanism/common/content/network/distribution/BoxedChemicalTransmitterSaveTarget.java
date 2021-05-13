@@ -12,9 +12,8 @@ import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import mekanism.common.util.ChemicalUtil;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>
-      extends Target<BoxedChemicalTransmitterSaveTarget.SaveHandler, Long, @NonNull STACK> {
+      extends Target<BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK>.SaveHandler, Long, @NonNull STACK> {
 
     public BoxedChemicalTransmitterSaveTarget(@Nonnull STACK empty, @Nonnull STACK type, Collection<BoxedPressurizedTube> transmitters) {
         super(transmitters.size());
@@ -23,12 +22,12 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
     }
 
     @Override
-    protected void acceptAmount(BoxedChemicalTransmitterSaveTarget.SaveHandler handler, SplitInfo<Long> splitInfo, Long amount) {
+    protected void acceptAmount(BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK>.SaveHandler handler, SplitInfo<Long> splitInfo, Long amount) {
         handler.acceptAmount(splitInfo, amount);
     }
 
     @Override
-    protected Long simulate(BoxedChemicalTransmitterSaveTarget.SaveHandler handler, @Nonnull STACK chemicalStack) {
+    protected Long simulate(BoxedChemicalTransmitterSaveTarget<CHEMICAL, STACK>.SaveHandler handler, @Nonnull STACK chemicalStack) {
         return handler.simulate(chemicalStack);
     }
 
@@ -39,6 +38,7 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
     }
 
     public class SaveHandler {
+
         private STACK currentStored;
         private final BoxedPressurizedTube transmitter;
 
@@ -49,9 +49,8 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
 
         protected void acceptAmount(SplitInfo<Long> splitInfo, Long amount) {
             amount = Math.min(amount, transmitter.getCapacity() - currentStored.getAmount());
-            STACK newChemical = ChemicalUtil.copyWithAmount(extra, amount);
             if (currentStored.isEmpty()) {
-                currentStored = newChemical;
+                currentStored = ChemicalUtil.copyWithAmount(extra, amount);
             } else {
                 currentStored.grow(amount);
             }
@@ -65,6 +64,7 @@ public class BoxedChemicalTransmitterSaveTarget<CHEMICAL extends Chemical<CHEMIC
             return Math.min(chemicalStack.getAmount(), transmitter.getCapacity() - currentStored.getAmount());
         }
 
+        @SuppressWarnings("unchecked")
         protected void saveShare() {
             boolean shouldSave = false;
             if (currentStored.isEmpty() != transmitter.saveShare.isEmpty()) {

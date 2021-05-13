@@ -8,16 +8,9 @@ import mekanism.common.lib.distribution.Target;
 
 public class EnergyTransmitterSaveTarget extends Target<EnergyTransmitterSaveTarget.SaveHandler, FloatingLong, FloatingLong> {
 
-    public EnergyTransmitterSaveTarget() {
-    }
-
-    public EnergyTransmitterSaveTarget(Collection<UniversalCable> allHandlers) {
-        super(allHandlers.size());
-        allHandlers.forEach(handler->addHandler(new SaveHandler(handler)));
-    }
-
-    public EnergyTransmitterSaveTarget(int expectedSize) {
-        super(expectedSize);
+    public EnergyTransmitterSaveTarget(Collection<UniversalCable> transmitters) {
+        super(transmitters.size());
+        transmitters.forEach(transmitter -> addHandler(new SaveHandler(transmitter)));
     }
 
     @Override
@@ -37,6 +30,7 @@ public class EnergyTransmitterSaveTarget extends Target<EnergyTransmitterSaveTar
     }
 
     public static class SaveHandler {
+
         private FloatingLong currentStored = FloatingLong.ZERO;
         private final UniversalCable transmitter;
 
