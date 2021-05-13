@@ -28,18 +28,16 @@ class MergeJars {
         }
     }
 
-    static Closure merge(Project project, SourceSet... sourceSets) {
-        return {
-            //Generate folders, merge the access transformers and mods.toml files
-            project.mkdir("$project.buildDir/generated/META-INF")
-            (new File("$project.buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets)
-            (new File("$project.buildDir/generated/META-INF/mods.toml")).text = mergeModsTOML(sourceSets)
-            //Delete the data directory so that we don't accidentally leak bad old data into it
-            project.file("$project.buildDir/generated/data").deleteDir()
-            //And then recreate the directory so we can put stuff in it
-            project.mkdir("$project.buildDir/generated/data")
-            mergeTags(project, sourceSets)
-        }
+    static void merge(Project project, SourceSet... sourceSets) {
+        //Generate folders, merge the access transformers and mods.toml files
+        project.mkdir("$project.buildDir/generated/META-INF")
+        (new File("$project.buildDir/generated/META-INF/accesstransformer.cfg")).text = mergeATs(sourceSets)
+        (new File("$project.buildDir/generated/META-INF/mods.toml")).text = mergeModsTOML(sourceSets)
+        //Delete the data directory so that we don't accidentally leak bad old data into it
+        project.file("$project.buildDir/generated/data").deleteDir()
+        //And then recreate the directory so we can put stuff in it
+        project.mkdir("$project.buildDir/generated/data")
+        mergeTags(project, sourceSets)
     }
 
     static List<Closure> getGeneratedClosures(def version_properties) {

@@ -45,14 +45,10 @@ apply plugin: 'net.minecraftforge.gradle'
 
 sourceSets {
     api {
-        java {
-            srcDir 'src/api/java'
-        }
+        //The API has no resources
+        resources.srcDirs = []
     }
     main {
-        java {
-            srcDir 'src/main/java'
-        }
         resources {
             include '**/**'
             // copy everything else, but blender files.
@@ -70,6 +66,8 @@ sourceSets {
     defense { setupSourceSet(defense, 'defense') }
     tools { setupSourceSet(tools, 'tools') }
     test {
+        //The test module has no resources
+        resources.srcDirs = []
         compileClasspath += api.output + main.output + additions.output + generators.output + defense.output + tools.output
         runtimeClasspath += api.output + main.output + additions.output + generators.output + defense.output + tools.output
     }
@@ -85,9 +83,6 @@ sourceSets {
 // data gen's resource directory excluding the cache. It also adds the api and main mekanism module
 // to the dependencies of the source set we are setting up
 def setupSourceSet(SourceSet sourceSet, String name) {
-    sourceSet.java {
-        srcDir 'src/' + name + '/java'
-    }
     sourceSet.resources {
         //Add the generated module resources
         srcDirs += 'src/datagen/generated/mekanism' + name
@@ -102,7 +97,8 @@ def setupSourceSet(SourceSet sourceSet, String name) {
 // base module to the dependencies of the data generators source set that we are setting up
 def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, String name) {
     datagenSourceSet.java.srcDirs = ['src/datagen/' + name + '/java']
-    datagenSourceSet.resources.srcDirs = ['src/datagen/' + name + '/resources']
+    //Data gen sourceSets have no resources
+    datagenSourceSet.resources.srcDirs = []
     datagenSourceSet.compileClasspath += project.sourceSets.api.output
     datagenSourceSet.compileClasspath += project.sourceSets.main.output
     if (baseSourceSet != null) {
@@ -413,7 +409,7 @@ dependencies {
     compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:${computer_craft_version}")
 
     //Dependencies for data generators for mod compat reference
-    datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}"){
+    datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}") {
         transitive = false
     }
     datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
@@ -528,26 +524,36 @@ def getManifestAttributes(String title) {
             "Implementation-Title"    : title,
             "Implementation-Version"  : "${project.mod_version}",
             "Implementation-Vendor"   : "Mekanism",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
     ]
 }
 
 jar {
-    from sourceSets.api.output
-    from sourceSets.main.output
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+    from([sourceSets.api.output, sourceSets.main.output])
+    manifest.attributes(getManifestAttributes("Mekanism"))
+    afterEvaluate { finalizedBy reobfJar }
+}
+
+task sourcesJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses]) {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+    archiveClassifier.set("sources")
+    from(sourceSets.api.allJava, sourceSets.main.allJava, sourceSets.additions.allJava, sourceSets.defense.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
     manifest.attributes(getManifestAttributes("Mekanism"))
 }
 
-//TODO: Sources Jars?
-
 task apiJar(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     archiveClassifier.set("api")
     from sourceSets.api.output
+    manifest.attributes(getManifestAttributes("Mekanism"))
+    afterEvaluate { finalizedBy reobfApiJar }
 }
 
 task additionsJar(type: Jar) {
     //Mark that it shouldn't run before the replace resources gets run
     shouldRunAfter(additionsReplaceResources)
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     archiveFileName.set("MekanismAdditions-${project.version}.jar")
     archiveClassifier.set("additions")
     from sourceSets.additions.output
@@ -558,6 +564,7 @@ task additionsJar(type: Jar) {
 task defenseJar(type: Jar) {
     //Mark that it shouldn't run before the replace resources gets run
     shouldRunAfter(defenseReplaceResources)
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     archiveFileName.set("MekanismDefense-${project.version}.jar")
     archiveClassifier.set("defense")
     from sourceSets.defense.output
@@ -568,6 +575,7 @@ task defenseJar(type: Jar) {
 task generatorsJar(type: Jar) {
     //Mark that it shouldn't run before the replace resources gets run
     shouldRunAfter(generatorsReplaceResources)
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     archiveFileName.set("MekanismGenerators-${project.version}.jar")
     archiveClassifier.set("generators")
     from sourceSets.generators.output
@@ -578,6 +586,7 @@ task generatorsJar(type: Jar) {
 task toolsJar(type: Jar) {
     //Mark that it shouldn't run before the replace resources gets run
     shouldRunAfter(toolsReplaceResources)
+    duplicatesStrategy = DuplicatesStrategy.FAIL
     archiveFileName.set("MekanismTools-${project.version}.jar")
     archiveClassifier.set("tools")
     from sourceSets.tools.output
@@ -595,7 +604,7 @@ task allJar(type: Jar) {
     archiveClassifier.set("all")
     manifest.attributes(getManifestAttributes("MekanismAll"))
     //Start by generating the merged data
-    doFirst(MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools))
+    MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
     //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
     List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project)
@@ -622,6 +631,7 @@ artifacts {
     archives defenseJar
     archives toolsJar
     archives allJar
+    archives sourcesJar
 }
 
 reobf {
@@ -679,7 +689,7 @@ publishing {
             groupId = project.group
             version = project.version
             artifactId = project.archivesBaseName
-            artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar]
+            artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar, sourcesJar]
             pom {
                 groupId = project.group
                 version = project.version

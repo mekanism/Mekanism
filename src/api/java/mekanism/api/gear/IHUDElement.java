@@ -1,7 +1,6 @@
 package mekanism.api.gear;
 
 import javax.annotation.Nonnull;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -12,7 +11,6 @@ import net.minecraft.util.text.ITextComponent;
  *     <li>{@link IModuleHelper#hudElement(ResourceLocation, ITextComponent, HUDColor)}</li>
  *     <li>{@link IModuleHelper#hudElementEnabled(ResourceLocation, boolean)}</li>
  *     <li>{@link IModuleHelper#hudElementPercent(ResourceLocation, double)}</li>
- *     <li>{@link IModuleHelper#hudElementEnergyPercent(ResourceLocation, ItemStack)}</li>
  * </ul>
  */
 public interface IHUDElement {
