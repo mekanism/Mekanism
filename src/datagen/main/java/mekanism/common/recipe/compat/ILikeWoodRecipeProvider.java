@@ -13,6 +13,7 @@ import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismPigments;
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.DyeColor;
@@ -22,10 +23,11 @@ import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.IItemProvider;
 import net.minecraftforge.common.crafting.conditions.ICondition;
+import yamahari.ilikewood.ILikeWood;
 import yamahari.ilikewood.plugin.vanilla.VanillaWoodTypes;
-import yamahari.ilikewood.registry.WoodenItems;
+import yamahari.ilikewood.registry.objecttype.WoodenBlockType;
+import yamahari.ilikewood.registry.objecttype.WoodenItemType;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
-import yamahari.ilikewood.util.objecttype.WoodenObjectTypes;
 
 @ParametersAreNonnullByDefault
 public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
@@ -60,22 +62,22 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
     public static void addWoodType(Consumer<IFinishedRecipe> consumer, ICondition condition, String basePath, IItemProvider planks, IItemProvider log,
           IItemProvider fences, IWoodType woodType, ICondition bedVersion, ICondition soulTorchVersion) {
         String name = woodType.getName();
-        Item stick = WoodenItems.getItem(WoodenObjectTypes.STICK, woodType);
+        Item stick = ILikeWood.getItem(woodType, WoodenItemType.STICK);
         //Barrel
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.BARREL, woodType)),
+              ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.BARREL)),
               new ItemStack(planks, 7)
         ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "barrel/" + name));
         //Chest
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.CHEST, woodType)),
+              ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.CHEST)),
               new ItemStack(planks, 8)
         ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "chest/" + name));
         //Composter
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.COMPOSTER, woodType)),
+              ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.COMPOSTER)),
               new ItemStack(planks, 3),
               new ItemStack(fences, 4),
               1
@@ -83,13 +85,13 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "composter/" + name));
         //Crafting table
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.CRAFTING_TABLE, woodType)),
+              ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.CRAFTING_TABLE)),
               new ItemStack(planks, 4)
         ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "crafting_table/" + name));
         //Item Frame
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.ITEM_FRAME, woodType)),
+              ItemStackIngredient.from(ILikeWood.getItem(woodType, WoodenItemType.ITEM_FRAME)),
               new ItemStack(stick, 8),
               new ItemStack(Items.LEATHER),
               1
@@ -97,13 +99,13 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "item_frame/" + name));
         //Ladder
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.LADDER, woodType), 3),
+              ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.LADDER), 3),
               new ItemStack(stick, 7)
         ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "ladder/" + name));
         //Lectern
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.LECTERN, woodType)),
+              ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.LECTERN)),
               new ItemStack(planks, 8),
               new ItemStack(Items.BOOK, 3),
               1
@@ -111,7 +113,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "lectern/" + name));
         //Panel
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.PANELS, woodType)),
+              ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.PANELS)),
               new ItemStack(stick, 6),
               MekanismItems.SAWDUST.getItemStack(),
               0.25
@@ -120,8 +122,8 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         //Post
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.POST, woodType)),
-                    ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.STRIPPED_POST, woodType))
+                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.POST)),
+                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.STRIPPED_POST))
               ),
               new ItemStack(planks, 3),
               MekanismItems.SAWDUST.getItemStack(),
@@ -129,7 +131,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "post/" + name));
         //Torch
-        Item torch = WoodenItems.getItem(WoodenObjectTypes.TORCH, woodType);
+        Block torch = ILikeWood.getBlock(woodType, WoodenBlockType.TORCH);
         SawmillRecipeBuilder.sawing(
               ItemStackIngredient.from(torch, 4),
               new ItemStack(stick),
@@ -139,7 +141,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "torch/" + name));
         //Soul Torch
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.SOUL_TORCH, woodType), 4),
+              ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.SOUL_TORCH), 4),
               new ItemStack(torch, 4),
               new ItemStack(Blocks.SOUL_SOIL),
               1
@@ -147,7 +149,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "soul_torch/" + name));
         //Wall
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(WoodenItems.getItem(WoodenObjectTypes.WALL, woodType)),
+              ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.WALL)),
               new ItemStack(log)
         ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "wall/" + name));
@@ -176,13 +178,52 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
 
     private static void addBedRecipe(Consumer<IFinishedRecipe> consumer, ICondition condition, IItemProvider planks, IWoodType woodType, DyeColor dyeColor,
           EnumColor color, String basePath) {
-        Item bed = WoodenItems.getBedItem(woodType, dyeColor);
+        WoodenBlockType bedType = getBedType(dyeColor);
+        Block bed = ILikeWood.getBlock(woodType, bedType);
         RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, bed, planks, dyeColor, condition);
         ItemStackChemicalToItemStackRecipeBuilder.painting(
-              ItemStackIngredient.from(Ingredient.of(WoodenItems.getBedItems(woodType).filter(b -> b != bed).map(ItemStack::new))),
+              ItemStackIngredient.from(Ingredient.of(WoodenBlockType.getBeds().filter(b -> !b.equals(bedType)).map(b -> new ItemStack(ILikeWood.getBlock(woodType, b))))),
               PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               new ItemStack(bed)
         ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "painting/" + color.getRegistryPrefix()));
+    }
+
+    private static WoodenBlockType getBedType(DyeColor dyeColor) {
+        switch (dyeColor) {
+            case WHITE:
+                return WoodenBlockType.WHITE_BED;
+            case ORANGE:
+                return WoodenBlockType.ORANGE_BED;
+            case MAGENTA:
+                return WoodenBlockType.MAGENTA_BED;
+            case LIGHT_BLUE:
+                return WoodenBlockType.LIGHT_BLUE_BED;
+            case YELLOW:
+                return WoodenBlockType.YELLOW_BED;
+            case LIME:
+                return WoodenBlockType.LIME_BED;
+            case PINK:
+                return WoodenBlockType.PINK_BED;
+            case GRAY:
+                return WoodenBlockType.GRAY_BED;
+            case LIGHT_GRAY:
+                return WoodenBlockType.LIGHT_GRAY_BED;
+            case CYAN:
+                return WoodenBlockType.CYAN_BED;
+            case PURPLE:
+                return WoodenBlockType.PURPLE_BED;
+            case BLUE:
+                return WoodenBlockType.BLUE_BED;
+            case BROWN:
+                return WoodenBlockType.BROWN_BED;
+            case GREEN:
+                return WoodenBlockType.GREEN_BED;
+            case RED:
+                return WoodenBlockType.RED_BED;
+            case BLACK:
+                return WoodenBlockType.BLACK_BED;
+        }
+        throw new IllegalArgumentException("Unknown dye color.");
     }
 }

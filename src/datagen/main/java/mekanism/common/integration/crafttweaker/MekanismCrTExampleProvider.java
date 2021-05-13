@@ -36,6 +36,7 @@ import mekanism.common.integration.crafttweaker.recipe.CombinerRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.ElectrolysisRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.FluidSlurryToSlurryRecipeManager.ChemicalWasherRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.FluidToFluidRecipeManager.EvaporatingRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.GasToGasRecipeManager.IsotopicCentrifugeRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.GasToGasRecipeManager.SolarNeutronActivatorRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.ItemStackChemicalToItemStackRecipeManager.ChemicalInjectionRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.ItemStackChemicalToItemStackRecipeManager.MetallurgicInfuserRecipeManager;
@@ -256,12 +257,12 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         exampleBuilder("mekanism_centrifuging")
               .comment("Adds a Centrifuging Recipe that converts 1 mB of Gaseous Brine into 1 mB of Hydrogen Chloride.")
               .blankLine()
-              .recipe(SolarNeutronActivatorRecipeManager.INSTANCE)
+              .recipe(IsotopicCentrifugeRecipeManager.INSTANCE)
               .addExample("centrifuge_brine", GasStackIngredient.from(MekanismGases.BRINE, 1), MekanismGases.HYDROGEN_CHLORIDE.getStack(1))
               .end()
               .comment("Removes the Centrifuging Recipe for producing Plutonium from Nuclear Waste.")
               .blankLine()
-              .removeRecipes(SolarNeutronActivatorRecipeManager.INSTANCE, Mekanism.rl("processing/lategame/plutonium"))
+              .removeRecipes(IsotopicCentrifugeRecipeManager.INSTANCE, Mekanism.rl("processing/lategame/plutonium"))
         ;
         exampleBuilder("mekanism_compressing")
               .comment("Adds a Compressing Recipe that compresses Emerald Dust into an Emerald.")

@@ -36,6 +36,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
@@ -104,6 +105,12 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         addSupportedConversion(IItemStack.class, ItemStack.class, stack -> new MCItemStack(stack).getCommandString());
         addSupportedConversion(IFluidStack.class, FluidStack.class, stack -> new MCFluidStack(stack).getCommandString());
         addSupportedConversion(MCWeightedItemStack.class, WeightedItemStack.class, stack -> new MCWeightedItemStack(new MCItemStack(stack.stack), stack.chance).getCommandString());
+        addSupportedConversion(FloatingLong.class, FloatingLong.class, fl -> {
+            if (fl.getDecimal() == 0 && fl.getValue() > Integer.MAX_VALUE) {
+                return CrTConstants.CLASS_FLOATING_LONG + ".createFromUnsigned(" + fl + ")";
+            }
+            return CrTConstants.CLASS_FLOATING_LONG + ".create(" + fl + ")";
+        }, FloatingLong::toString);
         addItemStackIngredientSupport();
         addFluidStackIngredientSupport();
         addSupportedChemical(GasStack.class, ICrTGasStack.class, GasStackIngredient.class, CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTGasStack::new,
@@ -147,6 +154,26 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
 
     public <ACTUAL> List<String> getConversionRepresentations(Class<?> crtClass, ACTUAL actual) {
         Class<?> actualClass = actual.getClass();
+        List<ClassConversionInfo<?>> conversions = supportedConversions.get(crtClass);
+        if (conversions != null) {
+            List<String> representations = new ArrayList<>();
+            for (ClassConversionInfo<?> conversionInfo : conversions) {
+                if (conversionInfo.actualClass.isAssignableFrom(actualClass)) {
+                    for (Function<?, String> stringFunction : conversionInfo.conversions) {
+                        String representation = ((Function<? super ACTUAL, String>) stringFunction).apply(actual);
+                        if (representation != null) {
+                            //We use null to represent things we can't represent and then don't add them here
+                            representations.add(representation);
+                        }
+                    }
+                }
+            }
+            if (!representations.isEmpty()) {
+                //If we have any representations try returning them
+                return representations;
+            }
+            //Otherwise try seeing if we have a default type we can fallback to
+        }
         if (crtClass.isAssignableFrom(actualClass)) {
             if (actual instanceof String) {
                 return Collections.singletonList("\"" + actual + "\"");
@@ -156,23 +183,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
                 return Collections.singletonList(actual.toString());
             }
         }
-        List<ClassConversionInfo<?>> conversions = supportedConversions.get(crtClass);
-        if (conversions == null) {
-            return Collections.emptyList();
-        }
-        List<String> representations = new ArrayList<>();
-        for (ClassConversionInfo<?> conversionInfo : conversions) {
-            if (conversionInfo.actualClass.isAssignableFrom(actualClass)) {
-                for (Function<?, String> stringFunction : conversionInfo.conversions) {
-                    String representation = ((Function<? super ACTUAL, String>) stringFunction).apply(actual);
-                    if (representation != null) {
-                        //We use null to represent things we can't represent and then don't add them here
-                        representations.add(representation);
-                    }
-                }
-            }
-        }
-        return representations;
+        return Collections.emptyList();
     }
 
     public String getCrTClassName(Class<?> clazz) {

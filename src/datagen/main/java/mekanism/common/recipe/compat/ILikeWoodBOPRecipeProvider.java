@@ -19,7 +19,7 @@ public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
     private final ICondition modLoadedSoulTorchVersion;
 
     public ILikeWoodBOPRecipeProvider() {
-        super(yamahari.ilikewood.plugin.util.Constants.MOD_ID, "biomesoplenty");
+        super(yamahari.ilikewood.plugin.biomesoplenty.util.Constants.MOD_ID, "biomesoplenty");
         modLoadedSoulTorchVersion = new AndCondition(new ModVersionLoadedCondition(modid, "1.16.5-6.2.2.0"), new ModLoadedCondition("biomesoplenty"));
     }
 
