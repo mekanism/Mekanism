@@ -312,7 +312,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     public void setPlasmaTemp(double temp) {
-        plasmaTemperature = temp;
+        if (plasmaTemperature != temp) {
+            plasmaTemperature = temp;
+            markDirty();
+        }
     }
 
     @ComputerMethod
@@ -331,6 +334,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                     steamTank.setStackSize(Math.min(steamTank.getStored(), steamTank.getCapacity()), Action.EXECUTE);
                 }
             }
+            markDirty();
         }
     }
 
@@ -347,7 +351,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     public void setBurning(boolean burn) {
-        burning = burn;
+        if (burning != burn) {
+            burning = burn;
+            markDirty();
+        }
     }
 
     public double getCaseTemp() {

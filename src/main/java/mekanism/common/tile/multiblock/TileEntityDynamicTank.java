@@ -61,7 +61,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     @Override
     public void nextMode() {
         TankMultiblockData multiblock = getMultiblock();
-        multiblock.editMode = multiblock.editMode.getNext();
+        multiblock.setContainerEditMode(multiblock.editMode.getNext());
     }
 
     private boolean manageInventory(TankMultiblockData multiblock, PlayerEntity player, Hand hand, ItemStack itemStack) {

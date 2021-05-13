@@ -61,9 +61,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     public void setRateLimitFromPacket(double rate) {
-        FissionReactorMultiblockData multiblock = getMultiblock();
-        multiblock.rateLimit = Math.max(Math.min(multiblock.getMaxBurnRate(), rate), 0);
-        markDirty(false);
+        getMultiblock().setRateLimit(rate);
     }
 
     @Override

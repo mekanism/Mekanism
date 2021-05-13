@@ -50,8 +50,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-//TODO - 10.1: Look into how we mark multiblock data as requiring saving as I am not sure we actually are doing that currently
-// which could maybe be why some people randomly have issues that contents reset?
 public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTracker, IInfusionTracker,
       IPigmentTracker, ISlurryTracker {
 
@@ -99,9 +97,23 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
+    private boolean dirty;
+
     public MultiblockData(TileEntity tile) {
         remoteSupplier = () -> tile.getLevel().isClientSide();
         worldSupplier = tile::getLevel;
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void resetDirty() {
+        dirty = false;
+    }
+
+    public void markDirty() {
+        dirty = true;
     }
 
     /**
@@ -182,7 +194,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return worldSupplier.get();
     }
 
-    protected boolean shouldCap(CacheSubstance type) {
+    protected boolean shouldCap(CacheSubstance<?, ?>  type) {
         return true;
     }
 
@@ -207,7 +219,9 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     public void writeUpdateTag(CompoundNBT tag) {
         tag.putInt(NBTConstants.VOLUME, getVolume());
-        tag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(renderLocation));
+        if (renderLocation != null) {//In theory this shouldn't be null here but check it anyways
+            tag.put(NBTConstants.RENDER_LOCATION, NBTUtil.writeBlockPos(renderLocation));
+        }
         tag.put(NBTConstants.MIN, NBTUtil.writeBlockPos(bounds.getMinPos()));
         tag.put(NBTConstants.MAX, NBTUtil.writeBlockPos(bounds.getMaxPos()));
         if (inventoryID != null) {
@@ -332,6 +346,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     @Override
     public void onContentsChanged() {
+        markDirty();
     }
 
     @Override

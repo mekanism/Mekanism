@@ -87,6 +87,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         double processed = 0;
         couldOperate = canOperate();
         if (couldOperate && !receivedEnergy.isZero()) {
+            double lastProgress = progress;
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
             long inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeeded() - 1);
             double processable = receivedEnergy.doubleValue() / MekanismConfig.general.spsEnergyPerInput.get().doubleValue();
@@ -105,6 +106,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                     processed -= processedDif;
                 }
                 progress %= 1;
+            }
+            if (lastProgress != progress) {
+                markDirty();
             }
         }
 
@@ -140,6 +144,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             return 0;
         }
         long processed = inputTank.shrinkStack(operations, Action.EXECUTE);
+        int lastInputProcessed = inputProcessed;
         //Limit how much input we actually increase the input processed by to how much we were actually able to remove from the input tank
         inputProcessed += MathUtils.clampToInt(processed);
         final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
@@ -147,6 +152,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             GasStack toAdd = MekanismGases.ANTIMATTER.getStack(inputProcessed / inputPerAntimatter);
             outputTank.insert(toAdd, Action.EXECUTE, AutomationType.INTERNAL);
             inputProcessed %= inputPerAntimatter;
+        }
+        if (lastInputProcessed != inputProcessed) {
+            markDirty();
         }
         return processed;
     }

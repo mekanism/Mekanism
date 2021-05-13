@@ -23,7 +23,7 @@ public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultibl
     public void nextMode(int tank) {
         if (tank == 0) {
             TurbineMultiblockData multiblock = getMultiblock();
-            multiblock.dumpMode = multiblock.dumpMode.getNext();
+            multiblock.setDumpMode(multiblock.dumpMode.getNext());
         }
     }
 

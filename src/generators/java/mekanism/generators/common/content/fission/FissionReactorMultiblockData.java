@@ -227,6 +227,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private void handleDamage(World world) {
+        double lastDamage = reactorDamage;
         double temp = heatCapacitor.getTemperature();
         if (temp > MIN_DAMAGE_TEMPERATURE) {
             double damageRate = Math.min(temp, MAX_DAMAGE_TEMPERATURE) / (MIN_DAMAGE_TEMPERATURE * 10);
@@ -246,6 +247,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 MekanismAPI.getRadiationManager().radiate(new Coord4D(getBounds().getCenter(), world), radiation);
                 RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
             }
+        }
+        if (reactorDamage != lastDamage) {
+            markDirty();
         }
     }
 
@@ -283,6 +287,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     private void burnFuel(World world) {
+        double lastPartialWaste = partialWaste;
+        double lastBurnRemaining = burnRemaining;
         double storedFuel = fuelTank.getStored() + burnRemaining;
         double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
         storedFuel -= toBurn;
@@ -304,6 +310,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
         // update previous burn
         lastBurnRate = toBurn;
+        if (lastPartialWaste != partialWaste || lastBurnRemaining != burnRemaining) {
+            markDirty();
+        }
     }
 
     private void radiateEntities(World world) {
@@ -329,7 +338,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        if (this.active != active) {
+            this.active = active;
+            markDirty();
+        }
     }
 
     public boolean isBurning() {
@@ -361,6 +373,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
     }
 
+    public void setRateLimit(double rate) {
+        rate = Math.max(Math.min(getMaxBurnRate(), rate), 0);
+        if (rateLimit != rate) {
+            rateLimit = rate;
+            markDirty();
+        }
+    }
+
     //Computer related methods
     @ComputerMethod
     private void activate() throws ComputerException {
@@ -387,7 +407,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             //Validate bounds even though we can clamp
             throw new ComputerException("Burn Rate '%d' is out of range must be between 0 and %d. (Inclusive)", rate, max);
         }
-        rateLimit = Math.max(Math.min(getMaxBurnRate(), rate), 0);
+        setRateLimit(rate);
     }
 
     @ComputerMethod

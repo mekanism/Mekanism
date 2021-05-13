@@ -185,20 +185,23 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         return mergedTank.getCurrentType() == CurrentType.EMPTY;
     }
 
-    //Computer related methods
     @ComputerMethod
-    private void setContainerEditMode(ContainerEditMode mode) {
-        editMode = mode;
+    public void setContainerEditMode(ContainerEditMode mode) {
+        if (editMode != mode) {
+            editMode = mode;
+            markDirty();
+        }
     }
 
+    //Computer related methods
     @ComputerMethod
     private void incrementContainerEditMode() {
-        editMode = editMode.getNext();
+        setContainerEditMode(editMode.getNext());
     }
 
     @ComputerMethod
     private void decrementContainerEditMode() {
-        editMode = editMode.getPrevious();
+        setContainerEditMode(editMode.getPrevious());
     }
 
     @ComputerMethod

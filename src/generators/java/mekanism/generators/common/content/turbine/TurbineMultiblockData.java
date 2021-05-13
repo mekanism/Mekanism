@@ -242,20 +242,23 @@ public class TurbineMultiblockData extends MultiblockData {
         return (long) condensers * MekanismGeneratorsConfig.generators.condenserRate.get();
     }
 
-    //Computer related methods
-    @ComputerMethod
-    private void setDumpingMode(GasMode mode) {
-        dumpMode = mode;
+    @ComputerMethod(nameOverride = "setDumpingMode")
+    public void setDumpMode(GasMode mode) {
+        if (dumpMode != mode) {
+            dumpMode = mode;
+            markDirty();
+        }
     }
 
+    //Computer related methods
     @ComputerMethod
     private void incrementDumpingMode() {
-        dumpMode = dumpMode.getNext();
+        setDumpMode(dumpMode.getNext());
     }
 
     @ComputerMethod
     private void decrementDumpingMode() {
-        dumpMode = dumpMode.getPrevious();
+        setDumpMode(dumpMode.getPrevious());
     }
     //End computer related methods
 }

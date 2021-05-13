@@ -50,7 +50,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     public void apply(T data) {
-        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
+        for (CacheSubstance<?, INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
             List<? extends INBTSerializable<CompoundNBT>> containers = type.getContainerList(data);
             if (containers != null) {
                 List<? extends INBTSerializable<CompoundNBT>> cacheContainers = type.getContainerList(this);
@@ -65,7 +65,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     }
 
     public void sync(T data) {
-        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
+        for (CacheSubstance<?, INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
             List<? extends INBTSerializable<CompoundNBT>> containersToCopy = type.getContainerList(data);
             if (containersToCopy != null) {
                 List<? extends INBTSerializable<CompoundNBT>> cacheContainers = type.getContainerList(this);
@@ -80,14 +80,14 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     }
 
     public void load(CompoundNBT nbtTags) {
-        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
+        for (CacheSubstance<?, INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
             type.prefab(this, nbtTags.getInt(type.getTagKey() + "_stored"));
             DataHandlerUtils.readContainers(type.getContainerList(this), nbtTags.getList(type.getTagKey(), NBT.TAG_COMPOUND));
         }
     }
 
     public void save(CompoundNBT nbtTags) {
-        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
+        for (CacheSubstance<?, INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
             nbtTags.putInt(type.getTagKey() + "_stored", type.getContainerList(this).size());
             nbtTags.put(type.getTagKey(), DataHandlerUtils.writeContainers(type.getContainerList(this)));
         }
@@ -95,7 +95,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     public void merge(MultiblockCache<T> mergeCache, List<ItemStack> rejectedItems) {
         // prefab enough containers for each substance type to support the merge cache
-        for (CacheSubstance<?,INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
+        for (CacheSubstance<?, INBTSerializable<CompoundNBT>> type : CacheSubstance.VALUES) {
             type.preHandleMerge(this, mergeCache);
         }
 
@@ -192,6 +192,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     }
 
     public static abstract class CacheSubstance<HANDLER, ELEMENT> {
+
         public static final CacheSubstance<IMekanismInventory, IInventorySlot> ITEMS = new CacheSubstance<IMekanismInventory, IInventorySlot>(NBTConstants.ITEMS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
@@ -332,15 +333,15 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         };
 
         @SuppressWarnings({"unchecked"})
-        public static final CacheSubstance<?, INBTSerializable<CompoundNBT>>[] VALUES = new CacheSubstance[] {
-                ITEMS,
-                FLUID,
-                GAS,
-                INFUSION,
-                PIGMENT,
-                SLURRY,
-                ENERGY,
-                HEAT,
+        public static final CacheSubstance<?, INBTSerializable<CompoundNBT>>[] VALUES = new CacheSubstance[]{
+              ITEMS,
+              FLUID,
+              GAS,
+              INFUSION,
+              PIGMENT,
+              SLURRY,
+              ENERGY,
+              HEAT
         };
 
         private final String tagKey;
