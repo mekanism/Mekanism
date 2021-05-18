@@ -625,7 +625,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.COMMAND_RADIATION_ADD, "Added %s radiation at (%s) in %s.");
         add(MekanismLang.COMMAND_RADIATION_GET, "Current radiation at (%s) in %s: %s");
         add(MekanismLang.COMMAND_RADIATION_CLEAR, "Cleared player radiation.");
-        add(MekanismLang.COMMAND_RADIATION_CLEAR_PLAYER, "Cleared player radiation for: %s.");
+        add(MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY, "Cleared entity radiation for: %s.");
         add(MekanismLang.COMMAND_RADIATION_REMOVE_ALL, "Removed all radiation sources.");
         add(MekanismLang.COMMAND_RETROGEN_CHUNK_QUEUED, "Queued chunk (%s) in %s for retrogen.");
         add(MekanismLang.COMMAND_ERROR_RETROGEN_DISABLED, "Retrogen is disabled, please enable it in the config.");

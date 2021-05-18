@@ -139,7 +139,7 @@ public enum MekanismLang implements ILangEntry {
     COMMAND_RADIATION_ADD("command", "radiation.add"),
     COMMAND_RADIATION_GET("command", "radiation.get"),
     COMMAND_RADIATION_CLEAR("command", "radiation.clear"),
-    COMMAND_RADIATION_CLEAR_PLAYER("command", "radiation.clear.player"),
+    COMMAND_RADIATION_CLEAR_ENTITY("command", "radiation.clear.entity"),
     COMMAND_RADIATION_REMOVE_ALL("command", "radiation.remove_all"),
     COMMAND_RETROGEN_CHUNK_QUEUED("command", "retrogen.chunk_queued"),
     COMMAND_ERROR_RETROGEN_DISABLED("command", "error.retrogen.disabled"),

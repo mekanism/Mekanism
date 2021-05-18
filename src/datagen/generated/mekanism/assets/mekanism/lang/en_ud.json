@@ -285,7 +285,7 @@
   "command.mekanism.error.tpop.empty": "\u02D9\u029E\u0254\u0250\u0287s uo suo\u1D09\u0287\u1D09sod oN",
   "command.mekanism.radiation.add": "\u02D9%3$s u\u1D09 (%s) \u0287\u0250 uo\u1D09\u0287\u0250\u1D09p\u0250\u0279 %1$s p\u01DDpp\u2C6F",
   "command.mekanism.radiation.clear": "\u02D9uo\u1D09\u0287\u0250\u1D09p\u0250\u0279 \u0279\u01DD\u028E\u0250\uA781d p\u01DD\u0279\u0250\u01DD\uA781\u0186",
-  "command.mekanism.radiation.clear.player": "\u02D9%s :\u0279o\u025F uo\u1D09\u0287\u0250\u1D09p\u0250\u0279 \u0279\u01DD\u028E\u0250\uA781d p\u01DD\u0279\u0250\u01DD\uA781\u0186",
+  "command.mekanism.radiation.clear.entity": "\u02D9%s :\u0279o\u025F uo\u1D09\u0287\u0250\u1D09p\u0250\u0279 \u028E\u0287\u1D09\u0287u\u01DD p\u01DD\u0279\u0250\u01DD\uA781\u0186",
   "command.mekanism.radiation.get": "%3$s :%s u\u1D09 (%1$s) \u0287\u0250 uo\u1D09\u0287\u0250\u1D09p\u0250\u0279 \u0287u\u01DD\u0279\u0279n\u0186",
   "command.mekanism.radiation.remove_all": "\u02D9s\u01DD\u0254\u0279nos uo\u1D09\u0287\u0250\u1D09p\u0250\u0279 \uA781\uA781\u0250 p\u01DD\u028Co\u026F\u01DD\u1D1A",
   "command.mekanism.retrogen.chunk_queued": "\u02D9u\u01DD\u1D77o\u0279\u0287\u01DD\u0279 \u0279o\u025F %2$s u\u1D09 (%1$s) \u029Eun\u0265\u0254 p\u01DDn\u01DDn\uA779",

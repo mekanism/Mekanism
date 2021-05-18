@@ -17,7 +17,8 @@ import net.minecraft.command.arguments.DimensionArgument;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.command.arguments.ILocationArgument;
 import net.minecraft.command.arguments.Vec3Argument;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
@@ -71,16 +72,22 @@ public class RadiationCommand {
               ).then(Commands.literal("heal")
                     .executes(ctx -> {
                         CommandSource source = ctx.getSource();
-                        source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(0));
-                        source.sendSuccess(MekanismLang.COMMAND_RADIATION_CLEAR.translateColored(EnumColor.GRAY), true);
+                        source.getPlayerOrException().getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+                            c.set(0);
+                            source.sendSuccess(MekanismLang.COMMAND_RADIATION_CLEAR.translateColored(EnumColor.GRAY), true);
+                        });
                         return 0;
-                    }).then(Commands.argument("targets", EntityArgument.players())
+                    }).then(Commands.argument("targets", EntityArgument.entities())
                           .executes(ctx -> {
                               CommandSource source = ctx.getSource();
-                              for (PlayerEntity player : EntityArgument.getPlayers(ctx, "targets")) {
-                                  player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.set(0));
-                                  source.sendSuccess(MekanismLang.COMMAND_RADIATION_CLEAR_PLAYER.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                                        player.getDisplayName()), true);
+                              for (Entity entity : EntityArgument.getEntities(ctx, "targets")) {
+                                  if (entity instanceof LivingEntity) {
+                                      entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> {
+                                          c.set(0);
+                                          source.sendSuccess(MekanismLang.COMMAND_RADIATION_CLEAR_ENTITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                                                entity.getDisplayName()), true);
+                                      });
+                                  }
                               }
                               return 0;
                           })

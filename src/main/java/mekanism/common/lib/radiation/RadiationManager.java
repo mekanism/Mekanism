@@ -284,11 +284,10 @@ public class RadiationManager implements IRadiationManager {
             }
             radiationCap.ifPresent(IRadiationEntity::decay);
             if (entity instanceof ServerPlayerEntity) {
-                ServerPlayerEntity player = (ServerPlayerEntity) entity;
                 RadiationScale scale = RadiationScale.get(magnitude);
-                if (playerExposureMap.get(player.getUUID()) != scale) {
-                    playerExposureMap.put(player.getUUID(), scale);
-                    Mekanism.packetHandler.sendTo(PacketRadiationData.create(scale), player);
+                if (playerExposureMap.get(entity.getUUID()) != scale) {
+                    playerExposureMap.put(entity.getUUID(), scale);
+                    Mekanism.packetHandler.sendTo(PacketRadiationData.create(scale), (ServerPlayerEntity) entity);
                 }
             }
         }
@@ -365,7 +364,7 @@ public class RadiationManager implements IRadiationManager {
     @SubscribeEvent
     public void onLivingUpdate(LivingUpdateEvent event) {
         World world = event.getEntityLiving().getCommandSenderWorld();
-        if (!world.isClientSide() && !(event.getEntityLiving() instanceof PlayerEntity) && world.getRandom().nextInt() % 20 == 0) {
+        if (!world.isClientSide() && !(event.getEntityLiving() instanceof PlayerEntity)) {
             updateEntityRadiation(event.getEntityLiving());
         }
     }

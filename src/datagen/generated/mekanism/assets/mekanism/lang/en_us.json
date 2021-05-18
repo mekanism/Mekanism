@@ -285,7 +285,7 @@
   "command.mekanism.error.tpop.empty": "No positions on stack.",
   "command.mekanism.radiation.add": "Added %s radiation at (%s) in %s.",
   "command.mekanism.radiation.clear": "Cleared player radiation.",
-  "command.mekanism.radiation.clear.player": "Cleared player radiation for: %s.",
+  "command.mekanism.radiation.clear.entity": "Cleared entity radiation for: %s.",
   "command.mekanism.radiation.get": "Current radiation at (%s) in %s: %s",
   "command.mekanism.radiation.remove_all": "Removed all radiation sources.",
   "command.mekanism.retrogen.chunk_queued": "Queued chunk (%s) in %s for retrogen.",
