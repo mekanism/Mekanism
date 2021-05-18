@@ -47,7 +47,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
         blit(matrix, x + type.switchX, y + type.switchY + BUTTON_SIZE_Y + 1, 0, stateSupplier.getAsBoolean() ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
 
         minecraft.textureManager.bind(icon);
-        blit(matrix, x + 6, y + 21, 0, 0, 5, 5, 5, 5);
+        blit(matrix, x + 5, y + 21, 0, 0, 5, 5, 5, 5);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     public enum SwitchType {
-        LOWER_ICON(BUTTON_SIZE_X, 40, 0, 0);
+        LOWER_ICON(BUTTON_SIZE_X, 31, 0, 0);
 
         private final int sizeX, sizeY;
         private final int switchX, switchY;
