@@ -169,7 +169,7 @@ public class GearConfig extends BaseMekanismConfig {
         electricBowEnergyUsage = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Electric Bow.",
               "energyUsage", FloatingLong.createConst(120));
         electricBowEnergyUsageFire = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Electric Bow with flame mode active.",
-              "energyUsage", FloatingLong.createConst(1_200));
+              "energyUsageFire", FloatingLong.createConst(1_200));
         builder.pop();
 
         builder.comment("Energy Tablet Settings").push(ENERGY_TABLET_CATEGORY);
@@ -250,9 +250,9 @@ public class GearConfig extends BaseMekanismConfig {
 
         builder.comment("Meka-Tool Settings").push(MEKATOOL_CATEGORY);
         mekaToolEnergyUsage = CachedFloatingLongValue.define(this, builder, "Base energy (Joules) usage of the Meka-Tool. (Gets multiplied by speed factor)",
-              "energyUsageTeleport", FloatingLong.createConst(10));
+              "energyUsage", FloatingLong.createConst(10));
         mekaToolEnergyUsageSilk = CachedFloatingLongValue.define(this, builder, "Silk touch energy (Joules) usage of the Meka-Tool. (Gets multiplied by speed factor)",
-              "energyUsageTeleport", FloatingLong.createConst(100));
+              "energyUsageSilk", FloatingLong.createConst(100));
         mekaToolEnergyUsageWeapon = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to deal 4 units of damage.",
               "energyUsageWeapon", FloatingLong.createConst(2_000));
         mekaToolEnergyUsageTeleport = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to teleport 10 blocks.",
