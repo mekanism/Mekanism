@@ -1,5 +1,8 @@
 package mekanism.common.lib.radiation;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -12,6 +15,8 @@ import java.util.UUID;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -20,6 +25,7 @@ import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.radiation.IRadiationSource;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
 import mekanism.api.text.EnumColor;
@@ -27,7 +33,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.collection.HashList;
-import mekanism.common.lib.math.voxel.Chunk3D;
+import mekanism.api.Chunk3D;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismParticleTypes;
@@ -79,6 +85,8 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
  *
  * @author aidancbrady
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public class RadiationManager implements IRadiationManager {
 
     /**
@@ -94,8 +102,9 @@ public class RadiationManager implements IRadiationManager {
 
     private boolean loaded;
 
-    private final Map<Chunk3D, Map<Coord4D, RadiationSource>> radiationMap = new Object2ObjectOpenHashMap<>();
+    private final Table<Chunk3D, Coord4D, RadiationSource> radiationTable = HashBasedTable.create();
     //TODO - 10.1: Re-evaluate the fact this doesn't seem to be persisted between saving and opening
+    // this may not fully matter due to a meltdown only lasting 5 seconds, but may be something we care about
     private final Map<ResourceLocation, List<Meltdown>> meltdowns = new Object2ObjectOpenHashMap<>();
 
     private final Map<UUID, RadiationScale> playerExposureMap = new Object2ObjectOpenHashMap<>();
@@ -125,15 +134,31 @@ public class RadiationManager implements IRadiationManager {
     }
 
     @Override
+    public Table<Chunk3D, Coord4D, IRadiationSource> getRadiationSources() {
+        return Tables.unmodifiableTable(radiationTable);
+    }
+
+    @Override
+    public void removeRadiationSources(Chunk3D chunk) {
+        radiationTable.row(chunk).clear();
+    }
+
+    @Override
+    public void removeRadiationSource(Coord4D coord) {
+        radiationTable.remove(new Chunk3D(coord), coord);
+    }
+
+    @Override
     public double getRadiationLevel(Coord4D coord) {
         Set<Chunk3D> checkChunks = new Chunk3D(coord).expand(MekanismConfig.general.radiationChunkCheckRadius.get());
         double level = BASELINE;
         for (Chunk3D chunk : checkChunks) {
-            if (radiationMap.containsKey(chunk)) {
-                for (RadiationSource src : radiationMap.get(chunk).values()) {
+            Map<Coord4D, RadiationSource> row = radiationTable.row(chunk);
+            if (row != null) {
+                for (Map.Entry<Coord4D, RadiationSource> entry : row.entrySet()) {
                     // we only compute exposure when within the MAX_RANGE bounds
-                    if (src.getPos().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
-                        level += computeExposure(coord, src);
+                    if (entry.getKey().distanceTo(coord) <= MAX_RANGE.getAsInt()) {
+                        level += computeExposure(coord, entry.getValue());
                     }
                 }
             }
@@ -146,7 +171,7 @@ public class RadiationManager implements IRadiationManager {
         if (!isRadiationEnabled()) {
             return;
         }
-        Map<Coord4D, RadiationSource> radiationSourceMap = radiationMap.computeIfAbsent(new Chunk3D(coord), c -> new Object2ObjectOpenHashMap<>());
+        Map<Coord4D, RadiationSource> radiationSourceMap = radiationTable.row(new Chunk3D(coord));
         RadiationSource src = radiationSourceMap.get(coord);
         if (src == null) {
             radiationSourceMap.put(coord, new RadiationSource(coord, magnitude));
@@ -198,11 +223,11 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void clearSources() {
-        radiationMap.clear();
+        radiationTable.clear();
     }
 
     private double computeExposure(Coord4D coord, RadiationSource source) {
-        return source.getMagnitude() / Math.max(1, Math.pow(coord.distanceTo(source.getPos()), 2));
+        return source.getMagnitude() / Math.max(1, coord.distanceToSquared(source.getPos()));
     }
 
     private double getRadiationResistance(LivingEntity entity) {
@@ -294,16 +319,14 @@ public class RadiationManager implements IRadiationManager {
         }
         // each tick, there's a 1/20 chance we'll decay radiation sources (averages to 1 decay operation per second)
         if (RAND.nextInt(20) == 0) {
-            for (Map<Coord4D, RadiationSource> set : radiationMap.values()) {
-                for (Iterator<Map.Entry<Coord4D, RadiationSource>> iter = set.entrySet().iterator(); iter.hasNext(); ) {
-                    Map.Entry<Coord4D, RadiationSource> entry = iter.next();
-                    if (entry.getValue().decay()) {
-                        // remove if source gets too low
-                        iter.remove();
-                    }
-
-                    dataHandler.setDirty();
+            for (Iterator<RadiationSource> iter = radiationTable.values().iterator(); iter.hasNext(); ) {
+                RadiationSource source = iter.next();
+                if (source.decay()) {
+                    // remove if source gets too low
+                    iter.remove();
                 }
+
+                dataHandler.setDirty();
             }
         }
     }
@@ -439,8 +462,7 @@ public class RadiationManager implements IRadiationManager {
             // don't sync the manager if radiation has been disabled
             if (loadedSources != null && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
                 for (RadiationSource source : loadedSources) {
-                    Chunk3D chunk = new Chunk3D(source.getPos());
-                    manager.radiationMap.computeIfAbsent(chunk, c -> new Object2ObjectOpenHashMap<>()).put(source.getPos(), source);
+                    manager.radiationTable.put(new Chunk3D(source.getPos()), source.getPos(), source);
                 }
             }
         }
@@ -460,12 +482,10 @@ public class RadiationManager implements IRadiationManager {
         @Override
         public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
             ListNBT list = new ListNBT();
-            for (Map<Coord4D, RadiationSource> map : manager.radiationMap.values()) {
-                for (RadiationSource source : map.values()) {
-                    CompoundNBT compound = new CompoundNBT();
-                    source.write(compound);
-                    list.add(compound);
-                }
+            for (RadiationSource source : manager.radiationTable.values()) {
+                CompoundNBT compound = new CompoundNBT();
+                source.write(compound);
+                list.add(compound);
             }
             nbtTags.put(NBTConstants.RADIATION_LIST, list);
             return nbtTags;

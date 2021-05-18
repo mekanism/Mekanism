@@ -42,7 +42,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
     }
 
     @Override
-    public void update(LivingEntity entity) {
+    public void update(@Nonnull LivingEntity entity) {
         if (entity instanceof PlayerEntity && !MekanismUtils.isPlayingMode((PlayerEntity) entity)) {
             return;
         }

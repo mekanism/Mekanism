@@ -1,6 +1,10 @@
 package mekanism.api.radiation;
 
+import com.google.common.collect.Table;
 import java.util.List;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
@@ -34,6 +38,8 @@ import net.minecraft.util.DamageSource;
  * <li>~500 Sv/h: irradiation inside primary containment vessel of Fukushima power station (at this rate, it takes 30 seconds to accumulate a median lethal dose)</li>
  * </ul>
  */
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public interface IRadiationManager {
 
     /**
@@ -51,7 +57,7 @@ public interface IRadiationManager {
     /**
      * Get the radiation level (in sV/h) at a certain location.
      *
-     * @param coord - Location
+     * @param coord Location
      *
      * @return radiation level (in sV).
      */
@@ -66,6 +72,27 @@ public interface IRadiationManager {
      * @return Radiation level (in sV).
      */
     double getRadiationLevel(Entity entity);
+
+    /**
+     * Gets an unmodifiable table of the radiation sources tracked by this manager. This table keeps track of radiation sources on both a chunk and position based level.
+     *
+     * @return Unmodifiable table of radiation sources.
+     */
+    Table<Chunk3D, Coord4D, IRadiationSource> getRadiationSources();
+
+    /**
+     * Removes all radiation sources in a given chunk.
+     *
+     * @param chunk Chunk to clear radiation sources of.
+     */
+    void removeRadiationSources(Chunk3D chunk);
+
+    /**
+     * Removes the radiation source at the given location.
+     *
+     * @param coord Location.
+     */
+    void removeRadiationSource(Coord4D coord);
 
     /**
      * Applies a radiation source (Sv) of the given magnitude to a given location.
