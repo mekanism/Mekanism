@@ -258,6 +258,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         autoEject = data.getBoolean(NBTConstants.EJECT);
         roundRobin = data.getBoolean(NBTConstants.ROUND_ROBIN);
         singleItem = data.getBoolean(NBTConstants.SINGLE_ITEM);
+        filters.clear();
         if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
