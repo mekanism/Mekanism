@@ -24,7 +24,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.Mekanism;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
@@ -708,7 +707,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public void setRemoved() {
         super.setRemoved();
-        Mekanism.logger.info("Has level: {}", level != null);
         if (level != null) {
             for (int x = -1; x <= 1; x++) {
                 for (int y = 0; y <= 1; y++) {
