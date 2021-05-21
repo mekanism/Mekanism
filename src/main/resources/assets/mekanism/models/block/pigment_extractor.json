@@ -1,0 +1,12 @@
+{
+  "parent": "mekanism:block/machine",
+  "textures": {
+    "sides": "mekanism:block/pigment_extractor/right",
+    "front": "mekanism:block/pigment_extractor/front",
+    "west": "mekanism:block/pigment_extractor/right",
+    "east": "mekanism:block/pigment_extractor/left",
+    "south": "mekanism:block/pigment_extractor/back",
+    "up": "mekanism:block/pigment_extractor/top",
+    "down": "mekanism:block/pigment_extractor/bottom"
+  }
+}

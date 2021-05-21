@@ -2,6 +2,7 @@ package mekanism.common.tile.machine;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -32,6 +33,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
@@ -42,9 +44,16 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToGasRecipe> {
 
@@ -62,6 +71,10 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     private GasInventorySlot outputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
+
+    @Nullable
+    private HashedItem lastPasteItem;
+    private float lastPasteScale;
 
     public TileEntityNutritionalLiquifier() {
         super(MekanismBlocks.NUTRITIONAL_LIQUIFIER, 100);
@@ -118,6 +131,27 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         energySlot.fillContainerOrConvert();
         outputSlot.drainTank();
         recipeCacheLookupMonitor.updateAndProcess();
+        boolean needsPacket = false;
+        float pasteScale = MekanismUtils.getScale(lastPasteScale, gasTank);
+        if (pasteScale != lastPasteScale) {
+            lastPasteScale = pasteScale;
+            needsPacket = true;
+        }
+        if (inputSlot.isEmpty()) {
+            if (lastPasteItem != null) {
+                lastPasteItem = null;
+                needsPacket = true;
+            }
+        } else {
+            HashedItem item = HashedItem.raw(inputSlot.getStack());
+            if (!item.equals(lastPasteItem)) {
+                lastPasteItem = HashedItem.create(item.getStack());
+                needsPacket = true;
+            }
+        }
+        if (needsPacket) {
+            sendUpdatePacket();
+        }
     }
 
     @Nonnull
@@ -158,6 +192,57 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     public MachineEnergyContainer<TileEntityNutritionalLiquifier> getEnergyContainer() {
         return energyContainer;
+    }
+
+    /**
+     * @apiNote Do not modify the returned stack.
+     */
+    public ItemStack getRenderStack() {
+        if (lastPasteItem == null) {
+            return ItemStack.EMPTY;
+        }
+        return lastPasteItem.getStack();
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT getReducedUpdateTag() {
+        CompoundNBT updateTag = super.getReducedUpdateTag();
+        updateTag.put(NBTConstants.GAS_STORED, gasTank.serializeNBT());
+        CompoundNBT item = new CompoundNBT();
+        if (lastPasteItem != null) {
+            item.putString(NBTConstants.ID, lastPasteItem.getStack().getItem().getRegistryName().toString());
+            CompoundNBT tag = lastPasteItem.getStack().getTag();
+            if (tag != null) {
+                item.put(NBTConstants.TAG, tag.copy());
+            }
+        }
+        updateTag.put(NBTConstants.ITEM, item);
+        return updateTag;
+    }
+
+    @Override
+    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
+        super.handleUpdateTag(state, tag);
+        NBTUtils.setCompoundIfPresent(tag, NBTConstants.GAS_STORED, nbt -> gasTank.deserializeNBT(nbt));
+        NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> {
+            if (nbt.isEmpty()) {
+                lastPasteItem = null;
+            } else if (nbt.contains(NBTConstants.ID, NBT.TAG_STRING)) {
+                ResourceLocation id = ResourceLocation.tryParse(nbt.getString(NBTConstants.ID));
+                if (id != null) {
+                    Item item = ForgeRegistries.ITEMS.getValue(id);
+                    if (item != null && item != Items.AIR) {
+                        ItemStack stack = new ItemStack(item);
+                        if (nbt.contains(NBTConstants.TAG, NBT.TAG_COMPOUND)) {
+                            stack.setTag(nbt.getCompound(NBTConstants.TAG));
+                        }
+                        //Use raw because we have a new stack so we don't need to bother copying it
+                        lastPasteItem = HashedItem.raw(stack);
+                    }
+                }
+            }
+        });
     }
 
     //Methods relating to IComputerTile

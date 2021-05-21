@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
@@ -13,9 +14,13 @@ import org.lwjgl.opengl.GL11;
 public class MekanismRenderType extends RenderType {
 
     private static final AlphaState CUBOID_ALPHA = new RenderState.AlphaState(0.1F);
-    private static final RenderState.TransparencyState BLADE_TRANSPARENCY = new RenderState.TransparencyState("blade_transparency", () -> {
+    private static final RenderState.TransparencyState BLADE_TRANSPARENCY = new RenderState.TransparencyState("mek_blade_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(SourceFactor.ONE, DestFactor.ONE_MINUS_SRC_ALPHA);
+    }, RenderSystem::disableBlend);
+    private static final RenderState.TransparencyState PARTICLE_TRANSPARENCY = new RenderState.TransparencyState("mek_particle_transparency", () -> {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
     }, RenderSystem::disableBlend);
 
     public static final RenderType MEK_LIGHTNING = create("mek_lightning", DefaultVertexFormats.POSITION_COLOR, GL11.GL_QUADS, 256,
@@ -59,6 +64,16 @@ public class MekanismRenderType extends RenderType {
               .setLightmapState(NO_LIGHTMAP)//disableLighting
               .createCompositeState(true);
         return create("mek_flame", DefaultVertexFormats.POSITION_COLOR_TEX, GL11.GL_QUADS, 256, true, false, state);
+    }
+
+    public static RenderType nutritionalParticle() {
+        return create("mek_nutritional_particle", DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP, GL11.GL_QUADS, 256, false, false,
+              RenderType.State.builder()
+                    .setTextureState(new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS, false, false))
+                    .setTransparencyState(PARTICLE_TRANSPARENCY)
+                    .setAlphaState(DEFAULT_ALPHA)
+                    .createCompositeState(false)
+        );
     }
 
     public static RenderType getMekaSuit() {

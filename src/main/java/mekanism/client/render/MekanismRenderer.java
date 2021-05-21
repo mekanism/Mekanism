@@ -28,6 +28,7 @@ import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderFluidTank;
+import mekanism.client.render.tileentity.RenderNutritionalLiquifier;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
@@ -41,6 +42,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -71,6 +73,7 @@ public class MekanismRenderer {
     public static final int FULL_SKY_LIGHT = LightTexture.pack(0, 15);
 
     public static OBJModel contentsModel;
+    public static IBakedModel liquifierBlade;
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
@@ -389,6 +392,7 @@ public class MekanismRenderer {
     public static void onModelBake(ModelBakeEvent event) {
         try {
             contentsModel = OBJLoader.INSTANCE.loadModel(new ModelSettings(RenderTransmitterBase.MODEL_LOCATION, true, false, true, true, null));
+            liquifierBlade = event.getModelRegistry().get(Mekanism.rl("block/liquifier_blade"));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -430,6 +434,7 @@ public class MekanismRenderer {
         RenderDigitalMiner.resetCachedVisuals();
         RenderFluidTank.resetCachedModels();
         RenderFluidTankItem.resetCachedModels();
+        RenderNutritionalLiquifier.resetCachedModels();
         RenderMechanicalPipe.onStitch();
         RenderTickHandler.resetCached();
         RenderTeleporter.resetCachedModels();

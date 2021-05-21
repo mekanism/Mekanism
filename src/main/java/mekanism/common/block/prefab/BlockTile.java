@@ -2,6 +2,7 @@ package mekanism.common.block.prefab;
 
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.block.attribute.Attribute;
@@ -35,8 +36,13 @@ import net.minecraft.world.World;
 
 public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockBase<TYPE> implements IHasTileEntity<TILE> {
 
-    public BlockTile(TYPE type) {//TODO - 10.1: Figure out what the resistance should be (it used to be different in 1.12)
-        this(type, AbstractBlock.Properties.of(Material.METAL).strength(3.5F, 16).requiresCorrectToolForDrops());
+    public BlockTile(TYPE type) {
+        this(type, UnaryOperator.identity());
+    }
+
+    public BlockTile(TYPE type, UnaryOperator<AbstractBlock.Properties> propertiesModifier) {
+        this(type, propertiesModifier.apply(AbstractBlock.Properties.of(Material.METAL).strength(3.5F, 16).requiresCorrectToolForDrops()));
+        //TODO - 10.1: Figure out what the resistance should be (it used to be different in 1.12)
     }
 
     public BlockTile(TYPE type, AbstractBlock.Properties properties) {
