@@ -75,7 +75,7 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleDosimeterUnit> DOSIMETER_UNIT = MODULES.registerLegacy("dosimeter_unit",
           ModuleDosimeterUnit::new, () -> MekanismItems.MODULE_DOSIMETER.getItem(), builder -> builder.rarity(Rarity.UNCOMMON).rendersHUD());
     public static final ModuleRegistryObject<ModuleGeigerUnit> GEIGER_UNIT = MODULES.register("geiger_unit",
-          ModuleGeigerUnit::new, () -> MekanismItems.MODULE_ENERGY.getItem(), builder -> builder.rarity(Rarity.UNCOMMON).rendersHUD());
+          ModuleGeigerUnit::new, () -> MekanismItems.MODULE_GEIGER.getItem(), builder -> builder.rarity(Rarity.UNCOMMON).rendersHUD());
     public static final ModuleRegistryObject<ModuleJetpackUnit> JETPACK_UNIT = MODULES.registerLegacy("jetpack_unit",
           ModuleJetpackUnit::new, () -> MekanismItems.MODULE_JETPACK.getItem(), builder -> builder.rarity(Rarity.RARE).handlesModeChange().rendersHUD().exclusive());
     public static final ModuleRegistryObject<ModuleChargeDistributionUnit> CHARGE_DISTRIBUTION_UNIT = MODULES.registerLegacy("charge_distribution_unit",
