@@ -71,6 +71,7 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
+import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -88,6 +89,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.Region;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
@@ -895,6 +897,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (upgrade == Upgrade.SPEED) {
             delayLength = MekanismUtils.getTicks(this, MekanismConfig.general.minerTicksPerMine.get());
         }
+    }
+
+    @Override
+    public List<ITextComponent> getInfo(Upgrade upgrade) {
+        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Nonnull

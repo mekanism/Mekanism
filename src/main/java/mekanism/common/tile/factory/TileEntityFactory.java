@@ -57,11 +57,13 @@ import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.text.ITextComponent;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
@@ -372,6 +374,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
         }
+    }
+
+    @Override
+    public List<ITextComponent> getInfo(Upgrade upgrade) {
+        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

@@ -3,6 +3,7 @@ package mekanism.common.tile.machine;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
@@ -37,6 +38,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ILiquidContainer;
@@ -50,6 +52,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -288,6 +291,11 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
         }
+    }
+
+    @Override
+    public List<ITextComponent> getInfo(Upgrade upgrade) {
+        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override

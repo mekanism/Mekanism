@@ -47,6 +47,7 @@ import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
+import mekanism.common.util.UpgradeUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -54,6 +55,7 @@ import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
@@ -648,6 +650,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (upgrade == Upgrade.SPEED) {
             ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
         }
+    }
+
+    @Override
+    public List<ITextComponent> getInfo(Upgrade upgrade) {
+        return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     public MachineEnergyContainer<TileEntityFormulaicAssemblicator> getEnergyContainer() {
