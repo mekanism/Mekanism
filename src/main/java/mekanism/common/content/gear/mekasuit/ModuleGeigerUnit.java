@@ -7,12 +7,13 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModule;
+import mekanism.client.MekanismClient;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
-import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
 @ParametersAreNonnullByDefault
@@ -23,9 +24,12 @@ public class ModuleGeigerUnit implements ICustomModule<ModuleGeigerUnit> {
     @Override
     public void addHUDElements(IModule<ModuleGeigerUnit> module, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(Minecraft.getInstance().player);
-            hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElement(icon, UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2),
-                  magnitude < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (magnitude < 0.1 ? HUDColor.WARNING : HUDColor.DANGER)));
+            PlayerEntity player = MekanismClient.tryGetClientPlayer();
+            if (player != null) {
+                double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(player);
+                hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElement(icon, UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2),
+                      magnitude < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (magnitude < 0.1 ? HUDColor.WARNING : HUDColor.DANGER)));
+            }
         }
     }
 }
