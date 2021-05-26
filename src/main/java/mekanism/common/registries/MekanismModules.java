@@ -72,10 +72,12 @@ public class MekanismModules {
           ModuleNutritionalInjectionUnit::new, () -> MekanismItems.MODULE_NUTRITIONAL_INJECTION.getItem(), builder -> builder.rarity(Rarity.RARE).rendersHUD());
 
     //Chestplate
+    //Note: Dosimeter and geiger both reference a client only class (client player) so need to be initialized via lambda
+    // and not method reference so that it doesn't get resolved and crash on a dedicated server
     public static final ModuleRegistryObject<ModuleDosimeterUnit> DOSIMETER_UNIT = MODULES.registerLegacy("dosimeter_unit",
-          ModuleDosimeterUnit::new, () -> MekanismItems.MODULE_DOSIMETER.getItem(), builder -> builder.rarity(Rarity.UNCOMMON).rendersHUD());
+          () -> new ModuleDosimeterUnit(), () -> MekanismItems.MODULE_DOSIMETER.getItem(), builder -> builder.rarity(Rarity.UNCOMMON).rendersHUD());
     public static final ModuleRegistryObject<ModuleGeigerUnit> GEIGER_UNIT = MODULES.register("geiger_unit",
-          ModuleGeigerUnit::new, () -> MekanismItems.MODULE_ENERGY.getItem(), builder -> builder.rarity(Rarity.UNCOMMON).rendersHUD());
+          () -> new ModuleGeigerUnit(), () -> MekanismItems.MODULE_ENERGY.getItem(), builder -> builder.rarity(Rarity.UNCOMMON).rendersHUD());
     public static final ModuleRegistryObject<ModuleJetpackUnit> JETPACK_UNIT = MODULES.registerLegacy("jetpack_unit",
           ModuleJetpackUnit::new, () -> MekanismItems.MODULE_JETPACK.getItem(), builder -> builder.rarity(Rarity.RARE).handlesModeChange().rendersHUD().exclusive());
     public static final ModuleRegistryObject<ModuleChargeDistributionUnit> CHARGE_DISTRIBUTION_UNIT = MODULES.registerLegacy("charge_distribution_unit",
