@@ -31,11 +31,12 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.client.event.sound.SoundSetupEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 /**
  * SoundHandler is the central point for sounds on Mek client side. There are roughly three classes of sounds to deal with:
@@ -54,6 +55,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  *
  * @apiNote Only used by client
  */
+@Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class SoundHandler {
 
     private SoundHandler() {
@@ -198,7 +200,7 @@ public class SoundHandler {
     }
 
     @SubscribeEvent
-    public static void onSoundEngineSetup(SoundSetupEvent event) {
+    public static void onSoundEngineSetup(SoundLoadEvent event) {
         //Grab the sound engine, so that we are able to play sounds. We use this event rather than requiring the use of an AT
         if (soundEngine == null) {
             //Note: We include a null check as the constructor for SoundEngine is public and calls this event
@@ -207,7 +209,6 @@ public class SoundHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onTilePlaySound(PlaySoundEvent event) {
         // Ignore any sound event which is null or is happening in a muffled check
         ISound resultSound = event.getResultSound();

@@ -175,7 +175,7 @@ public class ClientRegistration {
     public static void init(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
         MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
-        MinecraftForge.EVENT_BUS.register(SoundHandler.class);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, SoundHandler::onTilePlaySound);
         if (ModList.get().isLoaded(MekanismHooks.JEI_MOD_ID)) {
             //Note: We check this directly instead of using our value stored in Mekanism hooks
             // as that is initialized in CommonSetup and I believe that may be fired in parallel
