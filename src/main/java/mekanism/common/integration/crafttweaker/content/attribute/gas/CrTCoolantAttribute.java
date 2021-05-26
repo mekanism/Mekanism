@@ -8,7 +8,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.providers.IGasProvider;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTGas;
 import mekanism.common.integration.crafttweaker.content.attribute.CrTChemicalAttribute;
 import mekanism.common.integration.crafttweaker.content.attribute.ICrTChemicalAttribute.ICrTGasAttribute;
 import org.openzen.zencode.java.ZenCodeType;
@@ -29,7 +28,7 @@ public class CrTCoolantAttribute extends CrTChemicalAttribute implements ICrTGas
      * @return Attribute representing a 'cooled' variant of a coolant.
      */
     @ZenCodeType.Method
-    public static CrTCoolantAttribute cooled(Supplier<ICrTGas> heatedGas, double thermalEnthalpy, double conductivity) {
+    public static CrTCoolantAttribute cooled(Supplier<Gas> heatedGas, double thermalEnthalpy, double conductivity) {
         validateEnthalpyAndConductivity(thermalEnthalpy, conductivity);
         return new CrTCoolantAttribute(new GasAttributes.CooledCoolant(new CachingCrTGasProvider(heatedGas), thermalEnthalpy, conductivity));
     }
@@ -46,7 +45,7 @@ public class CrTCoolantAttribute extends CrTChemicalAttribute implements ICrTGas
      * @return Attribute representing the 'heated' variant of a coolant.
      */
     @ZenCodeType.Method
-    public static CrTCoolantAttribute heated(Supplier<ICrTGas> cooledGas, double thermalEnthalpy, double conductivity) {
+    public static CrTCoolantAttribute heated(Supplier<Gas> cooledGas, double thermalEnthalpy, double conductivity) {
         validateEnthalpyAndConductivity(thermalEnthalpy, conductivity);
         return new CrTCoolantAttribute(new GasAttributes.HeatedCoolant(new CachingCrTGasProvider(cooledGas), thermalEnthalpy, conductivity));
     }
@@ -65,14 +64,14 @@ public class CrTCoolantAttribute extends CrTChemicalAttribute implements ICrTGas
     }
 
     /**
-     * Helper class to cache the result of the {@link ICrTGas} supplier, so that we don't have to do registry lookups once it has properly been added to the registry.
+     * Helper class to cache the result of the {@link Gas} supplier, so that we don't have to do registry lookups once it has properly been added to the registry.
      */
     private static class CachingCrTGasProvider implements IGasProvider {
 
-        private Supplier<ICrTGas> gasSupplier;
+        private Supplier<Gas> gasSupplier;
         private Gas gas = MekanismAPI.EMPTY_GAS;
 
-        private CachingCrTGasProvider(Supplier<ICrTGas> gasSupplier) {
+        private CachingCrTGasProvider(Supplier<Gas> gasSupplier) {
             this.gasSupplier = gasSupplier;
         }
 

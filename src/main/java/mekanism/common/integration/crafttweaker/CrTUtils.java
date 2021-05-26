@@ -73,7 +73,7 @@ public class CrTUtils {
      * @return {@link ICrTChemicalStack} representation of the given stack or {@code null} if empty.
      */
     @Nullable
-    public static ICrTChemicalStack<?, ?, ?, ?> fromBoxedStack(BoxedChemicalStack stack) {
+    public static ICrTChemicalStack<?, ?, ?> fromBoxedStack(BoxedChemicalStack stack) {
         if (stack.isEmpty()) {
             return null;
         }

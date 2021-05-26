@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,6 +57,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
+import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.tag.CrTChemicalTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
@@ -101,16 +103,24 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         addNameLookupOverride(Boolean.TYPE, "bool");
         addPrimitiveInfo(Boolean.TYPE, Boolean.class, "bool");
         addNameLookupOverride(Character.class, "char");
-        addSupportedConversion(Character.TYPE, Character.class, c -> "'" + c + "'");
-        addSupportedConversion(IItemStack.class, ItemStack.class, stack -> new MCItemStack(stack).getCommandString());
-        addSupportedConversion(IFluidStack.class, FluidStack.class, stack -> new MCFluidStack(stack).getCommandString());
-        addSupportedConversion(MCWeightedItemStack.class, WeightedItemStack.class, stack -> new MCWeightedItemStack(new MCItemStack(stack.stack), stack.chance).getCommandString());
-        addSupportedConversion(FloatingLong.class, FloatingLong.class, fl -> {
+        addSupportedConversion(Character.TYPE, Character.class, (imports, c) -> "'" + c + "'");
+        addSupportedConversion(IItemStack.class, ItemStack.class, (imports, stack) -> new MCItemStack(stack).getCommandString());
+        addSupportedConversion(IFluidStack.class, FluidStack.class, (imports, stack) -> new MCFluidStack(stack).getCommandString());
+        addSupportedConversion(MCWeightedItemStack.class, WeightedItemStack.class, (imports, stack) -> new MCWeightedItemStack(new MCItemStack(stack.stack), stack.chance).getCommandString());
+        addSupportedConversion(FloatingLong.class, FloatingLong.class, (imports, fl) -> {
+            String path = imports.addImport(CrTConstants.CLASS_FLOATING_LONG);
             if (fl.getDecimal() == 0 && fl.getValue() > Integer.MAX_VALUE) {
-                return CrTConstants.CLASS_FLOATING_LONG + ".createFromUnsigned(" + fl + ")";
+                return path + ".createFromUnsigned(" + fl + ")";
             }
-            return CrTConstants.CLASS_FLOATING_LONG + ".create(" + fl + ")";
-        }, FloatingLong::toString);
+            return path + ".create(" + fl + ")";
+        }, (imports, fl) -> {
+            if (fl.getDecimal() == 0) {
+                //No decimal, don't bother printing it
+                return fl.toString(0);
+            }
+            //Trim any trailing zeros rather than printing them out
+            return fl.toString().replaceAll("0*$", "");
+        });
         addItemStackIngredientSupport();
         addFluidStackIngredientSupport();
         addSupportedChemical(GasStack.class, ICrTGasStack.class, GasStackIngredient.class, CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTGasStack::new,
@@ -132,17 +142,18 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
 
     protected void addPrimitiveInfo(Class<?> primitiveClass, Class<?> objectClass, String name) {
         addNameLookupOverride(objectClass, name);
-        addSupportedConversion(primitiveClass, objectClass, Object::toString);
+        addSupportedConversion(primitiveClass, objectClass, (imports, primitive) -> primitive.toString());
     }
 
     @SafeVarargs
-    protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, Class<? extends ACTUAL> actualClass, Function<? super ACTUAL, String>... conversions) {
+    protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, Class<? extends ACTUAL> actualClass,
+          BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
         supportedConversions.computeIfAbsent(crtClass, clazz -> new ArrayList<>()).add(new ClassConversionInfo<>(actualClass, Arrays.asList(conversions)));
     }
 
     @SafeVarargs
     protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, Class<?> altCrTClass, Class<? extends ACTUAL> actualClass,
-          Function<? super ACTUAL, String>... conversions) {
+          BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
         addSupportedConversion(crtClass, actualClass, conversions);
         addSupportedConversion(altCrTClass, actualClass, conversions);
     }
@@ -152,15 +163,15 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         return conversions != null && conversions.stream().anyMatch(conversionInfo -> conversionInfo.actualClass.isAssignableFrom(actualClass));
     }
 
-    public <ACTUAL> List<String> getConversionRepresentations(Class<?> crtClass, ACTUAL actual) {
+    public <ACTUAL> List<String> getConversionRepresentations(Class<?> crtClass, CrTImportsComponent imports, ACTUAL actual) {
         Class<?> actualClass = actual.getClass();
         List<ClassConversionInfo<?>> conversions = supportedConversions.get(crtClass);
         if (conversions != null) {
             List<String> representations = new ArrayList<>();
             for (ClassConversionInfo<?> conversionInfo : conversions) {
                 if (conversionInfo.actualClass.isAssignableFrom(actualClass)) {
-                    for (Function<?, String> stringFunction : conversionInfo.conversions) {
-                        String representation = ((Function<? super ACTUAL, String>) stringFunction).apply(actual);
+                    for (BiFunction<CrTImportsComponent, ?, String> stringFunction : conversionInfo.conversions) {
+                        String representation = ((BiFunction<CrTImportsComponent, ? super ACTUAL, String>) stringFunction).apply(imports, actual);
                         if (representation != null) {
                             //We use null to represent things we can't represent and then don't add them here
                             representations.add(representation);
@@ -241,7 +252,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
 
     private void addItemStackIngredientSupport() {
         addSupportedConversion(ItemStackIngredient.class, ItemStackIngredient.class, this::getIngredientRepresentation,
-              ingredient -> {
+              (imports, ingredient) -> {
                   if (ingredient instanceof ItemStackIngredient.Single) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       JsonObject serializedIngredient = serialized.get(JsonConstants.INGREDIENT).getAsJsonObject();
@@ -324,7 +335,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         return null;
     }
 
-    private String getIngredientRepresentation(ItemStackIngredient ingredient) {
+    private String getIngredientRepresentation(CrTImportsComponent imports, ItemStackIngredient ingredient) {
         if (ingredient instanceof ItemStackIngredient.Single) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //While it is easier to compare types of some stuff using the inner ingredient, some of the things
@@ -350,16 +361,17 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
                 representation = getIngredientRepresentation(vanillaIngredient, serializedIngredient);
             }
             if (representation != null) {
+                String path = imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT);
                 if (amount == 1) {
-                    return CrTConstants.CLASS_ITEM_STACK_INGREDIENT + ".from(" + representation + ")";
+                    return path + ".from(" + representation + ")";
                 }
-                return CrTConstants.CLASS_ITEM_STACK_INGREDIENT + ".from(" + representation + ", " + amount + ")";
+                return path + ".from(" + representation + ", " + amount + ")";
             }
         } else if (ingredient instanceof ItemStackIngredient.Multi) {
             ItemStackIngredient.Multi multiIngredient = (ItemStackIngredient.Multi) ingredient;
-            StringBuilder builder = new StringBuilder(CrTConstants.CLASS_ITEM_STACK_INGREDIENT + ".createMulti(");
+            StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT) + ".createMulti(");
             if (!multiIngredient.forEachIngredient(i -> {
-                String rep = getIngredientRepresentation(i);
+                String rep = getIngredientRepresentation(imports, i);
                 if (rep == null) {
                     return true;
                 }
@@ -377,7 +389,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
 
     private void addFluidStackIngredientSupport() {
         addSupportedConversion(FluidStackIngredient.class, FluidStackIngredient.class, this::getIngredientRepresentation,
-              ingredient -> {
+              (imports, ingredient) -> {
                   if (ingredient instanceof FluidStackIngredient.Single) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
@@ -390,20 +402,20 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
               });
     }
 
-    private String getIngredientRepresentation(FluidStackIngredient ingredient) {
+    private String getIngredientRepresentation(CrTImportsComponent imports, FluidStackIngredient ingredient) {
         if (ingredient instanceof FluidStackIngredient.Single) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String stackRepresentation = new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
-            return CrTConstants.CLASS_FLUID_STACK_INGREDIENT + ".from(" + stackRepresentation + ")";
+            return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + stackRepresentation + ")";
         } else if (ingredient instanceof FluidStackIngredient.Tagged) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String tagRepresentation = TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
-            return CrTConstants.CLASS_FLUID_STACK_INGREDIENT + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
+            return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
         } else if (ingredient instanceof FluidStackIngredient.Multi) {
             FluidStackIngredient.Multi multiIngredient = (FluidStackIngredient.Multi) ingredient;
-            StringBuilder builder = new StringBuilder(CrTConstants.CLASS_FLUID_STACK_INGREDIENT + ".createMulti(");
+            StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".createMulti(");
             if (!multiIngredient.forEachIngredient(i -> {
-                String rep = getIngredientRepresentation(i);
+                String rep = getIngredientRepresentation(imports, i);
                 if (rep == null) {
                     return true;
                 }
@@ -420,13 +432,13 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addSupportedChemical(Class<STACK> stackClass,
-          Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?, ?>> stackCrTClass, Class<? extends IChemicalStackIngredient<CHEMICAL, STACK>> ingredientClass,
-          String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription, CrTChemicalTagManager<CHEMICAL, ?> tagManager,
+          Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?>> stackCrTClass, Class<? extends IChemicalStackIngredient<CHEMICAL, STACK>> ingredientClass,
+          String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription, CrTChemicalTagManager<CHEMICAL> tagManager,
           ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer) {
-        addSupportedConversion(ICrTChemicalStack.class, stackCrTClass, stackClass, stack -> singleDescription.apply(stack).getCommandString());
+        addSupportedConversion(ICrTChemicalStack.class, stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
         addSupportedConversion(IChemicalStackIngredient.class, ingredientClass, ingredientClass,
-              ingredient -> getIngredientRepresentation(ingredient, ingredientType, deserializer, singleDescription, tagManager),
-              ingredient -> {
+              (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), deserializer, singleDescription, tagManager),
+              (imports, ingredient) -> {
                   if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return singleDescription.apply(deserializer.deserializeStack(serialized)).getCommandString();
@@ -443,7 +455,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getIngredientRepresentation(
           IChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
-          Function<STACK, CommandStringDisplayable> singleDescription, CrTChemicalTagManager<CHEMICAL, ?> tagManager) {
+          Function<STACK, CommandStringDisplayable> singleDescription, CrTChemicalTagManager<CHEMICAL> tagManager) {
         if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String stackRepresentation = singleDescription.apply(deserializer.deserializeStack(serialized)).getCommandString();
@@ -515,9 +527,9 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
     private static class ClassConversionInfo<ACTUAL> {
 
         private final Class<? extends ACTUAL> actualClass;
-        private final List<Function<? super ACTUAL, String>> conversions;
+        private final List<BiFunction<CrTImportsComponent, ? super ACTUAL, String>> conversions;
 
-        public ClassConversionInfo(Class<? extends ACTUAL> actualClass, List<Function<? super ACTUAL, String>> conversions) {
+        public ClassConversionInfo(Class<? extends ACTUAL> actualClass, List<BiFunction<CrTImportsComponent, ? super ACTUAL, String>> conversions) {
             this.actualClass = actualClass;
             this.conversions = conversions;
         }

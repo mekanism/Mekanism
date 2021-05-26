@@ -7,7 +7,6 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTGas;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
 import net.minecraft.tags.ITag;
@@ -16,6 +15,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @NativeTypeRegistration(value = GasStackIngredient.class, zenCodeName = CrTConstants.CLASS_GAS_STACK_INGREDIENT)
 public class CrTGasStackIngredient {
+
+    private CrTGasStackIngredient() {
+    }
 
     /**
      * Creates a {@link GasStackIngredient} that matches a given gas and amount.
@@ -26,7 +28,7 @@ public class CrTGasStackIngredient {
      * @return A {@link GasStackIngredient} that matches a given gas and amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasStackIngredient from(ICrTGas instance, long amount) {
+    public static GasStackIngredient from(Gas instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "GasStackIngredients", "gas");
         return GasStackIngredient.from(instance, amount);
     }
@@ -53,7 +55,7 @@ public class CrTGasStackIngredient {
      * @return A {@link GasStackIngredient} that matches a given gas tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasStackIngredient from(MCTag<ICrTGas> gasTag, long amount) {
+    public static GasStackIngredient from(MCTag<Gas> gasTag, long amount) {
         ITag<Gas> tag = CrTIngredientHelper.assertValidAndGet(gasTag, amount, CrTGasTagManager.INSTANCE::getInternal, "GasStackIngredients");
         return GasStackIngredient.from(tag, amount);
     }
@@ -66,7 +68,7 @@ public class CrTGasStackIngredient {
      * @return A {@link GasStackIngredient} that matches a given gas tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasStackIngredient from(MCTagWithAmount<ICrTGas> gasTag) {
+    public static GasStackIngredient from(MCTagWithAmount<Gas> gasTag) {
         return from(gasTag.getTag(), gasTag.getAmount());
     }
 

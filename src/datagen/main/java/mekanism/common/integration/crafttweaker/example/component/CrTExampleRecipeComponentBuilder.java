@@ -133,7 +133,8 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
                 List<String>[] parameterRepresentations = new List[paramCount];
                 for (int i = 0; i < paramCount; i++) {
                     Object exampleParam = example.params[i];
-                    List<String> representations = parent.getExampleProvider().getConversionRepresentations(example.method.parameterTypes.get(i), exampleParam);
+                    List<String> representations = parent.getExampleProvider().getConversionRepresentations(example.method.parameterTypes.get(i), parent.getImports(),
+                          exampleParam);
                     if (representations.isEmpty()) {
                         throw new RuntimeException("No matching representations found for parameter " + i + " of type " + exampleParam.getClass().getSimpleName());
                     }

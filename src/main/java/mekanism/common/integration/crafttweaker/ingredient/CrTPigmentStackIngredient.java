@@ -7,7 +7,6 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTPigment;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
 import net.minecraft.tags.ITag;
@@ -16,6 +15,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @NativeTypeRegistration(value = PigmentStackIngredient.class, zenCodeName = CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT)
 public class CrTPigmentStackIngredient {
+
+    private CrTPigmentStackIngredient() {
+    }
 
     /**
      * Creates a {@link PigmentStackIngredient} that matches a given pigment and amount.
@@ -26,7 +28,7 @@ public class CrTPigmentStackIngredient {
      * @return A {@link PigmentStackIngredient} that matches a given pigment and amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static PigmentStackIngredient from(ICrTPigment instance, long amount) {
+    public static PigmentStackIngredient from(Pigment instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "PigmentStackIngredients", "pigment");
         return PigmentStackIngredient.from(instance, amount);
     }
@@ -53,7 +55,7 @@ public class CrTPigmentStackIngredient {
      * @return A {@link PigmentStackIngredient} that matches a given pigment tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static PigmentStackIngredient from(MCTag<ICrTPigment> pigmentTag, long amount) {
+    public static PigmentStackIngredient from(MCTag<Pigment> pigmentTag, long amount) {
         ITag<Pigment> tag = CrTIngredientHelper.assertValidAndGet(pigmentTag, amount, CrTPigmentTagManager.INSTANCE::getInternal, "PigmentStackIngredients");
         return PigmentStackIngredient.from(tag, amount);
     }
@@ -66,7 +68,7 @@ public class CrTPigmentStackIngredient {
      * @return A {@link PigmentStackIngredient} that matches a given pigment tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static PigmentStackIngredient from(MCTagWithAmount<ICrTPigment> pigmentTag) {
+    public static PigmentStackIngredient from(MCTagWithAmount<Pigment> pigmentTag) {
         return from(pigmentTag.getTag(), pigmentTag.getAmount());
     }
 

@@ -30,7 +30,7 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Chem
      * @param output    {@link ICrTChemicalStack} representing the output of the recipe.
      */
     @ZenCodeType.Method
-    public void addRecipe(String name, ItemStackIngredient itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?, ?> output) {
+    public void addRecipe(String name, ItemStackIngredient itemInput, GasStackIngredient gasInput, ICrTChemicalStack<?, ?, ?> output) {
         addRecipe(new ChemicalDissolutionIRecipe(getAndValidateName(name), itemInput, gasInput, getAndValidateNotEmpty(output)));
     }
 
@@ -39,7 +39,7 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Chem
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                ICrTChemicalStack<?, ?, ?, ?> output = CrTUtils.fromBoxedStack(getRecipe().getOutputDefinition());
+                ICrTChemicalStack<?, ?, ?> output = CrTUtils.fromBoxedStack(getRecipe().getOutputDefinition());
                 if (output == null) {
                     return "unknown chemical output";
                 }

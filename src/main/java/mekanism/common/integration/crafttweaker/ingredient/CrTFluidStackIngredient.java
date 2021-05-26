@@ -17,6 +17,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = FluidStackIngredient.class, zenCodeName = CrTConstants.CLASS_FLUID_STACK_INGREDIENT)
 public class CrTFluidStackIngredient {
 
+    private CrTFluidStackIngredient() {
+    }
+
     /**
      * Creates a {@link FluidStackIngredient} that matches a given fluid and amount.
      *

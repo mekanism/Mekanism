@@ -1,5 +1,7 @@
 #modloaded jeitweaker
 
+import mods.jei.JEI;
+
 //If JEITweaker is installed, Mekanism will add integration with it that allows for hiding our chemicals, and adding descriptions to them.
 
 /*
@@ -10,21 +12,21 @@
  * 4) Hides clean copper slurry
 */
 
-//mods.jei.JEI.hideGas(stack as ICrTGasStack)
-//mods.jei.JEI.hideInfuseType(stack as ICrTInfusionStack)
-//mods.jei.JEI.hidePigment(stack as ICrTPigmentStack)
-//mods.jei.JEI.hideSlurry(stack as ICrTSlurryStack)
+//JEI.hideGas(stack as ICrTGasStack)
+//JEI.hideInfuseType(stack as ICrTInfusionStack)
+//JEI.hidePigment(stack as ICrTPigmentStack)
+//JEI.hideSlurry(stack as ICrTSlurryStack)
 
-mods.jei.JEI.hideGas(<gas:mekanism:brine>);
-mods.jei.JEI.hideInfuseType(<infuse_type:mekanism:bio>);
-mods.jei.JEI.hidePigment(<pigment:mekanism:dark_red>);
-mods.jei.JEI.hideSlurry(<slurry:mekanism:clean_gold>);
+JEI.hideGas(<gas:mekanism:brine>);
+JEI.hideInfuseType(<infuse_type:mekanism:bio>);
+JEI.hidePigment(<pigment:mekanism:dark_red>);
+JEI.hideSlurry(<slurry:mekanism:clean_gold>);
 
 //Adds a description to the passed in chemical. This example adds some basic text to JEI's information tab when looking at Hydrogen.
 
-//mods.jei.JEI.addInfo(stack as ICrTGasStack, MCTextComponent...)
-//mods.jei.JEI.addInfo(stack as ICrTInfusionStack, MCTextComponent...)
-//mods.jei.JEI.addInfo(stack as ICrTPigmentStack, MCTextComponent...)
-//mods.jei.JEI.addInfo(stack as ICrTSlurryStack, MCTextComponent...)
+//JEI.addInfo(stack as ICrTGasStack, MCTextComponent...)
+//JEI.addInfo(stack as ICrTInfusionStack, MCTextComponent...)
+//JEI.addInfo(stack as ICrTPigmentStack, MCTextComponent...)
+//JEI.addInfo(stack as ICrTSlurryStack, MCTextComponent...)
 
-mods.jei.JEI.addInfo(<gas:mekanism:hydrogen>, "Hydrogen is a basic gas that is produced in an electrolytic separator");
+JEI.addInfo(<gas:mekanism:hydrogen>, "Hydrogen is a basic gas that is produced in an electrolytic separator");

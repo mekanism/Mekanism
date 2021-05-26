@@ -7,7 +7,6 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTSlurry;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
 import net.minecraft.tags.ITag;
@@ -16,6 +15,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @NativeTypeRegistration(value = SlurryStackIngredient.class, zenCodeName = CrTConstants.CLASS_SLURRY_STACK_INGREDIENT)
 public class CrTSlurryStackIngredient {
+
+    private CrTSlurryStackIngredient() {
+    }
 
     /**
      * Creates a {@link SlurryStackIngredient} that matches a given slurry and amount.
@@ -26,7 +28,7 @@ public class CrTSlurryStackIngredient {
      * @return A {@link SlurryStackIngredient} that matches a given slurry and amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static SlurryStackIngredient from(ICrTSlurry instance, long amount) {
+    public static SlurryStackIngredient from(Slurry instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "SlurryStackIngredients", "slurry");
         return SlurryStackIngredient.from(instance, amount);
     }
@@ -53,7 +55,7 @@ public class CrTSlurryStackIngredient {
      * @return A {@link SlurryStackIngredient} that matches a given slurry tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static SlurryStackIngredient from(MCTag<ICrTSlurry> slurryTag, long amount) {
+    public static SlurryStackIngredient from(MCTag<Slurry> slurryTag, long amount) {
         ITag<Slurry> tag = CrTIngredientHelper.assertValidAndGet(slurryTag, amount, CrTSlurryTagManager.INSTANCE::getInternal, "SlurryStackIngredients");
         return SlurryStackIngredient.from(tag, amount);
     }
@@ -66,7 +68,7 @@ public class CrTSlurryStackIngredient {
      * @return A {@link SlurryStackIngredient} that matches a given slurry tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static SlurryStackIngredient from(MCTagWithAmount<ICrTSlurry> slurryTag) {
+    public static SlurryStackIngredient from(MCTagWithAmount<Slurry> slurryTag) {
         return from(slurryTag.getTag(), slurryTag.getAmount());
     }
 

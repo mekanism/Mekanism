@@ -3,9 +3,11 @@ package mekanism.common.integration.crafttweaker.example;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import mekanism.common.integration.crafttweaker.example.component.CrTExampleComment;
 import mekanism.common.integration.crafttweaker.example.component.CrTExampleRecipeComponentBuilder;
 import mekanism.common.integration.crafttweaker.example.component.CrTExampleRemoveRecipesComponent;
+import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.example.component.ICrTExampleComponent;
 import mekanism.common.integration.crafttweaker.recipe.MekanismRecipeManager;
 import net.minecraft.util.ResourceLocation;
@@ -14,7 +16,9 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
 
     protected final List<ICrTExampleComponent> contents = new ArrayList<>();
     private final BaseCrTExampleProvider exampleProvider;
+    private final CrTImportsComponent importsComponent = new CrTImportsComponent();
     protected final String name;
+    private boolean importsDeclared;
 
     CrTExampleBuilder(BaseCrTExampleProvider exampleProvider, String name) {
         this.exampleProvider = exampleProvider;
@@ -26,13 +30,25 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
         return exampleProvider;
     }
 
+    public CrTImportsComponent getImports() {
+        return importsComponent;
+    }
+
     private BUILDER_TYPE getThis() {
         return (BUILDER_TYPE) this;
+    }
+
+    public BUILDER_TYPE addComponent(Function<CrTImportsComponent, ICrTExampleComponent> component) {
+        return addComponent(component.apply(importsComponent));
     }
 
     public BUILDER_TYPE addComponent(ICrTExampleComponent component) {
         contents.add(Objects.requireNonNull(component, "Example component cannot be null."));
         return getThis();
+    }
+
+    public BUILDER_TYPE comment(Function<CrTImportsComponent, String> comment) {
+        return comment(comment.apply(importsComponent));
     }
 
     public BUILDER_TYPE comment(String... comments) {
@@ -83,6 +99,20 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
         return getThis();
     }
 
+    /**
+     * If specified goes where it is specified, if not goes at the top.
+     */
+    public BUILDER_TYPE imports() {
+        //TODO: Figure out the handling of this when in the snip component builder
+        if (importsComponent.hasImports()) {
+            throw new IllegalStateException("Imports are already in use above this point, please move this declaration earlier.");
+        } else if (importsDeclared) {
+            throw new IllegalStateException("Imports positioning has already been declared.");
+        }
+        importsDeclared = true;
+        return addComponent(importsComponent);
+    }
+
     public String build() {
         int contentLength = contents.size();
         if (contentLength == 0) {
@@ -90,9 +120,16 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
         }
         //TODO: Trim trailing and starting blank lines and check if empty again (may be best to do this *after* the string is built??)
         // Though do we want it to just silently trim or do we want it to hard fail
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder preImports = new StringBuilder();
+        StringBuilder postImports = new StringBuilder();
         for (int i = 0; i < contentLength; i++) {
             ICrTExampleComponent component = contents.get(i);
+            if (component instanceof CrTImportsComponent) {
+                //Set imports being declared to false so that we move onto post imports
+                importsDeclared = false;
+                continue;
+            }
+            StringBuilder stringBuilder = importsDeclared ? preImports : postImports;
             if (component != null) {
                 //Null components are blank lines and can be ignored here as the new line afterwards will be added when appropriate
                 stringBuilder.append(component.asString());
@@ -102,7 +139,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
                 stringBuilder.append('\n');
             }
         }
-        return stringBuilder.toString();
+        return preImports.append(importsComponent.asString()).append(postImports).toString();
     }
 
     protected void invalidContents() {

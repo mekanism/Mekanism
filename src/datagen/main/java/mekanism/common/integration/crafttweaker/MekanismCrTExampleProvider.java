@@ -28,6 +28,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTI
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
+import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.example.component.ICrTExampleComponent;
 import mekanism.common.integration.crafttweaker.recipe.ChemicalCrystallizerRecipeManager;
 import mekanism.common.integration.crafttweaker.recipe.ChemicalDissolutionRecipeManager;
@@ -90,6 +91,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         exampleBuilder("mekanism_custom_chemicals")
               .addComponent(() -> "#loader " + CrTConstants.CONTENT_LOADER)
               .blankLine()
+              .imports()
               .comment("Adds five very simple chemicals to show a very basic usage of the content creation capabilities provided. Custom content needs to be created "
                        + "in the mekanismcontent loader and requires a full game restart to take effect as well as have names defined in a lang file. One thing to note "
                        + "is that these examples are extremely basic and there is quite a bit more that is possible with this system including using custom textures and "
@@ -100,16 +102,17 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "4) Creates an example Dirty Slurry that is for a yellow ore.",
                     "5) Creates an example Clean Slurry that is for the same yellow ore."
               ).blankLine()
-              .addComponent(new SimpleCustomChemicalComponent(CrTConstants.CLASS_BUILDER_GAS, "example_gas", 0xDF03FC))
-              .addComponent(new SimpleCustomChemicalComponent(CrTConstants.CLASS_BUILDER_INFUSE_TYPE, "example_infuse_type", 0x03FC0B))
-              .addComponent(new SimpleCustomChemicalComponent(CrTConstants.CLASS_BUILDER_PIGMENT, "example_pigment", 0xCAFC03))
-              .addComponent(new SimpleCustomChemicalComponent(CrTConstants.CLASS_BUILDER_SLURRY, "dirty", "example_dirty_slurry", 0xF0FC03))
-              .addComponent(new SimpleCustomChemicalComponent(CrTConstants.CLASS_BUILDER_SLURRY, "clean", "example_clean_slurry", 0xF0FC03))
+              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_GAS), "example_gas", 0xDF03FC))
+              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_INFUSE_TYPE), "example_infuse_type", 0x03FC0B))
+              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_PIGMENT), "example_pigment", 0xCAFC03))
+              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_SLURRY), "dirty", "example_dirty_slurry", 0xF0FC03))
+              .addComponent(imports -> new SimpleCustomChemicalComponent(imports.addImport(CrTConstants.CLASS_BUILDER_SLURRY), "clean", "example_clean_slurry", 0xF0FC03))
         ;
         //JEITweaker integration
         exampleBuilder("mekanism_jeitweaker_integration")
               .addComponent(() -> "#modloaded " + MekanismHooks.JEITWEAKER_MOD_ID)
               .blankLine()
+              .imports()
               .comment("If JEITweaker is installed, Mekanism will add integration with it that allows for hiding our chemicals, and adding descriptions to them.")
               .blankLine()
               .comment("Hides four chemicals (one of each type: Gas, Infuse Type, Pigment, Slurry) from JEI:",
@@ -118,25 +121,26 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "3) Hides dark red pigment",
                     "4) Hides clean copper slurry"
               ).blankLine()
-              .comment(hideSignature("Gas", ICrTGasStack.class))
-              .comment(hideSignature("InfuseType", ICrTInfusionStack.class))
-              .comment(hideSignature("Pigment", ICrTPigmentStack.class))
-              .comment(hideSignature("Slurry", ICrTSlurryStack.class))
+              .comment(imports -> hideSignature(imports, "Gas", ICrTGasStack.class))
+              .comment(imports -> hideSignature(imports, "InfuseType", ICrTInfusionStack.class))
+              .comment(imports -> hideSignature(imports, "Pigment", ICrTPigmentStack.class))
+              .comment(imports -> hideSignature(imports, "Slurry", ICrTSlurryStack.class))
               .blankLine()
-              .addComponent(new JEIHidingComponent<>("Gas", MekanismGases.BRINE, CrTGasStack::new))
-              .addComponent(new JEIHidingComponent<>("InfuseType", MekanismInfuseTypes.BIO, CrTInfusionStack::new))
-              .addComponent(new JEIHidingComponent<>("Pigment", MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_RED), CrTPigmentStack::new))
-              .addComponent(new JEIHidingComponent<>("Slurry", MekanismSlurries.PROCESSED_RESOURCES.get(PrimaryResource.GOLD).getCleanSlurry(), CrTSlurryStack::new))
+              .addComponent(imports -> new JEIHidingComponent<>(imports, "Gas", MekanismGases.BRINE, CrTGasStack::new))
+              .addComponent(imports -> new JEIHidingComponent<>(imports, "InfuseType", MekanismInfuseTypes.BIO, CrTInfusionStack::new))
+              .addComponent(imports -> new JEIHidingComponent<>(imports, "Pigment", MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_RED), CrTPigmentStack::new))
+              .addComponent(imports -> new JEIHidingComponent<>(imports, "Slurry", MekanismSlurries.PROCESSED_RESOURCES.get(PrimaryResource.GOLD).getCleanSlurry(), CrTSlurryStack::new))
               .blankLine()
               .comment("Adds a description to the passed in chemical. This example adds some basic text to JEI's information tab when looking at Hydrogen.")
               .blankLine()
-              .comment(descriptionSignature(ICrTGasStack.class))
-              .comment(descriptionSignature(ICrTInfusionStack.class))
-              .comment(descriptionSignature(ICrTPigmentStack.class))
-              .comment(descriptionSignature(ICrTSlurryStack.class))
+              .comment(imports -> descriptionSignature(imports, ICrTGasStack.class))
+              .comment(imports -> descriptionSignature(imports, ICrTInfusionStack.class))
+              .comment(imports -> descriptionSignature(imports, ICrTPigmentStack.class))
+              .comment(imports -> descriptionSignature(imports, ICrTSlurryStack.class))
               .blankLine()
-              .addComponent(() -> CrTConstants.EXPANSION_TARGET_JEITWEAKER + ".addInfo(" + new CrTGasStack(MekanismGases.HYDROGEN.getStack(1)).getCommandString()
-                                  + ", \"Hydrogen is a basic gas that is produced in an electrolytic separator\");")
+              .addComponent(imports -> () -> imports.addImport(CrTConstants.EXPANSION_TARGET_JEITWEAKER) + ".addInfo(" +
+                                             new CrTGasStack(MekanismGases.HYDROGEN.getStack(1)).getCommandString() +
+                                             ", \"Hydrogen is a basic gas that is produced in an electrolytic separator\");")
         ;
     }
 
@@ -498,12 +502,13 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         ;
     }
 
-    private String hideSignature(String type, Class<?> clazz) {
-        return CrTConstants.EXPANSION_TARGET_JEITWEAKER + ".hide" + type + "(stack as " + getCrTClassName(clazz) + ")";
+    private String hideSignature(CrTImportsComponent imports, String type, Class<?> clazz) {
+        return imports.addImport(CrTConstants.EXPANSION_TARGET_JEITWEAKER) + ".hide" + type + "(stack as " + getCrTClassName(clazz) + ")";
     }
 
-    private String descriptionSignature(Class<?> clazz) {
-        return CrTConstants.EXPANSION_TARGET_JEITWEAKER + ".addInfo(stack as " + getCrTClassName(clazz) + ", " + getCrTClassName(MCTextComponent.class) + "...)";
+    private String descriptionSignature(CrTImportsComponent imports, Class<?> clazz) {
+        return imports.addImport(CrTConstants.EXPANSION_TARGET_JEITWEAKER) + ".addInfo(stack as " + getCrTClassName(clazz) + ", " +
+               getCrTClassName(MCTextComponent.class) + "...)";
     }
 
     private static class JEIHidingComponent<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ICrTExampleComponent {
@@ -511,8 +516,11 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         private final String type;
         private final Function<STACK, CommandStringDisplayable> describer;
         private final IChemicalProvider<CHEMICAL> chemicalProvider;
+        private final CrTImportsComponent imports;
 
-        public JEIHidingComponent(String type, IChemicalProvider<CHEMICAL> chemicalProvider, Function<STACK, CommandStringDisplayable> describer) {
+        public JEIHidingComponent(CrTImportsComponent imports, String type, IChemicalProvider<CHEMICAL> chemicalProvider,
+              Function<STACK, CommandStringDisplayable> describer) {
+            this.imports = imports;
             this.type = type;
             this.describer = describer;
             this.chemicalProvider = chemicalProvider;
@@ -521,7 +529,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         @Nonnull
         @Override
         public String asString() {
-            return CrTConstants.EXPANSION_TARGET_JEITWEAKER + ".hide" + type + '(' + describer.apply((STACK) chemicalProvider.getStack(1)).getCommandString() + ");";
+            return imports.addImport(CrTConstants.EXPANSION_TARGET_JEITWEAKER) + ".hide" + type + '(' +
+                   describer.apply((STACK) chemicalProvider.getStack(1)).getCommandString() + ");";
         }
     }
 

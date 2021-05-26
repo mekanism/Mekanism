@@ -5,7 +5,6 @@ import java.util.function.Function;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.inputs.InputIngredient;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.tags.ITag;
 
@@ -32,10 +31,9 @@ public class CrTIngredientHelper {
     /**
      * Validates that the amount is greater than zero and that given chemical is not the empty variant. If one of these is not true, an error is thrown.
      */
-    static void assertValid(ICrTChemical<?, ?, ?, ?> instance, long amount, String ingredientType, String chemicalType) {
+    static void assertValid(Chemical<?> instance, long amount, String ingredientType, String chemicalType) {
         assertValidAmount(ingredientType, amount);
-        Chemical<?> chemical = instance.getChemical();
-        if (chemical.isEmptyType()) {
+        if (instance.isEmptyType()) {
             throw new IllegalArgumentException(ingredientType + " cannot be created from an empty " + chemicalType + ".");
         }
     }
@@ -43,7 +41,7 @@ public class CrTIngredientHelper {
     /**
      * Validates that the chemical stack is not empty. If it is, an error is thrown.
      */
-    static void assertValid(ICrTChemicalStack<?, ?, ?, ?> instance, String ingredientType) {
+    static void assertValid(ICrTChemicalStack<?, ?, ?> instance, String ingredientType) {
         if (instance.isEmpty()) {
             throw new IllegalArgumentException(ingredientType + " cannot be created from an empty stack.");
         }

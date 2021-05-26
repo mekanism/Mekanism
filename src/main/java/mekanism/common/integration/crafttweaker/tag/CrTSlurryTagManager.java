@@ -5,13 +5,11 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemical.CrTSlurry;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTSlurry;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_SLURRY_TAG_MANAGER)
-public class CrTSlurryTagManager extends CrTChemicalTagManager<Slurry, ICrTSlurry> {
+public class CrTSlurryTagManager extends CrTChemicalTagManager<Slurry> {
 
     public static final CrTSlurryTagManager INSTANCE = new CrTSlurryTagManager();
 
@@ -21,17 +19,12 @@ public class CrTSlurryTagManager extends CrTChemicalTagManager<Slurry, ICrTSlurr
 
     @Nonnull
     @Override
-    public Class<ICrTSlurry> getElementClass() {
-        return ICrTSlurry.class;
+    public Class<Slurry> getElementClass() {
+        return Slurry.class;
     }
 
     @Override
     public String getTagFolder() {
         return "slurries";
-    }
-
-    @Override
-    protected ICrTSlurry fromChemical(Slurry slurry) {
-        return new CrTSlurry(slurry);
     }
 }

@@ -9,4 +9,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 @ZenRegister
 @NativeTypeRegistration(value = IChemicalStackIngredient.class, zenCodeName = CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT)
 public class CrTChemicalStackIngredient {
+
+    private CrTChemicalStackIngredient() {
+    }
 }

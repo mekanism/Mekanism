@@ -7,7 +7,6 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTInfuseType;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
 import net.minecraft.tags.ITag;
@@ -16,6 +15,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @NativeTypeRegistration(value = InfusionStackIngredient.class, zenCodeName = CrTConstants.CLASS_INFUSION_STACK_INGREDIENT)
 public class CrTInfusionStackIngredient {
+
+    private CrTInfusionStackIngredient() {
+    }
 
     /**
      * Creates a {@link InfusionStackIngredient} that matches a given infuse type and amount.
@@ -26,7 +28,7 @@ public class CrTInfusionStackIngredient {
      * @return A {@link InfusionStackIngredient} that matches a given infuse type and amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static InfusionStackIngredient from(ICrTInfuseType instance, long amount) {
+    public static InfusionStackIngredient from(InfuseType instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "InfusionStackIngredients", "infuse type");
         return InfusionStackIngredient.from(instance, amount);
     }
@@ -53,7 +55,7 @@ public class CrTInfusionStackIngredient {
      * @return A {@link InfusionStackIngredient} that matches a given infuse type tag with a given amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static InfusionStackIngredient from(MCTag<ICrTInfuseType> infuseTypeTag, long amount) {
+    public static InfusionStackIngredient from(MCTag<InfuseType> infuseTypeTag, long amount) {
         ITag<InfuseType> tag = CrTIngredientHelper.assertValidAndGet(infuseTypeTag, amount, CrTInfuseTypeTagManager.INSTANCE::getInternal, "InfusionStackIngredients");
         return InfusionStackIngredient.from(tag, amount);
     }
@@ -66,7 +68,7 @@ public class CrTInfusionStackIngredient {
      * @return A {@link InfusionStackIngredient} that matches a given infuse type tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static InfusionStackIngredient from(MCTagWithAmount<ICrTInfuseType> infuseTypeTag) {
+    public static InfusionStackIngredient from(MCTagWithAmount<InfuseType> infuseTypeTag) {
         return from(infuseTypeTag.getTag(), infuseTypeTag.getAmount());
     }
 

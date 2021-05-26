@@ -34,6 +34,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_JEITWEAKER)
 public class JEITweakerExpansion {
 
+    private JEITweakerExpansion() {
+    }
+
     static final Set<GasStack> HIDDEN_GASES = new HashSet<>();
     static final Set<InfusionStack> HIDDEN_INFUSE_TYPES = new HashSet<>();
     static final Set<PigmentStack> HIDDEN_PIGMENTS = new HashSet<>();
@@ -136,7 +139,7 @@ public class JEITweakerExpansion {
     }
 
     private static class ChemicalDescriptionAction<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, ?, CRT_STACK>> implements IUndoableAction {
+          CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>> implements IUndoableAction {
 
         private final Map<STACK, ITextComponent[]> descriptionMap;
         private final ITextComponent[] descriptions;
@@ -178,7 +181,7 @@ public class JEITweakerExpansion {
     }
 
     private static class ChemicalHiderAction<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, ?, CRT_STACK>> implements IUndoableAction {
+          CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>> implements IUndoableAction {
 
         private final Set<STACK> hidden;
         private final CRT_STACK stack;

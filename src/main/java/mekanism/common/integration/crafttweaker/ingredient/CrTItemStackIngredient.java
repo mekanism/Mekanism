@@ -22,6 +22,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = ItemStackIngredient.class, zenCodeName = CrTConstants.CLASS_ITEM_STACK_INGREDIENT)
 public class CrTItemStackIngredient {
 
+    private CrTItemStackIngredient() {
+    }
+
     /**
      * Creates a {@link ItemStackIngredient} that matches a given item stack.
      *

@@ -13,6 +13,9 @@ public class CrTNumberExpansion {
     @ZenCodeType.Expansion("byte")
     public static class ByteExpansion {
 
+        private ByteExpansion() {
+        }
+
         /**
          * Allows for casting ints to {@link FloatingLong} without even needing to specify the cast.
          */
@@ -25,6 +28,9 @@ public class CrTNumberExpansion {
     @ZenRegister
     @ZenCodeType.Expansion("short")
     public static class ShortExpansion {
+
+        private ShortExpansion() {
+        }
 
         /**
          * Allows for casting ints to {@link FloatingLong} without even needing to specify the cast.
@@ -39,6 +45,9 @@ public class CrTNumberExpansion {
     @ZenCodeType.Expansion("int")
     public static class IntExpansion {
 
+        private IntExpansion() {
+        }
+
         /**
          * Allows for casting ints to {@link FloatingLong} without even needing to specify the cast.
          */
@@ -51,6 +60,9 @@ public class CrTNumberExpansion {
     @ZenRegister
     @ZenCodeType.Expansion("long")
     public static class LongExpansion {
+
+        private LongExpansion() {
+        }
 
         /**
          * Allows for casting longs to {@link FloatingLong} without even needing to specify the cast.
@@ -65,6 +77,9 @@ public class CrTNumberExpansion {
     @ZenCodeType.Expansion("float")
     public static class FloatExpansion {
 
+        private FloatExpansion() {
+        }
+
         /**
          * Allows for casting floats to {@link FloatingLong} without even needing to specify the cast.
          */
@@ -78,6 +93,9 @@ public class CrTNumberExpansion {
     @ZenCodeType.Expansion("double")
     public static class DoubleExpansion {
 
+        private DoubleExpansion() {
+        }
+
         /**
          * Allows for casting doubles to {@link FloatingLong} without even needing to specify the cast.
          */
@@ -90,6 +108,9 @@ public class CrTNumberExpansion {
     @ZenRegister
     @ZenCodeType.Expansion("string")
     public static class StringExpansion {
+
+        private StringExpansion() {
+        }
 
         /**
          * Allows for casting strings to {@link FloatingLong} without even needing to specify the cast.

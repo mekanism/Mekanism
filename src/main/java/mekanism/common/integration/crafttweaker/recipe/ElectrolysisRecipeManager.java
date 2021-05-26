@@ -34,8 +34,6 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
     @ZenCodeType.Method
     public void addRecipe(String name, FluidStackIngredient input, ICrTGasStack leftGasOutput, ICrTGasStack rightGasOutput,
           @ZenCodeType.Optional("1 as " + CrTConstants.CLASS_FLOATING_LONG) FloatingLong energyMultiplier) {
-        //TODO - 10.1: Update to a version of CrT that doesn't cause this to have issues with our example scripts due to implicit casting
-        // see https://github.com/ZenCodeLang/ZenCode/issues/31
         if (energyMultiplier.smallerThan(FloatingLong.ONE)) {
             throw new IllegalArgumentException("Energy multiplier must be at least one! Multiplier: " + energyMultiplier);
         }

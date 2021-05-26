@@ -105,6 +105,7 @@ import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DatagenModLoader;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -224,7 +225,7 @@ public class Mekanism {
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
         hooks.hookConstructor();
-        if (hooks.CraftTweakerLoaded) {
+        if (hooks.CraftTweakerLoaded && !DatagenModLoader.isRunningDataGen()) {
             //Attempt to grab the mod event bus for CraftTweaker so that we can register our custom content in their namespace
             // to make it clearer which chemicals were added by CraftTweaker, and which are added by actual mods.
             // Gracefully fallback to our event bus if something goes wrong with getting CrT's and just then have the log have

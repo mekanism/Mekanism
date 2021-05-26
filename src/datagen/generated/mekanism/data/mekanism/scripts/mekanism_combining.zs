@@ -1,3 +1,5 @@
+import mods.mekanism.api.ingredient.ItemStackIngredient;
+
 /*
  * Adds two Combining Recipes that do the following:
  * 1) Adds a recipe that combines three Books and six Planks into a Bookshelf.
@@ -6,16 +8,16 @@
 
 // <recipetype:mekanism:combining>.addRecipe(arg0 as string, arg1 as ItemStackIngredient, arg2 as ItemStackIngredient, arg3 as IItemStack)
 
-<recipetype:mekanism:combining>.addRecipe("combining/bookshelf", mekanism.api.ingredient.ItemStackIngredient.from(<item:minecraft:book> * 3), mekanism.api.ingredient.ItemStackIngredient.from(<tag:items:minecraft:planks>, 6), <item:minecraft:bookshelf>);
+<recipetype:mekanism:combining>.addRecipe("combining/bookshelf", ItemStackIngredient.from(<item:minecraft:book> * 3), ItemStackIngredient.from(<tag:items:minecraft:planks>, 6), <item:minecraft:bookshelf>);
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:combining>.addRecipe("combining/bookshelf", <item:minecraft:book> * 3, mekanism.api.ingredient.ItemStackIngredient.from(<tag:items:minecraft:planks>, 6), <item:minecraft:bookshelf>);
-// <recipetype:mekanism:combining>.addRecipe("combining/bookshelf", mekanism.api.ingredient.ItemStackIngredient.from(<item:minecraft:book> * 3), <tag:items:minecraft:planks> * 6, <item:minecraft:bookshelf>);
+// <recipetype:mekanism:combining>.addRecipe("combining/bookshelf", <item:minecraft:book> * 3, ItemStackIngredient.from(<tag:items:minecraft:planks>, 6), <item:minecraft:bookshelf>);
+// <recipetype:mekanism:combining>.addRecipe("combining/bookshelf", ItemStackIngredient.from(<item:minecraft:book> * 3), <tag:items:minecraft:planks> * 6, <item:minecraft:bookshelf>);
 // <recipetype:mekanism:combining>.addRecipe("combining/bookshelf", <item:minecraft:book> * 3, <tag:items:minecraft:planks> * 6, <item:minecraft:bookshelf>);
 
-<recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", mekanism.api.ingredient.ItemStackIngredient.from(<item:minecraft:prismarine_shard> * 8), mekanism.api.ingredient.ItemStackIngredient.from(<tag:items:forge:dyes/black>), <item:minecraft:dark_prismarine>);
+<recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", ItemStackIngredient.from(<item:minecraft:prismarine_shard> * 8), ItemStackIngredient.from(<tag:items:forge:dyes/black>), <item:minecraft:dark_prismarine>);
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", <item:minecraft:prismarine_shard> * 8, mekanism.api.ingredient.ItemStackIngredient.from(<tag:items:forge:dyes/black>), <item:minecraft:dark_prismarine>);
-// <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", mekanism.api.ingredient.ItemStackIngredient.from(<item:minecraft:prismarine_shard> * 8), <tag:items:forge:dyes/black>, <item:minecraft:dark_prismarine>);
+// <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", <item:minecraft:prismarine_shard> * 8, ItemStackIngredient.from(<tag:items:forge:dyes/black>), <item:minecraft:dark_prismarine>);
+// <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", ItemStackIngredient.from(<item:minecraft:prismarine_shard> * 8), <tag:items:forge:dyes/black>, <item:minecraft:dark_prismarine>);
 // <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", <item:minecraft:prismarine_shard> * 8, <tag:items:forge:dyes/black>, <item:minecraft:dark_prismarine>);
 
 

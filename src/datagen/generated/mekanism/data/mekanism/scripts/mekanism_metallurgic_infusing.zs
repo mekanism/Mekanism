@@ -1,11 +1,14 @@
+import mods.mekanism.api.ingredient.ChemicalStackIngredient.InfusionStackIngredient;
+import mods.mekanism.api.ingredient.ItemStackIngredient;
+
 //Adds a Metallurgic Infusing Recipe that uses 10 mB of Fungi Infuse Type to convert any Oak Planks into Crimson Planks.
 
 // <recipetype:mekanism:metallurgic_infusing>.addRecipe(arg0 as string, arg1 as ItemStackIngredient, arg2 as IChemicalStackIngredient, arg3 as IItemStack)
 
-<recipetype:mekanism:metallurgic_infusing>.addRecipe("infuse_planks", mekanism.api.ingredient.ItemStackIngredient.from(<item:minecraft:oak_planks>), mekanism.api.ingredient.ChemicalStackIngredient.InfusionStackIngredient.from(<infuse_type:mekanism:fungi> * 10), <item:minecraft:crimson_planks>);
+<recipetype:mekanism:metallurgic_infusing>.addRecipe("infuse_planks", ItemStackIngredient.from(<item:minecraft:oak_planks>), InfusionStackIngredient.from(<infuse_type:mekanism:fungi> * 10), <item:minecraft:crimson_planks>);
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:metallurgic_infusing>.addRecipe("infuse_planks", <item:minecraft:oak_planks>, mekanism.api.ingredient.ChemicalStackIngredient.InfusionStackIngredient.from(<infuse_type:mekanism:fungi> * 10), <item:minecraft:crimson_planks>);
-// <recipetype:mekanism:metallurgic_infusing>.addRecipe("infuse_planks", mekanism.api.ingredient.ItemStackIngredient.from(<item:minecraft:oak_planks>), <infuse_type:mekanism:fungi> * 10, <item:minecraft:crimson_planks>);
+// <recipetype:mekanism:metallurgic_infusing>.addRecipe("infuse_planks", <item:minecraft:oak_planks>, InfusionStackIngredient.from(<infuse_type:mekanism:fungi> * 10), <item:minecraft:crimson_planks>);
+// <recipetype:mekanism:metallurgic_infusing>.addRecipe("infuse_planks", ItemStackIngredient.from(<item:minecraft:oak_planks>), <infuse_type:mekanism:fungi> * 10, <item:minecraft:crimson_planks>);
 // <recipetype:mekanism:metallurgic_infusing>.addRecipe("infuse_planks", <item:minecraft:oak_planks>, <infuse_type:mekanism:fungi> * 10, <item:minecraft:crimson_planks>);
 
 

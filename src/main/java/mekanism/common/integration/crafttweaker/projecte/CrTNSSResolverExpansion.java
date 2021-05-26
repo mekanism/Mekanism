@@ -4,14 +4,13 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.infuse.InfuseType;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTGas;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTInfuseType;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTPigment;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTSlurry;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
@@ -35,15 +34,18 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenCodeType.Expansion(CrTConstants.EXPANSION_TARGET_NSS_RESOLVER)
 public class CrTNSSResolverExpansion {
 
+    private CrTNSSResolverExpansion() {
+    }
+
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTGas}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link Gas}.
      *
      * @param gas Gas to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTGas}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link Gas}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromGas(ICrTGas gas) {
+    public static NormalizedSimpleStack fromGas(Gas gas) {
         return NSSGas.createGas(validateNotEmptyAndGet(gas, "gas"));
     }
 
@@ -60,26 +62,26 @@ public class CrTNSSResolverExpansion {
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<ICrTGas>}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<Gas>}.
      *
      * @param tag Gas Tag to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<ICrTGas>}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Gas>}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromGasTag(MCTag<ICrTGas> tag) {
+    public static NormalizedSimpleStack fromGasTag(MCTag<Gas> tag) {
         return NSSGas.createTag(CrTUtils.validateTagAndGet(tag, CrTGasTagManager.INSTANCE::getInternal));
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTInfuseType}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link InfuseType}.
      *
      * @param infuseType Infuse Type to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTInfuseType}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link InfuseType}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromInfuseType(ICrTInfuseType infuseType) {
+    public static NormalizedSimpleStack fromInfuseType(InfuseType infuseType) {
         return NSSInfuseType.createInfuseType(validateNotEmptyAndGet(infuseType, "infuse type"));
     }
 
@@ -96,26 +98,26 @@ public class CrTNSSResolverExpansion {
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<ICrTInfuseType>}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<InfuseType>}.
      *
      * @param tag Infuse Type Tag to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<ICrTInfuseType>}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<InfuseType>}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromInfuseTypeTag(MCTag<ICrTInfuseType> tag) {
+    public static NormalizedSimpleStack fromInfuseTypeTag(MCTag<InfuseType> tag) {
         return NSSInfuseType.createTag(CrTUtils.validateTagAndGet(tag, CrTInfuseTypeTagManager.INSTANCE::getInternal));
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTPigment}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link Pigment}.
      *
      * @param pigment Pigment to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTPigment}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link Pigment}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromPigment(ICrTPigment pigment) {
+    public static NormalizedSimpleStack fromPigment(Pigment pigment) {
         return NSSPigment.createPigment(validateNotEmptyAndGet(pigment, "pigment"));
     }
 
@@ -132,26 +134,26 @@ public class CrTNSSResolverExpansion {
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<ICrTPigment>}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<Pigment>}.
      *
      * @param tag Pigment Tag to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<ICrTPigment>}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Pigment>}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromPigmentTag(MCTag<ICrTPigment> tag) {
+    public static NormalizedSimpleStack fromPigmentTag(MCTag<Pigment> tag) {
         return NSSPigment.createTag(CrTUtils.validateTagAndGet(tag, CrTPigmentTagManager.INSTANCE::getInternal));
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link ICrTSlurry}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link Slurry}.
      *
      * @param slurry Slurry to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link ICrTSlurry}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link Slurry}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromSlurry(ICrTSlurry slurry) {
+    public static NormalizedSimpleStack fromSlurry(Slurry slurry) {
         return NSSSlurry.createSlurry(validateNotEmptyAndGet(slurry, "slurry"));
     }
 
@@ -168,19 +170,18 @@ public class CrTNSSResolverExpansion {
     }
 
     /**
-     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<ICrTSlurry>}.
+     * Create a {@link NormalizedSimpleStack} representing a given {@link MCTag<Slurry>}.
      *
      * @param tag Slurry Tag to represent
      *
-     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<ICrTSlurry>}.
+     * @return A {@link NormalizedSimpleStack} representing a given {@link MCTag<Slurry>}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static NormalizedSimpleStack fromSlurryTag(MCTag<ICrTSlurry> tag) {
+    public static NormalizedSimpleStack fromSlurryTag(MCTag<Slurry> tag) {
         return NSSSlurry.createTag(CrTUtils.validateTagAndGet(tag, CrTSlurryTagManager.INSTANCE::getInternal));
     }
 
-    private static <CHEMICAL extends Chemical<CHEMICAL>, CRT_CHEMICAL extends ICrTChemical<CHEMICAL, ?, ?, ?>> CHEMICAL validateNotEmptyAndGet(CRT_CHEMICAL chemical,
-          String type) {
+    private static <CHEMICAL extends Chemical<CHEMICAL>> CHEMICAL validateNotEmptyAndGet(CHEMICAL chemical, String type) {
         if (chemical.isEmptyType()) {
             //Note: We check this here to provide a better error than we would get in the NSS create method
             throw new IllegalArgumentException("Cannot make an NSS Representation using an empty " + type + ".");
@@ -188,8 +189,7 @@ public class CrTNSSResolverExpansion {
         return chemical.getChemical();
     }
 
-    private static <STACK extends ChemicalStack<?>, CRT_STACK extends ICrTChemicalStack<?, STACK, ?, ?>> STACK validateNotEmptyAndGet(CRT_STACK stack,
-          String type) {
+    private static <STACK extends ChemicalStack<?>, CRT_STACK extends ICrTChemicalStack<?, STACK, ?>> STACK validateNotEmptyAndGet(CRT_STACK stack, String type) {
         if (stack.isEmpty()) {
             //Note: We check this here to provide a better error than we would get in the NSS create method
             throw new IllegalArgumentException("Cannot make an NSS Representation using an empty " + type + " stack.");

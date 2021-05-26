@@ -5,13 +5,11 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import mekanism.common.integration.crafttweaker.chemical.CrTChemical.CrTPigment;
-import mekanism.common.integration.crafttweaker.chemical.ICrTChemical.ICrTPigment;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_PIGMENT_TAG_MANAGER)
-public class CrTPigmentTagManager extends CrTChemicalTagManager<Pigment, ICrTPigment> {
+public class CrTPigmentTagManager extends CrTChemicalTagManager<Pigment> {
 
     public static final CrTPigmentTagManager INSTANCE = new CrTPigmentTagManager();
 
@@ -21,17 +19,12 @@ public class CrTPigmentTagManager extends CrTChemicalTagManager<Pigment, ICrTPig
 
     @Nonnull
     @Override
-    public Class<ICrTPigment> getElementClass() {
-        return ICrTPigment.class;
+    public Class<Pigment> getElementClass() {
+        return Pigment.class;
     }
 
     @Override
     public String getTagFolder() {
         return "pigments";
-    }
-
-    @Override
-    protected ICrTPigment fromChemical(Pigment pigment) {
-        return new CrTPigment(pigment);
     }
 }

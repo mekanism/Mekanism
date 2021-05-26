@@ -9,6 +9,9 @@ import org.openzen.zencode.java.ZenCodeType;
 @NativeTypeRegistration(value = FloatingLong.class, zenCodeName = CrTConstants.CLASS_FLOATING_LONG)
 public class CrTFloatingLong {
 
+    private CrTFloatingLong() {
+    }
+
     /**
      * Creates a {@link FloatingLong} representing the given long.
      *

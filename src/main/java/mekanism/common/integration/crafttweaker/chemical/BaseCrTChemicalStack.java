@@ -6,8 +6,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.util.ChemicalUtil;
 
 public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      CRT_CHEMICAL extends ICrTChemical<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK>>
-      implements ICrTChemicalStack<CHEMICAL, STACK, CRT_CHEMICAL, CRT_STACK> {
+      CRT_STACK extends ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK>> implements ICrTChemicalStack<CHEMICAL, STACK, CRT_STACK> {
 
     protected final STACK stack;
     protected final Function<STACK, CRT_STACK> stackConverter;
@@ -58,7 +57,7 @@ public abstract class BaseCrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, 
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        return stack.equals(((BaseCrTChemicalStack<?, ?, ?, ?>) o).stack);
+        return stack.equals(((BaseCrTChemicalStack<?, ?, ?>) o).stack);
     }
 
     @Override
