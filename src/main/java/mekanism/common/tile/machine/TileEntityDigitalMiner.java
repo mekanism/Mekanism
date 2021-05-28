@@ -684,7 +684,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             //TODO: Improve on this to use the max that we actually need to do the rendering
             return INFINITE_EXTENT_AABB;
         }
-        return new AxisAlignedBB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
+        return super.getRenderBoundingBox();
     }
 
     @Override

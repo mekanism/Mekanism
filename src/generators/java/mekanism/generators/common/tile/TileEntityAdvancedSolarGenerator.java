@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile;
 
-import javax.annotation.Nonnull;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
@@ -10,7 +9,6 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar {
@@ -60,11 +58,5 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     @Override
     protected BlockPos getSkyCheckPos() {
         return worldPosition.above(2);
-    }
-
-    @Nonnull
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 3, 2));
     }
 }

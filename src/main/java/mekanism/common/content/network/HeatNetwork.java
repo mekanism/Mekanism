@@ -5,6 +5,7 @@ import java.util.UUID;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
+import mekanism.api.text.APILang;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.network.transmitter.ThermodynamicConductor;
 import mekanism.common.lib.transmitter.DynamicNetwork;
@@ -38,9 +39,11 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
     public ITextComponent getFlowInfo() {
         ITextComponent transferred = MekanismUtils.getTemperatureDisplay(heatTransferred, TemperatureUnit.KELVIN, false);
         ITextComponent lost = MekanismUtils.getTemperatureDisplay(heatLost, TemperatureUnit.KELVIN, false);
-        return heatTransferred + heatLost == 0 ? MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost)
-                                               : MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost,
-                                                     (Math.round(heatTransferred / (heatTransferred + heatLost) * 10_000) / 100F) + "%");
+        if (heatTransferred + heatLost == 0) {
+            return MekanismLang.HEAT_NETWORK_FLOW.translate(transferred, lost);
+        }
+        return MekanismLang.HEAT_NETWORK_FLOW_EFFICIENCY.translate(transferred, lost,
+              APILang.GENERIC_PERCENT.translate(Math.round(heatTransferred / (heatTransferred + heatLost) * 10_000) / 100F));
     }
 
     @Override

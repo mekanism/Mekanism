@@ -569,6 +569,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MAY_4_LINE_ONE, "May the 4th be with you, %s!");
         //Generic
         add(APILang.GENERIC, "%s");
+        //Note: How translation text component is implemented requires a double percent sign to make it show up as a single percent sign
+        add(APILang.GENERIC_PERCENT, "%s%%");
         add(MekanismLang.GENERIC_WITH_COMMA, "%s, %s");
         add(MekanismLang.GENERIC_STORED, "%s: %s");
         add(MekanismLang.GENERIC_STORED_MB, "%s: %s mB");

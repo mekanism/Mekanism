@@ -1,6 +1,7 @@
 package mekanism.api.chemical;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -35,7 +36,8 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
 
     protected Chemical(ChemicalBuilder<CHEMICAL, ?> builder, ChemicalTags<CHEMICAL> chemicalTags) {
         reverseTags = new ReverseTagWrapper<>(getChemical(), chemicalTags::getCollection);
-        this.attributeMap = builder.getAttributeMap();
+        //Copy the map to support addAttribute
+        this.attributeMap = new HashMap<>(builder.getAttributeMap());
         this.iconLocation = builder.getTexture();
         this.tint = builder.getColor();
         this.hidden = builder.isHidden();

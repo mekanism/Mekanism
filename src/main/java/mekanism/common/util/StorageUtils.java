@@ -255,9 +255,9 @@ public class StorageUtils {
     }
 
     public static ITextComponent getStoragePercent(double ratio, boolean colorText) {
-        String text = TextUtils.getPercent(ratio);
+        ITextComponent text = TextUtils.getPercent(ratio);
         if (!colorText) {
-            return TextComponentUtil.getString(text);
+            return text;
         }
         EnumColor color;
         if (ratio < 0.01F) {

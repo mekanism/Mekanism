@@ -26,7 +26,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -162,12 +161,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (level != null) {
             level.removeBlock(getBlockPos().above(), false);
         }
-    }
-
-    @Nonnull
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     @Nonnull

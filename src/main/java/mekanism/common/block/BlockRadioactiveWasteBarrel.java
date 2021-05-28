@@ -79,8 +79,8 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
             if (stored.isEmpty()) {
                 text = MekanismLang.NO_GAS.translateColored(EnumColor.GRAY);
             } else {
-                String scale = TextUtils.getPercent(tile.getGasScale());
-                text = MekanismLang.STORED_MB_PERCENTAGE.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY, TextUtils.format(stored.getAmount()), scale);
+                text = MekanismLang.STORED_MB_PERCENTAGE.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
+                      TextUtils.format(stored.getAmount()), TextUtils.getPercent(tile.getGasScale()));
             }
             player.sendMessage(text, Util.NIL_UUID);
         }

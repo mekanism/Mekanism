@@ -1,6 +1,7 @@
 package mekanism.api.chemical;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Collections;
 import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
@@ -36,8 +37,7 @@ public class ChemicalBuilder<CHEMICAL extends Chemical<CHEMICAL>, BUILDER extend
      * Gets the attributes this chemical will have.
      */
     public Map<Class<? extends ChemicalAttribute>, ChemicalAttribute> getAttributeMap() {
-        //TODO - 10.1: Look into returning unmodifiable view/immutable copy of this and the same for block attributes
-        return attributeMap;
+        return Collections.unmodifiableMap(attributeMap);
     }
 
     /**

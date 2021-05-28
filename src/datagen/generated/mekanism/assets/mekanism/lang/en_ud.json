@@ -730,6 +730,7 @@
   "generic.mekanism.mb": "\u15FA\u026F %s",
   "generic.mekanism.parenthesis": "(%s)",
   "generic.mekanism.per_tick": "\u0287/%s",
+  "generic.mekanism.percent": "%%%s",
   "generic.mekanism.pre_colon": ":%s",
   "generic.mekanism.pre_pre_colon": "%3$s :%s %1$s",
   "generic.mekanism.square_bracket": "[%s]",

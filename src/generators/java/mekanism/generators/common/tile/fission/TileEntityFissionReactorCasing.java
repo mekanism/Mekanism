@@ -3,6 +3,7 @@ package mekanism.generators.common.tile.fission;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
@@ -12,6 +13,7 @@ import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.text.ITextComponent;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> {
 
@@ -44,9 +46,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         getMultiblock().setActive(active);
     }
 
-    public String getDamageString() {
-        //TODO - 10.1: Lang string?
-        return getMultiblock().getDamagePercent() + "%";
+    public ITextComponent getDamageString() {
+        return APILang.GENERIC_PERCENT.translate(getMultiblock().getDamagePercent());
     }
 
     public EnumColor getDamageColor() {

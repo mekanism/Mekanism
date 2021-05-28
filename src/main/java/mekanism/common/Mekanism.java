@@ -211,10 +211,10 @@ public class Mekanism {
         MekanismPlacements.PLACEMENTS.register(modEventBus);
         MekanismFeatures.FEATURES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
-        MekanismGases.GASES.createAndRegisterWithTags(modEventBus, "gas", "gases");
-        MekanismInfuseTypes.INFUSE_TYPES.createAndRegisterWithTags(modEventBus, "infuse_type", "infuse_types");
-        MekanismPigments.PIGMENTS.createAndRegisterWithTags(modEventBus, "pigment", "pigments");
-        MekanismSlurries.SLURRIES.createAndRegisterWithTags(modEventBus, "slurry", "slurries");
+        MekanismGases.GASES.createAndRegister(modEventBus, "gas", builder -> builder.tagFolder("gases").setDefaultKey(rl("empty_gas")));
+        MekanismInfuseTypes.INFUSE_TYPES.createAndRegister(modEventBus, "infuse_type", builder -> builder.tagFolder("infuse_types").setDefaultKey(rl("empty_infuse_type")));
+        MekanismPigments.PIGMENTS.createAndRegister(modEventBus, "pigment", builder -> builder.tagFolder("pigments").setDefaultKey(rl("empty_pigment")));
+        MekanismSlurries.SLURRIES.createAndRegister(modEventBus, "slurry", builder -> builder.tagFolder("slurries").setDefaultKey(rl("empty_slurry")));
         MekanismModules.MODULES.createAndRegister(modEventBus, "module");
         modEventBus.addGenericListener(Gas.class, this::registerGases);
         modEventBus.addGenericListener(InfuseType.class, this::registerInfuseTypes);

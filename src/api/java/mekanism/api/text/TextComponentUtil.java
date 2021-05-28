@@ -77,12 +77,10 @@ public class TextComponentUtil {
                 current = translate(((Fluid) component).getAttributes().getTranslationKey());
             } else if (component instanceof Direction) {
                 current = getTranslatedDirection((Direction) component);
-            } else if (component instanceof String || component instanceof Boolean || component instanceof Number) {
-                //Put actual boolean or integer/double, etc value
-                current = getString(component.toString());
             } else {
                 //Fallback to a generic replacement
-                current = APILang.GENERIC.translate(component);
+                // this handles strings, booleans, numbers, and any type we don't necessarily know about
+                current = getString(component.toString());
             }
             if (current == null) {
                 //If we don't have a component to add, don't
@@ -215,15 +213,13 @@ public class TextComponentUtil {
                 if (component instanceof ITextComponent) {
                     //Just append if a text component is being passed
                     current = ((ITextComponent) component).copy();
-                } else if (component instanceof String || component instanceof Boolean || component instanceof Number) {
-                    //Put actual boolean or integer/double, etc value
-                    current = getString(component.toString());
                 } else if (component instanceof EnumColor) {
                     //If we already have a color in our format allow using the EnumColor's name
                     current = ((EnumColor) component).getName();
                 } else {
                     //Fallback to a direct replacement just so that we can properly color it
-                    current = APILang.GENERIC.translate(component);
+                    // this handles strings, booleans, numbers, and any type we don't necessarily know about
+                    current = getString(component.toString());
                 }
             } else if (component instanceof String) {
                 //If we didn't format it and it is a string make sure we clean it up

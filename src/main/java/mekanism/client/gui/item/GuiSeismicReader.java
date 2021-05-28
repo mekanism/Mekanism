@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.text.APILang;
+import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiArrowSelection;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -80,7 +80,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         int currentLayer = blockList.size() - scrollBar.getCurrentSelection() - 1;
         //Render the layer text scaled, so that it does not start overlapping past 100
-        drawTextScaledBound(matrix, APILang.GENERIC.translate(currentLayer), 111, 87, screenTextColor(), 13);
+        drawTextScaledBound(matrix, TextComponentUtil.build(currentLayer), 111, 87, screenTextColor(), 13);
 
         //TODO - V11: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
         //Render the item stacks

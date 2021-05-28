@@ -35,7 +35,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 
 public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
@@ -147,13 +146,6 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableInt.create(() -> operatingTicks, value -> operatingTicks = value));
-    }
-
-    @Nonnull
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        // not exact, but doesn't matter that much
-        return new AxisAlignedBB(worldPosition.offset(-1, 0, -1), worldPosition.offset(2, 2, 2));
     }
 
     @Override

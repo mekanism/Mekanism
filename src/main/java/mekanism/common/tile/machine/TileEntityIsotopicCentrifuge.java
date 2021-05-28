@@ -46,7 +46,6 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.util.math.AxisAlignedBB;
 
 public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
 
@@ -181,12 +180,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         if (level != null) {
             level.removeBlock(getBlockPos().above(), false);
         }
-    }
-
-    @Nonnull
-    @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     @Override

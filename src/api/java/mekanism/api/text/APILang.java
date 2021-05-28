@@ -24,7 +24,9 @@ public enum APILang implements ILangEntry {
     UPGRADE_ANCHOR("upgrade", "anchor"),
     UPGRADE_ANCHOR_DESCRIPTION("upgrade", "anchor.description"),
     //Generic
+    @Deprecated//TODO - 1.17: Remove this generic lang entry in favor of just having string text components be used
     GENERIC("generic", "format"),
+    GENERIC_PERCENT("generic", "percent"),
     //Directions
     DOWN("direction", "down"),
     UP("direction", "up"),
