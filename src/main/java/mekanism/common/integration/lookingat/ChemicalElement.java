@@ -5,6 +5,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
@@ -39,7 +40,7 @@ public class ChemicalElement extends LookingAtElement {
         if (amount == Long.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(stored.getType(), MekanismLang.INFINITE);
         }
-        return MekanismLang.GENERIC_STORED_MB.translate(stored.getType(), amount);
+        return MekanismLang.GENERIC_STORED_MB.translate(stored.getType(), TextUtils.format(amount));
     }
 
     @Override

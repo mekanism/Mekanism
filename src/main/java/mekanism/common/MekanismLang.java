@@ -396,6 +396,9 @@ public enum MekanismLang implements ILangEntry {
     SORTER_FILTER_SIZE_MISSING("filter", "sorter.size_missing"),
     OREDICTIONIFICATOR_FILTER("filter", "oredictionificator"),
     OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG("filter", "oredictionificator.invalid_key"),
+    //Radioactive Waste Barrel
+    WASTE_BARREL_DECAY_RATE("waste_barrel", "decay_rate"),
+    WASTE_BARREL_DECAY_RATE_ACTUAL("waste_barrel", "decay_rate.actual"),
     //Seismic Vibrator
     CHUNK("seismic_vibrator", "chunk"),
     VIBRATING("seismic_vibrator", "vibrating"),

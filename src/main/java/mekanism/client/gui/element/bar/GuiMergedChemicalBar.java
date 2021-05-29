@@ -22,6 +22,7 @@ import mekanism.common.capabilities.chemical.dynamic.IGasTracker;
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.text.ITextComponent;
 
@@ -62,7 +63,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
                 } else if (currentTank.getStored() == Long.MAX_VALUE) {
                     return MekanismLang.GENERIC_STORED.translate(currentTank.getType(), MekanismLang.INFINITE);
                 }
-                return MekanismLang.GENERIC_STORED_MB.translate(currentTank.getType(), currentTank.getStored());
+                return MekanismLang.GENERIC_STORED_MB.translate(currentTank.getType(), TextUtils.format(currentTank.getStored()));
             }
 
             @Override

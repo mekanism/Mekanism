@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockSecurityDesk> implements IItemSustainedInventory {
 
     public ItemBlockSecurityDesk(BlockSecurityDesk block) {
-        super(block, ItemDeferredRegister.getMekBaseProperties());
+        super(block, true, ItemDeferredRegister.getMekBaseProperties());
     }
 
     @Override

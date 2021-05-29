@@ -16,6 +16,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityFluidicPlenisher;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.EnergyDisplay;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
@@ -39,7 +40,7 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
             if (fluid.isEmpty()) {
                 list.add(MekanismLang.NO_FLUID.translate());
             } else {
-                list.add(MekanismLang.GENERIC_STORED_MB.translate(fluid, fluid.getAmount()));
+                list.add(MekanismLang.GENERIC_STORED_MB.translate(fluid, TextUtils.format(fluid.getAmount())));
             }
             return list;
         }));

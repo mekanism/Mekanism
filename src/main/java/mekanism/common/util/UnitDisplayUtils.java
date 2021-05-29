@@ -112,8 +112,9 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
     }
 
     public static double roundDecimals(double d, int decimalPlaces) {
-        int j = (int) (d * Math.pow(10, decimalPlaces));
-        return j / Math.pow(10, decimalPlaces);
+        double multiplier = Math.pow(10, decimalPlaces);
+        long j = (long) (d * multiplier);
+        return j / multiplier;
     }
 
     public static double roundDecimals(double d) {

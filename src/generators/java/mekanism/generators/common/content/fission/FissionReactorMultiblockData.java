@@ -34,6 +34,7 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.UnitDisplayUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
@@ -401,7 +402,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ComputerMethod
     private void setBurnRate(double rate) throws ComputerException {
         //Round to two decimal places
-        rate = (double) Math.round(rate * 100) / 100;
+        rate = UnitDisplayUtils.roundDecimals(rate);
         long max = getMaxBurnRate();
         if (rate < 0 || rate > max) {
             //Validate bounds even though we can clamp

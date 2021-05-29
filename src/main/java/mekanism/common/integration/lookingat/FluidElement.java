@@ -5,6 +5,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.MekanismLang;
+import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,7 +41,7 @@ public class FluidElement extends LookingAtElement {
         if (amount == Integer.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(stored, MekanismLang.INFINITE);
         }
-        return MekanismLang.GENERIC_STORED_MB.translate(stored, amount);
+        return MekanismLang.GENERIC_STORED_MB.translate(stored, TextUtils.format(amount));
     }
 
     @Override
