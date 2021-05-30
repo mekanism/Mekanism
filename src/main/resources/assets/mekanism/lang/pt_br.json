@@ -269,6 +269,7 @@
   "color.mekanism.yellow": "Amarelo",
   "command.mekanism.build.built": "Construção finalizada: %s.",
   "command.mekanism.build.removed": "Construção removida com sucesso.",
+  "command.mekanism.chunk.flush": "%s chunks descarregados.",
   "command.mekanism.chunk.loaded": "Chunk carregado (%s).",
   "command.mekanism.chunk.unloaded": "Chunk descarregado (%s).",
   "command.mekanism.debug": "Modo debug ativado: %s.",
