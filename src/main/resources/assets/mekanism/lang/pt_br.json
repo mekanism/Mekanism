@@ -273,6 +273,8 @@
   "command.mekanism.chunk.flush": "%s chunks descarregados.",
   "command.mekanism.chunk.loaded": "Chunk carregado (%s).",
   "command.mekanism.chunk.unloaded": "Chunk descarregado (%s).",
+  "command.mekanism.chunk.unwatch": "Chunk (%s) removida da lista de observação.",
+  "command.mekanism.chunk.watch": "Chunk (%s) adicionada à lista de observação.",
   "command.mekanism.debug": "Modo debug ativado: %s.",
   "command.mekanism.error.build.miss": "Nenhum alvo válido encontrado.",
   "command.mekanism.error.retrogen.disabled": "Retrogen está desativado, por favor ative-o nas configurações.",
