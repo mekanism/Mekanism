@@ -491,6 +491,7 @@
   "description.mekanism.laser_tractor_beam": "Lasertraktorstrahl",
   "description.mekanism.lead_ore": "Ein mittelmäßig seltenes Metall, welches hervorragend gegen radioaktive Partikel schützt und etwas seltener als Eisen vorkommt.",
   "description.mekanism.locomotive_boosting_unit": "Erhöht die Sprintgeschwindigkeit des Nutzers (und die Sprungweite).",
+  "description.mekanism.logistical_sorter": "Eine fortgeschrittene, auf Filtern basierende Sortier-Maschine, die automatisch spezifische Items in angrenzende Inventare und Logistische Transporter befördert, oder sie hinauszieht.",
   "description.mekanism.magnetic_attraction_unit": "Verwendet starke Magnete um weiter entfernte Gegenstände in Richtung des Spielers zu ziehen. Installiere mehrere für eine größere Reichweite.",
   "description.mekanism.modification_station": "Eine fortgeschrittene Werkbank, welche Module für Modulare Ausrüstung installieren oder entfernen kann (d.h. MekaSuit)",
   "description.mekanism.nutritional_injection_unit": "Füttert den Spieler bei Hunger automatisch mit Nährstoffpaste.",
