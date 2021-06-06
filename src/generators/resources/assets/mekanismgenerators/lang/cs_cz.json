@@ -60,7 +60,7 @@
   "description.mekanismgenerators.reactor.logic.capacity": "Tepelná kapacita jádra reaktoru byla dosažena",
   "description.mekanismgenerators.reactor.logic.damaged": "Výstup, když reaktor dosáhne kritické úrovně poškození (100%+).",
   "description.mekanismgenerators.reactor.logic.depleted": "Výstup když reaktor má nedostatek paliva k udržení reakce",
-  "description.mekanismgenerators.reactor.logic.disabled": "Nebude vysílat ruditový signál",
+  "description.mekanismgenerators.reactor.logic.disabled": "Nebude vysílat redstonový signál",
   "description.mekanismgenerators.reactor.logic.excess_waste": "Výstup, pokud má reaktor přebytečný odpad",
   "description.mekanismgenerators.reactor.logic.ready": "Výstup, pokud reaktor dosáhl potřebné teploty pro zážeh",
   "description.mekanismgenerators.reactor.logic.temperature": "Výstup, když reaktor dosáhne nebezpečných teplot",
