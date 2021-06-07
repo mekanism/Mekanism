@@ -493,6 +493,7 @@
   "description.mekanism.locomotive_boosting_unit": "Erhöht die Sprintgeschwindigkeit des Nutzers (und die Sprungweite).",
   "description.mekanism.logistical_sorter": "Eine fortgeschrittene, auf Filtern basierende Sortier-Maschine, die automatisch spezifische Items in angrenzende Inventare und Logistische Transporter befördert, oder sie hinauszieht.",
   "description.mekanism.magnetic_attraction_unit": "Verwendet starke Magnete um weiter entfernte Gegenstände in Richtung des Spielers zu ziehen. Installiere mehrere für eine größere Reichweite.",
+  "description.mekanism.metallurgic_infuser": "Eine Maschine, die benutzt wird, um verschiedene Materialien in (vor allem) Metalle einzuflößen, um Metalllegierungen und andere Komponenten herzustellen.",
   "description.mekanism.modification_station": "Eine fortgeschrittene Werkbank, welche Module für Modulare Ausrüstung installieren oder entfernen kann (d.h. MekaSuit)",
   "description.mekanism.nutritional_injection_unit": "Füttert den Spieler bei Hunger automatisch mit Nährstoffpaste.",
   "description.mekanism.nutritional_liquifier": "Eine Maschine, die in der Lage ist, Nahrungsmittel zu ungefährlicher, leicht verdaulicher Nährstoffpaste zu verarbeiten.",
