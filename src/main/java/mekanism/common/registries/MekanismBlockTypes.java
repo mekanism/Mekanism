@@ -293,7 +293,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.DIGITAL_MINER, MekanismLang.DESCRIPTION_DIGITAL_MINER)
           .withGui(() -> MekanismContainerTypes.DIGITAL_MINER)
           .withEnergyConfig(MekanismConfig.usage.digitalMiner, MekanismConfig.storage.digitalMiner)
-          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR))
+          .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR, Upgrade.STONE_GENERATOR))
           .withCustomShape(BlockShapes.DIGITAL_MINER)
           .with(AttributeCustomSelectionBox.JSON)
           .withComputerSupport("digitalMiner")

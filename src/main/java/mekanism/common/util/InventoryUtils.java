@@ -1,8 +1,16 @@
 package mekanism.common.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import mekanism.api.Action;
+import mekanism.api.inventory.AutomationType;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
+import mekanism.common.lib.inventory.TileTransitRequest;
+import mekanism.common.lib.inventory.TransitRequest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -47,5 +55,20 @@ public final class InventoryUtils {
 
     public static boolean isItemHandler(TileEntity tile, Direction side) {
         return CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).isPresent();
+    }
+
+    public static TransitRequest getEjectItemMap(TileEntity tile, List<IInventorySlot> slots, Direction side) {
+        TileTransitRequest request = new TileTransitRequest(tile, side);
+        // shuffle the order we look at our slots to avoid ejection patterns
+        List<IInventorySlot> shuffled = new ArrayList<>(slots);
+        Collections.shuffle(shuffled);
+        for (IInventorySlot slot : shuffled) {
+            //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
+            ItemStack simulatedExtraction = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.EXTERNAL);
+            if (!simulatedExtraction.isEmpty()) {
+                request.addItem(simulatedExtraction, slots.indexOf(slot));
+            }
+        }
+        return request;
     }
 }

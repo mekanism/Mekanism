@@ -55,7 +55,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.inventory.Finder;
-import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
@@ -67,6 +66,7 @@ import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -78,6 +78,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.nbt.CompoundNBT;
@@ -281,7 +282,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             TileEntity ejectInv = WorldUtils.getTileEntity(level, getBlockPos().above().relative(oppositeDirection, 2));
             TileEntity ejectTile = WorldUtils.getTileEntity(getLevel(), getBlockPos().above().relative(oppositeDirection));
             if (ejectInv != null && ejectTile != null) {
-                TransitRequest ejectMap = getEjectItemMap(ejectTile, oppositeDirection);
+                TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectTile, mainSlots, oppositeDirection);
                 if (!ejectMap.isEmpty()) {
                     TransitResponse response;
                     if (ejectInv instanceof TileEntityLogisticalTransporterBase) {
@@ -465,12 +466,20 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (filter == null || filter.replaceStack.isEmpty()) {
             return ItemStack.EMPTY;
         }
+        //Start by sourcing from the miner's inventory
         for (IInventorySlot slot : mainSlots) {
             if (filter.replaceStackMatches(slot.getStack())) {
                 MekanismUtils.logMismatchedStackSize(slot.shrinkStack(1, Action.EXECUTE), 1);
                 return StackUtils.size(filter.replaceStack, 1);
             }
         }
+        //Then source from the upgrade if it is installed
+        if (filter.replaceStack.getItem() == Items.COBBLESTONE || filter.replaceStack.getItem() == Items.STONE) {
+            if (upgradeComponent.isUpgradeInstalled(Upgrade.STONE_GENERATOR)) {
+                return StackUtils.size(filter.replaceStack, 1);
+            }
+        }
+        //And finally source from the inventory on top if auto pull is enabled
         if (doPull && getPullInv() != null) {
             TransitRequest request = TransitRequest.definedItem(getPullInv(), Direction.DOWN, 1, Finder.strict(filter.replaceStack));
             if (!request.isEmpty() && request.createSimpleResponse().useAll().isEmpty()) {
@@ -479,19 +488,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             }
         }
         return ItemStack.EMPTY;
-    }
-
-    private TransitRequest getEjectItemMap(TileEntity tile, Direction side) {
-        TileTransitRequest request = new TileTransitRequest(tile, side);
-        for (int i = mainSlots.size() - 1; i >= 0; i--) {
-            IInventorySlot slot = mainSlots.get(i);
-            //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
-            ItemStack simulatedExtraction = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.EXTERNAL);
-            if (!simulatedExtraction.isEmpty()) {
-                request.addItem(simulatedExtraction, i);
-            }
-        }
-        return request;
     }
 
     public boolean canInsert(List<ItemStack> toInsert) {

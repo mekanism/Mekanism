@@ -1,16 +1,12 @@
 package mekanism.common.tile.component;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
-import mekanism.api.inventory.AutomationType;
-import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
@@ -19,7 +15,6 @@ import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerT
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -34,10 +29,10 @@ import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -149,19 +144,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     private TransitRequest getEjectItemMap(InventorySlotInfo slotInfo, Direction side) {
-        TileTransitRequest request = new TileTransitRequest(tile, side);
-        List<IInventorySlot> slots = slotInfo.getSlots();
-        // shuffle the order we look at our slots to avoid ejection patterns
-        List<IInventorySlot> shuffled = new ArrayList<>(slots);
-        Collections.shuffle(shuffled);
-        for (IInventorySlot slot : shuffled) {
-            //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
-            ItemStack simulatedExtraction = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.EXTERNAL);
-            if (!simulatedExtraction.isEmpty()) {
-                request.addItem(simulatedExtraction, slots.indexOf(slot));
-            }
-        }
-        return request;
+        return InventoryUtils.getEjectItemMap(tile, slotInfo.getSlots(), side);
     }
 
     @ComputerMethod

@@ -73,6 +73,12 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
             //Don't include the inventory slots
             return;
         }
+        if (tile.supportsUpgrades()) {
+            //Add the virtual slot for the upgrade (add them before the main inventory to make sure they take priority in targeting)
+            //TODO - 10.1: Test this and test how it handles
+            addSlot(upgradeSlot = tile.getComponent().getUpgradeSlot().createContainerSlot());
+            addSlot(upgradeOutputSlot = tile.getComponent().getUpgradeOutputSlot().createContainerSlot());
+        }
         if (tile.hasInventory()) {
             //Get all the inventory slots the tile has
             List<IInventorySlot> inventorySlots = tile.getInventorySlots(null);
@@ -82,11 +88,6 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
                     addSlot(containerSlot);
                 }
             }
-        }
-        if (tile.supportsUpgrades()) {
-            //Add the virtual slot for the upgrade
-            addSlot(upgradeSlot = tile.getComponent().getUpgradeSlot().createContainerSlot());
-            addSlot(upgradeOutputSlot = tile.getComponent().getUpgradeOutputSlot().createContainerSlot());
         }
     }
 

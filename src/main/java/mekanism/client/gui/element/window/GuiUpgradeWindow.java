@@ -5,8 +5,8 @@ import mekanism.api.Upgrade;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
-import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.DigitalButton;
+import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.custom.GuiSupportedUpgrades;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
@@ -74,11 +74,14 @@ public class GuiUpgradeWindow extends GuiWindow {
         if (scrollList.hasSelection()) {
             Upgrade selectedType = scrollList.getSelection();
             int amount = tile.getComponent().getUpgrades(selectedType);
-            drawTextWithScale(matrix, MekanismLang.UPGRADE_TYPE.translate(selectedType), relativeX + 74, relativeY + 20, screenTextColor(), 0.6F);
-            drawTextWithScale(matrix, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), relativeX + 74, relativeY + 28, screenTextColor(), 0.6F);
-            int text = 0;
+            int textY = relativeY + 20;
+            int lines = drawWrappedTextWithScale(matrix, MekanismLang.UPGRADE_TYPE.translate(selectedType), relativeX + 74, textY, screenTextColor(), 56, 0.6F);
+            textY += 6 * lines + 2;
+            drawTextWithScale(matrix, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), relativeX + 74, textY, screenTextColor(), 0.6F);
             for (ITextComponent component : UpgradeUtils.getInfo(tile, selectedType)) {
-                drawTextWithScale(matrix, component, relativeX + 74, relativeY + 34 + (6 * text++), screenTextColor(), 0.6F);
+                //Note: We add the six here instead of after to account for the line above this for loop that draws the upgrade count
+                textY += 6;
+                drawTextWithScale(matrix, component, relativeX + 74, textY, screenTextColor(), 0.6F);
             }
         } else {
             drawTextWithScale(matrix, MekanismLang.UPGRADE_NO_SELECTION.translate(), relativeX + 74, relativeY + 20, screenTextColor(), 0.8F);

@@ -35,6 +35,8 @@ public class UpgradeUtils {
                 return MekanismItems.GAS_UPGRADE.getItemStack(count);
             case ANCHOR:
                 return MekanismItems.ANCHOR_UPGRADE.getItemStack(count);
+            case STONE_GENERATOR:
+                return MekanismItems.STONE_GENERATOR_UPGRADE.getItemStack(count);
         }
         return ItemStack.EMPTY;
     }

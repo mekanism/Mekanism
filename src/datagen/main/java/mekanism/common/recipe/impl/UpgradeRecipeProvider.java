@@ -15,6 +15,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.tags.ITag;
 import net.minecraftforge.common.Tags;
 
@@ -34,6 +35,16 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
         addUpgradeRecipe(consumer, MekanismItems.GAS_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.IRON), basePath);
         addUpgradeRecipe(consumer, MekanismItems.MUFFLING_UPGRADE, MekanismTags.Items.DUSTS_STEEL, basePath);
         addUpgradeRecipe(consumer, MekanismItems.SPEED_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM), basePath);
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.STONE_GENERATOR_UPGRADE)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.ALLOY, Pattern.BUCKET),
+                    TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY))
+              ).key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS)
+              .key(Pattern.CONSTANT, Items.WATER_BUCKET)
+              .key(Pattern.BUCKET, Items.LAVA_BUCKET)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .build(consumer, Mekanism.rl(basePath + getSaveName(MekanismItems.STONE_GENERATOR_UPGRADE)));
     }
 
     private void addUpgradeRecipe(Consumer<IFinishedRecipe> consumer, ItemRegistryObject<ItemUpgrade> upgrade, ITag<Item> dustTag, String basePath) {
@@ -42,6 +53,10 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
               .key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS)
               .key(Pattern.CONSTANT, dustTag)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
-              .build(consumer, Mekanism.rl(basePath + upgrade.getItem().getUpgradeType(upgrade.getItemStack()).getRawName()));
+              .build(consumer, Mekanism.rl(basePath + getSaveName(upgrade)));
+    }
+
+    private String getSaveName(ItemRegistryObject<ItemUpgrade> upgrade) {
+        return upgrade.getItem().getUpgradeType(upgrade.getItemStack()).getRawName();
     }
 }

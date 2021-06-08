@@ -76,8 +76,8 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        forEachUpgrade((upgrade, multipliedElement) -> drawString(matrix, TextComponentUtil.build(upgrade), relativeX + 13, relativeY + 3 + multipliedElement,
-              titleTextColor()));
+        forEachUpgrade((upgrade, multipliedElement) -> drawTextScaledBound(matrix, TextComponentUtil.build(upgrade), relativeX + 13, relativeY + 3 + multipliedElement,
+              titleTextColor(), 44));
     }
 
     @Override

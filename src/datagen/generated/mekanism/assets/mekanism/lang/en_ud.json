@@ -986,6 +986,7 @@
   "item.mekanism.upgrade_gas": "\u01DDp\u0250\u0279\u1D77d\u2229 s\u0250\u2141",
   "item.mekanism.upgrade_muffling": "\u01DDp\u0250\u0279\u1D77d\u2229 \u1D77u\u1D09\uA781\u025F\u025FnW",
   "item.mekanism.upgrade_speed": "\u01DDp\u0250\u0279\u1D77d\u2229 p\u01DD\u01DDdS",
+  "item.mekanism.upgrade_stone_generator": "\u01DDp\u0250\u0279\u1D77d\u2229 \u0279o\u0287\u0250\u0279\u01DDu\u01DD\u2141 \u01DDuo\u0287S",
   "item.mekanism.yellow_cake_uranium": "\u026Fn\u1D09u\u0250\u0279\u2229 \u01DD\u029E\u0250\u0186 \u028Do\uA781\uA781\u01DD\u2144",
   "jetpack.mekanism.disabled": "p\u01DD\uA781q\u0250s\u1D09\u15E1",
   "jetpack.mekanism.hover": "\u0279\u01DD\u028CoH",
@@ -1372,6 +1373,8 @@
   "upgrade.mekanism.muffling.description": "\u02D9\u028E\u0279\u01DDu\u1D09\u0265\u0254\u0250\u026F \u028Eq p\u01DD\u0287\u0250\u0279\u01DDu\u01DD\u1D77 \u01DDs\u1D09ou s\u01DD\u0254np\u01DD\u1D1A",
   "upgrade.mekanism.speed": "p\u01DD\u01DDdS",
   "upgrade.mekanism.speed.description": "\u02D9\u028E\u0279\u01DDu\u1D09\u0265\u0254\u0250\u026F \u025Fo p\u01DD\u01DDds s\u01DDs\u0250\u01DD\u0279\u0254uI",
+  "upgrade.mekanism.stone_generator": "\u0279o\u0287\u0250\u0279\u01DDu\u01DD\u2141 \u01DDuo\u0287S",
+  "upgrade.mekanism.stone_generator.description": "\u02D9p\u01DDp\u01DD\u01DDu s\u0250 \u01DDuo\u0287s\u01DD\uA781qqo\u0254 \u0279o \u01DDuo\u0287s s\u01DD\u0287\u0250\u0279\u01DDu\u01DD\u2141",
   "waste_barrel.mekanism.decay_rate": "\u0287/\u15FA\u026F %s :\u01DD\u0287\u0250\u1D1A \u028E\u0250\u0254\u01DD\u15E1",
   "waste_barrel.mekanism.decay_rate.actual": "s\u029E\u0254\u1D09\u0287 %2$s / \u15FA\u026F %1$s :\u01DD\u0287\u0250\u1D1A \u028E\u0250\u0254\u01DD\u15E1 \uA781\u0250n\u0287\u0254\u2C6F"
 }

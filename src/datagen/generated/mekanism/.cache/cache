@@ -23,8 +23,8 @@ d5bd6c407c9250a90e22e1f2c8805738b3830abf assets/mekanism/blockstates/lithium.jso
 c1be0ed56a542f711719367cf1e508f10063c695 assets/mekanism/blockstates/sulfuric_acid.json
 f5e3eb6799a15d0b72969547614dfc51dac53419 assets/mekanism/blockstates/tin_ore.json
 246c1904e7699b01a3a20f2a2b79b35b5d99aec9 assets/mekanism/blockstates/uranium_ore.json
-183575a0e4372c97be5f7080f7abb7dad7e06cf5 assets/mekanism/lang/en_ud.json
-e500cb7a71dd2d125911a2c0ea3a178c036146ea assets/mekanism/lang/en_us.json
+bff13d66c2c444808054fd714fbdde4e460d5914 assets/mekanism/lang/en_ud.json
+242e66bbac245cdc2d755c9afd2b8b94f4e742c7 assets/mekanism/lang/en_us.json
 beea3be5a8af802be66d456a7a648678bede0f02 assets/mekanism/models/block/brine.json
 beea3be5a8af802be66d456a7a648678bede0f02 assets/mekanism/models/block/chlorine.json
 beea3be5a8af802be66d456a7a648678bede0f02 assets/mekanism/models/block/ethene.json
@@ -2524,6 +2524,7 @@ d6a3d17c57dc72808dfb89a41618769c68c85567 data/mekanism/recipes/upgrade/filter.js
 c6194b01656da10ae68e9a54003fb87ef8ad1ec2 data/mekanism/recipes/upgrade/gas.json
 22e23669d3edb40656d3976533d595bacf98dc46 data/mekanism/recipes/upgrade/muffling.json
 87545c2a7c6a9197ced562127d8988ca3a65ab02 data/mekanism/recipes/upgrade/speed.json
+5bea5a02d8d74afeea042cdc1e2daa628ba9e354 data/mekanism/recipes/upgrade/stone_generator.json
 0e943f7510e2277c6c4c3d1701ac02564333690c data/mekanism/scripts/mekanism_activating.zs
 fa3f1814bb1395a68d17db354d6edc5ab72aea82 data/mekanism/scripts/mekanism_centrifuging.zs
 241ccddef25bfa1a622338ee91e0f1368c99d3a1 data/mekanism/scripts/mekanism_chemical_infusing.zs

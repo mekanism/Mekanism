@@ -136,6 +136,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemUpgrade> MUFFLING_UPGRADE = registerUpgrade(Upgrade.MUFFLING);
     public static final ItemRegistryObject<ItemUpgrade> GAS_UPGRADE = registerUpgrade(Upgrade.GAS);
     public static final ItemRegistryObject<ItemUpgrade> ANCHOR_UPGRADE = registerUpgrade(Upgrade.ANCHOR);
+    public static final ItemRegistryObject<ItemUpgrade> STONE_GENERATOR_UPGRADE = registerUpgrade(Upgrade.STONE_GENERATOR);
 
     public static final ItemRegistryObject<ItemTierInstaller> BASIC_TIER_INSTALLER = registerInstaller(null, BaseTier.BASIC);
     public static final ItemRegistryObject<ItemTierInstaller> ADVANCED_TIER_INSTALLER = registerInstaller(BaseTier.BASIC, BaseTier.ADVANCED);
