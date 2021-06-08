@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "mekanism:module_dosimeter_unit"
+    "item": "mekanism:module_laser_dissipation_unit"
   },
   "pattern": [
     "A#A",
@@ -16,7 +16,7 @@
       "item": "mekanism:module_base"
     },
     "#": {
-      "item": "mekanism:dosimeter"
+      "item": "mekanism:laser_amplifier"
     },
     "H": {
       "item": "mekanism:hdpe_sheet"

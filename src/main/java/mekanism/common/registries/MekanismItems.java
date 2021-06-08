@@ -107,6 +107,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
 
     public static final ItemRegistryObject<ItemModule> MODULE_ENERGY = ITEMS.registerModule(MekanismModules.ENERGY_UNIT);
+    public static final ItemRegistryObject<ItemModule> MODULE_LASER_DISSIPATION = ITEMS.registerModule(MekanismModules.LASER_DISSIPATION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_RADIATION_SHIELDING = ITEMS.registerModule(MekanismModules.RADIATION_SHIELDING_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_EXCAVATION_ESCALATION = ITEMS.registerModule(MekanismModules.EXCAVATION_ESCALATION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_ATTACK_AMPLIFICATION = ITEMS.registerModule(MekanismModules.ATTACK_AMPLIFICATION_UNIT);
@@ -127,6 +128,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemModule> MODULE_LOCOMOTIVE_BOOSTING = ITEMS.registerModule(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_HYDRAULIC_PROPULSION = ITEMS.registerModule(MekanismModules.HYDRAULIC_PROPULSION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_MAGNETIC_ATTRACTION = ITEMS.registerModule(MekanismModules.MAGNETIC_ATTRACTION_UNIT);
+    public static final ItemRegistryObject<ItemModule> MODULE_FROST_WALKER = ITEMS.registerModule(MekanismModules.FROST_WALKER_UNIT);
 
     public static final ItemRegistryObject<ItemUpgrade> SPEED_UPGRADE = registerUpgrade(Upgrade.SPEED);
     public static final ItemRegistryObject<ItemUpgrade> ENERGY_UPGRADE = registerUpgrade(Upgrade.ENERGY);

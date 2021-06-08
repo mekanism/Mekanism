@@ -1248,6 +1248,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MODULE_TELEPORT_REQUIRES_BLOCK, "Requires Block Target");
 
         add(MekanismModules.ENERGY_UNIT, "Energy Unit", "Increases maximum energy capacity.");
+        add(MekanismModules.LASER_DISSIPATION_UNIT, "Laser Dissipation Unit",
+              "Refracts and safely dissipates lasers that hit any MekaSuit armor piece.");
         add(MekanismModules.RADIATION_SHIELDING_UNIT, "Radiation Shielding Unit",
               "Provides thick, radiation-proof metal plating to any MekaSuit armor piece.");
 
@@ -1275,6 +1277,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT, "Locomotive Boosting Unit", "Increases the user's sprinting speed (and jumping distance).");
         add(MekanismModules.HYDRAULIC_PROPULSION_UNIT, "Hydraulic Propulsion Unit", "Allows the user to both step and jump higher.");
         add(MekanismModules.MAGNETIC_ATTRACTION_UNIT, "Magnetic Attraction Unit", "Uses powerful magnets to draw distant items towards the player. Install multiple for a greater range.");
+        add(MekanismModules.FROST_WALKER_UNIT, "Frost Walker Unit", "Uses liquid hydrogen to freeze any water the player walks on. Install multiple for a greater range.");
     }
 
     private void addOre(OreType type, String description) {

@@ -50,6 +50,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemStack.TooltipDisplayFlags;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
@@ -312,10 +313,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
-        if (stack.getTag() == null) {
-            stack.setTag(new CompoundNBT());
-        }
-        stack.getTag().putInt("HideFlags", 2);
+        stack.hideTooltipPart(TooltipDisplayFlags.MODIFIERS);
         return super.initCapabilities(stack, nbt);
     }
 

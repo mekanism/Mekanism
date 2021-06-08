@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
@@ -122,6 +123,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //TODO: Allow the tractor beam to have an energy cost for pulling items?
                         continue;
                     }
+                    boolean updateEnergyScale = false;
                     FloatingLong value = remainingEnergy.divide(energyPerDamage);
                     float damage = value.floatValue();
                     float health = 0;
@@ -129,8 +131,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //If the entity is a living entity check if they are blocking with a shield and then allow
                         // the shield to cause some of the damage to be dissipated in exchange for durability
                         LivingEntity livingEntity = (LivingEntity) entity;
-                        //TODO - V11: Add a system for dissipating lasers in armor/the meka-suit
+                        boolean updateDamage = false;
                         if (livingEntity.isBlocking() && livingEntity.getUseItem().isShield(livingEntity)) {
+                            //TODO - V11: Add a laser reflector capability that shields can implement to cause the laser beam to be reflected
+                            // maybe even implement this ability but don't add it to any of our things yet?
                             float damageBlocked = damageShield(livingEntity, livingEntity.getUseItem(), damage, 2);
                             //Remove how ever much energy we were able to block
                             remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damageBlocked));
@@ -139,32 +143,92 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                                 to = from.adjustPosition(direction, entity);
                                 break;
                             }
-                            //Otherwise update the damage we are actually going to try and do to the entity
+                            updateDamage = true;
+                        }
+                        //After our shield checks see if the armor the entity is wearing can dissipate or refract lasers
+                        double dissipationPercent = 0;
+                        double refractionPercent = 0;
+                        for (ItemStack armor : livingEntity.getArmorSlots()) {
+                            if (!armor.isEmpty()) {
+                                Optional<ILaserDissipation> capability = armor.getCapability(Capabilities.LASER_DISSIPATION_CAPABILITY).resolve();
+                                if (capability.isPresent()) {
+                                    ILaserDissipation laserDissipation = capability.get();
+                                    dissipationPercent += laserDissipation.getDissipationPercent();
+                                    refractionPercent += laserDissipation.getRefractionPercent();
+                                    if (dissipationPercent >= 1) {
+                                        //If we will fully dissipate it don't bother checking the rest of the armor slots
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        //We start by dissipating energy across the armor after it is blocked by the shield
+                        // we check this after blocking by the shield as the shield is in front of the entity and their armor
+                        if (dissipationPercent > 0) {
+                            //If we will dissipate any energy, cap the dissipation amount at one
+                            dissipationPercent = Math.min(dissipationPercent, 1);
+                            remainingEnergy = remainingEnergy.timesEqual(FloatingLong.create(1 - dissipationPercent));
+                            if (remainingEnergy.isZero()) {
+                                //If we dissipated it all then update the position the laser is going to and break
+                                to = from.adjustPosition(direction, entity);
+                                break;
+                            }
+                            updateDamage = true;
+                        }
+                        //After dissipating any energy across the armor we try to refract some of the energy through the armor
+                        // this will further reduce the damage the entity would take and allow the laser to continue through
+                        // onto the other side
+                        if (refractionPercent > 0) {
+                            //If we will refract any energy, cap the refraction amount at one
+                            refractionPercent = Math.min(refractionPercent, 1);
+                            FloatingLong refractedEnergy = remainingEnergy.multiply(FloatingLong.create(refractionPercent));
+                            //Don't actually use the refracted energy from our remaining energy
+                            // but lower the damage values to not include the energy that is being refracted
+                            // and mark that we don't actually need to update the damage values (as we just did so here)
+                            value = remainingEnergy.subtract(refractedEnergy).divide(energyPerDamage);
+                            damage = value.floatValue();
+                            updateDamage = false;
+                            //Mark the energy scale should be checked for updates as if some of the energy got dissipated above
+                            // and we end up refracting all the remaining energy we won't do any damage and not get through the
+                            // normal code path that checks if the energy scale changed
+                            updateEnergyScale = true;
+                        }
+                        if (updateDamage) {
+                            //Update the damage we are actually going to try and do to the entity as the amount of energy being used changed
                             value = remainingEnergy.divide(energyPerDamage);
                             damage = value.floatValue();
                         }
                         health = livingEntity.getHealth();
                     }
-                    if (!entity.fireImmune()) {
-                        entity.setSecondsOnFire(value.intValue());
+                    if (damage > 0) {
+                        //If the damage is more than zero, which should be all cases except for when we are refracting all the energy past the entity
+                        // set the entity on fire if it is not damage immune and try to damage it
+                        if (!entity.fireImmune()) {
+                            entity.setSecondsOnFire(value.intValue());
+                        }
+                        int lastHurtResistTime = entity.invulnerableTime;
+                        //Set the hurt resistance time to zero to ensure we get a chance to do damage
+                        entity.invulnerableTime = 0;
+                        boolean damaged = entity.hurt(MekanismDamageSource.LASER, damage);
+                        //Set the hurt resistance time to whatever it was before the laser hit as lasers should not have a downtime in damage frequency
+                        entity.invulnerableTime = lastHurtResistTime;
+                        if (damaged) {
+                            //If we damaged it
+                            if (entity instanceof LivingEntity) {
+                                //Update the damage to match how much health the entity lost
+                                damage = Math.min(damage, Math.max(0, health - ((LivingEntity) entity).getHealth()));
+                            }
+                            remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damage));
+                            if (remainingEnergy.isZero()) {
+                                //Update the position that the laser is going to
+                                to = from.adjustPosition(direction, entity);
+                                break;
+                            }
+                            //If we have any energy left over after damaging the entity, mark that we are going to need to update the energy scale
+                            updateEnergyScale = true;
+                        }
                     }
-                    int lastHurtResistTime = entity.invulnerableTime;
-                    //Set the hurt resistance time to zero to ensure we get a chance to do damage
-                    entity.invulnerableTime = 0;
-                    boolean damaged = entity.hurt(MekanismDamageSource.LASER, damage);
-                    //Set the hurt resistance time to whatever it was before the laser hit as lasers should not have a downtime in damage frequency
-                    entity.invulnerableTime = lastHurtResistTime;
-                    if (damaged) {
-                        if (entity instanceof LivingEntity) {
-                            //Update the damage to match how much health the entity lost
-                            damage = Math.min(damage, Math.max(0, health - ((LivingEntity) entity).getHealth()));
-                        }
-                        remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damage));
-                        if (remainingEnergy.isZero()) {
-                            //Update the position that the laser is going to
-                            to = from.adjustPosition(direction, entity);
-                            break;
-                        }
+                    if (updateEnergyScale) {
                         float energyScale = getEnergyScale(remainingEnergy);
                         if (laserEnergyScale - energyScale > 0.01) {
                             //Otherwise send the laser between the two positions and update the energy scale
@@ -241,10 +305,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     /**
      * Based off of PlayerEntity#damageShield
      */
-    private float damageShield(LivingEntity livingEntity, ItemStack activeStack, float damage, int absorptionRation) {
+    private float damageShield(LivingEntity livingEntity, ItemStack activeStack, float damage, int absorptionRatio) {
         //Absorb part of the damage based on the given absorption ratio
         float damageBlocked = damage;
-        float effectiveDamage = damage / absorptionRation;
+        float effectiveDamage = damage / absorptionRatio;
         if (effectiveDamage >= 1) {
             //Allow the shield to absorb sub single unit damage values for free
             int durabilityNeeded = 1 + MathHelper.floor(effectiveDamage);
@@ -265,7 +329,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 livingEntity.stopUsingItem();
                 livingEntity.playSound(SoundEvents.SHIELD_BREAK, 0.8F, 0.8F + 0.4F * level.random.nextFloat());
                 //Durability needed to block damage - durability we had is the left over durability that would have been needed to block it all
-                int unblockedDamage = (durabilityNeeded - activeDurability) * absorptionRation;
+                int unblockedDamage = (durabilityNeeded - activeDurability) * absorptionRatio;
                 damageBlocked = Math.max(0, damage - unblockedDamage);
             }
         }

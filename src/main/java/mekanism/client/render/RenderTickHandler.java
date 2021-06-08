@@ -95,6 +95,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class RenderTickHandler {
@@ -133,6 +134,14 @@ public class RenderTickHandler {
                 //If it is mark on our current screen that we are switching to JEI
                 ((GuiMekanism<?>) Minecraft.getInstance().screen).switchingToJEI = true;
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void filterTooltips(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        if (stack.getItem() instanceof ItemMekaSuitArmor) {
+            ((ItemMekaSuitArmor) stack.getItem()).filterTooltips(stack, event.getToolTip());
         }
     }
 

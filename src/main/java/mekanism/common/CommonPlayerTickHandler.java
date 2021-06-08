@@ -5,9 +5,11 @@ import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
@@ -226,13 +228,13 @@ public class CommonPlayerTickHandler {
             // use a negative number as the damage value
             return;
         }
-        LivingEntity base = event.getEntityLiving();
+        LivingEntity entity = event.getEntityLiving();
         //Gas Mask checks
         if (event.getSource().isMagic()) {
-            ItemStack headStack = base.getItemBySlot(EquipmentSlotType.HEAD);
+            ItemStack headStack = entity.getItemBySlot(EquipmentSlotType.HEAD);
             if (!headStack.isEmpty()) {
                 if (headStack.getItem() instanceof ItemScubaMask) {
-                    ItemStack chestStack = base.getItemBySlot(EquipmentSlotType.CHEST);
+                    ItemStack chestStack = entity.getItemBySlot(EquipmentSlotType.CHEST);
                     if (!chestStack.isEmpty()) {
                         if (chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
                             ChemicalUtil.hasGas(chestStack)) {
@@ -245,30 +247,25 @@ public class CommonPlayerTickHandler {
                     // then we don't play the hurt effect/sound, as cancelling LivingHurtEvent still causes that to happen
                     IModule<ModuleInhalationPurificationUnit> module = MekanismAPI.getModuleHelper().load(headStack, MekanismModules.INHALATION_PURIFICATION_UNIT);
                     if (module != null && module.isEnabled()) {
-                        FloatingLong energyRequirement = MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce.get().multiply(event.getAmount());
-                        if (module.canUseEnergy(base, energyRequirement)) {
-                            //If we could fully negate the damage cancel the event
-                            module.useEnergy(base, energyRequirement);
-                            event.setCanceled(true);
+                        if (tryAbsorbAll(event, module.getEnergyContainer(), MekanismConfig.gear.mekaSuitMagicDamageRatio,
+                              MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce)) {
                             return;
                         }
                     }
                 }
             }
         }
-        //Free runner checks
         //Note: We have this here in addition to listening to LivingHurt, so as if we can fully block the damage
         // then we don't play the hurt effect/sound, as cancelling LivingHurtEvent still causes that to happen
         if (event.getSource() == DamageSource.FALL) {
-            IEnergyContainer energyContainer = getFallAbsorptionEnergyContainer(base);
-            if (energyContainer != null) {
-                FloatingLong energyRequirement = MekanismConfig.gear.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
-                FloatingLong simulatedExtract = energyContainer.extract(energyRequirement, Action.SIMULATE, AutomationType.MANUAL);
-                if (simulatedExtract.equals(energyRequirement)) {
-                    //If we could fully negate the damage cancel the event
-                    energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
-                    event.setCanceled(true);
-                }
+            //Free runner checks
+            FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
+            if (info != null) {
+                tryAbsorbAll(event, info.container, info.damageRatio, info.energyCost);
+            }
+        } else if (entity instanceof PlayerEntity) {
+            if (ItemMekaSuitArmor.tryAbsorbAll((PlayerEntity) entity, event.getSource(), event.getAmount())) {
+                event.setCanceled(true);
             }
         }
     }
@@ -283,67 +280,22 @@ public class CommonPlayerTickHandler {
         }
         LivingEntity entity = event.getEntityLiving();
         if (event.getSource() == DamageSource.FALL) {
-            IEnergyContainer energyContainer = getFallAbsorptionEnergyContainer(entity);
-            if (energyContainer != null) {
-                FloatingLong energyRequirement = MekanismConfig.gear.freeRunnerFallEnergyCost.get().multiply(event.getAmount());
-                FloatingLong extracted = energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
-                if (!extracted.isZero()) {
-                    //If we managed to remove any power, then we want to lower (or negate) the amount of fall damage
-                    FloatingLong remainder = energyRequirement.subtract(extracted);
-                    if (remainder.isZero()) {
-                        //If we used all the power we required, then cancel the event
-                        event.setCanceled(true);
-                        return;
-                    } else {
-                        float newDamage = remainder.divide(MekanismConfig.gear.freeRunnerFallEnergyCost.get()).floatValue();
-                        if (newDamage == 0) {
-                            //If we ended up being close enough that it rounds down to zero, just cancel it anyways
-                            event.setCanceled(true);
-                            return;
-                        } else {
-                            //Otherwise reduce the damage
-                            event.setAmount(newDamage);
-                        }
-                    }
-                }
+            FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
+            if (info != null && handleDamage(event, info.container, info.damageRatio, info.energyCost)) {
+                return;
             }
         } else if (event.getSource().isMagic()) {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlotType.HEAD);
             if (!headStack.isEmpty()) {
                 IModule<ModuleInhalationPurificationUnit> module = MekanismAPI.getModuleHelper().load(headStack, MekanismModules.INHALATION_PURIFICATION_UNIT);
-                if (module != null && module.isEnabled()) {
-                    FloatingLong energyRequirement = MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce.get().multiply(event.getAmount());
-                    FloatingLong extracted = module.useEnergy(entity, energyRequirement);
-                    if (!extracted.isZero()) {
-                        //If we managed to remove any power, then we want to lower (or negate) the amount of fall damage
-                        FloatingLong remainder = energyRequirement.subtract(extracted);
-                        if (remainder.isZero()) {
-                            //If we used all the power we required, then cancel the event
-                            event.setCanceled(true);
-                            return;
-                        } else {
-                            float newDamage = remainder.divide(MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce.get()).floatValue();
-                            if (newDamage == 0) {
-                                //If we ended up being close enough that it rounds down to zero, just cancel it anyways
-                                event.setCanceled(true);
-                                return;
-                            } else {
-                                //Otherwise reduce the damage
-                                event.setAmount(newDamage);
-                            }
-                        }
-                    }
+                if (module != null && module.isEnabled() && handleDamage(event, module.getEnergyContainer(), MekanismConfig.gear.mekaSuitMagicDamageRatio,
+                      MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce)) {
+                    return;
                 }
             }
         }
         if (entity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) entity;
-            float ratioAbsorbed = 0;
-            for (ItemStack stack : player.inventory.armor) {
-                if (stack.getItem() instanceof ItemMekaSuitArmor) {
-                    ratioAbsorbed += ((ItemMekaSuitArmor) stack.getItem()).getDamageAbsorbed(stack, event.getSource(), event.getAmount());
-                }
-            }
+            float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed((PlayerEntity) entity, event.getSource(), event.getAmount());
             if (ratioAbsorbed > 0) {
                 float damageRemaining = event.getAmount() * Math.max(0, 1 - ratioAbsorbed);
                 if (damageRemaining <= 0) {
@@ -353,6 +305,52 @@ public class CommonPlayerTickHandler {
                 }
             }
         }
+    }
+
+    private boolean tryAbsorbAll(LivingAttackEvent event, @Nullable IEnergyContainer energyContainer, FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
+        if (energyContainer != null && absorptionRatio.getAsFloat() == 1) {
+            FloatingLong energyRequirement = energyCost.get().multiply(event.getAmount());
+            if (energyRequirement.isZero()) {
+                //No energy is actually needed to absorb the damage, either because of the config
+                // or how small the amount to absorb is
+                event.setCanceled(true);
+                return true;
+            }
+            FloatingLong simulatedExtract = energyContainer.extract(energyRequirement, Action.SIMULATE, AutomationType.MANUAL);
+            if (simulatedExtract.equals(energyRequirement)) {
+                //If we could fully negate the damage cancel the event and extract it
+                energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
+                event.setCanceled(true);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean handleDamage(LivingHurtEvent event, @Nullable IEnergyContainer energyContainer, FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
+        if (energyContainer != null) {
+            float absorption = absorptionRatio.getAsFloat();
+            float amount = event.getAmount() * absorption;
+            FloatingLong energyRequirement = energyCost.get().multiply(amount);
+            float ratioAbsorbed;
+            if (energyRequirement.isZero()) {
+                //No energy is actually needed to absorb the damage, either because of the config
+                // or how small the amount to absorb is
+                ratioAbsorbed = absorption;
+            } else {
+                ratioAbsorbed = absorption * energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL).divide(amount).floatValue();
+            }
+            if (ratioAbsorbed > 0) {
+                float damageRemaining = event.getAmount() * Math.max(0, 1 - ratioAbsorbed);
+                if (damageRemaining <= 0) {
+                    event.setCanceled(true);
+                    return true;
+                } else {
+                    event.setAmount(damageRemaining);
+                }
+            }
+        }
+        return false;
     }
 
     @SubscribeEvent
@@ -380,18 +378,34 @@ public class CommonPlayerTickHandler {
      * @return null if free runners are not being worn or they don't have an energy container for some reason
      */
     @Nullable
-    private IEnergyContainer getFallAbsorptionEnergyContainer(LivingEntity base) {
+    private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemStack feetStack = base.getItemBySlot(EquipmentSlotType.FEET);
         if (!feetStack.isEmpty()) {
             if (feetStack.getItem() instanceof ItemFreeRunners) {
                 ItemFreeRunners boots = (ItemFreeRunners) feetStack.getItem();
                 if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL) {
-                    return StorageUtils.getEnergyContainer(feetStack, 0);
+                    return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.freeRunnerFallDamageRatio,
+                          MekanismConfig.gear.freeRunnerFallEnergyCost);
                 }
             } else if (feetStack.getItem() instanceof ItemMekaSuitArmor) {
-                return StorageUtils.getEnergyContainer(feetStack, 0);
+                return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.mekaSuitFallDamageRatio,
+                      MekanismConfig.gear.mekaSuitEnergyUsageFall);
             }
         }
         return null;
+    }
+
+    private static class FallEnergyInfo {
+
+        @Nullable
+        private final IEnergyContainer container;
+        private final FloatSupplier damageRatio;
+        private final FloatingLongSupplier energyCost;
+
+        public FallEnergyInfo(@Nullable IEnergyContainer container, FloatSupplier damageRatio, FloatingLongSupplier energyCost) {
+            this.container = container;
+            this.damageRatio = damageRatio;
+            this.energyCost = energyCost;
+        }
     }
 }

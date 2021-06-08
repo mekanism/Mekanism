@@ -4,21 +4,21 @@
     "item": "mekanism:module_inhalation_purification_unit"
   },
   "pattern": [
-    "I#I",
-    "IAI",
-    "PoP"
+    "A#A",
+    "APA",
+    "HoH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/elite"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
       "item": "mekanism:hazmat_mask"
     },
-    "P": {
+    "H": {
       "item": "mekanism:pellet_polonium"
     },
     "o": {

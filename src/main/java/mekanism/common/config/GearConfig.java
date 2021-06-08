@@ -1,11 +1,15 @@
 package mekanism.common.config;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -26,6 +30,7 @@ public class GearConfig extends BaseMekanismConfig {
     private static final String CANTEEN_CATEGORY = "canteen";
     private static final String MEKATOOL_CATEGORY = "mekatool";
     private static final String MEKASUIT_CATEGORY = "mekasuit";
+    private static final String MEKASUIT_DAMAGE_CATEGORY = "damage_absorption";
 
     private final ForgeConfigSpec configSpec;
 
@@ -60,6 +65,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedLongValue flamethrowerFillRate;
     //Free runner
     public final CachedFloatingLongValue freeRunnerFallEnergyCost;
+    public final CachedFloatValue freeRunnerFallDamageRatio;
     public final CachedFloatingLongValue freeRunnerMaxEnergy;
     public final CachedFloatingLongValue freeRunnerChargeRate;
     //Jetpack
@@ -106,6 +112,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitBaseJumpEnergyUsage;
     public final CachedFloatingLongValue mekaSuitEnergyUsagePotionTick;
     public final CachedFloatingLongValue mekaSuitEnergyUsageMagicReduce;
+    public final CachedFloatingLongValue mekaSuitEnergyUsageFall;
     public final CachedFloatingLongValue mekaSuitEnergyUsageSprintBoost;
     public final CachedFloatingLongValue mekaSuitEnergyUsageGravitationalModulation;
     public final CachedFloatingLongValue mekaSuitInventoryChargeRate;
@@ -118,6 +125,10 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedLongValue mekaSuitNutritionalTransferRate;
     public final CachedLongValue mekaSuitJetpackMaxStorage;
     public final CachedLongValue mekaSuitJetpackTransferRate;
+    public final Map<DamageSource, CachedFloatValue> mekaSuitDamageRatios = new LinkedHashMap<>();
+    public final CachedFloatValue mekaSuitFallDamageRatio;
+    public final CachedFloatValue mekaSuitMagicDamageRatio;
+    public final CachedFloatValue mekaSuitUnspecifiedDamageRatio;
 
     GearConfig() {
         ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
@@ -189,6 +200,8 @@ public class GearConfig extends BaseMekanismConfig {
         builder.comment("Free Runner Settings").push(FREE_RUNNER_CATEGORY);
         freeRunnerFallEnergyCost = CachedFloatingLongValue.define(this, builder, "Energy cost/multiplier in Joules for reducing fall damage with free runners. Energy cost is: FallDamage * freeRunnerFallEnergyCost. (1 FallDamage is 1 half heart)",
               "fallEnergyCost", FloatingLong.createConst(50));
+        freeRunnerFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by Free Runners when they have enough power.")
+              .defineInRange("fallDamageReductionRatio", 1D, 0, 1));
         freeRunnerMaxEnergy = CachedFloatingLongValue.define(this, builder, "Maximum amount (joules) of energy Free Runners can contain.",
               "maxEnergy", FloatingLong.createConst(64_000));
         freeRunnerChargeRate = CachedFloatingLongValue.define(this, builder, "Amount (joules) of energy the Free Runners can accept per tick.",
@@ -288,6 +301,8 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsagePotionTick", FloatingLong.createConst(40_000));
         mekaSuitEnergyUsageMagicReduce = CachedFloatingLongValue.define(this, builder, "Energy cost/multiplier in Joules for reducing magic damage via the inhalation purification unit. Energy cost is: MagicDamage * energyUsageMagicPrevent. (1 MagicDamage is 1 half heart).",
               "energyUsageMagicReduce", FloatingLong.createConst(1_000));
+        mekaSuitEnergyUsageFall = CachedFloatingLongValue.define(this, builder, "Energy cost/multiplier in Joules for reducing fall damage with MekaSuit Boots. Energy cost is: FallDamage * freeRunnerFallEnergyCost. (1 FallDamage is 1 half heart)",
+              "energyUsageFall", FloatingLong.createConst(50));
         mekaSuitEnergyUsageSprintBoost = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to sprint motion.",
               "energyUsageSprintBoost", FloatingLong.createConst(100));
         mekaSuitEnergyUsageGravitationalModulation = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit per tick when flying via Gravitational Modulation.",
@@ -312,7 +327,19 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("jetpackMaxStorage", 48_000, 1, Long.MAX_VALUE));
         mekaSuitJetpackTransferRate = CachedLongValue.wrap(this, builder.comment("Rate at which Hydrogen can be transferred into the jetpack unit.")
               .defineInRange("jetpackTransferRate", 256, 1, Long.MAX_VALUE));
-        builder.pop();
+        builder.push(MEKASUIT_DAMAGE_CATEGORY);
+        mekaSuitFallDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from falling that can be absorbed by MekaSuit Boots when they have enough power.")
+              .defineInRange("fallDamageReductionRatio", 1D, 0, 1));
+        mekaSuitMagicDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from magic damage that can be absorbed by MekaSuit Helmet with Purification unit when it has enough power.")
+              .defineInRange("magicDamageReductionRatio", 1D, 0, 1));
+        mekaSuitUnspecifiedDamageRatio = CachedFloatValue.wrap(this, builder.comment("Percent of damage taken from other non explicitly supported damage types that don't bypass armor when the MekaSuit has enough power and a full suit is equipped.")
+              .defineInRange("unspecifiedDamageReductionRatio", 1D, 0, 1));
+        for (DamageSource type : ItemMekaSuitArmor.getSupportedSources()) {
+            mekaSuitDamageRatios.put(type, CachedFloatValue.wrap(this, builder
+                  .comment("Percent of damage taken from " + type.getMsgId() + " that can be absorbed by the MekaSuit when there is enough power and a full suit is equipped.")
+                  .defineInRange( type.getMsgId() + "DamageReductionRatio", 1D, 0, 1)));
+        }
+        builder.pop(2);
 
         builder.pop();
         configSpec = builder.build();

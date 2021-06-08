@@ -1,25 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "mekanism:module_dosimeter_unit"
+    "item": "mekanism:module_frost_walker_unit"
   },
   "pattern": [
     "A#A",
     "APA",
-    "HHH"
+    "H#H"
   ],
   "key": {
     "A": {
-      "tag": "forge:alloys/advanced"
+      "tag": "forge:alloys/elite"
     },
     "P": {
       "item": "mekanism:module_base"
     },
     "#": {
-      "item": "mekanism:dosimeter"
+      "item": "mekanism:hydrogen_bucket"
     },
     "H": {
-      "item": "mekanism:hdpe_sheet"
+      "item": "mekanism:pellet_polonium"
     }
   }
 }

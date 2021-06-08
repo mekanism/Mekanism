@@ -4,21 +4,21 @@
     "item": "mekanism:module_nutritional_injection_unit"
   },
   "pattern": [
-    "I#I",
-    "IAI",
-    "PPP"
+    "A#A",
+    "APA",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/elite"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
       "item": "mekanism:canteen"
     },
-    "P": {
+    "H": {
       "tag": "forge:pellets/polonium"
     }
   }

@@ -4,21 +4,21 @@
     "item": "mekanism:module_silk_touch_unit"
   },
   "pattern": [
-    "I#I",
-    "WAW",
-    "PPP"
+    "A#A",
+    "WPW",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/elite"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
       "item": "mekanism:block_refined_glowstone"
     },
-    "P": {
+    "H": {
       "tag": "forge:pellets/polonium"
     },
     "W": {

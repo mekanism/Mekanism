@@ -10,6 +10,7 @@ import mekanism.api.chemical.pigment.IPigmentHandler;
 import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.heat.IHeatHandler;
+import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.api.radiation.capability.IRadiationShielding;
@@ -22,6 +23,7 @@ import mekanism.common.capabilities.basic.DefaultConfigCardAccess;
 import mekanism.common.capabilities.basic.DefaultConfigurable;
 import mekanism.common.capabilities.basic.DefaultEvaporationSolar;
 import mekanism.common.capabilities.basic.DefaultHeatHandler;
+import mekanism.common.capabilities.basic.DefaultLaserDissipation;
 import mekanism.common.capabilities.basic.DefaultLaserReceptor;
 import mekanism.common.capabilities.basic.DefaultStrictEnergyHandler;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
@@ -67,6 +69,9 @@ public class Capabilities {
     @CapabilityInject(ILaserReceptor.class)
     public static Capability<ILaserReceptor> LASER_RECEPTOR_CAPABILITY;
 
+    @CapabilityInject(ILaserDissipation.class)
+    public static Capability<ILaserDissipation> LASER_DISSIPATION_CAPABILITY;
+
     @CapabilityInject(IRadiationShielding.class)
     public static Capability<IRadiationShielding> RADIATION_SHIELDING_CAPABILITY;
 
@@ -86,6 +91,7 @@ public class Capabilities {
         DefaultConfigCardAccess.register();
         DefaultEvaporationSolar.register();
         DefaultLaserReceptor.register();
+        DefaultLaserDissipation.register();
 
         DefaultRadiationShielding.register();
         DefaultRadiationEntity.register();

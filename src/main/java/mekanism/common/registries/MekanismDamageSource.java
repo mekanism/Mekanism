@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.text.IHasTranslationKey;
+import mekanism.common.Mekanism;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -24,7 +25,7 @@ public class MekanismDamageSource extends DamageSource implements IHasTranslatio
     }
 
     private MekanismDamageSource(@Nonnull String damageType, @Nullable Vector3d damageLocation) {
-        super(damageType);
+        super(Mekanism.MODID + "." + damageType);
         this.translationKey = "death.attack." + getMsgId();
         this.damageLocation = damageLocation;
     }

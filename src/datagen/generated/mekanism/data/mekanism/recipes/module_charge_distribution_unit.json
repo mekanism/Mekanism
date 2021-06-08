@@ -4,21 +4,21 @@
     "item": "mekanism:module_charge_distribution_unit"
   },
   "pattern": [
-    "I#I",
-    "IAI",
-    "PPP"
+    "A#A",
+    "APA",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/elite"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
       "item": "mekanism:basic_induction_provider"
     },
-    "P": {
+    "H": {
       "tag": "forge:pellets/polonium"
     }
   }

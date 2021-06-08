@@ -4,6 +4,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.gear.mekasuit.ModuleChargeDistributionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleDosimeterUnit;
 import mekanism.common.content.gear.mekasuit.ModuleElectrolyticBreathingUnit;
+import mekanism.common.content.gear.mekasuit.ModuleFrostWalkerUnit;
 import mekanism.common.content.gear.mekasuit.ModuleGeigerUnit;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
@@ -37,6 +38,8 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleEnergyUnit> ENERGY_UNIT = MODULES.registerLegacy("energy_unit", ModuleEnergyUnit::new,
           () -> MekanismItems.MODULE_ENERGY.getItem(), builder -> builder.maxStackSize(8).rarity(Rarity.UNCOMMON).noDisable());
     //Shared Armor
+    public static final ModuleRegistryObject<?> LASER_DISSIPATION_UNIT = MODULES.registerMarker("laser_dissipation_unit",
+          () -> MekanismItems.MODULE_LASER_DISSIPATION.getItem(), builder -> builder.rarity(Rarity.UNCOMMON));
     public static final ModuleRegistryObject<?> RADIATION_SHIELDING_UNIT = MODULES.registerMarkerLegacy("radiation_shielding_unit",
           () -> MekanismItems.MODULE_RADIATION_SHIELDING.getItem(), builder -> builder.rarity(Rarity.UNCOMMON));
 
@@ -95,4 +98,6 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleMagneticAttractionUnit> MAGNETIC_ATTRACTION_UNIT = MODULES.registerLegacy("magnetic_attraction_unit",
           ModuleMagneticAttractionUnit::new, () -> MekanismItems.MODULE_MAGNETIC_ATTRACTION.getItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE)
                 .handlesModeChange());
+    public static final ModuleRegistryObject<ModuleFrostWalkerUnit> FROST_WALKER_UNIT = MODULES.register("frost_walker_unit", ModuleFrostWalkerUnit::new,
+          () -> MekanismItems.MODULE_FROST_WALKER.getItem(), builder -> builder.maxStackSize(2).rarity(Rarity.RARE).noDisable());
 }

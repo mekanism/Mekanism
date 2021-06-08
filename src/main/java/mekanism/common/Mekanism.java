@@ -333,7 +333,7 @@ public class Mekanism {
         hooks.sendIMCMessages(event);
         //IMC messages that we are sending to ourselves
         MekanismIMC.addModulesToAll(MekanismModules.ENERGY_UNIT);
-        MekanismIMC.addMekaSuitModules(MekanismModules.RADIATION_SHIELDING_UNIT);
+        MekanismIMC.addMekaSuitModules(MekanismModules.LASER_DISSIPATION_UNIT, MekanismModules.RADIATION_SHIELDING_UNIT);
         MekanismIMC.addMekaToolModules(MekanismModules.ATTACK_AMPLIFICATION_UNIT, MekanismModules.SILK_TOUCH_UNIT, MekanismModules.VEIN_MINING_UNIT,
               MekanismModules.FARMING_UNIT, MekanismModules.TELEPORTATION_UNIT, MekanismModules.EXCAVATION_ESCALATION_UNIT);
         MekanismIMC.addMekaSuitHelmetModules(MekanismModules.ELECTROLYTIC_BREATHING_UNIT, MekanismModules.INHALATION_PURIFICATION_UNIT,
@@ -341,7 +341,7 @@ public class Mekanism {
         MekanismIMC.addMekaSuitBodyarmorModules(MekanismModules.JETPACK_UNIT, MekanismModules.GRAVITATIONAL_MODULATING_UNIT, MekanismModules.CHARGE_DISTRIBUTION_UNIT,
               MekanismModules.DOSIMETER_UNIT, MekanismModules.GEIGER_UNIT);
         MekanismIMC.addMekaSuitPantsModules(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
-        MekanismIMC.addMekaSuitBootsModules(MekanismModules.HYDRAULIC_PROPULSION_UNIT, MekanismModules.MAGNETIC_ATTRACTION_UNIT);
+        MekanismIMC.addMekaSuitBootsModules(MekanismModules.HYDRAULIC_PROPULSION_UNIT, MekanismModules.MAGNETIC_ATTRACTION_UNIT, MekanismModules.FROST_WALKER_UNIT);
     }
 
     private void imcHandle(InterModProcessEvent event) {

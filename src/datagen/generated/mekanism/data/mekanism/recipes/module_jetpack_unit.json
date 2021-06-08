@@ -4,21 +4,21 @@
     "item": "mekanism:module_jetpack_unit"
   },
   "pattern": [
-    "I#I",
-    "IAI",
-    "PPP"
+    "A#A",
+    "APA",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/elite"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
       "item": "mekanism:jetpack"
     },
-    "P": {
+    "H": {
       "tag": "forge:pellets/polonium"
     }
   }

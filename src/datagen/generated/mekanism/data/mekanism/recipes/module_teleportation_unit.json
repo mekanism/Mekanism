@@ -4,21 +4,21 @@
     "item": "mekanism:module_teleportation_unit"
   },
   "pattern": [
-    "I#I",
-    "IAI",
-    "PPP"
+    "A#A",
+    "APA",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/ultimate"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
       "item": "mekanism:teleportation_core"
     },
-    "P": {
+    "H": {
       "tag": "forge:pellets/antimatter"
     }
   }

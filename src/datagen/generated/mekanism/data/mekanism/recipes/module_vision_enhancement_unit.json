@@ -4,21 +4,21 @@
     "item": "mekanism:module_vision_enhancement_unit"
   },
   "pattern": [
-    "I#I",
-    "IAI",
-    "PPP"
+    "A#A",
+    "APA",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/elite"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
       "item": "minecraft:emerald"
     },
-    "P": {
+    "H": {
       "item": "mekanism:pellet_polonium"
     }
   }

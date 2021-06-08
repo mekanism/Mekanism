@@ -4,15 +4,15 @@
     "item": "mekanism:module_hydraulic_propulsion_unit"
   },
   "pattern": [
-    "I#I",
-    "EAE",
-    "PPP"
+    "A#A",
+    "EPE",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/elite"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
@@ -21,7 +21,7 @@
     "E": {
       "item": "mekanism:energy_tablet"
     },
-    "P": {
+    "H": {
       "item": "mekanism:pellet_polonium"
     }
   }
