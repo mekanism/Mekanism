@@ -525,6 +525,7 @@
   "description.mekanism.sps_casing": "Verstärktes Gehäuse, in der Lage schweren chemischen und thermalen Bedingungen durch Phasenverschiebungen zu trotzen.",
   "description.mekanism.sps_port": "Ein Port, um Energie and Substanzen im Supercritical Phase Shifter zu transportieren.",
   "description.mekanism.steel_casing": "Stahlgehäuse",
+  "description.mekanism.structural_glass": "Ein fortschrittliches, verstärktes Glasmaterial, das beim Zerbrechen fällt und in der Struktur eines beliebigen Multiblocks verwendet werden kann.",
   "description.mekanism.supercharged_coil": "Wird im Superkritischen Phasenverschieber Multiblock verwendet um große Mengen Energie zu speichern. Muss an einen SPS Port angeschlossen sein.",
   "description.mekanism.teleportation_unit": "Ermöglicht die Schnellreise zu nahen Blöcken.",
   "description.mekanism.thermal_evaporation_valve": "Ein Ventil, welches an einer Thermalverdampfungsanlage angebracht werden kann, um Flüssigkeiten über externe Rohre zu im- oder zu exportieren.",
