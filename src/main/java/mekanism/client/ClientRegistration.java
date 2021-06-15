@@ -86,6 +86,7 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.layer.MekanismArmorLayer;
+import mekanism.client.render.layer.MekanismElytraLayer;
 import mekanism.client.render.obj.TransmitterLoader;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderChemicalDissolutionChamber;
@@ -140,6 +141,7 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
+import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -282,6 +284,8 @@ public class ClientRegistration {
                 }
                 return 0;
             });
+            ClientRegistrationUtil.setPropertyOverride(MekanismItems.HDPE_REINFORCED_ELYTRA, Mekanism.rl("broken"),
+                  (stack, world, entity) -> entity != null && MekanismItems.HDPE_REINFORCED_ELYTRA.get().canElytraFly(stack, entity) ? 0.0F : 1.0F);
         });
 
         addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
@@ -457,27 +461,47 @@ public class ClientRegistration {
             EntityRendererManager entityRenderManager = Minecraft.getInstance().getEntityRenderDispatcher();
             //Add our own custom armor layer to the various player renderers
             for (Entry<String, PlayerRenderer> entry : entityRenderManager.getSkinMap().entrySet()) {
-                addCustomArmorLayer(entry.getValue());
+                addCustomLayers(EntityType.PLAYER, entry.getValue());
             }
             //Add our own custom armor layer to everything that has an armor layer
             //Note: This includes any modded mobs that have vanilla's BipedArmorLayer added to them
             for (Entry<EntityType<?>, EntityRenderer<?>> entry : entityRenderManager.renderers.entrySet()) {
                 EntityRenderer<?> renderer = entry.getValue();
                 if (renderer instanceof LivingRenderer) {
-                    addCustomArmorLayer((LivingRenderer) renderer);
+                    addCustomLayers(entry.getKey(), (LivingRenderer) renderer);
                 }
             }
         });
     }
 
-    private static <T extends LivingEntity, M extends BipedModel<T>, A extends BipedModel<T>> void addCustomArmorLayer(LivingRenderer<T, M> renderer) {
-        //Only allow an exact class match, so we don't add to modded entities that only have a modded extended armor layer
-        // We also validate against the layer render being null, as it seems like some mods do stupid things and add in null layers
-        LayerRenderer<T, M> matchingLayer = renderer.layers.stream().filter(layerRenderer -> layerRenderer != null && layerRenderer.getClass() == BipedArmorLayer.class)
-              .findFirst().orElse(null);
-        if (matchingLayer != null) {
-            BipedArmorLayer<T, M, A> bipedArmorLayer = (BipedArmorLayer<T, M, A>) matchingLayer;
+    private static <T extends LivingEntity, M extends BipedModel<T>> void addCustomLayers(EntityType<?> type, LivingRenderer<T, M> renderer) {
+        BipedArmorLayer<T, M, ?> bipedArmorLayer = null;
+        boolean hasElytra = false;
+        for (LayerRenderer<T, M> layerRenderer : renderer.layers) {
+            //Validate against the layer render being null, as it seems like some mods do stupid things and add in null layers
+            if (layerRenderer != null) {
+                //Only allow an exact class match, so we don't add to modded entities that only have a modded extended armor or elytra layer
+                Class<?> layerClass = layerRenderer.getClass();
+                if (layerClass == BipedArmorLayer.class) {
+                    bipedArmorLayer = (BipedArmorLayer<T, M, ?>) layerRenderer;
+                    if (hasElytra) {
+                        break;
+                    }
+                } else if (layerClass == ElytraLayer.class) {
+                    hasElytra = true;
+                    if (bipedArmorLayer != null) {
+                        break;
+                    }
+                }
+            }
+        }
+        if (bipedArmorLayer != null) {
             renderer.addLayer(new MekanismArmorLayer<>(renderer, bipedArmorLayer.innerModel, bipedArmorLayer.outerModel));
+            Mekanism.logger.debug("Added Mekanism Armor Layer to entity of type: {}", type.getRegistryName());
+        }
+        if (hasElytra) {
+            renderer.addLayer(new MekanismElytraLayer<>(renderer));
+            Mekanism.logger.debug("Added Mekanism Elytra Layer to entity of type: {}", type.getRegistryName());
         }
     }
 

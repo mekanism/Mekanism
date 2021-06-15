@@ -92,6 +92,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismItems.FREE_RUNNERS, "Free Runners");
         add(MekanismItems.JETPACK, "Jetpack");
         add(MekanismItems.ARMORED_JETPACK, "Armored Jetpack");
+        add(MekanismItems.HDPE_REINFORCED_ELYTRA, "HDPE Reinforced Elytra");
         add(MekanismItems.GEIGER_COUNTER, "Geiger Counter");
         add(MekanismItems.DOSIMETER, "Dosimeter");
         add(MekanismItems.CANTEEN, "Canteen");
@@ -1274,6 +1275,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.NUTRITIONAL_INJECTION_UNIT, "Nutritional Injection Unit", "Automatically feeds the player Nutritional Paste when hungry.");
         add(MekanismModules.JETPACK_UNIT, "Jetpack Unit", "Applies a hydrogen-fueled jetpack to the MekaSuit.");
         add(MekanismModules.GRAVITATIONAL_MODULATING_UNIT, "Gravitational Modulating Unit", "Using experimental technologies and the tremendous energy of antimatter, allows the user to defy gravity.");
+        add(MekanismModules.ELYTRA_UNIT, "Elytra Unit", "Applies an HDPE Reinforced Elytra to the MekaSuit.");
         add(MekanismModules.CHARGE_DISTRIBUTION_UNIT, "Charge Distribution Unit", "Evenly distributes charge throughout all worn MekaSuit armor.");
         add(MekanismModules.DOSIMETER_UNIT, "Dosimeter Unit", "Displays the user's current radiation dose in the HUD.");
         add(MekanismModules.GEIGER_UNIT, "Geiger Unit", "Displays the ambient radiation level in the HUD.");

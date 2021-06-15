@@ -70,6 +70,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
@@ -79,6 +80,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
@@ -250,11 +252,37 @@ public class RenderTickHandler {
                         Pos3D playerPos = new Pos3D(p).translate(0, p.getEyeHeight(), 0);
                         Vector3d playerMotion = p.getDeltaMovement();
                         float random = (world.random.nextFloat() - 0.5F) * 0.1F;
-                        Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).xRot(p.isCrouching() ? 20 : 0).yRot(p.yBodyRot);
+                        //This positioning code is somewhat cursed but it seems to be mostly working and entity pose code seems cursed in general
+                        float xRot;
+                        if (p.isCrouching()) {
+                            xRot = 20;
+                            playerPos = playerPos.translate(0, 0.125, 0);
+                        } else {
+                            float f = p.getSwimAmount(event.renderTickTime);
+                            if (p.isFallFlying()) {
+                                float f1 = (float) p.getFallFlyingTicks() + event.renderTickTime;
+                                float f2 = MathHelper.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
+                                xRot = f2 * (-90.0F - p.xRot);
+                            } else {
+                                float f3 = p.isInWater() ? -90.0F - p.xRot : -90.0F;
+                                xRot = MathHelper.lerp(f, 0.0F, f3);
+                            }
+                            xRot = -xRot;
+                            Pos3D eyeAdjustments;
+                            if (p.isFallFlying()) {
+                                eyeAdjustments = new Pos3D(0, p.getEyeHeight(Pose.STANDING), 0).xRot(xRot).yRot(p.yBodyRot);
+                            } else if (p.isVisuallySwimming()) {
+                                eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot).translate(0, 0.5, 0);
+                            } else {
+                                eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot);
+                            }
+                            playerPos = new Pos3D(p.getX() + eyeAdjustments.x, p.getY() + eyeAdjustments.y, p.getZ() + eyeAdjustments.z);
+                        }
+                        Pos3D vLeft = new Pos3D(-0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
                         renderJetpackSmoke(world, playerPos.translate(vLeft, playerMotion), vLeft.scale(0.2).translate(playerMotion, vLeft.scale(random)));
-                        Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).xRot(p.isCrouching() ? 20 : 0).yRot(p.yBodyRot);
+                        Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
                         renderJetpackSmoke(world, playerPos.translate(vRight, playerMotion), vRight.scale(0.2).translate(playerMotion, vRight.scale(random)));
-                        Pos3D vCenter = new Pos3D((world.random.nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(p.isCrouching() ? 25 : 0).yRot(p.yBodyRot);
+                        Pos3D vCenter = new Pos3D((world.random.nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(xRot).yRot(p.yBodyRot);
                         renderJetpackSmoke(world, playerPos.translate(vCenter, playerMotion), vCenter.scale(0.2).translate(playerMotion));
                     }
                 }

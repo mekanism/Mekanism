@@ -1,0 +1,22 @@
+{
+  "type": "mekanism:mek_data",
+  "result": {
+    "item": "mekanism:hdpe_elytra"
+  },
+  "pattern": [
+    "AHA",
+    "HPH",
+    "H H"
+  ],
+  "key": {
+    "A": {
+      "tag": "mekanism:alloys/atomic"
+    },
+    "H": {
+      "item": "mekanism:hdpe_sheet"
+    },
+    "P": {
+      "item": "minecraft:elytra"
+    }
+  }
+}

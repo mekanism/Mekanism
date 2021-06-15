@@ -86,6 +86,8 @@ public class MekanismModules {
     public static final ModuleRegistryObject<ModuleGravitationalModulatingUnit> GRAVITATIONAL_MODULATING_UNIT = MODULES.registerLegacy("gravitational_modulating_unit",
           ModuleGravitationalModulatingUnit::new, () -> MekanismItems.MODULE_GRAVITATIONAL_MODULATING.getItem(), builder -> builder.rarity(Rarity.EPIC).handlesModeChange()
                 .rendersHUD().exclusive());
+    public static final ModuleRegistryObject<?> ELYTRA_UNIT = MODULES.registerMarker("elytra_unit", () -> MekanismItems.MODULE_ELYTRA.getItem(),
+          builder -> builder.rarity(Rarity.EPIC));
 
     //Pants
     public static final ModuleRegistryObject<ModuleLocomotiveBoostingUnit> LOCOMOTIVE_BOOSTING_UNIT = MODULES.registerLegacy("locomotive_boosting_unit",

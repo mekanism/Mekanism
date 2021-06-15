@@ -103,6 +103,8 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @param energy Energy amount to check.
      *
      * @return {@code true} if the energy can be used/provided.
+     *
+     * @implNote By default this method checks players in creative as well.
      */
     boolean canUseEnergy(LivingEntity wearer, FloatingLong energy);
 
@@ -110,13 +112,13 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * Helper to check if the item this module is installed on can provide the given amount of energy. If {@code checkCreative} is {@code false} this method will return
      * {@code false} for players in creative or spectator.
      *
-     * @param wearer        Wearer/User of the item the module is installed on.
-     * @param energy        Energy amount to check.
-     * @param checkCreative {@code true} to check the item for energy if the wearer is in creative.
+     * @param wearer         Wearer/User of the item the module is installed on.
+     * @param energy         Energy amount to check.
+     * @param ignoreCreative {@code true} to not check the item for energy if the wearer is in creative and just return {@code false} for player's in creative.
      *
      * @return {@code true} if the energy can be used/provided.
      */
-    boolean canUseEnergy(LivingEntity wearer, FloatingLong energy, boolean checkCreative);
+    boolean canUseEnergy(LivingEntity wearer, FloatingLong energy, boolean ignoreCreative);
 
     /**
      * Helper to check if the item this module is installed on can provide the given amount of energy. If the {@code energyContainer} is null this will return {@code
@@ -125,13 +127,13 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @param wearer          Wearer/User of the item the module is installed on.
      * @param energyContainer Energy container, most likely gotten from {@link #getEnergyContainer()}.
      * @param energy          Energy amount to check.
-     * @param checkCreative   {@code true} to check the item for energy if the wearer is in creative.
+     * @param ignoreCreative  {@code true} to not check the item for energy if the wearer is in creative and just return {@code false} for player's in creative.
      *
      * @return {@code true} if the energy can be used/provided.
      *
      * @apiNote This method is mostly for use in not having to lookup the energy container multiple times.
      */
-    boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean checkCreative);
+    boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean ignoreCreative);
 
     /**
      * Helper to use energy from the item this module is installed on.
@@ -140,6 +142,8 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @param energy Energy to use.
      *
      * @return Actual amount of energy used.
+     *
+     * @implNote By default this method does not use any energy from players that are in creative.
      */
     FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy);
 
@@ -147,13 +151,13 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * Helper to use energy from the item this module is installed on. If {@code checkCreative} is {@code false} this method will return {@link FloatingLong#ZERO} for
      * players in creative or spectator.
      *
-     * @param wearer        Wearer/User of the item the module is installed on.
-     * @param energy        Energy to use.
-     * @param checkCreative {@code true} to use energy from the item even if the wearer is in creative.
+     * @param wearer       Wearer/User of the item the module is installed on.
+     * @param energy       Energy to use.
+     * @param freeCreative {@code true} to not use any energy from the item if the wearer is in creative.
      *
      * @return Actual amount of energy used.
      */
-    FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy, boolean checkCreative);
+    FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy, boolean freeCreative);
 
     /**
      * Helper to use energy from the given energy container. If the {@code energyContainer} is null this will return {@link FloatingLong#ZERO}. If {@code checkCreative}
@@ -162,11 +166,11 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @param wearer          Wearer/User of the item the module is installed on.
      * @param energyContainer Energy container, most likely gotten from {@link #getEnergyContainer()}.
      * @param energy          Energy to use.
-     * @param checkCreative   {@code true} to use energy from the item even if the wearer is in creative.
+     * @param freeCreative    {@code true} to not use any energy from the item if the wearer is in creative.
      *
      * @return Actual amount of energy used.
      *
      * @apiNote This method is mostly for use in not having to lookup the energy container multiple times.
      */
-    FloatingLong useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean checkCreative);
+    FloatingLong useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean freeCreative);
 }

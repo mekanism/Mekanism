@@ -75,7 +75,7 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
 
     public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F);
-        return player.isSprinting() && module.getContainerEnergy().greaterOrEqual(usage);
+        return player.isSprinting() && module.canUseEnergy(player, usage);
     }
 
     public float getBoost() {

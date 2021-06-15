@@ -1,5 +1,6 @@
 package mekanism.common;
 
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
@@ -129,29 +130,11 @@ public class CommonPlayerTickHandler {
         ItemStack chest = player.getItemBySlot(EquipmentSlotType.CHEST);
         if (isJetpackOn(player, chest)) {
             JetpackMode mode = getJetpackMode(chest);
-            Vector3d motion = player.getDeltaMovement();
-            if (mode == JetpackMode.NORMAL) {
-                player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.5D), motion.z());
-            } else if (mode == JetpackMode.HOVER) {
-                boolean ascending = Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
-                boolean descending = Mekanism.keyMap.has(player.getUUID(), KeySync.DESCEND);
-                if ((!ascending && !descending) || (ascending && descending)) {
-                    if (motion.y() > 0) {
-                        player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, 0), motion.z());
-                    } else if (motion.y() < 0) {
-                        if (!isOnGroundOrSleeping(player)) {
-                            player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0), motion.z());
-                        }
-                    }
-                } else if (ascending) {
-                    player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.2D), motion.z());
-                } else if (!isOnGroundOrSleeping(player)) {
-                    player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, -0.2D), motion.z());
+            if (handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
+                player.fallDistance = 0.0F;
+                if (player instanceof ServerPlayerEntity) {
+                    ((ServerPlayerEntity) player).connection.aboveGroundTickCount = 0;
                 }
-            }
-            player.fallDistance = 0.0F;
-            if (player instanceof ServerPlayerEntity) {
-                ((ServerPlayerEntity) player).connection.aboveGroundTickCount = 0;
             }
             if (chest.getItem() instanceof ItemJetpack) {
                 ((ItemJetpack) chest.getItem()).useGas(chest, 1);
@@ -180,6 +163,45 @@ public class CommonPlayerTickHandler {
         Mekanism.playerState.updateFlightInfo(player);
     }
 
+    /**
+     * @return If fall distance should get reset or not
+     */
+    public static boolean handleJetpackMotion(PlayerEntity player, JetpackMode mode, BooleanSupplier ascendingSupplier) {
+        Vector3d motion = player.getDeltaMovement();
+        if (mode == JetpackMode.NORMAL) {
+            if (player.isFallFlying()) {
+                Vector3d lookAngle = player.getLookAngle();
+                Vector3d normalizedLook = lookAngle.normalize();
+                double d1x = normalizedLook.x * 0.15;
+                double d1y = normalizedLook.y * 0.15;
+                double d1z = normalizedLook.z * 0.15;
+                    player.setDeltaMovement(motion.add(lookAngle.x * d1x + (lookAngle.x * 1.5 - motion.x) * 0.5,
+                          lookAngle.y * d1y + (lookAngle.y * 1.5 - motion.y) * 0.5,
+                          lookAngle.z * d1z + (lookAngle.z * 1.5 - motion.z) * 0.5));
+                return false;
+            } else {
+                player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.5D), motion.z());
+            }
+        } else if (mode == JetpackMode.HOVER) {
+            boolean ascending = ascendingSupplier.getAsBoolean();
+            boolean descending = player.isDescending();
+            if ((!ascending && !descending) || (ascending && descending)) {
+                if (motion.y() > 0) {
+                    player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, 0), motion.z());
+                } else if (motion.y() < 0) {
+                    if (!isOnGroundOrSleeping(player)) {
+                        player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0), motion.z());
+                    }
+                }
+            } else if (ascending) {
+                player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.2D), motion.z());
+            } else if (!isOnGroundOrSleeping(player)) {
+                player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, -0.2D), motion.z());
+            }
+        }
+        return true;
+    }
+
     private static boolean isJetpackOn(PlayerEntity player, ItemStack chest) {
         if (MekanismUtils.isPlayingMode(player) && !chest.isEmpty()) {
             JetpackMode mode = getJetpackMode(chest);
@@ -187,7 +209,7 @@ public class CommonPlayerTickHandler {
                 return Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
             } else if (mode == JetpackMode.HOVER) {
                 boolean ascending = Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);
-                boolean descending = Mekanism.keyMap.has(player.getUUID(), KeySync.DESCEND);
+                boolean descending = player.isDescending();
                 if (!ascending || descending) {
                     return !isOnGroundOrSleeping(player);
                 }
@@ -361,14 +383,15 @@ public class CommonPlayerTickHandler {
             if (module != null && module.isEnabled() && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = module.getCustomInstance().getBoost();
                 FloatingLong usage = MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get().multiply(boost / 0.1F);
-                if (module.getContainerEnergy().greaterOrEqual(usage)) {
+                IEnergyContainer energyContainer = module.getEnergyContainer();
+                if (module.canUseEnergy(player, energyContainer, usage, false)) {
                     // if we're sprinting with the boost module, limit the height
                     IModule<ModuleLocomotiveBoostingUnit> boostModule = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlotType.LEGS), MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
                     if (boostModule != null && boostModule.isEnabled() && boostModule.getCustomInstance().canFunction(boostModule, player)) {
                         boost = (float) Math.sqrt(boost);
                     }
                     player.setDeltaMovement(player.getDeltaMovement().add(0, boost, 0));
-                    module.useEnergy(player, usage);
+                    module.useEnergy(player, energyContainer, usage, true);
                 }
             }
         }

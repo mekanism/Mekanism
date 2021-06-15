@@ -117,19 +117,22 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Override
     public boolean canUseEnergy(LivingEntity wearer, FloatingLong energy) {
-        //TODO - 10.1: Decide if this should return true or false when in creative by default (update docs afterwards)
-        return canUseEnergy(wearer, energy, true);
+        //Note: This is subtly different than how useEnergy does it so that we can get to useEnergy when in creative
+        return canUseEnergy(wearer, energy, false);
     }
 
     @Override
-    public boolean canUseEnergy(LivingEntity wearer, FloatingLong energy, boolean checkCreative) {
-        return canUseEnergy(wearer, getEnergyContainer(), energy, checkCreative);
+    public boolean canUseEnergy(LivingEntity wearer, FloatingLong energy, boolean ignoreCreative) {
+        return canUseEnergy(wearer, getEnergyContainer(), energy, ignoreCreative);
     }
 
     @Override
-    public boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean checkCreative) {
-        if (energyContainer != null && validEntity(wearer, checkCreative)) {
-            return energyContainer.extract(energy, Action.SIMULATE, AutomationType.MANUAL).equals(energy);
+    public boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean ignoreCreative) {
+        if (energyContainer != null && !wearer.isSpectator()) {
+            //Don't check spectators in general
+            if (!ignoreCreative || !(wearer instanceof PlayerEntity) || !((PlayerEntity) wearer).isCreative()) {
+                return energyContainer.extract(energy, Action.SIMULATE, AutomationType.MANUAL).equals(energy);
+            }
         }
         return false;
     }
@@ -140,20 +143,19 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy, boolean checkCreative) {
-        return useEnergy(wearer, getEnergyContainer(), energy, checkCreative);
+    public FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy, boolean freeCreative) {
+        return useEnergy(wearer, getEnergyContainer(), energy, freeCreative);
     }
 
     @Override
-    public FloatingLong useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean checkCreative) {
-        if (energyContainer != null && validEntity(wearer, checkCreative)) {
-            return energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);
+    public FloatingLong useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean freeCreative) {
+        if (energyContainer != null) {
+            //Use from spectators if this is called due to the various edge cases that exist for when things are calculated manually
+            if (!freeCreative || !(wearer instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) wearer)) {
+                return energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);
+            }
         }
         return FloatingLong.ZERO;
-    }
-
-    private boolean validEntity(LivingEntity wearer, boolean checkCreative) {
-        return !checkCreative || !(wearer instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) wearer);
     }
 
     public final void read(CompoundNBT nbt) {

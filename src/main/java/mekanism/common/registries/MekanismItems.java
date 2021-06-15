@@ -37,6 +37,7 @@ import mekanism.common.item.gear.ItemCanteen;
 import mekanism.common.item.gear.ItemElectricBow;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemFreeRunners;
+import mekanism.common.item.gear.ItemHDPEElytra;
 import mekanism.common.item.gear.ItemHazmatSuitArmor;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -93,6 +94,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemScubaTank> SCUBA_TANK = ITEMS.register("scuba_tank", ItemScubaTank::new);
     public static final ItemRegistryObject<ItemJetpack> JETPACK = ITEMS.register("jetpack", ItemJetpack::new);
     public static final ItemRegistryObject<ItemArmoredJetpack> ARMORED_JETPACK = ITEMS.register("jetpack_armored", ItemArmoredJetpack::new);
+    public static final ItemRegistryObject<ItemHDPEElytra> HDPE_REINFORCED_ELYTRA = ITEMS.register("hdpe_elytra", props -> new ItemHDPEElytra(props.durability(648).rarity(Rarity.RARE)));
 
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_MASK = ITEMS.register("hazmat_mask", props -> new ItemHazmatSuitArmor(EquipmentSlotType.HEAD, props));
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_GOWN = ITEMS.register("hazmat_gown", props -> new ItemHazmatSuitArmor(EquipmentSlotType.CHEST, props));
@@ -125,6 +127,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemModule> MODULE_JETPACK = ITEMS.registerModule(MekanismModules.JETPACK_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_CHARGE_DISTRIBUTION = ITEMS.registerModule(MekanismModules.CHARGE_DISTRIBUTION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_GRAVITATIONAL_MODULATING = ITEMS.registerModule(MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
+    public static final ItemRegistryObject<ItemModule> MODULE_ELYTRA = ITEMS.registerModule(MekanismModules.ELYTRA_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_LOCOMOTIVE_BOOSTING = ITEMS.registerModule(MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_HYDRAULIC_PROPULSION = ITEMS.registerModule(MekanismModules.HYDRAULIC_PROPULSION_UNIT);
     public static final ItemRegistryObject<ItemModule> MODULE_MAGNETIC_ATTRACTION = ITEMS.registerModule(MekanismModules.MAGNETIC_ATTRACTION_UNIT);

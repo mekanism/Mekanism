@@ -23,6 +23,7 @@ import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.gear.ItemFlamethrower;
+import mekanism.common.item.gear.ItemHDPEElytra;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
@@ -53,7 +54,6 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
@@ -208,31 +208,11 @@ public class ClientTickHandler {
 
             if (!chestStack.isEmpty() && (chestStack.getItem() instanceof ItemJetpack || jetpackModule != null)) {
                 MekanismClient.updateKey(minecraft.options.keyJump, KeySync.ASCEND);
-                MekanismClient.updateKey(minecraft.options.keyShift, KeySync.DESCEND);
             }
 
             if (isJetpackActive(minecraft.player)) {
                 JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chestStack);
-                Vector3d motion = minecraft.player.getDeltaMovement();
-                if (mode == JetpackMode.NORMAL) {
-                    minecraft.player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.5D), motion.z());
-                    minecraft.player.fallDistance = 0.0F;
-                } else if (mode == JetpackMode.HOVER) {
-                    boolean ascending = minecraft.options.keyJump.isDown();
-                    boolean descending = minecraft.options.keyShift.isDown();
-                    if ((!ascending && !descending) || (ascending && descending) || minecraft.screen != null) {
-                        if (motion.y() > 0) {
-                            minecraft.player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, 0), motion.z());
-                        } else if (motion.y() < 0) {
-                            if (!CommonPlayerTickHandler.isOnGroundOrSleeping(minecraft.player)) {
-                                minecraft.player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0), motion.z());
-                            }
-                        }
-                    } else if (ascending) {
-                        minecraft.player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.2D), motion.z());
-                    } else if (!CommonPlayerTickHandler.isOnGroundOrSleeping(minecraft.player)) {
-                        minecraft.player.setDeltaMovement(motion.x(), Math.max(motion.y() - 0.15D, -0.2D), motion.z());
-                    }
+                if (CommonPlayerTickHandler.handleJetpackMotion(minecraft.player, mode, minecraft.options.keyJump::isDown)) {
                     minecraft.player.fallDistance = 0.0F;
                 }
             }
@@ -376,8 +356,13 @@ public class ClientTickHandler {
         if (entity.getItemBySlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
             entityModel.head.visible = showModel;
             entityModel.hat.visible = showModel;
+            if (entityModel instanceof PlayerModel) {
+                PlayerModel<?> playerModel = (PlayerModel<?>) entityModel;
+                playerModel.ear.visible = showModel;
+            }
         }
-        if (entity.getItemBySlot(EquipmentSlotType.CHEST).getItem() instanceof ItemMekaSuitArmor) {
+        ItemStack chest = entity.getItemBySlot(EquipmentSlotType.CHEST);
+        if (chest.getItem() instanceof ItemMekaSuitArmor) {
             entityModel.body.visible = showModel;
             if (!(entity instanceof ArmorStandEntity)) {
                 //Don't adjust arms for armor stands as the model will end up changing them anyways and then we may incorrectly activate them
@@ -386,6 +371,7 @@ public class ClientTickHandler {
             }
             if (entityModel instanceof PlayerModel) {
                 PlayerModel<?> playerModel = (PlayerModel<?>) entityModel;
+                playerModel.cloak.visible = showModel;
                 playerModel.jacket.visible = showModel;
                 playerModel.leftSleeve.visible = showModel;
                 playerModel.rightSleeve.visible = showModel;
@@ -395,6 +381,10 @@ public class ClientTickHandler {
                 armorStandModel.bodyStick2.visible = showModel;
                 armorStandModel.shoulderStick.visible = showModel;
             }
+        } else if (chest.getItem() instanceof ItemHDPEElytra && entityModel instanceof PlayerModel) {
+            //Hide the player's cape if they have an HDPE elytra as it will be part of the elytra's layer and shouldn't be rendered
+            PlayerModel<?> playerModel = (PlayerModel<?>) entityModel;
+            playerModel.cloak.visible = showModel;
         }
         if (entity.getItemBySlot(EquipmentSlotType.LEGS).getItem() instanceof ItemMekaSuitArmor) {
             entityModel.leftLeg.visible = showModel;

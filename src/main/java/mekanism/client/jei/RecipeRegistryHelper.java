@@ -1,10 +1,14 @@
 package mekanism.client.jei;
 
+import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
@@ -16,11 +20,14 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
+import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
@@ -89,6 +96,27 @@ public class RecipeRegistryHelper {
             }
         };
         registry.addRecipes(Collections.singletonList(recipe), MekanismBlocks.SPS_CASING.getRegistryName());
+    }
+
+    public static void addAnvilRecipes(IRecipeRegistration registry, IItemProvider item, Function<Item, ItemStack[]> repairMaterials) {
+        IVanillaRecipeFactory factory = registry.getVanillaRecipeFactory();
+        //Based off of how JEI adds for Vanilla items
+        ItemStack damaged2 = item.getItemStack();
+        damaged2.setDamageValue(damaged2.getMaxDamage() * 3 / 4);
+        ItemStack damaged3 = item.getItemStack();
+        damaged3.setDamageValue(damaged3.getMaxDamage() * 2 / 4);
+        //Two damaged items combine to undamaged
+        registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged2, Collections.singletonList(damaged2), Collections.singletonList(damaged3))),
+              VanillaRecipeCategoryUid.ANVIL);
+        ItemStack[] repairStacks = repairMaterials.apply(item.getItem());
+        //Damaged item + the repair material
+        if (repairStacks != null && repairStacks.length > 0) {
+            //While this is damaged1 it is down here as we don't need to bother creating the reference if we don't have a repair material
+            ItemStack damaged1 = item.getItemStack();
+            damaged1.setDamageValue(damaged1.getMaxDamage());
+            registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged1, Arrays.asList(repairStacks), Collections.singletonList(damaged2))),
+                  VanillaRecipeCategoryUid.ANVIL);
+        }
     }
 
     private static ClientWorld getWorld() {

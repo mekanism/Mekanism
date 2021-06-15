@@ -110,6 +110,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaSuitBaseEnergyCapacity;
     public final CachedFloatingLongValue mekaSuitBaseChargeRate;
     public final CachedFloatingLongValue mekaSuitBaseJumpEnergyUsage;
+    public final CachedFloatingLongValue mekaSuitElytraEnergyUsage;
     public final CachedFloatingLongValue mekaSuitEnergyUsagePotionTick;
     public final CachedFloatingLongValue mekaSuitEnergyUsageMagicReduce;
     public final CachedFloatingLongValue mekaSuitEnergyUsageFall;
@@ -297,6 +298,8 @@ public class GearConfig extends BaseMekanismConfig {
               "chargeRate", FloatingLong.createConst(100_000));
         mekaSuitBaseJumpEnergyUsage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when adding 0.1 to jump motion.",
               "baseJumpEnergyUsage", FloatingLong.createConst(1_000));
+        mekaSuitElytraEnergyUsage = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) per second of the MekaSuit when flying with the Elytra Unit.",
+              "elytraEnergyUsage", FloatingLong.createConst(32_000));
         mekaSuitEnergyUsagePotionTick = CachedFloatingLongValue.define(this, builder, "Energy usage (Joules) of MekaSuit when lessening a potion effect.",
               "energyUsagePotionTick", FloatingLong.createConst(40_000));
         mekaSuitEnergyUsageMagicReduce = CachedFloatingLongValue.define(this, builder, "Energy cost/multiplier in Joules for reducing magic damage via the inhalation purification unit. Energy cost is: MagicDamage * energyUsageMagicPrevent. (1 MagicDamage is 1 half heart).",

@@ -41,7 +41,9 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.EnchantmentBasedModule;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
+import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
+import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismModules;
@@ -259,6 +261,35 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
         return slotType == getSlot() && getModules(stack).stream().anyMatch(Module::handlesModeChange);
+    }
+
+    @Override
+    public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
+        if (slot == EquipmentSlotType.CHEST && !entity.isShiftKeyDown()) {
+            //Don't allow elytra flight if the player is sneaking. This lets the player exit elytra flight early
+            IModule<?> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
+            if (module != null && module.isEnabled() && module.canUseEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get())) {
+                //If we can use the elytra, check if the jetpack unit is also installed, and if it is,
+                // only mark that we can use the elytra if the jetpack is not set to hover or if it is if it has no hydrogen stored
+                IModule<ModuleJetpackUnit> jetpack = getModule(stack, MekanismModules.JETPACK_UNIT);
+                return jetpack == null || !jetpack.isEnabled() || jetpack.getCustomInstance().getMode() != JetpackMode.HOVER ||
+                       getContainedGas(stack, MekanismGases.HYDROGEN.get()).isEmpty();
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
+        //Note: As canElytraFly is checked just before this we don't bother validating ahead of time we have the energy
+        // or that we are the correct slot
+        if (!entity.level.isClientSide && (flightTicks + 1) % 20 == 0) {
+            IModule<?> module = getModule(stack, MekanismModules.ELYTRA_UNIT);
+            if (module != null && module.isEnabled()) {
+                module.useEnergy(entity, MekanismConfig.gear.mekaSuitElytraEnergyUsage.get());
+            }
+        }
+        return true;
     }
 
     @Nonnull

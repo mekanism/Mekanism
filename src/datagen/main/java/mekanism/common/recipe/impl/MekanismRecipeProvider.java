@@ -603,6 +603,16 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL, MekanismTags.Items.STORAGE_BLOCKS_STEEL)
               .key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_DIAMOND)
               .build(consumer);
+        //HDPE Elytra
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_REINFORCED_ELYTRA)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, HDPE_CHAR, Pattern.ALLOY),
+                    TripleLine.of(HDPE_CHAR, Pattern.PREVIOUS, HDPE_CHAR),
+                    TripleLine.of(HDPE_CHAR, Pattern.EMPTY, HDPE_CHAR))
+              ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
+              .key(HDPE_CHAR, MekanismItems.HDPE_SHEET)
+              .key(Pattern.PREVIOUS, Items.ELYTRA)
+              .build(consumer);
         //Laser
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER)
               .pattern(RecipePattern.createPattern(
@@ -1392,6 +1402,18 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CONSTANT, Tags.Items.NETHER_STARS)
               .key(Pattern.ENERGY, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER)
               .key(HDPE_CHAR, MekanismItems.ANTIMATTER_PELLET)
+              .build(consumer);
+        //Elytra Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_ELYTRA)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CONSTANT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.ALLOY, Pattern.PREVIOUS, Pattern.ALLOY),
+                    TripleLine.of(HDPE_CHAR, Pattern.NUGGET, HDPE_CHAR))
+              ).key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, MekanismItems.HDPE_REINFORCED_ELYTRA)
+              .key(HDPE_CHAR, MekanismTags.Items.PELLETS_POLONIUM)
+              .key(Pattern.NUGGET, MekanismItems.ANTIMATTER_PELLET)
               .build(consumer);
     }
 

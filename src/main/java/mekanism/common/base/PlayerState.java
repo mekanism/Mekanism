@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.sound.PlayerSound.SoundType;
@@ -271,12 +272,16 @@ public class PlayerState {
                 IModule<ModuleGravitationalModulatingUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlotType.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT);
                 if (module != null) {//Should not be null but double check
                     FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
-                    boolean boostKey = Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST);
                     player.setSprinting(false);
-                    if (boostKey) {
-                        player.moveRelative(module.getCustomInstance().getBoost(), new Vector3d(0, 0, 1));
+                    IEnergyContainer energyContainer = module.getEnergyContainer();
+                    if (Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
+                        FloatingLong boostUsage = usage.multiply(4);
+                        if (energyContainer != null && module.canUseEnergy(player, energyContainer, boostUsage, false)) {
+                            player.moveRelative(module.getCustomInstance().getBoost(), new Vector3d(0, 0, 1));
+                            usage = boostUsage;
+                        }
                     }
-                    module.useEnergy(player, boostKey ? usage.multiply(4) : usage);
+                    module.useEnergy(player, usage);
                 }
             }
         } else {

@@ -307,6 +307,7 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, ENERGY_CONVERSION, MekanismRecipeType.ENERGY_CONVERSION);
         RecipeRegistryHelper.register(registry, GAS_CONVERSION, MekanismRecipeType.GAS_CONVERSION);
         RecipeRegistryHelper.register(registry, INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
+        RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.getItemStack()});
         //TODO - 10.1: Do something similar as we do to fission, and make it so that the boiler can shows that it can work?
 
         if (Mekanism.hooks.JEITweakerLoaded) {

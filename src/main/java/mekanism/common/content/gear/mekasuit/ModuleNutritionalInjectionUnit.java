@@ -26,16 +26,17 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
     @Override
     public void tickServer(IModule<ModuleNutritionalInjectionUnit> module, PlayerEntity player) {
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
-        if (MekanismUtils.isPlayingMode(player) && player.canEat(false) && module.getContainerEnergy().greaterOrEqual(usage)) {
+        if (MekanismUtils.isPlayingMode(player) && player.canEat(false)) {
+            //Check if we can use a single iteration of it
             ItemStack container = module.getContainer();
             ItemMekaSuitArmor item = (ItemMekaSuitArmor) container.getItem();
-            long toFeed = Math.min(1, item.getContainedGas(container, MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
+            long needed = Math.min(20 - player.getFoodData().getFoodLevel(),
+                  item.getContainedGas(container, MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
+            long toFeed = Math.min(module.getContainerEnergy().divideToInt(usage), needed);
             if (toFeed > 0) {
                 module.useEnergy(player, usage.multiply(toFeed));
                 item.useGas(container, MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get());
-                //TODO - 10.1: Re-evaluate the calculations related to this as it seems slightly different than the canteen
-                // and I think the 1, should be toFeed except I am not sure toFeed can ever by > 1 currently
-                player.getFoodData().eat(1, MekanismConfig.general.nutritionalPasteSaturation.get());
+                player.getFoodData().eat((int) needed, needed * MekanismConfig.general.nutritionalPasteSaturation.get());
             }
         }
     }
