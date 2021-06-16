@@ -260,7 +260,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
-        return slotType == getSlot() && getModules(stack).stream().anyMatch(Module::handlesModeChange);
+        return slotType == getSlot() && getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.handlesModeChange());
     }
 
     @Override

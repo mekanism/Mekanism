@@ -27,7 +27,7 @@ plugins {
     id 'maven-publish'
 }
 
-defaultTasks 'fullBuild'
+defaultTasks 'build'
 
 idea {
     module {
@@ -644,11 +644,6 @@ reobf {
     defenseJar { classpath = sourceSets.defense.compileClasspath }
     toolsJar { classpath = sourceSets.tools.compileClasspath }
     allJar {}
-}
-
-task fullBuild(type: Delete) {
-    delete jar
-    dependsOn "build"
 }
 
 //Minimize/optimize all png files, requires optipng on the PATH
