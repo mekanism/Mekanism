@@ -95,7 +95,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
         setGeneralPersistentData(data);
     }
 
-    private void setGeneralPersistentData(CompoundNBT data) {
+    protected void setGeneralPersistentData(CompoundNBT data) {
         filters.clear();
         if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
@@ -111,9 +111,7 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     @Nonnull
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
-        getGeneralPersistentData(nbtTags);
-        return nbtTags;
+        return getGeneralPersistentData(super.save(nbtTags));
     }
 
     @Override
