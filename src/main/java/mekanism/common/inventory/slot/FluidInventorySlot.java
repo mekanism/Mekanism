@@ -9,6 +9,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
+import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -16,6 +17,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.util.StackUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -224,5 +226,25 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     @Override
     public void setFilling(boolean filling) {
         isFilling = filling;
+    }
+
+    @Override
+    public CompoundNBT serializeNBT() {
+        CompoundNBT nbt = super.serializeNBT();
+        if (isDraining) {
+            nbt.putBoolean(NBTConstants.DRAINING, true);
+        }
+        if (isFilling) {
+            nbt.putBoolean(NBTConstants.FILLING, true);
+        }
+        return nbt;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundNBT nbt) {
+        super.deserializeNBT(nbt);
+        //Grab the booleans regardless if they are present as if they aren't that means they are false
+        isDraining = nbt.getBoolean(NBTConstants.DRAINING);
+        isFilling = nbt.getBoolean(NBTConstants.FILLING);
     }
 }

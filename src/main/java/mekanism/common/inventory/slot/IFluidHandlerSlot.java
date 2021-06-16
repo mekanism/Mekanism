@@ -7,6 +7,7 @@ import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.lib.HashedFluid;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
@@ -95,23 +96,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     //If we have more than one tank in our item then handle calculating the different drains that will occur for filling our fluid handler
                     // We start by gathering all the fluids in the item that we are able to drain and are valid for the tank,
                     // combining same fluid types into a single fluid stack
-                    Map<FluidInfo, FluidStack> knownFluids = new Object2ObjectOpenHashMap<>();
-                    for (int itemTank = 0; itemTank < itemTanks; itemTank++) {
-                        FluidStack fluidInItem = itemFluidHandler.getFluidInTank(itemTank);
-                        if (!fluidInItem.isEmpty()) {
-                            FluidInfo info = new FluidInfo(fluidInItem);
-                            FluidStack knownFluid = knownFluids.get(info);
-                            //If we have a fluid that can be drained from the item and is valid then we add it to our known fluids
-                            // Note: We only bother checking if it can be drained if we do not already have it as a known fluid
-                            if (knownFluid == null) {
-                                if (!itemFluidHandler.drain(fluidInItem, FluidAction.SIMULATE).isEmpty() && getFluidTank().isFluidValid(fluidInItem)) {
-                                    knownFluids.put(info, fluidInItem.copy());
-                                }
-                            } else {
-                                knownFluid.grow(fluidInItem.getAmount());
-                            }
-                        }
-                    }
+                    Map<HashedFluid, FluidStack> knownFluids = gatherKnownFluids(itemFluidHandler, itemTanks);
                     //If we found any fluids that we can drain, attempt to drain them into our item
                     for (FluidStack knownFluid : knownFluids.values()) {
                         if (drainItemAndMove(outputSlot, knownFluid) && isEmpty()) {
@@ -282,22 +267,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     //If we have more than one tank in our item then handle calculating the different drains that will occur for filling our fluid handler
                     // We start by gathering all the fluids in the item that we are able to drain and are valid for the tank,
                     // combining same fluid types into a single fluid stack
-                    Map<FluidInfo, FluidStack> knownFluids = new Object2ObjectOpenHashMap<>();
-                    for (int tank = 0; tank < tanks; tank++) {
-                        FluidStack fluidInItem = itemFluidHandler.getFluidInTank(tank);
-                        if (!fluidInItem.isEmpty()) {
-                            FluidInfo info = new FluidInfo(fluidInItem);
-                            FluidStack knownFluid = knownFluids.get(info);
-                            //If we have a fluid that can be drained from the item and is valid then we add it to our known fluids
-                            if (knownFluid == null) {
-                                if (!itemFluidHandler.drain(fluidInItem, FluidAction.SIMULATE).isEmpty() && getFluidTank().isFluidValid(fluidInItem)) {
-                                    knownFluids.put(info, fluidInItem.copy());
-                                }
-                            } else {
-                                knownFluid.grow(fluidInItem.getAmount());
-                            }
-                        }
-                    }
+                    Map<HashedFluid, FluidStack> knownFluids = gatherKnownFluids(itemFluidHandler, tanks);
                     if (!knownFluids.isEmpty()) {
                         //If we found any fluids that we can drain, attempt to drain them into our item
                         boolean changed = false;
@@ -316,6 +286,29 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             }
         }
         return false;
+    }
+
+    //TODO - 1.17: Make this private as java 16 allows for privates in interface
+    default Map<HashedFluid, FluidStack> gatherKnownFluids(IFluidHandlerItem itemFluidHandler, int tanks) {
+        Map<HashedFluid, FluidStack> knownFluids = new Object2ObjectOpenHashMap<>();
+        for (int tank = 0; tank < tanks; tank++) {
+            FluidStack fluidInItem = itemFluidHandler.getFluidInTank(tank);
+            if (!fluidInItem.isEmpty()) {
+                //Note: We use the raw form of hashed fluids even though we are using them in a map as the map isn't persistent
+                // and we don't make any modifications while adding to the map
+                HashedFluid info = HashedFluid.raw(fluidInItem);
+                FluidStack knownFluid = knownFluids.get(info);
+                //If we have a fluid that can be drained from the item and is valid then we add it to our known fluids
+                if (knownFluid == null) {
+                    if (!itemFluidHandler.drain(fluidInItem, FluidAction.SIMULATE).isEmpty() && getFluidTank().isFluidValid(fluidInItem)) {
+                        knownFluids.put(info, fluidInItem.copy());
+                    }
+                } else {
+                    knownFluid.grow(fluidInItem.getAmount());
+                }
+            }
+        }
+        return knownFluids;
     }
 
     /**
@@ -342,32 +335,5 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             }
         }
         return false;
-    }
-
-    /**
-     * Helper class to make comparing fluids ignoring amount easier
-     */
-    class FluidInfo {
-
-        private final FluidStack fluidStack;
-
-        public FluidInfo(FluidStack fluidStack) {
-            this.fluidStack = fluidStack;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            return other == this || other instanceof FluidInfo && fluidStack.isFluidEqual(((FluidInfo) other).fluidStack);
-        }
-
-        @Override
-        public int hashCode() {
-            int code = 1;
-            code = 31 * code + fluidStack.getFluid().hashCode();
-            if (fluidStack.hasTag()) {
-                code = 31 * code + fluidStack.getTag().hashCode();
-            }
-            return code;
-        }
     }
 }

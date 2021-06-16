@@ -79,6 +79,7 @@ public final class NBTConstants {
     public static final String DATA_TYPE = "dataType";
     public static final String DELAY = "delay";
     public static final String DIMENSION = "dimension";
+    public static final String DRAINING = "draining";
     public static final String DRIVES = "drives";
     public static final String DUMP_LEFT = "dumpLeft";
     public static final String DUMP_MODE = "dumping";
@@ -88,6 +89,7 @@ public final class NBTConstants {
     public static final String ENERGY_CONTAINERS = "EnergyContainers";
     public static final String ENERGY_STORED = "energy";
     public static final String ENERGY_USAGE = "energyUsage";
+    public static final String FILLING = "filling";
     public static final String FILTER = "filter";
     public static final String FILTERS = "filters";
     public static final String FINISHED = "finished";
