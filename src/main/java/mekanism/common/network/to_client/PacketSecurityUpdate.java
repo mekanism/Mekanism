@@ -69,10 +69,12 @@ public class PacketSecurityUpdate implements IMekanismPacket {
             }
         } else {
             List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyType.SECURITY.getManager(null).getFrequencies());
+            //In theory no owner should be null but handle the case anyways just in case
+            frequencies.removeIf(frequency -> frequency.getOwner() == null);
             buffer.writeVarInt(frequencies.size());
             for (SecurityFrequency frequency : frequencies) {
                 UUID owner = frequency.getOwner();
-                //In theory I don't think we can ever get here if this is null
+                //We remove all null cases above
                 buffer.writeUUID(owner);
                 new SecurityData(frequency).write(buffer);
                 buffer.writeUtf(MekanismUtils.getLastKnownUsername(owner));
