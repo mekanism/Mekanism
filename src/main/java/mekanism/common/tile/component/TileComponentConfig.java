@@ -170,6 +170,12 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         return configInfo.get(type);
     }
 
+    public void addDisabledSides(@Nonnull RelativeSide... sides) {
+        for (ConfigInfo config : configInfo.values()) {
+            config.addDisabledSides(sides);
+        }
+    }
+
     public ConfigInfo setupInputConfig(TransmissionType type, Object container) {
         ConfigInfo config = getConfig(type);
         if (config != null) {

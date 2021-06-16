@@ -255,6 +255,7 @@ public enum MekanismLang implements ILangEntry {
     STRICT_INPUT_ENABLED("configuration", "strict_input.enabled"),
     CONFIG_TYPE("configuration", "config_type"),
     NO_EJECT("configuration", "no_eject"),
+    CANT_EJECT_TOOLTIP("configuration", "no_eject.tooltip"),
     SLOTS("configuration", "slots"),
     //Auto
     AUTO_PULL("auto", "pull"),

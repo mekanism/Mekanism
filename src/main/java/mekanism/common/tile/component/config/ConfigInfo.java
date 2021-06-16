@@ -27,13 +27,14 @@ public class ConfigInfo {
 
     private final Supplier<Direction> facingSupplier;
     //TODO: Ejecting/can eject, how do we want to use these
-    //TODO: When can eject is false don't even show the auto eject button
     private boolean canEject;
     private boolean ejecting;
     private final Map<RelativeSide, DataType> sideConfig;
     private final Map<DataType, ISlotInfo> slotInfo;
     // used so slot & tank GUIs can quickly reference which color overlay to render
     private final Map<Object, List<DataType>> containerTypeMapping;
+    //Not final so that it can be lazily initialized
+    private Set<RelativeSide> disabledSides;
 
     public ConfigInfo(@Nonnull Supplier<Direction> facingSupplier) {
         this.facingSupplier = facingSupplier;
@@ -63,6 +64,23 @@ public class ConfigInfo {
         this.ejecting = ejecting;
     }
 
+    public void addDisabledSides(@Nonnull RelativeSide... sides) {
+        if (disabledSides == null) {
+            disabledSides = EnumSet.noneOf(RelativeSide.class);
+        }
+        for (RelativeSide side : sides) {
+            disabledSides.add(side);
+            sideConfig.put(side, DataType.NONE);
+        }
+    }
+
+    public boolean isSideEnabled(@Nonnull RelativeSide side) {
+        if (disabledSides == null) {
+            return true;
+        }
+        return !disabledSides.contains(side);
+    }
+
     @Nonnull
     public DataType getDataType(@Nonnull RelativeSide side) {
         return sideConfig.get(side);
@@ -70,7 +88,9 @@ public class ConfigInfo {
 
     public void setDataType(@Nonnull DataType dataType, @Nonnull RelativeSide... sides) {
         for (RelativeSide side : sides) {
-            sideConfig.put(side, dataType);
+            if (isSideEnabled(side)) {
+                sideConfig.put(side, dataType);
+            }
         }
     }
 
@@ -166,21 +186,29 @@ public class ConfigInfo {
      * @return The new data type
      */
     @Nonnull
-    public DataType incrementDataType(@Nonnull RelativeSide relativeSide) {
-        Set<DataType> supportedDataTypes = getSupportedDataTypes();
-        DataType newType = getDataType(relativeSide).getNext(supportedDataTypes::contains);
-        sideConfig.put(relativeSide, newType);
-        return newType;
+    public DataType incrementDataType(@Nonnull RelativeSide relativeSide) {//TODO - 10.1: Check if changed on things that use this?
+        DataType current = getDataType(relativeSide);
+        if (isSideEnabled(relativeSide)) {
+            Set<DataType> supportedDataTypes = getSupportedDataTypes();
+            DataType newType = current.getNext(supportedDataTypes::contains);
+            sideConfig.put(relativeSide, newType);
+            return newType;
+        }
+        return current;
     }
 
     /**
      * @return The new data type
      */
     @Nonnull
-    public DataType decrementDataType(@Nonnull RelativeSide relativeSide) {
-        Set<DataType> supportedDataTypes = getSupportedDataTypes();
-        DataType newType = getDataType(relativeSide).getPrevious(supportedDataTypes::contains);
-        sideConfig.put(relativeSide, newType);
-        return newType;
+    public DataType decrementDataType(@Nonnull RelativeSide relativeSide) {//TODO - 10.1: Check if changed on things that use this?
+        DataType current = getDataType(relativeSide);
+        if (isSideEnabled(relativeSide)) {
+            Set<DataType> supportedDataTypes = getSupportedDataTypes();
+            DataType newType = current.getPrevious(supportedDataTypes::contains);
+            sideConfig.put(relativeSide, newType);
+            return newType;
+        }
+        return current;
     }
 }

@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.Collections;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanism;
@@ -35,7 +36,8 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         super(gui, x, y, 156, 95, SelectedWindowData.UNSPECIFIED);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
-        addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12));
+        addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12,
+              () -> Collections.singletonList(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())))));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
         addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, getButtonLocation("strict_input"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos())), getOnHover(MekanismLang.STRICT_INPUT)));
@@ -54,9 +56,12 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
-        addChild(new SideDataButton(gui(), getGuiLeft() + relativeX + xPos, getGuiTop() + relativeY + yPos, side,
+        SideDataButton button = addChild(new SideDataButton(gui(), getGuiLeft() + relativeX + xPos, getGuiTop() + relativeY + yPos, side,
               () -> tile.getConfig().getDataType(TransmissionType.ITEM, side), () -> tile.getEjector().getInputColor(side), tile, () -> null,
               ConfigurationPacket.INPUT_COLOR, getOnHover(side)));
+        if (!tile.getEjector().isInputSideEnabled(side)) {
+            button.active = false;
+        }
     }
 
     @Override
@@ -84,8 +89,6 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
-        drawTextScaledBound(matrix, MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())), relativeX + 43, relativeY + 17,
-              screenTextColor(), 70);
         drawString(matrix, MekanismLang.INPUT.translate(), relativeX + 38, relativeY + 81, subheadingTextColor());
         drawString(matrix, MekanismLang.OUTPUT.translate(), relativeX + 104, relativeY + 68, subheadingTextColor());
     }

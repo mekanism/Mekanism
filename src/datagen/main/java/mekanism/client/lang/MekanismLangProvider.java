@@ -738,6 +738,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.STRICT_INPUT_ENABLED, "Strict Input (%s)");
         add(MekanismLang.CONFIG_TYPE, "%s Config");
         add(MekanismLang.NO_EJECT, "Can't Eject");
+        add(MekanismLang.CANT_EJECT_TOOLTIP, "Auto-eject is not supported, manual extraction may still be possible.");
         add(MekanismLang.SLOTS, "Slots");
         //Auto
         add(MekanismLang.AUTO_PULL, "Auto-pull");

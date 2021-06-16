@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import java.util.Collections;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
@@ -31,14 +30,15 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
+import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ChemicalRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
-import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IBoundingBlock;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -46,7 +46,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
 
-public class TileEntitySolarNeutronActivator extends TileEntityMekanism implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
+public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
 
     public static final long MAX_GAS = 10_000;
 
@@ -54,8 +54,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
     public IGasTank inputTank;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded", "getOutputFilledPercentage"})
     public IGasTank outputTank;
-
-    private RecipeCacheLookupMonitor<GasToGasRecipe> recipeCacheLookupMonitor;
 
     @SyntheticComputerMethod(getter = "getPeakProductionRate")
     private float peakProductionRate;
@@ -74,34 +72,34 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
 
     public TileEntitySolarNeutronActivator() {
         super(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
+        configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS);
+        configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot, RelativeSide.FRONT);
+        configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT).setEjecting(true);
+        configComponent.addDisabledSides(RelativeSide.TOP);
+
+        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
-    @Override
-    protected void presetVariables() {
-        super.presetVariables();
-        recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
-    }
-
     @Nonnull
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
-        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSide(this::getDirection);
+        ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         builder.addTank(inputTank = ChemicalTankBuilder.GAS.create(MAX_GAS, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
-              this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheLookupMonitor), RelativeSide.BOTTOM);
-        builder.addTank(outputTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this), RelativeSide.FRONT);
+              this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheLookupMonitor));
+        builder.addTank(outputTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
         return builder.build();
     }
 
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this, 5, 56), RelativeSide.BOTTOM, RelativeSide.TOP, RelativeSide.RIGHT,
-              RelativeSide.LEFT, RelativeSide.BACK);
-        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 56), RelativeSide.FRONT);
+        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
+        builder.addSlot(inputSlot = GasInventorySlot.fill(inputTank, this, 5, 56));
+        builder.addSlot(outputSlot = GasInventorySlot.drain(outputTank, this, 155, 56));
         inputSlot.setSlotType(ContainerSlotType.INPUT);
         inputSlot.setSlotOverlay(SlotOverlay.MINUS);
         outputSlot.setSlotType(ContainerSlotType.OUTPUT);
@@ -140,7 +138,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityMekanism implemen
         outputSlot.drainTank();
         productionRate = recalculateProductionRate();
         recipeCacheLookupMonitor.updateAndProcess();
-        ChemicalUtil.emit(Collections.singleton(getDirection()), outputTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
     }
 
     @Nonnull

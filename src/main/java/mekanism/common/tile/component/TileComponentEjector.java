@@ -5,6 +5,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
@@ -171,11 +172,18 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
     }
 
+    public boolean isInputSideEnabled(@Nonnull RelativeSide side) {
+        ConfigInfo info = configInfo.get(TransmissionType.ITEM);
+        return info == null || info.isSideEnabled(side);
+    }
+
     public void setInputColor(RelativeSide side, EnumColor color) {
-        int ordinal = side.ordinal();
-        if (inputColors[ordinal] != color) {
-            inputColors[ordinal] = color;
-            WorldUtils.saveChunk(tile);
+        if (isInputSideEnabled(side)) {
+            int ordinal = side.ordinal();
+            if (inputColors[ordinal] != color) {
+                inputColors[ordinal] = color;
+                WorldUtils.saveChunk(tile);
+            }
         }
     }
 
@@ -239,15 +247,23 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         setStrictInput(strict);
     }
 
+    private void validateInputSide(RelativeSide side) throws ComputerException {
+        if (!isInputSideEnabled(side)) {
+            throw new ComputerException("Side '%s' is disabled and can't be configured.", side);
+        }
+    }
+
     @ComputerMethod
     private void clearInputColor(RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
+        validateInputSide(side);
         setInputColor(side, null);
     }
 
     @ComputerMethod
     private void incrementInputColor(RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
+        validateInputSide(side);
         int ordinal = side.ordinal();
         inputColors[ordinal] = TransporterUtils.increment(inputColors[ordinal]);
         WorldUtils.saveChunk(tile);
@@ -256,6 +272,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @ComputerMethod
     private void decrementInputColor(RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
+        validateInputSide(side);
         int ordinal = side.ordinal();
         inputColors[ordinal] = TransporterUtils.decrement(inputColors[ordinal]);
         WorldUtils.saveChunk(tile);
@@ -264,6 +281,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @ComputerMethod(nameOverride = "setInputColor")
     private void computerSetInputColor(RelativeSide side, EnumColor color) throws ComputerException {
         tile.validateSecurityIsPublic();
+        validateInputSide(side);
         if (!TransporterUtils.colors.contains(color)) {
             throw new ComputerException("Color '%s' is not a supported transporter color.", color);
         }

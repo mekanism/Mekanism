@@ -75,6 +75,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT).setEjecting(true);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
+        configComponent.addDisabledSides(RelativeSide.TOP);
 
         ejectorComponent = new TileComponentEjector(this);
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);
