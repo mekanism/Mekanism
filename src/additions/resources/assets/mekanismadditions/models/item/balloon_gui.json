@@ -1,0 +1,54 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "particle": "mekanismadditions:entity/balloon",
+    "all": "mekanismadditions:entity/balloon"
+  },
+  "elements": [
+    {
+      "name": "balloon_nub",
+      "from": [8.5, 8, 6.5],
+      "to": [9.5, 9, 7.5],
+      "faces": {
+        "north": {"uv": [0, 0, 1, 1], "texture": "#all", "tintindex": 0},
+        "east": {"uv": [0, 0, 1, 1], "texture": "#all", "tintindex": 0},
+        "south": {"uv": [0, 0, 1, 1], "texture": "#all", "tintindex": 0},
+        "west": {"uv": [0, 0, 1, 1], "texture": "#all", "tintindex": 0}
+      }
+    },
+    {
+      "name": "balloon_end",
+      "from": [8, 7, 6],
+      "to": [10, 8, 8],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
+      "faces": {
+        "north": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},
+        "east": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},
+        "south": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},
+        "west": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},
+        "up": {"uv": [3, 7, 5, 9], "texture": "#all", "tintindex": 0},
+        "down": {"uv": [8, 2, 10, 4], "texture": "#all", "tintindex": 0}
+      }
+    },
+    {
+      "name": "balloon",
+      "from": [5, 9, 5],
+      "to": [11, 16, 11],
+      "faces": {
+        "north": {"uv": [0, 6, 6, 13], "texture": "#all", "tintindex": 0},
+        "east": {"uv": [6, 6, 12, 13], "texture": "#all", "tintindex": 0},
+        "south": {"uv": [0, 6, 6, 13], "texture": "#all", "tintindex": 0},
+        "west": {"uv": [6, 6, 12, 13], "texture": "#all", "tintindex": 0},
+        "up": {"uv": [0, 0, 6, 6], "texture": "#all", "tintindex": 0},
+        "down": {"uv": [6, 0, 12, 6], "texture": "#all", "tintindex": 0}
+      }
+    }
+  ],
+  "display": {
+    "gui": {
+      "rotation": [30, 225, 0],
+      "translation": [0, -2, 0],
+      "scale": [0.85, 0.85, 0.85]
+    }
+  }
+}

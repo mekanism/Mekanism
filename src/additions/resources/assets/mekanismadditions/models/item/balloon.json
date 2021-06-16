@@ -1,94 +1,22 @@
 {
-	"loader": "mekanism:mekanism",
-	"credit": "Model by CyanideX",
-	"parent": "block/cube_all",
 	"textures": {
 		"1": "mekanismadditions:entity/balloon_string",
 		"all": "mekanismadditions:entity/balloon",
 		"particle": "mekanismadditions:entity/balloon_string"
 	},
-	"elements": [
-		{
-			"name": "string_straight",
-			"from": [7.5, 3, 8],
-			"to": [8.5, 19, 8],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 3, 8]},
-			"faces": {
-				"north": {"uv": [0, 0, 1, 16], "texture": "#1"},
-				"south": {"uv": [1, 0, 0, 16], "texture": "#1"}
-			}
-		},
-		{
-			"name": "balloon_nub",
-			"from": [7.5, 20, 7.5],
-			"to": [8.5, 20.5, 8.5],
-			"faces": {
-				"north": {"uv": [0, 0, 1, 1], "texture": "#all", "tintindex": 0},
-				"east": {"uv": [0, 0, 1, 1], "texture": "#all", "tintindex": 0},
-				"south": {"uv": [0, 0, 1, 1], "texture": "#all", "tintindex": 0},
-				"west": {"uv": [0, 0, 1, 1], "texture": "#all", "tintindex": 0}
-			}
-		},
-		{
-			"name": "balloon_end",
-			"from": [7, 19, 7],
-			"to": [9, 20, 9],
-			"rotation": {"angle": 0, "axis": "y", "origin": [8, 7, 8]},
-			"faces": {
-				"north": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},
-				"east": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},
-				"south": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},
-				"west": {"uv": [3, 7, 5, 8], "texture": "#all", "tintindex": 0},
-				"up": {"uv": [3, 7, 5, 9], "texture": "#all", "tintindex": 0},
-				"down": {"uv": [8, 2, 10, 4], "texture": "#all", "tintindex": 0}
-			}
-		},
-		{
-			"name": "balloon",
-			"from": [5, 20.5, 5],
-			"to": [11, 27.5, 11],
-			"faces": {
-				"north": {"uv": [0, 6, 6, 13], "texture": "#all", "tintindex": 0},
-				"east": {"uv": [6, 6, 12, 13], "texture": "#all", "tintindex": 0},
-				"south": {"uv": [0, 6, 6, 13], "texture": "#all", "tintindex": 0},
-				"west": {"uv": [6, 6, 12, 13], "texture": "#all", "tintindex": 0},
-				"up": {"uv": [0, 0, 6, 6], "texture": "#all", "tintindex": 0},
-				"down": {"uv": [6, 0, 12, 6], "texture": "#all", "tintindex": 0}
-			}
-		}
-	],
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [68, -135, 0],
-			"translation": [-0.25, 1.25, 4.5]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [68, -135, 0],
-			"translation": [-0.25, 1.25, 4.5]
-		},
-		"firstperson_righthand": {
-			"rotation": [0, 15, 0],
-			"translation": [3.75, 1.75, 0]
-		},
-		"firstperson_lefthand": {
-			"rotation": [0, 15, 0],
-			"translation": [3.75, 1.75, 0]
+	"loader": "forge:separate-perspective",
+	"base": {
+		"parent": "mekanismadditions:item/balloon_latched"
+	},
+	"perspectives": {
+		"gui": {
+			"parent": "mekanismadditions:item/balloon_gui"
 		},
 		"ground": {
-			"translation": [0, 3, 0],
-			"scale": [0.25, 0.25, 0.25]
-		},
-		"gui": {
-			"rotation": [30, 135, 0],
-			"translation": [0, -4.75, 0],
-			"scale": [0.65, 0.63, 0.65]
-		},
-		"head": {
-			"translation": [3, 10, 0]
+			"parent": "mekanismadditions:item/balloon_fixed"
 		},
 		"fixed": {
-			"translation": [0, -3.75, -0.5],
-			"scale": [0.5, 0.5, 0.5]
+			"parent": "mekanismadditions:item/balloon_fixed"
 		}
 	}
 }
