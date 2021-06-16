@@ -75,6 +75,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             matrix.pushPose();
             entityItem.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
             entityItem.level = tile.getLevel();
+            //Reset entity age to fix issues with mods like ItemPhysic
+            entityItem.age = 0;
 
             float partial = partialTick * transporter.tier.getSpeed();
             Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
