@@ -28,7 +28,6 @@ public enum APILang implements ILangEntry {
     //Generic
     @Deprecated//TODO - 1.17: Remove this generic lang entry in favor of just having string text components be used
     GENERIC("generic", "format"),
-    GENERIC_PERCENT("generic", "percent"),
     //Directions
     DOWN("direction", "down"),
     UP("direction", "up"),
@@ -66,6 +65,8 @@ public enum APILang implements ILangEntry {
     CHEMICAL_ATTRIBUTE_RADIATION("chemical", "attribute.radiation"),
     CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY("chemical", "attribute.coolant.efficiency"),
     CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY("chemical", "attribute.coolant.heat_capacity"),
+    CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS("chemical", "attribute.fuel.burn_ticks"),
+    CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY("chemical", "attribute.fuel.energy_density"),
     ;
 
     private final String key;

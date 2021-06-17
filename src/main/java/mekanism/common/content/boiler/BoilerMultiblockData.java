@@ -43,7 +43,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     public static final Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
-    private static final double CASING_HEAT_CAPACITY = 50;
+    public static final double CASING_HEAT_CAPACITY = 50;
     private static final double CASING_INVERSE_INSULATION_COEFFICIENT = 100_000;
     private static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
 
@@ -174,7 +174,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                 steamTank.growStack(amountToBoil, Action.EXECUTE);
             }
 
-            handleHeat(-amountToBoil * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency());
+            heatCapacitor.handleHeat(-amountToBoil * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency());
             lastBoilRate = amountToBoil;
         } else {
             lastBoilRate = 0;

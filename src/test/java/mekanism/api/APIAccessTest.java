@@ -8,14 +8,20 @@ import org.junit.jupiter.api.Test;
 class APIAccessTest {
 
     @Test
+    @DisplayName("Test getting Module Helper")
+    void testGetModuleHelper() {
+        Assertions.assertNotNull(MekanismAPI.getModuleHelper());
+    }
+
+    @Test
     @DisplayName("Test getting the Radiation Manager")
     void testGetRadiationManager() {
         Assertions.assertNotNull(MekanismAPI.getRadiationManager());
     }
 
     @Test
-    @DisplayName("Test getting Module Helper")
-    void testGetModuleHelper() {
-        Assertions.assertNotNull(MekanismAPI.getModuleHelper());
+    @DisplayName("Test getting the Tooltip Helper")
+    void testGetTooltipHelper() {
+        Assertions.assertNotNull(MekanismAPI.getTooltipHelper());
     }
 }

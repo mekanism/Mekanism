@@ -6,16 +6,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
-import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.registries.MekanismBlocks;
@@ -28,8 +24,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.Food;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -76,26 +70,6 @@ public class RecipeRegistryHelper {
             }
         }
         registry.addRecipes(list, MekanismBlocks.NUTRITIONAL_LIQUIFIER.getRegistryName());
-    }
-
-    public static void registerSPS(IRecipeRegistration registry) {
-        //TODO - V11: Make the SPS have a proper recipe type to allow for custom recipes
-        // Note: While the serializer and type are nonnull, they aren't used anywhere by recipes that are only added to JEI
-        GasToGasRecipe recipe = new GasToGasRecipe(Mekanism.rl("processing/polonium_to_antimatter"),
-              GasStackIngredient.from(MekanismGases.POLONIUM, MekanismConfig.general.spsInputPerAntimatter.get()), MekanismGases.ANTIMATTER.getStack(1)) {
-            @Nonnull
-            @Override
-            public IRecipeSerializer<?> getSerializer() {
-                return null;
-            }
-
-            @Nonnull
-            @Override
-            public IRecipeType<?> getType() {
-                return null;
-            }
-        };
-        registry.addRecipes(Collections.singletonList(recipe), MekanismBlocks.SPS_CASING.getRegistryName());
     }
 
     public static void addAnvilRecipes(IRecipeRegistration registry, IItemProvider item, Function<Item, ItemStack[]> repairMaterials) {

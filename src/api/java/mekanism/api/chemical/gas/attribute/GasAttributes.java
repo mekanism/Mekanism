@@ -10,6 +10,7 @@ import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
+import mekanism.api.text.ITooltipHelper;
 import net.minecraft.util.text.ITextComponent;
 
 public class GasAttributes {
@@ -48,7 +49,8 @@ public class GasAttributes {
         @Override
         public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
             super.addTooltipText(list);
-            list.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, radioactivity));
+            ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
+            list.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(getRadioactivity())));
             return list;
         }
     }
@@ -88,9 +90,10 @@ public class GasAttributes {
         @Override
         public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
             super.addTooltipText(list);
-            list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-                  APILang.GENERIC_PERCENT.translate(Math.round(conductivity * 100))));
-            list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, thermalEnthalpy));
+            ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
+            list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity)));
+            list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                  tooltipHelper.getEnergyPerMBDisplayShort(FloatingLong.createConst(thermalEnthalpy))));
             return list;
         }
     }
@@ -167,7 +170,7 @@ public class GasAttributes {
          */
         public FloatingLong getEnergyPerTick() {
             int ticks = getBurnTicks();
-            //If we have less than 2 ticks, the density is the
+            //If we have less than one tick, the density is invalid
             if (ticks < 1) {
                 MekanismAPI.logger.warn("Invalid tick count ({}) for Fuel attribute, this number should be at least 1.", ticks);
                 return FloatingLong.ZERO;
@@ -176,6 +179,16 @@ public class GasAttributes {
                 return energyDensity.get();
             }
             return energyDensity.get().divide(ticks);
+        }
+
+        @Override
+        public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
+            super.addTooltipText(list);
+            ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
+            list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFormattedNumber(getBurnTicks())));
+            list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
+                  tooltipHelper.getEnergyPerMBDisplayShort(energyDensity.get())));
+            return list;
         }
     }
 }

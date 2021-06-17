@@ -13,7 +13,9 @@ import net.minecraft.util.text.ITextComponent;
 /**
  * Code taken from UE and modified to fit Mekanism.
  */
-public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextComponents the two getDisplay methods build, and have them have better translation keys with formats
+public class UnitDisplayUtils {
+    //TODO: Maybe at some point improve on the ITextComponents the two getDisplay methods build, and have them have better translation keys with formats
+    // That would improve how well this handles en_ud as currently the order of the number and the unit is not reversed and the unit is not upside down
 
     /**
      * Displays the unit as text. Does not handle negative numbers, as {@link FloatingLong} does not have a concept of negatives
@@ -55,44 +57,43 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
 
     public static ITextComponent getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
         ILangEntry label = unit.getLabel();
-        String prefix = "";
         String spaceStr = spaceBetweenSymbol ? " " : "";
-        if (value < 0) {
-            value = Math.abs(value);
-            prefix = "-";
-        }
         if (value == 0) {
             return isShort ? TextComponentUtil.getString(value + spaceStr + unit.getSymbol()) : TextComponentUtil.build(value, label);
+        }
+        boolean negative = value < 0;
+        if (negative) {
+            value = Math.abs(value);
         }
         for (int i = 0; i < EnumUtils.MEASUREMENT_UNITS.length; i++) {
             MeasurementUnit lowerMeasure = EnumUtils.MEASUREMENT_UNITS[i];
             String symbolStr = spaceStr + lowerMeasure.symbol;
             if (lowerMeasure.below(value) && lowerMeasure.ordinal() == 0) {
                 if (isShort) {
-                    return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
+                    return TextComponentUtil.getString(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
                 }
-                return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
+                return TextComponentUtil.build(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
             }
             if (lowerMeasure.ordinal() + 1 >= EnumUtils.MEASUREMENT_UNITS.length) {
                 if (isShort) {
-                    return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
+                    return TextComponentUtil.getString(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
                 }
-                return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
+                return TextComponentUtil.build(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
             }
             if (i + 1 < EnumUtils.MEASUREMENT_UNITS.length) {
                 MeasurementUnit upperMeasure = EnumUtils.MEASUREMENT_UNITS[i + 1];
                 if ((lowerMeasure.above(value) && upperMeasure.below(value)) || lowerMeasure.value == value) {
                     if (isShort) {
-                        return TextComponentUtil.getString(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
+                        return TextComponentUtil.getString(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + symbolStr + unit.getSymbol());
                     }
-                    return TextComponentUtil.build(prefix + roundDecimals(lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
+                    return TextComponentUtil.build(roundDecimals(negative, lowerMeasure.process(value), decimalPlaces) + " " + lowerMeasure.name, label);
                 }
             }
         }
         if (isShort) {
-            return TextComponentUtil.getString(prefix + roundDecimals(value, decimalPlaces) + spaceStr + unit.getSymbol());
+            return TextComponentUtil.getString(roundDecimals(negative, value, decimalPlaces) + spaceStr + unit.getSymbol());
         }
-        return TextComponentUtil.build(prefix + roundDecimals(value, decimalPlaces) + " ", label);
+        return TextComponentUtil.build(roundDecimals(negative, value, decimalPlaces) + " ", label);
     }
 
     public static ITextComponent getDisplayShort(double value, TemperatureUnit unit) {
@@ -109,6 +110,10 @@ public class UnitDisplayUtils {//TODO: Maybe at some point improve on the ITextC
 
     public static ITextComponent getDisplayShort(double value, RadiationUnit unit, int decimalPlaces) {
         return getDisplayBase(value, unit, decimalPlaces, true, true);
+    }
+
+    public static double roundDecimals(boolean negative, double d, int decimalPlaces) {
+        return negative ? roundDecimals(-d, decimalPlaces) : roundDecimals(d, decimalPlaces);
     }
 
     public static double roundDecimals(double d, int decimalPlaces) {

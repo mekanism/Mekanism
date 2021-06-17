@@ -482,9 +482,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.TRANSMISSION_TYPE_ITEM, "Items");
         add(MekanismLang.TRANSMISSION_TYPE_HEAT, "Heat");
         //Chemical Attributes
-        add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, " - Radioactivity: %s sV/h");
+        add(APILang.CHEMICAL_ATTRIBUTE_RADIATION, " - Radioactivity: %s");
         add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY, " - Coolant Efficiency: %s");
-        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Thermal Enthalpy: %s J/mB");
+        add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_ENTHALPY, " - Thermal Enthalpy: %s");
+        add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS, " - Burn Time: %s t");
+        add(APILang.CHEMICAL_ATTRIBUTE_FUEL_ENERGY_DENSITY, " - Energy Density: %s");
         //Colors
         for (EnumColor color : EnumUtils.COLORS) {
             add(color.getLangEntry(), color.getEnglishName());
@@ -574,7 +576,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Generic
         add(APILang.GENERIC, "%s");
         //Note: How translation text component is implemented requires a double percent sign to make it show up as a single percent sign
-        add(APILang.GENERIC_PERCENT, "%s%%");
+        add(MekanismLang.GENERIC_PERCENT, "%s%%");
         add(MekanismLang.GENERIC_WITH_COMMA, "%s, %s");
         add(MekanismLang.GENERIC_STORED, "%s: %s");
         add(MekanismLang.GENERIC_STORED_MB, "%s: %s mB");
@@ -587,6 +589,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.GENERIC_FRACTION, "%s/%s");
         add(MekanismLang.GENERIC_TRANSFER, "- %s (%s)");
         add(MekanismLang.GENERIC_PER_TICK, "%s/t");
+        add(MekanismLang.GENERIC_PER_MB, "%s/mB");
         add(MekanismLang.GENERIC_PRE_STORED, "%s %s: %s");
         add(MekanismLang.GENERIC_BLOCK_POS, "%s, %s, %s");
         add(MekanismLang.GENERIC_HEX, "#%s");

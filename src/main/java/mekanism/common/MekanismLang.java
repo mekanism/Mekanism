@@ -101,6 +101,7 @@ public enum MekanismLang implements ILangEntry {
     NEW_YEAR_LINE_THREE("holiday", "new_year.3"),
     MAY_4_LINE_ONE("holiday", "may_4.1"),
     //Generic
+    GENERIC_PERCENT("generic", "percent"),
     GENERIC_WITH_COMMA("generic", "with_comma"),
     GENERIC_STORED("generic", "stored"),
     GENERIC_STORED_MB("generic", "stored.mb"),
@@ -113,6 +114,7 @@ public enum MekanismLang implements ILangEntry {
     GENERIC_FRACTION("generic", "fraction"),
     GENERIC_TRANSFER("generic", "transfer"),
     GENERIC_PER_TICK("generic", "per_tick"),
+    GENERIC_PER_MB("generic", "per_mb"),
     GENERIC_PRE_STORED("generic", "pre_pre_colon"),
     GENERIC_BLOCK_POS("generic", "block_pos"),
     GENERIC_HEX("generic", "hex"),

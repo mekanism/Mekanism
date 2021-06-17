@@ -1,7 +1,7 @@
 package mekanism.common.util.text;
 
 import java.text.NumberFormat;
-import mekanism.api.text.APILang;
+import mekanism.common.MekanismLang;
 import net.minecraft.util.text.ITextComponent;
 
 public final class TextUtils {
@@ -15,7 +15,7 @@ public final class TextUtils {
     private static final NumberFormat doubleFormatter = NumberFormat.getNumberInstance();
 
     public static ITextComponent getPercent(double ratio) {
-        return APILang.GENERIC_PERCENT.translate(Math.round(ratio * 100));
+        return MekanismLang.GENERIC_PERCENT.translate(Math.round(ratio * 100));
     }
 
     public static String format(long count) {

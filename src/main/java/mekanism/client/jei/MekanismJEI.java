@@ -27,6 +27,7 @@ import mekanism.client.jei.ChemicalStackHelper.GasStackHelper;
 import mekanism.client.jei.ChemicalStackHelper.InfusionStackHelper;
 import mekanism.client.jei.ChemicalStackHelper.PigmentStackHelper;
 import mekanism.client.jei.ChemicalStackHelper.SlurryStackHelper;
+import mekanism.client.jei.machine.BoilerRecipeCategory;
 import mekanism.client.jei.machine.ChemicalCrystallizerRecipeCategory;
 import mekanism.client.jei.machine.ChemicalDissolutionRecipeCategory;
 import mekanism.client.jei.machine.ChemicalInfuserRecipeCategory;
@@ -254,6 +255,7 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new NucleosynthesizingRecipeCategory(guiHelper));
 
         registry.addRecipeCategories(new SPSRecipeCategory(guiHelper));
+        registry.addRecipeCategories(new BoilerRecipeCategory(guiHelper, MekanismBlocks.BOILER_CASING.getRegistryName()));
 
         registry.addRecipeCategories(new SawmillRecipeCategory(guiHelper, MekanismBlocks.PRECISION_SAWMILL));
 
@@ -303,12 +305,12 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, MekanismBlocks.PAINTING_MACHINE, MekanismRecipeType.PAINTING);
         RecipeRegistryHelper.registerCondensentrator(registry);
         RecipeRegistryHelper.registerNutritionalLiquifier(registry);
-        RecipeRegistryHelper.registerSPS(registry);
+        registry.addRecipes(SPSRecipeCategory.getSPSRecipes(), MekanismBlocks.SPS_CASING.getRegistryName());
+        registry.addRecipes(BoilerRecipeCategory.getBoilerRecipes(), MekanismBlocks.BOILER_CASING.getRegistryName());
         RecipeRegistryHelper.register(registry, ENERGY_CONVERSION, MekanismRecipeType.ENERGY_CONVERSION);
         RecipeRegistryHelper.register(registry, GAS_CONVERSION, MekanismRecipeType.GAS_CONVERSION);
         RecipeRegistryHelper.register(registry, INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
         RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.getItemStack()});
-        //TODO - 10.1: Do something similar as we do to fission, and make it so that the boiler can shows that it can work?
 
         if (Mekanism.hooks.JEITweakerLoaded) {
             //JEI Tweaker compat
@@ -342,6 +344,8 @@ public class MekanismJEI implements IModPlugin {
               MekanismBlocks.SUPERCHARGED_COIL);
         CatalystRegistryHelper.register(registry, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER.getRegistryName(), MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER,
               MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK);
+        CatalystRegistryHelper.register(registry, MekanismBlocks.BOILER_CASING.getRegistryName(), MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE,
+              MekanismBlocks.PRESSURE_DISPERSER, MekanismBlocks.SUPERHEATING_ELEMENT);
         CatalystRegistryHelper.register(registry, MekanismBlocks.PRESSURIZED_REACTION_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.ISOTOPIC_CENTRIFUGE);
         CatalystRegistryHelper.register(registry, MekanismBlocks.NUTRITIONAL_LIQUIFIER);

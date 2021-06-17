@@ -12,6 +12,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.text.ITooltipHelper;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 import org.apache.logging.log4j.LogManager;
@@ -39,8 +40,9 @@ public class MekanismAPI {
     private static IForgeRegistry<Pigment> PIGMENT_REGISTRY;
     private static IForgeRegistry<Slurry> SLURRY_REGISTRY;
     private static IForgeRegistry<ModuleData<?>> MODULE_REGISTRY;
-    private static IRadiationManager RADIATION_MANAGER;
     private static IModuleHelper MODULE_HELPER;
+    private static IRadiationManager RADIATION_MANAGER;
+    private static ITooltipHelper TOOLTIP_HELPER;
 
     //Note: None of the empty variants support registry replacement
     //TODO - 1.17: Rename registry names for the empty types to just being mekanism:empty instead of mekanism:empty_type,
@@ -180,5 +182,21 @@ public class MekanismAPI {
             }
         }
         return RADIATION_MANAGER;
+    }
+
+    /**
+     * Mostly for internal use, allows us to access a couple internal helper methods for formatting some numbers in tooltips.
+     */
+    public static ITooltipHelper getTooltipHelper() {
+        // Harmless race
+        if (TOOLTIP_HELPER == null) {
+            try {
+                Class<?> clazz = Class.forName("mekanism.common.util.text.TooltipHelper");
+                TOOLTIP_HELPER = (ITooltipHelper) clazz.getField("INSTANCE").get(null);
+            } catch (ReflectiveOperationException ex) {
+                logger.fatal("Error retrieving TooltipHelper, Mekanism may be absent, damaged, or outdated.");
+            }
+        }
+        return TOOLTIP_HELPER;
     }
 }
