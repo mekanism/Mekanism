@@ -45,6 +45,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
             minecraft.textureManager.bind(getResource());
             blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             double progress = getProgress();
+            boolean warning = false;//TODO - 10.1: Hook up warnings
             if (type.isVertical()) {
                 int displayInt = (int) (progress * height);
                 if (displayInt > 0) {
@@ -52,8 +53,8 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
                     if (type.isReverse()) {
                         innerOffsetY += type.getTextureHeight() - displayInt;
                     }
-                    blit(matrix, x, y + innerOffsetY, type.getOverlayX(), type.getOverlayY() + innerOffsetY, width, displayInt, type.getTextureWidth(),
-                          type.getTextureHeight(), progress);
+                    blit(matrix, x, y + innerOffsetY, type.getOverlayX(warning), type.getOverlayY(warning) + innerOffsetY, width, displayInt,
+                          type.getTextureWidth(), type.getTextureHeight(), progress);
                 }
             } else {
                 int innerOffsetX = type == ProgressType.BAR ? 1 : 0;
@@ -62,8 +63,8 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
                     if (type.isReverse()) {
                         innerOffsetX += type.getTextureWidth() - displayInt;
                     }
-                    blit(matrix, x + innerOffsetX, y, type.getOverlayX() + innerOffsetX, type.getOverlayY(), displayInt, height, type.getTextureWidth(),
-                          type.getTextureHeight(), progress);
+                    blit(matrix, x + innerOffsetX, y, type.getOverlayX(warning) + innerOffsetX, type.getOverlayY(warning), displayInt, height,
+                          type.getTextureWidth(), type.getTextureHeight(), progress);
                 }
             }
         }
