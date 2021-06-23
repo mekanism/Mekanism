@@ -39,6 +39,7 @@
   "description.mekanismgenerators.fusion_reactor_frame": "Armação reforçada que pode ser utilizada no multibloco do Reator de Fusão.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Um bloco que pode ser usado para permitir monitoramento básico de um reactor usando redstone.",
   "description.mekanismgenerators.fusion_reactor_port": "Um bloco de armação reforçada que é capaz de gerenciar a transferência de gás e de energia do Reator de Fusão.",
+  "description.mekanismgenerators.gas_burning_generator": "Um gerador que aproveita os diversos gases moleculares para produzir energia. ",
   "description.mekanismgenerators.heat_generator": "Um gerador que usa o calor da lava ou outros recursos combustíveis para produzir energia.",
   "description.mekanismgenerators.laser_focus_matrix": "Um painel de Vidro do Reator de Fusão que é capaz de absorver energia ótica e dessa forma aquecendo o Reator de Fusão.",
   "description.mekanismgenerators.reactor.logic.capacity": "Saída quando a capacidade de calor do núcleo do reator foi atingida",
