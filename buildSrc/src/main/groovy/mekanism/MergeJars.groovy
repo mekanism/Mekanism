@@ -1,9 +1,11 @@
-package mekanism.tasks
+package mekanism
 
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.gradle.api.Project
+import org.gradle.api.file.CopySpec
 import org.gradle.api.tasks.SourceSet
+import org.gradle.api.tasks.util.PatternFilterable
 
 class MergeJars {
 
@@ -23,8 +25,8 @@ class MergeJars {
         for (String extraExclusion : extraExclusions) {
             toExcludeFromAll.add(extraExclusion)
         }
-        return {
-            exclude(toExcludeFromAll)
+        return { CopySpec c ->
+            c.exclude(toExcludeFromAll)
         }
     }
 
@@ -40,15 +42,14 @@ class MergeJars {
         mergeTags(project, sourceSets)
     }
 
-    static List<Closure> getGeneratedClosures(def version_properties) {
+    static List<Closure> getGeneratedClosures(def versionProperties) {
         List<Closure> generated = new ArrayList<>()
-        generated.add({
-            include 'META-INF/mods.toml'
-            expand version_properties
+        generated.add({ CopySpec c ->
+            c.include('META-INF/mods.toml')
+            c.expand(versionProperties)
         })
-        generated.add({
-            include 'META-INF/accesstransformer.cfg'
-            include 'data/**'
+        generated.add({ CopySpec c ->
+            c.include('META-INF/accesstransformer.cfg', 'data/**')
         })
         return generated
     }
@@ -56,10 +57,10 @@ class MergeJars {
     private static String mergeATs(SourceSet... sourceSets) {
         String text = ""
         for (SourceSet sourceSet : sourceSets) {
-            sourceSet.resources.matching {
-                include 'META-INF/accesstransformer.cfg'
-            }.each {
-                file -> text = text.isEmpty() ? file.getText() : text + "\n" + file.getText()
+            sourceSet.resources.matching { PatternFilterable pf ->
+                pf.include('META-INF/accesstransformer.cfg')
+            }.each { file ->
+                text = text.isEmpty() ? file.getText() : text + "\n" + file.getText()
             }
         }
         return text
@@ -68,8 +69,8 @@ class MergeJars {
     private static String mergeModsTOML(SourceSet... sourceSets) {
         String text = ""
         for (SourceSet sourceSet : sourceSets) {
-            sourceSet.resources.matching {
-                include 'META-INF/mods.toml'
+            sourceSet.resources.matching { PatternFilterable pf ->
+                pf.include('META-INF/mods.toml')
             }.each { file ->
                 if (text.isEmpty()) {
                     //Nothing added yet, take it all
@@ -87,7 +88,7 @@ class MergeJars {
     }
 
     private static void mergeTags(Project project, SourceSet... sourceSets) {
-        Closure tagFilter = { include '**/data/*/tags/**/*.json' }
+        Closure tagFilter = { PatternFilterable pf -> pf.include('**/data/*/tags/**/*.json') }
         Map<String, List<String>> reverseTags = new HashMap<>()
         for (SourceSet sourceSet : sourceSets) {
             sourceSet.resources.srcDirs.each { srcDir ->
@@ -115,7 +116,7 @@ class MergeJars {
     private static void mergeTag(Project project, String tag, List<String> tagPaths) {
         //println(tag + " appeared " + tagPaths.size() + " times")
         Object outputTagAsJson = null
-        tagPaths.each {path ->
+        tagPaths.each { path ->
             Object tagAsJson = new JsonSlurper().parse(project.file(path))
             if (outputTagAsJson == null) {
                 outputTagAsJson = tagAsJson

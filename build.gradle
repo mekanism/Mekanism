@@ -1,6 +1,6 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import mekanism.tasks.MergeJars
+import mekanism.MergeJars
 
 buildscript {
     repositories {
@@ -14,7 +14,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.0.16', changing: true
     }
 }
 
@@ -25,6 +25,14 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+
+wrapper {
+    //Define wrapper values here so as to not have to always do so when updating gradlew.properties
+    gradleVersion = '7.1'
+    distributionType = Wrapper.DistributionType.ALL
 }
 
 defaultTasks 'build'
@@ -40,8 +48,6 @@ idea {
         }
     }
 }
-
-apply plugin: 'net.minecraftforge.gradle'
 
 sourceSets {
     api {
@@ -112,54 +118,52 @@ def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, S
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
-    def compileExtenders = [apiCompile, additionsCompile, generatorsCompile, defenseCompile, toolsCompile, testCompile,
-                            datagenmainCompile, datagenadditionsCompile, datagengeneratorsCompile, datagendefenseCompile, datagentoolsCompile]
-    def implementationExtenders = [apiImplementation, additionsImplementation, generatorsImplementation, defenseImplementation, toolsImplementation, testImplementation,
-                                   datagenmainImplementation, datagenadditionsImplementation, datagengeneratorsImplementation, datagendefenseImplementation, datagentoolsImplementation]
-    def compileOnlyExtenders = [apiCompileOnly, additionsCompileOnly, generatorsCompileOnly, defenseCompileOnly, toolsCompileOnly, testCompileOnly,
-                                datagenmainCompileOnly, datagenadditionsCompileOnly, datagengeneratorsCompileOnly, datagendefenseCompileOnly, datagentoolsCompileOnly]
-    def runtimeOnlyExtenders = [apiRuntimeOnly, additionsRuntimeOnly, generatorsRuntimeOnly, defenseRuntimeOnly, toolsRuntimeOnly,
-                                datagenmainRuntimeOnly, datagenadditionsRuntimeOnly, datagengeneratorsRuntimeOnly, datagendefenseRuntimeOnly, datagentoolsRuntimeOnly]
-    for (def compileExtender : compileExtenders) {
-        compileExtender.extendsFrom(compile)
-    }
-    for (def implementationExtender : implementationExtenders) {
-        implementationExtender.extendsFrom(implementation)
-    }
-    for (def compileOnlyExtender : compileOnlyExtenders) {
-        compileOnlyExtender.extendsFrom(compileOnly)
-    }
-    for (def runtimeOnlyExtender : runtimeOnlyExtenders) {
-        runtimeOnlyExtender.extendsFrom(runtimeOnly)
+    extendConfigurations(compile, apiCompile, testCompile, datagenmainCompile)
+    extendConfigurations(implementation, apiImplementation, testImplementation, datagenmainImplementation)
+    extendConfigurations(compileOnly, apiCompileOnly, testCompileOnly, datagenmainCompileOnly)
+    extendConfigurations(runtimeOnly, apiRuntimeOnly, datagenmainRuntimeOnly)
+    //Extend configurations for alternate modules. First by making the compile, implementation, compileOnly, runtimeOnly equivalents
+    // for those modules extend the main ones, and then by making the corresponding ones for datagen for the module extend those.
+    // This way if we add a dependency/integration in a submodule instead of the main module of Mekanism, the datagen of the corresponding
+    // module will be able to properly access the dependency
+    for (def name : ["additions", "defense", "generators", "tools"]) {
+        maybeCreate("datagen" + name + "Compile").extendsFrom(maybeCreate(name + "Compile").extendsFrom(compile))
+        maybeCreate("datagen" + name + "Implementation").extendsFrom(maybeCreate(name + "Implementation").extendsFrom(implementation))
+        maybeCreate("datagen" + name + "CompileOnly").extendsFrom(maybeCreate(name + "CompileOnly").extendsFrom(compileOnly))
+        maybeCreate("datagen" + name + "RuntimeOnly").extendsFrom(maybeCreate(name + "RuntimeOnly").extendsFrom(runtimeOnly))
     }
 }
 
-def version_properties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                          "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range]
-def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
+static void extendConfigurations(Configuration base, Configuration... configurations) {
+    for (def configuration : configurations) {
+        configuration.extendsFrom(base)
+    }
+}
 
 ext {
-    replaceResourcesInfo = [
-            "main"      : sourceSets.main,
-            "additions" : sourceSets.additions,
-            "generators": sourceSets.generators,
-            "defense"   : sourceSets.defense,
-            "tools"     : sourceSets.tools,
-    ]
+    versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
+                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range]
+    jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
-replaceResourcesInfo.each { output, sourceSet ->
-    return tasks.create("${output}ReplaceResources", Copy) {
-        outputs.upToDateWhen { false }
+def mainReplaceResources = createReplaceResourcesTask("main", sourceSets.main)
+def additionsReplaceResources = createReplaceResourcesTask("additions", sourceSets.additions)
+def generatorsReplaceResources = createReplaceResourcesTask("generators", sourceSets.generators)
+def defenseReplaceResources = createReplaceResourcesTask("defense", sourceSets.defense)
+def toolsReplaceResources = createReplaceResourcesTask("tools", sourceSets.tools)
+
+def createReplaceResourcesTask(String output, SourceSet sourceSet) {
+    return tasks.register("${output}ReplaceResources", Copy) {
+        it.outputs.upToDateWhen { false }
         def modsToml = copySpec {
             from(sourceSet.resources) {
                 include "META-INF/mods.toml"
-                expand version_properties
+                expand versionProperties
             }
         }
         //Copy it into the build dir
-        with modsToml
-        into "$buildDir/resources/${output}/"
+        it.with modsToml
+        it.into "$buildDir/resources/${output}/"
         //If IntelliJ's output dir exists, copy it there as well
         if (new File("$rootDir/out/production/Mekanism.${output}/").exists()) {
             //Note: This copies it into the correct place, but it still doesn't have the IntelliJ
@@ -183,7 +187,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 minecraft {
     mappings channel: "${mappings_channel}", version: "${mappings_version}"
 
-    accessTransformers(file('src/main/resources/META-INF/accesstransformer.cfg'),
+    accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'),
             file('src/additions/resources/META-INF/accesstransformer.cfg'),
             file('src/tools/resources/META-INF/accesstransformer.cfg'))
 
@@ -347,8 +351,7 @@ repositories {
     whenObjectAdded {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
         if (it instanceof MavenArtifactRepository) {
             def url = it.url.toString()
-            if (url == 'https://files.minecraftforge.net/maven/' || url == 'https://maven.minecraftforge.net/' ||
-                    url == 'https://libraries.minecraft.net/' || url == 'https://repo.maven.apache.org/maven2/') {
+            if (url == 'https://maven.minecraftforge.net/' || url == 'https://libraries.minecraft.net/' || url == 'https://repo.maven.apache.org/maven2/') {
                 try {
                     it.content {
                         excludeGroup 'curse.maven'
@@ -398,8 +401,6 @@ dependencies {
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
-    //TODO: Double check if putting implementation here instead of compileOnly and runtimeOnly
-    // pollutes the dependencies for our artifact on maven
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
     runtimeOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
 
@@ -433,92 +434,41 @@ if (project.hasProperty('UPDATE_MAPPINGS')) {
         allExtraDirs.addAll(sourceSet.java.srcDirs)
     }
     extractRangeMap {
-        sources allExtraDirs
+        sources.from(allExtraDirs)
     }
     applyRangeMap {
-        sources allExtraDirs
+        sources.from(allExtraDirs)
     }
     allExtraDirs.each { extractMappedNew.addTarget it }
 }
 
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
-    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
-    exclude 'META-INF/mods.toml'
-    //Add our logo file
-    from("${projectDir}") { include 'logo.png' }
-    finalizedBy mainReplaceResources
-    //Minify json resources
-    doLast {
-        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+//Set the various variables/settings for the different process resources tasks
+processResources { setupProcessResources(processResources, mainReplaceResources) }
+processAdditionsResources { setupProcessResources(processAdditionsResources, additionsReplaceResources) }
+processDefenseResources { setupProcessResources(processDefenseResources, defenseReplaceResources) }
+processGeneratorsResources { setupProcessResources(processGeneratorsResources, generatorsReplaceResources) }
+processToolsResources { setupProcessResources(processToolsResources, toolsReplaceResources) }
+
+def setupProcessResources(ProcessResources process, TaskProvider<Task> replaceResources) {
+    process.duplicatesStrategy(DuplicatesStrategy.FAIL)
+    process.exclude('META-INF/mods.toml')
+    process.from("${projectDir}") { include 'logo.png' }
+    process.configure { finalizedBy(replaceResources) }
+    process.doLast {
+        fileTree(dir: process.getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
             File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
         }
     }
 }
 
-processAdditionsResources {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
-    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
-    exclude 'META-INF/mods.toml'
-    //Add our logo file
-    from("${projectDir}") { include 'logo.png' }
-    finalizedBy additionsReplaceResources
-    //Minify json resources
-    doLast {
-        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
-        }
-    }
-}
-
-processDefenseResources {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
-    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
-    exclude 'META-INF/mods.toml'
-    //Add our logo file
-    from("${projectDir}") { include 'logo.png' }
-    finalizedBy defenseReplaceResources
-    //Minify json resources
-    doLast {
-        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
-        }
-    }
-}
-
-processGeneratorsResources {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
-    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
-    exclude 'META-INF/mods.toml'
-    //Add our logo file
-    from("${projectDir}") { include 'logo.png' }
-    finalizedBy generatorsReplaceResources
-    //Minify json resources
-    doLast {
-        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
-        }
-    }
-}
-
-processToolsResources {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
-    //Exclude the mods.toml file as we manually handle that and don't want it to invalidate our cache
-    exclude 'META-INF/mods.toml'
-    //Add our logo file
-    from("${projectDir}") { include 'logo.png' }
-    finalizedBy toolsReplaceResources
-    //Minify json resources
-    doLast {
-        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file)))
-        }
-    }
-}
+//Make the various classes tasks depend on the corresponding replaceResources tasks in addition to the default processResources tasks they depend on
+classes.configure { dependsOn(mainReplaceResources) }
+additionsClasses.configure { dependsOn(additionsReplaceResources) }
+defenseClasses.configure { dependsOn(defenseReplaceResources) }
+generatorsClasses.configure { dependsOn(generatorsReplaceResources) }
+toolsClasses.configure { dependsOn(toolsReplaceResources) }
 
 def getManifestAttributes(String title) {
-    //TODO: Eventually we may want to try and improve the information supplied here
-    // if there are parts of it that are not as they are supposed to be
     return [
             "Specification-Title"     : title,
             "Specification-Vendor"    : "Mekanism",
@@ -531,21 +481,21 @@ def getManifestAttributes(String title) {
 }
 
 jar {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
     from([sourceSets.api.output, sourceSets.main.output])
     manifest.attributes(getManifestAttributes("Mekanism"))
     afterEvaluate { finalizedBy reobfJar }
 }
 
 task sourcesJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses]) {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier.set("sources")
     from(sourceSets.api.allJava, sourceSets.main.allJava, sourceSets.additions.allJava, sourceSets.defense.allJava, sourceSets.generators.allJava, sourceSets.tools.allJava)
     manifest.attributes(getManifestAttributes("Mekanism"))
 }
 
 task apiJar(type: Jar) {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier.set("api")
     from sourceSets.api.output
     manifest.attributes(getManifestAttributes("Mekanism"))
@@ -553,9 +503,7 @@ task apiJar(type: Jar) {
 }
 
 task additionsJar(type: Jar) {
-    //Mark that it shouldn't run before the replace resources gets run
-    shouldRunAfter(additionsReplaceResources)
-    duplicatesStrategy = DuplicatesStrategy.FAIL
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveFileName.set("MekanismAdditions-${project.version}.jar")
     archiveClassifier.set("additions")
     from sourceSets.additions.output
@@ -564,9 +512,7 @@ task additionsJar(type: Jar) {
 }
 
 task defenseJar(type: Jar) {
-    //Mark that it shouldn't run before the replace resources gets run
-    shouldRunAfter(defenseReplaceResources)
-    duplicatesStrategy = DuplicatesStrategy.FAIL
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveFileName.set("MekanismDefense-${project.version}.jar")
     archiveClassifier.set("defense")
     from sourceSets.defense.output
@@ -575,9 +521,7 @@ task defenseJar(type: Jar) {
 }
 
 task generatorsJar(type: Jar) {
-    //Mark that it shouldn't run before the replace resources gets run
-    shouldRunAfter(generatorsReplaceResources)
-    duplicatesStrategy = DuplicatesStrategy.FAIL
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveFileName.set("MekanismGenerators-${project.version}.jar")
     archiveClassifier.set("generators")
     from sourceSets.generators.output
@@ -586,9 +530,7 @@ task generatorsJar(type: Jar) {
 }
 
 task toolsJar(type: Jar) {
-    //Mark that it shouldn't run before the replace resources gets run
-    shouldRunAfter(toolsReplaceResources)
-    duplicatesStrategy = DuplicatesStrategy.FAIL
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveFileName.set("MekanismTools-${project.version}.jar")
     archiveClassifier.set("tools")
     from sourceSets.tools.output
@@ -596,17 +538,16 @@ task toolsJar(type: Jar) {
     afterEvaluate { finalizedBy reobfToolsJar }
 }
 
-task allJar(type: Jar) {
-    //Make sure the other tasks run first
-    shouldRunAfter(apiJar, jar, additionsJar, defenseJar, generatorsJar, toolsJar,
-            processResources, processAdditionsResources, processDefenseResources,
-            processGeneratorsResources, processToolsResources)
+task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defenseClasses, generatorsClasses, toolsClasses]) {
+    mustRunAfter(clean)
     afterEvaluate { finalizedBy reobfAllJar }
-    duplicatesStrategy = DuplicatesStrategy.FAIL
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
     archiveClassifier.set("all")
     manifest.attributes(getManifestAttributes("MekanismAll"))
     //Start by generating the merged data
-    MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
+    doFirst {
+        MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
+    }
     //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
     List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project)
@@ -618,12 +559,12 @@ task allJar(type: Jar) {
     from(sourceSets.generators.output, excludeFromAll)
     from(sourceSets.tools.output, excludeFromAll)
     //And finally copy over the generated files
-    MergeJars.getGeneratedClosures(version_properties).each { closure -> from("$buildDir/generated", closure) }
+    MergeJars.getGeneratedClosures(versionProperties).each { closure -> from("$buildDir/generated", closure) }
 }
 
-tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
+tasks.withType(JavaCompile).configureEach({
+    it.options.encoding = 'UTF-8'
+})
 
 artifacts {
     archives apiJar
@@ -637,12 +578,12 @@ artifacts {
 }
 
 reobf {
-    apiJar { classpath = sourceSets.api.compileClasspath }
-    jar { classpath = sourceSets.main.compileClasspath }
-    additionsJar { classpath = sourceSets.additions.compileClasspath }
-    generatorsJar { classpath = sourceSets.generators.compileClasspath }
-    defenseJar { classpath = sourceSets.defense.compileClasspath }
-    toolsJar { classpath = sourceSets.tools.compileClasspath }
+    apiJar { classpath.from(sourceSets.api.compileClasspath) }
+    jar { classpath.from(sourceSets.main.compileClasspath) }
+    additionsJar { classpath.from(sourceSets.additions.compileClasspath) }
+    generatorsJar { classpath.from(sourceSets.generators.compileClasspath) }
+    defenseJar { classpath.from(sourceSets.defense.compileClasspath) }
+    toolsJar { classpath.from(sourceSets.tools.compileClasspath) }
     allJar {}
 }
 
@@ -680,36 +621,29 @@ task optimizePng {
 def MAVEN_PASSWORD_PROPERTY_NAME = 'mekanismMavenPassword'
 
 publishing {
-    publications {
-        maven(MavenPublication) {
-            from components.java
-            groupId = project.group
-            version = project.version
-            artifactId = project.archivesBaseName
-            artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar, sourcesJar]
-            pom {
-                groupId = project.group
-                version = project.version
-                if (System.getenv("MAVEN_ARTIFACT") != null) {
-                    artifactId = System.getenv("MAVEN_ARTIFACT")
-                } else {
-                    artifactId = project.archivesBaseName
-                }
-                name = "Mekanism"
-                packaging 'jar'
-                description 'Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'
-                url = 'http://aidancbrady.com/mekanism/'
+    publications { PublicationContainer publicationContainer ->
+        publicationContainer.register("maven", MavenPublication) { MavenPublication publication ->
+            publication.from((SoftwareComponent) components.java)
+            publication.groupId = project.group
+            publication.version = project.version
+            publication.artifactId = System.getenv("MAVEN_ARTIFACT") ?: project.archivesBaseName
+            publication.artifacts = [apiJar, jar, generatorsJar, additionsJar, toolsJar, allJar, sourcesJar]
+            publication.pom {
+                name.set("Mekanism")
+                packaging = 'jar'
+                description.set('Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.')
+                url.set('https://aidancbrady.com/mekanism/')
                 scm {
-                    url = 'https://github.com/mekanism/Mekanism.git'
+                    url.set('https://github.com/mekanism/Mekanism.git')
                 }
                 issueManagement {
-                    system = 'github'
-                    url = 'https://github.com/mekanism/Mekanism/issues'
+                    system.set('github')
+                    url.set('https://github.com/mekanism/Mekanism/issues')
                 }
                 licenses {
                     license {
-                        name = 'MIT'
-                        distribution = 'repo'
+                        name.set('MIT')
+                        distribution.set('repo')
                     }
                 }
                 withXml {
@@ -717,18 +651,18 @@ publishing {
                     NodeList allDeps = dependencies.'*'
 
                     // Remove forge deps
-                    allDeps.findAll() { Node el ->
+                    allDeps.<Node>findAll() { Node el ->
                         el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
                     }.forEach() { Node el ->
                         el.parent().remove(el)
                     }
                     //remove ForgeGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
-                    allDeps.findAll() { Node el ->
+                    allDeps.<Node>findAll() { Node el ->
                         el.version.text().contains('_mapped_')
                     }.each { Node el ->
-                        NodeList version = el.version
-                        version.each {
-                            it.setValue(it.text().substring(0, it.text().indexOf('_mapped_')))
+                        el.version.each { Node version ->
+                            def versionText = version.text()
+                            version.setValue(versionText.substring(0, versionText.indexOf('_mapped_')))
                         }
                         el.appendNode('optional', true)
                     }
@@ -749,7 +683,7 @@ publishing {
     }
 }
 
-tasks.curseforge.dependsOn jar, additionsJar, generatorsJar, defenseJar, toolsJar, apiJar
+tasks.curseforge.dependsOn jar, additionsJar, generatorsJar, /*defenseJar,*/ toolsJar, apiJar
 
 if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKey')) {
     println "Enabling Curseforge config"
@@ -774,7 +708,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 }.reverse().each { commit ->
                     String message = commit.shortMessage
                     if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {
-//Ignore PRs and Merges
+                        //Ignore PRs and Merges
                         message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
                             return "<a href=\"https://github.com/mekanism/Mekanism/issues/${match[1]}\">${match[0]}</a>"
                         })
