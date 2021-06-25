@@ -90,7 +90,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
 
     @Override
     protected ItemStack checkValidity(int slotIndex) {
-        int i = slotIndex - 19;
+        int i = slotIndex - 21;
         if (i >= 0 && tile.formula != null && tile.formula.isValidFormula()) {
             ItemStack stack = tile.formula.input.get(i);
             if (!stack.isEmpty()) {
