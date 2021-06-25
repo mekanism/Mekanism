@@ -17,12 +17,11 @@ body:
       placeholder: |
         1. Start by doing...
         2. Next do...
-        3. ...
-        4. See result described above
+        3. See result described above
   - type: dropdown
     id: minecraft-version
     attributes:
-      label: Minecraft Version
+      label: Minecraft version
       description: What version of Minecraft are you using?
       options:
         - 1.16.5 (Latest)
@@ -31,7 +30,7 @@ body:
       required: true
   - type: input
     attributes:
-      label: Forge Version
+      label: Forge version
       description: What version of Forge are you using?
       placeholder: e.g. 36.1.32
     validations:
@@ -39,7 +38,7 @@ body:
   - type: dropdown
     id: mekanism-version
     attributes:
-      label: Mekanism Version
+      label: Mekanism version
       description: What version of Mekanism are you using?
       options:
         - Current Dev Branch (Manually Compiled)
@@ -53,8 +52,8 @@ body:
   - type: textarea
     attributes:
       label: Other relevant versions
-      description: If this issue is related to other mods list their versions here.
+      description: If this issue is related to any other mods list their versions here.
   - type: input
     attributes:
-      label: "If a (crash)log is relevant for this issue, link it here: (_It's almost always relevant_)"
-      description: "[[gist](https://gist.github.com/) / [pastebin](https://pastebin.com/) / etc link here. Please make sure that it isn't set to expire.]"
+      label: "If a (crash)log is relevant for this issue, link it here: (It's almost always relevant)"
+      description: "Please provide a [gist](https://gist.github.com/) / [pastebin](https://pastebin.com/) / etc link here. (Make sure that it isn't set to expire!)"
