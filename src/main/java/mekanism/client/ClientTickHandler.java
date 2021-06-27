@@ -243,7 +243,7 @@ public class ClientTickHandler {
             if (isVisionEnhancementOn(minecraft.player)) {
                 visionEnhancement = true;
                 // adds if it doesn't exist, otherwise tops off duration to 200
-                minecraft.player.addPotionEffect(new EffectInstance(Effects.NIGHT_VISION, 200, 0, false, true, false));
+                minecraft.player.addPotionEffect(new EffectInstance(Effects.NIGHT_VISION, 300, 0, false, true, false));
             } else if (visionEnhancement) {
                 visionEnhancement = false;
                 minecraft.player.removePotionEffect(Effects.NIGHT_VISION);
