@@ -114,7 +114,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             }
             Set<Direction> outputs = info.getSidesForData(dataType);
             if (!outputs.isEmpty()) {
-                TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo, outputs.iterator().next());
+                TransitRequest ejectMap = InventoryUtils.getEjectItemMap(tile, ((InventorySlotInfo) slotInfo).getSlots(), outputs.iterator().next());
                 if (!ejectMap.isEmpty()) {
                     for (Direction side : outputs) {
                         TileEntity tile = WorldUtils.getTileEntity(this.tile.getLevel(), this.tile.getBlockPos().relative(side));
@@ -142,10 +142,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
 
         tickDelay = 10;
-    }
-
-    private TransitRequest getEjectItemMap(InventorySlotInfo slotInfo, Direction side) {
-        return InventoryUtils.getEjectItemMap(tile, slotInfo.getSlots(), side);
     }
 
     @ComputerMethod

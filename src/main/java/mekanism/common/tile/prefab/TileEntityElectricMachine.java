@@ -78,6 +78,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
 
     @Override
     protected void onUpdateServer() {
+        super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         recipeCacheLookupMonitor.updateAndProcess();
     }
