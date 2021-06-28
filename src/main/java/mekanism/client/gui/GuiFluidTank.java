@@ -18,8 +18,8 @@ public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, MekanismT
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiContainerEditModeTab<>(this, tile));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 48, 18));
     }

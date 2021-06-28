@@ -47,8 +47,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new TranslationButton(this, leftPos + 56, topPos + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiMinerFilerSelect(this, tile))));
         addButton(new MekanismImageButton(this, leftPos + 5, topPos + 5, 11, 14, getButtonLocation("back"),

@@ -25,8 +25,8 @@ public abstract class GuiRobit<CONTAINER extends Container & IEntityContainer<En
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiSecurityTab(this, robit, 120));
         addButton(GuiSideHolder.create(this, 176, 6, 106, false, false, SpecialColors.TAB_ROBIT_MENU));
         addButton(new MekanismImageButton(this, leftPos + 179, topPos + 10, 18, getButtonLocation("main"),

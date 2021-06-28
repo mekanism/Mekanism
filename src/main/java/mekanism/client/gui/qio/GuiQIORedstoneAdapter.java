@@ -40,8 +40,8 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiQIOFrequencyTab(this, tile));
         addButton(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true));
         addButton(new GuiInnerScreen(this, 7, 16, imageWidth - 15, 12, () -> {

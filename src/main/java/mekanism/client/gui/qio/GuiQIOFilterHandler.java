@@ -49,8 +49,8 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiQIOFrequencyTab(this, tile));
         addButton(new GuiInnerScreen(this, 9, 16, imageWidth - 18, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();

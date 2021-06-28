@@ -30,8 +30,8 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiFissionReactorTab(this, tile, FissionReactorTab.MAIN));
         addButton(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override

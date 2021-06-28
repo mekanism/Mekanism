@@ -43,8 +43,8 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiSlot(SlotType.NORMAL, this, 12, 136).setRenderAboveSlots());
         addButton(new TranslationButton(this, leftPos + 56, topPos + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiSorterFilerSelect(this, tile))));

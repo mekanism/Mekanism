@@ -3,10 +3,12 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.window.GuiWindow;
+import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.SelectedWindowData;
 import net.minecraft.client.gui.FontRenderer;
@@ -74,6 +76,12 @@ public interface IGuiWrapper {
     default GuiWindow getWindowHovering(double mouseX, double mouseY) {
         Mekanism.logger.error("Tried to call 'getWindowHovering' but unsupported in {}", getClass().getName());
         return null;
+    }
+
+    @Nonnull
+    default BooleanSupplier trackWarning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
+        Mekanism.logger.error("Tried to call 'trackWarning' but unsupported in {}", getClass().getName());
+        return warningSupplier;
     }
 
     @Nullable

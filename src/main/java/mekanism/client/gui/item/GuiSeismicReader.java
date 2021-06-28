@@ -45,8 +45,8 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiInnerScreen(this, 7, 11, 63, 49));
         addButton(new GuiInnerScreen(this, 74, 11, 51, 159));
         scrollBar = addButton(new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));

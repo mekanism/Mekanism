@@ -54,8 +54,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
         getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
         addButton(new GuiInnerScreen(this, 7, 15, imageWidth - 16, 12, () -> {

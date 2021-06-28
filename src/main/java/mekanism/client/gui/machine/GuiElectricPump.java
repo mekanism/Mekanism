@@ -29,8 +29,8 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiInnerScreen(this, 54, 23, 80, 41, () -> {
             List<ITextComponent> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent());
@@ -45,7 +45,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
         addButton(new GuiDownArrow(this, 32, 39));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), this));
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer()));
     }
 
     @Override

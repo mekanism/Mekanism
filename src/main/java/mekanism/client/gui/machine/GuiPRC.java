@@ -23,19 +23,25 @@ public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionCha
     }
 
     @Override
-    public void init() {
-        super.init();
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getActive, this));
+    protected void addGuiElements() {
+        super.addGuiElements();
+        //TODO - 10.1: Use proper suppliers for warnings
+        //TODO - 10.1: Figure out how to attach a warning to the output slots??
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
         addButton(new GuiFluidGauge(() -> tile.inputFluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 5, 10));
         addButton(new GuiGasGauge(() -> tile.inputGasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 28, 10));
-        addButton(new GuiGasGauge(() -> tile.outputGasTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 140, 40));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 163, 16));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 77, 38).jeiCategory(tile));
+        addButton(new GuiGasGauge(() -> tile.outputGasTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 140, 40)
+        );//.warning(WarningType.NO_SPACE_IN_OUTPUT, () -> true));
+        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 163, 16)
+        );//.warning(WarningType.NOT_ENOUGH_ENERGY, () -> true));
+        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.RIGHT, this, 77, 38).jeiCategory(tile)
+        );//.warning(WarningType.NO_MATCHING_RECIPE, () -> true));
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTextScaledBound(matrix, tile.getName(), imageWidth / 3 - 7, titleLabelY, titleTextColor(), 2 * imageWidth / 3);
+        float widthThird = imageWidth / 3F;
+        drawTextScaledBound(matrix, tile.getName(), widthThird - 7, titleLabelY, titleTextColor(), 2 * widthThird);
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

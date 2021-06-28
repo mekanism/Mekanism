@@ -16,8 +16,8 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiQIOFrequencyTab(this, menu.getHand()));
     }
 

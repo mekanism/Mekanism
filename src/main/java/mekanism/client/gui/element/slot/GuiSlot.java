@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.slot;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -8,6 +9,7 @@ import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
+import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -18,12 +20,19 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
     private static final int INVALID_SLOT_COLOR = MekanismRenderer.getColorARGB(EnumColor.DARK_RED, 0.8F);
     public static final int DEFAULT_HOVER_COLOR = 0x80FFFFFF;
+    private final SlotType slotType;
     private Supplier<ItemStack> validityCheck;
     private Supplier<ItemStack> storedStackSupplier;
     private Supplier<SlotOverlay> overlaySupplier;
+    @Nullable
+    private BooleanSupplier warningSupplier;
+    @Nullable
     private IntSupplier overlayColorSupplier;
+    @Nullable
     private SlotOverlay overlay;
+    @Nullable
     private IHoverable onHover;
+    @Nullable
     private IClickable onClick;
     private boolean renderHover;
     private boolean renderAboveSlots;
@@ -33,11 +42,19 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
     public GuiSlot(SlotType type, IGuiWrapper gui, int x, int y) {
         super(type.getTexture(), gui, x, y, type.getWidth(), type.getHeight());
+        this.slotType = type;
         active = false;
     }
 
     public GuiSlot validity(Supplier<ItemStack> validityCheck) {
+        //TODO - 10.1: Evaluate if any of these validity things should be moved to the warning system
         this.validityCheck = validityCheck;
+        return this;
+    }
+
+    //TODO - 10.1: Hook up usage of warnings
+    public GuiSlot warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
+        this.warningSupplier = gui().trackWarning(type, warningSupplier);
         return this;
     }
 
@@ -104,7 +121,11 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     private void draw(@Nonnull MatrixStack matrix) {
-        minecraft.textureManager.bind(getResource());
+        if (warningSupplier != null && warningSupplier.getAsBoolean()) {
+            minecraft.textureManager.bind(slotType.getWarningTexture());
+        } else {
+            minecraft.textureManager.bind(getResource());
+        }
         blit(matrix, x, y, 0, 0, width, height, width, height);
         if (overlaySupplier != null) {
             overlay = overlaySupplier.get();

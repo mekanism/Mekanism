@@ -22,8 +22,8 @@ public class GuiQIODashboard extends GuiQIOItemViewer<QIODashboardContainer> {
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiQIOFrequencyTab(this, tile));
         addButton(new GuiSecurityTab(this, tile));
     }

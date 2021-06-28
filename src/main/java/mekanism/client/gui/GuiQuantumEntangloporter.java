@@ -55,8 +55,8 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         scrollList = addButton(new GuiTextScrollList(this, 27, 36, 122, 42));
         publicButton = addButton(new TranslationButton(this, leftPos + 27, topPos + 14, 60, 20, MekanismLang.PUBLIC, () -> {
             privateMode = false;
@@ -89,17 +89,17 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
         frequencyField.setEnterHandler(this::setFrequency);
         frequencyField.setInputValidator(InputValidator.or(InputValidator.DIGIT, InputValidator.LETTER, InputValidator.FREQUENCY_CHARS));
         frequencyField.addCheckmarkButton(this::setFrequency);
-        addButton(new GuiEnergyTab(() -> {
+        addButton(new GuiEnergyTab(this, () -> {
             InventoryFrequency frequency = tile.getFreq();
             EnergyDisplay storing = frequency == null ? EnergyDisplay.ZERO : EnergyDisplay.of(frequency.storedEnergy.getEnergy(), frequency.storedEnergy.getMaxEnergy());
             EnergyDisplay rate = EnergyDisplay.of(tile.getInputRate());
             return Arrays.asList(MekanismLang.STORING.translate(storing), MekanismLang.MATRIX_INPUT_RATE.translate(rate));
-        }, this));
-        addButton(new GuiHeatTab(() -> {
+        }));
+        addButton(new GuiHeatTab(this, () -> {
             ITextComponent transfer = MekanismUtils.getTemperatureDisplay(tile.getLastTransferLoss(), TemperatureUnit.KELVIN, false);
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getLastEnvironmentLoss(), TemperatureUnit.KELVIN, false);
             return Arrays.asList(MekanismLang.TRANSFERRED_RATE.translate(transfer), MekanismLang.DISSIPATED_RATE.translate(environment));
-        }, this));
+        }));
         updateButtons();
     }
 

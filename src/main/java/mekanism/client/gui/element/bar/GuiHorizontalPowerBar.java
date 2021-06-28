@@ -41,13 +41,13 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
     }
 
     public GuiHorizontalPowerBar(IGuiWrapper gui, IBarInfoHandler handler, int x, int y, int desiredWidth) {
-        super(ENERGY_BAR, gui, handler, x, y, desiredWidth, texHeight);
+        super(ENERGY_BAR, gui, handler, x, y, desiredWidth, texHeight, true);
         widthScale = desiredWidth / (double) texWidth;
     }
 
     @Override
-    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
-        int displayInt = (int) (getHandler().getLevel() * texWidth);
+    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+        int displayInt = (int) (handlerLevel * texWidth);
         if (displayInt > 0) {
             blit(matrix, x + 1, y + 1, calculateScaled(widthScale, displayInt), texHeight, 0, 0, displayInt, texHeight, texWidth, texHeight);
         }

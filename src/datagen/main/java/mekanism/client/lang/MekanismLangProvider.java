@@ -716,6 +716,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DANGER, "Danger");
         add(MekanismLang.COMPASS, "Compass");
         add(MekanismLang.RADIAL_SCREEN, "Radial Selector Screen");
+        //GUI Issues
+        add(MekanismLang.ISSUES, "Issues:");
+        add(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY, " - Not enough energy to operate");
+        add(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY_REDUCED_RATE, " - Not enough energy to run at maximum speed");
+        add(MekanismLang.ISSUE_NO_SPACE_IN_OUTPUT, " - Not enough room in output");
+        add(MekanismLang.ISSUE_NO_MATCHING_RECIPE, " - No matching recipe or not enough input");
+        add(MekanismLang.ISSUE_INPUT_DOESNT_PRODUCE_OUTPUT, " - Input does not produce output");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");

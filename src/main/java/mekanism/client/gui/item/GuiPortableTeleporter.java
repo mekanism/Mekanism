@@ -65,8 +65,8 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiTeleporterStatus(this, () -> getFrequency() != null, () -> clientStatus));
         addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override

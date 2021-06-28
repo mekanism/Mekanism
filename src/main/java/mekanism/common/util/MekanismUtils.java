@@ -650,6 +650,7 @@ public final class MekanismUtils {
         GUI_GAUGE("gui/gauge"),
         GUI_PROGRESS("gui/progress"),
         GUI_SLOT("gui/slot"),
+        GUI_TAB("gui/tabs"),
         SOUND("sound"),
         RENDER("render"),
         TEXTURE_BLOCKS("textures/block"),

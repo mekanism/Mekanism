@@ -39,8 +39,8 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         moduleScreen = addButton(new GuiModuleScreen(this, 138, 20, stack -> {
             int slotId = menu.slots.get(selected).getSlotIndex();
             Mekanism.packetHandler.sendToServer(new PacketUpdateInventorySlot(stack, slotId));

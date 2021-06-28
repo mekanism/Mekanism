@@ -40,8 +40,8 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         //Filter holder
         addButton(new GuiElementHolder(this, 9, 17, 144, 68));
         //new filter button border

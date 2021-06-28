@@ -29,6 +29,8 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60;
+    public static final ResourceLocation WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
+    public static final ResourceLocation WARNING_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning.png");
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
@@ -210,6 +212,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        //TODO - 10.1: Evaluate this and other methods that loop children and see if any overrides should be calling super
         children.stream().filter(child -> child.isMouseOver(mouseX + getGuiLeft(), mouseY + getGuiTop()))
               .forEach(child -> child.renderToolTip(matrix, mouseX, mouseY));
     }

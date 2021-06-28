@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,7 +16,11 @@ import mekanism.client.gui.element.GuiElement.IHoverable;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.GuiVirtualSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.client.gui.element.tab.GuiWarningTab;
 import mekanism.client.gui.element.window.GuiWindow;
+import mekanism.client.gui.warning.IWarningTracker;
+import mekanism.client.gui.warning.WarningTracker;
+import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
@@ -56,6 +61,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     protected final LRU<GuiWindow> windows = new LRU<>();
     protected final List<GuiElement> focusListeners = new ArrayList<>();
     public boolean switchingToJEI;
+    @Nullable
+    private IWarningTracker warningTracker;
 
     private boolean hasClicked = false;
 
@@ -63,6 +70,15 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
 
     protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
+    }
+
+    @Nonnull
+    @Override
+    public BooleanSupplier trackWarning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
+        if (warningTracker == null) {
+            warningTracker = new WarningTracker();
+        }
+        return warningTracker.trackWarning(type, warningSupplier);
     }
 
     @Override
@@ -78,7 +94,28 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     @Override
     public void init() {
         super.init();
-        initPreSlots();
+        if (warningTracker != null) {
+            //If our warning tracker isn't null (so this isn't the first time we are initializing, such as after resizing)
+            // clear out any tracked warnings so we don't have duplicates being tracked when we add our elements again
+            warningTracker.clearTrackedWarnings();
+        }
+        addGuiElements();
+        if (warningTracker != null) {
+            //If we have a warning tracker add it as a button, we do so via a method in case any of the sub GUIs need to reposition where it ends up
+            addWarningTab(warningTracker);
+        }
+    }
+
+    protected void addWarningTab(IWarningTracker warningTracker) {
+        //TODO - 10.1: Move this for any GUIs that also have a heat tab (81 y would be above heat)
+        addButton(new GuiWarningTab(this, warningTracker, 109));
+    }
+
+    /**
+     * Called to add gui elements to the GUI. Add elements before calling super if they should be before the slots, and after if they should be after the slots. Most
+     * elements can and should be added after the slots.
+     */
+    protected void addGuiElements() {
         if (dynamicSlots) {
             addSlots();
         }
@@ -89,9 +126,6 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         super.tick();
         children.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
         windows.forEach(GuiWindow::tick);
-    }
-
-    protected void initPreSlots() {
     }
 
     protected IHoverable getOnHover(ILangEntry translationHelper) {

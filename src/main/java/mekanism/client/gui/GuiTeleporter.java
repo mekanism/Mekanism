@@ -57,8 +57,8 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiTeleporterStatus(this, () -> tile.getFrequency(FrequencyType.TELEPORTER) != null, () -> tile.status));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 158, 26));
         scrollList = addButton(new GuiTextScrollList(this, 27, 36, 122, 42));

@@ -31,8 +31,8 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.STANDARD, this, 6, 10));
         addButton(new GuiAmplifierTab(this, tile));
         timerField = addButton(new GuiTextField(this, 96, 28, 36, 11));

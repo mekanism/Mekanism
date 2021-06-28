@@ -56,15 +56,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     @Override
-    protected void initPreSlots() {
+    protected void addGuiElements() {
         addButton(new GuiElementHolder(this, 141, 13, 26, 37));
         addButton(new GuiElementHolder(this, 141, 54, 26, 34));
         addButton(new GuiElementHolder(this, 141, 92, 26, 37));
-    }
-
-    @Override
-    public void init() {
-        super.init();
+        super.addGuiElements();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 17));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
         addButton(new GuiSecurityLight(this, 144, 77, () -> {

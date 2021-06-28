@@ -55,8 +55,8 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiInnerScreen(this, 7, 19, 77, 69, () -> {
             List<ITextComponent> list = new ArrayList<>();
             ILangEntry runningType;
@@ -83,7 +83,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addButton(new GuiSlot(SlotType.DIGITAL, this, 64, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
               .with(() -> tile.missingStack.isEmpty() ? SlotOverlay.CHECK : null)
               .hover(getOnHover(() -> tile.missingStack.isEmpty() ? MekanismLang.MINER_WELL.translate() : MekanismLang.MINER_MISSING_BLOCK.translate())));
-        addButton(new GuiEnergyTab(() -> {
+        addButton(new GuiEnergyTab(this, () -> {
             MinerEnergyContainer energyContainer = tile.getEnergyContainer();
             FloatingLong perTick = energyContainer.getEnergyPerTick();
             ArrayList<ITextComponent> ret = new ArrayList<>(4);
@@ -94,7 +94,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             }
             ret.add(MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(energyContainer.getNeeded())));
             return ret;
-        }, this));
+        }));
 
         int buttonStart = topPos + 19;
         startButton = addButton(new TranslationButton(this, leftPos + 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,

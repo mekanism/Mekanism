@@ -13,7 +13,7 @@ body:
   - type: textarea
     attributes:
       label: Steps to reproduce
-      description: If there are specific steps that need to be taken to reproduce ths issue list them here.
+      description: If there are specific steps that need to be taken to reproduce the issue list them here.
       placeholder: |
         1. Start by doing...
         2. Next do...

@@ -27,8 +27,8 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiMatrixTab(this, tile, MatrixTab.MAIN));
         addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
@@ -68,12 +68,12 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
                 return multiblock.getLastOutput().divideToLevel(multiblock.getTransferCap());
             }
         }, 38, 13));
-        addButton(new GuiEnergyTab(() -> {
+        addButton(new GuiEnergyTab(this, () -> {
             MatrixMultiblockData multiblock = tile.getMultiblock();
             return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.getEnergy(), multiblock.getStorageCap())),
                   MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastInput())),
                   MekanismLang.MATRIX_OUTPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastOutput())));
-        }, this));
+        }));
     }
 
     @Override

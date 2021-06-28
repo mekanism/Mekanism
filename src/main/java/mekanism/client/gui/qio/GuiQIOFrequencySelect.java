@@ -48,8 +48,8 @@ public abstract class GuiQIOFrequencySelect<CONTAINER extends MekanismContainer>
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         scrollList = addButton(new GuiTextScrollList(this, 27, 39, 122, 42));
 
         publicButton = addButton(new TranslationButton(this, leftPos + 27, topPos + 17, 60, 20, MekanismLang.PUBLIC, () -> {

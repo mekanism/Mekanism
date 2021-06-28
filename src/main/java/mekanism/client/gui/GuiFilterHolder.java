@@ -42,8 +42,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiInnerScreen(this, 9, 17, 46, 140));
         //Filter holder
         addButton(new GuiElementHolder(this, 55, 17, 98, 118));
