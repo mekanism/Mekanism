@@ -14,7 +14,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.0.16', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.0.20', changing: true
     }
 }
 
@@ -407,9 +407,9 @@ dependencies {
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
-    compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:${computer_craft_version}")
+    compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
-    testRuntimeOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:${computer_craft_version}")
+    testRuntimeOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
 
     //Dependencies for data generators for mod compat reference
     datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}") {

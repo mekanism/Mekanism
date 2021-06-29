@@ -49,6 +49,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
 
     @Override
     protected void onUpdateServer() {
+        super.onUpdateServer();
         if (MekanismUtils.canFunction(this)) {
             //TODO: Cache the directions?
             Set<Direction> emitDirections = EnumSet.noneOf(Direction.class);

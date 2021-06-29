@@ -85,6 +85,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     protected void onUpdateClient() {
+        super.onUpdateClient();
         if (getActive()) {
             angle = (angle + (getBlockPos().getY() + 4F) / SPEED_SCALED) % 360;
         }
