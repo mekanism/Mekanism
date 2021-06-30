@@ -45,7 +45,7 @@
   "description.mekanismgenerators.gas_burning_generator": "Генератор, який використовує змінні молекулярні гази для виробництва енергії.",
   "description.mekanismgenerators.heat_generator": "Генератор, який використовує тепло лави або інших спалюваних ресурсів для виробництва енергії.",
   "description.mekanismgenerators.laser_focus_matrix": "Скляна панель термоядерного реактора, яка здатна поглинати оптичну енергію і тим самим нагрівати термоядерний реактор.",
-  "description.mekanismgenerators.reactor.logic.capacity": "Сигнал, коли (*********)",
+  "description.mekanismgenerators.reactor.logic.capacity": "Сигнал, коли (***working***)",
   "description.mekanismgenerators.reactor.logic.depleted": "Сигнал, коли палива недостатньо для підтримування реакції",
   "description.mekanismgenerators.reactor.logic.disabled": "Не реагує на сигнал редстоуну",
   "description.mekanismgenerators.reactor.logic.ready": "Сигнал, коли реактор досяг необхідної температури для запалювання",
