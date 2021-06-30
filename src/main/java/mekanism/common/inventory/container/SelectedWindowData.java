@@ -7,7 +7,6 @@ import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 
 public class SelectedWindowData {
 
-    private static final IntPredicate ONE_WINDOW = v -> v == 0;
     public static final SelectedWindowData UNSPECIFIED = new SelectedWindowData(WindowType.UNSPECIFIED);
 
     @Nonnull
@@ -53,7 +52,9 @@ public class SelectedWindowData {
         private final IntPredicate validator;
 
         WindowType() {
-            this(ONE_WINDOW);
+            this(v -> v == 0);
+            //TODO: Evaluate putting this in some constant if we end up with lots of window types.
+            // The issue is that we need to make sure the constant is initialized before here so for now we just let there be multiple
         }
 
         WindowType(IntPredicate validator) {
