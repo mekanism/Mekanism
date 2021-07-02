@@ -2,19 +2,32 @@ defaultTasks 'fullBuild'
 
 buildscript {
     repositories {
-    maven { url = "https://repo1.maven.org/maven2/" }
-    maven {
-      name = "forge"
-        url = "https://files.minecraftforge.net/maven"
+
+        // [HTTPS FIX] Replace mavenCentral() with the code block below
+        maven {
+            url "https://repo1.maven.org/maven2"
+        }
+
+        maven {
+            name = "forge"
+            url = "https://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "forge2"
+            url = "https://maven.minecraftforge.net/"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+
+        flatDir {
+            dirs 'libs'
+        }
     }
-    maven {
-      name = "sonatype"
-        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
-  }
-  dependencies {
-    classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-  }
 }
 
 repositories {
@@ -28,14 +41,24 @@ repositories {
      }
 }
 
-apply plugin: 'idea'
+allprojects {
+    repositories {
+        all { ArtifactRepository repo ->
+            if (repo instanceof MavenArtifactRepository) {
+                if (repo.url.toString().startsWith("http://repo1.maven.org/maven2")) {
+                    repo.url = repo.url.toString().replace("http://", "https://")
+                }
+            }
+        }
+    }
+}
 
-idea {
+/*idea {
     module {
         // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
         inheritOutputDirs = true
     }
-}
+}*/
 
 apply plugin: 'forge'
 
@@ -60,11 +83,12 @@ version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUI
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 minecraft {
-    version = config.minecraft_version + "-" + config.forge_version
+    version = "1.7.10-10.13.4.1558-1.7.10"
+    runDir = "eclipse"
 }
 
 processResources
