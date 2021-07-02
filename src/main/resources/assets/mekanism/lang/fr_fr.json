@@ -971,7 +971,7 @@
   "jetpack.mekanism.hover": "Survoler",
   "jetpack.mekanism.mode_change": "Mode du Jetpack changé sur: %s",
   "jetpack.mekanism.normal": "Régulier",
-  "key.mekanism.chest_mode": "Commande de mode de coffre",
+  "key.mekanism.chest_mode": "Commutateur de mode du buste",
   "key.mekanism.description": "Afficher la description",
   "key.mekanism.details": "Afficher les détails",
   "key.mekanism.feet_mode": "Commutateur de mode des pieds",
