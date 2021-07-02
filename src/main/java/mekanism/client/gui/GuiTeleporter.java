@@ -23,6 +23,7 @@ import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterMessag
 import mekanism.common.network.PacketPortableTeleporter.PortableTeleporterPacketType;
 import mekanism.common.network.PacketTileEntity.TileEntityMessage;
 import mekanism.common.security.IOwnerItem;
+import mekanism.common.security.ISecurityTile;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.LangUtils;
 import mekanism.common.util.MekanismUtils;
@@ -52,7 +53,8 @@ public class GuiTeleporter extends GuiMekanism
 	
 	public GuiButton publicButton;
 	public GuiButton privateButton;
-	
+	public GuiButton protectedButton;
+
 	public GuiButton setButton;
 	public GuiButton deleteButton;
 	
@@ -62,14 +64,15 @@ public class GuiTeleporter extends GuiMekanism
 	
 	public GuiTextField frequencyField;
 	
-	public boolean privateMode;
+	public ISecurityTile.SecurityMode access = ISecurityTile.SecurityMode.PUBLIC;
 	
 	public Frequency clientFreq;
 	public byte clientStatus;
 	
 	public List<Frequency> clientPublicCache = new ArrayList<Frequency>();
 	public List<Frequency> clientPrivateCache = new ArrayList<Frequency>();
-	
+	public List<Frequency> clientProtectedCache = new ArrayList<Frequency>();
+
 	public boolean isInit = true;
 
 	public GuiTeleporter(InventoryPlayer inventory, TileEntityTeleporter tentity)
@@ -97,7 +100,7 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(tileEntity.frequency != null)
 		{
-			privateMode = !tileEntity.frequency.publicFreq;
+			access = tileEntity.frequency.access;
 		}
 		
 		ySize+=64;
@@ -129,13 +132,13 @@ public class GuiTeleporter extends GuiMekanism
 		
 		if(item.getFrequency(stack) != null)
 		{
-			privateMode = item.isPrivateMode(itemStack);
+			access = item.getAccess(itemStack);
 			setFrequency(item.getFrequency(stack));
 		}
 		else {
 			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, clientFreq));
 		}
-		
+
 		ySize = 175;
 	}
 	
@@ -149,9 +152,10 @@ public class GuiTeleporter extends GuiMekanism
 
 		buttonList.clear();
 		
-		publicButton = new GuiButton(0, guiWidth + 27, guiHeight + 14, 60, 20, LangUtils.localize("gui.public"));
-		privateButton = new GuiButton(1, guiWidth + 89, guiHeight + 14, 60, 20, LangUtils.localize("gui.private"));
-		
+		publicButton = new GuiButton(0, guiWidth + 27, guiHeight + 14, 40, 20, LangUtils.localize("gui.public"));
+		privateButton = new GuiButton(1, guiWidth + 69, guiHeight + 14, 40, 20, LangUtils.localize("gui.private"));
+		protectedButton = new GuiButton(5, guiWidth + 111, guiHeight + 14, 40, 20, LangUtils.localize("gui.trusted"));
+
 		setButton = new GuiButton(2, guiWidth + 27, guiHeight + 116, 60, 20, LangUtils.localize("gui.set"));
 		deleteButton = new GuiButton(3, guiWidth + 89, guiHeight + 116, 60, 20, LangUtils.localize("gui.delete"));
 		
@@ -168,13 +172,14 @@ public class GuiTeleporter extends GuiMekanism
 
 		buttonList.add(publicButton);
 		buttonList.add(privateButton);
+		buttonList.add(protectedButton);
 		buttonList.add(setButton);
 		buttonList.add(deleteButton);
 		
 		if(itemStack != null)
 		{
 			buttonList.add(teleportButton);
-			
+
 			if(!isInit)
 			{
 				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.DATA_REQUEST, clientFreq));
@@ -197,12 +202,12 @@ public class GuiTeleporter extends GuiMekanism
 			ArrayList data = new ArrayList();
 			data.add(0);
 			data.add(freq);
-			data.add(!privateMode);
+			data.add(access.ordinal());
 			
 			Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 		}
 		else {
-			Frequency newFreq = new Frequency(freq, null).setPublic(!privateMode);
+			Frequency newFreq = new Frequency(freq, null).setAccess(access);
 			
 			Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.SET_FREQ, newFreq));
 		}
@@ -210,7 +215,14 @@ public class GuiTeleporter extends GuiMekanism
 	
 	public String getSecurity(Frequency freq)
 	{
-		return !freq.publicFreq ? EnumColor.DARK_RED + LangUtils.localize("gui.private") : LangUtils.localize("gui.public");
+
+		if(freq.isPrivate()) {
+			return EnumColor.DARK_RED + LangUtils.localize("gui.private");
+		} else 		if(freq.isPublic()) {
+			return LangUtils.localize("gui.public");
+		}
+
+		return EnumColor.ORANGE + LangUtils.localize("gui.trusted");
 	}
 	
 	public void updateButtons()
@@ -221,37 +233,52 @@ public class GuiTeleporter extends GuiMekanism
 		}
 		
 		List<String> text = new ArrayList<String>();
-		
-		if(privateMode)
-		{
+
+		if(access == ISecurityTile.SecurityMode.PRIVATE) {
 			for(Frequency freq : getPrivateCache())
 			{
 				text.add(freq.name);
 			}
-		}
-		else {
+
+			publicButton.enabled = true;
+			privateButton.enabled = false;
+			protectedButton.enabled = true;
+		} else if(access == ISecurityTile.SecurityMode.PUBLIC) {
 			for(Frequency freq : getPublicCache())
 			{
 				text.add(freq.name + " (" + freq.owner + ")");
 			}
-		}
-		
-		scrollList.setText(text);
-		
-		if(privateMode)
-		{
-			publicButton.enabled = true;
-			privateButton.enabled = false;
-		}
-		else {
+
 			publicButton.enabled = false;
 			privateButton.enabled = true;
+			protectedButton.enabled = true;
+		} else {
+			for(Frequency freq : getProtectedCache())
+			{
+				text.add(freq.name + " (" + freq.owner + ")");
+			}
+
+			publicButton.enabled = true;
+			privateButton.enabled = true;
+			protectedButton.enabled = false;
 		}
+
+		scrollList.setText(text);
+
 		
 		if(scrollList.hasSelection())
 		{
-			Frequency freq = privateMode ? getPrivateCache().get(scrollList.selected) : getPublicCache().get(scrollList.selected);
-			
+
+			Frequency freq;
+
+			if(access == ISecurityTile.SecurityMode.PRIVATE) {
+				freq = getPrivateCache().get(scrollList.selected);
+			} else if(access == ISecurityTile.SecurityMode.PUBLIC) {
+				freq = getPublicCache().get(scrollList.selected);
+			} else {
+				freq = getProtectedCache().get(scrollList.selected);
+			}
+
 			if(getFrequency() == null || !getFrequency().equals(freq))
 			{
 				setButton.enabled = true;
@@ -350,11 +377,11 @@ public class GuiTeleporter extends GuiMekanism
 
 		if(guibutton.id == 0)
 		{
-			privateMode = false;
+			access = ISecurityTile.SecurityMode.PUBLIC;
 		}
 		else if(guibutton.id == 1)
 		{
-			privateMode = true;
+			access = ISecurityTile.SecurityMode.PRIVATE;
 		}
 		else if(guibutton.id == 2)
 		{
@@ -362,7 +389,16 @@ public class GuiTeleporter extends GuiMekanism
 			
 			if(selection != -1)
 			{
-				Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
+				Frequency freq;
+
+				if(access == ISecurityTile.SecurityMode.PRIVATE) {
+					freq = getPrivateCache().get(scrollList.selected);
+				} else if(access == ISecurityTile.SecurityMode.PUBLIC) {
+					freq = getPublicCache().get(scrollList.selected);
+				} else {
+					freq = getProtectedCache().get(scrollList.selected);
+				}
+
 				setFrequency(freq.name);
 			}
 		}
@@ -372,14 +408,23 @@ public class GuiTeleporter extends GuiMekanism
 			
 			if(selection != -1)
 			{
-				Frequency freq = privateMode ? getPrivateCache().get(selection) : getPublicCache().get(selection);
-				
+
+				Frequency freq;
+
+				if(access == ISecurityTile.SecurityMode.PRIVATE) {
+					freq = getPrivateCache().get(scrollList.selected);
+				} else if(access == ISecurityTile.SecurityMode.PUBLIC) {
+					freq = getPublicCache().get(scrollList.selected);
+				} else {
+					freq = getProtectedCache().get(scrollList.selected);
+				}
+
 				if(tileEntity != null)
 				{
 					ArrayList data = new ArrayList();
 					data.add(1);
 					data.add(freq.name);
-					data.add(freq.publicFreq);
+					data.add(freq.access.ordinal());
 					
 					Mekanism.packetHandler.sendToServer(new TileEntityMessage(Coord4D.get(tileEntity), data));
 				}
@@ -398,6 +443,8 @@ public class GuiTeleporter extends GuiMekanism
 				mc.setIngameFocus();
 				Mekanism.packetHandler.sendToServer(new PortableTeleporterMessage(PortableTeleporterPacketType.TELEPORT, clientFreq));
 			}
+		} else if(guibutton.id == 5) {
+			access = ISecurityTile.SecurityMode.TRUSTED;
 		}
 		
 		updateButtons();
@@ -507,7 +554,12 @@ public class GuiTeleporter extends GuiMekanism
 	{
 		return tileEntity != null ? tileEntity.privateCache : clientPrivateCache;
 	}
-	
+
+	private List<Frequency> getProtectedCache()
+	{
+		return tileEntity != null ? tileEntity.protectedCache : clientProtectedCache;
+	}
+
 	private Frequency getFrequency()
 	{
 		return tileEntity != null ? tileEntity.frequency : clientFreq;

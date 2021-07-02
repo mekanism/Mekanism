@@ -181,10 +181,12 @@ public class Mekanism
 	/** FrequencyManagers for various networks */
 	public static FrequencyManager publicTeleporters = new FrequencyManager(Frequency.class, Frequency.TELEPORTER);
 	public static Map<String, FrequencyManager> privateTeleporters = new HashMap<String, FrequencyManager>();
-	
+	public static Map<String, FrequencyManager> protectedTeleporters = new HashMap<String, FrequencyManager>();
+
 	public static FrequencyManager publicEntangloporters = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER);
 	public static Map<String, FrequencyManager> privateEntangloporters = new HashMap<String, FrequencyManager>();
-	
+	public static Map<String, FrequencyManager> protectedEntangloporters = new HashMap<String, FrequencyManager>();
+
 	public static FrequencyManager securityFrequencies = new FrequencyManager(SecurityFrequency.class, SecurityFrequency.SECURITY);
 	
 	/** Mekanism creative tab */
@@ -1193,8 +1195,10 @@ public class Mekanism
 		activeVibrators.clear();
 		worldTickHandler.resetRegenChunks();
 		privateTeleporters.clear();
+		protectedTeleporters.clear();
 		privateEntangloporters.clear();
-		
+		protectedEntangloporters.clear();
+
 		//Reset consistent managers
 		MultiblockManager.reset();
 		FrequencyManager.reset();
