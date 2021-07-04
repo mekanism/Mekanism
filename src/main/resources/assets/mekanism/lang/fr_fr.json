@@ -627,7 +627,7 @@
   "filter.mekanism.item.size_missing": "Max/min",
   "filter.mekanism.item.size_mode": "%s !",
   "filter.mekanism.material": "Filtre à matériaux",
-  "filter.mekanism.material.details": "En utilisant du matériel de :",
+  "filter.mekanism.material.details": "Utilisant ce matériau :",
   "filter.mekanism.modid": "Filtre d'ID de mod",
   "filter.mekanism.modid.id": "ID: %s",
   "filter.mekanism.modid.no_id": "Pas d'identification",
