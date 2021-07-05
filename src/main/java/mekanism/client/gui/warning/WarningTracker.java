@@ -11,6 +11,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.util.text.ITextComponent;
 
+//TODO - 1.17: Look at TODOs related to warning system
 public class WarningTracker implements IWarningTracker {
 
     private final Map<WarningType, List<BooleanSupplier>> warnings = new EnumMap<>(WarningType.class);
@@ -19,7 +20,7 @@ public class WarningTracker implements IWarningTracker {
     public BooleanSupplier trackWarning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
         //Note: We use a default size of one as in most cases we will only have one of any given type of warning except for things
         // with multiple outputs or for factories
-        //TODO - 10.1: Should we maybe define default capacity in WarningType as some things may make more sense to have slightly higher?
+        //TODO - WARNING SYSTEM: Should we maybe define default capacity in WarningType as some things may make more sense to have slightly higher?
         warnings.computeIfAbsent(Objects.requireNonNull(type, "Warning type cannot be null."), t -> new ArrayList<>(1))
               .add(Objects.requireNonNull(warningSupplier, "Warning check cannot be null."));
         return warningSupplier;
@@ -35,6 +36,7 @@ public class WarningTracker implements IWarningTracker {
         for (List<BooleanSupplier> warningSuppliers : warnings.values()) {
             for (BooleanSupplier warningSupplier : warningSuppliers) {
                 if (warningSupplier.getAsBoolean()) {
+                    //Exit as soon as we run into a warning as that means we have at least one and the warning tab should be displayed
                     return true;
                 }
             }

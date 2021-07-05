@@ -43,7 +43,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         this.gaugeType = gaugeType;
     }
 
-    //TODO - 10.1: Hook up usage of warnings
+    //TODO - WARNING SYSTEM: Hook up usage of warnings
     public GuiGauge<T> warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
         this.warningSupplier = gui().trackWarning(type, warningSupplier);
         return this;
@@ -93,9 +93,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
             drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, scale, icon, TilingDirection.UP_RIGHT);
             MekanismRenderer.resetColor();
             if (warning && scale == height - 2) {
-                //TODO - 10.1: If this doesn't look good make it render the sprite above at a lower transparency
-                // Probably more effort than it may be worth so hopefully this looks decent
-                //TODO - 10.1: Also decide if this should be using some check for when it is just close to max so that it is visible
+                //TODO - WARNING SYSTEM: Also decide if this should be using some check for when it is just close to max so that it is easily visible
                 //If we have a warning and the gauge is entirely filled draw a warning vertically next to it
                 minecraft.textureManager.bind(WARNING_TEXTURE);
                 int halfWidth = (width - 2) / 2;

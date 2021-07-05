@@ -107,7 +107,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     protected void addWarningTab(IWarningTracker warningTracker) {
-        //TODO - 10.1: Move this for any GUIs that also have a heat tab (81 y would be above heat)
+        //TODO - WARNING SYSTEM: Move this for any GUIs that also have a heat tab (81 y would be above heat)
         addButton(new GuiWarningTab(this, warningTracker, 109));
     }
 

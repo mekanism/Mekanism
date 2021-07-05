@@ -49,6 +49,7 @@ public interface IInputHandler<INPUT> {
      *
      * @return The number of operations the input can sustain.
      */
+    @Deprecated//TODO - 1.17: Remove this
     default int operationsCanSupport(InputIngredient<INPUT> recipeIngredient, int currentMax) {
         return operationsCanSupport(recipeIngredient, currentMax, 1);
     }
@@ -62,5 +63,31 @@ public interface IInputHandler<INPUT> {
      *
      * @return The number of operations the input can sustain.
      */
-    int operationsCanSupport(InputIngredient<INPUT> recipeIngredient, int currentMax, int usageMultiplier);
+    @Deprecated//TODO - 1.17: Remove this
+    default int operationsCanSupport(InputIngredient<INPUT> recipeIngredient, int currentMax, int usageMultiplier) {
+        return operationsCanSupport(getRecipeInput(recipeIngredient), currentMax, usageMultiplier);
+    }
+
+    /**
+     * Calculates how many operations the input can sustain.
+     *
+     * @param recipeInput Recipe input gotten from {@link #getRecipeInput(InputIngredient)}.
+     * @param currentMax  The current maximum number of operations that can happen.
+     *
+     * @return The number of operations the input can sustain.
+     */
+    default int operationsCanSupport(INPUT recipeInput, int currentMax) {
+        return operationsCanSupport(recipeInput, currentMax, 1);
+    }
+
+    /**
+     * Calculates how many operations the input can sustain.
+     *
+     * @param recipeInput     Recipe input gotten from {@link #getRecipeInput(InputIngredient)}.
+     * @param currentMax      The current maximum number of operations that can happen.
+     * @param usageMultiplier Usage multiplier to multiply the recipeInput's amount by per operation.
+     *
+     * @return The number of operations the input can sustain.
+     */
+    int operationsCanSupport(INPUT recipeInput, int currentMax, int usageMultiplier);
 }

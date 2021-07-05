@@ -272,6 +272,9 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      * Called each tick to allow for {@link CachedRecipe}s to consume any per tick resources.
      *
      * @param operations Number of operations being performed.
+     *
+     * @implNote It is safe to assume that {@link #getOperationsThisTick(int)} will have been called before this method and there will be at least one operation. This
+     * means that caching of types can be done inside of {@link #getOperationsThisTick(int)} and safely used here.
      */
     protected void useResources(int operations) {
     }
@@ -294,6 +297,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      * current recipe progress will be reset.
      */
     protected int getOperationsThisTick(int currentMax) {
+        //TODO - WARNING SYSTEM: Probably use this to hookup some handling related to warnings, and make use of records for returning multiple types
         //TODO: Try to deduplicate the code in the implementations as there is a good bit of duplication for calculating the max
         // of the different types that recipe uses
         if (currentMax <= 0) {
@@ -325,6 +329,9 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      * Called when a recipe finishes processing. This method consumes any recipe inputs and produces the recipe outputs.
      *
      * @param operations Number of operations being performed.
+     *
+     * @implNote It is safe to assume that {@link #getOperationsThisTick(int)} will have been called before this method and there will be at least one operation. This
+     * means that caching of types can be done inside of {@link #getOperationsThisTick(int)} and safely used here.
      */
     protected abstract void finishProcessing(int operations);
 

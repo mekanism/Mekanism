@@ -59,12 +59,11 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull ItemStack> recipeIngredient, int currentMax, int usageMultiplier) {
-                if (currentMax <= 0 || usageMultiplier == 0) {
+            public int operationsCanSupport(@Nonnull ItemStack recipeInput, int currentMax, int usageMultiplier) {
+                if (currentMax <= 0 || usageMultiplier <= 0) {
                     //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;
                 }
-                ItemStack recipeInput = getRecipeInput(recipeIngredient);
                 if (recipeInput.isEmpty()) {
                     //If the input is empty that means there is no ingredient that matches
                     return 0;
@@ -116,12 +115,11 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull STACK> recipeIngredient, int currentMax, long usageMultiplier) {
-                if (currentMax <= 0 || usageMultiplier == 0) {
+            public int operationsCanSupport(@Nonnull STACK recipeInput, int currentMax, long usageMultiplier) {
+                if (currentMax <= 0 || usageMultiplier <= 0) {
                     //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;
                 }
-                STACK recipeInput = getRecipeInput(recipeIngredient);
                 //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
                 if (recipeInput.isEmpty()) {
                     //If the input is empty that means there is no ingredient that matches
@@ -174,12 +172,11 @@ public class InputHelper {
             }
 
             @Override
-            public int operationsCanSupport(InputIngredient<@NonNull FluidStack> recipeIngredient, int currentMax, int usageMultiplier) {
-                if (currentMax <= 0 || usageMultiplier == 0) {
+            public int operationsCanSupport(@Nonnull FluidStack recipeInput, int currentMax, int usageMultiplier) {
+                if (currentMax <= 0 || usageMultiplier <= 0) {
                     //Short circuit that if we already can't perform any operations or don't want to use any, just return
                     return currentMax;
                 }
-                FluidStack recipeInput = getRecipeInput(recipeIngredient);
                 //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
                 if (recipeInput.isEmpty()) {
                     //If the input is empty that means there is no ingredient that matches

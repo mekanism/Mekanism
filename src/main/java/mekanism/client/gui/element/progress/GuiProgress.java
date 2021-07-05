@@ -44,14 +44,14 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         return this;
     }
 
-    //TODO - 10.1: Hook up usage of warnings
+    //TODO - WARNING SYSTEM: Hook up usage of warnings
     public GuiProgress warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
         return warning(type, warningSupplier, true);
     }
 
     public GuiProgress warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier, boolean useFullProgressForWarning) {
         this.warningSupplier = gui().trackWarning(type, warningSupplier);
-        //TODO - 10.1: Evaluate if we even want this to be a thing?
+        //TODO - WARNING SYSTEM: Evaluate if we even want this to be a thing?
         this.useFullProgressForWarning = useFullProgressForWarning;
         return this;
     }

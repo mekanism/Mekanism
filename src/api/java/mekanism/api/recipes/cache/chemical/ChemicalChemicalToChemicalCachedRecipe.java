@@ -27,6 +27,12 @@ public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CH
     private final IInputHandler<@NonNull STACK> leftInputHandler;
     private final IInputHandler<@NonNull STACK> rightInputHandler;
 
+    //Note: These shouldn't be null in places they are actually used, but we mark them as nullable so we don't have to initialize them
+    @Nullable
+    private STACK leftRecipeInput;
+    @Nullable
+    private STACK rightRecipeInput;
+
     /**
      * @param recipe            Recipe.
      * @param leftInputHandler  Left input handler.
@@ -74,20 +80,20 @@ public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CH
             //If either inputs are empty then we are unable to operate
             return -1;
         }
-        STACK leftRecipeInput = leftInputHandler.getRecipeInput(ingredients.getLeft());
+        leftRecipeInput = leftInputHandler.getRecipeInput(ingredients.getLeft());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(leftRecipeInput)
         if (leftRecipeInput.isEmpty()) {
             return -1;
         }
-        STACK rightRecipeInput = rightInputHandler.getRecipeInput(ingredients.getRight());
+        rightRecipeInput = rightInputHandler.getRecipeInput(ingredients.getRight());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(rightRecipeInput)
         if (rightRecipeInput.isEmpty()) {
             return -1;
         }
         //Calculate the current max based on the left input
-        currentMax = leftInputHandler.operationsCanSupport(ingredients.getLeft(), currentMax);
+        currentMax = leftInputHandler.operationsCanSupport(leftRecipeInput, currentMax);
         //Calculate the current max based on the right input
-        currentMax = rightInputHandler.operationsCanSupport(ingredients.getRight(), currentMax);
+        currentMax = rightInputHandler.operationsCanSupport(rightRecipeInput, currentMax);
         if (currentMax <= 0) {
             //If our input can't handle it return that we should be resetting
             return -1;
@@ -103,21 +109,7 @@ public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CH
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
-        Pair<INGREDIENT, INGREDIENT> ingredients = getIngredients();
-        if (ingredients == null) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
-            return;
-        }
-        STACK leftRecipeInput = leftInputHandler.getRecipeInput(ingredients.getLeft());
-        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(leftRecipeInput)
-        if (leftRecipeInput.isEmpty()) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
-            return;
-        }
-        STACK rightRecipeInput = rightInputHandler.getRecipeInput(ingredients.getRight());
-        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(rightRecipeInput)
-        if (rightRecipeInput.isEmpty()) {
+        if (leftRecipeInput == null || rightRecipeInput == null || leftRecipeInput.isEmpty() || rightRecipeInput.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }

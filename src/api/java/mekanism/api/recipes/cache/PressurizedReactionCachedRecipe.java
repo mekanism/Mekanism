@@ -24,6 +24,10 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
 
+    private ItemStack recipeItem = ItemStack.EMPTY;
+    private FluidStack recipeFluid = FluidStack.EMPTY;
+    private GasStack recipeGas = GasStack.EMPTY;
+
     /**
      * @param recipe            Recipe.
      * @param itemInputHandler  Item input handler.
@@ -48,27 +52,27 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getInputSolid());
+        recipeItem = itemInputHandler.getRecipeInput(recipe.getInputSolid());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeItem.isEmpty()) {
             return -1;
         }
-        FluidStack recipeFluid = fluidInputHandler.getRecipeInput(recipe.getInputFluid());
+        recipeFluid = fluidInputHandler.getRecipeInput(recipe.getInputFluid());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
         if (recipeFluid.isEmpty()) {
             return -1;
         }
-        GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getInputGas());
+        recipeGas = gasInputHandler.getRecipeInput(recipe.getInputGas());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputGas)
         if (recipeGas.isEmpty()) {
             return -1;
         }
         //Calculate the current max based on the item input
-        currentMax = itemInputHandler.operationsCanSupport(recipe.getInputSolid(), currentMax);
+        currentMax = itemInputHandler.operationsCanSupport(recipeItem, currentMax);
         //Calculate the current max based on the fluid input
-        currentMax = fluidInputHandler.operationsCanSupport(recipe.getInputFluid(), currentMax);
+        currentMax = fluidInputHandler.operationsCanSupport(recipeFluid, currentMax);
         //Calculate the current max based on the gas input
-        currentMax = gasInputHandler.operationsCanSupport(recipe.getInputGas(), currentMax);
+        currentMax = gasInputHandler.operationsCanSupport(recipeGas, currentMax);
         if (currentMax <= 0) {
             //If our input can't handle it return that we should be resetting
             return -1;
@@ -92,23 +96,7 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
-        ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getInputSolid());
-        if (recipeItem.isEmpty()) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
-            return;
-        }
-
-        //Now check the fluid input
-        FluidStack recipeFluid = fluidInputHandler.getRecipeInput(recipe.getInputFluid());
-        if (recipeFluid.isEmpty()) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
-            return;
-        }
-
-        //Now check the gas input
-        GasStack recipeGas = gasInputHandler.getRecipeInput(recipe.getInputGas());
-        if (recipeGas.isEmpty()) {
+        if (recipeItem.isEmpty() || recipeFluid.isEmpty() || recipeGas.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }

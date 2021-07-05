@@ -20,6 +20,18 @@ public class GuiWarningTab extends GuiTexturedElement {
     public GuiWarningTab(IGuiWrapper gui, IWarningTracker warningTracker, int y) {
         super(MekanismUtils.getResource(ResourceType.GUI_TAB, "warning_info.png"), gui, -26, y, 26, 26);
         this.warningTracker = warningTracker;
+        updateVisibility();
+    }
+
+    private void updateVisibility() {
+        visible = warningTracker.hasWarning();
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        //Ensure the visibility of the warning tab is correct based on if we have any warnings to display
+        updateVisibility();
     }
 
     @Override

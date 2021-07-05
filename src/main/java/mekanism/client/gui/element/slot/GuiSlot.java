@@ -47,12 +47,12 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     public GuiSlot validity(Supplier<ItemStack> validityCheck) {
-        //TODO - 10.1: Evaluate if any of these validity things should be moved to the warning system
+        //TODO - WARNING SYSTEM: Evaluate if any of these validity things should be moved to the warning system
         this.validityCheck = validityCheck;
         return this;
     }
 
-    //TODO - 10.1: Hook up usage of warnings
+    //TODO - WARNING SYSTEM: Hook up usage of warnings
     public GuiSlot warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
         this.warningSupplier = gui().trackWarning(type, warningSupplier);
         return this;
