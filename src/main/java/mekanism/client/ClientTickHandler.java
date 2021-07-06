@@ -11,6 +11,8 @@ import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
 import mekanism.client.gui.GuiRadialSelector;
+import mekanism.client.key.MekKeyHandler;
+import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;

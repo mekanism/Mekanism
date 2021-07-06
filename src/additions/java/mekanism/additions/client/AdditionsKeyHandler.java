@@ -1,36 +1,17 @@
 package mekanism.additions.client;
 
 import mekanism.additions.common.AdditionsLang;
-import mekanism.client.MekKeyHandler;
-import mekanism.common.MekanismLang;
+import mekanism.client.ClientRegistrationUtil;
+import mekanism.client.key.MekKeyBinding.MekBindingBuilder;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.glfw.GLFW;
 
-public class AdditionsKeyHandler extends MekKeyHandler {
+public class AdditionsKeyHandler {
 
-    public static final KeyBinding voiceKey = new KeyBinding(AdditionsLang.KEY_VOICE.getTranslationKey(), GLFW.GLFW_KEY_U, MekanismLang.MEKANISM.getTranslationKey());
+    //TODO - 10.1: Re-evaluate why this is repeating when it doesn't have an onDown or onUp. Also figure out if this should use the ToggleableKeyBinding concept
+    public static final KeyBinding voiceKey = new MekBindingBuilder().description(AdditionsLang.KEY_VOICE).keyCode(GLFW.GLFW_KEY_U).repeating().build();
 
-    private static final Builder BINDINGS = new Builder(1)
-          .addBinding(voiceKey, true);
-
-    public AdditionsKeyHandler() {
-        super(BINDINGS);
-        ClientRegistry.registerKeyBinding(voiceKey);
-        MinecraftForge.EVENT_BUS.addListener(this::onTick);
-    }
-
-    private void onTick(InputEvent.KeyInputEvent event) {
-        keyTick();
-    }
-
-    @Override
-    public void keyDown(KeyBinding kb, boolean isRepeat) {
-    }
-
-    @Override
-    public void keyUp(KeyBinding kb) {
+    public static void registerKeybindings() {
+        ClientRegistrationUtil.registerKeyBindings(voiceKey);
     }
 }

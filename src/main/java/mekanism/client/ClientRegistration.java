@@ -70,6 +70,7 @@ import mekanism.client.gui.robit.GuiRobitInventory;
 import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
+import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.model.baked.DriveArrayBakedModel;
@@ -185,7 +186,7 @@ public class ClientRegistration {
             // properly initialized and will have the wrong value
             MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, RenderTickHandler::guiOpening);
         }
-        new MekanismKeyHandler();
+        MekanismKeyHandler.registerKeybindings();
         HolidayManager.init();
 
         //Register entity rendering handlers

@@ -42,7 +42,7 @@ public class AdditionsClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        new AdditionsKeyHandler();
+        AdditionsKeyHandler.registerKeybindings();
 
         //Register entity rendering handlers
         ClientRegistrationUtil.registerEntityRenderingHandler(AdditionsEntityTypes.OBSIDIAN_TNT, RenderObsidianTNTPrimed::new);
