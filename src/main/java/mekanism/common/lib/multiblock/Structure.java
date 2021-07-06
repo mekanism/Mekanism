@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.ToIntFunction;
 import mekanism.common.lib.math.voxel.BlockPosBuilder;
@@ -29,7 +28,7 @@ public class Structure {
 
     private final Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
 
-    private final Map<Axis, SortedMap<Integer, VoxelPlane>> minorPlaneMap = new EnumMap<>(Axis.class);
+    private final Map<Axis, NavigableMap<Integer, VoxelPlane>> minorPlaneMap = new EnumMap<>(Axis.class);
     private final Map<Axis, NavigableMap<Integer, VoxelPlane>> planeMap = new EnumMap<>(Axis.class);
 
     private boolean valid;
@@ -79,7 +78,7 @@ public class Structure {
         return nodes.get(pos);
     }
 
-    public SortedMap<Integer, VoxelPlane> getMinorAxisMap(Axis axis) {
+    public NavigableMap<Integer, VoxelPlane> getMinorAxisMap(Axis axis) {
         return minorPlaneMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
     }
 
@@ -130,7 +129,7 @@ public class Structure {
             });
             //Iterate through the over the other structure's minor plane map and merge
             // the minor planes into our structure.
-            for (Entry<Axis, SortedMap<Integer, VoxelPlane>> entry : s.minorPlaneMap.entrySet()) {
+            for (Entry<Axis, NavigableMap<Integer, VoxelPlane>> entry : s.minorPlaneMap.entrySet()) {
                 Axis axis = entry.getKey();
                 Map<Integer, VoxelPlane> minorMap = getMinorAxisMap(axis);
                 Map<Integer, VoxelPlane> majorMap = getMajorAxisMap(axis);

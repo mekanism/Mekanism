@@ -114,7 +114,7 @@ public class VoxelPlane {
 
     @Override
     public String toString() {
-        return "Plane(full=" + isFull() + ", size=" + size() + ", frame=" + hasFrame + ", bounds=" + Arrays.asList(minCol, minRow, maxCol, maxRow).toString() + ")";
+        return "Plane(full=" + isFull() + ", size=" + size() + ", frame=" + hasFrame + ", bounds=" + Arrays.asList(minCol, minRow, maxCol, maxRow) + ")";
     }
 
     @Override
