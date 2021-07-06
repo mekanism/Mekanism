@@ -49,10 +49,8 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     public TileEntityEnergyCube(IBlockProvider blockProvider) {
         super(blockProvider);
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
-        configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, RelativeSide.FRONT, true)
-              .setCanEject(false);
-        configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer, energyContainer, RelativeSide.FRONT)
-              .setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, RelativeSide.FRONT, true).setCanEject(false);
+        configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer, RelativeSide.FRONT).setEjecting(true);
         ejectorComponent = new TileComponentEjector(this);
     }
 

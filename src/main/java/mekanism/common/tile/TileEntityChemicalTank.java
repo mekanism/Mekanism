@@ -83,10 +83,10 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY,
               TransmissionType.ITEM);
         configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, RelativeSide.FRONT, true).setCanEject(false);
-        configComponent.setupIOConfig(TransmissionType.GAS, getGasTank(), getGasTank(), RelativeSide.FRONT).setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.INFUSION, getInfusionTank(), getInfusionTank(), RelativeSide.FRONT).setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.PIGMENT, getPigmentTank(), getPigmentTank(), RelativeSide.FRONT).setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.SLURRY, getSlurryTank(), getSlurryTank(), RelativeSide.FRONT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.GAS, getGasTank(), RelativeSide.FRONT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.INFUSION, getInfusionTank(), RelativeSide.FRONT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.PIGMENT, getPigmentTank(), RelativeSide.FRONT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.SLURRY, getSlurryTank(), RelativeSide.FRONT).setEjecting(true);
         ejectorComponent = new TileComponentEjector(this);
     }
 
@@ -150,6 +150,8 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         Current current = chemicalTank.getCurrent();
         if (current != Current.EMPTY) {
             IChemicalTank<?, ?> currentTank = null;
+            //TODO - 10.1: If/when we add an override to output amount to the config ejector for the entangloporter
+            // we should evaluate changing this so that it can just use the normal ejector part
             if (MekanismUtils.canFunction(this) && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
                 currentTank = getCurrentTank(current);
                 if (current == Current.GAS) {

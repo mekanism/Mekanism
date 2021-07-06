@@ -143,9 +143,10 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
             received = connectedAcceptor.extractChemical(ChemicalUtil.copyWithAmount((STACK) bufferWithFallback.getChemicalStack(), availablePull), Action.SIMULATE);
         }
         if (!received.isEmpty() && takeChemical(chemicalType, received, Action.SIMULATE).isEmpty()) {
-            //If we received some chemical and are able to insert it all
-            STACK remainder = takeChemical(chemicalType, received, Action.EXECUTE);
-            connectedAcceptor.extractChemical(ChemicalUtil.copyWithAmount(received, received.getAmount() - remainder.getAmount()), Action.EXECUTE);
+            //If we received some chemical and are able to insert it all, then actually extract it and insert it into our thing.
+            // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
+            // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
+            takeChemical(chemicalType, connectedAcceptor.extractChemical(received, Action.EXECUTE), Action.EXECUTE);
             return true;
         }
         return false;

@@ -54,7 +54,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
         super(blockProvider);
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
         configComponent.addSupported(TransmissionType.INFUSION);
-        configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, infusionTank, RelativeSide.RIGHT).setCanEject(false);
+        configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, RelativeSide.RIGHT).setCanEject(false);
     }
 
     @Nonnull

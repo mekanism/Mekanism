@@ -201,15 +201,31 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public ConfigInfo setupIOConfig(TransmissionType type, Object inputContainer, Object outputContainer, RelativeSide outputSide, boolean alwaysAllow) {
-        ConfigInfo gasConfig = getConfig(type);
-        if (gasConfig != null) {
-            gasConfig.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, inputContainer));
-            gasConfig.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, outputContainer));
-            gasConfig.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, Arrays.asList(inputContainer, outputContainer)));
-            gasConfig.fill(DataType.INPUT);
-            gasConfig.setDataType(DataType.OUTPUT, outputSide);
+        ConfigInfo config = getConfig(type);
+        if (config != null) {
+            config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, inputContainer));
+            config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, outputContainer));
+            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, Arrays.asList(inputContainer, outputContainer)));
+            config.fill(DataType.INPUT);
+            config.setDataType(DataType.OUTPUT, outputSide);
         }
-        return gasConfig;
+        return config;
+    }
+
+    public ConfigInfo setupIOConfig(TransmissionType type, Object info, RelativeSide outputSide) {
+        return setupIOConfig(type, info, outputSide, false);
+    }
+
+    public ConfigInfo setupIOConfig(TransmissionType type, Object info, RelativeSide outputSide, boolean alwaysAllow) {
+        ConfigInfo config = getConfig(type);
+        if (config != null) {
+            config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, info));
+            config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, info));
+            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, info));
+            config.fill(DataType.INPUT);
+            config.setDataType(DataType.OUTPUT, outputSide);
+        }
+        return config;
     }
 
     public ConfigInfo setupItemIOConfig(IInventorySlot inputSlot, IInventorySlot outputSlot, IInventorySlot energySlot) {
