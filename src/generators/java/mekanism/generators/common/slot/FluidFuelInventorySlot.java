@@ -62,13 +62,6 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             }
             //Note: We recheck about this having a fuel value and that it is still valid as the fuel value might have changed, such as after a reload
             return fuelValue.applyAsInt(stack) > 0;
-        }, stack -> {
-            if (FluidUtil.getFluidHandler(stack).isPresent()) {
-                //Note: we mark all fluid items as valid and have a more restrictive insert check so that we allow empty buckets when we finish draining
-                return true;
-            }
-            //Allow items that have a fuel conversion value greater than one
-            return fuelValue.applyAsInt(stack) > 0;
         }, listener, x, y);
     }
 
@@ -76,9 +69,10 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
     private final ToIntFunction<@NonNull ItemStack> fuelValue;
 
     private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<@NonNull ItemStack> fuelValue, Int2ObjectFunction<@NonNull FluidStack> fuelCreator,
-          Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator,
-          @Nullable IContentsListener listener, int x, int y) {
-        super(fluidTank, canExtract, canInsert, validator, listener, x, y);
+          Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
+        super(fluidTank, canExtract, canInsert, alwaysTrue, listener, x, y);
+        //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a fluid handler on the filled item
+        // then we don't have it all of a sudden being invalid after it is emptied
         this.fuelCreator = fuelCreator;
         this.fuelValue = fuelValue;
     }
