@@ -75,8 +75,8 @@ public class VoiceServerManager {
     private class ListenThread extends Thread {
 
         private ListenThread() {
+            super("VoiceServer Listen Thread");
             setDaemon(true);
-            setName("VoiceServer Listen Thread");
         }
 
         @Override

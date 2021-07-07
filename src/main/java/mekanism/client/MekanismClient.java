@@ -46,7 +46,6 @@ public class MekanismClient {
         clientUUIDMap.clear();
 
         ClientTickHandler.portableTeleports.clear();
-        ClientTickHandler.firstTick = true;
         ClientTickHandler.visionEnhancement = false;
 
         Mekanism.playerState.clear(true);

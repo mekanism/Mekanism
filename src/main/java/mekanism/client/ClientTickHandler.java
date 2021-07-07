@@ -241,10 +241,8 @@ public class ClientTickHandler {
                 if (minecraft.screen == null || minecraft.screen instanceof GuiRadialSelector) {
                     updateSelectorRenderer((IRadialModeItem<?>) stack.getItem());
                 }
-            } else {
-                if (minecraft.screen instanceof GuiRadialSelector) {
-                    minecraft.setScreen(null);
-                }
+            } else if (minecraft.screen instanceof GuiRadialSelector) {
+                minecraft.setScreen(null);
             }
 
             if (MekanismConfig.client.enablePlayerSounds.get()) {

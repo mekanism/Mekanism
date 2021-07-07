@@ -106,8 +106,9 @@ public class MekanismAdditions implements IModModule {
     }
 
     private void serverStopping(FMLServerStoppingEvent event) {
-        if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
+        if (voiceManager != null) {
             voiceManager.stop();
+            voiceManager = null;
         }
     }
 
