@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -131,11 +132,23 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
     private void removePositionedTransmitter(LogisticalTransporterBase transmitter) {
         BlockPos pos = transmitter.getTilePos();
         LogisticalTransporterBase currentTransmitter = positionedTransmitters.get(pos);
-        if (currentTransmitter != transmitter) {
-            Mekanism.logger.warn("Removed transmitter at position: {} in {} was different than expected.", pos, world == null ? null : world.dimension().location());
-        }
         if (currentTransmitter != null) {
             //This shouldn't be null but if it is don't bother attempting to remove
+            if (currentTransmitter != transmitter) {
+                World world = this.world;
+                if (world == null) {
+                    //If the world is null, grab it from the transmitter
+                    world = transmitter.getTileWorld();
+                }
+                if (world != null && world.isClientSide()) {
+                    //On the client just exit instead of warning and then removing the unexpected transmitter.
+                    // When the client dies at spawn in single player the order of operations is:
+                    // - new tiles get added/loaded (so the positioned transmitter gets overridden with the correct one)
+                    // - The old one unloads which causes this removedPositionedTransmitter call to take place
+                    return;
+                }
+                Mekanism.logger.warn("Removed transmitter at position: {} in {} was different than expected.", pos, world == null ? null : world.dimension().location());
+            }
             positionedTransmitters.remove(pos);
         }
     }
