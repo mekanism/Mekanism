@@ -2,7 +2,7 @@
 
 ### This is a customized version of Mekanism made for Terralization modpack. It is made with several other contributions I found on GitHub and my own fixes. This version is supported but its limited, therefore it can be unstable.
 
-### Im open for contributors / people who want to take over. I mainly made this since i saw alot of people making their own version. I am already quite busy and if you want to you can get access to repo and help out. If you do this, i will rename it to Mekanism Community Edition
+### Im open for contributors / people who want to take over. I mainly made this since i saw alot of people making their own version and the only other version with enough fixes was closed down. I am already quite busy and if you want to you can get access to repo and help out. If you do this, i will rename it to Mekanism Community Edition
 
 #### Download at curseforge
 https://www.curseforge.com/minecraft/mc-mods/mekanism-terralization-edition
