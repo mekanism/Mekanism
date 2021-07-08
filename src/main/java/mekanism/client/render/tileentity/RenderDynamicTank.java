@@ -31,7 +31,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     protected void render(TileEntityDynamicTank tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             TankMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.renderLocation != null) {
                 RenderData data = getRenderData(multiblock);
@@ -81,7 +81,7 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Override
     public boolean shouldRenderOffScreen(TileEntityDynamicTank tile) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             TankMultiblockData multiblock = tile.getMultiblock();
             return multiblock.isFormed() && !multiblock.isEmpty() && multiblock.renderLocation != null;
         }

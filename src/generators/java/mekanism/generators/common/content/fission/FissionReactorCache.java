@@ -14,7 +14,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     private double rateLimit = -1;
     private double burnRemaining;
     private double partialWaste;
-    public boolean active;
+    private boolean active;
 
     private double getRateLimit() {
         if (rateLimit == -1) {
@@ -30,8 +30,8 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
         super.merge(mergeCache, rejectedItems);
         reactorDamage = Math.max(reactorDamage, ((FissionReactorCache) mergeCache).reactorDamage);
         rateLimit = Math.max(rateLimit, ((FissionReactorCache) mergeCache).rateLimit);
-        burnRemaining = Math.max(burnRemaining, ((FissionReactorCache) mergeCache).burnRemaining);
-        partialWaste = Math.max(partialWaste, ((FissionReactorCache) mergeCache).partialWaste);
+        burnRemaining += ((FissionReactorCache) mergeCache).burnRemaining;
+        partialWaste += ((FissionReactorCache) mergeCache).partialWaste;
         active |= ((FissionReactorCache) mergeCache).active;
     }
 

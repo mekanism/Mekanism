@@ -83,13 +83,14 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     }
 
     @Override
-    protected void onUpdateServer(FusionReactorMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(FusionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         if (getActive() && multiblock.isFormed()) {
             Set<Direction> directionsToEmit = multiblock.getDirectionsToEmit(getBlockPos());
             ChemicalUtil.emit(directionsToEmit, multiblock.steamTank, this);
             CableUtils.emit(directionsToEmit, multiblock.energyContainer, this);
         }
+        return needsPacket;
     }
 
     @Nullable

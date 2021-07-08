@@ -57,7 +57,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @ContainerSync
     public double lastProcessed;
 
-    private boolean couldOperate;
+    public boolean couldOperate;
     private AxisAlignedBB deathZone;
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
@@ -130,6 +130,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         super.readUpdateTag(tag);
         coilData.read(tag);
         lastReceivedEnergy = FloatingLong.parseFloatingLong(tag.getString(NBTConstants.ENERGY_USAGE));
+        lastProcessed = tag.getDouble(NBTConstants.LAST_PROCESSED);
     }
 
     @Override
@@ -137,6 +138,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         super.writeUpdateTag(tag);
         coilData.write(tag);
         tag.putString(NBTConstants.ENERGY_USAGE, lastReceivedEnergy.toString());
+        tag.putDouble(NBTConstants.LAST_PROCESSED, lastProcessed);
     }
 
     private long process(long operations) {
@@ -204,7 +206,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     public boolean handlesSound(TileEntitySPSCasing tile) {
-        return tile.getBlockPos().equals(getMinPos().offset(3, 0, 0)) || tile.getBlockPos().equals(getMaxPos().offset(3, 0, 7));
+        return tile.getBlockPos().equals(getMinPos().offset(3, 0, 0)) ||
+               tile.getBlockPos().equals(getMaxPos().offset(-3, 0, 0));
     }
 
     //Computer related methods

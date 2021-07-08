@@ -39,7 +39,7 @@ public class MultiblockFluidTank<MULTIBLOCK extends MultiblockData> extends Vari
     public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> input(MULTIBLOCK multiblock, TileEntityMultiblock<MULTIBLOCK> tile,
           IntSupplier capacity, Predicate<@NonNull FluidStack> validator, @Nullable IContentsListener listener) {
         return create(multiblock, tile, capacity, (stack, automationType) -> automationType != AutomationType.EXTERNAL && multiblock.isFormed(),
-              (stack, automationType) -> multiblock.isFormed(), validator, null);
+              (stack, automationType) -> multiblock.isFormed(), validator, listener);
     }
 
     public static <MULTIBLOCK extends MultiblockData> MultiblockFluidTank<MULTIBLOCK> output(MULTIBLOCK multiblock,

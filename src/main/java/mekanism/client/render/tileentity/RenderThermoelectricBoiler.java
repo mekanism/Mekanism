@@ -26,7 +26,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
 
     @Override
     protected void render(TileEntityBoilerCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             BoilerMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.renderLocation != null && multiblock.upperRenderLocation != null) {
                 BlockPos pos = tile.getBlockPos();
@@ -80,7 +80,7 @@ public class RenderThermoelectricBoiler extends MekanismTileEntityRenderer<TileE
 
     @Override
     public boolean shouldRenderOffScreen(TileEntityBoilerCasing tile) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             BoilerMultiblockData multiblock = tile.getMultiblock();
             return multiblock.isFormed() && multiblock.renderLocation != null && multiblock.upperRenderLocation != null;
         }

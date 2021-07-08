@@ -73,6 +73,7 @@ public final class NBTConstants {
     public static final String CONNECTION = "connection";
     public static final String CONTAINER = "Container";
     public static final String CONTROL_TYPE = "controlType";
+    public static final String COULD_OPERATE = "couldOperate";
     public static final String CURRENT_REDSTONE = "currentRedstone";
     public static final String DATA = "data";
     public static final String DATA_NAME = "dataName";

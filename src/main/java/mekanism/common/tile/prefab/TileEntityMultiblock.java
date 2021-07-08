@@ -61,7 +61,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     /**
      * Whether or not this multiblock segment is rendering the structure.
      */
-    public boolean isMaster;
+    private boolean isMaster;
 
     /**
      * This multiblock segment's cached data
@@ -116,6 +116,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     protected void onUpdateServer() {
         super.onUpdateServer();
+        boolean needsPacket = false;
         if (ticker >= 3) {
             structure.tick(this, ticker % 10 == 0);
         }
@@ -124,13 +125,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             if (!prevStructure) {
                 structureChanged(multiblock);
                 prevStructure = true;
+                needsPacket = true;
             }
             if (multiblock.inventoryID != null) {
                 cachedID = multiblock.inventoryID;
                 getManager().updateCache(this, multiblock);
-                if (isMaster) {
+                if (isMaster()) {
                     if (multiblock.tick(level)) {
-                        sendUpdatePacket();
+                        needsPacket = true;
                     }
                     if (multiblock.isDirty()) {
                         //If the multiblock is dirty mark the chunk as dirty to ensure that we save and then reset the fact the multiblock is dirty
@@ -147,16 +149,35 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             if (prevStructure) {
                 structureChanged(multiblock);
                 prevStructure = false;
+                needsPacket = true;
             }
             isMaster = false;
         }
-        onUpdateServer(multiblock);
+        needsPacket |= onUpdateServer(multiblock);
+        if (needsPacket) {
+            sendUpdatePacket();
+        }
     }
 
-    protected void onUpdateServer(T multiblock) {
+    /**
+     * @return if we need an update packet
+     */
+    protected boolean onUpdateServer(T multiblock) {
+        return false;
     }
 
-    private void structureChanged(T multiblock) {
+    @Override
+    public void resetForFormed() {
+        //TODO: Note, this seems to work fine as is, but there is a chance that we also need
+        // to be updating the cache using the old multiblock to allow for it to save properly
+        //Clear this multiblock being master, and also mark it as we don't have a structure
+        // as this method is only called when we have a formed multiblock so we want to just
+        // treat it as us unforming if formed and then reforming
+        isMaster = false;
+        prevStructure = false;
+    }
+
+    protected void structureChanged(T multiblock) {
         invalidateCachedCapabilities();
         if (multiblock.isFormed() && !multiblock.hasMaster && canBeMaster()) {
             multiblock.hasMaster = true;
@@ -175,7 +196,6 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 }
             }
         }
-        sendUpdatePacket();
         if (!multiblock.isFormed()) {
             //If we have no structure just mark the comparator as dirty for each block,
             // this will only perform neighbor updates if the block supports comparators
@@ -252,10 +272,10 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public CompoundNBT getReducedUpdateTag() {
         CompoundNBT updateTag = super.getReducedUpdateTag();
-        updateTag.putBoolean(NBTConstants.RENDERING, isMaster);
+        updateTag.putBoolean(NBTConstants.RENDERING, isMaster());
         T multiblock = getMultiblock();
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, multiblock.isFormed());
-        if (multiblock.isFormed() && isMaster) {
+        if (multiblock.isFormed() && isMaster()) {
             multiblock.writeUpdateTag(updateTag);
         }
         return updateTag;
@@ -267,7 +287,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isMaster = value);
         T multiblock = getMultiblock();
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, multiblock::setFormedForce);
-        if (isMaster) {
+        if (isMaster()) {
             if (multiblock.isFormed()) {
                 multiblock.readUpdateTag(tag);
                 doMultiblockSparkle(multiblock);
@@ -342,7 +362,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        if (isMaster) {
+        if (isMaster()) {
             T multiblock = getMultiblock();
             if (multiblock.isFormed() && multiblock.getBounds() != null) {
                 //TODO: Eventually we may want to look into caching this

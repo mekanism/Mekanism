@@ -34,8 +34,8 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
-    protected void onUpdateServer(FissionReactorMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(FissionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         RedstoneStatus status = getStatus();
         if (status != prevStatus) {
             World world = getLevel();
@@ -44,6 +44,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
             }
             prevStatus = status;
         }
+        return needsPacket;
     }
 
     @Override

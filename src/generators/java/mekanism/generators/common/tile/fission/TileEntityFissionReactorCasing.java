@@ -29,13 +29,14 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    protected void onUpdateServer(FissionReactorMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(FissionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         boolean burning = multiblock.isFormed() && multiblock.handlesSound(this) && multiblock.isBurning();
         if (burning != prevBurning) {
             prevBurning = burning;
-            sendUpdatePacket();
+            needsPacket = true;
         }
+        return needsPacket;
     }
 
     public double getBoilEfficiency() {

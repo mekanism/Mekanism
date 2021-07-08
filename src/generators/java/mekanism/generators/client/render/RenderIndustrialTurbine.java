@@ -28,7 +28,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
 
     @Override
     protected void render(TileEntityTurbineCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.complex != null && multiblock.renderLocation != null) {
                 BlockPos pos = tile.getBlockPos();
@@ -75,7 +75,7 @@ public class RenderIndustrialTurbine extends MekanismTileEntityRenderer<TileEnti
 
     @Override
     public boolean shouldRenderOffScreen(TileEntityTurbineCasing tile) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             TurbineMultiblockData multiblock = tile.getMultiblock();
             return multiblock.isFormed() && multiblock.complex != null && multiblock.renderLocation != null;
         }

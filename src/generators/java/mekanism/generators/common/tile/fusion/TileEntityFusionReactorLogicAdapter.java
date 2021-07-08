@@ -36,8 +36,8 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     }
 
     @Override
-    protected void onUpdateServer(FusionReactorMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(FusionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         boolean outputting = checkMode();
         if (outputting != prevOutputting) {
             World world = getLevel();
@@ -46,6 +46,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
             }
             prevOutputting = outputting;
         }
+        return needsPacket;
     }
 
     public boolean checkMode() {

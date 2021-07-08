@@ -42,7 +42,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
     @Override
     protected void render(TileEntityFissionReactorCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             FissionReactorMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.renderLocation != null) {
                 BlockPos pos = tile.getBlockPos();
@@ -72,11 +72,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     int height = multiblock.height() - 2;
                     if (height >= 1) {
                         FluidRenderData data = new FluidRenderData(multiblock.fluidCoolantTank.getFluid());
-                        data.location = multiblock.renderLocation;
-                        data.height = height;
-                        data.length = multiblock.length();
-                        data.width = multiblock.width();
-                        int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
+                        int glow = setCoolantDataAndCalculateGlow(data, multiblock, height);
                         matrix.pushPose();
                         matrix.translate(data.location.getX() - pos.getX(), data.location.getY() - pos.getY(), data.location.getZ() - pos.getZ());
                         Model3D model = ModelRenderer.getModel(data, multiblock.prevCoolantScale);
@@ -89,11 +85,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     int height = multiblock.height() - 2;
                     if (height >= 1) {
                         GasRenderData data = new GasRenderData(multiblock.heatedCoolantTank.getStack());
-                        data.location = multiblock.renderLocation;
-                        data.height = height;
-                        data.length = multiblock.length();
-                        data.width = multiblock.width();
-                        int glow = data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
+                        int glow = setCoolantDataAndCalculateGlow(data, multiblock, height);
                         Model3D gasModel;
                         if (cachedHeatedCoolantModels.containsKey(data)) {
                             gasModel = cachedHeatedCoolantModels.get(data);
@@ -119,6 +111,14 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
         }
     }
 
+    private int setCoolantDataAndCalculateGlow(RenderData data, FissionReactorMultiblockData multiblock, int height) {
+        data.location = multiblock.renderLocation;
+        data.height = height;
+        data.length = multiblock.length();
+        data.width = multiblock.width();
+        return data.calculateGlowLight(MekanismRenderer.FULL_SKY_LIGHT);
+    }
+
     @Override
     protected String getProfilerSection() {
         return GeneratorsProfilerConstants.FISSION_REACTOR;
@@ -126,7 +126,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
 
     @Override
     public boolean shouldRenderOffScreen(TileEntityFissionReactorCasing tile) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             FissionReactorMultiblockData multiblock = tile.getMultiblock();
             return multiblock.isFormed() && multiblock.renderLocation != null;
         }

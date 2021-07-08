@@ -33,8 +33,8 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     }
 
     @Override
-    protected void onUpdateServer(SPSMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(SPSMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
             if (getActive()) {
                 ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.outputTank, this);
@@ -43,6 +43,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
                 multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
             }
         }
+        return needsPacket;
     }
 
     @Nonnull
