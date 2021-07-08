@@ -244,13 +244,17 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onEntityAttacked(LivingAttackEvent event) {
-        if (event.getAmount() <= 0) {
+        LivingEntity entity = event.getEntityLiving();
+        if (event.getAmount() <= 0 || !entity.isAlive()) {
             //If some mod does weird things and causes the damage value to be negative or zero then exit
             // as our logic assumes there is actually damage happening and can crash if someone tries to
-            // use a negative number as the damage value
+            // use a negative number as the damage value. We also check to make sure that we don't do
+            // anything if the entity is dead as living attack is still fired when the entity is dead
+            // for things like fall damage if the entity dies before hitting the ground, and then energy
+            // would be depleted regardless if keep inventory is on even if no damage was stopped as the
+            // entity can't take damage while dead
             return;
         }
-        LivingEntity entity = event.getEntityLiving();
         //Gas Mask checks
         if (event.getSource().isMagic()) {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlotType.HEAD);
@@ -294,13 +298,19 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
-        if (event.getAmount() <= 0) {
-            //If some mod does weird things and causes the damage value to be negative (or zero instead of just cancelling)
-            // then exit as our logic assumes there is actually damage happening and can crash if someone tries to use a
-            // negative number as the damage value
+        LivingEntity entity = event.getEntityLiving();
+        if (event.getAmount() <= 0 || !entity.isAlive()) {
+            //If some mod does weird things and causes the damage value to be negative or zero then exit
+            // as our logic assumes there is actually damage happening and can crash if someone tries to
+            // use a negative number as the damage value. We also check to make sure that we don't do
+            // anything if the entity is dead as living attack is still fired when the entity is dead
+            // for things like fall damage if the entity dies before hitting the ground, and then energy
+            // would be depleted regardless if keep inventory is on even if no damage was stopped as the
+            // entity can't take damage while dead. While living hurt is not fired, we catch this case
+            // just in case anyways because it is a simple boolean check and there is no guarantee that
+            // other mods may not be firing the event manually even when the entity is dead
             return;
         }
-        LivingEntity entity = event.getEntityLiving();
         if (event.getSource() == DamageSource.FALL) {
             FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
             if (info != null && handleDamage(event, info.container, info.damageRatio, info.energyCost)) {
