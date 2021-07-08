@@ -5,9 +5,9 @@ name: Check code
 
 on:
   push:
-    branches: [ master ]
+    branches: [ 1.7.10 ]
   pull_request:
-    branches: [ master ]
+    branches: [ 1.7.10 ]
 
 jobs:
   build:
