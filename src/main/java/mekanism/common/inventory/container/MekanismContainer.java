@@ -218,6 +218,10 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     protected void addSlots() {
     }
 
+    public List<InventoryContainerSlot> getInventoryContainerSlots() {
+        return Collections.unmodifiableList(inventoryContainerSlots);
+    }
+
     public List<MainInventorySlot> getMainInventorySlots() {
         return Collections.unmodifiableList(mainInventorySlots);
     }

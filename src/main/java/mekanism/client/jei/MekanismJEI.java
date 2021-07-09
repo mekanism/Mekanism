@@ -55,7 +55,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.crafttweaker.jeitweaker.JEITweakerHelper;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
-import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
@@ -368,8 +367,7 @@ public class MekanismJEI implements IModPlugin {
         IRecipeTransferHandlerHelper transferHelper = registry.getTransferHelper();
         IStackHelper stackHelper = registry.getJeiHelpers().getStackHelper();
         registry.addRecipeTransferHandler(CraftingRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
-        //TODO - 10.1: Validate we are properly allowing for searching all slots in the formulaic assemblicator and the player's inventory
-        registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 19, 9, 35, 36);
+        registry.addRecipeTransferHandler(new FormulaicRecipeTransferInfo());
         registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, QIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
         registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, PortableQIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
     }

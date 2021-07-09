@@ -52,7 +52,6 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
@@ -61,7 +60,6 @@ import net.minecraft.util.math.RayTraceContext.BlockMode;
 import net.minecraft.util.math.RayTraceContext.FluidMode;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.UsernameCache;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -454,47 +452,6 @@ public final class MekanismUtils {
             }
         };
         return new CraftingInventory(tempContainer, 3, 3);
-    }
-
-    /**
-     * Finds the output of a brute forced repairing action
-     *
-     * @param inv   - InventoryCrafting to check
-     * @param world - world reference
-     *
-     * @return output ItemStack
-     */
-    public static ItemStack findRepairRecipe(CraftingInventory inv, World world) {
-        NonNullList<ItemStack> dmgItems = NonNullList.withSize(2, ItemStack.EMPTY);
-        ItemStack leftStack = dmgItems.get(0);
-        for (int i = 0; i < inv.getContainerSize(); i++) {
-            if (!inv.getItem(i).isEmpty()) {
-                if (leftStack.isEmpty()) {
-                    dmgItems.set(0, leftStack = inv.getItem(i));
-                } else {
-                    dmgItems.set(1, inv.getItem(i));
-                    break;
-                }
-            }
-        }
-
-        if (leftStack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-
-        ItemStack rightStack = dmgItems.get(1);
-        if (!rightStack.isEmpty() && leftStack.getItem() == rightStack.getItem() && leftStack.getCount() == 1 && rightStack.getCount() == 1 &&
-            leftStack.getItem().isRepairable(leftStack)) {
-            Item theItem = leftStack.getItem();
-            int dmgDiff0 = theItem.getMaxDamage(leftStack) - leftStack.getDamageValue();
-            int dmgDiff1 = theItem.getMaxDamage(leftStack) - rightStack.getDamageValue();
-            int value = dmgDiff0 + dmgDiff1 + theItem.getMaxDamage(leftStack) * 5 / 100;
-            int solve = Math.max(0, theItem.getMaxDamage(leftStack) - value);
-            ItemStack repaired = new ItemStack(leftStack.getItem());
-            repaired.setDamageValue(solve);
-            return repaired;
-        }
-        return ItemStack.EMPTY;
     }
 
     /**

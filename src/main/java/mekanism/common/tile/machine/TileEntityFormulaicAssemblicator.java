@@ -279,24 +279,22 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 for (int i = 0; i < craftingGridSlots.size(); i++) {
                     dummyInv.setItem(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
                 }
-
                 lastRemainingItems = EMPTY_LIST;
-
                 if (cachedRecipe == null || !cachedRecipe.matches(dummyInv, level)) {
                     cachedRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, dummyInv, level).orElse(null);
                 }
-                if (cachedRecipe != null) {
+                if (cachedRecipe == null) {
+                    lastOutputStack = ItemStack.EMPTY;
+                } else {
                     lastOutputStack = cachedRecipe.assemble(dummyInv);
                     lastRemainingItems = cachedRecipe.getRemainingItems(dummyInv);
-                } else {
-                    lastOutputStack = MekanismUtils.findRepairRecipe(dummyInv, level);
                 }
                 isRecipe = !lastOutputStack.isEmpty();
             } else {
                 isRecipe = formula.matches(level, craftingGridSlots);
                 if (isRecipe) {
-                    lastOutputStack = formula.recipe.assemble(dummyInv);
-                    lastRemainingItems = formula.recipe.getRemainingItems(dummyInv);
+                    lastOutputStack = formula.assemble();
+                    lastRemainingItems = formula.getRemainingItems();
                 } else {
                     lastOutputStack = ItemStack.EMPTY;
                 }
@@ -306,12 +304,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private boolean doSingleCraft() {
-        //Should always be 9 for the size
-        for (int i = 0; i < craftingGridSlots.size(); i++) {
-            dummyInv.setItem(i, StackUtils.size(craftingGridSlots.get(i).getStack(), 1));
-        }
         recalculateRecipe();
-
         ItemStack output = lastOutputStack;
         if (!output.isEmpty() && tryMoveToOutput(output, Action.SIMULATE) &&
             (lastRemainingItems.isEmpty() || lastRemainingItems.stream().allMatch(it -> it.isEmpty() || tryMoveToOutput(it, Action.SIMULATE)))) {

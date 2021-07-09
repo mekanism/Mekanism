@@ -62,8 +62,23 @@ public class RecipeFormula {
         return recipe.matches(dummy, world);
     }
 
+    //Must have matches be called before this and be true as it assumes that the dummy inventory was set by it
+    public ItemStack assemble() {
+        return recipe == null ? ItemStack.EMPTY : recipe.assemble(dummy);
+    }
+
+    //Must have matches be called before this and be true as it assumes that the dummy inventory was set by it
+    public NonNullList<ItemStack> getRemainingItems() {
+        //Should never be null given the assumption matches is called first
+        return recipe == null ? NonNullList.create() : recipe.getRemainingItems(dummy);
+    }
+
     public boolean isIngredientInPos(World world, ItemStack stack, int i) {
         if (recipe == null) {
+            return false;
+        } else if (stack.isEmpty() && !input.get(i).isEmpty()) {
+            //If the stack being checked is empty but the input isn't expected to be empty,
+            // mark it as not being correct for the position
             return false;
         }
         resetToRecipe();
