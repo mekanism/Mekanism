@@ -4,8 +4,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
@@ -106,7 +107,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
       IHasSortableFilters {
 
     public Long2ObjectMap<BitSet> oresToMine = new Long2ObjectOpenHashMap<>();
-    public Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
     private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
@@ -191,6 +191,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         super.onUpdateServer();
         closeInvalidScreens();
         if (!initCalc) {
+            //If it had finished searching and we didn't initialize things yet,
+            // reset it and start running again if needed. This happens after saving the miner to disk
             if (searcher.state == State.FINISHED) {
                 boolean prevRunning = running;
                 reset();
@@ -211,64 +213,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 }
                 energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
                 if (delay == 0) {
-                    boolean did = false;
-                    for (LongIterator it = oresToMine.keySet().iterator(); it.hasNext(); ) {
-                        long chunk = it.nextLong();
-                        BitSet set = oresToMine.get(chunk);
-                        int next = 0;
-                        while (!did) {
-                            int index = set.nextSetBit(next);
-                            BlockPos pos = getPosFromIndex(index);
-                            if (index == -1) {
-                                it.remove();
-                                break;
-                            }
-                            Optional<BlockState> blockState = WorldUtils.getBlockState(level, pos);
-                            if (!blockState.isPresent() || blockState.get().isAir(level, pos)) {
-                                set.clear(index);
-                                if (set.cardinality() == 0) {
-                                    it.remove();
-                                    break;
-                                }
-                                next = index + 1;
-                                continue;
-                            }
-                            boolean hasFilter = false;
-                            BlockState state = blockState.get();
-                            for (MinerFilter<?> filter : filters) {
-                                if (filter.canFilter(state)) {
-                                    hasFilter = true;
-                                    break;
-                                }
-                            }
-
-                            if (inverse == hasFilter || !canMine(pos)) {
-                                set.clear(index);
-                                if (set.cardinality() == 0) {
-                                    it.remove();
-                                    break;
-                                }
-                                next = index + 1;
-                                continue;
-                            }
-
-                            List<ItemStack> drops = getDrops(state, pos);
-                            if (canInsert(drops) && setReplace(pos, index)) {
-                                did = true;
-                                add(drops);
-                                set.clear(index);
-                                if (set.cardinality() == 0) {
-                                    it.remove();
-                                }
-                                level.levelEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getId(state));
-                                missingStack = ItemStack.EMPTY;
-                            }
-                            break;
-                        }
-                    }
+                    tryMineBlock();
                     delay = getDelay();
-                    //Update the cached to mine value now that we have actually performed a mine
-                    updateCachedToMine();
                 }
             } else {
                 setActive(false);
@@ -422,14 +368,77 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         markDirty(false);
     }
 
+    private void tryMineBlock() {
+        for (ObjectIterator<BitSet> it = oresToMine.values().iterator(); it.hasNext(); ) {
+            BitSet chunkToMine = it.next();
+            int next = 0;
+            while (true) {
+                int index = chunkToMine.nextSetBit(next);
+                if (index == -1) {
+                    //If there is no found index, remove it and continue on
+                    it.remove();
+                    break;
+                }
+                BlockPos pos = getPosFromIndex(index);
+                Optional<BlockState> blockState = WorldUtils.getBlockState(level, pos);
+                if (blockState.isPresent()) {
+                    BlockState state = blockState.get();
+                    if (!state.isAir(level, pos)) {
+                        //Make sure the block is loaded and is not air
+                        // then check if the block matches one of our filters
+                        MinerFilter<?> matchingFilter = null;
+                        for (MinerFilter<?> filter : filters) {
+                            if (filter.canFilter(state)) {
+                                matchingFilter = filter;
+                                break;
+                            }
+                        }
+                        //If our hasFilter state matches our inversion state, that means we should try to mine
+                        // the block so we check if we can mine it
+                        if (inverse == (matchingFilter == null) && canMine(state, pos)) {
+                            //If we can, then
+                            List<ItemStack> drops = getDrops(state, pos);
+                            if (canInsert(drops) && setReplace(pos, matchingFilter)) {
+                                add(drops);
+                                missingStack = ItemStack.EMPTY;
+                                level.levelEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getId(state));
+                                //Remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
+                                cachedToMine--;
+                                chunkToMine.clear(index);
+                                if (chunkToMine.isEmpty()) {
+                                    // if we are out of stored elements then we remove this chunk and continue to check other chunks
+                                    // remove it so that we don't have to check the chunk next time around
+                                    it.remove();
+                                }
+                            }
+                            //Exit out. We either mined the block or don't have room so there is no reason to continue checking
+                            return;
+                        }
+                    }
+                }
+                //If we failed to mine the block, because it isn't loaded, is air, or we shouldn't mine it
+                // remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
+                cachedToMine--;
+                chunkToMine.clear(index);
+                if (chunkToMine.isEmpty()) {
+                    // if we are out of stored elements then we remove this chunk and continue to check other chunks
+                    it.remove();
+                    break;
+                }
+                // if we still have elements in this chunk that can potentially be mined, increment our index
+                // to the next one and attempt to mine it
+                next = index + 1;
+            }
+        }
+    }
+
     /**
      * @return false if unsuccessful
      */
-    private boolean setReplace(BlockPos pos, int index) {
+    private boolean setReplace(BlockPos pos, @Nullable MinerFilter<?> filter) {
         if (level == null) {
             return false;
         }
-        MinerFilter<?> filter = replaceMap.get(index);
         ItemStack stack = getReplace(filter);
         if (stack.isEmpty()) {
             if (filter == null || filter.replaceStack.isEmpty() || !filter.requireStack) {
@@ -450,11 +459,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return true;
     }
 
-    private boolean canMine(BlockPos pos) {
-        if (level == null) {
-            return false;
-        }
-        BlockState state = level.getBlockState(pos);
+    private boolean canMine(BlockState state, BlockPos pos) {
         return MekFakePlayer.withFakePlayer((ServerWorld) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), dummy -> {
             dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
             BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, state, dummy);
@@ -602,7 +607,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         running = false;
         cachedToMine = 0;
         oresToMine.clear();
-        replaceMap.clear();
         missingStack = ItemStack.EMPTY;
         setActive(false);
         markDirty(false);
@@ -615,10 +619,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             }
         }
         return false;
-    }
-
-    private void updateCachedToMine() {
-        cachedToMine = oresToMine.values().stream().mapToInt(BitSet::cardinality).sum();
     }
 
     @Override

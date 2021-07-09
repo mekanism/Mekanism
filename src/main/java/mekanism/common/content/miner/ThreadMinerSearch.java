@@ -1,7 +1,5 @@
 package mekanism.common.content.miner;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -31,7 +29,6 @@ public class ThreadMinerSearch extends Thread {
     public State state = State.IDLE;
 
     private final Long2ObjectMap<BitSet> oresToMine = new Long2ObjectOpenHashMap<>();
-    private final Int2ObjectMap<MinerFilter<?>> replaceMap = new Int2ObjectOpenHashMap<>();
     private final Map<Block, MinerFilter<?>> acceptedItems = new Object2ObjectOpenHashMap<>();
     private Region chunkCache;
 
@@ -95,24 +92,17 @@ public class ThreadMinerSearch extends Thread {
                 acceptedItems.put(info, filterFound);
             }
             if (tile.getInverse() == (filterFound == null)) {
-                set(i, testPos);
-                replaceMap.put(i, filterFound);
+                long chunk = WorldUtils.getChunkPosAsLong(testPos);
+                oresToMine.computeIfAbsent(chunk, k -> new BitSet()).set(i);
                 found++;
             }
         }
 
         state = State.FINISHED;
         tile.oresToMine = oresToMine;
-        tile.replaceMap = replaceMap;
         chunkCache = null;
         tile.markDirty(false);
         tile.cachedToMine = found;
-    }
-
-    public void set(int i, BlockPos pos) {
-        long chunk = WorldUtils.getChunkPosAsLong(pos);
-        oresToMine.computeIfAbsent(chunk, k -> new BitSet());
-        oresToMine.get(chunk).set(i);
     }
 
     public void reset() {
