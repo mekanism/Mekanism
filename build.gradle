@@ -35,6 +35,10 @@ repositories {
         name 'CB Maven FS'
         url "http://chickenbones.net/maven/"
     }
+	maven {
+            name = "forge2"
+            url = "https://maven.minecraftforge.net/"
+        }
     maven {
         name 'ForgeFS'
         url 'http://files.minecraftforge.net/maven'
