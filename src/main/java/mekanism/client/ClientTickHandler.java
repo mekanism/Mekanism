@@ -232,7 +232,11 @@ public class ClientTickHandler {
                 minecraft.player.addEffect(new EffectInstance(Effects.NIGHT_VISION, 220, 0, false, true, false));
             } else if (visionEnhancement) {
                 visionEnhancement = false;
-                minecraft.player.removeEffect(Effects.NIGHT_VISION);
+                EffectInstance effect = minecraft.player.getEffect(Effects.NIGHT_VISION);
+                if (effect != null && effect.getDuration() <= 220) {
+                    //Only remove it if it is our effect and not one that has a longer remaining duration
+                    minecraft.player.removeEffect(Effects.NIGHT_VISION);
+                }
             }
 
             ItemStack stack = minecraft.player.getItemBySlot(EquipmentSlotType.MAINHAND);
