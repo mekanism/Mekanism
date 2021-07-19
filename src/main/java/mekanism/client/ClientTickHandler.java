@@ -12,7 +12,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.key.MekKeyHandler;
-import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;
@@ -229,15 +228,19 @@ public class ClientTickHandler {
 
             if (isVisionEnhancementOn(minecraft.player)) {
                 visionEnhancement = true;
-                // adds if it doesn't exist, otherwise tops off duration to 200
-                minecraft.player.addEffect(new EffectInstance(Effects.NIGHT_VISION, 200, 0, false, true, false));
+                // adds if it doesn't exist, otherwise tops off duration to 220. equal or less than 200 will make vision flickers
+                minecraft.player.addEffect(new EffectInstance(Effects.NIGHT_VISION, 220, 0, false, true, false));
             } else if (visionEnhancement) {
                 visionEnhancement = false;
-                minecraft.player.removeEffect(Effects.NIGHT_VISION);
+                EffectInstance effect = minecraft.player.getEffect(Effects.NIGHT_VISION);
+                if (effect != null && effect.getDuration() <= 220) {
+                    //Only remove it if it is our effect and not one that has a longer remaining duration
+                    minecraft.player.removeEffect(Effects.NIGHT_VISION);
+                }
             }
 
             ItemStack stack = minecraft.player.getItemBySlot(EquipmentSlotType.MAINHAND);
-            if (MekKeyHandler.isKeyDown(MekanismKeyHandler.handModeSwitchKey) && stack.getItem() instanceof IRadialModeItem) {
+            if (MekKeyHandler.isRadialPressed() && stack.getItem() instanceof IRadialModeItem) {
                 if (minecraft.screen == null || minecraft.screen instanceof GuiRadialSelector) {
                     updateSelectorRenderer((IRadialModeItem<?>) stack.getItem());
                 }

@@ -14,7 +14,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.0.25', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.0.37', changing: true
     }
 }
 
@@ -748,6 +748,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             releaseType = "${curse_release_type}"
             mainArtifact(jar) {
                 relations {
+                    optionalDependency "applied-energistics-2"
                     optionalDependency "biomes-o-plenty"
                     optionalDependency "cc-tweaked"
                     optionalDependency "crafttweaker"

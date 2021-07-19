@@ -18,6 +18,8 @@ import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
 import mekanism.common.content.gear.mekatool.ModuleAttackAmplificationUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
 import mekanism.common.content.gear.mekatool.ModuleFarmingUnit;
+import mekanism.common.content.gear.mekatool.ModuleShearingUnit;
+import mekanism.common.content.gear.mekatool.ModuleSilkTouchUnit;
 import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
@@ -52,8 +54,12 @@ public class MekanismModules {
                 .rendersHUD());
     public static final ModuleRegistryObject<ModuleFarmingUnit> FARMING_UNIT = MODULES.registerLegacy("farming_unit", ModuleFarmingUnit::new,
           () -> MekanismItems.MODULE_FARMING.getItem(), builder -> builder.maxStackSize(4).rarity(Rarity.UNCOMMON).exclusive());
-    public static final ModuleRegistryObject<?> SILK_TOUCH_UNIT = MODULES.registerMarkerLegacy("silk_touch_unit", () -> MekanismItems.MODULE_SILK_TOUCH.getItem(),
-          builder -> builder.rarity(Rarity.RARE));
+    //TODO: Eventually we may want to come up with a better exclusive method given realistically the shearing unit and farming unit don't need to be
+    // exclusive of each other, but they both should be exclusive in regards to the teleportation unit
+    public static final ModuleRegistryObject<ModuleShearingUnit> SHEARING_UNIT = MODULES.register("shearing_unit", ModuleShearingUnit::new,
+          () -> MekanismItems.MODULE_SHEARING.getItem(), builder -> builder.rarity(Rarity.UNCOMMON).exclusive());
+    public static final ModuleRegistryObject<ModuleSilkTouchUnit> SILK_TOUCH_UNIT = MODULES.registerLegacy("silk_touch_unit", ModuleSilkTouchUnit::new,
+          () -> MekanismItems.MODULE_SILK_TOUCH.getItem(), builder -> builder.rarity(Rarity.RARE));
     public static final ModuleRegistryObject<ModuleVeinMiningUnit> VEIN_MINING_UNIT = MODULES.registerLegacy("vein_mining_unit", ModuleVeinMiningUnit::new,
           () -> MekanismItems.MODULE_VEIN_MINING.getItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE).rendersHUD());
     public static final ModuleRegistryObject<ModuleTeleportationUnit> TELEPORTATION_UNIT = MODULES.registerLegacy("teleportation_unit", ModuleTeleportationUnit::new,
@@ -101,5 +107,5 @@ public class MekanismModules {
           ModuleMagneticAttractionUnit::new, () -> MekanismItems.MODULE_MAGNETIC_ATTRACTION.getItem(), builder -> builder.maxStackSize(4).rarity(Rarity.RARE)
                 .handlesModeChange());
     public static final ModuleRegistryObject<ModuleFrostWalkerUnit> FROST_WALKER_UNIT = MODULES.register("frost_walker_unit", ModuleFrostWalkerUnit::new,
-          () -> MekanismItems.MODULE_FROST_WALKER.getItem(), builder -> builder.maxStackSize(2).rarity(Rarity.RARE).noDisable());
+          () -> MekanismItems.MODULE_FROST_WALKER.getItem(), builder -> builder.maxStackSize(2).rarity(Rarity.RARE));
 }

@@ -16,7 +16,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
-import mekanism.common.content.gear.mekasuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.entity.EntityFlame;
@@ -258,26 +257,12 @@ public class CommonPlayerTickHandler {
         //Gas Mask checks
         if (event.getSource().isMagic()) {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlotType.HEAD);
-            if (!headStack.isEmpty()) {
-                if (headStack.getItem() instanceof ItemScubaMask) {
-                    ItemStack chestStack = entity.getItemBySlot(EquipmentSlotType.CHEST);
-                    if (!chestStack.isEmpty()) {
-                        if (chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
-                            ChemicalUtil.hasGas(chestStack)) {
-                            event.setCanceled(true);
-                            return;
-                        }
-                    }
-                } else {
-                    //Note: We have this here in addition to listening to LivingHurt, so as if we can fully block the damage
-                    // then we don't play the hurt effect/sound, as cancelling LivingHurtEvent still causes that to happen
-                    IModule<ModuleInhalationPurificationUnit> module = MekanismAPI.getModuleHelper().load(headStack, MekanismModules.INHALATION_PURIFICATION_UNIT);
-                    if (module != null && module.isEnabled()) {
-                        if (tryAbsorbAll(event, module.getEnergyContainer(), MekanismConfig.gear.mekaSuitMagicDamageRatio,
-                              MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce)) {
-                            return;
-                        }
-                    }
+            if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
+                ItemStack chestStack = entity.getItemBySlot(EquipmentSlotType.CHEST);
+                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
+                    ChemicalUtil.hasGas(chestStack)) {
+                    event.setCanceled(true);
+                    return;
                 }
             }
         }
@@ -286,10 +271,11 @@ public class CommonPlayerTickHandler {
         if (event.getSource() == DamageSource.FALL) {
             //Free runner checks
             FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
-            if (info != null) {
-                tryAbsorbAll(event, info.container, info.damageRatio, info.energyCost);
+            if (info != null && tryAbsorbAll(event, info.container, info.damageRatio, info.energyCost)) {
+                return;
             }
-        } else if (entity instanceof PlayerEntity) {
+        }
+        if (entity instanceof PlayerEntity) {
             if (ItemMekaSuitArmor.tryAbsorbAll((PlayerEntity) entity, event.getSource(), event.getAmount())) {
                 event.setCanceled(true);
             }
@@ -315,15 +301,6 @@ public class CommonPlayerTickHandler {
             FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
             if (info != null && handleDamage(event, info.container, info.damageRatio, info.energyCost)) {
                 return;
-            }
-        } else if (event.getSource().isMagic()) {
-            ItemStack headStack = entity.getItemBySlot(EquipmentSlotType.HEAD);
-            if (!headStack.isEmpty()) {
-                IModule<ModuleInhalationPurificationUnit> module = MekanismAPI.getModuleHelper().load(headStack, MekanismModules.INHALATION_PURIFICATION_UNIT);
-                if (module != null && module.isEnabled() && handleDamage(event, module.getEnergyContainer(), MekanismConfig.gear.mekaSuitMagicDamageRatio,
-                      MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce)) {
-                    return;
-                }
             }
         }
         if (entity instanceof PlayerEntity) {

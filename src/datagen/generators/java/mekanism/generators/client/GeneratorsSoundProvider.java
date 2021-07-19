@@ -1,7 +1,6 @@
 package mekanism.generators.client;
 
 import mekanism.client.sound.BaseSoundProvider;
-import mekanism.client.sound.SoundEventBuilder;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsSounds;
@@ -16,7 +15,7 @@ public class GeneratorsSoundProvider extends BaseSoundProvider {
     }
 
     @Override
-    protected void addSoundEvents() {
+    public void registerSounds() {
         addSoundEventWithSubtitle(GeneratorsSounds.FUSION_REACTOR, MekanismGenerators.rl("fusion_reactor"));
         addSoundEventWithSubtitle(GeneratorsSounds.FISSION_REACTOR, MekanismGenerators.rl("fission_reactor"));
         addGeneratorSoundEvents();
@@ -33,6 +32,6 @@ public class GeneratorsSoundProvider extends BaseSoundProvider {
     }
 
     private void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location, int attenuationDistance) {
-        addSoundEvent(SoundEventBuilder.create(soundEventRO).subtitle(soundEventRO).addSounds(createSoundBuilder(location).attenuationDistance(attenuationDistance)));
+        add(soundEventRO, definition(soundEventRO).with(sound(location).attenuationDistance(attenuationDistance)));
     }
 }

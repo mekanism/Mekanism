@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.nbt.CompoundNBT;
@@ -14,6 +15,7 @@ import net.minecraft.nbt.CompoundNBT;
  *
  * @apiNote Does not currently support {@link mekanism.api.IDisableableEnum}.
  */
+@ParametersAreNonnullByDefault
 public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> implements ModuleConfigData<TYPE> {
 
     private final List<TYPE> enumConstants;
@@ -25,7 +27,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
      * @param enumClass Class of the Enum this {@link ModuleEnumData} corresponds to.
      * @param def       Default value.
      */
-    public ModuleEnumData(@Nonnull Class<TYPE> enumClass, @Nonnull TYPE def) {
+    public ModuleEnumData(Class<TYPE> enumClass, TYPE def) {
         TYPE[] constants = Objects.requireNonNull(enumClass, "Enum Class cannot be null.").getEnumConstants();
         this.enumConstants = ImmutableList.<TYPE>builder()
               .addAll(Arrays.asList(constants))
@@ -40,7 +42,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
      * @param selectableCount The number of selectable elements.
      * @param def             Default value.
      */
-    public ModuleEnumData(@Nonnull Class<TYPE> enumClass, int selectableCount, @Nonnull TYPE def) {
+    public ModuleEnumData(Class<TYPE> enumClass, int selectableCount, TYPE def) {
         TYPE[] constants = Objects.requireNonNull(enumClass, "Enum Class cannot be null.").getEnumConstants();
         if (selectableCount <= 0) {
             throw new IllegalArgumentException("Invalid selectableCount, there must be at least one element that is selectable.");
@@ -81,7 +83,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
     }
 
     @Override
-    public void set(@Nonnull TYPE val) {
+    public void set(TYPE val) {
         Objects.requireNonNull(val, "Value cannot be null.");
         if (val.ordinal() >= enumConstants.size()) {
             throw new IllegalArgumentException("Invalid value, it is out of range of the selectable values.");
@@ -90,14 +92,14 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
     }
 
     @Override
-    public void read(@Nonnull String name, @Nonnull CompoundNBT tag) {
+    public void read(String name, CompoundNBT tag) {
         Objects.requireNonNull(tag, "Tag cannot be null.");
         Objects.requireNonNull(name, "Name cannot be null.");
         value = MathUtils.getByIndexMod(enumConstants, tag.getInt(name));
     }
 
     @Override
-    public void write(@Nonnull String name, @Nonnull CompoundNBT tag) {
+    public void write(String name, CompoundNBT tag) {
         Objects.requireNonNull(tag, "Tag cannot be null.");
         Objects.requireNonNull(name, "Name cannot be null.");
         tag.putInt(name, value.ordinal());

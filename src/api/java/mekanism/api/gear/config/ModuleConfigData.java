@@ -1,6 +1,7 @@
 package mekanism.api.gear.config;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.nbt.CompoundNBT;
 
 /**
@@ -9,6 +10,7 @@ import net.minecraft.nbt.CompoundNBT;
  * @apiNote Currently Mekanism only has rendering/GUI support for handling {@link ModuleBooleanData} and {@link ModuleEnumData}; if more types are needed either open an
  * issue or create a PR implementing support for them.
  */
+@ParametersAreNonnullByDefault
 public interface ModuleConfigData<TYPE> {
 
     /**
@@ -24,7 +26,7 @@ public interface ModuleConfigData<TYPE> {
      *
      * @param val Desired value.
      */
-    void set(@Nonnull TYPE val);
+    void set(TYPE val);
 
     /**
      * Attempts to read a {@link ModuleConfigData} of this type with the given name from the given {@link CompoundNBT} and updates the current value to the stored value.
@@ -32,7 +34,7 @@ public interface ModuleConfigData<TYPE> {
      * @param name Name of the config data to read.
      * @param tag  Stored data.
      */
-    void read(@Nonnull String name, @Nonnull CompoundNBT tag);
+    void read(String name, CompoundNBT tag);
 
     /**
      * Attempts to write the current value of this {@link ModuleConfigData} into the given {@link CompoundNBT} using the given name.
@@ -40,5 +42,5 @@ public interface ModuleConfigData<TYPE> {
      * @param name Name of the config data to write to.
      * @param tag  Data to store the value in.
      */
-    void write(@Nonnull String name, @Nonnull CompoundNBT tag);
+    void write(String name, CompoundNBT tag);
 }

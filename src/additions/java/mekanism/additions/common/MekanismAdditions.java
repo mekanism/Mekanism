@@ -1,6 +1,8 @@
 package mekanism.additions.common;
 
+import javax.annotation.Nonnull;
 import mekanism.additions.client.AdditionsClient;
+import mekanism.additions.common.block.BlockObsidianTNT;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.SpawnHelper;
 import mekanism.additions.common.registries.AdditionsBlocks;
@@ -12,7 +14,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -92,6 +99,17 @@ public class MekanismAdditions implements IModModule {
             AdditionsTags.init();
             //Setup some stuff related to entities
             SpawnHelper.setupEntities();
+            //Dispenser behavior
+            DispenserBlock.registerBehavior(AdditionsBlocks.OBSIDIAN_TNT, new DefaultDispenseItemBehavior() {
+                @Nonnull
+                @Override
+                protected ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+                    BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
+                    BlockObsidianTNT.createAndAddEntity(source.getLevel(), blockpos, null);
+                    stack.shrink(1);
+                    return stack;
+                }
+            });
         });
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }

@@ -2,6 +2,7 @@ package mekanism.common.content.gear.mekasuit;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
@@ -16,9 +17,13 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
+import net.minecraft.util.DamageSource;
 
 @ParametersAreNonnullByDefault
 public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInhalationPurificationUnit> {
+
+    private static final ModuleDamageAbsorbInfo INHALATION_ABSORB_INFO = new ModuleDamageAbsorbInfo(MekanismConfig.gear.mekaSuitMagicDamageRatio,
+          MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce);
 
     private IModuleConfigItem<Boolean> beneficialEffects;
     private IModuleConfigItem<Boolean> neutralEffects;
@@ -85,6 +90,12 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
                 }
             }
         }
+    }
+
+    @Nullable
+    @Override
+    public ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleInhalationPurificationUnit> module, DamageSource damageSource) {
+        return damageSource.isMagic() ? INHALATION_ABSORB_INFO : null;
     }
 
     private void speedupEffect(PlayerEntity player, EffectInstance effect) {
