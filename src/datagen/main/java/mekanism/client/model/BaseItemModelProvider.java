@@ -2,8 +2,12 @@ package mekanism.client.model;
 
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
+import mekanism.common.item.ItemModule;
+import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidRegistryObject;
+import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.item.Item;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
@@ -34,6 +38,21 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     protected void registerGenerated(IItemProvider... itemProviders) {
         for (IItemProvider itemProvider : itemProviders) {
             generated(itemProvider);
+        }
+    }
+
+    protected void registerModules(ItemDeferredRegister register) {
+        for (IItemProvider itemProvider : register.getAllItems()) {
+            Item item = itemProvider.asItem();
+            if (item instanceof ItemModule) {
+                generated(itemProvider);
+            }
+        }
+    }
+
+    protected void registerBuckets(FluidDeferredRegister register) {
+        for (FluidRegistryObject<?, ?, ?, ?> fluidRegistryObject : register.getAllFluids()) {
+            registerBucket(fluidRegistryObject);
         }
     }
 

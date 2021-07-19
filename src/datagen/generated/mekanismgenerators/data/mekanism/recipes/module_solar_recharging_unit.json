@@ -4,21 +4,21 @@
     "item": "mekanism:module_solar_recharging_unit"
   },
   "pattern": [
-    "I#I",
-    "IAI",
-    "PPP"
+    "A#A",
+    "APA",
+    "HHH"
   ],
   "key": {
-    "I": {
+    "A": {
       "tag": "forge:alloys/elite"
     },
-    "A": {
+    "P": {
       "item": "mekanism:module_base"
     },
     "#": {
       "item": "mekanismgenerators:advanced_solar_generator"
     },
-    "P": {
+    "H": {
       "item": "mekanism:pellet_polonium"
     }
   }

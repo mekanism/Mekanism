@@ -40,7 +40,7 @@ import mekanism.common.network.to_server.PacketRemoveModule;
 import mekanism.common.network.to_server.PacketRobit;
 import mekanism.common.network.to_server.PacketSecurityMode;
 import mekanism.common.network.to_server.PacketTeleporterSetColor;
-import mekanism.common.network.to_server.PacketUpdateInventorySlot;
+import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
@@ -79,7 +79,7 @@ public class PacketHandler extends BasePacketHandler {
         registerClientToServer(PacketRobit.class, PacketRobit::decode);
         registerClientToServer(PacketSecurityMode.class, PacketSecurityMode::decode);
         registerClientToServer(PacketTeleporterSetColor.class, PacketTeleporterSetColor::decode);
-        registerClientToServer(PacketUpdateInventorySlot.class, PacketUpdateInventorySlot::decode);
+        registerClientToServer(PacketUpdateModuleSettings.class, PacketUpdateModuleSettings::decode);
         registerClientToServer(PacketWindowSelect.class, PacketWindowSelect::decode);
 
         //Server to client messages

@@ -12,7 +12,7 @@ public class MekanismSoundProvider extends BaseSoundProvider {
     }
 
     @Override
-    protected void addSoundEvents() {
+    public void registerSounds() {
         addTileSoundEvents();
         addItemSoundEvents();
         addHolidaySoundEvents();

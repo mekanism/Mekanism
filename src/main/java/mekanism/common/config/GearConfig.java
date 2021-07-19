@@ -105,6 +105,8 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaToolEnergyUsageHoe;
     public final CachedFloatingLongValue mekaToolEnergyUsageShovel;
     public final CachedFloatingLongValue mekaToolEnergyUsageAxe;
+    public final CachedFloatingLongValue mekaToolEnergyUsageShearBlock;
+    public final CachedFloatingLongValue mekaToolEnergyUsageShearEntity;
     public final CachedBooleanValue mekaToolExtendedMining;
     //MekaSuit
     public final CachedFloatingLongValue mekaSuitBaseEnergyCapacity;
@@ -287,6 +289,10 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsageShovel", FloatingLong.createConst(10));
         mekaToolEnergyUsageAxe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as an axe for stripping logs.",
               "energyUsageAxe", FloatingLong.createConst(10));
+        mekaToolEnergyUsageShearBlock = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to shear blocks (beehives, pumpkins).",
+              "energyUsageShearBlock", FloatingLong.createConst(10));
+        mekaToolEnergyUsageShearEntity = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to shear entities.",
+              "energyUsageShearEntity", FloatingLong.createConst(10));
         mekaToolExtendedMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Extended Vein Mining' mode for the Meka-Tool. (Allows vein mining everything not just ores/logs)")
               .define("extendedMining", true));
         builder.pop();

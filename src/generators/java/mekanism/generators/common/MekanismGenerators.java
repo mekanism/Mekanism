@@ -1,5 +1,6 @@
 package mekanism.generators.common;
 
+import mekanism.api.MekanismIMC;
 import mekanism.api.chemical.gas.attribute.GasAttributes.Fuel;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
@@ -28,6 +29,7 @@ import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsItems;
+import mekanism.generators.common.registries.GeneratorsModules;
 import mekanism.generators.common.registries.GeneratorsSounds;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.util.ResourceLocation;
@@ -36,6 +38,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismGenerators.MODID)
@@ -64,6 +67,7 @@ public class MekanismGenerators implements IModModule {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::onConfigLoad);
+        modEventBus.addListener(this::imcQueue);
 
         GeneratorsItems.ITEMS.register(modEventBus);
         GeneratorsBlocks.BLOCKS.register(modEventBus);
@@ -72,6 +76,7 @@ public class MekanismGenerators implements IModModule {
         GeneratorsContainerTypes.CONTAINER_TYPES.register(modEventBus);
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         GeneratorsGases.GASES.register(modEventBus);
+        GeneratorsModules.MODULES.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
     }
@@ -101,6 +106,10 @@ public class MekanismGenerators implements IModModule {
 
         //Finalization
         Mekanism.logger.info("Loaded 'Mekanism Generators' module.");
+    }
+
+    private void imcQueue(InterModEnqueueEvent event) {
+        MekanismIMC.addMekaSuitPantsModules(GeneratorsModules.GEOTHERMAL_GENERATOR_UNIT);
     }
 
     @Override

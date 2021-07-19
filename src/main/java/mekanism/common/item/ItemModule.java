@@ -48,7 +48,7 @@ public class ItemModule extends Item implements IModuleItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
+        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             for (Item item : MekanismAPI.getModuleHelper().getSupported(getModuleData())) {
                 tooltip.add(item.getName(new ItemStack(item)));
             }

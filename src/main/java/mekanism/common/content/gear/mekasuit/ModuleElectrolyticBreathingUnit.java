@@ -1,5 +1,6 @@
 package mekanism.common.content.gear.mekasuit;
 
+import java.util.Map;
 import java.util.Optional;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
@@ -18,12 +19,14 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.MekanismUtils.FluidInDetails;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
 
 @ParametersAreNonnullByDefault
 public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElectrolyticBreathingUnit> {
@@ -41,14 +44,20 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
         //Check if the mask is under water
         //Note: Being in water is checked first to ensure that if it is raining and the player is in water
         // they get the full strength production
-        double maskHeight = player.getEyeY() - 0.15;
-        BlockPos headPos = new BlockPos(player.getX(), maskHeight, player.getZ());
-        FluidState fluidstate = player.getCommandSenderWorld().getFluidState(headPos);
-        if (fluidstate.is(FluidTags.WATER) && maskHeight <= headPos.getY() + fluidstate.getHeight(player.getCommandSenderWorld(), headPos)) {
-            //If the position the bottom of the mask is in is water set the production rate to our max rate
+        float eyeHeight = player.getEyeHeight();
+        Map<Fluid, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, bb -> {
+            //Grab the center of the BB as that is where the player is for purposes of what it renders it intersects with
+            double centerX = (bb.minX + bb.maxX) / 2;
+            double centerZ = (bb.minZ + bb.maxZ) / 2;
+            //For the y range check a range of where the mask's breathing unit is based on where the eyes are
+            return new AxisAlignedBB(centerX,  Math.min(bb.minY + eyeHeight - 0.27, bb.maxY), centerZ, centerX, Math.min(bb.minY + eyeHeight - 0.14, bb.maxY), centerZ);
+        });
+        if (fluidsIn.entrySet().stream().anyMatch(entry -> entry.getKey().is(FluidTags.WATER) && entry.getValue().getMaxHeight() >= 0.11)) {
+            //If the position the bottom of the mask is almost entire in water set the production rate to our max rate
+            // if the mask is only partially in water treat it as not being in it enough to actually function
             productionRate = getMaxRate(module);
         } else if (player.isInRain()) {
-            //If the player is not in water but is in rain set the production at half power
+            //If the player is not in water but is in rain set the production to half power
             productionRate = getMaxRate(module) / 2;
         }
         if (productionRate > 0) {

@@ -2,12 +2,15 @@ package mekanism.common.content.gear;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.EnumColor;
@@ -15,6 +18,8 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.util.ItemDataUtils;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -110,5 +115,53 @@ public interface IModuleContainerItem extends IItemHUDProvider {
             }
         }
         return ret;
+    }
+
+    void filterTooltips(ItemStack stack, List<ITextComponent> tooltips);
+
+    @SafeVarargs
+    static boolean hasOtherEnchants(ItemStack stack, IModuleDataProvider<? extends EnchantmentBasedModule<?>>... moduleTypes) {
+        MatchedEnchants enchants = new MatchedEnchants(stack);
+        IModuleContainerItem.forMatchingEnchants(stack, enchants, (e, module) -> e.matchedCount++, moduleTypes);
+        return enchants.enchantments == null || enchants.matchedCount < enchants.enchantments.size();
+    }
+
+    @SafeVarargs
+    static void filterTooltips(ItemStack stack, List<ITextComponent> tooltips, IModuleDataProvider<? extends EnchantmentBasedModule<?>>... moduleTypes) {
+        List<ITextComponent> enchantsToRemove = new ArrayList<>();
+        IModuleContainerItem.forMatchingEnchants(stack, new MatchedEnchants(stack), (e, module) -> enchantsToRemove.add(module.getCustomInstance().getEnchantment().getFullname(module.getInstalledCount())),
+              moduleTypes);
+        tooltips.removeAll(enchantsToRemove);
+    }
+
+    @SafeVarargs
+    static void forMatchingEnchants(ItemStack stack, MatchedEnchants enchants, BiConsumer<MatchedEnchants, IModule<? extends EnchantmentBasedModule<?>>> consumer,
+          IModuleDataProvider<? extends EnchantmentBasedModule<?>>... moduleTypes) {
+        IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
+        for (IModuleDataProvider<? extends EnchantmentBasedModule> moduleType : moduleTypes) {
+            IModule<? extends EnchantmentBasedModule<?>> module = moduleHelper.load(stack, moduleType);
+            if (module != null && module.isEnabled() &&
+                enchants.getEnchantments().getOrDefault(module.getCustomInstance().getEnchantment(), 0) == module.getInstalledCount()) {
+                consumer.accept(enchants, module);
+            }
+        }
+    }
+
+    class MatchedEnchants {
+
+        private final ItemStack stack;
+        private Map<Enchantment, Integer> enchantments;
+        private int matchedCount;
+
+        public MatchedEnchants(ItemStack stack) {
+            this.stack = stack;
+        }
+
+        public Map<Enchantment, Integer> getEnchantments() {
+            if (enchantments == null) {
+                enchantments = EnchantmentHelper.getEnchantments(stack);
+            }
+            return enchantments;
+        }
     }
 }
