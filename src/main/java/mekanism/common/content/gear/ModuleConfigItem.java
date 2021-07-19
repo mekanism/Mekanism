@@ -2,13 +2,12 @@ package mekanism.common.content.gear;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.text.ILangEntry;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
 
@@ -45,7 +44,7 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
         set(val, null);
     }
 
-    public void set(@Nonnull TYPE val, Consumer<ItemStack> callback) {
+    public void set(@Nonnull TYPE val, @Nullable Runnable callback) {
         Objects.requireNonNull(val, "Value cannot be null.");
         data.set(val);
         // validity checks
@@ -53,7 +52,7 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
             // disable other exclusive modules
             if (name.equals(Module.ENABLED_KEY) && val == Boolean.TRUE && module.getData().isExclusive()) {
                 if (m.getData().isExclusive() && m.getData() != module.getData()) {
-                    m.setDisabledForce();
+                    m.setDisabledForce(callback != null);
                 }
             }
             // turn off mode change handling for other modules

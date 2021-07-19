@@ -3,24 +3,26 @@ package mekanism.client.gui.element.custom;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import mekanism.api.gear.IModule;
+import mekanism.api.gear.config.ModuleBooleanData;
+import mekanism.api.gear.config.ModuleConfigData;
+import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiRelativeElement;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
-import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleConfigItem.DisableableModuleConfigItem;
-import mekanism.api.gear.config.ModuleEnumData;
+import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
@@ -32,15 +34,23 @@ public class GuiModuleScreen extends GuiRelativeElement {
     private final int TEXT_COLOR = screenTextColor();
 
     private final GuiInnerScreen background;
-    private final Consumer<ItemStack> callback;
+    private final IntSupplier slotIdSupplier;
 
     private IModule<?> currentModule;
     private List<MiniElement> miniElements = new ArrayList<>();
 
-    public GuiModuleScreen(IGuiWrapper gui, int x, int y, Consumer<ItemStack> callback) {
+    public GuiModuleScreen(IGuiWrapper gui, int x, int y, IntSupplier slotIdSupplier) {
         super(gui, x, y, 102, 134);
-        this.callback = callback;
+        this.slotIdSupplier = slotIdSupplier;
         background = addPositionOnlyChild(new GuiInnerScreen(gui, x, y, 102, 134));
+    }
+
+    private Runnable getCallback(ModuleConfigData<?> configData, int dataIndex) {
+        return () -> {
+            if (currentModule != null) {//Shouldn't be null but validate just in case
+                Mekanism.packetHandler.sendToServer(PacketUpdateModuleSettings.create(slotIdSupplier.getAsInt(), currentModule.getData(), dataIndex, configData));
+            }
+        };
     }
 
     @SuppressWarnings("unchecked")
@@ -66,10 +76,10 @@ public class GuiModuleScreen extends GuiRelativeElement {
                         // not adding them back when switching to another module and then back again
                         continue;
                     }
-                    newElements.add(new BooleanToggle((ModuleConfigItem<Boolean>) configItem, 2, startY));
+                    newElements.add(new BooleanToggle((ModuleConfigItem<Boolean>) configItem, 2, startY, i));
                     startY += 24;
                 } else if (configItem.getData() instanceof ModuleEnumData) {
-                    EnumToggle toggle = new EnumToggle((ModuleConfigItem<Enum<? extends IHasTextComponent>>) configItem, 2, startY);
+                    EnumToggle toggle = new EnumToggle((ModuleConfigItem<Enum<? extends IHasTextComponent>>) configItem, 2, startY, i);
                     newElements.add(toggle);
                     startY += 34;
                     // allow the dragger to continue sliding, even when we reset the config element
@@ -133,11 +143,12 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
     abstract class MiniElement {
 
-        final int xPos, yPos;
+        final int xPos, yPos, dataIndex;
 
-        public MiniElement(int xPos, int yPos) {
+        public MiniElement(int xPos, int yPos, int dataIndex) {
             this.xPos = xPos;
             this.yPos = yPos;
+            this.dataIndex = dataIndex;
         }
 
         abstract void renderBackground(MatrixStack matrix, int mouseX, int mouseY);
@@ -170,8 +181,8 @@ public class GuiModuleScreen extends GuiRelativeElement {
 
         final ModuleConfigItem<Boolean> data;
 
-        BooleanToggle(ModuleConfigItem<Boolean> data, int xPos, int yPos) {
-            super(xPos, yPos);
+        BooleanToggle(ModuleConfigItem<Boolean> data, int xPos, int yPos, int dataIndex) {
+            super(xPos, yPos, dataIndex);
             this.data = data;
         }
 
@@ -203,12 +214,12 @@ public class GuiModuleScreen extends GuiRelativeElement {
         @Override
         public void click(double mouseX, double mouseY) {
             if (!data.get() && mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19) {
-                data.set(true, callback);
+                data.set(true, getCallback(data.getData(), dataIndex));
                 minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
             }
 
             if (data.get() && mouseX >= getX() + 50 && mouseX < getX() + 58 && mouseY >= getY() + 11 && mouseY < getY() + 19) {
-                data.set(false, callback);
+                data.set(false, getCallback(data.getData(), dataIndex));
                 minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
             }
         }
@@ -222,8 +233,8 @@ public class GuiModuleScreen extends GuiRelativeElement {
         final ModuleConfigItem<Enum<? extends IHasTextComponent>> data;
         boolean dragging = false;
 
-        EnumToggle(ModuleConfigItem<Enum<? extends IHasTextComponent>> data, int xPos, int yPos) {
-            super(xPos, yPos);
+        EnumToggle(ModuleConfigItem<Enum<? extends IHasTextComponent>> data, int xPos, int yPos, int dataIndex) {
+            super(xPos, yPos, dataIndex);
             this.data = data;
         }
 
@@ -253,7 +264,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
                 int cur = (int) Math.round(((double) (mouseX - getX() - BAR_START) / (double) BAR_LENGTH) * (count - 1));
                 cur = Math.min(count - 1, Math.max(0, cur));
                 if (cur != data.get().ordinal()) {
-                    data.set(options.get(cur), callback);
+                    data.set(options.get(cur), getCallback(data.getData(), dataIndex));
                 }
             }
         }
@@ -273,7 +284,7 @@ public class GuiModuleScreen extends GuiRelativeElement {
                     int cur = (int) Math.round(((mouseX - getX() - BAR_START) / BAR_LENGTH) * (count - 1));
                     cur = Math.min(count - 1, Math.max(0, cur));
                     if (cur != data.get().ordinal()) {
-                        data.set(options.get(cur), callback);
+                        data.set(options.get(cur), getCallback(data.getData(), dataIndex));
                     }
                 }
             }

@@ -33,6 +33,7 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
@@ -142,8 +143,8 @@ public class RenderTickHandler {
     @SubscribeEvent
     public void filterTooltips(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-        if (stack.getItem() instanceof ItemMekaSuitArmor) {
-            ((ItemMekaSuitArmor) stack.getItem()).filterTooltips(stack, event.getToolTip());
+        if (stack.getItem() instanceof IModuleContainerItem) {
+            ((IModuleContainerItem) stack.getItem()).filterTooltips(stack, event.getToolTip());
         }
     }
 

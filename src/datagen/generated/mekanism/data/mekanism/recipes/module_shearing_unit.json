@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "mekanism:module_solar_recharging_unit"
+    "item": "mekanism:module_shearing_unit"
   },
   "pattern": [
     "A#A",
@@ -10,16 +10,16 @@
   ],
   "key": {
     "A": {
-      "tag": "forge:alloys/elite"
+      "tag": "forge:alloys/advanced"
     },
     "P": {
       "item": "mekanism:module_base"
     },
     "#": {
-      "item": "mekanismgenerators:advanced_solar_generator"
+      "item": "minecraft:shears"
     },
     "H": {
-      "item": "mekanism:pellet_polonium"
+      "item": "mekanism:hdpe_sheet"
     }
   }
 }

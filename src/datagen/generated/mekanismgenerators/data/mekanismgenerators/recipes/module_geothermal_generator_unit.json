@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "result": {
-    "item": "mekanism:module_solar_recharging_unit"
+    "item": "mekanismgenerators:module_geothermal_generator_unit"
   },
   "pattern": [
     "A#A",
@@ -16,7 +16,7 @@
       "item": "mekanism:module_base"
     },
     "#": {
-      "item": "mekanismgenerators:advanced_solar_generator"
+      "item": "mekanismgenerators:heat_generator"
     },
     "H": {
       "item": "mekanism:pellet_polonium"

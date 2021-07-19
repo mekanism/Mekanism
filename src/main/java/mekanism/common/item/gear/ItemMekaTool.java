@@ -3,6 +3,7 @@ package mekanism.common.item.gear;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nonnull;
@@ -24,6 +25,7 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.mekatool.ModuleAttackAmplificationUnit;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit;
+import mekanism.common.content.gear.mekatool.ModuleShearingUnit;
 import mekanism.common.content.gear.mekatool.ModuleTeleportationUnit;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
@@ -34,13 +36,12 @@ import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.block.TripWireBlock;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -54,8 +55,6 @@ import net.minecraft.item.ItemStack.TooltipDisplayFlags;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.stats.Stats;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
@@ -67,11 +66,11 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem, IModeItem {
@@ -104,6 +103,29 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Nonnull
     @Override
+    public Set<ToolType> getToolTypes(@Nonnull ItemStack stack) {
+        //TODO: If addons end up wanting to add custom tool types expose a way to do so via the custom module's implementation
+        // but for now just have special handling for shearing here
+        if (isModuleEnabled(stack, MekanismModules.SHEARING_UNIT)) {
+            Set<ToolType> types = new HashSet<>(super.getToolTypes(stack));
+            types.add(ModuleShearingUnit.SHEARS_TOOL_TYPE);
+            return types;
+        }
+        return super.getToolTypes(stack);
+    }
+
+    @Override
+    public boolean isFoil(@Nonnull ItemStack stack) {
+        return !stack.isEmpty() && super.isFoil(stack) && IModuleContainerItem.hasOtherEnchants(stack, MekanismModules.SILK_TOUCH_UNIT);
+    }
+
+    @Override
+    public void filterTooltips(ItemStack stack, List<ITextComponent> tooltips) {
+        IModuleContainerItem.filterTooltips(stack, tooltips, MekanismModules.SILK_TOUCH_UNIT);
+    }
+
+    @Nonnull
+    @Override
     public ActionResultType useOn(ItemUseContext context) {
         for (Module<?> module : getModules(context.getItemInHand())) {
             if (module.isEnabled()) {
@@ -113,26 +135,61 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                 }
             }
         }
-        return ActionResultType.PASS;
+        return super.useOn(context);
     }
 
     private <MODULE extends ICustomModule<MODULE>> ActionResultType onModuleUse(IModule<MODULE> module, ItemUseContext context) {
         return module.getCustomInstance().onItemUse(module, context);
     }
 
+    @Nonnull
+    @Override
+    public ActionResultType interactLivingEntity(@Nonnull ItemStack stack, @Nonnull PlayerEntity player, @Nonnull LivingEntity entity, @Nonnull Hand hand) {
+        for (Module<?> module : getModules(stack)) {
+            if (module.isEnabled()) {
+                ActionResultType result = onModuleInteract(module, player, entity, hand);
+                if (result != ActionResultType.PASS) {
+                    return result;
+                }
+            }
+        }
+        return super.interactLivingEntity(stack, player, entity, hand);
+    }
+
+    private <MODULE extends ICustomModule<MODULE>> ActionResultType onModuleInteract(IModule<MODULE> module, @Nonnull PlayerEntity player, @Nonnull LivingEntity entity,
+          @Nonnull Hand hand) {
+        return module.getCustomInstance().onInteract(module, player, entity, hand);
+    }
+
     @Override
     public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        if (energyContainer == null) {
+            return 0;
+        }
+        //Use raw hardness to get a best guess of if it is zero or not
+        FloatingLong energyRequired = getDestroyEnergy(stack, state.destroySpeed, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
+        FloatingLong energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
+        if (energyAvailable.smallerThan(energyRequired)) {
+            //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
+            return MekanismConfig.gear.mekaToolBaseEfficiency.get() * energyAvailable.divide(energyRequired).floatValue();
+        }
         IModule<ModuleExcavationEscalationUnit> module = getModule(stack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
-        double efficiency = module == null || !module.isEnabled() ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
-        return energyContainer == null || energyContainer.isEmpty() ? 1 : (float) efficiency;
+        return module == null || !module.isEnabled() ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
     }
 
     @Override
     public boolean mineBlock(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull BlockState state, @Nonnull BlockPos pos, @Nonnull LivingEntity entityliving) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null) {
-            energyContainer.extract(getDestroyEnergy(stack, state.getDestroySpeed(world, pos), false), Action.EXECUTE, AutomationType.MANUAL);
+            FloatingLong energyRequired = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
+            FloatingLong extractedEnergy = energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
+            if (extractedEnergy.equals(energyRequired) || entityliving instanceof PlayerEntity && ((PlayerEntity) entityliving).isCreative()) {
+                //Only disarm tripwires if we had all the energy we tried to use (or are creative). Otherwise treat it as if we may have failed to disarm it
+                if (state.is(Blocks.TRIPWIRE) && !state.getValue(TripWireBlock.DISARMED) && isModuleEnabled(stack, MekanismModules.SHEARING_UNIT)) {
+                    world.setBlock(pos, state.setValue(TripWireBlock.DISARMED, true), BlockFlags.NO_RERENDER);
+                }
+            }
         }
         return true;
     }
@@ -171,38 +228,26 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
-        World world = player.level;
-        if (!world.isClientSide && !player.isCreative()) {
+        if (player.level.isClientSide || player.isCreative()) {
+            return super.onBlockStartBreak(stack, pos, player);
+        }
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        if (energyContainer != null) {
+            World world = player.level;
             BlockState state = world.getBlockState(pos);
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-            if (energyContainer == null) {
-                //If something went wrong and we don't have an energy container, just go to super
-                return super.onBlockStartBreak(stack, pos, player);
-            }
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
-            if (silk) {
-                // if we can't break the initial block, terminate
-                if (!breakBlock(stack, world, pos, (ServerPlayerEntity) player, energyContainer, true)) {
-                    return super.onBlockStartBreak(stack, pos, player);
-                }
-            }
-            IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
-            if (veinMiningUnit != null && veinMiningUnit.isEnabled()) {
-                boolean extended = veinMiningUnit.getCustomInstance().isExtended();
-                if (state.getBlock() instanceof BlockBounding) {
-                    //Even though we now handle breaking bounding blocks properly, don't allow vein mining
-                    // them as an added safety measure
-                    return silk;
-                }
-                //If it is extended or should be treated as an ore
-                if (extended || state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
-                    ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
-                    Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, extended ? veinMiningUnit.getCustomInstance().getExcavationRange() : -1);
-                    for (BlockPos foundPos : found) {
-                        if (pos.equals(foundPos)) {
-                            continue;
-                        }
-                        breakBlock(stack, world, foundPos, serverPlayerEntity, energyContainer, silk);
+            FloatingLong baseDestroyEnergy = getDestroyEnergy(stack, silk);
+            FloatingLong energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
+            if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
+                IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
+                //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
+                if (veinMiningUnit != null && veinMiningUnit.isEnabled() && !(state.getBlock() instanceof BlockBounding)) {
+                    boolean extended = veinMiningUnit.getCustomInstance().isExtended();
+                    //If it is extended or should be treated as an ore
+                    if (extended || state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                        Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, extended ? veinMiningUnit.getCustomInstance().getExcavationRange() : -1);
+                        MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayerEntity) player, stack, this, found,
+                              isModuleEnabled(stack, MekanismModules.SHEARING_UNIT), hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), state);
                     }
                 }
             }
@@ -210,55 +255,19 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         return super.onBlockStartBreak(stack, pos, player);
     }
 
-    private boolean breakBlock(ItemStack stack, World world, BlockPos pos, ServerPlayerEntity player, IEnergyContainer energyContainer, boolean silk) {
-        BlockState state = world.getBlockState(pos);
-        FloatingLong destroyEnergy = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), silk);
-        if (energyContainer.extract(destroyEnergy, Action.SIMULATE, AutomationType.MANUAL).smallerThan(destroyEnergy)) {
-            return false;
-        }
-        int exp = ForgeHooks.onBlockBreakEvent(world, player.gameMode.getGameModeForPlayer(), player, pos);
-        if (exp == -1) {
-            //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
-            return false;
-        }
-        //Otherwise break the block
-        Block block = state.getBlock();
-        //Get the tile now so that we have it for when we try to harvest the block
-        TileEntity tileEntity = WorldUtils.getTileEntity(world, pos);
-        //Remove the block
-        boolean removed = state.removedByPlayer(world, pos, player, true, state.getFluidState());
-        if (removed) {
-            block.destroy(world, pos, state);
-            //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
-            ItemStack harvestTool = stack.copy();
-            if (silk) {
-                harvestTool.enchant(Enchantments.SILK_TOUCH, 1);
-                //Calculate the proper amount of xp that the state would drop if broken with a silk touch tool
-                //Note: This fixes ores and the like dropping xp when broken with silk touch but makes it so that
-                // BlockEvent.BreakEvent is unable to be used to adjust the amount of xp dropped.
-                //TODO: look into if there is a better way for us to handle this as BlockEvent.BreakEvent goes based
-                // of the item in the main hand so there isn't an easy way to change this without actually enchanting the meka-tool
-                exp = state.getExpDrop(world, pos, 0, 1);
-            }
-            block.playerDestroy(world, player, pos, state, tileEntity, harvestTool);
-            player.awardStat(Stats.ITEM_USED.get(this));
-            if (exp > 0) {
-                //If we have xp drop it
-                block.popExperience((ServerWorld) world, pos, exp);
-            }
-            //Use energy
-            energyContainer.extract(destroyEnergy, Action.EXECUTE, AutomationType.MANUAL);
-        }
-
-        return true;
+    private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
+        return getDestroyEnergy(getDestroyEnergy(itemStack, silk), hardness);
     }
 
-    private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
+    private FloatingLong getDestroyEnergy(FloatingLong baseDestroyEnergy, float hardness) {
+        return hardness == 0 ? baseDestroyEnergy.divide(2) : baseDestroyEnergy;
+    }
+
+    private FloatingLong getDestroyEnergy(ItemStack itemStack, boolean silk) {
         FloatingLong destroyEnergy = silk ? MekanismConfig.gear.mekaToolEnergyUsageSilk.get() : MekanismConfig.gear.mekaToolEnergyUsage.get();
         IModule<ModuleExcavationEscalationUnit> module = getModule(itemStack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
-        double efficiency = module == null || !module.isEnabled() ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
-        destroyEnergy = destroyEnergy.multiply(efficiency);
-        return hardness == 0 ? destroyEnergy.divide(2) : destroyEnergy;
+        float efficiency = module == null || !module.isEnabled() ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
+        return destroyEnergy.multiply(efficiency);
     }
 
     @Nonnull

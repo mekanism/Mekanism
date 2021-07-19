@@ -49,7 +49,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
         }
     }
 
-    public double getEfficiency() {
+    public float getEfficiency() {
         return excavationMode.get().getEfficiency();
     }
 

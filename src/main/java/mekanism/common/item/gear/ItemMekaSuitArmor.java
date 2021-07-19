@@ -6,22 +6,23 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.FloatSupplier;
+import mekanism.api.gear.ICustomModule;
+import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.providers.IModuleDataProvider;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
@@ -38,7 +39,6 @@ import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.gear.EnchantmentBasedModule;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
@@ -49,8 +49,6 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -70,7 +68,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem {
 
-    // TODO separate these into individual modules maybe (specifically fire-related - on_fire, in_fire, lava)
     private static final Set<DamageSource> ALWAYS_SUPPORTED_SOURCES = new LinkedHashSet<>(Arrays.asList(
           DamageSource.ANVIL, DamageSource.CACTUS, DamageSource.CRAMMING, DamageSource.DRAGON_BREATH, DamageSource.DRY_OUT,
           DamageSource.FALL, DamageSource.FALLING_BLOCK, DamageSource.FLY_INTO_WALL, DamageSource.GENERIC,
@@ -164,31 +161,12 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean isFoil(@Nonnull ItemStack stack) {
-        if (!stack.isEmpty() && super.isFoil(stack)) {
-            MatchedEnchants enchants = new MatchedEnchants(stack);
-            forMatchingEnchants(stack, enchants, (e, module) -> e.matchedCount++, MekanismModules.FROST_WALKER_UNIT);
-            return enchants.enchantments == null || enchants.matchedCount < enchants.enchantments.size();
-        }
-        return false;
+        return !stack.isEmpty() && super.isFoil(stack) && IModuleContainerItem.hasOtherEnchants(stack, MekanismModules.FROST_WALKER_UNIT);
     }
 
+    @Override
     public void filterTooltips(ItemStack stack, List<ITextComponent> tooltips) {
-        List<ITextComponent> enchantsToRemove = new ArrayList<>();
-        forMatchingEnchants(stack, new MatchedEnchants(stack), (e, module) -> enchantsToRemove.add(module.getCustomInstance().getEnchantment().getFullname(module.getInstalledCount())),
-              MekanismModules.FROST_WALKER_UNIT);
-        tooltips.removeAll(enchantsToRemove);
-    }
-
-    @SafeVarargs
-    private final void forMatchingEnchants(ItemStack stack, MatchedEnchants enchants, BiConsumer<MatchedEnchants, IModule<? extends EnchantmentBasedModule<?>>> consumer,
-          IModuleDataProvider<? extends EnchantmentBasedModule<?>>... moduleTypes) {
-        for (IModuleDataProvider<? extends EnchantmentBasedModule> moduleType : moduleTypes) {
-            IModule<? extends EnchantmentBasedModule<?>> module = getModule(stack, moduleType);
-            if (module != null && module.isEnabled() &&
-                enchants.getEnchantments().getOrDefault(module.getCustomInstance().getEnchantment(), 0) == module.getInstalledCount()) {
-                consumer.accept(enchants, module);
-            }
-        }
+        IModuleContainerItem.filterTooltips(stack, tooltips, MekanismModules.FROST_WALKER_UNIT);
     }
 
     @Override
@@ -319,94 +297,149 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     public static float getDamageAbsorbed(PlayerEntity player, DamageSource source, float amount) {
+        return getDamageAbsorbed(player, source, amount, null);
+    }
+
+    public static boolean tryAbsorbAll(PlayerEntity player, DamageSource source, float amount) {
+        List<Runnable> energyUsageCallbacks = new ArrayList<>(4);
+        if (getDamageAbsorbed(player, source, amount, energyUsageCallbacks) >= 1) {
+            //If we can fully absorb it, actually use the energy from the various pieces and then return that we absorbed it all
+            for (Runnable energyUsageCallback : energyUsageCallbacks) {
+                energyUsageCallback.run();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private static float getDamageAbsorbed(PlayerEntity player, DamageSource source, float amount, @Nullable List<Runnable> energyUseCallbacks) {
         if (amount <= 0) {
             return 0;
         }
-        FloatSupplier absorbRatio = null;
         float ratioAbsorbed = 0;
+        List<FoundArmorDetails> armorDetails = new ArrayList<>();
+        //Start by looping the armor, allowing modules to absorb damage if they can
         for (ItemStack stack : player.inventory.armor) {
-            if (stack.getItem() instanceof ItemMekaSuitArmor) {
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemMekaSuitArmor) {
+                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                if (energyContainer != null) {
+                    FoundArmorDetails details = new FoundArmorDetails(energyContainer, (ItemMekaSuitArmor) stack.getItem());
+                    armorDetails.add(details);
+                    for (Module<?> module : details.armor.getModules(stack)) {
+                        if (module.isEnabled()) {
+                            ModuleDamageAbsorbInfo damageAbsorbInfo = getModuleDamageAbsorbInfo(module, source);
+                            if (damageAbsorbInfo != null) {
+                                float absorption = damageAbsorbInfo.getAbsorptionRatio().getAsFloat();
+                                ratioAbsorbed += absorbDamage(details.usageInfo, amount, absorption, ratioAbsorbed, damageAbsorbInfo.getEnergyCost());
+                                if (ratioAbsorbed >= 1) {
+                                    //If we have fully absorbed the damage, stop checking/trying to absorb more
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (ratioAbsorbed >= 1) {
+                        //If we have fully absorbed the damage, stop checking/trying to absorb more
+                        break;
+                    }
+                }
+            }
+        }
+        if (ratioAbsorbed < 1) {
+            //If we haven't fully absorbed it check the individual pieces of armor for if they can absorb any
+            FloatSupplier absorbRatio = null;
+            for (FoundArmorDetails details : armorDetails) {
                 if (absorbRatio == null) {
                     //If we haven't looked up yet if we can absorb the damage type and if we can't
-                    // just exit (as none of our future pieces will be able to absorb it either
+                    // stop checking if the armor is able to
                     if (!ALWAYS_SUPPORTED_SOURCES.contains(source) && source.isBypassArmor()) {
-                        return 0;
+                        break;
                     }
                     // Next lookup the ratio at which we can absorb the given damage type from the config
                     absorbRatio = MekanismConfig.gear.mekaSuitDamageRatios.getOrDefault(source, MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio);
                     if (absorbRatio.getAsFloat() == 0) {
                         //If the config specifies that the damage type shouldn't be blocked at all
-                        // then just exit instead of checking the other pieces as well
-                        return 0;
+                        // stop checking if the armor is able to
+                        break;
                     }
                 }
-                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                if (energyContainer != null) {
-                    float absorption = ((ItemMekaSuitArmor) stack.getItem()).absorption * absorbRatio.getAsFloat();
-                    float toAbsorb = amount * absorption;
-                    if (toAbsorb > 0) {
-                        FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageDamage.get().multiply(toAbsorb);
-                        if (usage.isZero()) {
-                            //No energy is actually needed to absorb the damage, either because of the config
-                            // or how small the amount to absorb is
-                            ratioAbsorbed += absorption;
-                        } else {
-                            ratioAbsorbed += absorption * energyContainer.extract(usage, Action.EXECUTE, AutomationType.MANUAL).divide(usage).floatValue();
-                        }
-                    }
+                float absorption = details.armor.absorption * absorbRatio.getAsFloat();
+                ratioAbsorbed += absorbDamage(details.usageInfo, amount, absorption, ratioAbsorbed, MekanismConfig.gear.mekaSuitEnergyUsageDamage);
+                if (ratioAbsorbed >= 1) {
+                    //If we have fully absorbed the damage, stop checking/trying to absorb more
+                    break;
                 }
             }
         }
-        return ratioAbsorbed;
+        for (FoundArmorDetails details : armorDetails) {
+            //Use energy/or enqueue usage for each piece as needed
+            if (!details.usageInfo.energyUsed.isZero()) {
+                if (energyUseCallbacks == null) {
+                    details.energyContainer.extract(details.usageInfo.energyUsed, Action.EXECUTE, AutomationType.MANUAL);
+                } else {
+                    energyUseCallbacks.add(() -> details.energyContainer.extract(details.usageInfo.energyUsed, Action.EXECUTE, AutomationType.MANUAL));
+                }
+            }
+        }
+        return Math.min(ratioAbsorbed, 1);
     }
 
-    public static boolean tryAbsorbAll(PlayerEntity player, DamageSource source, float amount) {
-        if (amount <= 0) {
-            return false;
-        }
-        //Validate all the armor is mekasuit as a full suit is needed for baseline 100% protection
-        for (ItemStack stack : player.inventory.armor) {
-            if (!(stack.getItem() instanceof ItemMekaSuitArmor)) {
-                return false;
+    @Nullable
+    private static <MODULE extends ICustomModule<MODULE>> ModuleDamageAbsorbInfo getModuleDamageAbsorbInfo(IModule<MODULE> module, DamageSource damageSource) {
+        return module.getCustomInstance().getDamageAbsorbInfo(module, damageSource);
+    }
+
+    private static float absorbDamage(EnergyUsageInfo usageInfo, float amount, float absorption, float currentAbsorbed, FloatingLongSupplier energyCost) {
+        //Cap the amount that we can absorb to how much we have left to absorb
+        absorption = Math.min(1 - currentAbsorbed, absorption);
+        float toAbsorb = amount * absorption;
+        if (toAbsorb > 0) {
+            FloatingLong usage = energyCost.get().multiply(toAbsorb);
+            if (usage.isZero()) {
+                //No energy is actually needed to absorb the damage, either because of the config
+                // or how small the amount to absorb is
+                return absorption;
+            } else if (usageInfo.energyAvailable.greaterOrEqual(usage)) {
+                //If we have more energy available than we need, increase how much energy we "used"
+                // and decrease how much we have available.
+                usageInfo.energyUsed = usageInfo.energyUsed.plusEqual(usage);
+                usageInfo.energyAvailable = usageInfo.energyAvailable.minusEqual(usage);
+                return absorption;
+            } else if (!usageInfo.energyAvailable.isZero()) {
+                //Otherwise if we have energy available but not as much as needed to fully absorb it
+                // then we calculate what ratio we are able to block
+                float absorbedPercent = usageInfo.energyAvailable.divide(usage).floatValue();
+                usageInfo.energyUsed = usageInfo.energyUsed.plusEqual(usageInfo.energyAvailable);
+                usageInfo.energyAvailable = FloatingLong.ZERO;
+                return absorption * absorbedPercent;
             }
         }
-        if (!ALWAYS_SUPPORTED_SOURCES.contains(source) && source.isBypassArmor()) {
-            return false;
+        return 0;
+    }
+
+    //TODO - 1.17: Switch this to a record
+    private static class FoundArmorDetails {
+
+        private final IEnergyContainer energyContainer;
+        private final EnergyUsageInfo usageInfo;
+        private final ItemMekaSuitArmor armor;
+
+        public FoundArmorDetails(IEnergyContainer energyContainer, ItemMekaSuitArmor armor) {
+            this.energyContainer = energyContainer;
+            this.usageInfo = new EnergyUsageInfo(energyContainer.getEnergy());
+            this.armor = armor;
         }
-        FloatSupplier absorbRatio = MekanismConfig.gear.mekaSuitDamageRatios.getOrDefault(source, MekanismConfig.gear.mekaSuitUnspecifiedDamageRatio);
-        if (absorbRatio.getAsFloat() != 1) {
-            //If we can't fully block it don't bother checking further
-            return false;
+    }
+
+    private static class EnergyUsageInfo {
+
+        private FloatingLong energyAvailable;
+        private FloatingLong energyUsed = FloatingLong.ZERO;
+
+        public EnergyUsageInfo(FloatingLong energyAvailable) {
+            //Copy it so we can just use minusEquals without worry
+            this.energyAvailable = energyAvailable.copy();
         }
-        List<Runnable> energyUsageCallbacks = new ArrayList<>(4);
-        for (ItemStack stack : player.inventory.armor) {
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-            if (energyContainer == null) {
-                //Exit if we fail to get the container for one of them
-                return false;
-            }
-            float toAbsorb = amount * ((ItemMekaSuitArmor) stack.getItem()).absorption;
-            if (toAbsorb > 0) {
-                FloatingLong energyRequirement = MekanismConfig.gear.mekaSuitEnergyUsageDamage.get().multiply(toAbsorb);
-                if (!energyRequirement.isZero()) {
-                    //Energy is actually needed to absorb the damage
-                    FloatingLong simulatedExtract = energyContainer.extract(energyRequirement, Action.SIMULATE, AutomationType.MANUAL);
-                    if (simulatedExtract.equals(energyRequirement)) {
-                        //If we can fully provide the needed energy add a callback to actually use the energy that will be ran if
-                        // we don't end up exiting early due to one of the other pieces not being able to provide full protection
-                        energyUsageCallbacks.add(() -> energyContainer.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL));
-                    } else {
-                        //If we are unable to provide the power to fully block the portion this piece of armor would need to block
-                        // then just exit
-                        return false;
-                    }
-                }
-            }
-        }
-        for (Runnable energyUsageCallback : energyUsageCallbacks) {
-            energyUsageCallback.run();
-        }
-        return true;
     }
 
     // This is unused for the most part; toughness / damage reduction is handled manually
@@ -421,24 +454,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         @Override
         public String getName() {
             return Mekanism.MODID + ":mekasuit";
-        }
-    }
-
-    private static class MatchedEnchants {
-
-        private final ItemStack stack;
-        private Map<Enchantment, Integer> enchantments;
-        private int matchedCount;
-
-        public MatchedEnchants(ItemStack stack) {
-            this.stack = stack;
-        }
-
-        public Map<Enchantment, Integer> getEnchantments() {
-            if (enchantments == null) {
-                enchantments = EnchantmentHelper.getEnchantments(stack);
-            }
-            return enchantments;
         }
     }
 }
