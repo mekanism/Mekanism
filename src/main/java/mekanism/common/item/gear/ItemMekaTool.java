@@ -93,7 +93,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
+        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             addModuleDetails(stack, tooltip);
         } else {
             StorageUtils.addStoredEnergy(stack, tooltip, true);

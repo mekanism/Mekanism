@@ -12,7 +12,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.key.MekKeyHandler;
-import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;
@@ -237,7 +236,7 @@ public class ClientTickHandler {
             }
 
             ItemStack stack = minecraft.player.getItemBySlot(EquipmentSlotType.MAINHAND);
-            if (MekKeyHandler.isKeyDown(MekanismKeyHandler.handModeSwitchKey) && stack.getItem() instanceof IRadialModeItem) {
+            if (MekKeyHandler.isRadialPressed() && stack.getItem() instanceof IRadialModeItem) {
                 if (minecraft.screen == null || minecraft.screen instanceof GuiRadialSelector) {
                     updateSelectorRenderer((IRadialModeItem<?>) stack.getItem());
                 }

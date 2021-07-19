@@ -32,9 +32,9 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.descriptionKey)) {
+        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltip.add(getBlock().getDescription().translate());
-        } else if (hasDetails && MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
+        } else if (hasDetails && MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             addDetails(stack, world, tooltip, flag.isAdvanced());
         } else {
             addStats(stack, world, tooltip, flag.isAdvanced());
