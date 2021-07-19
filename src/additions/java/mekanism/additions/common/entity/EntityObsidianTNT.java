@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import mekanism.common.Mekanism;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.TNTEntity;
@@ -22,8 +21,6 @@ public class EntityObsidianTNT extends TNTEntity {
     public EntityObsidianTNT(EntityType<EntityObsidianTNT> type, World world) {
         super(type, world);
         setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
-        Mekanism.logger.info("Blocks building: {}", blocksBuilding);
-        //blocksBuilding = true;
     }
 
     @Nullable
@@ -42,8 +39,6 @@ public class EntityObsidianTNT extends TNTEntity {
         tnt.owner = igniter;
         //End TNTEntity constructor
         tnt.setFuse(MekanismAdditionsConfig.additions.obsidianTNTDelay.get());
-        //blocksBuilding = true;
-        Mekanism.logger.info("Blocks building: {}", tnt.blocksBuilding);
         return tnt;
     }
 
