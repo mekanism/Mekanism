@@ -105,6 +105,11 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_TOO_NARROW);
         }
 
+        //Terminate if coils don't exist
+        if (coils.isEmpty()) {
+            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_COILS);
+        }
+
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
         //Make sure a flat, horizontal plane of dispersers exists within the multiblock around the complex
         for (int x = complex.getX() - innerRadius; x <= complex.getX() + innerRadius; x++) {
@@ -161,11 +166,6 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
         BlockPos startCoord = complex.relative(Direction.UP);
         if (WorldUtils.getTileEntity(TileEntityElectromagneticCoil.class, world, chunkMap, startCoord) != null) {
             structure.coils = FormationProtocol.explore(startCoord, coord -> WorldUtils.getTileEntity(TileEntityElectromagneticCoil.class, world, chunkMap, coord) != null);
-        }
-
-        //Terminate if coils don't exist
-        if (coils.isEmpty()) {
-            return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_COILS);
         }
 
         if (coils.size() > structure.coils) {
