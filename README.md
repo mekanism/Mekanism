@@ -1,4 +1,4 @@
-# Mekanism Terralization version with bugfixes from community
+# Mekanism 1.7.10 Community Edition
 
 ### This is a customized version of Mekanism made for Terralization modpack. It is made with several other contributions I found on GitHub and my own fixes. This version is supported but its limited, therefore it can be unstable.
 
