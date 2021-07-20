@@ -160,10 +160,7 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
         byte status = 3;
 
         if (given != null) {
-
-
-
-            FrequencyManager manager = getManager(given.access, player.getCommandSenderName(), world);// given.isPublic() ? getManager(null, world) : getManager(player.getCommandSenderName(), world);
+            FrequencyManager manager = getManager(given.access, given.owner, world);// given.isPublic() ? getManager(null, world) : getManager(player.getCommandSenderName(), world);
             boolean found = false;
 
             for (Frequency iterFreq : manager.getFrequencies()) {
@@ -175,6 +172,23 @@ public class PacketPortableTeleporter implements IMessageHandler<PortableTelepor
                 }
             }
 
+            if(given.isProtected() && !given.owner.equalsIgnoreCase(player.getCommandSenderName())) {
+                for (Frequency frequency : Mekanism.securityFrequencies.getFrequencies()) {
+                    SecurityFrequency secure = (SecurityFrequency) frequency;
+                    if(secure.owner.equals(given.owner)) {
+                        if(!secure.trusted.contains(player.getCommandSenderName())) {
+                            given = null;
+                            break;
+                        }
+
+                        FrequencyManager protected_ = Mekanism.protectedTeleporters.get(secure.owner);
+                        if(!protected_.containsFrequency(given.name)) {
+                            given = null;
+                            break;
+                        }
+                    }
+                }
+            }
             if (!found) {
                 given = null;
             }

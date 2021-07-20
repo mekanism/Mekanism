@@ -19,7 +19,7 @@ public class Frequency {
 
     public boolean valid = true;
 
-    public ISecurityTile.SecurityMode access;
+    public ISecurityTile.SecurityMode access = ISecurityTile.SecurityMode.PUBLIC;
 
     public Set<Coord4D> activeCoords = new HashSet<Coord4D>();
 
