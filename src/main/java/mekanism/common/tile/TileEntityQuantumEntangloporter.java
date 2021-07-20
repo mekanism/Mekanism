@@ -24,6 +24,7 @@ import mekanism.common.frequency.FrequencyManager;
 import mekanism.common.frequency.IFrequencyHandler;
 import mekanism.common.integration.IComputerIntegration;
 import mekanism.common.security.ISecurityTile;
+import mekanism.common.security.SecurityFrequency;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -51,6 +52,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 	public double lastEnvironmentLoss;
 	
 	public List<Frequency> publicCache = new ArrayList<Frequency>();
+	public List<Frequency> protectedCache = new ArrayList<Frequency>();
 	public List<Frequency> privateCache = new ArrayList<Frequency>();
 
 	public static final EnumSet<ForgeDirection> nothing = EnumSet.noneOf(ForgeDirection.class);
@@ -186,7 +188,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		{
 			return Mekanism.publicEntangloporters;
 		}
-		else {
+		else if(freq.isPrivate()) {
 			if(!Mekanism.privateEntangloporters.containsKey(getSecurity().getOwner()))
 			{
 				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER, getSecurity().getOwner());
@@ -195,12 +197,21 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			}
 			
 			return Mekanism.privateEntangloporters.get(getSecurity().getOwner());
+		} else {
+			if(!Mekanism.protectedEntangloporters.containsKey(getSecurity().getOwner()))
+			{
+				FrequencyManager manager = new FrequencyManager(InventoryFrequency.class, InventoryFrequency.ENTANGLOPORTER + "#protected", getSecurity().getOwner());
+				Mekanism.protectedEntangloporters.put(getSecurity().getOwner(), manager);
+				manager.createOrLoad(worldObj);
+			}
+
+			return Mekanism.protectedEntangloporters.get(getSecurity().getOwner());
 		}
 	}
 	
-	public void setFrequency(String name, boolean publicFreq)
+	public void setFrequency(String name, ISecurityTile.SecurityMode access)
 	{
-		FrequencyManager manager = getManager(new InventoryFrequency(name, null).setPublic(publicFreq));
+		FrequencyManager manager = getManager(new InventoryFrequency(name, null).setAccess(access));
 		manager.deactivate(Coord4D.get(this));
 		
 		for(Frequency freq : manager.getFrequencies())
@@ -216,7 +227,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			}
 		}
 		
-		Frequency freq = new InventoryFrequency(name, getSecurity().getOwner()).setPublic(publicFreq);
+		Frequency freq = new InventoryFrequency(name, getSecurity().getOwner()).setAccess(access);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
 		frequency = (InventoryFrequency)freq;
@@ -260,16 +271,14 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			if(type == 0)
 			{
 				String name = PacketHandler.readString(dataStream);
-				boolean isPublic = dataStream.readBoolean();
-				
-				setFrequency(name, isPublic);
+
+				setFrequency(name, ISecurityTile.SecurityMode.values()[dataStream.readInt()]);
 			}
 			else if(type == 1)
 			{
 				String freq = PacketHandler.readString(dataStream);
-				boolean isPublic = dataStream.readBoolean();
-				
-				FrequencyManager manager = getManager(new InventoryFrequency(freq, null).setPublic(isPublic));
+
+				FrequencyManager manager = getManager(new InventoryFrequency(freq, null).setAccess(ISecurityTile.SecurityMode.values()[dataStream.readInt()]));
 				
 				if(manager != null)
 				{
@@ -297,7 +306,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			
 			publicCache.clear();
 			privateCache.clear();
-			
+			protectedCache.clear();
+
 			int amount = dataStream.readInt();
 			
 			for(int i = 0; i < amount; i++)
@@ -310,6 +320,13 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			for(int i = 0; i < amount; i++)
 			{
 				privateCache.add(new InventoryFrequency(dataStream));
+			}
+
+			amount = dataStream.readInt();
+
+			for(int i = 0; i < amount; i++)
+			{
+				protectedCache.add(new InventoryFrequency(dataStream));
 			}
 		}
 	}
@@ -338,7 +355,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 			freq.write(data);
 		}
 		
-		FrequencyManager manager = getManager(new InventoryFrequency(null, null).setPublic(false));
+		FrequencyManager manager = getManager(new InventoryFrequency(null, null).setAccess(SecurityMode.PRIVATE));
 		
 		if(manager != null)
 		{
@@ -351,6 +368,27 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		}
 		else {
 			data.add(0);
+		}
+
+		List<Frequency> protectedFrqs = new ArrayList<Frequency>();
+
+		for (Frequency frequency : Mekanism.securityFrequencies.getFrequencies()) {
+			SecurityFrequency secure = (SecurityFrequency) frequency;
+			if(secure.trusted.contains(getSecurity().getOwner())) {
+				FrequencyManager protected_ = Mekanism.protectedEntangloporters.get(secure.owner);
+				if(protected_ != null) {
+					protectedFrqs.addAll(protected_.getFrequencies());
+				}
+			}
+		}
+
+		if(getSecurity().getOwner() != null)
+			protectedFrqs.addAll(getManager(new Frequency(null, null).setAccess(SecurityMode.TRUSTED)).getFrequencies());
+
+		data.add(protectedFrqs.size());
+
+		for (Frequency freq : protectedFrqs) {
+			freq.write(data);
 		}
 		
 		return data;
@@ -680,15 +718,15 @@ public class TileEntityQuantumEntangloporter extends TileEntityElectricBlock imp
 		switch(method)
 		{
 			case 0:
-				if(!(arguments[0] instanceof String) || !(arguments[1] instanceof Boolean))
+				if(!(arguments[0] instanceof String) || !(arguments[1] instanceof Integer))
 				{
 					return new Object[] {"Invalid parameters."};
 				}
 				
 				String freq = ((String)arguments[0]).trim();
-				boolean isPublic = (Boolean)arguments[1];
+				int access = (int)arguments[1];
 				
-				setFrequency(freq, isPublic);
+				setFrequency(freq, ISecurityTile.SecurityMode.values()[access]);
 				
 				return new Object[] {"Frequency set."};
 			default:

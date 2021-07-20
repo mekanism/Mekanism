@@ -540,6 +540,7 @@ public class ClientProxy extends CommonProxy
 			teleporter.clientFreq = message.frequency;
 			teleporter.clientPublicCache = message.publicCache;
 			teleporter.clientPrivateCache = message.privateCache;
+			teleporter.clientProtectedCache = message.protectedCache;
 			
 			teleporter.updateButtons();
 		}

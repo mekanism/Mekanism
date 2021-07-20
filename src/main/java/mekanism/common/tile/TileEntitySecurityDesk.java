@@ -136,7 +136,7 @@ public class TileEntitySecurityDesk extends TileEntityContainerBlock implements 
 			}
 		}
 		
-		Frequency freq = new SecurityFrequency(owner).setPublic(true);
+		Frequency freq = new SecurityFrequency(owner).setAccess(SecurityMode.PUBLIC);
 		freq.activeCoords.add(Coord4D.get(this));
 		manager.addFrequency(freq);
 		frequency = (SecurityFrequency)freq;
