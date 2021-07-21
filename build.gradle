@@ -2,14 +2,27 @@ defaultTasks 'fullBuild'
 
 buildscript {
     repositories {
-        maven { url = "https://repo1.maven.org/maven2/" }
+
+        // [HTTPS FIX] Replace mavenCentral() with the code block below
+        maven {
+            url "https://repo1.maven.org/maven2"
+        }
+
         maven {
             name = "forge"
             url = "https://files.minecraftforge.net/maven"
         }
         maven {
+            name = "forge2"
+            url = "https://maven.minecraftforge.net/"
+        }
+        maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+
+        flatDir {
+            dirs 'libs'
         }
     }
     dependencies {
@@ -23,8 +36,24 @@ repositories {
         url "http://chickenbones.net/maven/"
     }
     maven {
+        name = "forge2"
+        url = "https://maven.minecraftforge.net/"
+    }
+    maven {
         name 'ForgeFS'
         url 'http://files.minecraftforge.net/maven'
+    }
+}
+
+allprojects {
+    repositories {
+        all { ArtifactRepository repo ->
+            if (repo instanceof MavenArtifactRepository) {
+                if (repo.url.toString().startsWith("http://repo1.maven.org/maven2")) {
+                    repo.url = repo.url.toString().replace("http://", "https://")
+                }
+            }
+        }
     }
 }
 
@@ -60,8 +89,8 @@ version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUI
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
-sourceCompatibility = '1.7'
-targetCompatibility = '1.7'
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 minecraft {
     version = config.minecraft_version + "-" + config.forge_version
