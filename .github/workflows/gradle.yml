@@ -5,9 +5,9 @@ name: Check code
 
 on:
   push:
-    branches: [ 1.7.10 ]
+    branches: [ gradle-3 ]
   pull_request:
-    branches: [ 1.7.10 ]
+    branches: [ gradle-3 ]
 
 jobs:
   build:
