@@ -1,27 +1,74 @@
-:compileApiJava UP-TO-DATE
+WARNING: You are using an unsupported version of ForgeGradle.
+Please consider upgrading to ForgeGradle 4 and helping in the efforts to get old versions working on the modern toolchain.
+See https://gist.github.com/TheCurle/fe7ad3ede188cbdd15c235cc75d52d4a for more info on contributing.
+#################################################
+         ForgeGradle 1.2.1-g1602004        
+  https://github.com/MinecraftForge/ForgeGradle  
+#################################################
+               Powered by MCP unknown               
+             http://modcoderpack.com             
+         by: Searge, ProfMobius, Fesh0r,         
+         R4wk, ZeuX, IngisKahn, bspkrs           
+#################################################
+:downloadClient SKIPPED
+:downloadServer SKIPPED
+:getVersionJson
+:extractUserDev
+Download http://files.minecraftforge.net/maven/net/minecraftforge/forge/1.7.10-10.13.4.1614-1.7.10/forge-1.7.10-10.13.4.1614-1.7.10-userdev.jar
+:mergeJars SKIPPED
+:applyBinPatches SKIPPED
+:downloadMcpTools SKIPPED
+:extractMcpData
+:genSrgs SKIPPED
+:deobfBinJar SKIPPED
+:compileApiJavawarning: [options] bootstrap class path not set in conjunction with -source 1.7
+Note: C:\Users\magna\OneDrive\Documents\GitHub\MekanismThorfusion\src\api\java\dan200\computercraft\api\ComputerCraftAPI.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+1 warning
+
 :processApiResources UP-TO-DATE
-:apiClasses UP-TO-DATE
+:apiClasses
 :sourceMainJava
 :compileJavawarning: [options] bootstrap class path not set in conjunction with -source 1.7
-C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\mekanism\common\item\ItemBlockBasic.java:88: error: <identifier> expected
-			return new 1;
-			          ^
-C:\Users\magna\OneDrive\Documents\GitHub\Mekanism2\build\sources\java\mekanism\common\item\ItemBlockBasic.java:88: error: '(' or '[' expected
-			return new 1;
-			           ^
-2 errors
-1 warning
- FAILED
+C:\Users\magna\OneDrive\Documents\GitHub\MekanismThorfusion\build\sources\java\codechicken\core\launch\DepLoader.java:12: warning: URLClassPath is internal proprietary API and may be removed in a future release
+import sun.misc.URLClassPath;
+               ^
+C:\Users\magna\OneDrive\Documents\GitHub\MekanismThorfusion\build\sources\java\codechicken\core\launch\DepLoader.java:13: warning: URLUtil is internal proprietary API and may be removed in a future release
+import sun.net.util.URLUtil;
+                   ^
+C:\Users\magna\OneDrive\Documents\GitHub\MekanismThorfusion\build\sources\java\codechicken\core\launch\DepLoader.java:302: warning: URLClassPath is internal proprietary API and may be removed in a future release
+                Field f_loaders = URLClassPath.class.getDeclaredField("loaders");
+                                  ^
+C:\Users\magna\OneDrive\Documents\GitHub\MekanismThorfusion\build\sources\java\codechicken\core\launch\DepLoader.java:303: warning: URLClassPath is internal proprietary API and may be removed in a future release
+                Field f_lmap = URLClassPath.class.getDeclaredField("lmap");
+                               ^
+C:\Users\magna\OneDrive\Documents\GitHub\MekanismThorfusion\build\sources\java\codechicken\core\launch\DepLoader.java:308: warning: URLClassPath is internal proprietary API and may be removed in a future release
+                URLClassPath ucp = (URLClassPath) f_ucp.get(cl);
+                ^
+C:\Users\magna\OneDrive\Documents\GitHub\MekanismThorfusion\build\sources\java\codechicken\core\launch\DepLoader.java:308: warning: URLClassPath is internal proprietary API and may be removed in a future release
+                URLClassPath ucp = (URLClassPath) f_ucp.get(cl);
+                                    ^
+C:\Users\magna\OneDrive\Documents\GitHub\MekanismThorfusion\build\sources\java\codechicken\core\launch\DepLoader.java:309: warning: URLUtil is internal proprietary API and may be removed in a future release
+                Closeable loader = ((Map<String, Closeable>) f_lmap.get(ucp)).remove(URLUtil.urlNoFragString(url));
+                                                                                     ^
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+8 warnings
 
-FAILURE: Build failed with an exception.
+:processResources
+:classes
+:jar
+:compileTestJava UP-TO-DATE
+:processTestResources UP-TO-DATE
+:testClasses UP-TO-DATE
+:test UP-TO-DATE
+:reobf
+:assemble
+:check UP-TO-DATE
+:build
 
-* What went wrong:
-Execution failed for task ':compileJava'.
-> Compilation failed; see the compiler error output for details.
+BUILD SUCCESSFUL
 
-* Try:
-Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
-
-BUILD FAILED
-
-Total time: 6.521 secs
+Total time: 44.955 secs

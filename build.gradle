@@ -2,27 +2,14 @@ defaultTasks 'fullBuild'
 
 buildscript {
     repositories {
-
-        // [HTTPS FIX] Replace mavenCentral() with the code block below
-        maven {
-            url "https://repo1.maven.org/maven2"
-        }
-
+        maven { url = "https://repo1.maven.org/maven2/" }
         maven {
             name = "forge"
             url = "https://files.minecraftforge.net/maven"
         }
         maven {
-            name = "forge2"
-            url = "https://maven.minecraftforge.net/"
-        }
-        maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-
-        flatDir {
-            dirs 'libs'
         }
     }
     dependencies {
@@ -35,34 +22,20 @@ repositories {
         name 'CB Maven FS'
         url "http://chickenbones.net/maven/"
     }
-	maven {
-            name = "forge2"
-            url = "https://maven.minecraftforge.net/"
-        }
     maven {
         name 'ForgeFS'
         url 'http://files.minecraftforge.net/maven'
-     }
-}
-
-allprojects {
-    repositories {
-        all { ArtifactRepository repo ->
-            if (repo instanceof MavenArtifactRepository) {
-                if (repo.url.toString().startsWith("http://repo1.maven.org/maven2")) {
-                    repo.url = repo.url.toString().replace("http://", "https://")
-                }
-            }
-        }
     }
 }
 
-/*idea {
+apply plugin: 'idea'
+
+idea {
     module {
         // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
         inheritOutputDirs = true
     }
-}*/
+}
 
 apply plugin: 'forge'
 
@@ -87,22 +60,21 @@ version = "${config.minecraft_version}-${config.mod_version}." + (System.env.BUI
 archivesBaseName = "MekanismAll"
 libsDirName = "../output"
 distsDirName = "../output"
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
 
 minecraft {
-    version = "1.7.10-10.13.4.1558-1.7.10"
-    runDir = "eclipse"
+    version = config.minecraft_version + "-" + config.forge_version
 }
 
 processResources
-{
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-        exclude '**/*.blend*'
-    }
-}
+        {
+            // copy everything else, thats not the mcmod.info
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+                exclude '**/*.blend*'
+            }
+        }
 
 task coreJar(type: Jar) {
     baseName = 'Mekanism'
