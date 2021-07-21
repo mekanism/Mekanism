@@ -2,27 +2,14 @@ defaultTasks 'fullBuild'
 
 buildscript {
     repositories {
-
-        // [HTTPS FIX] Replace mavenCentral() with the code block below
-        maven {
-            url "https://repo1.maven.org/maven2"
-        }
-
+        maven { url = "https://repo1.maven.org/maven2/" }
         maven {
             name = "forge"
-            url = "https://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "forge2"
             url = "https://maven.minecraftforge.net/"
         }
         maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-
-        flatDir {
-            dirs 'libs'
         }
     }
     dependencies {
@@ -35,14 +22,10 @@ repositories {
         name 'CB Maven FS'
         url "http://chickenbones.net/maven/"
     }
-	maven {
-            name = "forge2"
-            url = "https://maven.minecraftforge.net/"
-        }
     maven {
         name 'ForgeFS'
-        url 'http://files.minecraftforge.net/maven'
-     }
+        url 'https://maven.minecraftforge.net/'
+    }
 }
 
 allprojects {
@@ -57,12 +40,14 @@ allprojects {
     }
 }
 
-/*idea {
+apply plugin: 'idea'
+
+idea {
     module {
         // For some reason this is necessary for IDEA 2014 workspaces to recognize assets
         inheritOutputDirs = true
     }
-}*/
+}
 
 apply plugin: 'forge'
 
@@ -91,18 +76,18 @@ sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
 minecraft {
-    version = "1.7.10-10.13.4.1614-1.7.10"
+    version = config.minecraft_version + "-" + config.forge_version
     runDir = "eclipse"
 }
 
 processResources
-{
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-        exclude '**/*.blend*'
-    }
-}
+        {
+            // copy everything else, thats not the mcmod.info
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+                exclude '**/*.blend*'
+            }
+        }
 
 task coreJar(type: Jar) {
     baseName = 'Mekanism'
