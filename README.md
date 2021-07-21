@@ -29,5 +29,3 @@ fix EnergyMatrix use IC2 cable(EnergyNetBug) connecting valve as a loop to fully
 
 #### maggi373 :
 fix for bin dupe bug, removed the ability to stack bins, quick solution but it works
-
-test
