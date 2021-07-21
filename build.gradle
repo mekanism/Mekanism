@@ -5,7 +5,7 @@ buildscript {
         maven { url = "https://repo1.maven.org/maven2/" }
         maven {
             name = "forge"
-            url = "https://files.minecraftforge.net/maven"
+            url = "https://maven.minecraftforge.net/"
         }
         maven {
             name = "sonatype"
@@ -24,7 +24,7 @@ repositories {
     }
     maven {
         name 'ForgeFS'
-        url 'http://files.minecraftforge.net/maven'
+        url 'https://maven.minecraftforge.net/'
     }
 }
 
