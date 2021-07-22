@@ -1,8 +1,8 @@
 build
 output
 .idea
-.gradle
-buildSrc
+.gradle/
+buildSrc/
 *.iml
 *.ipr
 *.iws
