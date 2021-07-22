@@ -27,7 +27,7 @@ repositories {
         url 'https://maven.minecraftforge.net/'
     }
 }
-
+/*
 allprojects {
     repositories {
         all { ArtifactRepository repo ->
@@ -39,7 +39,7 @@ allprojects {
         }
     }
 }
-
+*/
 apply plugin: 'idea'
 
 idea {
@@ -165,12 +165,11 @@ task releaseJars(type: Copy) {
     from toolsJar
     from generatorsJar
     from MDKZip
-    from alltJar
+    //from alltJar
     rename '-(.*)jar', '.jar'
     rename '-(.*)zip', '.zip'
     into '.'
 }
-
 
 task fullBuild(type: Delete) {
     delete jar
