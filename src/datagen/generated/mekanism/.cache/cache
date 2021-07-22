@@ -189,9 +189,6 @@ daaf27e52f35edcf93ccc7dc5cea19ab582c64a3 data/forge/tags/items/alloys/advanced.j
 7d72314a3527dad51a5e516ff39d4f9c6cc7a5f5 data/forge/tags/items/alloys/elite.json
 2f2be9b02ec6f8754b72d073ffa4df9ec9f26e8e data/forge/tags/items/alloys/ultimate.json
 669e16ab375c9bc9b890c2baff27afb72781e2c0 data/forge/tags/items/batteries.json
-5ba124118746786175ed10c4eea2834b7622e7d9 data/forge/tags/items/chests.json
-8d9a785d66c9847b06109e41ad61c71906f7c585 data/forge/tags/items/chests/electric.json
-8d9a785d66c9847b06109e41ad61c71906f7c585 data/forge/tags/items/chests/personal.json
 2baa64ce8d4a980ce8bc0c5374e09648bf833431 data/forge/tags/items/circuits.json
 7b18a026b8aaf0fea057796e99a80bc0db9590b4 data/forge/tags/items/circuits/advanced.json
 94fc19c4037467eb4dad89bd3d0a6d820cc83a9c data/forge/tags/items/circuits/basic.json
@@ -468,7 +465,7 @@ ecaaff22dffec7bef0c746dd5856eb0e83d7283b data/mekanism/recipes/chemical_dissolut
 b7f317e1c2c6a3f1c44041efa88bb711cf479d76 data/mekanism/recipes/chemical_infusing/sulfur_trioxide.json
 45d53a5771ebaffaf675c89d7960035b8060f8a5 data/mekanism/recipes/chemical_infusing/sulfuric_acid.json
 37ac5b399c9fad02f4703e4962534c58e0da7062 data/mekanism/recipes/chemical_injection_chamber.json
-53feddbeabf0324e887cf552df0edd05612bff96 data/mekanism/recipes/chemical_oxidizer.json
+dd689cca596c7418f724c74ffdda08797eb33d40 data/mekanism/recipes/chemical_oxidizer.json
 588ba30eca6e1b486db6d32edf456e8e4a4bd07a data/mekanism/recipes/chemical_tank/advanced.json
 c42f7bd1d6391b4a8f26915904d5ae05aa2d453b data/mekanism/recipes/chemical_tank/basic.json
 16a6d4e439a944bd4d0860d1502d72c6e3c16648 data/mekanism/recipes/chemical_tank/elite.json
@@ -1767,7 +1764,7 @@ c28357fe492d83085e7accb2b12d52a7d8e798ed data/mekanism/recipes/jetpack.json
 166ae285c585d39c1f62aae1373a19e08f1b9aa0 data/mekanism/recipes/jetpack_armored.json
 e5644a8b427689eff7152d99530d151037f41c8c data/mekanism/recipes/laser.json
 0eec5a983a9446a4cdc8fb05e8279dac734ba14b data/mekanism/recipes/laser_amplifier.json
-d00a3a297d8b989b5db0e46a185b68e9b6fccd6e data/mekanism/recipes/laser_tractor_beam.json
+247f0edb8a23c43f4c4e06f72f444f9b95b5f7dd data/mekanism/recipes/laser_tractor_beam.json
 b49c56876c444f26c127e85bc6b335a022f062da data/mekanism/recipes/logistical_sorter.json
 d569a5f7bf013aa395babd06f823283c90c87b65 data/mekanism/recipes/meka_tool.json
 7b13a00563fe3858b7364cabbaafa3971e3b9401 data/mekanism/recipes/mekasuit_bodyarmor.json
@@ -2372,7 +2369,7 @@ cf8523adf6ec01a96f911a1297117dc3fe2c2f83 data/mekanism/recipes/reaction/substrat
 532fd66051f8a10646aac5fd1605395091f381d2 data/mekanism/recipes/reaction/wood_gasification/wooden_slabs.json
 419a2409643692c0709f4c8a784b5461b7de785e data/mekanism/recipes/reaction/wood_gasification/wooden_stairs.json
 be926aab5a5f4cb0648815331334b80d8d5d1870 data/mekanism/recipes/resistive_heater.json
-5b862147e9ee76ebab755d959a723e13f8224e30 data/mekanism/recipes/robit.json
+5049a0c71ad45898f74dea8c7f79ca3d10350fa0 data/mekanism/recipes/robit.json
 7dc2a305fb22cf0a6b48945479011ccd4ec7d19b data/mekanism/recipes/rotary/brine.json
 de068fecf64948cd45af3838e309536dcf13ebf2 data/mekanism/recipes/rotary/chlorine.json
 f0bd6cb008c4d338278fd6c2ba21447340db2f60 data/mekanism/recipes/rotary/ethene.json

@@ -87,9 +87,6 @@ public class MekanismTags {
         public static final INamedTag<Item> FUELS = forgeTag("fuels");
         public static final INamedTag<Item> FUELS_BIO = forgeTag("fuels/bio");
 
-        public static final INamedTag<Item> CHESTS_ELECTRIC = forgeTag("chests/electric");
-        public static final INamedTag<Item> CHESTS_PERSONAL = forgeTag("chests/personal");
-
         public static final INamedTag<Item> SALT = forgeTag("salt");
         public static final INamedTag<Item> SAWDUST = forgeTag("sawdust");
         public static final INamedTag<Item> YELLOW_CAKE_URANIUM = forgeTag("yellow_cake_uranium");

@@ -232,7 +232,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
               .key(Pattern.CONSTANT, MekanismBlocks.DYNAMIC_TANK)
-              .key(PERSONAL_CHEST_CHAR, MekanismTags.Items.CHESTS_PERSONAL)
+              .key(PERSONAL_CHEST_CHAR, MekanismBlocks.PERSONAL_CHEST)
               .build(consumer);
         //Chemical washer
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHEMICAL_WASHER)
@@ -634,11 +634,11 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.ENERGY, MekanismBlocks.BASIC_ENERGY_CUBE)
               .build(consumer);
         //Laser tractor beam
-        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER_TRACTOR_BEAM)
+        MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.LASER_TRACTOR_BEAM)
               .pattern(RecipePattern.createPattern(
                     PERSONAL_CHEST_CHAR,
                     Pattern.CONSTANT)
-              ).key(PERSONAL_CHEST_CHAR, MekanismTags.Items.CHESTS_PERSONAL)
+              ).key(PERSONAL_CHEST_CHAR, MekanismBlocks.PERSONAL_CHEST)
               .key(Pattern.CONSTANT, MekanismBlocks.LASER_AMPLIFIER)
               .build(consumer);
         //Logistical sorter
@@ -809,7 +809,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ATOMIC)
-              .key(PERSONAL_CHEST_CHAR, MekanismTags.Items.CHESTS_PERSONAL)
+              .key(PERSONAL_CHEST_CHAR, MekanismBlocks.PERSONAL_CHEST)
               .build(consumer);
         //Rotary condensentrator
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismBlocks.ROTARY_CONDENSENTRATOR)

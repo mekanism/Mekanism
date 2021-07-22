@@ -280,9 +280,8 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addChests() {
-        addToTags(MekanismTags.Items.CHESTS_ELECTRIC, MekanismTags.Blocks.CHESTS_ELECTRIC, MekanismBlocks.PERSONAL_CHEST);
-        addToTags(MekanismTags.Items.CHESTS_PERSONAL, MekanismTags.Blocks.CHESTS_PERSONAL, MekanismBlocks.PERSONAL_CHEST);
-        getItemBuilder(Tags.Items.CHESTS).add(MekanismTags.Items.CHESTS_ELECTRIC, MekanismTags.Items.CHESTS_PERSONAL);
+        addToTag(MekanismTags.Blocks.CHESTS_ELECTRIC, MekanismBlocks.PERSONAL_CHEST);
+        addToTag(MekanismTags.Blocks.CHESTS_PERSONAL, MekanismBlocks.PERSONAL_CHEST);
         getBlockBuilder(Tags.Blocks.CHESTS).add(MekanismTags.Blocks.CHESTS_ELECTRIC, MekanismTags.Blocks.CHESTS_PERSONAL);
     }
 
