@@ -19,7 +19,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biome.RainType;
@@ -72,7 +71,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
         // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
         // (like the End) have rainfall set, but can't actually support rain.
-        float humidityEff = -0.3F * (needsRainCheck ? b.getDownfall() : 0.0F);
+        float humidityEff = needsRainCheck ? -0.3F * b.getDownfall() : 0.0F;
         peakOutput = getConfiguredMax().multiply(1.0F + tempEff + humidityEff);
         settingsChecked = true;
     }
@@ -87,7 +86,7 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // Sort out if the generator can see the sun; we no longer check if it's raining here,
         // since under the new rules, we can still generate power when it's raining, albeit at a
         // significant penalty.
-        seesSun = WorldUtils.canSeeSun(level, getSkyCheckPos());
+        seesSun = checkCanSeeSun();
         if (seesSun && MekanismUtils.canFunction(this) && !getEnergyContainer().getNeeded().isZero()) {
             setActive(true);
             FloatingLong production = getProduction();
@@ -98,8 +97,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         }
     }
 
-    protected BlockPos getSkyCheckPos() {
-        return worldPosition;
+    protected boolean checkCanSeeSun() {
+        return WorldUtils.canSeeSun(level, worldPosition);
     }
 
     public FloatingLong getProduction() {
@@ -110,7 +109,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         //Get the brightness of the sun; note that there are some implementations that depend on the base
         // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
         float brightness = WorldUtils.getSunBrightness(world, 1.0F);
-        //TODO: Galacticraft solar energy multiplier (see TileEntitySolarGenerator 1.12 branch). Also do that for the Solar Neutron Activator
+        //TODO: Galacticraft solar energy multiplier (see TileEntitySolarGenerator 1.12 branch).
+        // Also do that for the Solar Neutron Activator and Solar Recharging Unit
 
         //Production is a function of the peak possible output in this biome and sun's current brightness
         FloatingLong production = peakOutput.multiply(brightness);

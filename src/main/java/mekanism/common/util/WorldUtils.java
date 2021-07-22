@@ -620,7 +620,7 @@ public class WorldUtils {
         //Note: We manually handle the world#isDaytime check by just checking the subtracted skylight
         // as vanilla returns false if the world's time is set to a fixed value even if that time
         // would effectively be daytime
-        return world != null && world.dimensionType().hasSkyLight() && world.getSkyDarken() < 4 && world.canSeeSkyFromBelowWater(pos);
+        return world != null && world.dimensionType().hasSkyLight() && world.getSkyDarken() < 4 && world.canSeeSky(pos);
     }
 
     /**

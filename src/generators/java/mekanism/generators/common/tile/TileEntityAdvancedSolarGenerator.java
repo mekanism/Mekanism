@@ -9,6 +9,7 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar {
@@ -56,7 +57,23 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
     }
 
     @Override
-    protected BlockPos getSkyCheckPos() {
-        return worldPosition.above(2);
+    protected boolean checkCanSeeSun() {
+        if (level == null || !level.dimensionType().hasSkyLight() || level.getSkyDarken() >= 4) {
+            //Inline of most of WorldUtils#canSeeSun so that we can exit early if it is not day or there is no skylight
+            return false;
+        }
+        //TODO: At some point check multiple spots given the advanced solar generator is wider than one block
+        BlockPos topPos = worldPosition.above(2);
+        if (level.getFluidState(topPos).isEmpty()) {
+            //If the top isn't fluid logged we can just quickly check if the top can see the sun
+            return level.canSeeSky(topPos);
+        }
+        BlockPos above = topPos.above();
+        if (level.canSeeSky(above)) {
+            //If the spot above can see the sun, check to make sure we can see through the block there
+            BlockState state = level.getBlockState(above);
+            return !state.getMaterial().isLiquid() && state.getLightBlock(level, above) <= 0;
+        }
+        return false;
     }
 }
