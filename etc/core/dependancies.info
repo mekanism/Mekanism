@@ -1,5 +1,5 @@
 {
-	"repo": "http://nexus.covers1624.net/repository/maven-hosted/codechicken/ForgeMultipart/${mc_version}-${fmp_version}/",
+	"repo": "http://maven.minecraftforge.net/codechicken/ForgeMultipart/${mc_version}-${fmp_version}/",
 	"file": "ForgeMultipart-${mc_version}-${fmp_version}-universal.jar",
 	"dev": "ForgeMultipart-${mc_version}-${fmp_version}-dev.jar",
 	"class": "codechicken.multipart.MultipartMod"
