@@ -138,19 +138,19 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
     protected void onHitEntity(EntityRayTraceResult entityResult) {
         Entity entity = entityResult.getEntity();
         if (entity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) entity.getEntity();
+            PlayerEntity player = (PlayerEntity) entity;
             Entity owner = getOwner();
             if (player.abilities.invulnerable || owner instanceof PlayerEntity && !((PlayerEntity) owner).canHarmPlayer(player)) {
                 return;
             }
         }
-        if (!entity.getEntity().fireImmune()) {
-            if (entity.getEntity() instanceof ItemEntity && mode == FlamethrowerMode.HEAT) {
-                if (entity.getEntity().tickCount > 100 && !smeltItem((ItemEntity) entity.getEntity())) {
-                    burn(entity.getEntity());
+        if (!entity.fireImmune()) {
+            if (entity instanceof ItemEntity && mode == FlamethrowerMode.HEAT) {
+                if (entity.tickCount > 100 && !smeltItem((ItemEntity) entity)) {
+                    burn(entity);
                 }
             } else {
-                burn(entity.getEntity());
+                burn(entity);
             }
         }
         remove();
@@ -251,8 +251,11 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
     }
 
     private void burn(Entity entity) {
-        entity.setSecondsOnFire(20);
-        entity.hurt(DamageSource.thrown(this, getOwner()), DAMAGE);
+        if (!(entity instanceof ItemEntity) || MekanismConfig.gear.flamethrowerDestroyItems.get()) {
+            //Only actually burn the entity if it is not an item or we allow destroying items
+            entity.setSecondsOnFire(20);
+            entity.hurt(DamageSource.thrown(this, getOwner()), DAMAGE);
+        }
     }
 
     private void spawnParticlesAt(BlockPos pos) {

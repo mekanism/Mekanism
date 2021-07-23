@@ -63,6 +63,7 @@ public class GearConfig extends BaseMekanismConfig {
     //Flamethrower
     public final CachedLongValue flamethrowerMaxGas;
     public final CachedLongValue flamethrowerFillRate;
+    public final CachedBooleanValue flamethrowerDestroyItems;
     //Free runner
     public final CachedFloatingLongValue freeRunnerFallEnergyCost;
     public final CachedFloatValue freeRunnerFallDamageRatio;
@@ -198,6 +199,8 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("maxGas", 24_000, 1, Long.MAX_VALUE));
         flamethrowerFillRate = CachedLongValue.wrap(this, builder.comment("Amount of hydrogen the Flamethrower can accept per tick.")
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
+        flamethrowerDestroyItems = CachedBooleanValue.wrap(this, builder.comment("Determines whether or not the Flamethrower can destroy items if it fails to smelt them.")
+              .define("destroyItems", true));
         builder.pop();
 
         builder.comment("Free Runner Settings").push(FREE_RUNNER_CATEGORY);
