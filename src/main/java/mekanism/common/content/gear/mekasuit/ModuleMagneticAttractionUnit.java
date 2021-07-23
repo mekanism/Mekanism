@@ -72,7 +72,7 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
         Vector3d motionNeeded = new Vector3d(Math.min(diff.x, 1), Math.min(diff.y, 1), Math.min(diff.z, 1));
         Vector3d motionDiff = motionNeeded.subtract(player.getDeltaMovement());
         item.setDeltaMovement(motionDiff.scale(0.2));
-        Mekanism.packetHandler.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player, item),
+        Mekanism.packetHandler.sendToAllTrackingAndSelf(new PacketLightningRender(LightningPreset.MAGNETIC_ATTRACTION, Objects.hash(player.getUUID(), item),
               player.position().add(0, 0.2, 0), item.position(), (int) (diff.length() * 4)), player);
     }
 
