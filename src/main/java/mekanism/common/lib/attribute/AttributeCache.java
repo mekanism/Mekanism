@@ -3,7 +3,8 @@ package mekanism.common.lib.attribute;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
-import mekanism.common.config.value.CachedPrimitiveValue;
+import mekanism.common.config.value.CachedValue;
+import mekanism.common.config.value.CachedValue.IConfigValueInvalidationListener;
 import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 
@@ -12,10 +13,10 @@ public class AttributeCache {
     private final IAttributeRefresher attributeRefresher;
     private Multimap<Attribute, AttributeModifier> attributes;
 
-    public AttributeCache(IAttributeRefresher attributeRefresher, CachedPrimitiveValue<?>... configValues) {
+    public AttributeCache(IAttributeRefresher attributeRefresher, CachedValue<?>... configValues) {
         this.attributeRefresher = attributeRefresher;
-        Runnable refreshListener = this::refreshAttributes;
-        for (CachedPrimitiveValue<?> configValue : configValues) {
+        IConfigValueInvalidationListener refreshListener = this::refreshAttributes;
+        for (CachedValue<?> configValue : configValues) {
             configValue.addInvalidationListener(refreshListener);
         }
         refreshAttributes();

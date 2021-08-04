@@ -4,8 +4,9 @@ import mekanism.api.functions.ShortSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class CachedShortValue extends CachedPrimitiveValue<Short> implements ShortSupplier {
+public class CachedShortValue extends CachedValue<Short> implements ShortSupplier {
 
+    private boolean resolved;
     private short cachedValue;
 
     private CachedShortValue(IMekanismConfig config, ConfigValue<Short> internal) {
@@ -33,5 +34,17 @@ public class CachedShortValue extends CachedPrimitiveValue<Short> implements Sho
     public void set(short value) {
         internal.set(value);
         cachedValue = value;
+    }
+
+    @Override
+    protected boolean clearCachedValue(boolean checkChanged) {
+        if (!resolved) {
+            //Isn't cached don't need to clear it or run any invalidation listeners
+            return false;
+        }
+        short oldCachedValue = cachedValue;
+        resolved = false;
+        //Return if we are meant to check the changed ones, and it is different than it used to be
+        return checkChanged && oldCachedValue != get();
     }
 }

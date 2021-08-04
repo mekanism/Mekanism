@@ -14,6 +14,7 @@ import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.config.value.CachedValue.IConfigValueInvalidationListener;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.oredictionificator.OredictionificatorFilter;
@@ -55,7 +56,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     private InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private OutputInventorySlot outputSlot;
-    private final Runnable validFiltersListener = () -> {
+    private final IConfigValueInvalidationListener validFiltersListener = () -> {
         for (OredictionificatorItemFilter filter : filters) {
             //Check each filter for validity
             filter.checkValidity();
@@ -117,12 +118,16 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     @Override
     public void onChunkUnloaded() {
         super.onChunkUnloaded();
-        MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListener(validFiltersListener);
+        removeInvalidationListener();
     }
 
     @Override
     public void setRemoved() {
         super.setRemoved();
+        removeInvalidationListener();
+    }
+
+    public void removeInvalidationListener() {
         MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListener(validFiltersListener);
     }
 

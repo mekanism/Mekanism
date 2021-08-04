@@ -88,11 +88,13 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCallback;
+import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -462,6 +464,15 @@ public class Mekanism {
         // when the server shuts down
         if (event.getWorld() instanceof ServerWorld) {
             MekFakePlayer.releaseInstance(event.getWorld());
+        }
+        if (event.getWorld() instanceof World && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
+            //If there are any invalidation listeners for the oredictionificator as there was a loaded oredictionificator
+            // then go through the entities and remove the corresponding invalidation listeners from them
+            for (TileEntity tile : ((World) event.getWorld()).blockEntityList) {
+                if (tile instanceof TileEntityOredictionificator) {
+                    ((TileEntityOredictionificator) tile).removeInvalidationListener();
+                }
+            }
         }
     }
 }

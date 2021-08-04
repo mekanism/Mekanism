@@ -4,8 +4,9 @@ import mekanism.api.functions.ByteSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class CachedByteValue extends CachedPrimitiveValue<Byte> implements ByteSupplier {
+public class CachedByteValue extends CachedValue<Byte> implements ByteSupplier {
 
+    private boolean resolved;
     private byte cachedValue;
 
     private CachedByteValue(IMekanismConfig config, ConfigValue<Byte> internal) {
@@ -33,5 +34,17 @@ public class CachedByteValue extends CachedPrimitiveValue<Byte> implements ByteS
     public void set(byte value) {
         internal.set(value);
         cachedValue = value;
+    }
+
+    @Override
+    protected boolean clearCachedValue(boolean checkChanged) {
+        if (!resolved) {
+            //Isn't cached don't need to clear it or run any invalidation listeners
+            return false;
+        }
+        byte oldCachedValue = cachedValue;
+        resolved = false;
+        //Return if we are meant to check the changed ones, and it is different than it used to be
+        return checkChanged && oldCachedValue != get();
     }
 }

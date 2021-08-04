@@ -55,7 +55,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
                           return Collections.singletonList(((OredictionificatorItemFilter) filter).getResult());
                       }
                       return Collections.emptyList();
-                  })).warning(WarningType.INVALID_OREDICTIONIFICATOR_FILTER, filter -> filter == null || !filter.hasFilter());
+                  })).warning(WarningType.INVALID_OREDICTIONIFICATOR_FILTER, filter -> filter != null && !filter.hasFilter());
         }
         //While we track and show warnings on the slots themselves we also need to track the warning
         // for if any of the set filters have it even if one of them is not visible

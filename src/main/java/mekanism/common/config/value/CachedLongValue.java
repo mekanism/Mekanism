@@ -4,8 +4,9 @@ import java.util.function.LongSupplier;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
-public class CachedLongValue extends CachedPrimitiveValue<Long> implements LongSupplier {
+public class CachedLongValue extends CachedValue<Long> implements LongSupplier {
 
+    private boolean resolved;
     private long cachedValue;
 
     private CachedLongValue(IMekanismConfig config, ConfigValue<Long> internal) {
@@ -33,5 +34,17 @@ public class CachedLongValue extends CachedPrimitiveValue<Long> implements LongS
     public void set(long value) {
         internal.set(value);
         cachedValue = value;
+    }
+
+    @Override
+    protected boolean clearCachedValue(boolean checkChanged) {
+        if (!resolved) {
+            //Isn't cached don't need to clear it or run any invalidation listeners
+            return false;
+        }
+        long oldCachedValue = cachedValue;
+        resolved = false;
+        //Return if we are meant to check the changed ones, and it is different than it used to be
+        return checkChanged && oldCachedValue != get();
     }
 }
