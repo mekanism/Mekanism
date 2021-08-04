@@ -1,7 +1,6 @@
 package mekanism.common.tile.qio;
 
 import java.util.Map;
-import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.providers.IBlockProvider;
@@ -18,8 +17,6 @@ import mekanism.common.lib.collection.HashList;
 import mekanism.common.tile.interfaces.IHasSortableFilters;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -74,28 +71,20 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     }
 
     @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        return getGeneralPersistentData(super.getConfigurationData(player));
-    }
-
-    protected CompoundNBT getGeneralPersistentData(CompoundNBT nbtTags) {
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (QIOFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundNBT()));
             }
-            nbtTags.put(NBTConstants.FILTERS, filterTags);
+            data.put(NBTConstants.FILTERS, filterTags);
         }
-        return nbtTags;
     }
 
     @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
-        setGeneralPersistentData(data);
-    }
-
-    protected void setGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
         filters.clear();
         if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
@@ -106,18 +95,6 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
                 }
             }
         }
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        return getGeneralPersistentData(super.save(nbtTags));
-    }
-
-    @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        setGeneralPersistentData(nbtTags);
     }
 
     @Override

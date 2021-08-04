@@ -37,8 +37,6 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -186,37 +184,17 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         return ItemStack.EMPTY;
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        return getGeneralPersistentData(super.save(nbtTags));
-    }
-
-    @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        setGeneralPersistentData(nbtTags);
-    }
-
-    @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        return getGeneralPersistentData(super.getConfigurationData(player));
-    }
-
-    private CompoundNBT getGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
         if (!filters.isEmpty()) {
             data.put(NBTConstants.FILTERS, writeFilters());
         }
-        return data;
     }
 
     @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
-        setGeneralPersistentData(data);
-    }
-
-    private void setGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
         if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
             setFilters(data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND));
         }

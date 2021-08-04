@@ -59,7 +59,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
@@ -351,7 +350,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.load(state, nbtTags);
-        sorting = nbtTags.getBoolean(NBTConstants.SORTING);
         for (int i = 0; i < tier.processes; i++) {
             progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);
         }
@@ -361,11 +359,22 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
         super.save(nbtTags);
-        nbtTags.putBoolean(NBTConstants.SORTING, isSorting());
         for (int i = 0; i < tier.processes; i++) {
             nbtTags.putInt(NBTConstants.PROGRESS + i, getProgress(i));
         }
         return nbtTags;
+    }
+
+    @Override
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
+        data.putBoolean(NBTConstants.SORTING, isSorting());
+    }
+
+    @Override
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
+        NBTUtils.setBooleanIfPresent(data, NBTConstants.SORTING, value -> sorting = value);
     }
 
     @Override
@@ -379,19 +388,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public List<ITextComponent> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
-    }
-
-    @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = super.getConfigurationData(player);
-        data.putBoolean(NBTConstants.SORTING, isSorting());
-        return data;
-    }
-
-    @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
-        NBTUtils.setBooleanIfPresent(data, NBTConstants.SORTING, value -> sorting = value);
     }
 
     @Override

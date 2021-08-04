@@ -41,7 +41,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -137,7 +136,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
         super.save(nbtTags);
-        getGeneralPersistentData(nbtTags);
         if (rrTarget != null) {
             nbtTags.put(NBTConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
         }
@@ -147,7 +145,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     @Override
     public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.load(state, nbtTags);
-        setGeneralPersistentData(nbtTags);
         if (nbtTags.contains(NBTConstants.ROUND_ROBIN_TARGET, NBT.TAG_COMPOUND)) {
             rrTarget = SidedBlockPos.deserialize(nbtTags.getCompound(NBTConstants.ROUND_ROBIN_TARGET));
         }
@@ -228,32 +225,24 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        return getGeneralPersistentData(super.getConfigurationData(player));
-    }
-
-    private CompoundNBT getGeneralPersistentData(CompoundNBT nbtTags) {
-        nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
-        nbtTags.putBoolean(NBTConstants.EJECT, autoEject);
-        nbtTags.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
-        nbtTags.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
+        data.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
+        data.putBoolean(NBTConstants.EJECT, autoEject);
+        data.putBoolean(NBTConstants.ROUND_ROBIN, roundRobin);
+        data.putBoolean(NBTConstants.SINGLE_ITEM, singleItem);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (SorterFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundNBT()));
             }
-            nbtTags.put(NBTConstants.FILTERS, filterTags);
+            data.put(NBTConstants.FILTERS, filterTags);
         }
-        return nbtTags;
     }
 
     @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
-        setGeneralPersistentData(data);
-    }
-
-    private void setGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
         NBTUtils.setEnumIfPresent(data, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         autoEject = data.getBoolean(NBTConstants.EJECT);
         roundRobin = data.getBoolean(NBTConstants.ROUND_ROBIN);

@@ -17,7 +17,6 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -114,23 +113,6 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         return remap;
     }
 
-    @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = super.getConfigurationData(player);
-        if (itemType != null) {
-            data.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
-        }
-        data.putLong(NBTConstants.AMOUNT, count);
-        return data;
-    }
-
-    @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
-        NBTUtils.setItemStackIfPresent(data, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
-        NBTUtils.setLongIfPresent(data, NBTConstants.AMOUNT, value -> count = value);
-    }
-
     @Nonnull
     @Override
     public CompoundNBT getReducedUpdateTag() {
@@ -148,21 +130,19 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        NBTUtils.setItemStackIfPresent(nbtTags, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
-        NBTUtils.setLongIfPresent(nbtTags, NBTConstants.AMOUNT, value -> count = value);
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
+        NBTUtils.setItemStackIfPresent(data, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
+        NBTUtils.setLongIfPresent(data, NBTConstants.AMOUNT, value -> count = value);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
         if (itemType != null) {
-            nbtTags.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
+            data.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
         }
-        nbtTags.putLong(NBTConstants.AMOUNT, count);
-        return nbtTags;
+        data.putLong(NBTConstants.AMOUNT, count);
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")

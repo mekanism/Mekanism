@@ -628,7 +628,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         delay = nbtTags.getInt(NBTConstants.DELAY);
         numPowering = nbtTags.getInt(NBTConstants.NUM_POWERING);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.STATE, State::byIndexStatic, s -> searcher.state = s);
-        setGeneralPersistentData(nbtTags);
         //Update energy per tick in case any of the values changed. It would be slightly cleaner to also validate the fact
         // the values changed, but it would make the code a decent bit messier as we couldn't use NBTUtils, and it is a
         // rather quick check to update the energy per tick, and in most cases at least one of the settings will not be at
@@ -647,7 +646,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         nbtTags.putInt(NBTConstants.DELAY, delay);
         nbtTags.putInt(NBTConstants.NUM_POWERING, numPowering);
         nbtTags.putInt(NBTConstants.STATE, searcher.state.ordinal());
-        return getGeneralPersistentData(nbtTags);
+        return nbtTags;
     }
 
     public int getTotalSize() {
@@ -760,32 +759,22 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        return getGeneralPersistentData(super.getConfigurationData(player));
-    }
-
-    private CompoundNBT getGeneralPersistentData(CompoundNBT nbtTags) {
-        nbtTags.putInt(NBTConstants.RADIUS, getRadius());
-        nbtTags.putInt(NBTConstants.MIN, getMinY());
-        nbtTags.putInt(NBTConstants.MAX, getMaxY());
-        nbtTags.putBoolean(NBTConstants.EJECT, doEject);
-        nbtTags.putBoolean(NBTConstants.PULL, doPull);
-        nbtTags.putBoolean(NBTConstants.SILK_TOUCH, getSilkTouch());
-        nbtTags.putBoolean(NBTConstants.INVERSE, inverse);
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
+        data.putInt(NBTConstants.RADIUS, getRadius());
+        data.putInt(NBTConstants.MIN, getMinY());
+        data.putInt(NBTConstants.MAX, getMaxY());
+        data.putBoolean(NBTConstants.EJECT, doEject);
+        data.putBoolean(NBTConstants.PULL, doPull);
+        data.putBoolean(NBTConstants.SILK_TOUCH, getSilkTouch());
+        data.putBoolean(NBTConstants.INVERSE, inverse);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (MinerFilter<?> filter : filters) {
                 filterTags.add(filter.write(new CompoundNBT()));
             }
-            nbtTags.put(NBTConstants.FILTERS, filterTags);
+            data.put(NBTConstants.FILTERS, filterTags);
         }
-        return nbtTags;
-    }
-
-    @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
-        setGeneralPersistentData(data);
     }
 
     @Override
@@ -801,7 +790,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
     }
 
-    private void setGeneralPersistentData(CompoundNBT data) {
+    @Override
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
         setRadius(Math.min(data.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         NBTUtils.setIntIfPresent(data, NBTConstants.MIN, this::setMinY);
         NBTUtils.setIntIfPresent(data, NBTConstants.MAX, this::setMaxY);
