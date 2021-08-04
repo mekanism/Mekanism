@@ -3,6 +3,7 @@ package mekanism.common.network.to_server;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.lib.collection.HashList;
@@ -10,7 +11,6 @@ import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -59,13 +59,13 @@ public class PacketEditFilter implements IMekanismPacket {
                         filters.add(index, (MinerFilter<?>) edited);
                     }
                 }
-            } else if (filter instanceof OredictionificatorFilter && tile instanceof TileEntityOredictionificator) {
-                HashList<OredictionificatorFilter> filters = ((TileEntityOredictionificator) tile).getFilters();
+            } else if (filter instanceof OredictionificatorItemFilter && tile instanceof TileEntityOredictionificator) {
+                HashList<OredictionificatorItemFilter> filters = ((TileEntityOredictionificator) tile).getFilters();
                 int index = filters.indexOf(filter);
                 if (index != -1) {
                     filters.remove(index);
                     if (!delete) {
-                        filters.add(index, (OredictionificatorFilter) edited);
+                        filters.add(index, (OredictionificatorItemFilter) edited);
                     }
                 }
             } else if (filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {

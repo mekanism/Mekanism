@@ -19,6 +19,11 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
     public MinerItemStackFilter() {
     }
 
+    public MinerItemStackFilter(MinerItemStackFilter filter) {
+        super(filter);
+        itemType = filter.itemType.copy();
+    }
+
     @Override
     public boolean canFilter(BlockState state) {
         ItemStack itemStack = new ItemStack(state.getBlock());
@@ -67,11 +72,7 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
 
     @Override
     public MinerItemStackFilter clone() {
-        MinerItemStackFilter filter = new MinerItemStackFilter();
-        filter.replaceStack = replaceStack;
-        filter.requireStack = requireStack;
-        filter.itemType = itemType.copy();
-        return filter;
+        return new MinerItemStackFilter(this);
     }
 
     @Override

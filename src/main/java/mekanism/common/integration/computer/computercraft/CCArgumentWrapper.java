@@ -29,6 +29,8 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.transporter.SorterFilter;
@@ -37,7 +39,6 @@ import mekanism.common.integration.computer.ComputerArgumentHandler;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -292,9 +293,9 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     wrapped.put("fuzzy", filter.fuzzyMode);
                 }
             } else if (result instanceof OredictionificatorFilter) {
-                OredictionificatorFilter filter = (OredictionificatorFilter) result;
+                OredictionificatorFilter<?, ?, ?> filter = (OredictionificatorFilter<?, ?, ?>) result;
                 wrapped.put("target", filter.getFilterText());
-                wrapped.put("selected", filter.getIndex());
+                wrapped.put("selected", wrapReturnType(filter.getResultElement()));
             }
             return wrapped;
         } else if (result instanceof Map) {
@@ -386,25 +387,33 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
     }
 
     private static ItemStack tryCreateFilterItem(@Nullable Object rawName, @Nullable Object rawNBT) {
+        Item item = tryCreateItem(rawName);
+        if (item == Items.AIR) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack stack = new ItemStack(item);
+        if (rawNBT != null) {
+            INBT nbt = sanitizeNBT(CompoundNBT.class, rawNBT.getClass(), rawNBT);
+            if (!(nbt instanceof CompoundNBT)) {
+                //Failed to deserialize properly, there is an issue with the passed in lua side
+                return ItemStack.EMPTY;
+            }
+            stack.setTag((CompoundNBT) nbt);
+        }
+        return stack;
+    }
+
+    private static Item tryCreateItem(@Nullable Object rawName) {
         if (rawName instanceof String) {
             ResourceLocation itemName = ResourceLocation.tryParse((String) rawName);
             if (itemName != null) {
                 Item item = ForgeRegistries.ITEMS.getValue(itemName);
-                if (item != null && item != Items.AIR) {
-                    ItemStack stack = new ItemStack(item);
-                    if (rawNBT != null) {
-                        INBT nbt = sanitizeNBT(CompoundNBT.class, rawNBT.getClass(), rawNBT);
-                        if (!(nbt instanceof CompoundNBT)) {
-                            //Failed to deserialize properly, there is an issue with the passed in lua side
-                            return ItemStack.EMPTY;
-                        }
-                        stack.setTag((CompoundNBT) nbt);
-                    }
-                    return stack;
+                if (item != null) {
+                    return item;
                 }
             }
         }
-        return ItemStack.EMPTY;
+        return Items.AIR;
     }
 
     @Nullable
@@ -510,8 +519,8 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                             qioItemFilter.fuzzyMode = getBooleanFromRaw(map.get("fuzzy"));
                         }
                     } else if (filter instanceof OredictionificatorFilter) {
-                        OredictionificatorFilter oredictionificatorFilter = (OredictionificatorFilter) filter;
-                        Object rawTag = map.get("tag");
+                        OredictionificatorFilter<?, ?, ?> oredictionificatorFilter = (OredictionificatorFilter<?, ?, ?>) filter;
+                        Object rawTag = map.get("target");
                         if (!(rawTag instanceof String)) {
                             return null;
                         }
@@ -524,9 +533,11 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                             return null;
                         }
                         oredictionificatorFilter.setFilter(rl);
-                        ItemStack stack = tryCreateFilterItem(map.get("selected"), null);
-                        if (!stack.isEmpty()) {
-                            oredictionificatorFilter.setSelectedOutput(stack.getItem());
+                        if (oredictionificatorFilter instanceof OredictionificatorItemFilter) {
+                            Item item = tryCreateItem(map.get("selected"));
+                            if (item != Items.AIR) {
+                                ((OredictionificatorItemFilter) oredictionificatorFilter).setSelectedOutput(item);
+                            }
                         }
                     }
                     return filter;

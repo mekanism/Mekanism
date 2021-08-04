@@ -15,6 +15,14 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
 
     public boolean requireStack;
 
+    protected MinerFilter() {
+    }
+
+    protected MinerFilter(FILTER filter) {
+        replaceStack = filter.replaceStack.copy();
+        requireStack = filter.requireStack;
+    }
+
     public boolean replaceStackMatches(@Nonnull ItemStack stack) {
         //TODO: Should this be ItemHandlerHelper.canItemStacksStack() instead of isItemEqual
         // Potentially this should be be a "fuzzy" style thing as sometimes the player may want the NBT to match and other times they may not

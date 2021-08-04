@@ -239,6 +239,17 @@ public class NBTUtils {
         }
     }
 
+    public static void setResourceLocationIfPresentElse(CompoundNBT nbt, String key, Consumer<ResourceLocation> setter, Runnable notPresent) {
+        if (nbt.contains(key, NBT.TAG_STRING)) {
+            ResourceLocation value = ResourceLocation.tryParse(nbt.getString(key));
+            if (value == null) {
+                notPresent.run();
+            } else {
+                setter.accept(value);
+            }
+        }
+    }
+
     public static <ENUM extends Enum<ENUM>> void setEnumIfPresent(CompoundNBT nbt, String key, Int2ObjectFunction<ENUM> indexLookup, Consumer<ENUM> setter) {
         if (nbt.contains(key, NBT.TAG_INT)) {
             setter.accept(indexLookup.apply(nbt.getInt(key)));

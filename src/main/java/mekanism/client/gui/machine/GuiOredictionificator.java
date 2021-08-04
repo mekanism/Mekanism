@@ -1,8 +1,7 @@
 package mekanism.client.gui.machine;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.Map;
+import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -12,14 +11,13 @@ import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.client.gui.element.window.filter.GuiOredictionificatorFilter;
+import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.lib.collection.HashList;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 
 public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredictionificator, MekanismTileContainer<TileEntityOredictionificator>> {
@@ -29,7 +27,6 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
      */
     private static final int FILTER_COUNT = 3;
 
-    private final Map<OredictionificatorFilter, ItemStack> renderStacks = new Object2ObjectOpenHashMap<>();
     private GuiScrollBar scrollBar;
 
     public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, PlayerInventory inv, ITextComponent title) {
@@ -46,23 +43,31 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         addButton(new GuiElementHolder(this, 9, 17, 144, 68));
         //new filter button border
         addButton(new GuiElementHolder(this, 9, 85, 144, 22));
-        scrollBar = addButton(new GuiScrollBar(this, 153, 17, 90, () -> getFilters().size(), () -> FILTER_COUNT));
+        scrollBar = addButton(new GuiScrollBar(this, 153, 17, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
         addButton(new GuiProgress(() -> tile.didProcess, ProgressType.LARGE_RIGHT, this, 64, 119));
         addButton(new TranslationButton(this, leftPos + 10, topPos + 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(GuiOredictionificatorFilter.create(this, tile))));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addButton(new FilterButton(this, 10, 18 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, this::getFilters, this::onClick));
+            addButton(new FilterButton(this, 10, 18 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, tile::getFilters, this::onClick,
+                  filter -> {
+                      if (filter instanceof OredictionificatorItemFilter) {
+                          return Collections.singletonList(((OredictionificatorItemFilter) filter).getResult());
+                      }
+                      return Collections.emptyList();
+                  })).warning(WarningType.INVALID_OREDICTIONIFICATOR_FILTER, filter -> filter == null || !filter.hasFilter());
         }
-    }
-
-    protected HashList<OredictionificatorFilter> getFilters() {
-        return tile.getFilters();
+        //While we track and show warnings on the slots themselves we also need to track the warning
+        // for if any of the set filters have it even if one of them is not visible
+        // Note: We add this after all the buttons have their warnings added so that it is further down the tracker
+        // so the tracker can short circuit on this type of warning and not have to check all the filters if one of
+        // the ones that are currently being shown has the warning
+        trackWarning(WarningType.INVALID_OREDICTIONIFICATOR_FILTER, () -> tile.getFilters().stream().anyMatch(filter -> !filter.hasFilter()));
     }
 
     protected void onClick(IFilter<?> filter, int index) {
-        if (filter instanceof OredictionificatorFilter) {
-            addWindow(GuiOredictionificatorFilter.edit(this, tile, (OredictionificatorFilter) filter));
+        if (filter instanceof OredictionificatorItemFilter) {
+            addWindow(GuiOredictionificatorFilter.edit(this, tile, (OredictionificatorItemFilter) filter));
         }
     }
 
@@ -70,31 +75,11 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
-        HashList<OredictionificatorFilter> filters = getFilters();
-        for (int i = 0; i < FILTER_COUNT; i++) {
-            OredictionificatorFilter filter = filters.getOrNull(scrollBar.getCurrentSelection() + i);
-            if (filter != null) {
-                if (!renderStacks.containsKey(filter)) {
-                    updateRenderStacks();
-                }
-                int yStart = i * 22 + 18;
-                renderItem(matrix, renderStacks.get(filter), 13, yStart + 3);
-                drawString(matrix, MekanismLang.FILTER.translate(), 32, yStart + 2, titleTextColor());
-                drawTextScaledBound(matrix, filter.getFilterText(), 32, yStart + 2 + 9, titleTextColor(), 117);
-            }
-        }
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         return super.mouseScrolled(mouseX, mouseY, delta) || scrollBar.adjustScroll(delta);
-    }
-
-    private void updateRenderStacks() {
-        renderStacks.clear();
-        for (OredictionificatorFilter filter : getFilters()) {
-            renderStacks.put(filter, filter.getResult());
-        }
     }
 }

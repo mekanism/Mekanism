@@ -18,10 +18,7 @@ public class WarningTracker implements IWarningTracker {
 
     @Override
     public BooleanSupplier trackWarning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
-        //Note: We use a default size of one as in most cases we will only have one of any given type of warning except for things
-        // with multiple outputs or for factories
-        //TODO - WARNING SYSTEM: Should we maybe define default capacity in WarningType as some things may make more sense to have slightly higher?
-        warnings.computeIfAbsent(Objects.requireNonNull(type, "Warning type cannot be null."), t -> new ArrayList<>(1))
+        warnings.computeIfAbsent(Objects.requireNonNull(type, "Warning type cannot be null."), t -> new ArrayList<>(type.expectedWarnings))
               .add(Objects.requireNonNull(warningSupplier, "Warning check cannot be null."));
         return warningSupplier;
     }
@@ -74,12 +71,22 @@ public class WarningTracker implements IWarningTracker {
         NO_SPACE_IN_OUTPUT(MekanismLang.ISSUE_NO_SPACE_IN_OUTPUT),
         NOT_ENOUGH_ENERGY(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY),
         NOT_ENOUGH_ENERGY_REDUCED_RATE(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY_REDUCED_RATE),
+        INVALID_OREDICTIONIFICATOR_FILTER(MekanismLang.ISSUE_INVALID_OREDICTIONIFICATOR_FILTER, 4)
         ;
 
         private final ILangEntry langEntry;
+        private final int expectedWarnings;
 
         WarningType(ILangEntry langEntry) {
+            //Note: We use a default size of one as in most cases we will only have one of any given type of warning except for things
+            // with multiple outputs or for factories
+            //TODO - WARNING SYSTEM: Should we maybe define default capacity in WarningType as some things may make more sense to have slightly higher?
+            this(langEntry, 1);
+        }
+
+        WarningType(ILangEntry langEntry, int expectedWarnings) {
             this.langEntry = langEntry;
+            this.expectedWarnings = expectedWarnings;
         }
     }
 }

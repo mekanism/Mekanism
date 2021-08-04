@@ -19,6 +19,11 @@ public class MinerMaterialFilter extends MinerFilter<MinerMaterialFilter> implem
     public MinerMaterialFilter() {
     }
 
+    public MinerMaterialFilter(MinerMaterialFilter filter) {
+        super(filter);
+        materialItem = filter.materialItem.copy();
+    }
+
     @Override
     public boolean canFilter(BlockState state) {
         return state.getMaterial() == getMaterial();
@@ -63,11 +68,7 @@ public class MinerMaterialFilter extends MinerFilter<MinerMaterialFilter> implem
 
     @Override
     public MinerMaterialFilter clone() {
-        MinerMaterialFilter filter = new MinerMaterialFilter();
-        filter.replaceStack = replaceStack;
-        filter.requireStack = requireStack;
-        filter.materialItem = materialItem;
-        return filter;
+        return new MinerMaterialFilter(this);
     }
 
     @Override

@@ -1,6 +1,8 @@
 package mekanism.common.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -11,6 +13,7 @@ import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
+import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
@@ -26,6 +29,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     private static final String EJECT_CATEGORY = "auto_eject";
     private static final String MINER_CATEGORY = "digital_miner";
     private static final String LASER_SETTINGS = "laser";
+    private static final String OREDICTIONIFICATOR_CATEGORY = "oredictionificator";
     private static final String PUMP_CATEGORY = "pump";
     private static final String ENTANGLOPORTER_CATEGORY = "quantum_entangloporter";
     private static final String SECURITY_CATEGORY = "security";
@@ -90,6 +94,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue laserRange;
     public final CachedFloatingLongValue laserEnergyNeededPerHardness;
     public final CachedFloatingLongValue laserEnergyPerDamage;
+    //Oredictionificator
+    public final CachedOredictionificatorConfigValue validOredictionificatorFilters;
     //Pump
     public final CachedIntValue maxPumpRange;
     public final CachedBooleanValue pumpWaterSources;
@@ -234,6 +240,11 @@ public class GeneralConfig extends BaseMekanismConfig {
               "energyPerDamage", FloatingLong.createConst(2_500), CachedFloatingLongValue.POSITIVE);
         builder.pop();
 
+        builder.comment("Oredictionificator Settings").push(OREDICTIONIFICATOR_CATEGORY);
+        validOredictionificatorFilters = CachedOredictionificatorConfigValue.define(this, builder.comment("The list of valid tag prefixes for the Oredictionificator. Note: It is highly recommended to only include well known/defined tag prefixes otherwise it is very easy to potentially add in accidental conversions of things that are not actually equivalent."),
+              "validItemFilters", () -> Collections.singletonMap("forge", Arrays.asList("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/")));
+        builder.pop();
+
         builder.comment("Pump Settings").push(PUMP_CATEGORY);
         maxPumpRange = CachedIntValue.wrap(this, builder.comment("Maximum block distance to pull fluid from for the Electric Pump.")
               .define("maxPumpRange", 80));
@@ -261,7 +272,7 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("opsBypassRestrictions", false));
         builder.pop();
 
-        builder.comment("Nutritional PasteSettings").push(NUTRITIONAL_PASTE_CATEGORY);
+        builder.comment("Nutritional Paste Settings").push(NUTRITIONAL_PASTE_CATEGORY);
         nutritionalPasteSaturation = CachedFloatValue.wrap(this, builder.comment("Saturation level of Nutritional Paste when eaten.")
               .define("saturation", 0.8));
         nutritionalPasteMBPerFood = CachedIntValue.wrap(this, builder.comment("How much mB of Nutritional Paste equates to one 'half-food.'")

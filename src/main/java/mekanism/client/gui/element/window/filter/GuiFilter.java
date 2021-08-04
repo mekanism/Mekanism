@@ -163,8 +163,8 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         }
     }
 
-    protected void filterSaveFailed(ILangEntry reason) {
-        status = reason.translateColored(EnumColor.DARK_RED);
+    protected void filterSaveFailed(ILangEntry reason, Object... args) {
+        status = reason.translateColored(EnumColor.DARK_RED, args);
         ticker = 20;
     }
 

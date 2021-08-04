@@ -1,14 +1,15 @@
 package mekanism.common.config.value;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import mekanism.common.Mekanism;
 import mekanism.common.config.IMekanismConfig;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
 public class CachedPrimitiveValue<T> {
 
     protected final ConfigValue<T> internal;
-    private List<Runnable> invalidationListeners;
+    private Set<Runnable> invalidationListeners;
     protected boolean resolved;
 
     protected CachedPrimitiveValue(IMekanismConfig config, ConfigValue<T> internal) {
@@ -18,9 +19,17 @@ public class CachedPrimitiveValue<T> {
 
     public void addInvalidationListener(Runnable listener) {
         if (invalidationListeners == null) {
-            invalidationListeners = new ArrayList<>();
+            invalidationListeners = new HashSet<>();
         }
-        invalidationListeners.add(listener);
+        if (!invalidationListeners.add(listener)) {
+            Mekanism.logger.warn("Duplicate invalidation listener added");
+        }
+    }
+
+    public void removeInvalidationListener(Runnable listener) {
+        if (invalidationListeners == null || !invalidationListeners.remove(listener)) {
+            Mekanism.logger.warn("Unable to remove specified invalidation listener.");
+        }
     }
 
     public void clearCache() {

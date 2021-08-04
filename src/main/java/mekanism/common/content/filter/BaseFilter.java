@@ -6,6 +6,7 @@ import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.content.miner.MinerMaterialFilter;
 import mekanism.common.content.miner.MinerModIDFilter;
 import mekanism.common.content.miner.MinerTagFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
@@ -13,7 +14,6 @@ import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.content.transporter.SorterMaterialFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
-import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -80,8 +80,8 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
                 return new SorterModIDFilter();
             case SORTER_TAG_FILTER:
                 return new SorterTagFilter();
-            case OREDICTIONIFICATOR:
-                return new OredictionificatorFilter();
+            case OREDICTIONIFICATOR_ITEM_FILTER:
+                return new OredictionificatorItemFilter();
             case QIO_ITEMSTACK_FILTER:
                 return new QIOItemStackFilter();
             case QIO_MODID_FILTER:

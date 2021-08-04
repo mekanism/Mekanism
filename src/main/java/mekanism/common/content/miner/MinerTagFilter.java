@@ -20,6 +20,11 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
     public MinerTagFilter() {
     }
 
+    public MinerTagFilter(MinerTagFilter filter) {
+        super(filter);
+        tagName = filter.tagName;
+    }
+
     @Override
     public boolean canFilter(BlockState state) {
         return state.getBlock().getTags().stream().anyMatch(tag -> WildcardMatcher.matches(tagName, tag.toString()));
@@ -64,11 +69,7 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
 
     @Override
     public MinerTagFilter clone() {
-        MinerTagFilter filter = new MinerTagFilter();
-        filter.replaceStack = replaceStack;
-        filter.requireStack = requireStack;
-        filter.tagName = tagName;
-        return filter;
+        return new MinerTagFilter(this);
     }
 
     @Override

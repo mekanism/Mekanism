@@ -20,6 +20,11 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     public MinerModIDFilter() {
     }
 
+    public MinerModIDFilter(MinerModIDFilter filter) {
+        super(filter);
+        modID = filter.modID;
+    }
+
     @Override
     public boolean canFilter(BlockState state) {
         return WildcardMatcher.matches(modID, state.getBlock().getRegistryName().getNamespace());
@@ -64,11 +69,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     @Override
     public MinerModIDFilter clone() {
-        MinerModIDFilter filter = new MinerModIDFilter();
-        filter.replaceStack = replaceStack;
-        filter.requireStack = requireStack;
-        filter.modID = modID;
-        return filter;
+        return new MinerModIDFilter(this);
     }
 
     @Override

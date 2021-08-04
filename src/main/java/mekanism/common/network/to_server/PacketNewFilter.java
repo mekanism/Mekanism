@@ -3,13 +3,13 @@ package mekanism.common.network.to_server;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,8 +38,8 @@ public class PacketNewFilter implements IMekanismPacket {
                     ((TileEntityLogisticalSorter) tile).getFilters().add((SorterFilter<?>) filter);
                 } else if (filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {
                     ((TileEntityDigitalMiner) tile).getFilters().add((MinerFilter<?>) filter);
-                } else if (filter instanceof OredictionificatorFilter && tile instanceof TileEntityOredictionificator) {
-                    ((TileEntityOredictionificator) tile).getFilters().add((OredictionificatorFilter) filter);
+                } else if (filter instanceof OredictionificatorItemFilter && tile instanceof TileEntityOredictionificator) {
+                    ((TileEntityOredictionificator) tile).getFilters().add((OredictionificatorItemFilter) filter);
                 } else if (filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
                     ((TileEntityQIOFilterHandler) tile).getFilters().add((QIOFilter<?>) filter);
                 }

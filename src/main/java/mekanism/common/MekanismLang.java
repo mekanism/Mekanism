@@ -239,6 +239,7 @@ public enum MekanismLang implements ILangEntry {
     ISSUE_NO_SPACE_IN_OUTPUT("gui", "issues.no_space"),
     ISSUE_NO_MATCHING_RECIPE("gui", "issues.no_recipe"),
     ISSUE_INPUT_DOESNT_PRODUCE_OUTPUT("gui", "issues.input_doesnt_produce_output"),
+    ISSUE_INVALID_OREDICTIONIFICATOR_FILTER("gui", "issues.invalid_oredictionificator_filter"),
     //Laser Amplifier
     ENTITY_DETECTION("laser_amplifier", "entity_detection"),
     ENERGY_CONTENTS("laser_amplifier", "energy_contents"),
@@ -405,7 +406,9 @@ public enum MekanismLang implements ILangEntry {
     SORTER_FILTER_OVER_SIZED("filter", "sorter.over_sized"),
     SORTER_FILTER_SIZE_MISSING("filter", "sorter.size_missing"),
     OREDICTIONIFICATOR_FILTER("filter", "oredictionificator"),
-    OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG("filter", "oredictionificator.invalid_key"),
+    OREDICTIONIFICATOR_FILTER_INVALID_NAMESPACE("filter", "oredictionificator.invalid_namespace"),
+    OREDICTIONIFICATOR_FILTER_INVALID_PATH("filter", "oredictionificator.invalid_path"),
+    OREDICTIONIFICATOR_FILTER_UNSUPPORTED_TAG("filter", "oredictionificator.unsupported_tag"),
     //Radioactive Waste Barrel
     WASTE_BARREL_DECAY_RATE("waste_barrel", "decay_rate"),
     WASTE_BARREL_DECAY_RATE_ACTUAL("waste_barrel", "decay_rate.actual"),

@@ -723,6 +723,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ISSUE_NO_SPACE_IN_OUTPUT, " - Not enough room in output");
         add(MekanismLang.ISSUE_NO_MATCHING_RECIPE, " - No matching recipe or not enough input");
         add(MekanismLang.ISSUE_INPUT_DOESNT_PRODUCE_OUTPUT, " - Input does not produce output");
+        add(MekanismLang.ISSUE_INVALID_OREDICTIONIFICATOR_FILTER, " - Filter is no longer valid or supported");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");
@@ -889,7 +890,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SORTER_FILTER_OVER_SIZED, "Max > 64");
         add(MekanismLang.SORTER_FILTER_SIZE_MISSING, "Max/min");
         add(MekanismLang.OREDICTIONIFICATOR_FILTER, "Oredictionificator Filter");
-        add(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG, "Incompatible tag");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_NAMESPACE, "Invalid tag namespace");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_PATH, "Invalid tag path");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER_UNSUPPORTED_TAG, "Unsupported tag");
         //Radioactive Waste Barrel
         add(MekanismLang.WASTE_BARREL_DECAY_RATE, "Decay Rate: %s mB/t");
         add(MekanismLang.WASTE_BARREL_DECAY_RATE_ACTUAL, "Actual Decay Rate: %s mB / %s ticks");

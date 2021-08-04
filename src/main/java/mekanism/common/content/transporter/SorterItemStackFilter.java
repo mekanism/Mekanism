@@ -15,6 +15,15 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
     private ItemStack itemType = ItemStack.EMPTY;
     public boolean fuzzyMode;
 
+    public SorterItemStackFilter() {
+    }
+
+    public SorterItemStackFilter(SorterItemStackFilter filter) {
+        super(filter);
+        itemType = filter.itemType.copy();
+        fuzzyMode = filter.fuzzyMode;
+    }
+
     @Override
     public Finder getFinder() {
         return fuzzyMode ? Finder.item(itemType) : Finder.strict(itemType);
@@ -65,11 +74,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
 
     @Override
     public SorterItemStackFilter clone() {
-        SorterItemStackFilter filter = new SorterItemStackFilter();
-        copyTo(filter);
-        filter.itemType = itemType.copy();
-        filter.fuzzyMode = fuzzyMode;
-        return filter;
+        return new SorterItemStackFilter(this);
     }
 
     @Override

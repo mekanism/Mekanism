@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
@@ -18,7 +17,6 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
-import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.lib.collection.HashList;
 import net.minecraft.item.ItemStack;
 
@@ -26,8 +24,6 @@ public class MovableFilterButton extends FilterButton {
 
     private final FilterSelectButton upButton;
     private final FilterSelectButton downButton;
-    private final GuiSequencedSlotDisplay slotDisplay;
-    private IFilter<?> prevFilter;
 
     public MovableFilterButton(IGuiWrapper gui, int x, int y, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
           IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
@@ -37,15 +33,13 @@ public class MovableFilterButton extends FilterButton {
     public MovableFilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex,
           Supplier<HashList<? extends IFilter<?>>> filters, IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress,
           Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
-        super(gui, x, y, width, height, index, filterIndex, filters, onPress);
+        super(gui, x, y, width, height, index, filterIndex, filters, onPress, renderStackSupplier);
         int arrowX = this.x + width - 12;
         upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, this.y + 1, false, () -> upButtonPress.accept(index + filterIndex.getAsInt()),
               (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, MekanismLang.MOVE_UP.translate(), xAxis, yAxis)));
         downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, this.y + height - 8, true,
               () -> downButtonPress.accept(index + filterIndex.getAsInt()),
               (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis)));
-        slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, x + 3, y + 3,
-              () -> renderStackSupplier.apply(filters.get().getOrNull(filterIndex.getAsInt() + index))));
     }
 
     @Override
@@ -66,34 +60,13 @@ public class MovableFilterButton extends FilterButton {
             upButton.renderToolTip(matrix, xAxis, yAxis);
         } else if (downButton.isMouseOverCheckWindows(mouseX, mouseY)) {
             downButton.renderToolTip(matrix, xAxis, yAxis);
-        } else {
-            super.renderForeground(matrix, mouseX, mouseY);
         }
-        IFilter<?> filter = filters.get().getOrNull(filterIndex.getAsInt() + index);
-        if (filter != prevFilter) {
-            slotDisplay.updateStackList();
-            prevFilter = filter;
-        }
-        int x = this.x - getGuiLeft();
-        int y = this.y - getGuiTop();
-        if (filter instanceof IItemStackFilter) {
-            drawTextScaledBound(matrix, MekanismLang.ITEM_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
-        } else if (filter instanceof ITagFilter) {
-            drawTextScaledBound(matrix, MekanismLang.TAG_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
-        } else if (filter instanceof IMaterialFilter) {
-            drawTextScaledBound(matrix, MekanismLang.MATERIAL_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
-        } else if (filter instanceof IModIDFilter) {
-            drawTextScaledBound(matrix, MekanismLang.MODID_FILTER.translate(), x + 22, y + 2, titleTextColor(), 60);
-        }
-        if (filter instanceof SorterFilter) {
-            SorterFilter<?> sorterFilter = (SorterFilter<?>) filter;
-            drawString(matrix, sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), x + 22, y + 11, titleTextColor());
-        }
+        super.renderForeground(matrix, mouseX, mouseY);
     }
 
     @Override
     protected void setVisibility(boolean visible) {
-        this.visible = visible;
+        super.setVisibility(visible);
         if (visible) {
             updateButtonVisibility();
         } else {
@@ -125,7 +98,8 @@ public class MovableFilterButton extends FilterButton {
 
     @Override
     protected void colorButton() {
-        IFilter<?> filter = filters.get().getOrNull(filterIndex.getAsInt() + index);
+        //TODO - 10.1: Fix the coloring of this as tags and material filters don't really even show as colored
+        IFilter<?> filter = getFilter(filters, filterIndex, index);
         if (filter instanceof IItemStackFilter) {
             MekanismRenderer.color(EnumColor.INDIGO, 1.0F, 2.5F);
         } else if (filter instanceof ITagFilter) {
@@ -135,5 +109,10 @@ public class MovableFilterButton extends FilterButton {
         } else if (filter instanceof IModIDFilter) {
             MekanismRenderer.color(EnumColor.PINK, 1.0F, 2.5F);
         }
+    }
+
+    @Override
+    protected int getMaxLength() {
+        return super.getMaxLength() - 12;
     }
 }

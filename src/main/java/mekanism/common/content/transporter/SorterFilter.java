@@ -22,6 +22,17 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     public int min;
     public int max;
 
+    protected SorterFilter() {
+    }
+
+    protected SorterFilter(FILTER filter) {
+        allowDefault = filter.allowDefault;
+        color = filter.color;
+        sizeMode = filter.sizeMode;
+        min = filter.min;
+        max = filter.max;
+    }
+
     public abstract Finder getFinder();
 
     public TransitRequest mapInventory(TileEntity tile, Direction side, boolean singleItem) {
@@ -68,14 +79,6 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
         sizeMode = dataStream.readBoolean();
         min = dataStream.readVarInt();
         max = dataStream.readVarInt();
-    }
-
-    protected void copyTo(FILTER filter) {
-        filter.allowDefault = allowDefault;
-        filter.color = color;
-        filter.sizeMode = sizeMode;
-        filter.min = min;
-        filter.max = max;
     }
 
     @Override
