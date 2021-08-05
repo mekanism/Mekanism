@@ -15,6 +15,8 @@ import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
+import mekanism.client.gui.element.window.GuiConfirmationDialog;
+import mekanism.client.gui.element.window.GuiConfirmationDialog.DialogType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.entangloporter.InventoryFrequency;
@@ -74,15 +76,16 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
             }
             updateButtons();
         }));
-        deleteButton = addButton(new TranslationButton(this, leftPos + 89, topPos + 116, 60, 20, MekanismLang.BUTTON_DELETE, () -> {
-            int selection = scrollList.getSelection();
-            if (selection != -1) {
-                Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(selection) : tile.getPublicCache(FrequencyType.INVENTORY).get(selection);
-                Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.INVENTORY, freq.getIdentity(), tile.getBlockPos()));
-                scrollList.clearSelection();
-            }
-            updateButtons();
-        }));
+        deleteButton = addButton(new TranslationButton(this, leftPos + 89, topPos + 116, 60, 20, MekanismLang.BUTTON_DELETE,
+              () -> GuiConfirmationDialog.show(this, MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
+                  int selection = scrollList.getSelection();
+                  if (selection != -1) {
+                      Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.INVENTORY).get(selection) : tile.getPublicCache(FrequencyType.INVENTORY).get(selection);
+                      Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.INVENTORY, freq.getIdentity(), tile.getBlockPos()));
+                      scrollList.clearSelection();
+                  }
+                  updateButtons();
+              }, DialogType.DANGER)));
         frequencyField = addButton(new GuiTextField(this, 50, 103, 98, 11));
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);

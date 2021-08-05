@@ -17,6 +17,8 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
+import mekanism.client.gui.element.window.GuiConfirmationDialog;
+import mekanism.client.gui.element.window.GuiConfirmationDialog.DialogType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.teleporter.TeleporterFrequency;
@@ -79,15 +81,16 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
             }
             updateButtons();
         }));
-        deleteButton = addButton(new TranslationButton(this, leftPos + 79, topPos + 120, 50, 18, MekanismLang.BUTTON_DELETE, () -> {
-            int selection = scrollList.getSelection();
-            if (selection != -1) {
-                Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.TELEPORTER).get(selection) : tile.getPublicCache(FrequencyType.TELEPORTER).get(selection);
-                Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.TELEPORTER, freq.getIdentity(), tile.getBlockPos()));
-                scrollList.clearSelection();
-            }
-            updateButtons();
-        }));
+        deleteButton = addButton(new TranslationButton(this, leftPos + 79, topPos + 120, 50, 18, MekanismLang.BUTTON_DELETE,
+              () -> GuiConfirmationDialog.show(this, MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
+                  int selection = scrollList.getSelection();
+                  if (selection != -1) {
+                      Frequency freq = privateMode ? tile.getPrivateCache(FrequencyType.TELEPORTER).get(selection) : tile.getPublicCache(FrequencyType.TELEPORTER).get(selection);
+                      Mekanism.packetHandler.sendToServer(PacketGuiSetFrequency.create(FrequencyUpdate.REMOVE_TILE, FrequencyType.TELEPORTER, freq.getIdentity(), tile.getBlockPos()));
+                      scrollList.clearSelection();
+                  }
+                  updateButtons();
+              }, DialogType.DANGER)));
         addButton(new GuiSlot(SlotType.NORMAL, this, 131, 120).setRenderAboveSlots());
         addButton(new ColorButton(this, leftPos + 132, topPos + 121, 16, 16, () -> {
             TeleporterFrequency frequency = getFrequency();
