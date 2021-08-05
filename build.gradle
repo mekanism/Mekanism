@@ -315,6 +315,13 @@ repositories {
         }
     }
     maven {
+        name 'curios'
+        url "https://maven.theillusivec4.top/"
+        content {
+            includeGroup 'top.theillusivec4.curios'
+        }
+    }
+    maven {
         name 'tterrag'
         url 'https://maven.tterrag.com/'
         content {
@@ -366,6 +373,7 @@ repositories {
                         excludeGroup 'org.squiddev'
                         excludeGroup 'com.blamejared.crafttweaker'
                         excludeGroup 'com.blamejared.jeitweaker'
+                        excludeGroup 'top.theillusivec4.curios'
                     }
                     println("Adding exclusions to ${it.url}")
                 } catch (Exception ignored) {
@@ -407,6 +415,7 @@ dependencies {
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
     compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
     testRuntimeOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
@@ -753,6 +762,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "cc-tweaked"
                     optionalDependency "crafttweaker"
                     optionalDependency "ctm"
+                    optionalDependency "curios"
                     optionalDependency "flux-networks"
                     optionalDependency "hwyla"
                     optionalDependency "i-like-wood"
