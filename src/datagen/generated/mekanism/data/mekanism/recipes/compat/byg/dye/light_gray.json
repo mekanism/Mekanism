@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "tag": "byg:light_gray_dye"
+    }
+  },
+  "output": {
+    "item": "minecraft:light_gray_dye",
+    "count": 2
+  }
+}

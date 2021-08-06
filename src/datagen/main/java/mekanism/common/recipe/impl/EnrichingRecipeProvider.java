@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
+import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
@@ -14,6 +15,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 
@@ -210,12 +212,12 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
     private void addEnrichingQuartzRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //Quartz Block -> Quartz Item
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Tags.Items.STORAGE_BLOCKS_QUARTZ),
-                    ItemStackIngredient.from(Blocks.QUARTZ_BRICKS),
-                    ItemStackIngredient.from(Blocks.CHISELED_QUARTZ_BLOCK),
-                    ItemStackIngredient.from(Blocks.QUARTZ_PILLAR)
-              ),
+              ItemStackIngredient.from(BaseRecipeProvider.createIngredient(
+                    Tags.Items.STORAGE_BLOCKS_QUARTZ,
+                    Blocks.QUARTZ_BRICKS,
+                    Blocks.CHISELED_QUARTZ_BLOCK,
+                    Blocks.QUARTZ_PILLAR
+              )),
               new ItemStack(Items.QUARTZ, 4)
         ).build(consumer, Mekanism.rl(basePath + "to_item"));
         //Smooth Quartz Block -> Quartz Block
@@ -279,11 +281,11 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.RED_DYE, 4)
         ).build(consumer, Mekanism.rl(basePath + "large_red"));
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Items.BEETROOT),
-                    ItemStackIngredient.from(Blocks.POPPY),
-                    ItemStackIngredient.from(Blocks.RED_TULIP)
-              ),
+              ItemStackIngredient.from(Ingredient.of(
+                    Items.BEETROOT,
+                    Blocks.POPPY,
+                    Blocks.RED_TULIP
+              )),
               new ItemStack(Items.RED_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "small_red"));
         //Green
@@ -293,11 +295,11 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "green"));
         //Light gray
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Blocks.OXEYE_DAISY),
-                    ItemStackIngredient.from(Blocks.AZURE_BLUET),
-                    ItemStackIngredient.from(Blocks.WHITE_TULIP)
-              ),
+              ItemStackIngredient.from(Ingredient.of(
+                    Blocks.OXEYE_DAISY,
+                    Blocks.AZURE_BLUET,
+                    Blocks.WHITE_TULIP
+              )),
               new ItemStack(Items.LIGHT_GRAY_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "light_gray"));
         //Pink
@@ -344,10 +346,10 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "orange"));
         //Blue
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Blocks.CORNFLOWER),
-                    ItemStackIngredient.from(Items.LAPIS_LAZULI)
-              ),
+              ItemStackIngredient.from(Ingredient.of(
+                    Blocks.CORNFLOWER,
+                    Items.LAPIS_LAZULI
+              )),
               new ItemStack(Items.BLUE_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "blue"));
         //Brown
@@ -357,18 +359,18 @@ class EnrichingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "brown"));
         //Black
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Items.INK_SAC),
-                    ItemStackIngredient.from(Blocks.WITHER_ROSE)
-              ),
+              ItemStackIngredient.from(Ingredient.of(
+                    Items.INK_SAC,
+                    Blocks.WITHER_ROSE
+              )),
               new ItemStack(Items.BLACK_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "black"));
         //White
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Items.BONE_MEAL),
-                    ItemStackIngredient.from(Blocks.LILY_OF_THE_VALLEY)
-              ),
+              ItemStackIngredient.from(Ingredient.of(
+                    Items.BONE_MEAL,
+                    Blocks.LILY_OF_THE_VALLEY
+              )),
               new ItemStack(Items.WHITE_DYE, 2)
         ).build(consumer, Mekanism.rl(basePath + "white"));
     }

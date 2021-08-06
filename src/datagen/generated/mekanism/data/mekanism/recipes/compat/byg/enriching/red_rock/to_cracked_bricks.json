@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:red_rock"
+    }
+  },
+  "output": {
+    "item": "byg:cracked_red_rock_bricks"
+  }
+}

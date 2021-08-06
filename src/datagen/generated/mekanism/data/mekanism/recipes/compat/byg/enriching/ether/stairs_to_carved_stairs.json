@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:ether_stone_stairs"
+    }
+  },
+  "output": {
+    "item": "byg:carved_ether_stone_stairs"
+  }
+}

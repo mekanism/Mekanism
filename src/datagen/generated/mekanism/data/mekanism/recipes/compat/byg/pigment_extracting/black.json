@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "tag": "byg:black_dye"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:black",
+    "amount": 768
+  }
+}

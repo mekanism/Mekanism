@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "conditions": [
+    {
+      "modid": "biomesoplenty",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "item": "biomesoplenty:violet"
+      },
+      {
+        "item": "biomesoplenty:lavender"
+      }
+    ]
+  },
+  "output": {
+    "pigment": "mekanism:purple",
+    "amount": 768
+  }
+}

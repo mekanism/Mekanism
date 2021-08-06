@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:cika_trapdoor"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:cika_planks",
+    "count": 3
+  }
+}

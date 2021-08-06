@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "amount": 4,
+    "ingredient": {
+      "item": "ilikewood:mangrove_soul_torch"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:mangrove_torch",
+    "count": 4
+  },
+  "secondaryOutput": {
+    "item": "minecraft:soul_soil"
+  },
+  "secondaryChance": 1.0
+}

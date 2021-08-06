@@ -1,0 +1,21 @@
+{
+  "type": "mekanism:metallurgic_infusing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "itemInput": {
+    "ingredient": {
+      "item": "byg:red_rock_brick_slab"
+    }
+  },
+  "infusionInput": {
+    "amount": 10,
+    "tag": "mekanism:bio"
+  },
+  "output": {
+    "item": "byg:mossy_red_rock_brick_slab"
+  }
+}

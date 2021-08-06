@@ -120,11 +120,17 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "panel/" + name));
         //Post
+        ItemStackIngredient postIngredient;
+        if (woodType.getBlockTypes().contains(WoodenBlockType.STRIPPED_POST)) {
+            postIngredient = ItemStackIngredient.from(Ingredient.of(
+                  ILikeWood.getBlock(woodType, WoodenBlockType.POST),
+                  ILikeWood.getBlock(woodType, WoodenBlockType.STRIPPED_POST)
+            ));
+        } else {
+            postIngredient = ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.POST));
+        }
         SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.POST)),
-                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.STRIPPED_POST))
-              ),
+              postIngredient,
               new ItemStack(planks, 3),
               MekanismItems.SAWDUST.getItemStack(),
               0.125
@@ -148,11 +154,13 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         ).addCondition(soulTorchVersion)
               .build(consumer, Mekanism.rl(basePath + "soul_torch/" + name));
         //Wall
-        SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.WALL)),
-              new ItemStack(log)
-        ).addCondition(condition)
-              .build(consumer, Mekanism.rl(basePath + "wall/" + name));
+        if (woodType.getBlockTypes().contains(WoodenBlockType.WALL)) {
+            SawmillRecipeBuilder.sawing(
+                        ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.WALL)),
+                        new ItemStack(log)
+                  ).addCondition(condition)
+                  .build(consumer, Mekanism.rl(basePath + "wall/" + name));
+        }
         //Beds
         addBedRecipes(consumer, bedVersion, planks, woodType, basePath + "bed/" + name + "/");
     }

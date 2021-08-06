@@ -1,0 +1,29 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "item": "byg:black_sandstone"
+      },
+      {
+        "item": "byg:black_chiseled_sandstone"
+      },
+      {
+        "item": "byg:black_cut_sandstone"
+      },
+      {
+        "item": "byg:black_smooth_sandstone"
+      }
+    ]
+  },
+  "output": {
+    "item": "byg:black_sand",
+    "count": 2
+  }
+}

@@ -426,8 +426,10 @@ dependencies {
     }
     datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
+    datagenmainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
+    datagenmainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 }
 
@@ -767,9 +769,11 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "hwyla"
                     optionalDependency "i-like-wood"
                     optionalDependency "i-like-wood-biomes-o-plenty-plugin"
+                    optionalDependency "i-like-wood-oh-the-biomes-youll-go-plugin"
                     optionalDependency "jade"
                     optionalDependency "jei"
                     optionalDependency "jeitweaker"
+                    optionalDependency "oh-the-biomes-youll-go"
                     optionalDependency "perviaminvenire"
                     optionalDependency "projecte"
                     optionalDependency "the-one-probe"

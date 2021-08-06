@@ -6,18 +6,16 @@
       "type": "forge:mod_loaded"
     }
   ],
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
         "item": "biomesoplenty:pink_daffodil"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "item": "biomesoplenty:pink_hibiscus"
       }
-    }
-  ],
+    ]
+  },
   "output": {
     "item": "minecraft:pink_dye",
     "count": 2

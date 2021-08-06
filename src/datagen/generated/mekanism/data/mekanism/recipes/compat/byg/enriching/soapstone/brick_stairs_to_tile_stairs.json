@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:soapstone_brick_stairs"
+    }
+  },
+  "output": {
+    "item": "byg:soapstone_tile_stairs"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:scoria_stone_stairs"
+    }
+  },
+  "output": {
+    "item": "byg:scoria_stonebrick_stairs"
+  }
+}

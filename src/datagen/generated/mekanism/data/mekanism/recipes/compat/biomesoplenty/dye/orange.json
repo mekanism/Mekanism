@@ -6,18 +6,16 @@
       "type": "forge:mod_loaded"
     }
   ],
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
         "item": "biomesoplenty:orange_cosmos"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "item": "biomesoplenty:burning_blossom"
       }
-    }
-  ],
+    ]
+  },
   "output": {
     "item": "minecraft:orange_dye",
     "count": 2

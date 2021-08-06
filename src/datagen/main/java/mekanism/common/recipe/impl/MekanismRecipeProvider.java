@@ -18,8 +18,10 @@ import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
 import mekanism.common.recipe.compat.AE2RecipeProvider;
+import mekanism.common.recipe.compat.BYGRecipeProvider;
 import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
 import mekanism.common.recipe.compat.ILikeWoodBOPRecipeProvider;
+import mekanism.common.recipe.compat.ILikeWoodBYGRecipeProvider;
 import mekanism.common.recipe.compat.ILikeWoodRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
@@ -114,8 +116,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               //Mod Compat Recipe providers
               new AE2RecipeProvider(),
               new BiomesOPlentyRecipeProvider(),
+              new BYGRecipeProvider(),
               new ILikeWoodRecipeProvider(),
-              new ILikeWoodBOPRecipeProvider()
+              new ILikeWoodBOPRecipeProvider(),
+              new ILikeWoodBYGRecipeProvider()
         );
     }
 

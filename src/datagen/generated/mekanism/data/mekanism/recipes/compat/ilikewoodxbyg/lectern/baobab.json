@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:baobab_lectern"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:baobab_planks",
+    "count": 8
+  },
+  "secondaryOutput": {
+    "item": "minecraft:book",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

@@ -1,0 +1,74 @@
+{
+  "type": "mekanism:painting",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:white_sythian_bed"
+      },
+      {
+        "item": "ilikewood:orange_sythian_bed"
+      },
+      {
+        "item": "ilikewood:magenta_sythian_bed"
+      },
+      {
+        "item": "ilikewood:light_blue_sythian_bed"
+      },
+      {
+        "item": "ilikewood:yellow_sythian_bed"
+      },
+      {
+        "item": "ilikewood:lime_sythian_bed"
+      },
+      {
+        "item": "ilikewood:pink_sythian_bed"
+      },
+      {
+        "item": "ilikewood:light_gray_sythian_bed"
+      },
+      {
+        "item": "ilikewood:cyan_sythian_bed"
+      },
+      {
+        "item": "ilikewood:purple_sythian_bed"
+      },
+      {
+        "item": "ilikewood:blue_sythian_bed"
+      },
+      {
+        "item": "ilikewood:brown_sythian_bed"
+      },
+      {
+        "item": "ilikewood:green_sythian_bed"
+      },
+      {
+        "item": "ilikewood:red_sythian_bed"
+      },
+      {
+        "item": "ilikewood:black_sythian_bed"
+      }
+    ]
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:gray"
+  },
+  "output": {
+    "item": "ilikewood:gray_sythian_bed"
+  }
+}

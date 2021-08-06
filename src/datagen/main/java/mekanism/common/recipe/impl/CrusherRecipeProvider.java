@@ -6,6 +6,7 @@ import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
+import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ComposterBlock;
@@ -56,25 +57,11 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "gravel_to_sand"));
         //TODO: Do we just want to make a clear and red tag for sandstone?
         //Red Sandstone -> Sand
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Blocks.RED_SANDSTONE),
-                    ItemStackIngredient.from(Blocks.CHISELED_RED_SANDSTONE),
-                    ItemStackIngredient.from(Blocks.CUT_RED_SANDSTONE),
-                    ItemStackIngredient.from(Blocks.SMOOTH_RED_SANDSTONE)
-              ),
-              new ItemStack(Blocks.RED_SAND, 2)
-        ).build(consumer, Mekanism.rl(basePath + "red_sandstone_to_sand"));
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "red_sandstone_to_sand", null, Blocks.RED_SAND, Blocks.RED_SANDSTONE,
+              Blocks.CHISELED_RED_SANDSTONE, Blocks.CUT_RED_SANDSTONE, Blocks.SMOOTH_RED_SANDSTONE);
         //Sandstone -> Sand
-        ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.createMulti(
-                    ItemStackIngredient.from(Blocks.SANDSTONE),
-                    ItemStackIngredient.from(Blocks.CHISELED_SANDSTONE),
-                    ItemStackIngredient.from(Blocks.CUT_SANDSTONE),
-                    ItemStackIngredient.from(Blocks.SMOOTH_SANDSTONE)
-              ),
-              new ItemStack(Blocks.SAND, 2)
-        ).build(consumer, Mekanism.rl(basePath + "sandstone_to_sand"));
+        RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "sandstone_to_sand", null, Blocks.SAND, Blocks.SANDSTONE,
+              Blocks.CHISELED_SANDSTONE, Blocks.CUT_SANDSTONE, Blocks.SMOOTH_SANDSTONE);
         //Wool -> String
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(ItemTags.WOOL),
@@ -90,12 +77,12 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Blocks.POLISHED_BASALT),
               new ItemStack(Blocks.BASALT)
         ).build(consumer, Mekanism.rl(basePath + "polished_basalt_to_basalt"));
-        //Chiseled Nether Bricks -> Nether Bricks Bricks
+        //Chiseled Nether Bricks -> Nether Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Blocks.CHISELED_NETHER_BRICKS),
               new ItemStack(Blocks.NETHER_BRICKS)
         ).build(consumer, Mekanism.rl(basePath + "chiseled_nether_bricks_to_nether_bricks"));
-        //Nether Bricks Bricks -> Cracked Nether Bricks Bricks
+        //Nether Bricks -> Cracked Nether Bricks
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Blocks.NETHER_BRICKS),
               new ItemStack(Blocks.CRACKED_NETHER_BRICKS)

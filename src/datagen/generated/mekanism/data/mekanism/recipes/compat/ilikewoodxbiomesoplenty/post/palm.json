@@ -15,18 +15,16 @@
       "type": "forge:and"
     }
   ],
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
         "item": "ilikewood:palm_post"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "item": "ilikewood:stripped_palm_post"
       }
-    }
-  ],
+    ]
+  },
   "mainOutput": {
     "item": "biomesoplenty:palm_planks",
     "count": 3
