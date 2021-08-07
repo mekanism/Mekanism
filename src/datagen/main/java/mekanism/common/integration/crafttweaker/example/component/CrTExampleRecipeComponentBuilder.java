@@ -6,6 +6,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.api.functions.TriConsumer;
+import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
 import mekanism.common.integration.crafttweaker.example.CrTExampleBuilder;
 import mekanism.common.integration.crafttweaker.recipe.MekanismRecipeManager;
 import org.openzen.zencode.java.ZenCodeType;
@@ -40,21 +42,23 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
                 usedMethodNames.put(methodName, true);
                 int optionalParameterCount = 0;
                 Parameter[] methodParameters = method.getParameters();
+                List<String> parameterNames = lookupParameterNames(recipeManagerClass, methodName, methodParameters);
                 LinkedHashMap<String, Class<?>> parameters = new LinkedHashMap<>();
-                for (Parameter parameter : methodParameters) {
+                for (int i = 0; i < methodParameters.length; i++) {
+                    Parameter parameter = methodParameters[i];
                     if (hasOptionalAnnotation(parameter)) {
                         optionalParameterCount++;
                     } else if (optionalParameterCount > 0) {
                         throw new RuntimeException("Optional parameters have to be consecutive and at the end. Found non optional parameter after an optional parameter.");
                     }
-                    addParameter(parameters, parameter);
+                    addParameter(parameters, parameterNames, parameter, i);
                 }
                 methods.add(new RecipeMethod(methodName, parameters));
                 //First we build it up with no optionals excluded, and then we go through and create the other possible combinations
                 for (int i = 1; i <= optionalParameterCount; i++) {
                     LinkedHashMap<String, Class<?>> reducedParameters = new LinkedHashMap<>();
                     for (int j = 0; j < methodParameters.length - i; j++) {
-                        addParameter(reducedParameters, methodParameters[j]);
+                        addParameter(reducedParameters, parameterNames, methodParameters[j], j);
                     }
                     methods.add(new RecipeMethod(methodName, reducedParameters));
                 }
@@ -76,6 +80,26 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
                   }
                   return pseudoPath.toString();
               }));
+    }
+
+    private static List<String> lookupParameterNames(Class<?> clazz, String methodName, Parameter[] methodParameters) {
+        StringBuilder stringBuilder = new StringBuilder(methodName);
+        stringBuilder.append('(');
+        for (Parameter methodParameter : methodParameters) {
+            stringBuilder.append(methodParameter.getType().getName()).append(';');
+        }
+        stringBuilder.append(')');
+        String key = stringBuilder.toString().replaceAll("\\$", ".");
+        List<String> parameterNames = getParameterNames(clazz, key);
+        while (parameterNames.isEmpty() && clazz.getSuperclass() != null) {
+            clazz = clazz.getSuperclass();
+            parameterNames = getParameterNames(clazz, key);
+        }
+        return parameterNames;
+    }
+
+    private static List<String> getParameterNames(Class<?> clazz, String method) {
+        return BaseCrTExampleProvider.PARAMETER_NAMES.getOrDefault(clazz.getName(), Collections.emptyMap()).getOrDefault(method, Collections.emptyList());
     }
 
     public CrTExampleRecipeComponentBuilder<BUILDER_TYPE> addExample(Object... params) {
@@ -229,14 +253,15 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         }
     }
 
-    private void addParameter(LinkedHashMap<String, Class<?>> parameters, Parameter parameter) {
-        //TODO - 10.1: Re-evaluate how we want to have the name be set for this as it doesn't get compiled unless
-        // manually specified with as a compiler argument. One option may be to only apply the compiler argument
-        // if we are not in our CI system to keep actual built jars smaller as we don't have our CI run data gen.
-        // Another option would be to have a method to manually specify what the various arguments actually are.
-        // Alternatively (and probably what we will go with), we could make an annotation processor to generate
-        // some extra data in which we can lookup the parameter names from
-        parameters.put(parameter.getName(), parameter.getType());
+    private void addParameter(LinkedHashMap<String, Class<?>> parameters, List<String> parameterNames, Parameter parameter, int index) {
+        String name;
+        if (index < parameterNames.size()) {
+            name = parameterNames.get(index);
+        } else {
+            //Fallback to generated name
+            name = parameter.getName();
+        }
+        parameters.put(name, parameter.getType());
     }
 
     private boolean isZCMethod(Method method) {

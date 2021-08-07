@@ -9,11 +9,11 @@ import mods.mekanism.api.ingredient.ItemStackIngredient;
  * 5) Adds a recipe for sawing Books into Paper and Leather.
 */
 
-// <recipetype:mekanism:sawing>.addRecipe(arg0 as string, arg1 as ItemStackIngredient, arg2 as IItemStack)
-// <recipetype:mekanism:sawing>.addRecipe(arg0 as string, arg1 as ItemStackIngredient, arg2 as MCWeightedItemStack)
-// <recipetype:mekanism:sawing>.addRecipe(arg0 as string, arg1 as ItemStackIngredient, arg2 as IItemStack, arg3 as MCWeightedItemStack)
-// <recipetype:mekanism:sawing>.addRecipe(arg0 as string, arg1 as ItemStackIngredient, arg2 as IItemStack, arg3 as double)
-// <recipetype:mekanism:sawing>.addRecipe(arg0 as string, arg1 as ItemStackIngredient, arg2 as IItemStack, arg3 as IItemStack, arg4 as double)
+// <recipetype:mekanism:sawing>.addRecipe(name as string, input as ItemStackIngredient, mainOutput as IItemStack)
+// <recipetype:mekanism:sawing>.addRecipe(name as string, input as ItemStackIngredient, secondaryOutput as MCWeightedItemStack)
+// <recipetype:mekanism:sawing>.addRecipe(name as string, input as ItemStackIngredient, mainOutput as IItemStack, secondaryOutput as MCWeightedItemStack)
+// <recipetype:mekanism:sawing>.addRecipe(name as string, input as ItemStackIngredient, secondaryOutput as IItemStack, secondaryChance as double)
+// <recipetype:mekanism:sawing>.addRecipe(name as string, input as ItemStackIngredient, mainOutput as IItemStack, secondaryOutput as IItemStack, secondaryChance as double)
 
 <recipetype:mekanism:sawing>.addRecipe("sawing/melon_to_seeds", ItemStackIngredient.from(<item:minecraft:melon_slice>), <item:minecraft:melon_seeds>);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:

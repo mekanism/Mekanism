@@ -21,3 +21,4 @@ MDK.zip
 *.blend2
 /bin
 /logs
+/src/datagen/main/resources

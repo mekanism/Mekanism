@@ -103,11 +103,14 @@ def setupSourceSet(SourceSet sourceSet, String name) {
 // base module to the dependencies of the data generators source set that we are setting up
 def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, String name) {
     datagenSourceSet.java.srcDirs = ['src/datagen/' + name + '/java']
-    //Data gen sourceSets have no resources
-    datagenSourceSet.resources.srcDirs = []
     datagenSourceSet.compileClasspath += project.sourceSets.api.output
     datagenSourceSet.compileClasspath += project.sourceSets.main.output
-    if (baseSourceSet != null) {
+    if (baseSourceSet == null) {
+        //Base source set has resources that we put files that our annotation processor generates for consumption by our datagen
+        datagenSourceSet.resources.srcDirs = ['src/datagen/' + name + '/resources']
+    } else {
+        //Data gen sourceSets outside of the main one have no resources
+        datagenSourceSet.resources.srcDirs = []
         //Only case it is null is when we are doing datagenmain so other cases also add access to the stuff
         // in datagenmain so we can add helper classes
         datagenSourceSet.compileClasspath += project.sourceSets.datagenmain.output
@@ -391,6 +394,8 @@ test {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
+    annotationProcessor project(":annotation-processor")
+
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
     //We use https://github.com/quicktheories/QuickTheories to allow for implementing property based testing
@@ -459,6 +464,7 @@ processAdditionsResources { setupProcessResources(processAdditionsResources, add
 processDefenseResources { setupProcessResources(processDefenseResources, defenseReplaceResources) }
 processGeneratorsResources { setupProcessResources(processGeneratorsResources, generatorsReplaceResources) }
 processToolsResources { setupProcessResources(processToolsResources, toolsReplaceResources) }
+processDatagenmainResources { dependsOn(compileJava) }
 
 def setupProcessResources(ProcessResources process, TaskProvider<Task> replaceResources) {
     process.duplicatesStrategy(DuplicatesStrategy.FAIL)
@@ -576,6 +582,14 @@ task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defens
 tasks.withType(JavaCompile).configureEach({
     it.options.encoding = 'UTF-8'
 })
+
+compileJava {
+    options.annotationProcessorPath = configurations.annotationProcessor
+    options.annotationProcessorGeneratedSourcesDirectory = layout.buildDirectory.file("src/datagen/main/resources/").map(r -> r.asFile)
+    options.compilerArgs = [
+            "-processor", "mekanism.CraftTweakerParamNameMapper"
+    ]
+}
 
 artifacts {
     archives apiJar

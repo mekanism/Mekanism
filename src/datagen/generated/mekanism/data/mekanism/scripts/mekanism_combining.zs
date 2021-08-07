@@ -6,7 +6,7 @@ import mods.mekanism.api.ingredient.ItemStackIngredient;
  * 2) Adds a recipe that combines eight Prismarine Shards and one Black Dye into a block of Dark Prismarine.
 */
 
-// <recipetype:mekanism:combining>.addRecipe(arg0 as string, arg1 as ItemStackIngredient, arg2 as ItemStackIngredient, arg3 as IItemStack)
+// <recipetype:mekanism:combining>.addRecipe(name as string, mainInput as ItemStackIngredient, extraInput as ItemStackIngredient, output as IItemStack)
 
 <recipetype:mekanism:combining>.addRecipe("combining/bookshelf", ItemStackIngredient.from(<item:minecraft:book> * 3), ItemStackIngredient.from(<tag:items:minecraft:planks>, 6), <item:minecraft:bookshelf>);
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
