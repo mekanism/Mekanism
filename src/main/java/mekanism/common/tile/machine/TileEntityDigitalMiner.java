@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -49,6 +50,7 @@ import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
+import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
 import mekanism.common.inventory.slot.BasicInventorySlot;
@@ -78,6 +80,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.loot.LootContext;
@@ -102,6 +105,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
       IHasSortableFilters {
@@ -112,6 +116,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     private int radius;
     private boolean inverse;
+    private boolean inverseRequiresReplacement;
+    private Item inverseReplaceTarget = Items.AIR;
     private int minY;
     private int maxY = 60;
     private boolean doEject = false;
@@ -156,9 +162,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         mainSlots = new ArrayList<>();
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
         //Allow insertion manually or internally, or if it is a replace stack
-        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert = (stack, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceStack(stack);
+        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canInsert = (stack, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceTarget(stack.getItem());
         //Allow extraction if it is manual or if it is a replace stack
-        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract = (stack, automationType) -> automationType == AutomationType.MANUAL || !isReplaceStack(stack);
+        BiPredicate<@NonNull ItemStack, @NonNull AutomationType> canExtract = (stack, automationType) -> automationType == AutomationType.MANUAL || !isReplaceTarget(stack.getItem());
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, this, 8 + slotX * 18, 92 + slotY * 18);
@@ -276,6 +282,16 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return inverse;
     }
 
+    @ComputerMethod(nameOverride = "getInverseModeRequiresReplacement")
+    public boolean getInverseRequiresReplacement() {
+        return inverseRequiresReplacement;
+    }
+
+    @ComputerMethod(nameOverride = "getInverseModeReplaceTarget")
+    public Item getInverseReplaceTarget() {
+        return inverseReplaceTarget;
+    }
+
     private void setSilkTouch(boolean newSilkTouch) {
         boolean changed = silkTouch != newSilkTouch;
         silkTouch = newSilkTouch;
@@ -292,6 +308,18 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public void toggleInverse() {
         inverse = !inverse;
         markDirty(false);
+    }
+
+    public void toggleInverseRequiresReplacement() {
+        inverseRequiresReplacement = !inverseRequiresReplacement;
+        markDirty(false);
+    }
+
+    public void setInverseReplaceTarget(Item target) {
+        if (target != inverseReplaceTarget) {
+            inverseReplaceTarget = target;
+            markDirty(false);
+        }
     }
 
     public void toggleAutoEject() {
@@ -433,19 +461,27 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     /**
+     * @param filter Filter that was matched, if in inverse mode this will be null
+     *
      * @return false if unsuccessful
      */
     private boolean setReplace(BlockPos pos, @Nullable MinerFilter<?> filter) {
         if (level == null) {
             return false;
         }
-        ItemStack stack = getReplace(filter);
+        Item replaceTarget;
+        ItemStack stack;
+        if (filter == null) {
+            stack = getReplace(replaceTarget = inverseReplaceTarget, this::inverseReplaceTargetMatches);
+        } else {
+            stack = getReplace(replaceTarget = filter.replaceTarget, filter::replaceTargetMatches);
+        }
         if (stack.isEmpty()) {
-            if (filter == null || filter.replaceStack.isEmpty() || !filter.requireStack) {
+            if (replaceTarget == Items.AIR || (filter == null && !inverseRequiresReplacement) || (filter != null && !filter.requiresReplacement)) {
                 level.removeBlock(pos, false);
                 return true;
             }
-            missingStack = filter.replaceStack;
+            missingStack = new ItemStack(replaceTarget);
             return false;
         }
         BlockState newState = MekFakePlayer.withFakePlayer((ServerWorld) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), fakePlayer ->
@@ -467,29 +503,36 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         });
     }
 
-    private ItemStack getReplace(MinerFilter<?> filter) {
-        if (filter == null || filter.replaceStack.isEmpty()) {
+    private ItemStack getReplace(Item replaceTarget, Predicate<Item> replaceStackMatches) {
+        if (replaceTarget == Items.AIR) {
             return ItemStack.EMPTY;
         }
         //Start by sourcing from the miner's inventory
         for (IInventorySlot slot : mainSlots) {
-            if (filter.replaceStackMatches(slot.getStack())) {
+            ItemStack slotStack = slot.getStack();
+            if (replaceStackMatches.test(slotStack.getItem())) {
                 MekanismUtils.logMismatchedStackSize(slot.shrinkStack(1, Action.EXECUTE), 1);
-                return StackUtils.size(filter.replaceStack, 1);
+                return StackUtils.size(slotStack, 1);
             }
         }
         //Then source from the upgrade if it is installed
-        if (filter.replaceStack.getItem() == Items.COBBLESTONE || filter.replaceStack.getItem() == Items.STONE) {
+        if (replaceTarget == Items.COBBLESTONE || replaceTarget == Items.STONE) {
             if (upgradeComponent.isUpgradeInstalled(Upgrade.STONE_GENERATOR)) {
-                return StackUtils.size(filter.replaceStack, 1);
+                return new ItemStack(replaceTarget);
             }
         }
         //And finally source from the inventory on top if auto pull is enabled
-        if (doPull && getPullInv() != null) {
-            TransitRequest request = TransitRequest.definedItem(getPullInv(), Direction.DOWN, 1, Finder.strict(filter.replaceStack));
-            if (!request.isEmpty() && request.createSimpleResponse().useAll().isEmpty()) {
-                //If the request isn't empty and we were able to successfully use it all
-                return StackUtils.size(filter.replaceStack, 1);
+        if (doPull) {
+            TileEntity pullInv = getPullInv();
+            if (pullInv != null) {
+                TransitRequest request = TransitRequest.definedItem(pullInv, Direction.DOWN, 1, Finder.item(replaceTarget));
+                if (!request.isEmpty()) {
+                    TransitResponse response = request.createSimpleResponse();
+                    if (response.useAll().isEmpty()) {
+                        //If the request isn't empty and we were able to successfully use it all
+                        return StackUtils.size(response.getStack(), 1);
+                    }
+                }
             }
         }
         return ItemStack.EMPTY;
@@ -612,13 +655,27 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         markDirty(false);
     }
 
-    public boolean isReplaceStack(ItemStack stack) {
+    public boolean isReplaceTarget(Item target) {
+        if (inverse) {
+            //If we are in inverse mode only check our replace target, and not the filter's replace targets
+            // as we don't have a matching filter once we are breaking blocks so there wouldn't actually
+            // be any cases where it makes sense to skip them due to them being the result of one of the
+            // things we are mining
+            return inverseReplaceTargetMatches(target);
+        }
         for (MinerFilter<?> filter : filters) {
-            if (filter.replaceStackMatches(stack)) {
+            if (filter.replaceTargetMatches(target)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * @apiNote Assumes that inverse is checked before this is called
+     */
+    private boolean inverseReplaceTargetMatches(Item target) {
+        return  inverseReplaceTarget != Items.AIR && inverseReplaceTarget == target;
     }
 
     @Override
@@ -768,6 +825,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         data.putBoolean(NBTConstants.PULL, doPull);
         data.putBoolean(NBTConstants.SILK_TOUCH, getSilkTouch());
         data.putBoolean(NBTConstants.INVERSE, inverse);
+        data.putString(NBTConstants.REPLACE_STACK, inverseReplaceTarget.getRegistryName().toString());
+        data.putBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (MinerFilter<?> filter : filters) {
@@ -800,6 +859,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         doPull = data.getBoolean(NBTConstants.PULL);
         NBTUtils.setBooleanIfPresent(data, NBTConstants.SILK_TOUCH, this::setSilkTouch);
         inverse = data.getBoolean(NBTConstants.INVERSE);
+        inverseReplaceTarget = NBTUtils.readRegistryEntry(data, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
+        inverseRequiresReplacement = data.getBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE);
         filters.clear();
         if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
@@ -821,6 +882,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         ItemDataUtils.setBoolean(itemStack, NBTConstants.PULL, doPull);
         ItemDataUtils.setBoolean(itemStack, NBTConstants.SILK_TOUCH, getSilkTouch());
         ItemDataUtils.setBoolean(itemStack, NBTConstants.INVERSE, inverse);
+        ItemDataUtils.setString(itemStack, NBTConstants.REPLACE_STACK, inverseReplaceTarget.getRegistryName().toString());
+        ItemDataUtils.setBoolean(itemStack, NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
         if (!filters.isEmpty()) {
             ListNBT filterTags = new ListNBT();
             for (MinerFilter<?> filter : filters) {
@@ -853,6 +916,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (ItemDataUtils.hasData(itemStack, NBTConstants.INVERSE, NBT.TAG_BYTE)) {
             inverse = ItemDataUtils.getBoolean(itemStack, NBTConstants.INVERSE);
         }
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.REPLACE_STACK, NBT.TAG_STRING)) {
+            inverseReplaceTarget = ItemDataUtils.getRegistryEntry(itemStack, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
+        }
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.INVERSE_REQUIRES_REPLACE, NBT.TAG_BYTE)) {
+            inverseRequiresReplacement = ItemDataUtils.getBoolean(itemStack, NBTConstants.INVERSE_REQUIRES_REPLACE);
+        }
         if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, NBT.TAG_LIST)) {
             ListNBT tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
@@ -874,6 +943,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         remap.put(NBTConstants.PULL, NBTConstants.PULL);
         remap.put(NBTConstants.SILK_TOUCH, NBTConstants.SILK_TOUCH);
         remap.put(NBTConstants.INVERSE, NBTConstants.INVERSE);
+        remap.put(NBTConstants.REPLACE_STACK, NBTConstants.REPLACE_STACK);
+        remap.put(NBTConstants.INVERSE_REQUIRES_REPLACE, NBTConstants.INVERSE_REQUIRES_REPLACE);
         remap.put(NBTConstants.FILTERS, NBTConstants.FILTERS);
         return remap;
     }
@@ -1021,6 +1092,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         container.track(SyncableInt.create(this::getMinY, this::setMinY));
         container.track(SyncableInt.create(this::getMaxY, this::setMaxY));
         container.track(SyncableBoolean.create(this::getInverse, value -> inverse = value));
+        container.track(SyncableBoolean.create(this::getInverseRequiresReplacement, value -> inverseRequiresReplacement = value));
+        container.track(SyncableRegistryEntry.create(this::getInverseReplaceTarget, value -> inverseReplaceTarget = value));
         container.track(SyncableFilterList.create(this::getFilters, value -> {
             if (value instanceof HashList) {
                 filters = (HashList<MinerFilter<?>>) value;
@@ -1185,6 +1258,25 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (inverse != enabled) {
             toggleInverse();
         }
+    }
+
+    @ComputerMethod
+    private void setInverseModeRequiresReplacement(boolean enabled) throws ComputerException {
+        validateCanChangeConfiguration();
+        if (inverseRequiresReplacement != enabled) {
+            toggleInverseRequiresReplacement();
+        }
+    }
+
+    @ComputerMethod
+    private void setInverseModeReplaceTarget(Item target) throws ComputerException {
+        validateCanChangeConfiguration();
+        setInverseReplaceTarget(target);
+    }
+
+    @ComputerMethod
+    private void clearInverseModeReplaceTarget() throws ComputerException {
+        setInverseModeReplaceTarget(Items.AIR);
     }
 
     @ComputerMethod

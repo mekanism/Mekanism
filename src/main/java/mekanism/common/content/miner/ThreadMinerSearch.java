@@ -16,7 +16,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.Region;
@@ -25,13 +24,9 @@ import net.minecraftforge.fluids.IFluidBlock;
 public class ThreadMinerSearch extends Thread {
 
     private final TileEntityDigitalMiner tile;
-
-    public State state = State.IDLE;
-
     private final Long2ObjectMap<BitSet> oresToMine = new Long2ObjectOpenHashMap<>();
-    private final Map<Block, MinerFilter<?>> acceptedItems = new Object2ObjectOpenHashMap<>();
     private Region chunkCache;
-
+    public State state = State.IDLE;
     public int found = 0;
 
     public ThreadMinerSearch(TileEntityDigitalMiner tile) {
@@ -50,6 +45,7 @@ public class ThreadMinerSearch extends Thread {
             state = State.FINISHED;
             return;
         }
+        Map<Block, MinerFilter<?>> acceptedItems = new Object2ObjectOpenHashMap<>();
         BlockPos pos = tile.getStartingPos();
         int diameter = tile.getDiameter();
         int size = tile.getTotalSize();
@@ -79,8 +75,7 @@ public class ThreadMinerSearch extends Thread {
             if (acceptedItems.containsKey(info)) {
                 filterFound = acceptedItems.get(info);
             } else {
-                ItemStack stack = new ItemStack(info);
-                if (tile.isReplaceStack(stack)) {
+                if (tile.isReplaceTarget(info.asItem())) {
                     continue;
                 }
                 for (MinerFilter<?> filter : filters) {
@@ -103,11 +98,6 @@ public class ThreadMinerSearch extends Thread {
         chunkCache = null;
         tile.markDirty(false);
         tile.cachedToMine = found;
-    }
-
-    public void reset() {
-        state = State.IDLE;
-        chunkCache = null;
     }
 
     public enum State implements IHasTextComponent {

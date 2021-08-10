@@ -120,6 +120,7 @@ public final class NBTConstants {
     public static final String INJECTION_RATE = "injectionRate";
     public static final String INVALID = "invalid";
     public static final String INVERSE = "inverse";
+    public static final String INVERSE_REQUIRES_REPLACE = "inverseReplace";
     public static final String ITEM = "Item";
     public static final String ITEMS = "Items";
     public static final String LAST_FIRED = "lastFired";

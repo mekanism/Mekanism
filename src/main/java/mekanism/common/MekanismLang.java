@@ -527,7 +527,7 @@ public enum MekanismLang implements ILangEntry {
     MINER_VISUALS("miner", "visuals"),
     MINER_VISUALS_TOO_BIG("miner", "visuals.too_big"),
     MINER_REQUIRE_REPLACE("miner", "require_replace"),
-    MINER_IS_INVERSE("miner", "is_inverse"),
+    MINER_REQUIRE_REPLACE_INVERSE("miner", "require_replace.inverse"),
     MINER_RADIUS("miner", "radius"),
     MINER_IDLE("miner", "idle"),
     MINER_SEARCHING("miner", "searching"),

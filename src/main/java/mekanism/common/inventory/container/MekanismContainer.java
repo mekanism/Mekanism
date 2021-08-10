@@ -39,6 +39,7 @@ import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
 import mekanism.common.inventory.container.sync.SyncableShort;
 import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
@@ -62,6 +63,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public abstract class MekanismContainer extends Container implements ISecurityContainer {
 
@@ -526,6 +528,13 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableBlockPos) {
             ((SyncableBlockPos) data).set(value);
+        }
+    }
+
+    public <V extends IForgeRegistryEntry<V>> void handleWindowProperty(short property, @Nonnull V value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableRegistryEntry) {
+            ((SyncableRegistryEntry<V>) data).set(value);
         }
     }
 

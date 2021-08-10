@@ -166,6 +166,11 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 if (sanitized != null) {
                     return sanitized;
                 }
+            } else if (Item.class.isAssignableFrom(expectedType)) {
+                Item item = tryCreateItem(argument);
+                if (expectedType.isInstance(item)) {
+                    return item;
+                }
             }
         } else if (argument instanceof Map) {
             if (IFilter.class.isAssignableFrom(expectedType)) {
@@ -267,14 +272,8 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             }
             if (result instanceof MinerFilter) {
                 MinerFilter<?> minerFilter = (MinerFilter<?>) result;
-                wrapped.put("requireReplace", minerFilter.requireStack);
-                wrapped.put("replaceItem", wrapReturnType(minerFilter.replaceStack.getItem()));
-                if (!minerFilter.replaceStack.isEmpty()) {
-                    CompoundNBT tag = minerFilter.replaceStack.getTag();
-                    if (tag != null && !tag.isEmpty()) {
-                        wrapped.put("replaceItemNBT", wrapNBT(tag));
-                    }
-                }
+                wrapped.put("requiresReplacement", minerFilter.requiresReplacement);
+                wrapped.put("replaceTarget", wrapReturnType(minerFilter.replaceTarget));
             } else if (result instanceof SorterFilter) {
                 SorterFilter<?> sorterFilter = (SorterFilter<?>) result;
                 wrapped.put("allowDefault", sorterFilter.allowDefault);
@@ -493,8 +492,8 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     }
                     if (filter instanceof MinerFilter) {
                         MinerFilter<?> minerFilter = (MinerFilter<?>) filter;
-                        minerFilter.requireStack = getBooleanFromRaw(map.get("requireReplace"));
-                        minerFilter.replaceStack = tryCreateFilterItem(map.get("replaceItem"), map.get("replaceItemNBT"));
+                        minerFilter.requiresReplacement = getBooleanFromRaw(map.get("requiresReplacement"));
+                        minerFilter.replaceTarget = tryCreateItem(map.get("replaceTarget"));
                     } else if (filter instanceof SorterFilter) {
                         SorterFilter<?> sorterFilter = (SorterFilter<?>) filter;
                         sorterFilter.allowDefault = getBooleanFromRaw(map.get("allowDefault"));

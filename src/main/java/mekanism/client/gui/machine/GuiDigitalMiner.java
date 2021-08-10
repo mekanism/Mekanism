@@ -39,9 +39,9 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
-    private static final ResourceLocation eject = MekanismUtils.getResource(ResourceType.GUI, "switch/eject.png");
-    private static final ResourceLocation input = MekanismUtils.getResource(ResourceType.GUI, "switch/input.png");
-    private static final ResourceLocation silk = MekanismUtils.getResource(ResourceType.GUI, "switch/silk.png");
+    private static final ResourceLocation EJECT = MekanismUtils.getResource(ResourceType.GUI, "switch/eject.png");
+    private static final ResourceLocation INPUT = MekanismUtils.getResource(ResourceType.GUI, "switch/input.png");
+    private static final ResourceLocation SILK = MekanismUtils.getResource(ResourceType.GUI, "switch/silk.png");
 
     private MekanismButton startButton;
     private MekanismButton stopButton;
@@ -72,11 +72,11 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             list.add(MekanismLang.MINER_TO_MINE.translate(TextUtils.format(tile.getToMine())));
             return list;
         }).spacing(1).clearFormat());
-        addButton(new GuiDigitalSwitch(this, 19, 56, eject, tile::getDoEject, MekanismLang.AUTO_EJECT.translate(),
+        addButton(new GuiDigitalSwitch(this, 19, 56, EJECT, tile::getDoEject, MekanismLang.AUTO_EJECT.translate(),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile)), SwitchType.LOWER_ICON));
-        addButton(new GuiDigitalSwitch(this, 38, 56, input, tile::getDoPull, MekanismLang.AUTO_PULL.translate(),
+        addButton(new GuiDigitalSwitch(this, 38, 56, INPUT, tile::getDoPull, MekanismLang.AUTO_PULL.translate(),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_PULL_BUTTON, tile)), SwitchType.LOWER_ICON));
-        addButton(new GuiDigitalSwitch(this, 57, 56, silk, tile::getSilkTouch, MekanismLang.MINER_SILK.translate(),
+        addButton(new GuiDigitalSwitch(this, 57, 56, SILK, tile::getSilkTouch, MekanismLang.MINER_SILK.translate(),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SILK_TOUCH_BUTTON, tile)), SwitchType.LOWER_ICON));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47));
         addButton(new GuiVisualsTab(this, tile));

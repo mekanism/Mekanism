@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter.miner;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -44,12 +43,6 @@ public class GuiMinerModIDFilter extends GuiModIDFilter<MinerModIDFilter, TileEn
             return TagCache.getModIDStacks(filter.getModID(), true);
         }
         return Collections.emptyList();
-    }
-
-    @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        renderReplaceStack(matrix, gui(), filter);
     }
 
     @Override

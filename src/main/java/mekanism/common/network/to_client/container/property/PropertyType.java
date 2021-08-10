@@ -23,6 +23,7 @@ import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
 import mekanism.common.inventory.container.sync.SyncableShort;
 import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableInfusionStack;
@@ -38,6 +39,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public enum PropertyType {
     BOOLEAN(Boolean.TYPE, false, (getter, setter) -> SyncableBoolean.create(() -> (boolean) getter.get(), setter::accept),
@@ -54,6 +56,8 @@ public enum PropertyType {
           (property, buffer) -> new LongPropertyData(property, buffer.readVarLong())),
     SHORT(Short.TYPE, (short) 0, (getter, setter) -> SyncableShort.create(() -> (short) getter.get(), setter::accept),
           (property, buffer) -> new ShortPropertyData(property, buffer.readShort())),
+    REGISTRY_ENTRY(IForgeRegistryEntry.class, null, (supplier, consumer) -> SyncableRegistryEntry.create((Supplier) supplier, (Consumer) consumer),
+          RegistryEntryPropertyData::readRegistryEntry),
     ITEM_STACK(ItemStack.class, ItemStack.EMPTY, (getter, setter) -> SyncableItemStack.create(() -> (ItemStack) getter.get(), setter::accept),
           (property, buffer) -> new ItemStackPropertyData(property, buffer.readItem())),
     FLUID_STACK(FluidStack.class, FluidStack.EMPTY, (getter, setter) -> SyncableFluidStack.create(() -> (FluidStack) getter.get(), setter::accept),

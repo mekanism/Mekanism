@@ -28,6 +28,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "inverseReplace",
+                  "target": "mekData.inverseReplace",
+                  "op": "replace"
+                },
+                {
                   "source": "pull",
                   "target": "mekData.pull",
                   "op": "replace"
@@ -60,6 +65,11 @@
                 {
                   "source": "min",
                   "target": "mekData.min",
+                  "op": "replace"
+                },
+                {
+                  "source": "replaceStack",
+                  "target": "mekData.replaceStack",
                   "op": "replace"
                 },
                 {

@@ -39,7 +39,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12,
               () -> Collections.singletonList(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())))));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
-        addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, getButtonLocation("strict_input"),
+        addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, 16, getButtonLocation("exclamation"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos())), getOnHover(MekanismLang.STRICT_INPUT)));
         addChild(new ColorButton(gui, gui.getLeft() + relativeX + 112, gui.getTop() + relativeY + 49, 16, 16,
               () -> this.tile.getEjector().getOutputColor(),

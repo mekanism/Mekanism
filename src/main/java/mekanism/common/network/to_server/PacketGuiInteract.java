@@ -140,6 +140,11 @@ public class PacketGuiInteract implements IMekanismPacket {
     }
 
     public enum GuiInteractionItem {
+        DIGITAL_MINER_INVERSE_REPLACE_ITEM((tile, player, stack) -> {
+            if (tile instanceof TileEntityDigitalMiner) {
+                ((TileEntityDigitalMiner) tile).setInverseReplaceTarget(stack.getItem());
+            }
+        }),
         QIO_REDSTONE_ADAPTER_STACK((tile, player, stack) -> {
             if (tile instanceof TileEntityQIORedstoneAdapter) {
                 ((TileEntityQIORedstoneAdapter) tile).handleStackChange(stack);
@@ -224,6 +229,11 @@ public class PacketGuiInteract implements IMekanismPacket {
         INVERSE_BUTTON((tile, player, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
                 ((TileEntityDigitalMiner) tile).toggleInverse();
+            }
+        }),
+        INVERSE_REQUIRES_REPLACEMENT_BUTTON((tile, player, extra) -> {
+            if (tile instanceof TileEntityDigitalMiner) {
+                ((TileEntityDigitalMiner) tile).toggleInverseRequiresReplacement();
             }
         }),
         RESET_BUTTON((tile, player, extra) -> {

@@ -1020,7 +1020,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MINER_VISUALS, "Visuals: %s");
         add(MekanismLang.MINER_VISUALS_TOO_BIG, "Radius too big to display visuals");
         add(MekanismLang.MINER_REQUIRE_REPLACE, "Require replace: %s");
-        add(MekanismLang.MINER_IS_INVERSE, "I: %s");
+        add(MekanismLang.MINER_REQUIRE_REPLACE_INVERSE, "Inverse mode requires replacement: %s");
         add(MekanismLang.MINER_RADIUS, "Radi: %s");
         add(MekanismLang.MINER_IDLE, "Not ready");
         add(MekanismLang.MINER_SEARCHING, "Searching");

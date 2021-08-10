@@ -188,13 +188,12 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (onClick != null && isValidClickButton(button)) {
-            if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height) {
+            if (mouseX >= x + borderSize() && mouseY >= y + borderSize() && mouseX < x + width - borderSize() && mouseY < y + height - borderSize()) {
                 onClick.onClick(this, (int) mouseX, (int) mouseY);
                 playDownSound(Minecraft.getInstance().getSoundManager());
                 return true;
             }
         }
-
         return false;
     }
 

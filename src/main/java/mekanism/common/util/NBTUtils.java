@@ -31,6 +31,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 @ParametersAreNonnullByDefault
 public class NBTUtils {
@@ -254,5 +256,18 @@ public class NBTUtils {
         if (nbt.contains(key, NBT.TAG_INT)) {
             setter.accept(indexLookup.apply(nbt.getInt(key)));
         }
+    }
+
+    public static <V extends IForgeRegistryEntry<V>> V readRegistryEntry(CompoundNBT nbt, String key, IForgeRegistry<V> registry, V fallback) {
+        if (nbt.contains(key, NBT.TAG_STRING)) {
+            ResourceLocation rl = ResourceLocation.tryParse(nbt.getString(key));
+            if (rl != null) {
+                V result = registry.getValue(rl);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return fallback;
     }
 }
