@@ -32,6 +32,8 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
 
     public abstract boolean canFilter(BlockState state);
 
+    public abstract boolean hasBlacklistedElement();
+
     @Override
     public CompoundNBT write(CompoundNBT nbtTags) {
         super.write(nbtTags);

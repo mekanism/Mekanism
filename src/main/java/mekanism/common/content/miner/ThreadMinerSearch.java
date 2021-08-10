@@ -10,6 +10,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.WorldUtils;
@@ -62,8 +63,8 @@ public class ThreadMinerSearch extends Thread {
                 continue;
             }
             BlockState state = chunkCache.getBlockState(testPos);
-            if (state.isAir(chunkCache, testPos) || state.getDestroySpeed(chunkCache, testPos) < 0) {
-                //Skip air and unbreakable blocks
+            if (state.isAir(chunkCache, testPos) || state.is(MekanismTags.Blocks.MINER_BLACKLIST) || state.getDestroySpeed(chunkCache, testPos) < 0) {
+                //Skip air, blacklisted blocks, and unbreakable blocks
                 continue;
             }
             info = state.getBlock();

@@ -62,6 +62,7 @@ import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.interfaces.IBoundingBlock;
@@ -411,8 +412,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 Optional<BlockState> blockState = WorldUtils.getBlockState(level, pos);
                 if (blockState.isPresent()) {
                     BlockState state = blockState.get();
-                    if (!state.isAir(level, pos)) {
-                        //Make sure the block is loaded and is not air
+                    if (!state.isAir(level, pos) && !state.is(MekanismTags.Blocks.MINER_BLACKLIST)) {
+                        //Make sure the block is loaded and is not air, and is not in the blacklist of blocks the miner can break
                         // then check if the block matches one of our filters
                         MinerFilter<?> matchingFilter = null;
                         for (MinerFilter<?> filter : filters) {

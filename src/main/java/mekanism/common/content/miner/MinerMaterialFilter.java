@@ -1,9 +1,11 @@
 package mekanism.common.content.miner;
 
 import javax.annotation.Nonnull;
+import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IMaterialFilter;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -27,6 +29,11 @@ public class MinerMaterialFilter extends MinerFilter<MinerMaterialFilter> implem
     @Override
     public boolean canFilter(BlockState state) {
         return state.getMaterial() == getMaterial();
+    }
+
+    @Override
+    public boolean hasBlacklistedElement() {
+        return !materialItem.isEmpty() && materialItem.getItem() instanceof BlockItem && TagCache.materialHasMinerBlacklisted(materialItem);
     }
 
     @Override

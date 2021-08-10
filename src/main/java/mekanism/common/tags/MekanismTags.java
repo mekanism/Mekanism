@@ -202,6 +202,7 @@ public class MekanismTags {
 
         public static final INamedTag<Block> RELOCATION_NOT_SUPPORTED = forgeTag("relocation_not_supported");
         public static final INamedTag<Block> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
+        public static final INamedTag<Block> MINER_BLACKLIST = tag("miner_blacklist");
         public static final INamedTag<Block> ATOMIC_DISASSEMBLER_ORE = tag("atomic_disassembler_ore");
 
         public static final INamedTag<Block> CHESTS_ELECTRIC = forgeTag("chests/electric");

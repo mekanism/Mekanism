@@ -776,6 +776,7 @@
   "gui.mekanism.infinite": "\u01DD\u0287\u1D09u\u1D09\u025FuI",
   "gui.mekanism.infuse_type": "%s :\u01DDd\u028E\u27D8 \u01DDsn\u025FuI",
   "gui.mekanism.issues": ":s\u01DDnssI",
+  "gui.mekanism.issues.filter_has_blacklisted_element": "p\u01DD\u0287s\u1D09\uA781\u029E\u0254\u0250\uA781q s\u1D09 \u0287\u0250\u0265\u0287 \u0287u\u01DD\u026F\u01DD\uA781\u01DD \u01DDuo \u0287s\u0250\u01DD\uA781 \u0287\u0250 su\u1D09\u0250\u0287uo\u0254 \u0279\u01DD\u0287\uA781\u1D09\u2132 - ",
   "gui.mekanism.issues.input_doesnt_produce_output": "\u0287nd\u0287no \u01DD\u0254npo\u0279d \u0287ou s\u01DDop \u0287nduI - ",
   "gui.mekanism.issues.invalid_oredictionificator_filter": "p\u01DD\u0287\u0279oddns \u0279o p\u1D09\uA781\u0250\u028C \u0279\u01DD\u1D77uo\uA781 ou s\u1D09 \u0279\u01DD\u0287\uA781\u1D09\u2132 - ",
   "gui.mekanism.issues.no_energy": "\u01DD\u0287\u0250\u0279\u01DDdo o\u0287 \u028E\u1D77\u0279\u01DDu\u01DD \u0265\u1D77nou\u01DD \u0287oN - ",

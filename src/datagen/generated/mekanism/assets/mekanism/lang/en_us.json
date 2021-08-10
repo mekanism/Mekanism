@@ -776,6 +776,7 @@
   "gui.mekanism.infinite": "Infinite",
   "gui.mekanism.infuse_type": "Infuse Type: %s",
   "gui.mekanism.issues": "Issues:",
+  "gui.mekanism.issues.filter_has_blacklisted_element": " - Filter contains at least one element that is blacklisted",
   "gui.mekanism.issues.input_doesnt_produce_output": " - Input does not produce output",
   "gui.mekanism.issues.invalid_oredictionificator_filter": " - Filter is no longer valid or supported",
   "gui.mekanism.issues.no_energy": " - Not enough energy to operate",

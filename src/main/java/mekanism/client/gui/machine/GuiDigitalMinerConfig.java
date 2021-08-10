@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiFilterHolder;
 import mekanism.client.gui.element.GuiDigitalSwitch;
 import mekanism.client.gui.element.GuiDigitalSwitch.SwitchType;
+import mekanism.client.gui.element.button.FilterButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -17,6 +18,7 @@ import mekanism.client.gui.element.window.filter.miner.GuiMinerItemStackFilter;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerMaterialFilter;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerModIDFilter;
 import mekanism.client.gui.element.window.filter.miner.GuiMinerTagFilter;
+import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostBlockItemConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -99,6 +101,10 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         maxField.setMaxStringLength(3);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.configureDigitalBorderInput(() -> setText(maxField, GuiInteraction.SET_MAX_Y));
+        // Note: We add this after all the buttons have their warnings added so that it is further down the tracker
+        // so the tracker can short circuit on this type of warning and not have to check all the filters if one of
+        // the ones that are currently being shown has the warning
+        trackWarning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, () -> tile.getFilters().stream().anyMatch(MinerFilter::hasBlacklistedElement));
     }
 
     private void updateInverseReplaceTarget(Item target) {
@@ -133,6 +139,11 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         } else if (filter instanceof IModIDFilter) {
             addWindow(GuiMinerModIDFilter.edit(this, tile, (MinerModIDFilter) filter));
         }
+    }
+
+    @Override
+    protected FilterButton addFilterButton(FilterButton button) {
+        return super.addFilterButton(button).warning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, filter -> filter instanceof MinerFilter && ((MinerFilter<?>) filter).hasBlacklistedElement());
     }
 
     private void setText(GuiTextField field, GuiInteraction interaction) {

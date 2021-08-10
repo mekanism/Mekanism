@@ -3,7 +3,9 @@ package mekanism.common.content.miner;
 import javax.annotation.Nonnull;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
+import mekanism.common.tags.MekanismTags;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -31,6 +33,11 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
             return false;
         }
         return itemType.sameItem(itemStack);
+    }
+
+    @Override
+    public boolean hasBlacklistedElement() {
+        return !itemType.isEmpty() && itemType.getItem() instanceof BlockItem && MekanismTags.Blocks.MINER_BLACKLIST.contains(((BlockItem) itemType.getItem()).getBlock());
     }
 
     @Override

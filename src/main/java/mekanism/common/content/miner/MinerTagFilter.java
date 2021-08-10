@@ -1,6 +1,7 @@
 package mekanism.common.content.miner;
 
 import mekanism.api.NBTConstants;
+import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.WildcardMatcher;
@@ -28,6 +29,11 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
     @Override
     public boolean canFilter(BlockState state) {
         return state.getBlock().getTags().stream().anyMatch(tag -> WildcardMatcher.matches(tagName, tag.toString()));
+    }
+
+    @Override
+    public boolean hasBlacklistedElement() {
+        return TagCache.tagHasMinerBlacklisted(tagName);
     }
 
     @Override

@@ -89,6 +89,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, PrimaryResource.GOLD)
         );
         addEntities();
+        getBlockBuilder(MekanismTags.Blocks.MINER_BLACKLIST);
     }
 
     private void addEntities() {

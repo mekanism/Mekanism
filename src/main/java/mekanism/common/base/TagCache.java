@@ -1,6 +1,8 @@
 package mekanism.common.base;
 
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +15,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.lib.WildcardMatcher;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -40,9 +43,17 @@ public final class TagCache {
     private static final Map<Material, List<ItemStack>> materialStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<Block, List<String>> tileEntityTypeTagCache = new Object2ObjectOpenHashMap<>();
 
+    private static final Object2BooleanMap<String> blockTagBlacklistedElements = new Object2BooleanOpenHashMap<>();
+    private static final Object2BooleanMap<String> modIDBlacklistedElements = new Object2BooleanOpenHashMap<>();
+    private static final Object2BooleanMap<Material> materialBlacklistedElements = new Object2BooleanOpenHashMap<>();
+
     public static void resetVanillaTagCaches() {
         blockTagStacks.clear();
         itemTagStacks.clear();
+        //These maps have the boolean value be based on a tag
+        blockTagBlacklistedElements.clear();
+        modIDBlacklistedElements.clear();
+        materialBlacklistedElements.clear();
     }
 
     public static void resetCustomTagCaches() {
@@ -161,5 +172,60 @@ public final class TagCache {
         }
         materialStacks.put(material, stacks);
         return stacks;
+    }
+
+    public static boolean tagHasMinerBlacklisted(@Nonnull String tag) {
+        if (MekanismTags.Blocks.MINER_BLACKLIST.getValues().isEmpty()) {
+            return false;
+        } else if (blockTagBlacklistedElements.containsKey(tag)) {
+            return blockTagBlacklistedElements.getBoolean(tag);
+        }
+        boolean hasBlacklisted = false;
+        for (Map.Entry<ResourceLocation, ITag<Block>> entry : BlockTags.getAllTags().getAllTags().entrySet()) {
+            if (WildcardMatcher.matches(tag, entry.getKey().toString()) && entry.getValue().getValues().stream().anyMatch(MekanismTags.Blocks.MINER_BLACKLIST::contains)) {
+                hasBlacklisted = true;
+                break;
+            }
+        }
+        blockTagBlacklistedElements.put(tag, hasBlacklisted);
+        return hasBlacklisted;
+    }
+
+    public static boolean modIDHasMinerBlacklisted(@Nonnull String modName) {
+        if (MekanismTags.Blocks.MINER_BLACKLIST.getValues().isEmpty()) {
+            return false;
+        } else if (modIDBlacklistedElements.containsKey(modName)) {
+            return modIDBlacklistedElements.getBoolean(modName);
+        }
+        boolean hasBlacklisted = false;
+        for (Block block : ForgeRegistries.BLOCKS.getValues()) {
+            if (MekanismTags.Blocks.MINER_BLACKLIST.contains(block) && WildcardMatcher.matches(modName, block.getRegistryName().getNamespace())) {
+                hasBlacklisted = true;
+                break;
+            }
+        }
+        modIDBlacklistedElements.put(modName, hasBlacklisted);
+        return hasBlacklisted;
+    }
+
+    public static boolean materialHasMinerBlacklisted(@Nonnull ItemStack stack) {
+        return materialHasMinerBlacklisted(Block.byItem(stack.getItem()).defaultBlockState().getMaterial());
+    }
+
+    public static boolean materialHasMinerBlacklisted(@Nonnull Material material) {
+        if (MekanismTags.Blocks.MINER_BLACKLIST.getValues().isEmpty()) {
+            return false;
+        } else if (materialBlacklistedElements.containsKey(material)) {
+            return materialBlacklistedElements.getBoolean(material);
+        }
+        boolean hasBlacklisted = false;
+        for (Block block : ForgeRegistries.BLOCKS.getValues()) {
+            if (block.defaultBlockState().getMaterial() == material && MekanismTags.Blocks.MINER_BLACKLIST.contains(block)) {
+                hasBlacklisted = true;
+                break;
+            }
+        }
+        materialBlacklistedElements.put(material, hasBlacklisted);
+        return hasBlacklisted;
     }
 }

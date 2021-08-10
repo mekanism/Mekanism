@@ -1,6 +1,7 @@
 package mekanism.common.content.miner;
 
 import mekanism.api.NBTConstants;
+import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.lib.WildcardMatcher;
@@ -28,6 +29,11 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     @Override
     public boolean canFilter(BlockState state) {
         return WildcardMatcher.matches(modID, state.getBlock().getRegistryName().getNamespace());
+    }
+
+    @Override
+    public boolean hasBlacklistedElement() {
+        return TagCache.modIDHasMinerBlacklisted(modID);
     }
 
     @Override
