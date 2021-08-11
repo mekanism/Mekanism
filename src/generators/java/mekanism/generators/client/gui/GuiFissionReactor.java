@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import java.util.Collections;
 import javax.annotation.Nonnull;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiBigLight;
@@ -94,7 +95,8 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                 return Math.min(1, tile.getMultiblock().heatCapacitor.getTemperature() / FissionReactorMultiblockData.MAX_DAMAGE_TEMPERATURE);
             }
         }, 5, 104, imageWidth - 12));
-        heatGraph = addButton(new GuiGraph(this, 6, 128, imageWidth - 12, 36, MekanismLang.TEMPERATURE::translate));
+        heatGraph = addButton(new GuiGraph(this, 6, 128, imageWidth - 12, 36,
+              temp -> MekanismUtils.getTemperatureDisplay(temp, TemperatureUnit.KELVIN, true)));
         heatGraph.setMinScale(1_600);
         updateButtons();
     }
@@ -118,6 +120,6 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     @Override
     public void tick() {
         super.tick();
-        heatGraph.addData((int) tile.getMultiblock().heatCapacitor.getTemperature());
+        heatGraph.addData(MathUtils.clampToLong(tile.getMultiblock().heatCapacitor.getTemperature()));
     }
 }

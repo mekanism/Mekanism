@@ -1262,9 +1262,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @ComputerMethod
-    private void setInverseModeRequiresReplacement(boolean enabled) throws ComputerException {
+    private void setInverseModeRequiresReplacement(boolean requiresReplacement) throws ComputerException {
         validateCanChangeConfiguration();
-        if (inverseRequiresReplacement != enabled) {
+        if (inverseRequiresReplacement != requiresReplacement) {
             toggleInverseRequiresReplacement();
         }
     }
