@@ -533,6 +533,11 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     @Override
+    public boolean currentlyQuickCrafting() {
+        return isQuickCrafting && !quickCraftSlots.isEmpty();
+    }
+
+    @Override
     public void addWindow(GuiWindow window) {
         GuiWindow top = windows.isEmpty() ? null : windows.iterator().next();
         if (top != null) {

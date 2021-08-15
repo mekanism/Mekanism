@@ -528,8 +528,9 @@ public class QIOCraftingWindow implements IContentsListener {
 
     private class QIOCraftingInventory extends CraftingInventory {
 
-        //TODO - 10.1: Suppress warning and also add a note that we override all the places where it being
-        // null would cause issues, and we handle slots individually as well
+        //Note: We suppress the warning about this passing null as the container as we override all methods that
+        // that make use of the container to use our handler instead
+        @SuppressWarnings("ConstantConditions")
         public QIOCraftingInventory() {
             super(null, 0, 0);
         }

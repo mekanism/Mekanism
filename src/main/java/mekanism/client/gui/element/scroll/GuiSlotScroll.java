@@ -1,6 +1,8 @@
 package mekanism.client.gui.element.scroll;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -24,6 +26,11 @@ public class GuiSlotScroll extends GuiRelativeElement {
 
     private static final ResourceLocation SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
     private static final ResourceLocation SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
+    private static final DecimalFormat COUNT_FORMAT = new DecimalFormat("#.#");
+
+    static {
+        COUNT_FORMAT.setRoundingMode(RoundingMode.FLOOR);
+    }
 
     private final GuiScrollBar scrollBar;
 
@@ -91,6 +98,10 @@ public class GuiSlotScroll extends GuiRelativeElement {
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (gui().currentlyQuickCrafting()) {
+            //If the player is currently quick crafting don't do any special handling for as if they clicked in the screen
+            return super.mouseReleased(mouseX, mouseY, button);
+        }
         super.mouseReleased(mouseX, mouseY, button);
         IScrollableSlot slot = getSlot(mouseX, mouseY, x, y);
         clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.inventory.getCarried());
@@ -167,16 +178,18 @@ public class GuiSlotScroll extends GuiRelativeElement {
     }
 
     private String getCountText(long count) {
+        //Note: For cases like 9,999,999 we intentionally display as 9999.9K instead of 10M so that people
+        // do not think they have more stored than they actually have just because it is rounding up
         if (count <= 1) {
             return null;
         } else if (count < 10_000) {
             return Long.toString(count);
         } else if (count < 10_000_000) {
-            return Double.toString(Math.round(count / 1_000D)) + "K";
+            return COUNT_FORMAT.format(count / 1_000D) + "K";
         } else if (count < 10_000_000_000L) {
-            return Double.toString(Math.round(count / 1_000_000D)) + "M";
+            return COUNT_FORMAT.format(count / 1_000_000D) + "M";
         } else if (count < 10_000_000_000_000L) {
-            return Double.toString(Math.round(count / 1_000_000_000D)) + "B";
+            return COUNT_FORMAT.format(count / 1_000_000_000D) + "B";
         }
         return ">10T";
     }

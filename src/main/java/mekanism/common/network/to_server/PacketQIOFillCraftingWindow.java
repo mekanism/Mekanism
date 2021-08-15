@@ -275,7 +275,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                 targetContents.put(entry.getByteKey(), stack);
             }
         }
-        //Extract what items are still
+        //Extract what items are still in the window
         Byte2ObjectMap<ItemStack> remainingCraftingGridContents = new Byte2ObjectArrayMap<>(9);
         for (byte i = 0; i < 9; i++) {
             CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(i);

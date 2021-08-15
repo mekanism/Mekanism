@@ -72,6 +72,10 @@ public interface IGuiWrapper {
         Mekanism.logger.error("Tried to call 'removeWindow' but unsupported in {}", getClass().getName());
     }
 
+    default boolean currentlyQuickCrafting() {
+        return false;
+    }
+
     @Nullable
     default GuiWindow getWindowHovering(double mouseX, double mouseY) {
         Mekanism.logger.error("Tried to call 'getWindowHovering' but unsupported in {}", getClass().getName());
