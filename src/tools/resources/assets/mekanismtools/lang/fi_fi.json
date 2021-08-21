@@ -53,5 +53,16 @@
   "item.mekanismtools.refined_obsidian_shovel": "Jalostettu Obsidian Lapio",
   "item.mekanismtools.refined_obsidian_sword": "Jalostettu Obsidiaani Miekka",
   "item.mekanismtools.steel_axe": "Teräs Kirves",
-  "item.mekanismtools.steel_boots": "Teräs Saappaat"
+  "item.mekanismtools.steel_boots": "Teräs Saappaat",
+  "item.mekanismtools.steel_chestplate": "Teräs Rintalevy",
+  "item.mekanismtools.steel_helmet": "Teräs Kypärä",
+  "item.mekanismtools.steel_hoe": "Teräs Koukka",
+  "item.mekanismtools.steel_leggings": "Teräs Jalkineet",
+  "item.mekanismtools.steel_paxel": "Teräs Paxel",
+  "item.mekanismtools.steel_pickaxe": "Teräs Hakku",
+  "item.mekanismtools.steel_shovel": "Teräs Lapio",
+  "item.mekanismtools.steel_sword": "Teräs Miekka",
+  "item.mekanismtools.stone_paxel": "Kivinen Paxel",
+  "item.mekanismtools.wood_paxel": "Puu Paxel",
+  "tooltip.mekanismtools.hp": "HP: %s"
 }
