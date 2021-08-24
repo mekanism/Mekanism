@@ -276,7 +276,7 @@
   "command.mekanism.chunk.unwatch": "Чанк (%s) удалён из списка наблюдения.",
   "command.mekanism.chunk.watch": "Чанк (%s) добавлен в список наблюдения.",
   "command.mekanism.debug": "Включён режим отладки: %s.",
-  "command.mekanism.error.build.miss": "Нет найден доступный объект.",
+  "command.mekanism.error.build.miss": "Не найден доступный объект.",
   "command.mekanism.error.retrogen.disabled": "Retrogen выключен, пожалуйста включите его в конфигурации.",
   "command.mekanism.error.retrogen.failure": "Не удалось поставить в очередь чанки для retrogen.",
   "command.mekanism.error.tpop.empty": "Нет позиций в стопке.",
