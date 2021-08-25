@@ -283,6 +283,8 @@
   "command.mekanism.radiation.clear.player": "Очищено гравця від радіації на: %s.",
   "command.mekanism.radiation.get": "Поточна радіація на (%s) у %s: %s",
   "command.mekanism.radiation.remove_all": "Видалено всі джерела радіації.",
+  "command.mekanism.retrogen.chunk_queued": "У черзі на чанк (%s) в %s для ретроґен.",
+  "command.mekanism.testrules": "Включає keepInventory та вимикає doMobSpawing, doDaylightCyle, doWeatherCycle та mobGriefing!",
   "condensentrator.mekanism.condensentrating": "Вуденсцентрація",
   "condensentrator.mekanism.decondensentrating": "Деконденсатор",
   "condensentrator.mekanism.toggle": "Включити операцію",
