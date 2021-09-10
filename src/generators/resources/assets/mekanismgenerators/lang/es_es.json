@@ -8,7 +8,7 @@
   "block.mekanismgenerators.fission_fuel_assembly": "Conjunto de combustible de fisión",
   "block.mekanismgenerators.fission_reactor_casing": "Carcasa del reactor de fisión",
   "block.mekanismgenerators.fission_reactor_logic_adapter": "Adaptador logico del reactor de fisión",
-  "block.mekanismgenerators.fission_reactor_port": "Puerta de reactor de fisión",
+  "block.mekanismgenerators.fission_reactor_port": "Puerto de reactor de fisión",
   "block.mekanismgenerators.fusion_fuel": "Combustible D-T líquido",
   "block.mekanismgenerators.fusion_reactor_controller": "Controlador de reactor de fusión",
   "block.mekanismgenerators.fusion_reactor_frame": "Marco del reactor de fusión",
