@@ -176,6 +176,7 @@ public class TransmitterNetworkRegistry {
                 if (MekanismAPI.debug) {
                     Mekanism.logger.info("Merging {} networks with {} new transmitters", finder.networksFound.size(), finder.connectedTransmitters.size());
                 }
+                commitChanges();
                 network = finder.createNetworkByMerging();
         }
         network.addNewTransmitters(finder.connectedTransmitters);
