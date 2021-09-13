@@ -770,7 +770,7 @@
   "gui.mekanism.process_rate_mb": "Taux de traitement: %s mb/t",
   "gui.mekanism.progress": "Progression: %s",
   "gui.mekanism.radiation_dose": "Dose de Radiation: %s",
-  "gui.mekanism.radiation_exposure": "Exposition au radiations: %s",
+  "gui.mekanism.radiation_exposure": "Exposition aux radiations: %s",
   "gui.mekanism.rgb": "RVB:",
   "gui.mekanism.set": "Mettre:",
   "gui.mekanism.slurry": "Lisier: %s",
