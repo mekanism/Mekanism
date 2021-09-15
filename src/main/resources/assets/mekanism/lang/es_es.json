@@ -506,7 +506,7 @@
   "description.mekanism.pressurized_reaction_chamber": "Máquina avanzada que procesa una mezcla sólida, líquida y gaseosa y crea un producto tanto gaseoso como sólido.",
   "description.mekanism.purification_chamber": "Máquina avanzada capaz de procesar los minerales en tres torbellinos, sirviendo como la etapa inicial del procesamiento de minerales del 300%.",
   "description.mekanism.qio_dashboard": "Un monitor, utilizado para acceder al contenido de un sistema de Orquestación de Elementos Cuánticos (QIO).",
-  "description.mekanism.qio_drive_array": "El inicio de cualquier sistema de QIO. Unidades de QIO se almacenan aquí.",
+  "description.mekanism.qio_drive_array": "La fundación de cualquier sistema de Orquestación de Elementos Cuántico. Unidades de OEC se almacenan aquí.",
   "description.mekanism.qio_exporter": "Una unidad de exportación enlazada al sistema QIO. Debe ser colocada en un bloque para exportar los contenidos del sistema QIO al bloque.",
   "description.mekanism.qio_importer": "Una unidad de importación enlazada al sistema QIO. Colocar en un bloque e importar sus objetos a tu sistema QIO.",
   "description.mekanism.qio_redstone_adapter": "Un adaptador de redstone vinculado al QIO. Úsalo para supervisar tus objetos del sistema QIO.",
