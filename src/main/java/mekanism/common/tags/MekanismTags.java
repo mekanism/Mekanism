@@ -111,6 +111,7 @@ public class MekanismTags {
         public static final INamedTag<Item> INGOTS_STEEL = forgeTag("ingots/steel");
 
         public static final INamedTag<Item> STORAGE_BLOCKS_BRONZE = forgeTag("storage_blocks/bronze");
+        public static final INamedTag<Item> STORAGE_BLOCKS_FLUORITE = forgeTag("storage_blocks/fluorite");
         public static final INamedTag<Item> STORAGE_BLOCKS_CHARCOAL = forgeTag("storage_blocks/charcoal");
         public static final INamedTag<Item> STORAGE_BLOCKS_REFINED_GLOWSTONE = forgeTag("storage_blocks/refined_glowstone");
         public static final INamedTag<Item> STORAGE_BLOCKS_REFINED_OBSIDIAN = forgeTag("storage_blocks/refined_obsidian");
@@ -184,6 +185,7 @@ public class MekanismTags {
         public static final INamedTag<Block> CHESTS_PERSONAL = forgeTag("chests/personal");
 
         public static final INamedTag<Block> STORAGE_BLOCKS_BRONZE = forgeTag("storage_blocks/bronze");
+        public static final INamedTag<Block> STORAGE_BLOCKS_FLUORITE = forgeTag("storage_blocks/fluorite");
         public static final INamedTag<Block> STORAGE_BLOCKS_CHARCOAL = forgeTag("storage_blocks/charcoal");
         public static final INamedTag<Block> STORAGE_BLOCKS_REFINED_GLOWSTONE = forgeTag("storage_blocks/refined_glowstone");
         public static final INamedTag<Block> STORAGE_BLOCKS_REFINED_OBSIDIAN = forgeTag("storage_blocks/refined_obsidian");

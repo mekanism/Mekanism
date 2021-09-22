@@ -44,6 +44,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
     private void addStorageBlockRecipes(Consumer<IFinishedRecipe> consumer) {
         String basePath = "storage_blocks/";
         addStorageBlockRecipe(consumer, MekanismBlocks.BRONZE_BLOCK, MekanismTags.Items.INGOTS_BRONZE, basePath);
+        addStorageBlockRecipe(consumer, MekanismBlocks.FLUORITE_BLOCK, MekanismTags.Items.GEMS_FLUORITE, basePath);
         addStorageBlockRecipe(consumer, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE, basePath);
         addStorageBlockRecipe(consumer, MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN, basePath);
         addStorageBlockRecipe(consumer, MekanismBlocks.STEEL_BLOCK, MekanismTags.Items.INGOTS_STEEL, basePath);
