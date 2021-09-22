@@ -84,6 +84,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         addSteelProcessingRecipes(consumer, basePath + "steel/");
 
         addUraniumRecipes(consumer, basePath + "uranium/");
+        addFluoriteRecipes(consumer, basePath + "fluorite/");
     }
 
     private void addDynamicOreProcessingIngotRecipes(Consumer<IFinishedRecipe> consumer, String basePath, PrimaryResource resource) {
@@ -471,5 +472,12 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(MekanismItems.REPROCESSED_FISSILE_FRAGMENT),
               MekanismGases.FISSILE_FUEL.getStack(2_000)
         ).build(consumer, Mekanism.rl(basePath + "reprocessing/to_fuel"));
+    }
+    private void addFluoriteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        //Ingot
+        //from block
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.FLUORITE_GEM, 9)
+                .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_FLUORITE)
+                .build(consumer, Mekanism.rl(basePath + "ingot/from_block"));
     }
 }

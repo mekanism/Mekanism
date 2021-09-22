@@ -278,6 +278,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         }
         //Storage blocks
         add(MekanismBlocks.BRONZE_BLOCK, "Bronze Block");
+        add(MekanismBlocks.FLUORITE_BLOCK, "Fluorite Block");
         add(MekanismBlocks.REFINED_OBSIDIAN_BLOCK, "Refined Obsidian");
         add(MekanismBlocks.CHARCOAL_BLOCK, "Charcoal Block");
         add(MekanismBlocks.REFINED_GLOWSTONE_BLOCK, "Refined Glowstone");
