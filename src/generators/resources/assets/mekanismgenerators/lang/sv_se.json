@@ -34,6 +34,7 @@
   "description.mekanismgenerators.fusion_reactor_frame": "Förstärkt inramning som kan användas i Fusion Reactor multiblock.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Ett block som kan användas för att möjliggöra grundläggande övervakning av en reaktor med hjälp av rödsten.",
   "description.mekanismgenerators.fusion_reactor_port": "Ett block av förstärkt inramning som kan hantera både gas- och energiöverföringen av Fusion Reactor.",
+  "description.mekanismgenerators.gas_burning_generator": "En generator som utnyttjar de olika molekylära gaserna för att producera energi.",
   "description.mekanismgenerators.heat_generator": "En generator som använder värmen från lava eller andra brännbara resurser för att producera energi.",
   "description.mekanismgenerators.laser_focus_matrix": "En panel av reaktorglas som kan absorbera optisk energi och därmed värma upp Fusion Reactor.",
   "description.mekanismgenerators.reactor.logic.capacity": "Reaktorns kärnvärmekapacitet har uppfyllts",
