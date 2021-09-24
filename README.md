@@ -7,14 +7,15 @@
 
 Mekanism is an independent Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, 
 armor, and weapons. You can find more detail on the features on the [**Official Website**](http://aidancbrady.com/mekanism/).
-With features ranging from jetpacks and balloons to factories and energy cubes, the mod does not have any unifying goal. Nevertheless,
-these features combine coherently to create a rich gameplay experience that players will enjoy.
+With features ranging from jetpacks and balloons to factories and energy cubes, the mod does not have a single unifying goal.
+Nevertheless, these features combine coherently to create a rich gameplay experience that players will enjoy.
 
-Mekanism uses a tier-based system to organize the majority of its core features, like energy 
-cubes and factories. There are four tiers: basic, advanced, elite, and ultimate. Players can upgrade their components to the next tier
-by placing each component in a crafting grid and surrounding it with the necessary resources for the upgrade.
+Mekanism uses a tier-based system to organize the majority of its core features, like energy cubes and factories.
+There are four tiers: basic, advanced, elite, and ultimate. Players can upgrade their components to the next tier
+by placing each component in a crafting grid and surrounding it with the necessary resources for the upgrade or in
+world by using tier installers.
 
-After using Mechanism for a while, players can obtain a near-indestructible suit of Obsidian Armor, receive four 
+After using Mekanism for a while, players can obtain a near-indestructible suit of Refined Obsidian Armor, receive five 
 ingots for each ore mined, fly with hydrogen-powered jetpacks, and have cute robotic friends following them around while they mine. :)
 
 # Discord #
@@ -23,7 +24,7 @@ Mekanism has a [discord server](https://discord.gg/nmSjMGc) where you can chat w
 
 # Translating #
 
-If you would like to help translate Mekanism, you can do so through [Crowdin](https://crowdin.com/project/mekanism)
+If you would like to help translate Mekanism, you can do so through [Crowdin](https://crowdin.com/project/mekanism).
 
 # License #
 
@@ -58,7 +59,7 @@ dependencies {
 }
 ```
 
-Add the following to `gradle.properties` (see [Maven](https://modmaven.dev/mekanism/Mekanism/) for the list of available versions):
+Add the following to your `gradle.properties` file (see [Maven](https://modmaven.dev/mekanism/Mekanism/) for the list of available versions):
 
 ```properties
 mekanism_version=1.16.5-10.0.21.448
