@@ -35,6 +35,8 @@ fun String.doTheThing(): String { //this is a receiver function
 println("Hello World".doTheThing()) // Prints "World"
 ```
 
+This also allows us to split categories out into the own files.
+
 #### Operator Overloads ####
 One of the more cryptic parts of the DSL (and the one which will make you want to use an IDE), [operator overloads](https://kotlinlang.org/docs/operator-overloading.html) allow us to add a few shorthands to the DSL. 
 
@@ -53,6 +55,8 @@ Patchouli Categories, Entries, etc have 'IDs' or 'names' which often become the 
 - Item, Block, Gas, Fluid Entries (about the block/item/etc itself) must use the Block/Item/Gas/Fluid registration entry (e.g. `mekanism.common.registries.MekanismBlocks.BRONZE_BLOCK`, usually statically imported and used as simply `BRONZE_BLOCK`) 
 - Entries which don't directly map to a specific block or item must have their ID defined in an enum implementing `IGuideEntry` (e.g. `mekanism.patchouli.GuideEntry`).
 
+The items in the above list are then invoked as functions themselves (see [Operator Overloads](#operator-overloads)).
+
 ### Page Links ###
 Links must be inserted using string interpolation and a `link()` helper function, supplying the link target and the text to link.
 ```kotlin
@@ -66,3 +70,40 @@ Keybinds must be referenced and invoked in string interpolation from the `Mekani
 text = "can be toggled by pressing the ${MekanismKeyHandler.chestModeSwitchKey()} key."
 ```
 For vanilla, ensure you use the vanilla keybinds and not the default binding - e.g `$(k:jump)` & `$(k:sneak)`. 
+
+### Tying it Together - the Typesafe Builder ###
+All the above features make up the Typesafe Builder pattern, sometimes known as Domain Specific Language. Every property defined in Patchouli's documentation will be available in one way or another, usually by a simple `property = <some value>` assignment. 
+
+Consider the following example:
+```kotlin
+ val myBook = patchouliBook(/*mod id*/"mekanism", /*book id, without modid*/"handyguide") { //NB: this is called internally by DirectoryCache.invoke in the Base book provider
+    locale = "en_us"
+    name = "my fancy book"
+    
+    category("my_category_id") { //NB: never call this directly, use the Category enum version
+        name = "Cat 1"
+        description = "The first category!"
+        icon = MekanismItems.BASIC_CONTROL_CIRCUIT
+        
+        entry("my_entry_id") { // again, never call directly, use an Item, Gas, Liquid, Block, GuidePage etc
+            name = "First Entry!"
+            icon = MekanismItems.BASIC_CONTROL_CIRCUIT
+            
+            text("Page Title", "Some body text")
+            text("just body text on this page")
+            +"Another way of adding a simple page of text (unary plus operator)"
+            spotlight(MekanismItems.BASIC_CONTROL_CIRCUIT, "A spotlight page, with this being the text below the item")
+        }
+    }
+}
+```
+
+The variable `myBook` will contain the definition of a Patchouli book with:
+* The name `my fancy book`
+* A single Category (`Cat 1`)
+* A single Entry (`My First Entry`) in that Category
+* 4 pages in that Entry - 3 text pages and one Spotlight page (more on page type specialities below)
+
+Notice how:
+* We didn't need to create multiple files and make sure their names matched the IDs written in the code
+* We don't need to worry about ItemStacks or item IDs, or even if they happen to change in the future
