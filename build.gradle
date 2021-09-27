@@ -113,7 +113,7 @@ task alltJar(type: Jar) {
         attributes 'FMLCorePlugin': 'mekanism.common.asm.LoadingHook'
         attributes 'FMLCorePluginContainsFMLMod': 'true'
     }
-    from('etc/core') {
+    from('etc/all') {
         include '*.info'
         expand 'version': config.mod_version, 'mc_version': config.minecraft_version, 'fmp_version': config.FMP_version
     }
@@ -165,7 +165,7 @@ task releaseJars(type: Copy) {
     from toolsJar
     from generatorsJar
     from MDKZip
-    //from alltJar
+    from alltJar
     rename '-(.*)jar', '.jar'
     rename '-(.*)zip', '.zip'
     into '.'
