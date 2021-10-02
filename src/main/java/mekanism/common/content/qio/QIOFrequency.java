@@ -7,6 +7,7 @@ import com.google.common.collect.SetMultimap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -131,7 +132,7 @@ public class QIOFrequency extends Frequency {
         if (!tags.isEmpty()) {
             boolean hasAllKeys = tagLookupMap.hasAllKeys(tags);
             if (tagLookupMap.putAll(tags, type) && !hasAllKeys) {
-                //If we added any tag item combinations and we didn't have all the keys for tags this item has,
+                //If we added any tag item combinations, and we didn't have all the keys for tags this item has,
                 // then we need to clear our wildcard cache as our new tags may be valid for some of our wildcards
                 tagWildcardCache.clear();
                 failedWildcardTags.clear();
@@ -210,7 +211,7 @@ public class QIOFrequency extends Frequency {
         ItemStack stack = type.getStack();
         String modID = MekanismUtils.getModId(stack);
         Set<HashedItem> itemsForMod = modIDLookupMap.get(modID);
-        //In theory if we are removing an item and it existed we should have a set corresponding to it,
+        //In theory if we are removing an item, and it existed we should have a set corresponding to it,
         // but double check that it is not null just in case
         // Next if we removed the item successfully, check if the items for that mod is now empty, and if they are
         // remove the modid from the lookup map, and clear our wildcard cache as it may have some wildcards that are
@@ -222,7 +223,7 @@ public class QIOFrequency extends Frequency {
         }
         Item item = stack.getItem();
         Set<HashedItem> itemsByFuzzy = fuzzyItemLookupMap.get(item);
-        //In theory if we are removing an item and it existed we should have a set corresponding to it,
+        //In theory if we are removing an item, and it existed we should have a set corresponding to it,
         // but double check that it is not null just in case
         // Next if we removed the item successfully, check if the "fuzzy" items for that item is now empty, and if they are
         // remove the item completely from the lookup map
@@ -358,6 +359,13 @@ public class QIOFrequency extends Frequency {
 
     public QIODriveData getDriveData(QIODriveKey key) {
         return driveMap.get(key);
+    }
+
+    /**
+     * This is mainly for use by things that need to do simulation, and should not have any of the values of the drive get changed directly.
+     */
+    public Collection<QIODriveData> getAllDrives() {
+        return driveMap.values();
     }
 
     @Override
