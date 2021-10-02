@@ -41,6 +41,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 public class MekanismTagProvider extends BaseTagProvider {
 
     public static final INamedTag<EntityType<?>> PVI_COMPAT = EntityTypeTags.bind("per-viam-invenire:replace_vanilla_navigator");
+    public static final INamedTag<EntityType<?>> INDUSTRIAL_FOREGOING_MOB_DUPLICATOR_BLACKLIST = EntityTypeTags.bind("industrialforegoing:mob_duplicator_blacklist");
     public static final INamedTag<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.bind("create:no_infinite_draining");
 
     public MekanismTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
@@ -95,6 +96,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     private void addEntities() {
         addToTag(EntityTypeTags.IMPACT_PROJECTILES, MekanismEntityTypes.FLAME);
         addToTag(PVI_COMPAT, MekanismEntityTypes.ROBIT);
+        addToTag(INDUSTRIAL_FOREGOING_MOB_DUPLICATOR_BLACKLIST, MekanismEntityTypes.ROBIT);
     }
 
     private void addProcessedResources() {
