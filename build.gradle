@@ -12,9 +12,14 @@ buildscript {
             name "forge"
             url "https://maven.minecraftforge.net/"
         }
+        maven {
+            name 'parchment'
+            url 'https://maven.parchmentmc.org'
+        }
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.parchmentmc:librarian:1.+'
     }
 }
 
@@ -28,10 +33,11 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.1.1'
+    gradleVersion = '7.2'
     distributionType = Wrapper.DistributionType.ALL
 }
 
