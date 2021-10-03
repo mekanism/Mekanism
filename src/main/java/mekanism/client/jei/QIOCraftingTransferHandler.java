@@ -168,46 +168,49 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             // system for letting mods declare what things match when it comes down to NBT
             Map<HashedItem, String> cachedIngredientUUIDs = new HashMap<>();
             for (Map.Entry<HashedItem, HashedItemSource> entry : qioTransferHelper.reverseLookup.entrySet()) {
-                HashedItem storedHashedItem = entry.getKey();
-                ItemStack storedItem = storedHashedItem.getStack();
-                Item storedItemType = storedItem.getItem();
                 HashedItemSource source = entry.getValue();
-                String storedItemUUID = null;
-                for (IntIterator missingIterator = missingSlots.iterator(); missingIterator.hasNext(); ) {
-                    int index = missingIterator.nextInt();
-                    for (HashedItem validIngredient : hashedIngredients.get(index)) {
-                        //Compare the raw item types
-                        if (storedItemType == validIngredient.getStack().getItem()) {
-                            //If they match, compute the identifiers for both stacks as needed
-                            if (storedItemUUID == null) {
-                                //If we haven't retrieved a UUID for the stored stack yet because none of our previous ingredients
-                                // matched the basic item type, retrieve it
-                                storedItemUUID = stackHelper.getUniqueIdentifierForStack(storedItem, UidContext.Recipe);
-                            }
-                            //Next compute the UUID for the ingredient we are missing if we haven't already calculated it
-                            // either in a previous iteration or for a different slot
-                            String ingredientUUID = cachedIngredientUUIDs.computeIfAbsent(validIngredient,
-                                  ingredient -> stackHelper.getUniqueIdentifierForStack(ingredient.getStack(), UidContext.Recipe));
-                            if (storedItemUUID.equals(ingredientUUID)) {
-                                //If the items are equivalent, reduce how much of the item we have as an input
-                                source.matchFound();
-                                // unmark that the slot is missing a match
-                                missingIterator.remove();
-                                // and mark which HashedItem the slot's index corresponds to
-                                matchedItems.computeIfAbsent(storedHashedItem, item -> new IntArrayList()).add(index);
-                                // and stop checking the other possible inputs
-                                break;
+                if (source.hasMoreRemaining()) {
+                    //Only look at the source if we still have more items available in it
+                    HashedItem storedHashedItem = entry.getKey();
+                    ItemStack storedItem = storedHashedItem.getStack();
+                    Item storedItemType = storedItem.getItem();
+                    String storedItemUUID = null;
+                    for (IntIterator missingIterator = missingSlots.iterator(); missingIterator.hasNext(); ) {
+                        int index = missingIterator.nextInt();
+                        for (HashedItem validIngredient : hashedIngredients.get(index)) {
+                            //Compare the raw item types
+                            if (storedItemType == validIngredient.getStack().getItem()) {
+                                //If they match, compute the identifiers for both stacks as needed
+                                if (storedItemUUID == null) {
+                                    //If we haven't retrieved a UUID for the stored stack yet because none of our previous ingredients
+                                    // matched the basic item type, retrieve it
+                                    storedItemUUID = stackHelper.getUniqueIdentifierForStack(storedItem, UidContext.Recipe);
+                                }
+                                //Next compute the UUID for the ingredient we are missing if we haven't already calculated it
+                                // either in a previous iteration or for a different slot
+                                String ingredientUUID = cachedIngredientUUIDs.computeIfAbsent(validIngredient,
+                                      ingredient -> stackHelper.getUniqueIdentifierForStack(ingredient.getStack(), UidContext.Recipe));
+                                if (storedItemUUID.equals(ingredientUUID)) {
+                                    //If the items are equivalent, reduce how much of the item we have as an input
+                                    source.matchFound();
+                                    // unmark that the slot is missing a match
+                                    missingIterator.remove();
+                                    // and mark which HashedItem the slot's index corresponds to
+                                    matchedItems.computeIfAbsent(storedHashedItem, item -> new IntArrayList()).add(index);
+                                    // and stop checking the other possible inputs
+                                    break;
+                                }
                             }
                         }
+                        if (!source.hasMoreRemaining()) {
+                            //If we have "used up" all the input we have available then continue onto the next stored stack
+                            break;
+                        }
                     }
-                    if (!source.hasMoreRemaining()) {
-                        //If we have "used up" all the input we have available then continue onto the next stored stack
+                    if (missingSlots.isEmpty()) {
+                        //If we have accounted for all the slots, stop checking for matches
                         break;
                     }
-                }
-                if (missingSlots.isEmpty()) {
-                    //If we have accounted for all the slots, stop checking for matches
-                    break;
                 }
             }
             if (!missingSlots.isEmpty()) {
@@ -229,11 +232,13 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                         //If something went wrong, and we don't actually have the item we think we do, error
                         return invalidSource(hashedItem.getStack());
                     }
+                    int maxStack = hashedItem.getStack().getMaxStackSize();
+                    //If we have something that only stacks to one, such as a bucket. Don't limit the max stack size
+                    // of other items to one
+                    long max = maxStack == 1 ? maxToTransfer : Math.min(maxToTransfer, maxStack);
                     //Note: This will always be at least one as the int list should not be able to become
                     // larger than the number of items we have available
-                    maxToTransfer = Math.min(Math.min(maxToTransfer, hashedItem.getStack().getMaxStackSize()), source.getAvailable() / entry.getValue().size());
-                    //TODO - 10.1: Do we want to cap things at max stack size but if we have more available then allow other items to go to higher counts?
-                    // That way if we have things that use say a bucket in the recipe they are able to transfer more of the other things
+                    maxToTransfer = Math.min(max, source.getAvailable() / entry.getValue().size());
                 }
                 toTransfer = MathUtils.clampToInt(maxToTransfer);
             } else {
@@ -252,9 +257,14 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                     //If something went wrong, and we don't actually have the item we think we do, error
                     return invalidSource(hashedItem.getStack());
                 }
+                //Cap the amount to transfer at the max tack size. This way we allow for transferring buckets
+                // and other stuff with it. This only actually matters if the max stack size is one, due to
+                // the logic done above when calculating how much to transfer, but we do this regardless here
+                // as there is no reason not to and then if we decide to widen it up we only have to change one spot
+                int transferAmount = Math.min(toTransfer, hashedItem.getStack().getMaxStackSize());
                 for (int slot : entry.getValue()) {
                     //Try to use the item and figure out where it is coming from
-                    List<SingularHashedItemSource> actualSources = source.use(toTransfer);
+                    List<SingularHashedItemSource> actualSources = source.use(transferAmount);
                     if (actualSources.isEmpty()) {
                         //If something went wrong, and we don't actually have enough of the item for some reason, error
                         return invalidSource(hashedItem.getStack());
