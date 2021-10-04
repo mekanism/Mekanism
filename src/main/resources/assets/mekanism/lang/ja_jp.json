@@ -287,6 +287,7 @@
   "command.mekanism.error.tpop.empty": "スタックリストに保存された位置情報がありません。",
   "command.mekanism.radiation.add": "%1$sの放射線量を%3$sの(%2$s) に追加しました。",
   "command.mekanism.radiation.clear": "プレイヤーの被爆をクリアしました。",
+  "command.mekanism.radiation.clear.entity": "エンティティ%sの被爆をクリアしました",
   "command.mekanism.radiation.get": "%2$sの(%1$s)の現在の放射線量: %3$s",
   "command.mekanism.radiation.remove_all": "すべての放射線源を削除しました。",
   "command.mekanism.retrogen.chunk_queued": "%2$sのチャンク(%1$s)はRetrogenのキューに追加されました。",
