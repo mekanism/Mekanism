@@ -741,7 +741,7 @@
   "gui.mekanism.dissipated": "Dissipado: %s/t",
   "gui.mekanism.dynamic_tank": "Tanque Dinâmico",
   "gui.mekanism.eject": "Ejetar: %s",
-  "gui.mekanism.empty": "Vazio",
+  "gui.mekanism.empty": "Esvaziar",
   "gui.mekanism.energy": "Energia: %s",
   "gui.mekanism.false": "Falso",
   "gui.mekanism.finished": "Terminado: %s",
