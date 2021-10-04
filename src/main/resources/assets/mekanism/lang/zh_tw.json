@@ -1067,7 +1067,7 @@
   "module.mekanism.purification.beneficial": "移除增益",
   "module.mekanism.purification.harmful": "移除減益",
   "module.mekanism.purification.neutral": "移除無益",
-  "module.mekanism.radiation_shielding_unit": "輻射防護罩單元",
+  "module.mekanism.radiation_shielding_unit": "輻射防護單元",
   "module.mekanism.range": "範圍",
   "module.mekanism.render_hud": "以 HUD 顯示",
   "module.mekanism.silk_touch_unit": "絲綢之觸單元",
