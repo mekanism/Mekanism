@@ -637,7 +637,7 @@
   "filter.mekanism.oredictionificator.invalid_key": "不兼容的標籤",
   "filter.mekanism.select.title": "創建新的過濾",
   "filter.mekanism.size_mode": "尺寸模式",
-  "filter.mekanism.size_mode.conflict": "尺寸模式 - 當前沒有任何效果, 因為已啟用單個模式.",
+  "filter.mekanism.size_mode.conflict": "尺寸模式 - 目前沒有任何效果, 因為已啟用單個模式.",
   "filter.mekanism.tag": "標籤過濾",
   "filter.mekanism.tag.key": "標籤: %s",
   "filter.mekanism.tag.no_key": "沒有標籤",
