@@ -251,6 +251,7 @@
   "cardboard_box.mekanism.tile": "Плитка: %s",
   "chemical.mekanism.attribute.coolant.efficiency": " - Эффективность охлаждения: %s",
   "chemical.mekanism.attribute.coolant.heat_capacity": " - Термоэнтальпия: %s J/mB",
+  "chemical.mekanism.attribute.fuel.burn_ticks": " - Скорость горения: %s t",
   "chemical.mekanism.attribute.fuel.energy_density": " - Плотность энергии: %s",
   "chemical.mekanism.attribute.radiation": " - Радиоактивность: %s sV/h",
   "color.mekanism.aqua": "Морской",
@@ -776,9 +777,12 @@
   "gui.mekanism.infuse_type": "Infuse Type: %s",
   "gui.mekanism.issues": "Запрос:",
   "gui.mekanism.issues.filter_has_blacklisted_element": " - Фильтр содержит по крайней мере один элемент черного списка",
+  "gui.mekanism.issues.input_doesnt_produce_output": " - Входное не производит выходное",
   "gui.mekanism.issues.invalid_oredictionificator_filter": " - Фильтр больше не действителен или не поддерживается",
   "gui.mekanism.issues.no_energy": " - Недостаточно энергии, чтобы выполнить действие",
   "gui.mekanism.issues.no_energy.reduced_rate": " - Недостаточно энергии для работы с максимальной скоростью",
+  "gui.mekanism.issues.no_recipe": " - Нет совпадающих рецептов или недостаточно входного",
+  "gui.mekanism.issues.no_space": " - Недостаточно места на выходе",
   "gui.mekanism.liquid": "Жидкость: %s",
   "gui.mekanism.max": "Макс.: %s",
   "gui.mekanism.max_output": "Макс. выход: %s/t",
@@ -1065,6 +1069,7 @@
   "miner.mekanism.well": "Всё хорошо!",
   "module.mekanism.attack_amplification_unit": "Модуль: Урон",
   "module.mekanism.attack_damage": "Урон",
+  "module.mekanism.breathing.held": "Наполнять предмет в руках",
   "module.mekanism.charge_distribution_unit": "Модуль: Распределение энергии",
   "module.mekanism.charge_inventory": "Зарядка инвентаря",
   "module.mekanism.charge_suit": "Зарядка костюма",
@@ -1388,5 +1393,7 @@
   "upgrade.mekanism.speed": "Скорость",
   "upgrade.mekanism.speed.description": "Увеличивает скорость механизмов.",
   "upgrade.mekanism.stone_generator": "Генератор камня",
-  "upgrade.mekanism.stone_generator.description": "Генерирует камень или булыжник по мере необходимости."
+  "upgrade.mekanism.stone_generator.description": "Генерирует камень или булыжник по мере необходимости.",
+  "waste_barrel.mekanism.decay_rate": "Скорость распада: %s mB/t",
+  "waste_barrel.mekanism.decay_rate.actual": "Текущая скорость распада: %s mB / %s ticks"
 }
