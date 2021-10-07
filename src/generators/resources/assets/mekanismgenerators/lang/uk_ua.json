@@ -57,6 +57,7 @@
   "description.mekanismgenerators.geothermal_generator_unit": "Застосовує геотермальну енергію навколишнього середовища та покращує захист від шкоди через перегрів. Встановіть кілька для швидшої зарядки та більшого захисту.",
   "description.mekanismgenerators.heat_generator": "Генератор, який використовує тепло лави або інших спалюваних ресурсів для виробництва енергії.",
   "description.mekanismgenerators.laser_focus_matrix": "Скляна панель термоядерного реактора, яка здатна поглинати оптичну енергію і тим самим нагрівати термоядерний реактор.",
+  "description.mekanismgenerators.reactor.logic.activation": "Активізовує реактор коли отримує сигнал, і відключає коли сигнал відсутній",
   "description.mekanismgenerators.reactor.logic.capacity": "Сигнал, коли (***working***)",
   "description.mekanismgenerators.reactor.logic.depleted": "Сигнал, коли палива недостатньо для підтримування реакції",
   "description.mekanismgenerators.reactor.logic.disabled": "Не реагує на сигнал редстоуну",
