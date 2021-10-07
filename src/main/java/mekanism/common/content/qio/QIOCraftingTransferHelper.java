@@ -2,6 +2,9 @@ package mekanism.common.content.qio;
 
 import it.unimi.dsi.fastutil.bytes.Byte2IntArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
@@ -18,12 +21,14 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.common.inventory.container.slot.HotBarSlot;
+import mekanism.common.inventory.container.slot.InsertableSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public class QIOCraftingTransferHelper {
 
@@ -34,6 +39,7 @@ public class QIOCraftingTransferHelper {
      * @implNote We use raw hashed items as none of this stuff should or will be modified while doing these checks, so we may as well remove some unneeded copies.
      */
     public final Map<HashedItem, HashedItemSource> reverseLookup;
+    private byte emptyInventorySlots;
 
     public QIOCraftingTransferHelper(Object2LongMap<UUIDAwareHashedItem> cachedInventory, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots,
           QIOCraftingWindow craftingWindow, PlayerEntity player) {
@@ -45,10 +51,14 @@ public class QIOCraftingTransferHelper {
         byte inventorySlotIndex = 0;
         for (; inventorySlotIndex < 9; inventorySlotIndex++) {
             IInventorySlot slot = craftingWindow.getInputSlot(inventorySlotIndex);
-            //Note: This isn't a super accurate validation of if we can take the stack or not, given in theory we
-            // always should be able to, but we have this check that mimics our implementation here just in case
-            if (!slot.isEmpty() && !slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
-                reverseLookup.computeIfAbsent(HashedItem.raw(slot.getStack()), item -> new HashedItemSource()).addSlot(inventorySlotIndex, slot.getCount());
+            if (!slot.isEmpty()) {
+                //Note: This isn't a super accurate validation of if we can take the stack or not, given in theory we
+                // always should be able to, but we have this check that mimics our implementation here just in case
+                if (!slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
+                    reverseLookup.computeIfAbsent(HashedItem.raw(slot.getStack()), item -> new HashedItemSource()).addSlot(inventorySlotIndex, slot.getCount());
+                } else {
+                    //TODO - 10.1: Fail? We always should be able to take it but it is probably a good thing to validate
+                }
             }
         }
         inventorySlotIndex = addSlotsToMap(player, hotBarSlots, inventorySlotIndex);
@@ -57,13 +67,21 @@ public class QIOCraftingTransferHelper {
 
     private byte addSlotsToMap(PlayerEntity player, List<? extends Slot> slots, byte inventorySlotIndex) {
         for (Slot slot : slots) {
-            if (slot.hasItem() && slot.mayPickup(player)) {
-                ItemStack stack = slot.getItem();
-                reverseLookup.computeIfAbsent(HashedItem.raw(stack), item -> new HashedItemSource()).addSlot(inventorySlotIndex, stack.getCount());
+            if (slot.hasItem()) {
+                if (slot.mayPickup(player)) {
+                    ItemStack stack = slot.getItem();
+                    reverseLookup.computeIfAbsent(HashedItem.raw(stack), item -> new HashedItemSource()).addSlot(inventorySlotIndex, stack.getCount());
+                }
+            } else {
+                emptyInventorySlots++;
             }
             inventorySlotIndex++;
         }
         return inventorySlotIndex;
+    }
+
+    public byte getEmptyInventorySlots() {
+        return emptyInventorySlots;
     }
 
     @Nullable
@@ -106,6 +124,24 @@ public class QIOCraftingTransferHelper {
             }
             slots.put(slot, count);
             available += count;
+        }
+
+        public int getSlotRemaining(byte slot) {
+            if (slots == null) {
+                return 0;
+            }
+            return slots.getOrDefault(slot, 0);
+        }
+
+        public long getQIORemaining(UUID uuid) {
+            if (qioSources == null) {
+                return 0;
+            }
+            return qioSources.getOrDefault(uuid, 0);
+        }
+
+        public boolean hasQIOSources() {
+            return qioSources != null;
         }
 
         public List<SingularHashedItemSource> use(int toUse) {
@@ -214,6 +250,119 @@ public class QIOCraftingTransferHelper {
         @Nullable
         public UUID getQioSource() {
             return qioSource;
+        }
+    }
+
+    /**
+     * Class to help keep track of the inventory contents for simulating if there is room to shuffle the items around
+     */
+    public static abstract class BaseSimulatedInventory {
+
+        private final ItemStack[] inventory;
+        private final int[] stackSizes;
+        private final int[] slotLimits;
+
+        protected BaseSimulatedInventory(List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
+            int hotBarSize = hotBarSlots.size();
+            int slots = hotBarSize + mainInventorySlots.size();
+            inventory = new ItemStack[slots];
+            stackSizes = new int[slots];
+            slotLimits = new int[slots];
+            InsertableSlot inventorySlot;
+            for (int slot = 0; slot < slots; slot++) {
+                if (slot < hotBarSize) {
+                    inventorySlot = hotBarSlots.get(slot);
+                } else {
+                    inventorySlot = mainInventorySlots.get(slot - hotBarSize);
+                }
+                ItemStack stack = inventorySlot.getItem();
+                int remaining = getRemaining(slot, stack);
+                if (remaining == 0) {
+                    //If there is nothing "available" in the slot anymore that means the slot is "empty"
+                    stack = ItemStack.EMPTY;
+                }
+                stackSizes[slot] = remaining;
+                inventory[slot] = stack;
+                //Note: For our slots the max stack size of the slot itself is always 64, but we look it up anyways just in case things change
+                if (stack.isEmpty()) {
+                    slotLimits[slot] = inventorySlot.getMaxStackSize(stack);
+                } else {
+                    slotLimits[slot] = Math.min(inventorySlot.getMaxStackSize(stack), stack.getMaxStackSize());
+                }
+            }
+        }
+
+        /**
+         * @return The remaining number of items in the slot.
+         */
+        protected abstract int getRemaining(int slot, ItemStack currentStored);
+
+        /**
+         * Tries to shuffle an item into the inventory.
+         *
+         * @return The amount of the item that couldn't fit into the inventory.
+         */
+        public int shuffleItem(HashedItem type, int amount) {
+            if (amount == 0) {
+                return 0;
+            }
+            ItemStack stack = type.getStack();
+            //Start by checking for slots it can stack with
+            for (int slot = 0; slot < inventory.length; slot++) {
+                int currentAmount = stackSizes[slot];
+                int max = slotLimits[slot];
+                //If the slot has any room left, and our stack is able to stack with it
+                if (currentAmount < max && ItemHandlerHelper.canItemStacksStack(inventory[slot], stack)) {
+                    int toPlace = Math.min(max - currentAmount, amount);
+                    stackSizes[slot] = currentAmount + toPlace;
+                    amount -= toPlace;
+                    if (amount == 0) {
+                        //We placed it all, return that we can shuffle
+                        return 0;
+                    }
+                }
+            }
+            //If we have any remaining amount check the empty slots
+            for (int slot = 0; slot < inventory.length; slot++) {
+                if (inventory[slot].isEmpty()) {
+                    int max = slotLimits[slot];
+                    if (max > 0) {
+                        //Note: Because player inventory slots don't have any restrictions on what can go in them,
+                        // we are not bothering to check if we can actually place the stack in it, though if we keep
+                        // track of the actual backing slot we could check it if needed, though that would have a chance
+                        // of giving incorrect information anyways if it returns false for mayPlace based oen what was
+                        // stored and is no longer stored
+                        inventory[slot] = stack;
+                        slotLimits[slot] = max = Math.min(max, stack.getMaxStackSize());
+                        int toPlace = stackSizes[slot] = Math.min(amount, max);
+                        amount -= toPlace;
+                        if (amount == 0) {
+                            //We placed it all, return that we can shuffle
+                            return 0;
+                        }
+                    }
+                }
+            }
+            return amount;
+        }
+
+        @Nullable
+        public Object2IntMap<HashedItem> shuffleInputs(Object2IntMap<HashedItem> leftOverInput, boolean hasFrequency) {
+            Object2IntMap<HashedItem> stillLeftOver = hasFrequency ? new Object2IntArrayMap<>(leftOverInput.size()) : Object2IntMaps.emptyMap();
+            for (Object2IntMap.Entry<HashedItem> entry : leftOverInput.object2IntEntrySet()) {
+                // And try to shuffle the remaining contents into the simulation updating as we go
+                int remaining = shuffleItem(entry.getKey(), entry.getIntValue());
+                if (remaining > 0) {
+                    if (!hasFrequency) {
+                        //If we have remaining items and no frequency then we don't have room to shuffle
+                        return null;
+                    }
+                    //Otherwise, if we do have a frequency add what we still have left over to a map to
+                    // try and insert into the frequency
+                    stillLeftOver.put(entry.getKey(), remaining);
+                }
+            }
+            return stillLeftOver;
         }
     }
 }

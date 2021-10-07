@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
+import mekanism.common.content.qio.QIOCraftingTransferHelper.BaseSimulatedInventory;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularHashedItemSource;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
@@ -295,20 +295,17 @@ public class QIOServerCraftingTransferHandler {
         if (!leftOverInput.isEmpty()) {
             //If we have any leftover inputs in the crafting inventory, then get a simulated view of what the player's inventory
             // will look like after things are changed
-            SimulatedInventory simulatedInventory = new SimulatedInventory();
-            Object2IntMap<HashedItem> stillLeftOver = frequency == null ? Object2IntMaps.emptyMap() : new Object2IntArrayMap<>(leftOverInput.size());
-            for (Object2IntMap.Entry<HashedItem> entry : leftOverInput.object2IntEntrySet()) {
-                // And try to shuffle the remaining contents into the simulation updating as we go
-                int remaining = simulatedInventory.shuffleItem(entry.getKey(), entry.getIntValue());
-                if (remaining > 0) {
-                    if (frequency == null) {
-                        //If we have remaining items and no frequency then we don't have room to shuffle
-                        return false;
-                    }
-                    //Otherwise, if we do have a frequency add what we still have left over to a map to
-                    // try and insert into the frequency
-                    stillLeftOver.put(entry.getKey(), remaining);
+            BaseSimulatedInventory simulatedInventory = new BaseSimulatedInventory(hotBarSlots, mainInventorySlots) {
+                @Override
+                protected int getRemaining(int slot, ItemStack currentStored) {
+                    SlotData slotData = availableItems.get((byte) (slot + 9));
+                    return slotData == null ? currentStored.getCount() : slotData.getAvailable();
                 }
+            };
+            Object2IntMap<HashedItem> stillLeftOver = simulatedInventory.shuffleInputs(leftOverInput, frequency != null);
+            if (stillLeftOver == null) {
+                //If we have remaining items and no frequency then we don't have room to shuffle
+                return false;
             }
             if (!stillLeftOver.isEmpty() && frequency != null) {
                 //If we still have left over things try adding them to the frequency
@@ -637,105 +634,6 @@ public class QIOServerCraftingTransferHandler {
     private int fail(String format, Object... args) {
         Mekanism.logger.warn(format, args);
         return -1;
-    }
-
-    /**
-     * Class to help keep track of the inventory contents for simulating if there is room to shuffle the items around
-     */
-    private class SimulatedInventory {
-
-        private final ItemStack[] inventory;
-        private final int[] stackSizes;
-        private final int[] slotLimits;
-
-        public SimulatedInventory() {
-            int hotBarSize = hotBarSlots.size();
-            int slots = hotBarSize + mainInventorySlots.size();
-            inventory = new ItemStack[slots];
-            stackSizes = new int[slots];
-            slotLimits = new int[slots];
-            InsertableSlot inventorySlot;
-            ItemStack stack;
-            for (int slot = 0; slot < slots; slot++) {
-                if (slot < hotBarSize) {
-                    inventorySlot = hotBarSlots.get(slot);
-                } else {
-                    inventorySlot = mainInventorySlots.get(slot - hotBarSize);
-                }
-                SlotData slotData = availableItems.get((byte) (slot + 9));
-                if (slotData != null) {
-                    //If we already know what is in the slot/will be in the slot then use that
-                    if (slotData.getAvailable() == 0) {
-                        //If there is nothing "available" in the slot anymore that means the slot is "empty"
-                        stack = ItemStack.EMPTY;
-                    } else {
-                        // otherwise, use the item we still have in it
-                        stack = slotData.getStack();
-                    }
-                    stackSizes[slot] = slotData.getAvailable();
-                } else {
-                    // if we don't know what is in it, then grab it from the actual inventory slot
-                    stack = inventorySlot.getItem();
-                    stackSizes[slot] = stack.getCount();
-                }
-                inventory[slot] = stack;
-                //Note: For our slots the max stack size of the slot itself is always 64, but we look it up anyways just in case things change
-                if (stack.isEmpty()) {
-                    slotLimits[slot] = inventorySlot.getMaxStackSize(stack);
-                } else {
-                    slotLimits[slot] = Math.min(inventorySlot.getMaxStackSize(stack), stack.getMaxStackSize());
-                }
-            }
-        }
-
-        /**
-         * Tries to shuffle an item into the inventory.
-         *
-         * @return The amount of the item that couldn't fit into the inventory.
-         */
-        public int shuffleItem(HashedItem type, int amount) {
-            if (amount == 0) {
-                return 0;
-            }
-            ItemStack stack = type.getStack();
-            //Start by checking for slots it can stack with
-            for (int slot = 0; slot < inventory.length; slot++) {
-                int currentAmount = stackSizes[slot];
-                int max = slotLimits[slot];
-                //If the slot has any room left, and our stack is able to stack with it
-                if (currentAmount < max && ItemHandlerHelper.canItemStacksStack(inventory[slot], stack)) {
-                    int toPlace = Math.min(max - currentAmount, amount);
-                    stackSizes[slot] = currentAmount + toPlace;
-                    amount -= toPlace;
-                    if (amount == 0) {
-                        //We placed it all, return that we can shuffle
-                        return 0;
-                    }
-                }
-            }
-            //If we have any remaining amount check the empty slots
-            for (int slot = 0; slot < inventory.length; slot++) {
-                if (inventory[slot].isEmpty()) {
-                    int max = slotLimits[slot];
-                    if (max > 0) {
-                        //Note: Because player inventory slots don't have any restrictions on what can go in them,
-                        // we are not bothering to check if we can actually place the stack in it, though if we keep
-                        // track of the actual backing slot we could check it if needed, though that would have a chance
-                        // of giving incorrect information anyways if it returns false for mayPlace based oen what was
-                        // stored and is no longer stored
-                        inventory[slot] = stack;
-                        slotLimits[slot] = max = Math.min(max, stack.getMaxStackSize());
-                        int toPlace = stackSizes[slot] = Math.min(amount, max);
-                        amount -= toPlace;
-                        if (amount == 0) {
-                            //We placed it all, return that we can shuffle
-                            return 0;
-                        }
-                    }
-                }
-            }
-            return amount;
-        }
     }
 
     private static class SimulatedQIODrive {

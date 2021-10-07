@@ -324,8 +324,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         cachedInventory.clear();
     }
 
-    public QIOCraftingTransferHelper getTransferHelper(PlayerEntity player, byte selectedCraftingGrid) {
-        return new QIOCraftingTransferHelper(cachedInventory, hotBarSlots, mainInventorySlots, getCraftingWindow(selectedCraftingGrid), player);
+    public QIOCraftingTransferHelper getTransferHelper(PlayerEntity player, QIOCraftingWindow craftingWindow) {
+        return new QIOCraftingTransferHelper(cachedInventory, hotBarSlots, mainInventorySlots, craftingWindow, player);
     }
 
     private void syncItemList() {
