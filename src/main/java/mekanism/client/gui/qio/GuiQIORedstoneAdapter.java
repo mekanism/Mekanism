@@ -12,6 +12,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.text.InputValidator;
+import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostItemConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
@@ -43,7 +44,10 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     protected void addGuiElements() {
         super.addGuiElements();
         addButton(new GuiQIOFrequencyTab(this, tile));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true));
+        addButton(new GuiSlot(SlotType.NORMAL, this, 7, 30).setRenderHover(true)).setGhostHandler((IGhostItemConsumer) ingredient -> {
+            Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionItem.QIO_REDSTONE_ADAPTER_STACK, tile, StackUtils.size((ItemStack) ingredient, 1)));
+            minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
+        });
         addButton(new GuiInnerScreen(this, 7, 16, imageWidth - 15, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             QIOFrequency freq = tile.getQIOFrequency();
