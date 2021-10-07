@@ -488,6 +488,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         } else if (ints.stream().allMatch(value -> value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE)) {
             ByteArrayNBT expected = new ByteArrayNBT(ints.stream().map(Integer::byteValue).collect(Collectors.toList()));
             return expected.equals(sanitized);
+        } else if (ints.stream().allMatch(value -> value >= Short.MIN_VALUE && value <= Short.MAX_VALUE)) {
+            ListNBT expected = ints.stream().map(i -> ShortNBT.valueOf(i.shortValue())).collect(Collectors.toCollection(ListNBT::new));
+            return expected.equals(sanitized);
         }
         return nbt.equals(sanitized);
     }
@@ -545,6 +548,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
             return sanitized instanceof ListNBT && ((ListNBT) sanitized).isEmpty();
         } else if (longs.stream().allMatch(value -> value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE)) {
             ByteArrayNBT expected = new ByteArrayNBT(longs.stream().map(Long::byteValue).collect(Collectors.toList()));
+            return expected.equals(sanitized);
+        } else if (longs.stream().allMatch(value -> value >= Short.MIN_VALUE && value <= Short.MAX_VALUE)) {
+            ListNBT expected = longs.stream().map(i -> ShortNBT.valueOf(i.shortValue())).collect(Collectors.toCollection(ListNBT::new));
             return expected.equals(sanitized);
         } else if (longs.stream().allMatch(value -> value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE)) {
             IntArrayNBT expected = new IntArrayNBT(longs.stream().map(Long::intValue).collect(Collectors.toList()));
