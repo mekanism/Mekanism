@@ -99,10 +99,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawString(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor());
+        drawTextScaledBound(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor(), 41);
         ITextComponent text = MekanismLang.LIST_SORT.translate();
-        int width = getStringWidth(text);
-        drawString(matrix, text, imageWidth - 66 - width, imageHeight - 92, titleTextColor());
+        drawString(matrix, text, imageWidth - 66 - getStringWidth(text), imageHeight - 92, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

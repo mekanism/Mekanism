@@ -154,7 +154,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @ComputerMethod
     public FloatingLong getMinThreshold() {
-        return maxThreshold;
+        return minThreshold;
     }
 
     @ComputerMethod
