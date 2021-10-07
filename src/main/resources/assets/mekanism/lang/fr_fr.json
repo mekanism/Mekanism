@@ -250,7 +250,7 @@
   "cardboard_box.mekanism.block_data": "Données de bloc : %s",
   "cardboard_box.mekanism.tile": "Tuile : %s",
   "chemical.mekanism.attribute.coolant.efficiency": " - Efficacité du Refroidissement à: %s",
-  "chemical.mekanism.attribute.coolant.heat_capacity": " - Enthalpie thermique à: %s J/mB",
+  "chemical.mekanism.attribute.coolant.heat_capacity": " - Enthalpie thermique à: %s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - Temps de Combustion: %s t",
   "chemical.mekanism.attribute.fuel.energy_density": " - Densité Énergétique : %s",
   "chemical.mekanism.attribute.radiation": " - Radioactivité à: %s sV/h",
