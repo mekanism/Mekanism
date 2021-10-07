@@ -48,6 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "Паливні стержні в яких зберігається ядерне паливо в межах ядерного реактора. Можуть бути розміщені один над одним.",
   "description.mekanismgenerators.fission_reactor_casing": "Збагачений свинцем сталевий корпус, що використовується для створення ядерного реактора. Переважно жаростійкий, переважно радіаційно-стійкий і переважно безпечний!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "Блок, який може бути використаний для нагляду та контролю ядерного реактора за допомогою редстоуна.",
+  "description.mekanismgenerators.fission_reactor_port": "Порт Реактора Розпаду, щоб подавати або забирати холодоагент, паливо й відходи.",
   "description.mekanismgenerators.fusion_reactor_controller": "Блок управління всією структурою реактора термоядерного синтезу.",
   "description.mekanismgenerators.fusion_reactor_frame": "Посилене обрамлення, яке можна використовувати в мультиблоку термоядерного реактора.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Блок, який може бути використаний для забезпечення основного моніторингу реактора за допомогою Редстоуна.",
