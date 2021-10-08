@@ -54,6 +54,7 @@
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "Un blocco che può essere usato per monitorare un Reattore usando la redstone.",
   "description.mekanismgenerators.fusion_reactor_port": "Un blocco di telaio rinforzato capace di controllare il trasporto di sia gas che energia del Reattore a fusione.",
   "description.mekanismgenerators.gas_burning_generator": "Un generatore che sfrutta le molecole variabili dei gas per produrre corrente.",
+  "description.mekanismgenerators.geothermal_generator_unit": "Sfrutta l'energia geotermica dell'ambiente circostante e migliora la protezione contro i danni da fonti di calore, installarne multipli aumenta la velocità di ricarica e offre una maggiore protezione.",
   "description.mekanismgenerators.heat_generator": "Un generatore che usa il calore della lava o di altre risorse bruciabili per produrre energia.",
   "description.mekanismgenerators.laser_focus_matrix": "Un vetro del Reattore a fusione che è capace di assorbire energia ottica con il quale riscaldare il reattore.",
   "description.mekanismgenerators.reactor.logic.activation": "Attiva il reattore quando viene alimentato e disattiva quando non viene alimentato",
