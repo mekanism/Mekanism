@@ -1024,7 +1024,7 @@
   "laser_amplifier.mekanism.redstone_output": "Sortie Redstone : %s",
   "logistical_sorter.mekanism.auto_eject": "Auto :",
   "logistical_sorter.mekanism.auto_eject.description": "Éjecte automatiquement les objets non filtrés dans les inventaires connectés, en utilisant la configuration par défaut.",
-  "logistical_sorter.mekanism.default": "Par défaut :",
+  "logistical_sorter.mekanism.default": "Défaut :",
   "logistical_sorter.mekanism.round_robin": "RR :",
   "logistical_sorter.mekanism.round_robin.description": "Cycles entre tous les inventaires connectés lors de l'envoi d'objets.",
   "logistical_sorter.mekanism.single_item": "Unique :",
