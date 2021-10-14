@@ -7,7 +7,7 @@
   "block.mekanismgenerators.electromagnetic_coil": "Bobina electromagnética",
   "block.mekanismgenerators.fission_fuel_assembly": "Conjunto de Combustible de Fisión",
   "block.mekanismgenerators.fission_reactor_casing": "Carcasa del Reactor de Fisión",
-  "block.mekanismgenerators.fission_reactor_logic_adapter": "Adaptador Lógico del Reactor de Fisión",
+  "block.mekanismgenerators.fission_reactor_logic_adapter": "Adaptador lógico del reactor de fisión",
   "block.mekanismgenerators.fission_reactor_port": "Puerto del Reactor de Fisión",
   "block.mekanismgenerators.fusion_fuel": "Combustible D-T líquido",
   "block.mekanismgenerators.fusion_reactor_controller": "Controlador del Reactor de Fusión",
