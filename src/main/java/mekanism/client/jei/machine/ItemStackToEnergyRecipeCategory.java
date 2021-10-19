@@ -45,10 +45,7 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     private final GuiSlot input;
 
     public ItemStackToEnergyRecipeCategory(IGuiHelper helper, ResourceLocation id) {
-        super(helper, id, MekanismLang.CONVERSION_ENERGY.translate(), 20, 12, 132, 62);
-        icon = helper.drawableBuilder(iconRL, 0, 0, 18, 18)
-              .setTextureSize(18, 18)
-              .build();
+        super(helper, id, MekanismLang.CONVERSION_ENERGY.translate(), createIcon(helper, iconRL), 20, 12, 132, 62);
         gauge = addElement(GuiEnergyGauge.getDummy(GaugeType.STANDARD.with(DataType.OUTPUT), this, 133, 13));
         input = addSlot(SlotType.INPUT, 26, 36);
         addConstantProgress(ProgressType.LARGE_RIGHT, 64, 40);

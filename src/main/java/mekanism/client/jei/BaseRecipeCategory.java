@@ -9,7 +9,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.providers.IBaseProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -43,28 +43,36 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     private static final IProgressInfoHandler CONSTANT_PROGRESS = () -> 1;
     protected static final IBarInfoHandler FULL_BAR = () -> 1;
 
+    protected static IDrawable createIcon(IGuiHelper helper, ResourceLocation iconRL) {
+        return helper.drawableBuilder(iconRL, 0, 0, 18, 18).setTextureSize(18, 18).build();
+    }
+
+    protected static IDrawable createIcon(IGuiHelper helper, IItemProvider provider) {
+        return helper.createDrawableIngredient(provider.getItemStack());
+    }
+
     private final Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();
     private final ITextComponent component;
     private final IGuiHelper guiHelper;
     private final IDrawable background;
     private final ResourceLocation id;
+    private final IDrawable icon;
     private final int xOffset;
     private final int yOffset;
     @Nullable
     private Map<GaugeOverlay, IDrawable> overlayLookup;
     @Nullable
     private ITickTimer timer;
-    @Nullable
-    protected IDrawable icon;
 
-    protected BaseRecipeCategory(IGuiHelper helper, IBaseProvider provider, int xOffset, int yOffset, int width, int height) {
-        this(helper, provider.getRegistryName(), provider.getTextComponent(), xOffset, yOffset, width, height);
+    protected BaseRecipeCategory(IGuiHelper helper, IItemProvider provider, int xOffset, int yOffset, int width, int height) {
+        this(helper, provider.getRegistryName(), provider.getTextComponent(), createIcon(helper, provider), xOffset, yOffset, width, height);
     }
 
-    protected BaseRecipeCategory(IGuiHelper helper, ResourceLocation id, ITextComponent component, int xOffset, int yOffset, int width, int height) {
+    protected BaseRecipeCategory(IGuiHelper helper, ResourceLocation id, ITextComponent component, IDrawable icon, int xOffset, int yOffset, int width, int height) {
         this.id = id;
         this.component = component;
         this.guiHelper = helper;
+        this.icon = icon;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.background = new NOOPDrawable(width, height);
@@ -164,7 +172,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     @Override
     public IDrawable getIcon() {
-        //Note: Even though we usually return null form here, this is allowed even though annotations imply it isn't supposed to be
         return icon;
     }
 

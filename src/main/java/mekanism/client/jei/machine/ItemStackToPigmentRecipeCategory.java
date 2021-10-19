@@ -6,7 +6,7 @@ import java.util.WeakHashMap;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.providers.IBlockProvider;
+import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ItemStackToPigmentRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiPigmentGauge;
@@ -26,8 +26,8 @@ public class ItemStackToPigmentRecipeCategory extends ItemStackToChemicalRecipeC
     private final Map<ItemStackToPigmentRecipe, IGuiIngredientGroup<PigmentStack>> ingredients = new WeakHashMap<>();
     private final PigmentColorDetails currentDetails;
 
-    public ItemStackToPigmentRecipeCategory(IGuiHelper helper, IBlockProvider mekanismBlock) {
-        super(helper, mekanismBlock.getRegistryName(), mekanismBlock.getTextComponent(), MekanismJEI.TYPE_PIGMENT, false);
+    public ItemStackToPigmentRecipeCategory(IGuiHelper helper, IItemProvider mekanismBlock) {
+        super(helper, mekanismBlock, MekanismJEI.TYPE_PIGMENT, false);
         progressBar.colored(currentDetails = new PigmentColorDetails());
     }
 

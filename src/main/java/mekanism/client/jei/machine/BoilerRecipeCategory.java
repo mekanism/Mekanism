@@ -52,10 +52,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
     private BoilerJEIRecipe recipe;
 
     public BoilerRecipeCategory(IGuiHelper helper, ResourceLocation id) {
-        super(helper, id, MekanismLang.BOILER.translate(), 6, 13, 180, 60);
-        //Width 216, fission 195
-        //Height 166, fission 172
-        icon = helper.drawableBuilder(iconRL, 0, 0, 18, 18).setTextureSize(18, 18).build();
+        super(helper, id, MekanismLang.BOILER.translate(), createIcon(helper, iconRL), 6, 13, 180, 60);
         //Note: All these elements except for the heatedCoolantTank and waterTank are in slightly different x positions than in the normal GUI
         // so that they fit properly in JEI
         addElement(new GuiInnerScreen(this, 48, 23, 96, 40, () -> {

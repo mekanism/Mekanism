@@ -14,6 +14,7 @@ import mekanism.client.jei.MekanismJEI;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.slot.SlotOverlay;
+import mekanism.common.registries.MekanismBlocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -27,8 +28,9 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
 
     public RotaryCondensentratorRecipeCategory(IGuiHelper helper, boolean condensentrating) {
         //We override the things that reference the provider
-        super(helper, Mekanism.rl(condensentrating ? "rotary_condensentrator_condensentrating" : "rotary_condensentrator_decondensentrating"),
-              condensentrating ? MekanismLang.CONDENSENTRATING.translate() : MekanismLang.DECONDENSENTRATING.translate(), 3, 12, 170, 64);
+        super(helper, Mekanism.rl("rotary_condensentrator_" + (condensentrating ? "condensentrating" : "decondensentrating")),
+              (condensentrating ? MekanismLang.CONDENSENTRATING : MekanismLang.DECONDENSENTRATING).translate(),
+              createIcon(helper, MekanismBlocks.ROTARY_CONDENSENTRATOR), 3, 12, 170, 64);
         this.condensentrating = condensentrating;
         addElement(new GuiDownArrow(this, 159, 44));
         gasGauge = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD, this, 25, 13));

@@ -17,10 +17,7 @@ public class ItemStackToInfuseTypeRecipeCategory extends ItemStackToChemicalReci
     private static final ResourceLocation iconRL = MekanismUtils.getResource(ResourceType.GUI, "infuse_types.png");
 
     public ItemStackToInfuseTypeRecipeCategory(IGuiHelper helper, ResourceLocation id) {
-        super(helper, id, MekanismLang.CONVERSION_INFUSION.translate(), MekanismJEI.TYPE_INFUSION, true);
-        icon = helper.drawableBuilder(iconRL, 0, 0, 18, 18)
-              .setTextureSize(18, 18)
-              .build();
+        super(helper, id, MekanismLang.CONVERSION_INFUSION.translate(), createIcon(helper, iconRL), MekanismJEI.TYPE_INFUSION, true);
     }
 
     @Override
