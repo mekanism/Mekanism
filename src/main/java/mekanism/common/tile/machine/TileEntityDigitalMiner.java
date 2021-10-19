@@ -525,7 +525,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         //And finally source from the inventory on top if auto pull is enabled
         if (doPull) {
             TileEntity pullInv = getPullInv();
-            if (pullInv != null) {
+            if (pullInv != null && InventoryUtils.isItemHandler(pullInv, Direction.DOWN)) {
                 TransitRequest request = TransitRequest.definedItem(pullInv, Direction.DOWN, 1, Finder.item(replaceTarget));
                 if (!request.isEmpty()) {
                     TransitResponse response = request.createSimpleResponse();
