@@ -57,9 +57,9 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             }
             return null;
         }));
-        upButton = addButton(new MekanismImageButton(this, leftPos + 126, topPos + 11, 14,
+        upButton = addButton(new MekanismImageButton(this, 126, 11, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), () -> scrollBar.adjustScroll(1)));
-        downButton = addButton(new MekanismImageButton(this, leftPos + 126, topPos + 156, 14,
+        downButton = addButton(new MekanismImageButton(this, 126, 156, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), () -> scrollBar.adjustScroll(-1)));
         updateEnabledButtons();
     }

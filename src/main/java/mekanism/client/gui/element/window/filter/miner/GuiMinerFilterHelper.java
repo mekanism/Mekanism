@@ -28,7 +28,7 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
                   filter.replaceTarget = ((ItemStack) ingredient).getItem();
                   Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
               }));
-        childAdder.apply(new MekanismImageButton(gui, gui.getLeft() + getRelativeX() + 148, gui.getTop() + getRelativeY() + 45, 14, 16,
+        childAdder.apply(new MekanismImageButton(gui, getRelativeX() + 148, getRelativeY() + 45, 14, 16,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), () -> filter.requiresReplacement = !filter.requiresReplacement,
               (onHover, matrix, xAxis, yAxis) -> gui.displayTooltip(matrix, MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(filter.requiresReplacement)), xAxis, yAxis)));
     }

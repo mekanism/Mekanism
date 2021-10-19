@@ -11,7 +11,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiRelativeElement;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -240,7 +240,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         initChemical(group, tankIndex, input, gauge, stacks, (max, width, height) -> new ChemicalStackRenderer<>(max, width, height, getOverlay(gauge)));
     }
 
-    private <STACK extends ChemicalStack<?>> void initChemical(IGuiIngredientGroup<@NonNull STACK> group, int tankIndex, boolean input, GuiRelativeElement element,
+    private <STACK extends ChemicalStack<?>> void initChemical(IGuiIngredientGroup<@NonNull STACK> group, int tankIndex, boolean input, GuiElement element,
           List<STACK> stacks, ChemicalStackRendererCreator<STACK> rendererCreator) {
         int x = element.getRelativeX() + 1 - xOffset;
         int y = element.getRelativeY() + 1 - yOffset;

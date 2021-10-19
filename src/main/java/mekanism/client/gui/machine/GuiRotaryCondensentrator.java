@@ -64,7 +64,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
                 return tile.mode;
             }
         }, ProgressType.LARGE_LEFT, this, 64, 39).jeiCategories(decondensentrating));
-        addButton(new MekanismImageButton(this, leftPos + 4, topPos + 4, 18, getButtonLocation("toggle"),
+        addButton(new MekanismImageButton(this, 4, 4, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }
 

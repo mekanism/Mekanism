@@ -8,7 +8,6 @@ import mekanism.api.functions.CharPredicate;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
@@ -21,7 +20,7 @@ import org.lwjgl.glfw.GLFW;
  *
  * @author aidancbrady
  */
-public class GuiTextField extends GuiRelativeElement {
+public class GuiTextField extends GuiElement {
 
     public static final int DEFAULT_BORDER_COLOR = 0xFFA0A0A0;
     public static final int DEFAULT_BACKGROUND_COLOR = 0xFF000000;

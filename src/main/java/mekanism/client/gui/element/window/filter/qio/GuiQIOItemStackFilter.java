@@ -26,13 +26,13 @@ public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter
 
     @Override
     protected int getLeftButtonX() {
-        return x + 29;
+        return relativeX + 29;
     }
 
     @Override
     protected void init() {
         super.init();
-        addChild(new MekanismImageButton(gui(), x + 148, y + 18, 11, 14, getButtonLocation("fuzzy"),
+        addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 18, 11, 14, getButtonLocation("fuzzy"),
               () -> filter.fuzzyMode = !filter.fuzzyMode, getOnHover(MekanismLang.FUZZY_MODE)));
     }
 

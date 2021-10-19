@@ -98,14 +98,14 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
             return ret;
         }));
 
-        int buttonStart = topPos + 19;
-        startButton = addButton(new TranslationButton(this, leftPos + 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,
+        int buttonStart = 19;
+        startButton = addButton(new TranslationButton(this, 87, buttonStart, 61, 18, MekanismLang.BUTTON_START,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.START_BUTTON, tile))));
-        stopButton = addButton(new TranslationButton(this, leftPos + 87, buttonStart + 17, 61, 18, MekanismLang.BUTTON_STOP,
+        stopButton = addButton(new TranslationButton(this, 87, buttonStart + 17, 61, 18, MekanismLang.BUTTON_STOP,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.STOP_BUTTON, tile))));
-        configButton = addButton(new TranslationButton(this, leftPos + 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
+        configButton = addButton(new TranslationButton(this, 87, buttonStart + 34, 61, 18, MekanismLang.BUTTON_CONFIG,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.DIGITAL_MINER_CONFIG, tile))));
-        addButton(new TranslationButton(this, leftPos + 87, buttonStart + 51, 61, 18, MekanismLang.MINER_RESET,
+        addButton(new TranslationButton(this, 87, buttonStart + 51, 61, 18, MekanismLang.MINER_RESET,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.RESET_BUTTON, tile))));
         updateEnabledButtons();
         trackWarning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, () -> tile.getFilters().stream().anyMatch(MinerFilter::hasBlacklistedElement));

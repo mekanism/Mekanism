@@ -49,7 +49,7 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     protected void addCloseButton() {
-        addChild(new GuiCloseButton(gui(), this.x + 6, this.y + 6, this));
+        addChild(new GuiCloseButton(gui(), relativeX + 6, relativeY + 6, this));
     }
 
     @Override

@@ -50,7 +50,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 return container == null ? 0 : container.getEnergy().divideToLevel(container.getMaxEnergy());
             }
         }, 158, 26));
-        teleportButton = addButton(new TranslationButton(this, leftPos + 42, topPos + 147, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
+        teleportButton = addButton(new TranslationButton(this, 42, 147, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             TeleporterFrequency frequency = getFrequency();
             if (frequency != null && menu.getStatus() == 1) {
                 //This should always be true if the teleport button is active, but validate it just in case

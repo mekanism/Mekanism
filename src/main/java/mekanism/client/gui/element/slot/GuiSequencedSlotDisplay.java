@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiRelativeElement;
+import mekanism.client.gui.element.GuiElement;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.NonNullSupplier;
 
-public class GuiSequencedSlotDisplay extends GuiRelativeElement {
+public class GuiSequencedSlotDisplay extends GuiElement {
 
     private List<ItemStack> iterStacks = Collections.emptyList();
     private int stackIndex;

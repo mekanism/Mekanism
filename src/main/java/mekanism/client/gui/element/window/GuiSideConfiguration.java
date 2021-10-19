@@ -64,7 +64,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             addChild(tab);
             configTabs.add(tab);
         }
-        ejectButton = addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, getButtonLocation("auto_eject"),
+        ejectButton = addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), currentType)), getOnHover(MekanismLang.AUTO_EJECT)));
         addSideDataButton(RelativeSide.BOTTOM, 71, 74);
         addSideDataButton(RelativeSide.TOP, 71, 44);
@@ -78,7 +78,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
-        sideConfigButtons.put(side, addChild(new SideDataButton(gui(), getGuiLeft() + relativeX + xPos, getGuiTop() + relativeY + yPos, side,
+        sideConfigButtons.put(side, addChild(new SideDataButton(gui(), relativeX + xPos, relativeY + yPos, side,
               () -> tile.getConfig().getDataType(currentType, side), () -> {
             DataType dataType = tile.getConfig().getDataType(currentType, side);
             return dataType == null ? EnumColor.GRAY : dataType.getColor();

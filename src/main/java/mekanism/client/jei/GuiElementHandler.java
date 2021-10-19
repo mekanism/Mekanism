@@ -7,7 +7,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
@@ -125,15 +124,14 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
                         return clickableGrandChildAreas;
                     }
                     //If we couldn't find any, then we need to continue on to checking this element itself
-                    if (element instanceof GuiRelativeElement && element instanceof IJEIRecipeArea) {
+                    if (element instanceof IJEIRecipeArea) {
                         IJEIRecipeArea<?> recipeArea = (IJEIRecipeArea<?>) element;
                         if (recipeArea.isActive()) {
                             ResourceLocation[] categories = recipeArea.getRecipeCategories();
                             //getRecipeCategory is a cheaper call than isMouseOver, so we perform it first
                             if (categories != null && recipeArea.isMouseOverJEIArea(mouseX, mouseY)) {
-                                GuiRelativeElement relativeElement = (GuiRelativeElement) element;
                                 //TODO: Decide if we want our own implementation to overwrite the getTooltipStrings and have it show something like "Crusher Recipes"
-                                IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(relativeElement.getRelativeX(), relativeElement.getRelativeY(),
+                                IGuiClickableArea clickableArea = IGuiClickableArea.createBasic(element.getRelativeX(), element.getRelativeY(),
                                       element.getWidth(), element.getHeight(), categories);
                                 return Collections.singleton(clickableArea);
                             }

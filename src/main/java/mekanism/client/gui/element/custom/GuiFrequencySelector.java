@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiRelativeElement;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.ColorButton;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.TranslationButton;
@@ -37,7 +37,7 @@ import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.IFormattableTextComponent;
 
-public class GuiFrequencySelector<FREQ extends Frequency> extends GuiRelativeElement {
+public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
 
     private final IGuiFrequencySelector<FREQ> frequencySelector;
     private final MekanismButton publicButton;
@@ -59,18 +59,18 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiRelativeEle
         this.yStart = yStart;
         boolean hasColor = frequencySelector instanceof IGuiColorFrequencySelector;
         scrollList = addChild(new GuiTextScrollList(frequencySelector, 27, yStart + 22, 122, 42));
-        publicButton = addChild(new TranslationButton(frequencySelector, getGuiLeft() + 27, getGuiTop() + yStart, 60, 20, MekanismLang.PUBLIC, () -> {
+        publicButton = addChild(new TranslationButton(frequencySelector, 27, yStart, 60, 20, MekanismLang.PUBLIC, () -> {
             this.publicFreq = true;
             this.scrollList.clearSelection();
             updateButtons();
         }));
-        privateButton = addChild(new TranslationButton(frequencySelector, getGuiLeft() + 89, getGuiTop() + yStart, 60, 20, MekanismLang.PRIVATE, () -> {
+        privateButton = addChild(new TranslationButton(frequencySelector, 89, yStart, 60, 20, MekanismLang.PRIVATE, () -> {
             this.publicFreq = false;
             this.scrollList.clearSelection();
             updateButtons();
         }));
         int buttonWidth = hasColor ? 50 : 60;
-        setButton = addChild(new TranslationButton(frequencySelector, getGuiLeft() + 27, getGuiTop() + yStart + 113, buttonWidth, 18,
+        setButton = addChild(new TranslationButton(frequencySelector, 27, yStart + 113, buttonWidth, 18,
               MekanismLang.BUTTON_SET, () -> {
             int selection = this.scrollList.getSelection();
             if (selection != -1) {
@@ -81,7 +81,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiRelativeEle
             // we will disable the ability to press the set button
             updateButtons();
         }));
-        deleteButton = addChild(new TranslationButton(frequencySelector, getGuiLeft() + 29 + buttonWidth, getGuiTop() + yStart + 113, buttonWidth, 18,
+        deleteButton = addChild(new TranslationButton(frequencySelector, 29 + buttonWidth, yStart + 113, buttonWidth, 18,
               MekanismLang.BUTTON_DELETE, () -> GuiConfirmationDialog.show(gui(), MekanismLang.FREQUENCY_DELETE_CONFIRM.translate(), () -> {
             int selection = this.scrollList.getSelection();
             if (selection != -1) {
@@ -96,7 +96,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiRelativeEle
         if (hasColor) {
             addChild(new GuiSlot(SlotType.NORMAL, frequencySelector, 131, yStart + 113).setRenderAboveSlots());
             IGuiColorFrequencySelector<?> colorFrequencySelector = (IGuiColorFrequencySelector<?>) frequencySelector;
-            addChild(new ColorButton(frequencySelector, getGuiLeft() + 132, getGuiTop() + yStart + 114, 16, 16, () -> {
+            addChild(new ColorButton(frequencySelector, 132, yStart + 114, 16, 16, () -> {
                 IColorableFrequency frequency = colorFrequencySelector.getFrequency();
                 return frequency == null ? null : frequency.getColor();
             }, () -> colorFrequencySelector.sendColorUpdate(true), () -> colorFrequencySelector.sendColorUpdate(false)));

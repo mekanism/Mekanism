@@ -48,7 +48,7 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
             }
             return ret;
         }));
-        addButton(new GuiGasMode(this, leftPos + 159, topPos + 72, true, () -> tile.dumping, tile.getBlockPos(), 0));
+        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.dumping, tile.getBlockPos(), 0));
     }
 
     private void addStored(List<ITextComponent> ret, IChemicalTank<?, ?> tank, ILangEntry langKey) {

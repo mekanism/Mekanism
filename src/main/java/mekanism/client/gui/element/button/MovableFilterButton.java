@@ -34,10 +34,10 @@ public class MovableFilterButton extends FilterButton {
           Supplier<HashList<? extends IFilter<?>>> filters, IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress,
           Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         super(gui, x, y, width, height, index, filterIndex, filters, onPress, renderStackSupplier);
-        int arrowX = this.x + width - 12;
-        upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, this.y + 1, false, () -> upButtonPress.accept(index + filterIndex.getAsInt()),
+        int arrowX = relativeX + width - 12;
+        upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + 1, false, () -> upButtonPress.accept(index + filterIndex.getAsInt()),
               (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, MekanismLang.MOVE_UP.translate(), xAxis, yAxis)));
-        downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, this.y + height - 8, true,
+        downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + height - 8, true,
               () -> downButtonPress.accept(index + filterIndex.getAsInt()),
               (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis)));
     }

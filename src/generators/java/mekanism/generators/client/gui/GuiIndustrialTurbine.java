@@ -107,7 +107,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             }
             return Arrays.asList(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
         }));
-        addButton(new GuiGasMode(this, leftPos + 159, topPos + 72, true, () -> tile.getMultiblock().dumpMode, tile.getBlockPos(), 0));
+        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.getMultiblock().dumpMode, tile.getBlockPos(), 0));
     }
 
     @Override

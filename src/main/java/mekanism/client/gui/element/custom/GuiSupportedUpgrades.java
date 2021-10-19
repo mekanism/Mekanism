@@ -9,8 +9,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
-import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
@@ -19,7 +19,7 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.opengl.GL11;
 
-public class GuiSupportedUpgrades extends GuiRelativeElement {
+public class GuiSupportedUpgrades extends GuiElement {
 
     private static final int ELEMENT_SIZE = 12;
     private static final int FIRST_ROW_ROOM = (123 - 55) / ELEMENT_SIZE;

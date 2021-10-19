@@ -20,7 +20,6 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.item.GuiDictionary.DictionaryTagType;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.render.MekanismRenderer;
@@ -46,7 +45,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
-public class GuiDictionaryTarget extends GuiRelativeElement implements IJEIGhostTarget {
+public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
 
     private final Map<DictionaryTagType, List<String>> tags = new EnumMap<>(DictionaryTagType.class);
     private final Consumer<Set<DictionaryTagType>> tagSetter;

@@ -30,7 +30,7 @@ public class GuiQIOItemFrequencySelect extends GuiMekanism<QIOFrequencySelectIte
     protected void addGuiElements() {
         super.addGuiElements();
         addButton(new GuiFrequencySelector<>(this, 17));
-        addButton(new MekanismImageButton(this, leftPos + 6, topPos + 6, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedItemButton.BACK_BUTTON, menu.getHand()))));
     }
 

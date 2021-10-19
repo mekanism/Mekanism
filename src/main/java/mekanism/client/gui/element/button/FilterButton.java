@@ -52,13 +52,13 @@ public class FilterButton extends MekanismButton {
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
           ObjIntConsumer<IFilter<?>> onPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
-        super(gui, gui.getLeft() + x, gui.getTop() + y, width, height, StringTextComponent.EMPTY,
+        super(gui, x, y, width, height, StringTextComponent.EMPTY,
               () -> onPress.accept(getFilter(filters, filterIndex, index), filterIndex.getAsInt() + index), null);
         this.index = index;
         this.filterIndex = filterIndex;
         this.filters = filters;
-        slot = addChild(new GuiSlot(SlotType.NORMAL, gui, x + 2, y + 2));
-        slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, x + 3, y + 3,
+        slot = addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 2, relativeY + 2));
+        slotDisplay = addChild(new GuiSequencedSlotDisplay(gui, relativeX + 3, relativeY + 3,
               () -> renderStackSupplier.apply(getFilter(filters, filterIndex, index))));
         setButtonBackground(ButtonBackground.NONE);
     }

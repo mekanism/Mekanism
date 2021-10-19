@@ -76,7 +76,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         addButton(new GuiElementHolder(this, 9, 30, 144, 68));
         //new filter button border
         addButton(new GuiElementHolder(this, 9, 98, 144, 22));
-        addButton(new TranslationButton(this, leftPos + 10, topPos + 99, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addButton(new TranslationButton(this, 10, 99, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiQIOFilerSelect(this, tile))));
         scrollBar = addButton(new GuiScrollBar(this, 153, 30, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info

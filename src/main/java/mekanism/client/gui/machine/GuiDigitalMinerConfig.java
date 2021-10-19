@@ -69,9 +69,9 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new TranslationButton(this, leftPos + 56, topPos + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addButton(new TranslationButton(this, 56, 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiMinerFilerSelect(this, tile))));
-        addButton(new MekanismImageButton(this, leftPos + 5, topPos + 5, 11, 14, getButtonLocation("back"),
+        addButton(new MekanismImageButton(this, 5, 5, 11, 14, getButtonLocation("back"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
         addButton(new GuiDigitalSwitch(this, 10, 115, INVERSE, tile::getInverse, MekanismLang.MINER_INVERSE.translate(),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, tile)), SwitchType.LEFT_ICON));
@@ -86,7 +86,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
                       }
                   }
               }).setGhostHandler((IGhostBlockItemConsumer) ingredient -> updateInverseReplaceTarget(((ItemStack) ingredient).getItem()));
-        addButton(new MekanismImageButton(this, leftPos + 35, topPos + 137, 14, 16, getButtonLocation("exclamation"),
+        addButton(new MekanismImageButton(this, 35, 137, 14, 16, getButtonLocation("exclamation"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_REQUIRES_REPLACEMENT_BUTTON, tile)),
               getOnHover(() -> MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.of(tile.getInverseRequiresReplacement())))));
         radiusField = addButton(new GuiTextField(this, 13, 49, 38, 11));

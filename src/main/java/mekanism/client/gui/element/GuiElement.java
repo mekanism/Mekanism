@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
@@ -44,13 +45,28 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     private final List<GuiElement> positionOnlyChildren = new ArrayList<>();
 
     private IGuiWrapper guiObj;
-
     protected boolean playClickSound;
+    protected int relativeX;
+    protected int relativeY;
     public boolean isOverlay;
 
+    public GuiElement(IGuiWrapper gui, int x, int y, int width, int height) {
+        this(gui, x, y, width, height, StringTextComponent.EMPTY);
+    }
+
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text) {
-        super(x, y, width, height, text);
-        guiObj = gui;
+        super(gui.getLeft() + x, gui.getTop() + y, width, height, text);
+        this.relativeX = x;
+        this.relativeY = y;
+        this.guiObj = gui;
+    }
+
+    public int getRelativeX() {
+        return relativeX;
+    }
+
+    public int getRelativeY() {
+        return relativeY;
     }
 
     /**
@@ -142,6 +158,10 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     public void move(int changeX, int changeY) {
         x += changeX;
         y += changeY;
+        //Note: When moving we need to adjust our relative position but when resizing, we don't as we are relative to the
+        // positions changing when resizing, instead of moving where we are in relation to
+        relativeX += changeX;
+        relativeY += changeY;
         children.forEach(child -> child.move(changeX, changeY));
         positionOnlyChildren.forEach(child -> child.move(changeX, changeY));
     }
@@ -440,6 +460,12 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     protected void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
           TilingDirection tilingDirection) {
         GuiUtils.drawTiledSprite(matrix, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, getBlitOffset(), tilingDirection);
+    }
+
+    @Override
+    public void drawCenteredTextScaledBound(MatrixStack matrix, ITextComponent text, float maxLength, float y, int color) {
+        float scale = Math.min(1, maxLength / getStringWidth(text));
+        drawScaledCenteredText(matrix, text, relativeX + getXSize() / 2F, relativeY + y, color, scale);
     }
 
     public enum ButtonBackground {

@@ -21,7 +21,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
         super(gui, (gui.getWidth() - 152) / 2, 20, 152, 30 + filterCount * FILTER_HEIGHT, SelectedWindowData.UNSPECIFIED);
         this.tile = tile;
         addChild(new GuiElementHolder(gui, 23, relativeY + 18, 130, 2 + filterCount * FILTER_HEIGHT));
-        int buttonY = this.y + 19;
+        int buttonY = relativeY + 19;
         buttonY = addFilterButton(buttonY, MekanismLang.BUTTON_ITEMSTACK_FILTER, getItemStackFilterCreator());
         buttonY = addFilterButton(buttonY, MekanismLang.BUTTON_TAG_FILTER, getTagFilterCreator());
         buttonY = addFilterButton(buttonY, MekanismLang.BUTTON_MATERIAL_FILTER, getMaterialFilterCreator());
@@ -32,7 +32,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
         if (filterSupplier == null) {
             return buttonY;
         }
-        addChild(new TranslationButton(gui(), gui().getLeft() + 24, buttonY, 128, FILTER_HEIGHT, translationHelper, () -> {
+        addChild(new TranslationButton(gui(), 24, buttonY, 128, FILTER_HEIGHT, translationHelper, () -> {
             //Add the window for the filter dialog to the parent gui
             gui().addWindow(filterSupplier.create(gui(), tile));
             //And close the filter select dialog

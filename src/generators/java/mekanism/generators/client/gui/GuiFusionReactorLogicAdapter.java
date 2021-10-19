@@ -36,12 +36,12 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     protected void addGuiElements() {
         super.addGuiElements();
         addButton(new GuiElementHolder(this, 16, 31, 130, 90));
-        addButton(new MekanismImageButton(this, leftPos + 16, topPos + 19, 11, 18, getButtonLocation("toggle"),
+        addButton(new MekanismImageButton(this, 16, 19, 11, 18, getButtonLocation("toggle"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING)));
         scrollBar = addButton(new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {
             int typeShift = 22 * i;
-            addButton(new ReactorLogicButton<>(this, leftPos + 17, topPos + 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, type -> {
+            addButton(new ReactorLogicButton<>(this, 17, 32 + typeShift, i, tile, scrollBar::getCurrentSelection, tile::getModes, type -> {
                 if (type == null) {
                     return;
                 }

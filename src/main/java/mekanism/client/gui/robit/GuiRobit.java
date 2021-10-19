@@ -29,25 +29,25 @@ public abstract class GuiRobit<CONTAINER extends Container & IEntityContainer<En
         super.addGuiElements();
         addButton(new GuiSecurityTab(this, robit, 120));
         addButton(GuiSideHolder.create(this, 176, 6, 106, false, false, SpecialColors.TAB_ROBIT_MENU));
-        addButton(new MekanismImageButton(this, leftPos + 179, topPos + 10, 18, getButtonLocation("main"),
+        addButton(new MekanismImageButton(this, 179, 10, 18, getButtonLocation("main"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_MAIN, robit.getId())),
               getOnHover(MekanismLang.ROBIT)));
-        addButton(new MekanismImageButton(this, leftPos + 179, topPos + 30, 18, getButtonLocation("crafting"), () -> {
+        addButton(new MekanismImageButton(this, 179, 30, 18, getButtonLocation("crafting"), () -> {
             if (shouldOpenGui(RobitGuiType.CRAFTING)) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_CRAFTING, robit.getId()));
             }
         }, getOnHover(MekanismLang.ROBIT_CRAFTING)));
-        addButton(new MekanismImageButton(this, leftPos + 179, topPos + 50, 18, getButtonLocation("inventory"), () -> {
+        addButton(new MekanismImageButton(this, 179, 50, 18, getButtonLocation("inventory"), () -> {
             if (shouldOpenGui(RobitGuiType.INVENTORY)) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_INVENTORY, robit.getId()));
             }
         }, getOnHover(MekanismLang.ROBIT_INVENTORY)));
-        addButton(new MekanismImageButton(this, leftPos + 179, topPos + 70, 18, getButtonLocation("smelting"), () -> {
+        addButton(new MekanismImageButton(this, 179, 70, 18, getButtonLocation("smelting"), () -> {
             if (shouldOpenGui(RobitGuiType.SMELTING)) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_SMELTING, robit.getId()));
             }
         }, getOnHover(MekanismLang.ROBIT_SMELTING)));
-        addButton(new MekanismImageButton(this, leftPos + 179, topPos + 90, 18, getButtonLocation("repair"), () -> {
+        addButton(new MekanismImageButton(this, 179, 90, 18, getButtonLocation("repair"), () -> {
             if (shouldOpenGui(RobitGuiType.REPAIR)) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedEntityButton.ROBIT_REPAIR, robit.getId()));
             }

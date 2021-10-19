@@ -46,18 +46,18 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     protected void addGuiElements() {
         super.addGuiElements();
         addButton(new GuiSlot(SlotType.NORMAL, this, 12, 136).setRenderAboveSlots());
-        addButton(new TranslationButton(this, leftPos + 56, topPos + 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addButton(new TranslationButton(this, 56, 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiSorterFilerSelect(this, tile))));
-        addButton(new MekanismImageButton(this, leftPos + 12, topPos + 58, 14, getButtonLocation("single"),
+        addButton(new MekanismImageButton(this, 12, 58, 14, getButtonLocation("single"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SINGLE_ITEM_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_SINGLE_ITEM_DESCRIPTION)));
-        addButton(new MekanismImageButton(this, leftPos + 12, topPos + 84, 14, getButtonLocation("round_robin"),
+        addButton(new MekanismImageButton(this, 12, 84, 14, getButtonLocation("round_robin"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.ROUND_ROBIN_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_ROUND_ROBIN_DESCRIPTION)));
-        addButton(new MekanismImageButton(this, leftPos + 12, topPos + 110, 14, getButtonLocation("auto_eject"),
+        addButton(new MekanismImageButton(this, 12, 110, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION)));
-        addButton(new ColorButton(this, leftPos + 13, topPos + 137, 16, 16, () -> tile.color,
+        addButton(new ColorButton(this, 13,  137, 16, 16, () -> tile.color,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CHANGE_COLOR, tile,
                     hasShiftDown() ? -1 : TransporterUtils.getColorIndex(TransporterUtils.increment(tile.color)))),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CHANGE_COLOR, tile,
