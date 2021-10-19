@@ -22,7 +22,17 @@ public abstract class MekanismItemContainer extends MekanismContainer {
         super(type, id, inv);
         this.hand = hand;
         this.stack = stack;
+        if (!stack.isEmpty()) {
+            //It shouldn't be empty but validate it just in case
+            addContainerTrackers();
+        }
         addSlotsAndOpen();
+    }
+
+    protected void addContainerTrackers() {
+        if (stack.getItem() instanceof IItemContainerTracker) {
+            ((IItemContainerTracker) stack.getItem()).addContainerTrackers(this, stack);
+        }
     }
 
     @Override
@@ -42,5 +52,10 @@ public abstract class MekanismItemContainer extends MekanismContainer {
             }
             throw new IllegalStateException("Client received invalid stack (" + stack.getItem().getRegistryName() + ") for item container.");
         });
+    }
+
+    public interface IItemContainerTracker {
+
+        void addContainerTrackers(MekanismContainer container, ItemStack stack);
     }
 }

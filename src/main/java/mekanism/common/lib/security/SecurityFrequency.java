@@ -38,7 +38,7 @@ public class SecurityFrequency extends Frequency {
     }
 
     public SecurityFrequency() {
-        super(FrequencyType.SECURITY);
+        super(FrequencyType.SECURITY, SECURITY, null);
     }
 
     @Override

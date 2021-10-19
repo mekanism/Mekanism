@@ -159,7 +159,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     protected void openInventory(@Nonnull PlayerInventory inv) {
         super.openInventory(inv);
-        if (inv.player.level.isClientSide()) {
+        if (isRemote()) {
             Mekanism.packetHandler.sendToServer(PacketGuiItemDataRequest.qioItemViewer());
         }
     }
@@ -432,7 +432,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public void updateSearch(String queryText) {
         // searches should only updated on client-side
-        if (!inv.player.level.isClientSide() || itemList == null) {
+        if (!isRemote() || itemList == null) {
             return;
         }
 

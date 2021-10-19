@@ -96,10 +96,18 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv) {
         super(type.getContainerType(), id);
         this.inv = inv;
-        if (!this.inv.player.level.isClientSide) {
+        if (!isRemote()) {
             //Only keep track of uuid based selected grids on the server (we use a size of one as for the most part containers are actually 1:1)
             selectedWindows = new HashMap<>(1);
         }
+    }
+
+    public boolean isRemote() {
+        return inv.player.level.isClientSide;
+    }
+
+    public UUID getPlayerUUID() {
+        return inv.player.getUUID();
     }
 
     @Nonnull
@@ -166,7 +174,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
             if (!insertableSlot.canMergeWith(stack)) {
                 return false;
             }
-            SelectedWindowData selectedWindow = inv.player.level.isClientSide ? getSelectedWindow() : getSelectedWindow(inv.player.getUUID());
+            SelectedWindowData selectedWindow = isRemote() ? getSelectedWindow() : getSelectedWindow(getPlayerUUID());
             return insertableSlot.exists(selectedWindow) && super.canTakeItemForPickAll(stack, slot);
         }
         return super.canTakeItemForPickAll(stack, slot);

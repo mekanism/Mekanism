@@ -110,9 +110,6 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 return null;
             }
         }
-        //TODO - 10.1: Do we need to validate the user has access?? Aka if they are looking at JEI does our kick out code on security level
-        // change actually work properly?? Look at this when looking at https://github.com/mekanism/Mekanism-Feature-Requests/issues/153
-        // We also should check users losing access when in JEI of other things we have a security system for
         //TODO: It may be nice to eventually implement some sort of caching for this, it isn't drastically needed because JEI is smart
         // and only calls it once per recipe to decide if it should display the button rather than say calling it every render tick in
         // case something changed and the render state should be different. We probably could add some sort of listeners to

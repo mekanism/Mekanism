@@ -67,6 +67,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     public InventoryFrequency() {
         super(FrequencyType.INVENTORY);
+        presetVariables();
     }
 
     private void presetVariables() {
@@ -96,7 +97,6 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        presetVariables();
         storedEnergy.deserializeNBT(nbtTags.getCompound(NBTConstants.ENERGY_STORED));
         storedFluid.deserializeNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
         storedGas.deserializeNBT(nbtTags.getCompound(NBTConstants.GAS_STORED));

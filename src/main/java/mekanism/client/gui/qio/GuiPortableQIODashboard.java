@@ -34,7 +34,7 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
 
     @Override
     public FrequencyIdentity getFrequency() {
-        return ((IFrequencyItem) menu.getStack().getItem()).getFrequency(menu.getStack());
+        return ((IFrequencyItem) menu.getStack().getItem()).getFrequencyIdentity(menu.getStack());
     }
 
     private ITextComponent getName() {

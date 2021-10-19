@@ -98,7 +98,12 @@ public abstract class BlockMekanism extends Block {
         if (tile == null) {
             return itemStack;
         }
+        //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
+        // the server doesn't bother syncing the data to the client. For example with what frequencies there are
         Item item = itemStack.getItem();
+        if (tile.getFrequencyComponent().hasCustomFrequencies()) {
+            tile.getFrequencyComponent().write(ItemDataUtils.getDataMap(itemStack));
+        }
         if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
             securityItem.setOwnerUUID(itemStack, tile.getOwnerUUID());
@@ -242,6 +247,12 @@ public abstract class BlockMekanism extends Block {
         Item item = stack.getItem();
         setTileData(world, pos, state, placer, stack, tile);
 
+        //TODO - 10.1: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
+        // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
+        // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
+        if (!world.isClientSide && tile.getFrequencyComponent().hasCustomFrequencies()) {
+            tile.getFrequencyComponent().read(ItemDataUtils.getDataMap(stack));
+        }
         if (tile instanceof TileEntitySecurityDesk && placer != null) {
             tile.getSecurity().setOwnerUUID(placer.getUUID());
         }

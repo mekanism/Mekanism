@@ -1059,12 +1059,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public CompoundNBT getConfigurationData(PlayerEntity player) {
         CompoundNBT data = new CompoundNBT();
         addGeneralPersistentData(data);
+        getFrequencyComponent().writeConfiguredFrequencies(data);
         return data;
     }
 
     @Override
     public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
         loadGeneralPersistentData(data);
+        getFrequencyComponent().readConfiguredFrequencies(player, data);
     }
 
     @Override

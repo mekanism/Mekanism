@@ -7,6 +7,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -28,6 +29,19 @@ public class TextComponentUtil {
     @Deprecated//TODO - 1.17: Remove this
     public static IFormattableTextComponent getFormattableComponent(ITextComponent component) {
         return component.copy();
+    }
+
+    /**
+     * Helper to apply an integer color style to a given text component.
+     *
+     * @param component Component to color.
+     * @param color     RGB color to apply.
+     *
+     * @return Colored component.
+     */
+    public static IFormattableTextComponent color(IFormattableTextComponent component, int color) {
+        return component.setStyle(component.getStyle()
+              .withColor(Color.fromRgb(color)));
     }
 
     /**

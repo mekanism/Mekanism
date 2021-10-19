@@ -72,7 +72,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     public void tickServer() {
         if (getFrequency() == null && ownerUUID != null) {
-            tile.getFrequencyComponent().setFrequencyFromData(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, true));
+            tile.setFrequency(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, true), ownerUUID);
         }
     }
 

@@ -38,6 +38,16 @@
                   "op": "replace"
                 },
                 {
+                  "source": "dumpLeft",
+                  "target": "mekData.dumpLeft",
+                  "op": "replace"
+                },
+                {
+                  "source": "dumpRight",
+                  "target": "mekData.dumpRight",
+                  "op": "replace"
+                },
+                {
                   "source": "controlType",
                   "target": "mekData.controlType",
                   "op": "replace"

@@ -27,6 +27,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
+import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -36,6 +37,10 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.integration.energy.EnergyCompatUtils.EnergyType;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
+import mekanism.common.lib.frequency.Frequency;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
@@ -43,6 +48,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.ElectricUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
+import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.UpgradeDisplay;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
@@ -60,6 +66,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SPlayEntityEffectPacket;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
@@ -386,6 +393,45 @@ public final class MekanismUtils {
             posY -= 0.08;
         }
         return new Vector3d(player.getX(), posY, player.getZ());
+    }
+
+    /**
+     * @apiNote Only call on the client.
+     */
+    public static void addFrequencyToTileTooltip(ItemStack stack, FrequencyType<?> frequencyType, List<ITextComponent> tooltip) {
+        if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_FREQUENCY, NBT.TAG_COMPOUND)) {
+            CompoundNBT frequencyComponent = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_FREQUENCY);
+            if (frequencyComponent.contains(frequencyType.getName(), NBT.TAG_COMPOUND)) {
+                Frequency frequency = frequencyType.create(frequencyComponent.getCompound(frequencyType.getName()));
+                frequency.setValid(false);
+                tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getName()));
+                if (frequency.getOwner() != null) {
+                    String owner = OwnerDisplay.getOwnerName(MekanismClient.tryGetClientPlayer(), frequency.getOwner(), frequency.getClientOwner());
+                    if (owner != null) {
+                        tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
+                    }
+                }
+                tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.isPublic() ? MekanismLang.PUBLIC : MekanismLang.PRIVATE));
+            }
+        }
+    }
+
+    /**
+     * @apiNote Only call on the client.
+     */
+    public static void addFrequencyItemTooltip(ItemStack stack, List<ITextComponent> tooltip) {
+        FrequencyIdentity frequency = ((IFrequencyItem) stack.getItem()).getFrequencyIdentity(stack);
+        if (frequency != null) {
+            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getKey()));
+            CompoundNBT frequencyCompound = ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY);
+            if (frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
+                String owner = OwnerDisplay.getOwnerName(MekanismClient.tryGetClientPlayer(), frequencyCompound.getUUID(NBTConstants.OWNER_UUID), null);
+                if (owner != null) {
+                    tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
+                }
+            }
+            tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.isPublic() ? MekanismLang.PUBLIC : MekanismLang.PRIVATE));
+        }
     }
 
     public static void addUpgradesToTooltip(ItemStack stack, List<ITextComponent> tooltip) {

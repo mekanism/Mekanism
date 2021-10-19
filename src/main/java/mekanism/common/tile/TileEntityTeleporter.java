@@ -2,14 +2,12 @@ package mekanism.common.tile;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -23,11 +21,13 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -44,9 +44,7 @@ import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.TileComponentChunkLoader;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -54,7 +52,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.server.MinecraftServer;
@@ -73,7 +70,7 @@ import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
-public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader, ISustainedData {
+public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
 
     public final Set<UUID> didTeleport = new ObjectOpenHashSet<>();
     private AxisAlignedBB teleportBounds;
@@ -99,6 +96,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         super(MekanismBlocks.TELEPORTER);
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.TELEPORTER, true, true, false);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
         cacheCoord();
     }
 
@@ -581,32 +579,6 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        TeleporterFrequency freq = frequencyComponent.getFrequency(FrequencyType.TELEPORTER);
-        if (freq != null) {
-            ItemDataUtils.setCompound(itemStack, NBTConstants.FREQUENCY, freq.serializeIdentity());
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        if (!isRemote()) {
-            FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.TELEPORTER, ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
-            if (freq != null) {
-                setFrequency(FrequencyType.TELEPORTER, freq);
-            }
-        }
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.NAME, NBTConstants.FREQUENCY + "." + NBTConstants.NAME);
-        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY, NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY);
-        return remap;
-    }
-
-    @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableByte.create(() -> status, value -> status = value));
@@ -662,7 +634,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (frequency == null) {
             throw new ComputerException("No public teleporter frequency with name '%s' found.", name);
         }
-        setFrequency(FrequencyType.TELEPORTER, frequency.getIdentity());
+        setFrequency(FrequencyType.TELEPORTER, frequency.getIdentity(), getOwnerUUID());
     }
 
     @ComputerMethod
@@ -672,7 +644,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         if (frequency != null) {
             throw new ComputerException("Unable to create public teleporter frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.TELEPORTER, new FrequencyIdentity(name, true));
+        setFrequency(FrequencyType.TELEPORTER, new FrequencyIdentity(name, true), getOwnerUUID());
     }
 
     @ComputerMethod

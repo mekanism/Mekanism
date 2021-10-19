@@ -67,6 +67,7 @@ public final class NBTConstants {
     public static final String COLOR = "color";
     public static final String COMPONENT_CONFIG = "componentConfig";
     public static final String COMPONENT_EJECTOR = "componentEjector";
+    public static final String COMPONENT_FREQUENCY = "componentFrequency";
     public static final String COMPONENT_SECURITY = "componentSecurity";
     public static final String COMPONENT_UPGRADE = "componentUpgrade";
     public static final String CONFIG = "config";

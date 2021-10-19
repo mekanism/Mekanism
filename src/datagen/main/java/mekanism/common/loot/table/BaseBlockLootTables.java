@@ -17,6 +17,7 @@ import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
@@ -128,6 +129,10 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             TileEntity tile = null;
             if (block instanceof IHasTileEntity) {
                 tile = ((IHasTileEntity<?>) block).getTileType().create();
+            }
+            if (tile instanceof IFrequencyHandler && ((IFrequencyHandler) tile).getFrequencyComponent().hasCustomFrequencies()) {
+                nbtBuilder.copy(NBTConstants.COMPONENT_FREQUENCY, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_FREQUENCY);
+                hasData = true;
             }
             if (Attribute.has(block, AttributeSecurity.class)) {
                 //TODO: Should we just save the entire security component?

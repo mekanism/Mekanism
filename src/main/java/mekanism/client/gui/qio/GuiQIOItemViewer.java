@@ -61,10 +61,10 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         addButton(new GuiInnerScreen(this, 7, 15, imageWidth - 16, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
-            if (freq != null) {
-                list.add(MekanismLang.FREQUENCY.translate(freq.getKey()));
-            } else {
+            if (freq == null) {
                 list.add(MekanismLang.NO_FREQUENCY.translate());
+            } else {
+                list.add(MekanismLang.FREQUENCY.translate(freq.getKey()));
             }
             return list;
         }).tooltip(() -> {

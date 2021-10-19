@@ -46,7 +46,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFie
  * harvest levels to pass to it, and the fact that forge already replaces a bunch of vanilla loot tables to use the shears tag instead of the shears item. Once a solution
  * gets to the point where it seems reasonable enough to do, a forge PR <strong>SHOULD</strong> be made and this reload listener removed.
  */
-public class LootTableModifierReloadListener implements IResourceManagerReloadListener {
+public class LootTableModifierReloadListener implements IResourceManagerReloadListener {//TODO - 1.17: Remove this won't be needed anymore
 
     private final DataPackRegistries dataPackRegistries;
 
@@ -191,8 +191,6 @@ public class LootTableModifierReloadListener implements IResourceManagerReloadLi
         }
     }
 
-    //TODO - 1.17: Double check if any of these had things change srg ids which then would cause issues
-    //TODO - 10.1: Evaluate moving this into a util class that then we can just instantiate from various places as needed
     //Class to make reflecting and grabbing the value of fields in a cached way easier
     private static class FieldDetails<CLASS, TYPE> {
 

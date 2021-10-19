@@ -1,15 +1,12 @@
 package mekanism.common.tile;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -50,7 +47,6 @@ import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
-import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
@@ -69,20 +65,16 @@ import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.PigmentProxy;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.ProxySlotInfoCreator;
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.SlurryProxy;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
-import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.ChunkPos;
 
-public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IFrequencyHandler, ISustainedData, IChunkLoader {
+public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IChunkLoader {
 
     private final TileComponentChunkLoader<TileEntityQuantumEntangloporter> chunkLoaderComponent;
 
@@ -188,12 +180,15 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
                 CableUtils.emit(info.getAllOutputtingSides(), getFreq().storedEnergy, this);
             }
         }
-        //TODO - 10.1: Re-evaluate, when placing a fresh entangloporter it seems to have a negative mK Dissipated number
-        // until a frequency is set
-        updateHeatCapacitors(null); // manually trigger heat capacitor update
-        HeatTransfer loss = simulate();
-        lastTransferLoss = loss.getAdjacentTransfer();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer();
+        if (hasFrequency()) {
+            updateHeatCapacitors(null); // manually trigger heat capacitor update
+            HeatTransfer loss = simulate();
+            lastTransferLoss = loss.getAdjacentTransfer();
+            lastEnvironmentLoss = loss.getEnvironmentTransfer();
+        } else {
+            lastTransferLoss = 0;
+            lastEnvironmentLoss = 0;
+        }
     }
 
     @ComputerMethod
@@ -236,37 +231,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return Collections.singleton(new ChunkPos(getBlockPos()));
     }
 
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        InventoryFrequency freq = frequencyComponent.getFrequency(FrequencyType.INVENTORY);
-        if (freq != null) {
-            ItemDataUtils.setCompound(itemStack, NBTConstants.FREQUENCY, freq.serializeIdentity());
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        //TODO - 10.1: Re-evaluate the entirety of BlockMekanism#onBlockPlacedBy and see what parts potentially should not be getting
-        // called at all when on the client side. My guess is that read sustained data isn't one of these but for now I am just catching
-        // the issue here. While we are at it also re-evaluate writeSustainedData as the client doesn't know the proper information but
-        // when they are in creative their itemstack is the "source" one so it overrides the one with the correct data thus making it so
-        // the frequency doesn't transfer to it
-        if (!isRemote()) {
-            FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
-            if (freq != null) {
-                setFrequency(FrequencyType.INVENTORY, freq);
-            }
-        }
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.NAME, NBTConstants.FREQUENCY + "." + NBTConstants.NAME);
-        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY, NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY);
-        return remap;
-    }
-
     public InventoryFrequency getFreq() {
         return getFrequency(FrequencyType.INVENTORY);
     }
@@ -286,27 +250,6 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         super.addContainerTrackers(container);
         container.track(SyncableDouble.create(this::getLastTransferLoss, value -> lastTransferLoss = value));
         container.track(SyncableDouble.create(this::getLastEnvironmentLoss, value -> lastEnvironmentLoss = value));
-    }
-
-    @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = super.getConfigurationData(player);
-        InventoryFrequency freq = getFreq();
-        if (freq != null) {
-            data.put(NBTConstants.FREQUENCY, freq.serializeIdentity());
-        }
-        return data;
-    }
-
-    @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
-        FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.INVENTORY, data.getCompound(NBTConstants.FREQUENCY));
-        if (freq == null) {
-            unsetFrequency(FrequencyType.INVENTORY);
-        } else {
-            setFrequency(FrequencyType.INVENTORY, freq);
-        }
     }
 
     //Methods relating to IComputerTile
@@ -331,7 +274,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (frequency == null) {
             throw new ComputerException("No public inventory frequency with name '%s' found.", name);
         }
-        setFrequency(FrequencyType.INVENTORY, frequency.getIdentity());
+        setFrequency(FrequencyType.INVENTORY, frequency.getIdentity(), getOwnerUUID());
     }
 
     @ComputerMethod
@@ -341,7 +284,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (frequency != null) {
             throw new ComputerException("Unable to create public inventory frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.INVENTORY, new FrequencyIdentity(name, true));
+        setFrequency(FrequencyType.INVENTORY, new FrequencyIdentity(name, true), getOwnerUUID());
     }
 
     //Note: A bunch of the below buffer getters are rather "hardcoded", but they should be fine unless we decide to add support for more buffers at some point

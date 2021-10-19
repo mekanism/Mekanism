@@ -22,7 +22,6 @@ import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
-import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemHDPEElytra;
 import mekanism.common.item.gear.ItemJetpack;
@@ -31,11 +30,11 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IRadialModeItem;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.to_server.PacketModeChange;
-import mekanism.common.network.to_server.PacketPortableTeleporterGui;
-import mekanism.common.network.to_server.PacketPortableTeleporterGui.PortableTeleporterPacketType;
+import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
 import mekanism.common.network.to_server.PacketRadialModeChange;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismModules;
@@ -137,12 +136,12 @@ public class ClientTickHandler {
         return !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem);
     }
 
-    public static void portableTeleport(PlayerEntity player, Hand hand, TeleporterFrequency freq) {
+    public static void portableTeleport(PlayerEntity player, Hand hand, FrequencyIdentity identity) {
         int delay = MekanismConfig.gear.portableTeleporterDelay.get();
         if (delay == 0) {
-            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.TELEPORT, hand, freq));
+            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterTeleport(hand, identity));
         } else {
-            portableTeleports.put(player, new TeleportData(hand, freq, minecraft.level.getGameTime() + delay));
+            portableTeleports.put(player, new TeleportData(hand, identity, minecraft.level.getGameTime() + delay));
         }
     }
 
@@ -197,9 +196,9 @@ public class ClientTickHandler {
                     double z = player.getZ() + rand.nextDouble() - 0.5D;
                     minecraft.level.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
                 }
-
-                if (minecraft.level.getGameTime() == entry.getValue().teleportTime) {
-                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.TELEPORT, entry.getValue().hand, entry.getValue().freq));
+                TeleportData data = entry.getValue();
+                if (minecraft.level.getGameTime() == data.teleportTime) {
+                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterTeleport(data.hand, data.identity));
                     iter.remove();
                 }
             }
@@ -400,16 +399,17 @@ public class ClientTickHandler {
         }
     }
 
+    //TODO - 1.17: Convert this to a record
     private static class TeleportData {
 
         private final Hand hand;
-        private final TeleporterFrequency freq;
+        private final FrequencyIdentity identity;
         private final long teleportTime;
 
-        public TeleportData(Hand h, TeleporterFrequency f, long t) {
-            hand = h;
-            freq = f;
-            teleportTime = t;
+        public TeleportData(Hand hand, FrequencyIdentity identity, long teleportTime) {
+            this.hand = hand;
+            this.identity = identity;
+            this.teleportTime = teleportTime;
         }
     }
 }

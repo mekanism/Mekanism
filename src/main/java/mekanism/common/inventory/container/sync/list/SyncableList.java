@@ -1,5 +1,7 @@
 package mekanism.common.inventory.container.sync.list;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -13,18 +15,31 @@ import mekanism.common.network.to_client.container.property.list.ListPropertyDat
  */
 public abstract class SyncableList<TYPE> implements ISyncableData {
 
-    private final Supplier<@NonNull List<TYPE>> getter;
+    private final Supplier<@NonNull ? extends Collection<TYPE>> getter;
     private final Consumer<@NonNull List<TYPE>> setter;
     private int lastKnownHashCode;
 
-    protected SyncableList(Supplier<@NonNull List<TYPE>> getter, Consumer<@NonNull List<TYPE>> setter) {
+    protected SyncableList(Supplier<@NonNull ? extends Collection<TYPE>> getter, Consumer<@NonNull List<TYPE>> setter) {
         this.getter = getter;
         this.setter = setter;
     }
 
     @Nonnull
     public List<TYPE> get() {
+        Collection<TYPE> collection = getRaw();
+        if (collection instanceof List) {
+            return (List<TYPE>) collection;
+        }
+        return new ArrayList<>(collection);
+    }
+
+    @Nonnull
+    protected Collection<TYPE> getRaw() {
         return getter.get();
+    }
+
+    protected int getValueHashCode() {
+        return getRaw().hashCode();
     }
 
     public void set(@Nonnull List<TYPE> value) {
@@ -36,13 +51,13 @@ public abstract class SyncableList<TYPE> implements ISyncableData {
 
     @Override
     public DirtyType isDirty() {
-        List<TYPE> values = get();
-        int valuesHashCode = values.hashCode();
+        int valuesHashCode = getValueHashCode();
         if (lastKnownHashCode == valuesHashCode) {
             return DirtyType.CLEAN;
         }
         //TODO: Create a way to declare changes so we don't have to sync the entire list, when a single element changes
-        // Both for removal as well as addition
+        // Both for removal as well as addition. Note that GuiFrequencySelector makes some assumptions based on the fact
+        // that this is not currently possible so a new list will occur each time
         lastKnownHashCode = valuesHashCode;
         return DirtyType.DIRTY;
     }

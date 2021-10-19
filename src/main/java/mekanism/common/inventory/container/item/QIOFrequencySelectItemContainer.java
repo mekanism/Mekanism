@@ -24,8 +24,4 @@ public class QIOFrequencySelectItemContainer extends FrequencyItemContainer<QIOF
     public FrequencyType<QIOFrequency> getFrequencyType() {
         return FrequencyType.QIO;
     }
-
-    public Hand getHand() {
-        return hand;
-    }
 }

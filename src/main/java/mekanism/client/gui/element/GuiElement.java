@@ -199,7 +199,13 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
             matrix.translate(getGuiLeft(), getGuiTop(), 0);
             renderForeground(matrix, mouseX, mouseY);
             // translate forward to render child foreground
-            children.forEach(child -> child.onRenderForeground(matrix, mouseX, mouseY, 50, totalOffset + 50));
+            children.forEach(child -> {
+                //Only apply the z shift to each child instead of having future children be translated by more as well
+                // Note: Does not apply to compounding with grandchildren as we want those to compound
+                matrix.pushPose();
+                child.onRenderForeground(matrix, mouseX, mouseY, 50, totalOffset + 50);
+                matrix.popPose();
+            });
         }
     }
 

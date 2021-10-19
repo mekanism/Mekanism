@@ -2,15 +2,13 @@ package mekanism.common.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyManager;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -20,24 +18,17 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
 
     @Nullable
     private final World world;
-    private final UUID playerUUID;
     /**
      * @apiNote This is only not final for purposes of being able to assign and use it in getInitialInventory.
      */
     private QIOCraftingWindow[] craftingWindows;
 
-    public PortableQIODashboardInventory(ItemStack stack, @Nullable PlayerInventory inv) {
+    public PortableQIODashboardInventory(ItemStack stack, @Nonnull PlayerInventory inv) {
         super(stack);
-        if (inv == null) {
-            this.world = null;
-            this.playerUUID = null;
-        } else {
-            this.world = inv.player.getCommandSenderWorld();
-            this.playerUUID = inv.player.getUUID();
-            for (QIOCraftingWindow craftingWindow : craftingWindows) {
-                //Force refresh the recipe now that we have a world set and can actually calculate it
-                craftingWindow.invalidateRecipe();
-            }
+        this.world = inv.player.getCommandSenderWorld();
+        for (QIOCraftingWindow craftingWindow : craftingWindows) {
+            //Force refresh the recipe now that we have a world set and can actually calculate it
+            craftingWindow.invalidateRecipe();
         }
     }
 
@@ -71,17 +62,16 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
     @Override
     public QIOFrequency getFrequency() {
         if (world != null && !world.isClientSide()) {
-            FrequencyIdentity identity = ((IFrequencyItem) stack.getItem()).getFrequency(stack);
-            if (identity == null) {
-                return null;
+            IFrequencyItem frequencyItem = (IFrequencyItem) stack.getItem();
+            if (frequencyItem.hasFrequency(stack)) {
+                Frequency frequency = frequencyItem.getFrequency(stack);
+                if (frequency instanceof QIOFrequency) {
+                    return (QIOFrequency) frequency;
+                } else {
+                    // if this frequency no longer exists, remove the reference from the stack
+                    frequencyItem.setFrequency(stack, null);
+                }
             }
-            FrequencyManager<QIOFrequency> manager = identity.isPublic() ? FrequencyType.QIO.getManager(null) : FrequencyType.QIO.getManager(playerUUID);
-            QIOFrequency freq = manager.getFrequency(identity.getKey());
-            // if this frequency no longer exists, remove the reference from the stack
-            if (freq == null) {
-                ((IFrequencyItem) stack.getItem()).setFrequency(stack, null);
-            }
-            return freq;
         }
         return null;
     }

@@ -1,12 +1,12 @@
 package mekanism.common.tile.qio;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
-import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.text.EnumColor;
+import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.qio.IQIOFrequencyHolder;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -14,21 +14,19 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.interfaces.ISustainedData;
-import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants.NBT;
 
-public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder, ISustainedData {
+public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder {
 
     private EnumColor lastColor;
 
     public TileEntityQIOComponent(IBlockProvider blockProvider) {
         super(blockProvider);
         frequencyComponent.track(FrequencyType.QIO, true, true, true);
+        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     public EnumColor getColor() {
@@ -47,32 +45,6 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         if (level.getGameTime() % 10 == 0) {
             setActive(frequency != null);
         }
-    }
-
-    @Override
-    public void writeSustainedData(ItemStack itemStack) {
-        QIOFrequency freq = frequencyComponent.getFrequency(FrequencyType.QIO);
-        if (freq != null) {
-            ItemDataUtils.setCompound(itemStack, NBTConstants.FREQUENCY, freq.serializeIdentity());
-        }
-    }
-
-    @Override
-    public void readSustainedData(ItemStack itemStack) {
-        if (!isRemote()) {
-            FrequencyIdentity freq = FrequencyIdentity.load(FrequencyType.QIO, ItemDataUtils.getCompound(itemStack, NBTConstants.FREQUENCY));
-            if (freq != null) {
-                setFrequency(FrequencyType.QIO, freq);
-            }
-        }
-    }
-
-    @Override
-    public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
-        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.NAME, NBTConstants.FREQUENCY + "." + NBTConstants.NAME);
-        remap.put(NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY, NBTConstants.FREQUENCY + "." + NBTConstants.PUBLIC_FREQUENCY);
-        return remap;
     }
 
     @Nonnull
@@ -124,7 +96,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         if (frequency == null) {
             throw new ComputerException("No public QIO frequency with name '%s' found.", name);
         }
-        setFrequency(FrequencyType.QIO, frequency.getIdentity());
+        setFrequency(FrequencyType.QIO, frequency.getIdentity(), getOwnerUUID());
     }
 
     @ComputerMethod
@@ -134,7 +106,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         if (frequency != null) {
             throw new ComputerException("Unable to create public QIO frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.QIO, new FrequencyIdentity(name, true));
+        setFrequency(FrequencyType.QIO, new FrequencyIdentity(name, true), getOwnerUUID());
     }
 
     @ComputerMethod

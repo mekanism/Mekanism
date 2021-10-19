@@ -30,6 +30,7 @@ import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.lib.collection.BiMultimap;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.to_client.PacketQIOItemViewerGuiSync;
@@ -42,7 +43,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
-public class QIOFrequency extends Frequency {
+public class QIOFrequency extends Frequency implements IColorableFrequency {
 
     private static final Random rand = new Random();
 
@@ -327,10 +328,12 @@ public class QIOFrequency extends Frequency {
         playersViewingItems.remove(player);
     }
 
+    @Override
     public EnumColor getColor() {
         return color;
     }
 
+    @Override
     public void setColor(EnumColor color) {
         this.color = color;
     }
@@ -470,7 +473,7 @@ public class QIOFrequency extends Frequency {
         totalCountCapacity = buf.readVarLong();
         clientTypes = buf.readVarInt();
         totalTypeCapacity = buf.readVarInt();
-        color = buf.readEnum(EnumColor.class);
+        setColor(buf.readEnum(EnumColor.class));
     }
 
     @Override
@@ -482,7 +485,7 @@ public class QIOFrequency extends Frequency {
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, value -> color = value);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, this::setColor);
     }
 
     public void addDrive(QIODriveKey key) {

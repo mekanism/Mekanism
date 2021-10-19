@@ -1,5 +1,7 @@
 package mekanism.common.tile.machine;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -57,15 +59,19 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.GasSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
+import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe> implements IHasGasMode, FluidRecipeLookupHandler<ElectrolysisRecipe> {
+public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe> implements IHasGasMode, FluidRecipeLookupHandler<ElectrolysisRecipe>,
+      ISustainedData {
 
     /**
      * This separator's water slot.
@@ -296,6 +302,26 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         super.addGeneralPersistentData(data);
         data.putInt(NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
         data.putInt(NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
+    }
+
+    @Override
+    public void writeSustainedData(ItemStack itemStack) {
+        ItemDataUtils.setInt(itemStack, NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
+        ItemDataUtils.setInt(itemStack, NBTConstants.DUMP_RIGHT, dumpRight.ordinal());
+    }
+
+    @Override
+    public void readSustainedData(ItemStack itemStack) {
+        dumpLeft = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.DUMP_LEFT));
+        dumpRight = GasMode.byIndexStatic(ItemDataUtils.getInt(itemStack, NBTConstants.DUMP_RIGHT));
+    }
+
+    @Override
+    public Map<String, String> getTileDataRemap() {
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
+        remap.put(NBTConstants.DUMP_LEFT, NBTConstants.DUMP_LEFT);
+        remap.put(NBTConstants.DUMP_RIGHT, NBTConstants.DUMP_RIGHT);
+        return remap;
     }
 
     @Override
