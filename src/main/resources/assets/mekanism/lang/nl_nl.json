@@ -199,6 +199,7 @@
   "boiler.mekanism.invalid_air_pockets": "Kon zich niet vormen, losgekoppelde luchtbellen gevonden aan de binnenkant.",
   "boiler.mekanism.invalid_extra_disperser": "Kan niet vormen, ongeldige Druk Dispersers gevonden.",
   "boiler.mekanism.invalid_missing_disperser": "Kan niet vormen, Druk Disperser verwacht op %s maar niet gevonden.",
+  "boiler.mekanism.invalid_no_disperser": "Kan de boiler niet vormen. Geen Drukverdeler laag gevonden.",
   "boiler.mekanism.max_boil": "Max Boil: %s mB/t",
   "boiler.mekanism.max_steam": "Max Steam: %s mB",
   "boiler.mekanism.max_water": "Max. water: %s mB",
