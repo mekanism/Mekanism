@@ -9,6 +9,7 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
+import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -87,28 +88,27 @@ public class MovableFilterButton extends FilterButton {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        if (visible) {
-            //Update visibility state of our buttons
-            updateButtonVisibility();
-            //Render our sub buttons and our slot
-            upButton.onDrawBackground(matrix, mouseX, mouseY, partialTicks);
-            downButton.onDrawBackground(matrix, mouseX, mouseY, partialTicks);
-        }
-    }
-
-    @Override
-    protected void colorButton() {
-        //TODO - 10.1: Fix the coloring of this as tags and material filters don't really even show as colored
         IFilter<?> filter = getFilter(filters, filterIndex, index);
+        EnumColor color;
         if (filter instanceof IItemStackFilter) {
-            MekanismRenderer.color(EnumColor.INDIGO, 1.0F, 2.5F);
+            color = EnumColor.INDIGO;
         } else if (filter instanceof ITagFilter) {
-            MekanismRenderer.color(EnumColor.BRIGHT_GREEN, 1.0F, 2.5F);
+            color = EnumColor.BRIGHT_GREEN;
         } else if (filter instanceof IMaterialFilter) {
-            MekanismRenderer.color(EnumColor.PURPLE, 1.0F, 4F);
+            color = EnumColor.PINK;
         } else if (filter instanceof IModIDFilter) {
-            MekanismRenderer.color(EnumColor.PINK, 1.0F, 2.5F);
+            color = EnumColor.RED;
+        } else {
+            color = null;
         }
+        if (color != null) {
+            GuiUtils.fill(matrix, x, y, width, height, MekanismRenderer.getColorARGB(color, 0.5F));
+            MekanismRenderer.resetColor();
+        }
+        updateButtonVisibility();
+        //Render our sub buttons and our slot
+        upButton.onDrawBackground(matrix, mouseX, mouseY, partialTicks);
+        downButton.onDrawBackground(matrix, mouseX, mouseY, partialTicks);
     }
 
     @Override

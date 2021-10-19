@@ -15,7 +15,6 @@ import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.warning.WarningTracker.WarningType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -79,16 +78,11 @@ public class FilterButton extends MekanismButton {
         super.render(matrix, mouseX, mouseY, partialTicks);
     }
 
-    protected void colorButton() {
-    }
-
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        colorButton();
         minecraft.textureManager.bind(TEXTURE);
         blit(matrix, x, y, width, height, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
-        MekanismRenderer.resetColor();
     }
 
     @Override

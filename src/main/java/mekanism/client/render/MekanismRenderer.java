@@ -279,12 +279,8 @@ public class MekanismRenderer {
     }
 
     public static void color(@Nullable EnumColor color, float alpha) {
-        color(color, alpha, 1.0F);
-    }
-
-    public static void color(@Nullable EnumColor color, float alpha, float multiplier) {
         if (color != null) {
-            RenderSystem.color4f(color.getColor(0) * multiplier, color.getColor(1) * multiplier, color.getColor(2) * multiplier, alpha);
+            RenderSystem.color4f(color.getColor(0), color.getColor(1), color.getColor(2), alpha);
         }
     }
 
