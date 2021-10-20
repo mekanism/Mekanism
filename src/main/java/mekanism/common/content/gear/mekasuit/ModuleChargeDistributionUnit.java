@@ -1,7 +1,5 @@
 package mekanism.common.content.gear.mekasuit;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.Set;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;

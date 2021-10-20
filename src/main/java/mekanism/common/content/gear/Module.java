@@ -43,7 +43,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     public static final String ENABLED_KEY = "enabled";
     public static final String HANDLE_MODE_CHANGE_KEY = "handleModeChange";
 
-    protected final List<ModuleConfigItem<?>> configItems = new ArrayList<>();
+    private final List<ModuleConfigItem<?>> configItems = new ArrayList<>();
 
     private final ModuleData<MODULE> data;
     private final ItemStack container;
@@ -170,7 +170,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return FloatingLong.ZERO;
     }
 
-    public final void read(CompoundNBT nbt) {
+    public void read(CompoundNBT nbt) {
         if (nbt.contains(NBTConstants.AMOUNT, NBT.TAG_INT)) {
             installed = nbt.getInt(NBTConstants.AMOUNT);
         }
@@ -185,7 +185,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
      *
      * @param callback - will run after the NBT data is saved
      */
-    public final void save(@Nullable Runnable callback) {
+    public void save(@Nullable Runnable callback) {
         CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
         String registryName = data.getRegistryName().toString();
         CompoundNBT nbt;

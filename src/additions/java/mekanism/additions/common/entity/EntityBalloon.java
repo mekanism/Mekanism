@@ -9,7 +9,6 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.additions.common.registries.AdditionsSounds;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
-import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
@@ -68,10 +67,6 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         entityData.define(LATCHED_Y, 0);
         entityData.define(LATCHED_Z, 0);
         entityData.define(LATCHED_ID, -1);
-    }
-
-    private EntityBalloon(EntityTypeRegistryObject<EntityBalloon> type, World world) {
-        this(type.getEntityType(), world);
     }
 
     @Nullable

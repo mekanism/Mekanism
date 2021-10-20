@@ -588,11 +588,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                             return ShortNBT.valueOf((short) d);
                         } else if (d >= Integer.MIN_VALUE && d <= Integer.MAX_VALUE) {
                             return IntNBT.valueOf((int) d);
-                        } else if (d >= Long.MIN_VALUE && d <= Long.MAX_VALUE) {
-                            return LongNBT.valueOf((long) d);
                         }
+                        return LongNBT.valueOf((long) d);
                     } else if (d >= -Float.MAX_VALUE && d <= Float.MAX_VALUE) {
-                        //Otherwise if it is in the range of a float give float nbt
+                        //Otherwise, if it is in the range of a float give float nbt
                         return FloatNBT.valueOf((float) d);
                     }
                     return DoubleNBT.valueOf(d);

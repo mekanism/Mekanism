@@ -206,6 +206,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
     /**
      * Like vanilla's {@link BlockLootTables#createSlabItemTable(Block)} except with a named pool
      */
+    @Nonnull
     protected static LootTable.Builder createSlabItemTable(Block slab) {
         return LootTable.lootTable().withPool(LootPool.lootPool()
               .name("main")
@@ -231,6 +232,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
     /**
      * Like vanilla's {@link BlockLootTables#createSingleItemTable(IItemProvider)} except with a named pool
      */
+    @Nonnull
     protected static LootTable.Builder createSingleItemTable(IItemProvider item) {
         return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool()
               .name("main")
@@ -242,6 +244,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
     /**
      * Like vanilla's {@link BlockLootTables#createSingleItemTableWithSilkTouch(Block, IItemProvider, IRandomRange)} except with a named pool
      */
+    @Nonnull
     protected static LootTable.Builder createSingleItemTableWithSilkTouch(@Nonnull Block block, @Nonnull IItemProvider item, @Nonnull IRandomRange range) {
         return createSilkTouchDispatchTable(block, applyExplosionDecay(block, ItemLootEntry.lootTableItem(item).apply(SetCount.setCount(range))));
     }
@@ -249,6 +252,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
     /**
      * Like vanilla's {@link BlockLootTables#createSilkTouchDispatchTable(Block, LootEntry.Builder)} except with a named pool
      */
+    @Nonnull
     protected static LootTable.Builder createSilkTouchDispatchTable(@Nonnull Block block, @Nonnull LootEntry.Builder<?> builder) {
         return createSelfDropDispatchTable(block, HAS_SILK_TOUCH, builder);
     }
@@ -256,6 +260,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
     /**
      * Like vanilla's {@link BlockLootTables#createSelfDropDispatchTable(Block, IBuilder, LootEntry.Builder)} except with a named pool
      */
+    @Nonnull
     protected static LootTable.Builder createSelfDropDispatchTable(@Nonnull Block block, @Nonnull ILootCondition.IBuilder conditionBuilder,
           @Nonnull LootEntry.Builder<?> entry) {
         return LootTable.lootTable().withPool(LootPool.lootPool()

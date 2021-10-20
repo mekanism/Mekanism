@@ -28,6 +28,6 @@ public class AdditionsEntityTypes {
     public static final EntityTypeRegistryObject<EntityBabySkeleton> BABY_SKELETON = ENTITY_TYPES.register("baby_skeleton", EntityType.Builder.of(EntityBabySkeleton::new, EntityClassification.MONSTER).sized(0.6F, 1.99F), AbstractSkeletonEntity::createAttributes);
     public static final EntityTypeRegistryObject<EntityBabyStray> BABY_STRAY = ENTITY_TYPES.register("baby_stray", EntityType.Builder.of(EntityBabyStray::new, EntityClassification.MONSTER).sized(0.6F, 1.99F), AbstractSkeletonEntity::createAttributes);
     public static final EntityTypeRegistryObject<EntityBabyWitherSkeleton> BABY_WITHER_SKELETON = ENTITY_TYPES.register("baby_wither_skeleton", EntityType.Builder.of(EntityBabyWitherSkeleton::new, EntityClassification.MONSTER).fireImmune().sized(0.7F, 2.4F), AbstractSkeletonEntity::createAttributes);
-    public static final EntityTypeRegistryObject<EntityBalloon> BALLOON = ENTITY_TYPES.register("balloon", EntityType.Builder.<EntityBalloon>of(EntityBalloon::new, EntityClassification.MISC).sized(0.4F, 0.45F));
-    public static final EntityTypeRegistryObject<EntityObsidianTNT> OBSIDIAN_TNT = ENTITY_TYPES.register("obsidian_tnt", EntityType.Builder.<EntityObsidianTNT>of(EntityObsidianTNT::new, EntityClassification.MISC).fireImmune().sized(0.98F, 0.98F));
+    public static final EntityTypeRegistryObject<EntityBalloon> BALLOON = ENTITY_TYPES.register("balloon", EntityType.Builder.of(EntityBalloon::new, EntityClassification.MISC).sized(0.4F, 0.45F));
+    public static final EntityTypeRegistryObject<EntityObsidianTNT> OBSIDIAN_TNT = ENTITY_TYPES.register("obsidian_tnt", EntityType.Builder.of(EntityObsidianTNT::new, EntityClassification.MISC).fireImmune().sized(0.98F, 0.98F));
 }

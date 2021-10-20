@@ -296,7 +296,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
             ItemStackToItemStackRecipeBuilder.crushing(
                   ItemStackIngredient.from(chance.getKey().asItem()),
                   MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue() * 8))
-            ).build(consumer, Mekanism.rl(basePath + chance.getKey().asItem().toString()));
+            ).build(consumer, Mekanism.rl(basePath + chance.getKey().asItem()));
         }
     }
 }

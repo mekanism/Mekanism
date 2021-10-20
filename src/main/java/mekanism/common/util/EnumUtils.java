@@ -5,7 +5,6 @@ import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.blocktype.FactoryType;
-import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;

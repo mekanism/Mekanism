@@ -357,6 +357,6 @@ public class Structure {
             return AXES[side.getAxis().ordinal()];
         }
 
-        protected static final Axis[] AXES = values();
+        static final Axis[] AXES = values();
     }
 }
