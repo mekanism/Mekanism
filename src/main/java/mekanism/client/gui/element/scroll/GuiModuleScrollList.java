@@ -40,7 +40,7 @@ public class GuiModuleScrollList extends GuiScrollList {
     private ItemStack currentItem;
 
     public GuiModuleScrollList(IGuiWrapper gui, int x, int y, int width, int height, Supplier<ItemStack> itemSupplier, Consumer<Module<?>> callback) {
-        super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, new GuiElementHolder(gui, x, y, width, height));
+        super(gui, x, y, width, height, TEXTURE_HEIGHT / 3, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
         this.itemSupplier = itemSupplier;
         this.callback = callback;
         updateList(itemSupplier.get(), true);

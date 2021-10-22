@@ -36,7 +36,7 @@ public class GuiArrowSelection extends GuiTexturedElement {
         if (component != null) {
             int tooltipX = mouseX + 5;
             int tooltipY = mouseY - 5;
-            GuiUtils.renderExtendedTexture(matrix, GuiInnerScreen.SCREEN, 2, 2, tooltipX - 3, tooltipY - 4, getStringWidth(component) + 6, 16);
+            GuiUtils.renderBackgroundTexture(matrix, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE, tooltipX - 3, tooltipY - 4, getStringWidth(component) + 6, 16, 256, 256);
             IRenderTypeBuffer.Impl renderType = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
             matrix.pushPose();
             //Make sure the text is above other renders like JEI

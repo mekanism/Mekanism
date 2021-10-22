@@ -33,7 +33,6 @@ public class GuiModuleScreen extends GuiElement {
 
     private final int TEXT_COLOR = screenTextColor();
 
-    private final GuiInnerScreen background;
     private final IntSupplier slotIdSupplier;
 
     private IModule<?> currentModule;
@@ -42,7 +41,6 @@ public class GuiModuleScreen extends GuiElement {
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, IntSupplier slotIdSupplier) {
         super(gui, x, y, 102, 134);
         this.slotIdSupplier = slotIdSupplier;
-        background = addPositionOnlyChild(new GuiInnerScreen(gui, x, y, 102, 134));
     }
 
     private Runnable getCallback(ModuleConfigData<?> configData, int dataIndex) {
@@ -97,7 +95,7 @@ public class GuiModuleScreen extends GuiElement {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        background.drawBackground(matrix, mouseX, mouseY, partialTicks);
+        renderBackgroundTexture(matrix, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
         for (MiniElement element : miniElements) {
             element.renderBackground(matrix, mouseX, mouseY);
         }

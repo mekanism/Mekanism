@@ -36,8 +36,8 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
             ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
-        boilGraph = addButton(new GuiGraph(this, 8, 83, 160, 36, MekanismLang.BOIL_RATE::translate));
-        maxGraph = addButton(new GuiGraph(this, 8, 122, 160, 36, MekanismLang.MAX_BOIL_RATE::translate));
+        boilGraph = addButton(new GuiGraph(this, 7, 82, 162, 38, MekanismLang.BOIL_RATE::translate));
+        maxGraph = addButton(new GuiGraph(this, 7, 121, 162, 38, MekanismLang.MAX_BOIL_RATE::translate));
         maxGraph.enableFixedScale((long) ((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getMultiblock().superheatingElements) / HeatUtils.getWaterThermalEnthalpy()));
     }
 

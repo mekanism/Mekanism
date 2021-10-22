@@ -97,8 +97,6 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     protected <ELEMENT extends GuiElement> ELEMENT addPositionOnlyChild(ELEMENT element) {
-        //TODO - 10.1: Re-evaluate "children" added here. As it may make sense to try and move some of them to being normal children
-        // or it may turn out that some of them are supposed to be ticking or something
         positionOnlyChildren.add(element);
         return element;
     }

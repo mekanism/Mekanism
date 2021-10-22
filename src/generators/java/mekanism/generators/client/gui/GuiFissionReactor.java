@@ -95,7 +95,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                 return Math.min(1, tile.getMultiblock().heatCapacitor.getTemperature() / FissionReactorMultiblockData.MAX_DAMAGE_TEMPERATURE);
             }
         }, 5, 104, imageWidth - 12));
-        heatGraph = addButton(new GuiGraph(this, 6, 128, imageWidth - 12, 36,
+        heatGraph = addButton(new GuiGraph(this, 5, 127, imageWidth - 10, 38,
               temp -> MekanismUtils.getTemperatureDisplay(temp, TemperatureUnit.KELVIN, true)));
         heatGraph.setMinScale(1_600);
         updateButtons();

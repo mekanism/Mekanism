@@ -15,6 +15,7 @@ import net.minecraft.util.text.ITextComponent;
 public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea<GuiInnerScreen> {
 
     public static final ResourceLocation SCREEN = MekanismUtils.getResource(ResourceType.GUI, "inner_screen.png");
+    public static int SCREEN_SIZE = 32;
 
     private Supplier<List<ITextComponent>> renderStrings;
     private Supplier<List<ITextComponent>> tooltipStrings;
@@ -26,7 +27,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     private float textScale = 1.0F;
 
     public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(SCREEN, gui, x, y, width, height, 32, 32);
+        super(SCREEN, gui, x, y, width, height, SCREEN_SIZE, SCREEN_SIZE);
     }
 
     public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<List<ITextComponent>> renderStrings) {

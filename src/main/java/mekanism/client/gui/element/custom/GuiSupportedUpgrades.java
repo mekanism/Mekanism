@@ -35,11 +35,9 @@ public class GuiSupportedUpgrades extends GuiElement {
     }
 
     private final Set<Upgrade> supportedUpgrades;
-    private final GuiElementHolder background;
 
     public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, Set<Upgrade> supportedUpgrades) {
         super(gui, x, y, 125, ELEMENT_SIZE * calculateNeededRows() + 2);
-        background = addPositionOnlyChild(new GuiElementHolder(gui, x, y, this.width, this.height));
         this.supportedUpgrades = supportedUpgrades;
     }
 
@@ -47,7 +45,7 @@ public class GuiSupportedUpgrades extends GuiElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw the background
-        background.render(matrix, mouseX, mouseY, partialTicks);
+        renderBackgroundTexture(matrix, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, GuiElementHolder.HOLDER_SIZE);
         int backgroundColor = Color.argb(GuiElementHolder.getBackgroundColor()).alpha(0.5).argb();
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
             Upgrade upgrade = EnumUtils.UPGRADES[i];

@@ -69,7 +69,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         //TODO: Figure out why we need a translation of 1 to fix the text intersecting for the dictionary but it works just fine
         // for the QIO item viewer
         matrix.translate(0, 0, 1);
-        renderBackgroundTexture(matrix, getResource(), 4, 4);
+        renderBackgroundTexture(matrix, getResource(), GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
 
         int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
