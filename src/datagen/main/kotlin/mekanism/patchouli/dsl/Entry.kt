@@ -179,6 +179,11 @@ class Entry(
         this.flag = FlagsBuilder().apply(init).build()
     }
 
+    @PatchouliDSL
+    operator fun IItemProvider.unaryPlus() {
+        spotlight(this)
+    }
+
     fun toJson(): JsonObject {
         val json = JsonObject()
         json.addProperty("name", name)

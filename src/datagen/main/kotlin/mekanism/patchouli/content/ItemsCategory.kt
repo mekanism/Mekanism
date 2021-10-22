@@ -185,6 +185,7 @@ fun PatchouliBook.itemCategory() {
                 spotlight(BRONZE_INGOT)
                 spotlight(BRONZE_DUST)
                 spotlight(BRONZE_NUGGET)
+                spotlight(BRONZE_BLOCK)
             }
 
             CHARCOAL_DUST("Crushed form of Charcoal")

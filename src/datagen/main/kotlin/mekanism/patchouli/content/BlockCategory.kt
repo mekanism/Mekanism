@@ -3,6 +3,7 @@ package mekanism.patchouli.content
 import mekanism.common.MekanismLang
 import mekanism.patchouli.dsl.*
 import mekanism.common.registries.MekanismBlocks.*
+import mekanism.common.registries.MekanismItems.*
 import mekanism.patchouli.GuideCategory
 import mekanism.patchouli.GuideEntry
 import mekanism.patchouli.MekanismMainBookProvider
@@ -135,6 +136,23 @@ fun PatchouliBook.blockCategory() {
             spotlight(ULTIMATE_BIN, "Holds 262,144 items.")
             spotlight(CREATIVE_BIN, "Holds an infinite amount, does not deplete when withdrawing items.")
 
+        }
+
+        CHARCOAL_BLOCK("Storage block for Charcoal.")
+        STEEL_CASING("Crafting ingredient or decoration.")
+        STRUCTURAL_GLASS("Glass that can be used in many Multiblocks.")
+        SECURITY_DESK("Used for adjusting the security of Mekanism blocks and items.")//TODO explain how to use
+        RADIOACTIVE_WASTE_BARREL("Stores radioactive chemicals. Can be stacked vertically to increase overall capacity.") {
+            +"WARNING: radioactive contents will disperse into the atmosphere when broken."
+        }
+        INDUSTRIAL_ALARM("WEE WOO WEE WOO$(p)Redstone powered alarm for warning purposes.")
+        ENRICHMENT_CHAMBER("Like a grinder, only better$(p)Enrich your resources, turn ores into dust, gem ores into more gems. Can also be used to create compressed resources for use in the Metallurgic Infuser.")
+        OSMIUM_COMPRESSOR("Infuses Liquid Osmium into various materials to make things such as ${link(
+            REFINED_GLOWSTONE_INGOT, "Refined Glowstone")} and ${link(REFINED_OBSIDIAN_INGOT, "Refined Obsidian")}")
+        COMBINER("Recombines materials into ore with the addition of rocks.$(p)Modpack makers are responsible for balancing recipes with other mods.")
+        CRUSHER("Smash things into smaller things.$(p)Not used for ore multiplication, see the ${link(ENRICHMENT_CHAMBER, "Enrichment Chamber")} for that.")
+        DIGITAL_MINER("Now you're thinking with portals!$(p)Advanced mining equipment that can mine blocks via teleportation."){
+            //todo explain how to use it
         }
     }
 }
