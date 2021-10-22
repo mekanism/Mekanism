@@ -63,14 +63,14 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
 
     @Override
     public int hashCode() {
-        int code = 1;
+        int code = super.hashCode();
         code = 31 * code + tagName.hashCode();
         return code;
     }
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof MinerTagFilter && ((MinerTagFilter) filter).tagName.equals(tagName);
+        return super.equals(filter) && filter instanceof MinerTagFilter && ((MinerTagFilter) filter).tagName.equals(tagName);
     }
 
     @Override

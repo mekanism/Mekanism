@@ -67,14 +67,14 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
 
     @Override
     public int hashCode() {
-        int code = 1;
+        int code = super.hashCode();
         code = 31 * code + itemType.hashCode();
         return code;
     }
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof MinerItemStackFilter && ((MinerItemStackFilter) filter).itemType.sameItem(itemType);
+        return super.equals(filter) && filter instanceof MinerItemStackFilter && ((MinerItemStackFilter) filter).itemType.sameItem(itemType);
     }
 
     @Override

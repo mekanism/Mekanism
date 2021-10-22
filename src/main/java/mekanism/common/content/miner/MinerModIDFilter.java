@@ -63,14 +63,14 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     @Override
     public int hashCode() {
-        int code = 1;
+        int code = super.hashCode();
         code = 31 * code + modID.hashCode();
         return code;
     }
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof MinerModIDFilter && ((MinerModIDFilter) filter).modID.equals(modID);
+        return super.equals(filter) && filter instanceof MinerModIDFilter && ((MinerModIDFilter) filter).modID.equals(modID);
     }
 
     @Override

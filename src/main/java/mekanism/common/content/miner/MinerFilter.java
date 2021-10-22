@@ -68,7 +68,17 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
         replaceTarget = dataStream.readRegistryId();
     }
 
-    public abstract boolean equals(Object filter);
+    @Override
+    public int hashCode() {
+        int code = 1;
+        code = 31 * code + replaceTarget.hashCode();
+        code = 31 * code + (requiresReplacement ? 1 : 0);
+        return code;
+    }
 
-    public abstract int hashCode();
+    @Override
+    public boolean equals(Object filter) {
+        return filter instanceof MinerFilter && ((MinerFilter<?>) filter).requiresReplacement == requiresReplacement &&
+               ((MinerFilter<?>) filter).replaceTarget == replaceTarget;
+    }
 }

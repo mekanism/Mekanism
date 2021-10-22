@@ -63,14 +63,14 @@ public class MinerMaterialFilter extends MinerFilter<MinerMaterialFilter> implem
 
     @Override
     public int hashCode() {
-        int code = 1;
+        int code = super.hashCode();
         code = 31 * code + materialItem.hashCode();
         return code;
     }
 
     @Override
     public boolean equals(Object filter) {
-        return filter instanceof MinerMaterialFilter && ((MinerMaterialFilter) filter).materialItem.sameItem(materialItem);
+        return super.equals(filter) && filter instanceof MinerMaterialFilter && ((MinerMaterialFilter) filter).materialItem.sameItem(materialItem);
     }
 
     @Override
