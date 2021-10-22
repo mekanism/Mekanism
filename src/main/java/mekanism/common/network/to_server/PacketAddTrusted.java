@@ -3,6 +3,7 @@ package mekanism.common.network.to_server;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.WorldUtils;
+import mekanism.common.util.text.InputValidator;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -27,11 +28,13 @@ public class PacketAddTrusted implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
-        if (player != null) {
-            TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, player.level, tilePosition);
-            if (tile != null) {
-                tile.addTrusted(name);
+        if (!name.isEmpty() && InputValidator.test(name, InputValidator.USERNAME)) {
+            PlayerEntity player = context.getSender();
+            if (player != null) {
+                TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, player.level, tilePosition);
+                if (tile != null) {
+                    tile.addTrusted(name);
+                }
             }
         }
     }

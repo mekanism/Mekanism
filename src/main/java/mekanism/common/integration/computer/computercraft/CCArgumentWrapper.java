@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -39,6 +40,7 @@ import mekanism.common.integration.computer.ComputerArgumentHandler;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
+import mekanism.common.util.text.InputValidator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -420,8 +422,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         if (rawTag instanceof String) {
             String tag = (String) rawTag;
             if (!tag.isEmpty()) {
-                //TODO - 10.1: Evaluate adding some extra validation here such as pertaining to capitals or other restrictions
-                return tag;
+                tag = tag.toLowerCase(Locale.ROOT);
+                if (InputValidator.test(tag, InputValidator.RL_NAMESPACE.or(InputValidator.WILDCARD_CHARS))) {
+                    return tag;
+                }
             }
         }
         return null;
@@ -432,8 +436,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         if (rawModId instanceof String) {
             String modId = (String) rawModId;
             if (!modId.isEmpty()) {
-                //TODO - 10.1: Evaluate adding some extra validation here such as pertaining to capitals or other restrictions
-                return modId;
+                modId = modId.toLowerCase(Locale.ROOT);
+                if (InputValidator.test(modId, InputValidator.RL_NAMESPACE.or(InputValidator.WILDCARD_CHARS))) {
+                    return modId;
+                }
             }
         }
         return null;

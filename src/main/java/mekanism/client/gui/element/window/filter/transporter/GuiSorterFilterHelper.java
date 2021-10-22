@@ -12,7 +12,7 @@ import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.client.gui.element.text.InputValidator;
+import mekanism.common.util.text.InputValidator;
 import mekanism.client.gui.element.window.filter.GuiFilterHelper;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.common.MekanismLang;

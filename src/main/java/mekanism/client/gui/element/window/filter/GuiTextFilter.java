@@ -1,10 +1,11 @@
 package mekanism.client.gui.element.window.filter;
 
+import java.util.Locale;
 import javax.annotation.Nullable;
 import mekanism.api.functions.CharPredicate;
+import mekanism.api.functions.CharUnaryOperator;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -26,6 +27,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         text = addChild(new GuiTextField(gui(), relativeX + 31, relativeY + 4 + getScreenHeight(), getScreenWidth() - 4, 12));
         text.setMaxStringLength(SorterFilter.MAX_LENGTH);
         text.setInputValidator(getInputValidator());
+        text.setInputTransformer(getInputTransformer());
         text.setEnabled(true);
         text.setFocused(true);
         text.configureDigitalInput(this::setText);
@@ -38,9 +40,17 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         }
     }
 
-    protected CharPredicate getInputValidator() {
-        //TODO - 10.1: Re-evaluate this I am not sure all the extra filter chars are valid for things like tag filters or even really modid filters
-        return InputValidator.or(InputValidator.LETTER, InputValidator.DIGIT, InputValidator.FILTER_CHARS);
+    protected abstract CharPredicate getInputValidator();
+
+    @Nullable
+    protected CharUnaryOperator getInputTransformer() {
+        //Force characters to become lowercase
+        return c -> {
+            if (c >= 'A' && c <= 'Z') {
+                return Character.toString(c).toLowerCase(Locale.ROOT).charAt(0);
+            }
+            return c;
+        };
     }
 
     /**

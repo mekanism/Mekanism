@@ -4,8 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.util.text.InputValidator;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.ITagFilter;
@@ -19,6 +21,11 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
 
     protected GuiTagFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, @Nullable FILTER origFilter) {
         super(gui, x, y, width, height, MekanismLang.TAG_FILTER.translate(), tile, origFilter);
+    }
+
+    @Override
+    protected CharPredicate getInputValidator() {
+        return InputValidator.RESOURCE_LOCATION.or(InputValidator.WILDCARD_CHARS);
     }
 
     @Override

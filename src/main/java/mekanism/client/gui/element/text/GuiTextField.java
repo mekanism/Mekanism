@@ -1,16 +1,20 @@
 package mekanism.client.gui.element.text;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import mekanism.api.functions.CharPredicate;
+import mekanism.api.functions.CharUnaryOperator;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.glfw.GLFW;
@@ -30,6 +34,7 @@ public class GuiTextField extends GuiElement {
     private final TextFieldWidget textField;
     private Runnable enterHandler;
     private CharPredicate inputValidator;
+    private CharUnaryOperator inputTransformer;
     private Consumer<String> responder;
 
     private BackgroundType backgroundType = BackgroundType.DEFAULT;
@@ -106,6 +111,11 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
+    public GuiTextField setInputTransformer(CharUnaryOperator inputTransformer) {
+        this.inputTransformer = inputTransformer;
+        return this;
+    }
+
     public GuiTextField setBackground(BackgroundType backgroundType) {
         this.backgroundType = backgroundType;
         return this;
@@ -133,8 +143,9 @@ public class GuiTextField extends GuiElement {
 
     private void updateTextField() {
         //width is scaled based on text scale
-        textField.setWidth(Math.round((width - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - (iconType != null ? iconType.getOffsetX() : 0)) * (1 / textScale)));
-        textField.x = x + textOffsetX + 2 + (iconType != null ? iconType.getOffsetX() : 0);
+        int iconOffsetX = iconType != null ? iconType.getOffsetX() : 0;
+        textField.setWidth(Math.round((width - (checkmarkButton != null ? textField.getHeight() + 2 : 0) - iconOffsetX) * (1 / textScale)));
+        textField.setX(x + textOffsetX + 2 + iconOffsetX);
         textField.y = y + textOffsetY + 1 + (int) ((height / 2F) - 4);
     }
 
@@ -180,23 +191,31 @@ public class GuiTextField extends GuiElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         backgroundType.render(this, matrix);
-        if (textScale != 1F) {
+        if (textScale == 1F) {
+            renderTextField(matrix, mouseX, mouseY, partialTicks);
+        } else {
             // hacky. we should write our own renderer at some point.
             float reverse = (1 / textScale) - 1;
             float yAdd = 4 - (textScale * 8) / 2F;
             matrix.pushPose();
             matrix.scale(textScale, textScale, textScale);
             matrix.translate(textField.x * reverse, (textField.y) * reverse + yAdd * (1 / textScale), 0);
-            textField.render(matrix, mouseX, mouseY, 0);
+            renderTextField(matrix, mouseX, mouseY, partialTicks);
             matrix.popPose();
-        } else {
-            textField.render(matrix, mouseX, mouseY, 0);
         }
         MekanismRenderer.resetColor();
         if (iconType != null) {
             minecraft.textureManager.bind(iconType.getIcon());
             blit(matrix, x + 2, y + (height / 2) - (int) Math.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }
+    }
+
+    private void renderTextField(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        //Apply matrix via render system so that it applies to the highlight
+        RenderSystem.pushMatrix();
+        RenderSystem.multMatrix(matrix.last().pose());
+        textField.render(new MatrixStack(), mouseX, mouseY, partialTicks);
+        RenderSystem.popMatrix();
     }
 
     @Override
@@ -226,8 +245,32 @@ public class GuiTextField extends GuiElement {
             } else if (keyCode == GLFW.GLFW_KEY_TAB) {
                 gui().incrementFocus(this);
                 return true;
+            } else if (Screen.isPaste(keyCode)) {
+                //Manual handling of textField#keyPressed for pasting so that we can filter things as needed
+                String text = Minecraft.getInstance().keyboardHandler.getClipboard();
+                if (inputTransformer != null || inputValidator != null) {
+                    boolean transformed = false;
+                    char[] charArray = text.toCharArray();
+                    for (int i = 0; i < charArray.length; i++) {
+                        char c = charArray[i];
+                        if (inputTransformer != null) {
+                            c = inputTransformer.applyAsChar(c);
+                            charArray[i] = c;
+                            transformed = true;
+                        }
+                        if (inputValidator != null && !inputValidator.test(c)) {
+                            //Contains an invalid character fail
+                            return false;
+                        }
+                    }
+                    if (transformed) {
+                        text = String.copyValueOf(charArray);
+                    }
+                }
+                textField.insertText(text);
+            } else {
+                textField.keyPressed(keyCode, scanCode, modifiers);
             }
-            textField.keyPressed(keyCode, scanCode, modifiers);
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -236,6 +279,9 @@ public class GuiTextField extends GuiElement {
     @Override
     public boolean charTyped(char c, int keyCode) {
         if (canWrite()) {
+            if (inputTransformer != null) {
+                c = inputTransformer.applyAsChar(c);
+            }
             if (inputValidator == null || inputValidator.test(c)) {
                 return textField.charTyped(c, keyCode);
             }

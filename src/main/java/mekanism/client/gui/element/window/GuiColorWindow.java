@@ -12,7 +12,7 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.client.gui.element.text.InputValidator;
+import mekanism.common.util.text.InputValidator;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.lib.Color;

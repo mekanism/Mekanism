@@ -429,7 +429,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         // Can use a lot of the same logic as GuiMekanism does for its background
 
         renderBg(matrix, minecraft, mouseX, mouseY);
-        //TODO - 10.1: Re-evaluate this and FilterSelectButton#drawBackground as vanilla doesn't disable these after
+        //TODO: Re-evaluate this and FilterSelectButton#drawBackground as vanilla doesn't disable these after
         // it draws a button but I am not sure if that is intentional or causes issues
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();

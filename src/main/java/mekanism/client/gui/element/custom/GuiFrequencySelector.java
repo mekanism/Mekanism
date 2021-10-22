@@ -17,7 +17,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.client.gui.element.text.InputValidator;
+import mekanism.common.util.text.InputValidator;
 import mekanism.client.gui.element.window.GuiConfirmationDialog;
 import mekanism.client.gui.element.window.GuiConfirmationDialog.DialogType;
 import mekanism.common.Mekanism;
@@ -105,7 +105,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
         frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);
-        frequencyField.setInputValidator(InputValidator.or(InputValidator.DIGIT, InputValidator.LETTER, InputValidator.FREQUENCY_CHARS));
+        frequencyField.setInputValidator(InputValidator.LETTER_OR_DIGIT.or(InputValidator.FREQUENCY_CHARS));
         frequencyField.addCheckmarkButton(this::setFrequency);
         //Disable buttons that shouldn't be enabled to start due to there being no data received yet
         publicButton.active = false;

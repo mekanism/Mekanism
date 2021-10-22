@@ -10,7 +10,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
-import mekanism.client.gui.element.text.InputValidator;
+import mekanism.common.util.text.InputValidator;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
@@ -62,7 +62,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
 
     @Override
     protected CharPredicate getInputValidator() {
-        return InputValidator.or(InputValidator.LETTER, InputValidator.DIGIT, InputValidator.from('_', ':', '/'));
+        return InputValidator.RESOURCE_LOCATION;
     }
 
     @Override

@@ -11,7 +11,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.client.gui.element.text.InputValidator;
+import mekanism.common.util.text.InputValidator;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostItemConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;

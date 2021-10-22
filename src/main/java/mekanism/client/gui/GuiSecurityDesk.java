@@ -1,9 +1,7 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -17,6 +15,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.common.util.text.InputValidator;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -38,7 +37,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
     private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
-    private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
     private MekanismButton removeButton;
     private MekanismButton publicButton;
     private MekanismButton privateButton;
@@ -82,7 +80,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         trustedField.setMaxStringLength(PacketAddTrusted.MAX_NAME_LENGTH);
         trustedField.setBackground(BackgroundType.INNER_SCREEN);
         trustedField.setEnterHandler(this::setTrusted);
-        trustedField.setInputValidator(c -> SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c));
+        trustedField.setInputValidator(InputValidator.USERNAME);
         trustedField.addCheckmarkButton(this::setTrusted);
         publicButton = addButton(new MekanismImageButton(this, 13, 113, 40, 16, 40, 16, getButtonLocation("public"),
               () -> {
