@@ -23,6 +23,7 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         ITextComponent visualsComponent = MekanismLang.MINER_VISUALS.translate(OnOff.of(dataSource.clientRendering));
         if (dataSource.getRadius() <= 64) {
             displayTooltip(matrix, visualsComponent, mouseX, mouseY);

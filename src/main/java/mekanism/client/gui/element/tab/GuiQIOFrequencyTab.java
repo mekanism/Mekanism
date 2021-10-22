@@ -43,6 +43,7 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         displayTooltip(matrix, MekanismLang.SET_FREQUENCY.translate(), mouseX, mouseY);
     }
 

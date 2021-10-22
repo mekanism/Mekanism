@@ -236,7 +236,6 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        //TODO - 10.1: Evaluate this and other methods that loop children and see if any overrides should be calling super
         children.stream().filter(child -> child.isMouseOver(mouseX + getGuiLeft(), mouseY + getGuiTop()))
               .forEach(child -> child.renderToolTip(matrix, mouseX, mouseY));
     }
@@ -339,7 +338,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return super.isMouseOver(mouseX, mouseY) || children.stream().anyMatch(child -> child.isMouseOver(mouseX, mouseY));
+        return super.isMouseOver(mouseX, mouseY) || GuiUtils.checkChildren(children, child -> child.isMouseOver(mouseX, mouseY));
     }
 
     /**

@@ -180,6 +180,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         if (onHover != null) {
             onHover.onHover(this, matrix, mouseX, mouseY);
         }
@@ -194,7 +195,7 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
                 return true;
             }
         }
-        return false;
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Nullable

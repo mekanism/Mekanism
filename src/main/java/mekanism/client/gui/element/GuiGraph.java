@@ -94,6 +94,7 @@ public class GuiGraph extends GuiTexturedElement {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         int hoverIndex = mouseX - relativeX;
         if (hoverIndex >= 0 && hoverIndex < graphData.size()) {
             displayTooltip(matrix, dataHandler.getDataDisplay(graphData.getLong(hoverIndex)), mouseX, mouseY);

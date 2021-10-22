@@ -96,6 +96,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         int index = getHoveredIndex(mouseX + getGuiLeft(), mouseY + getGuiTop());
         if (index != -1) {
             ITextComponent text = options[index].getTooltip();

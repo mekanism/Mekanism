@@ -43,6 +43,7 @@ public class GuiWarningTab extends GuiTexturedElement {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         //Note: We don't need to check if there are any warnings or not as if there aren't the warning tab goes away
         List<ITextComponent> info = new ArrayList<>();
         info.add(MekanismLang.ISSUES.translateColored(EnumColor.YELLOW));

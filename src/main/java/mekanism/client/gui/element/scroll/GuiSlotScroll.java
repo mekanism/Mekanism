@@ -84,10 +84,11 @@ public class GuiSlotScroll extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int xAxis, int yAxis) {
-        IScrollableSlot slot = getSlot(xAxis, yAxis, relativeX, relativeY);
+    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
+        IScrollableSlot slot = getSlot(mouseX, mouseY, relativeX, relativeY);
         if (slot != null) {
-            renderSlotTooltip(matrix, slot, xAxis, yAxis);
+            renderSlotTooltip(matrix, slot, mouseX, mouseY);
         }
     }
 
