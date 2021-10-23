@@ -53,6 +53,7 @@ import net.minecraft.block.PortalInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.play.server.SMoveVehiclePacket;
 import net.minecraft.network.play.server.SSetPassengersPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
@@ -66,6 +67,7 @@ import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.entity.PartEntity;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
@@ -331,6 +333,16 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             if (!entity.getPassengers().isEmpty()) {
                 //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
                 ((ServerChunkProvider) entity.getCommandSenderWorld().getChunkSource()).broadcast(entity, new SSetPassengersPacket(entity));
+                Entity controller = entity.getControllingPassenger();
+                if (controller != entity && controller instanceof ServerPlayerEntity && !(controller instanceof FakePlayer)) {
+                    ServerPlayerEntity player = (ServerPlayerEntity) controller;
+                    if (player.connection != null) {
+                        //Force sync the fact that the vehicle moved to the client that is controlling it
+                        // so that it makes sure to use the correct positions when sending move packets
+                        // back to the server instead of running into moved wrongly issues
+                        player.connection.send(new SMoveVehiclePacket(entity));
+                    }
+                }
             }
             return entity;
         }
