@@ -163,7 +163,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     @Override
     public boolean stillValid(@Nonnull PlayerEntity player) {
         //Is this the proper default
-        //TODO - 10.1: Re-evaluate this and maybe add in some distance based checks??
+        //TODO: Re-evaluate this and maybe add in some distance based checks??
         return true;
     }
 

@@ -452,16 +452,20 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     private void incrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
-        configInfo.get(type).incrementDataType(side);
-        sideChanged(type, side);
+        ConfigInfo configInfo = this.configInfo.get(type);
+        if (configInfo.getDataType(side) != configInfo.incrementDataType(side)) {
+            sideChanged(type, side);
+        }
     }
 
     @ComputerMethod
     private void decrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
-        configInfo.get(type).decrementDataType(side);
-        sideChanged(type, side);
+        ConfigInfo configInfo = this.configInfo.get(type);
+        if (configInfo.getDataType(side) != configInfo.decrementDataType(side)) {
+            sideChanged(type, side);
+        }
     }
     //End computer related methods
 }

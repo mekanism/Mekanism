@@ -112,10 +112,13 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                                 }
                                 energyContainer.extract(energyPerConfigure, Action.EXECUTE, AutomationType.MANUAL);
                             }
+                            DataType old = dataType;
                             dataType = info.incrementDataType(relativeSide);
-                            player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translate(transmissionType, dataType.getColor(), dataType,
-                                  dataType.getColor().getColoredName())), Util.NIL_UUID);
-                            config.getConfig().sideChanged(transmissionType, relativeSide);
+                            if (dataType != old) {
+                                player.sendMessage(MekanismUtils.logFormat(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translate(transmissionType, dataType.getColor(), dataType,
+                                      dataType.getColor().getColoredName())), Util.NIL_UUID);
+                                config.getConfig().sideChanged(transmissionType, relativeSide);
+                            }
                         } else {
                             SecurityUtils.displayNoAccess(player);
                         }
