@@ -7,8 +7,7 @@ import java.util.function.Predicate;
  * Represents a predicate (boolean-valued function) of one {@code char}-valued argument. This is the {@code char}-consuming primitive type specialization of {@link
  * Predicate}.
  *
- * <p>This is a <a href="package-summary.html">functional interface</a>
- * whose functional method is {@link #test(char)}.
+ * <p>This is a <a href="package-summary.html">functional interface</a> whose functional method is {@link #test(char)}.
  *
  * @see Predicate
  */
@@ -28,8 +27,8 @@ public interface CharPredicate {
      * Returns a composed predicate that represents a short-circuiting logical AND of this predicate and another.  When evaluating the composed predicate, if this
      * predicate is {@code false}, then the {@code other} predicate is not evaluated.
      *
-     * <p>Any exceptions thrown during evaluation of either predicate are relayed
-     * to the caller; if evaluation of this predicate throws an exception, the {@code other} predicate will not be evaluated.
+     * <p>Any exceptions thrown during evaluation of either predicate are relayed to the caller; if evaluation of this predicate throws an exception, the {@code other}
+     * predicate will not be evaluated.
      *
      * @param other a predicate that will be logically-ANDed with this predicate
      *
@@ -55,8 +54,8 @@ public interface CharPredicate {
      * Returns a composed predicate that represents a short-circuiting logical OR of this predicate and another.  When evaluating the composed predicate, if this
      * predicate is {@code true}, then the {@code other} predicate is not evaluated.
      *
-     * <p>Any exceptions thrown during evaluation of either predicate are relayed
-     * to the caller; if evaluation of this predicate throws an exception, the {@code other} predicate will not be evaluated.
+     * <p>Any exceptions thrown during evaluation of either predicate are relayed to the caller; if evaluation of this predicate throws an exception, the {@code other}
+     * predicate will not be evaluated.
      *
      * @param other a predicate that will be logically-ORed with this predicate
      *

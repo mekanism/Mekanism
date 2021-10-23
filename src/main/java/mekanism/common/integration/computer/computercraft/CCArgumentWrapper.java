@@ -423,7 +423,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             String tag = (String) rawTag;
             if (!tag.isEmpty()) {
                 tag = tag.toLowerCase(Locale.ROOT);
-                if (InputValidator.test(tag, InputValidator.RL_NAMESPACE.or(InputValidator.WILDCARD_CHARS))) {
+                if (InputValidator.test(tag, InputValidator.RESOURCE_LOCATION.or(InputValidator.WILDCARD_CHARS))) {
                     return tag;
                 }
             }
