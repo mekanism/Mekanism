@@ -192,10 +192,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         int prevLeft = leftPos, prevTop = topPos;
         super.init(minecraft, width, height);
 
-        windows.forEach(window -> {
-            window.resize(prevLeft, prevTop, leftPos, topPos);
-            children.add(window);
-        });
+        windows.forEach(window -> window.resize(prevLeft, prevTop, leftPos, topPos));
 
         prevElements.forEach(e -> {
             if (e.getLeft() < buttons.size()) {
