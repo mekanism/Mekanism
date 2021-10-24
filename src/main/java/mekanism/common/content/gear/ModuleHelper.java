@@ -126,7 +126,7 @@ public class ModuleHelper implements IModuleHelper {
     public <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack container, IModuleDataProvider<MODULE> typeProvider) {
         if (container.getItem() instanceof IModuleContainerItem) {
             CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
-            return load(container, typeProvider.getModuleData(), modulesTag);
+            return load(container, typeProvider.getModuleData(), modulesTag, null);
         }
         return null;
     }
@@ -137,9 +137,25 @@ public class ModuleHelper implements IModuleHelper {
             List<Module<?>> modules = new ArrayList<>();
             CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
             for (ModuleData<?> moduleType : loadAllTypes(modulesTag)) {
-                Module<?> module = load(container, moduleType, modulesTag);
+                Module<?> module = load(container, moduleType, modulesTag, null);
                 if (module != null) {
                     modules.add(module);
+                }
+            }
+            return modules;
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public <MODULE extends ICustomModule<?>> List<Module<? extends MODULE>> loadAll(ItemStack container, Class<MODULE> moduleClass) {
+        if (container.getItem() instanceof IModuleContainerItem) {
+            List<Module<? extends MODULE>> modules = new ArrayList<>();
+            CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
+            for (ModuleData<?> moduleType : loadAllTypes(modulesTag)) {
+                Module<?> module = load(container, moduleType, modulesTag, moduleClass);
+                if (module != null) {
+                    modules.add((Module<? extends MODULE>) module);
                 }
             }
             return modules;
@@ -176,29 +192,35 @@ public class ModuleHelper implements IModuleHelper {
             //If we found one return it
             return legacy;
         }
-        //Otherwise try getting the registry name and then looking it up in the module registry
+        //Otherwise, try getting the registry name and then looking it up in the module registry
         ResourceLocation registryName = ResourceLocation.tryParse(name);
         return registryName == null ? null : MekanismAPI.moduleRegistry().getValue(registryName);
     }
 
     @Nullable
-    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack container, ModuleData<MODULE> type, CompoundNBT modulesTag) {
+    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack container, ModuleData<MODULE> type, CompoundNBT modulesTag,
+          @Nullable Class<? extends ICustomModule<?>> typeFilter) {
         String registryName = type.getRegistryName().toString();
         if (modulesTag.contains(registryName, NBT.TAG_COMPOUND)) {
-            return load(type, container, modulesTag, registryName);
+            return load(type, container, modulesTag, registryName, typeFilter);
         }
         String legacyName = type.getLegacyName();
         if (legacyName != null && modulesTag.contains(legacyName, NBT.TAG_COMPOUND)) {
-            return load(type, container, modulesTag, legacyName);
+            return load(type, container, modulesTag, legacyName, typeFilter);
         }
         return null;
     }
 
-    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ModuleData<MODULE> type, ItemStack container, CompoundNBT modulesTag, String key) {
+    @Nullable
+    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ModuleData<MODULE> type, ItemStack container, CompoundNBT modulesTag, String key,
+          @Nullable Class<? extends ICustomModule<?>> typeFilter) {
         //TODO - 1.17: When removing the legacy handling from the above method just inline this method
         Module<MODULE> module = new Module<>(type, container);
-        module.read(modulesTag.getCompound(key));
-        return module;
+        if (typeFilter == null || typeFilter.isInstance(module.getCustomInstance())) {
+            module.read(modulesTag.getCompound(key));
+            return module;
+        }
+        return null;
     }
 
     @Override

@@ -116,12 +116,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Override
     public boolean isFoil(@Nonnull ItemStack stack) {
-        return !stack.isEmpty() && super.isFoil(stack) && IModuleContainerItem.hasOtherEnchants(stack, MekanismModules.SILK_TOUCH_UNIT);
-    }
-
-    @Override
-    public void filterTooltips(ItemStack stack, List<ITextComponent> tooltips) {
-        IModuleContainerItem.filterTooltips(stack, tooltips, MekanismModules.SILK_TOUCH_UNIT);
+        return !stack.isEmpty() && super.isFoil(stack) && IModuleContainerItem.hasOtherEnchants(stack);
     }
 
     @Nonnull

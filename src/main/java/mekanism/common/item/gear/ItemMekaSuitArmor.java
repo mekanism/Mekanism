@@ -161,12 +161,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean isFoil(@Nonnull ItemStack stack) {
-        return !stack.isEmpty() && super.isFoil(stack) && IModuleContainerItem.hasOtherEnchants(stack, MekanismModules.FROST_WALKER_UNIT);
-    }
-
-    @Override
-    public void filterTooltips(ItemStack stack, List<ITextComponent> tooltips) {
-        IModuleContainerItem.filterTooltips(stack, tooltips, MekanismModules.FROST_WALKER_UNIT);
+        return !stack.isEmpty() && super.isFoil(stack) && IModuleContainerItem.hasOtherEnchants(stack);
     }
 
     @Override

@@ -7,10 +7,10 @@ import java.util.function.BiConsumer;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
+import mekanism.api.gear.EnchantmentBasedModule;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
-import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.EnumColor;
@@ -117,32 +117,23 @@ public interface IModuleContainerItem extends IItemHUDProvider {
         return ret;
     }
 
-    void filterTooltips(ItemStack stack, List<ITextComponent> tooltips);
-
-    @SafeVarargs
-    static boolean hasOtherEnchants(ItemStack stack, IModuleDataProvider<? extends EnchantmentBasedModule<?>>... moduleTypes) {
+    static boolean hasOtherEnchants(ItemStack stack) {
         MatchedEnchants enchants = new MatchedEnchants(stack);
-        IModuleContainerItem.forMatchingEnchants(stack, enchants, (e, module) -> e.matchedCount++, moduleTypes);
+        IModuleContainerItem.forMatchingEnchants(stack, enchants, (e, module) -> e.matchedCount++);
         return enchants.enchantments == null || enchants.matchedCount < enchants.enchantments.size();
     }
 
-    @SafeVarargs
-    static void filterTooltips(ItemStack stack, List<ITextComponent> tooltips, IModuleDataProvider<? extends EnchantmentBasedModule<?>>... moduleTypes) {
+    default void filterTooltips(ItemStack stack, List<ITextComponent> tooltips) {
         List<ITextComponent> enchantsToRemove = new ArrayList<>();
-        IModuleContainerItem.forMatchingEnchants(stack, new MatchedEnchants(stack), (e, module) -> enchantsToRemove.add(module.getCustomInstance().getEnchantment().getFullname(module.getInstalledCount())),
-              moduleTypes);
+        IModuleContainerItem.forMatchingEnchants(stack, new MatchedEnchants(stack),
+              (e, module) -> enchantsToRemove.add(module.getCustomInstance().getEnchantment().getFullname(module.getInstalledCount())));
         tooltips.removeAll(enchantsToRemove);
     }
 
-    @SafeVarargs
-    static void forMatchingEnchants(ItemStack stack, MatchedEnchants enchants, BiConsumer<MatchedEnchants, IModule<? extends EnchantmentBasedModule<?>>> consumer,
-          IModuleDataProvider<? extends EnchantmentBasedModule<?>>... moduleTypes) {
-        IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
-        for (IModuleDataProvider<? extends EnchantmentBasedModule> moduleType : moduleTypes) {
-            IModule<? extends EnchantmentBasedModule<?>> module = moduleHelper.load(stack, moduleType);
-            if (module != null && module.isEnabled() &&
-                enchants.getEnchantments().getOrDefault(module.getCustomInstance().getEnchantment(), 0) == module.getInstalledCount()) {
-                consumer.accept(enchants, module);
+    static void forMatchingEnchants(ItemStack stack, MatchedEnchants enchants, BiConsumer<MatchedEnchants, IModule<? extends EnchantmentBasedModule<?>>> consumer) {
+        for (IModule<? extends EnchantmentBasedModule> module : MekanismAPI.getModuleHelper().loadAll(stack, EnchantmentBasedModule.class)) {
+            if (module.isEnabled() && enchants.getEnchantments().getOrDefault(module.getCustomInstance().getEnchantment(), 0) == module.getInstalledCount()) {
+                consumer.accept(enchants, (IModule<? extends EnchantmentBasedModule<?>>) module);
             }
         }
     }
