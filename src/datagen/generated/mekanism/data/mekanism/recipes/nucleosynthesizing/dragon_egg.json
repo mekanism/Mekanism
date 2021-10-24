@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:egg"
+    }
+  },
+  "gasInput": {
+    "amount": 4,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:dragon_egg"
+  },
+  "duration": 1000
+}

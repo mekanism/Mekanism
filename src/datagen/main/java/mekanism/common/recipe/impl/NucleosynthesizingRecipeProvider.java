@@ -14,6 +14,8 @@ import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.tags.ItemTags;
+import net.minecraftforge.common.Tags;
 
 class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
 
@@ -32,6 +34,19 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.EMERALD),
               1_000
         ).build(consumer, Mekanism.rl(basePath + "emerald"));
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+              ItemStackIngredient.from(Items.EGG),
+              GasStackIngredient.from(MekanismGases.ANTIMATTER, 4),
+              new ItemStack(Items.DRAGON_EGG),
+              1_000
+        ).build(consumer, Mekanism.rl(basePath + "dragon_egg"));
+
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+              ItemStackIngredient.from(Blocks.BEACON),
+              GasStackIngredient.from(MekanismGases.ANTIMATTER, 3),
+              new ItemStack(Items.END_CRYSTAL),
+              750
+        ).build(consumer, Mekanism.rl(basePath + "end_crystal"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               ItemStackIngredient.from(Blocks.RED_WOOL),
@@ -57,6 +72,12 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Blocks.QUARTZ_BLOCK),
               500
         ).build(consumer, Mekanism.rl(basePath + "quartz_block"));
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+              ItemStackIngredient.from(ItemTags.SMALL_FLOWERS),
+              GasStackIngredient.from(MekanismGases.ANTIMATTER, 2),
+              new ItemStack(Blocks.CHORUS_FLOWER),
+              500
+        ).build(consumer, Mekanism.rl(basePath + "chorus_flower"));
 
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN)),
@@ -64,5 +85,11 @@ class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
               new ItemStack(Items.IRON_INGOT),
               200
         ).build(consumer, Mekanism.rl(basePath + "iron"));
+        NucleosynthesizingRecipeBuilder.nucleosynthesizing(
+              ItemStackIngredient.from(Tags.Items.OBSIDIAN),
+              GasStackIngredient.from(MekanismGases.ANTIMATTER, 1),
+              new ItemStack(Blocks.CRYING_OBSIDIAN),
+              200
+        ).build(consumer, Mekanism.rl(basePath + "crying_obsidian"));
     }
 }
