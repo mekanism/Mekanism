@@ -221,6 +221,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
                 operatingTicks = 0;
                 finishProcessing(operations);
                 onFinish.run();
+                resetCache();
             } else {
                 //If we still have ticks left required to operate, use the contents
                 useResources(operations);
@@ -235,6 +236,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
                 //Reset the progress
                 operatingTicks = 0;
                 operatingTicksChanged.accept(operatingTicks);
+                resetCache();
             }
         }
     }
@@ -246,9 +248,10 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     protected void setupVariableValues() {
     }
 
-    //TODO - 1.17: Remove this as it can be gotten/stored via setOperatingTicksChanged and for this to be of any use
-    // the total number of operating ticks also need to be known
-    @Deprecated
+    /**
+     * @return Gets the current number of operating ticks that have happened so far.
+     */
+    //TODO - 1.17: Make this protected
     public int getOperatingTicks() {
         return operatingTicks;
     }
@@ -277,6 +280,12 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      * means that caching of types can be done inside of {@link #getOperationsThisTick(int)} and safely used here.
      */
     protected void useResources(int operations) {
+    }
+
+    /**
+     * Called when the recipe finishes processing or gets reset so that any values the implementation may be holding onto can be properly reset.
+     */
+    protected void resetCache() {
     }
 
     /**

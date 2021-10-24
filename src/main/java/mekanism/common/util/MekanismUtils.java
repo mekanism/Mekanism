@@ -26,6 +26,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
@@ -179,9 +180,9 @@ public final class MekanismUtils {
         return orientation.getCounterClockWise();
     }
 
-    public static float fractionUpgrades(IUpgradeTile tile, Upgrade type) {
-        if (tile.supportsUpgrades()) {
-            return (float) tile.getComponent().getUpgrades(type) / (float) type.getMax();
+    public static double fractionUpgrades(IUpgradeTile tile, Upgrade type) {
+        if (tile.supportsUpgrade(type)) {
+            return tile.getComponent().getUpgrades(type) / (double) type.getMax();
         }
         return 0;
     }
@@ -235,6 +236,24 @@ public final class MekanismUtils {
         return prevScale;
     }
 
+    public static long getBaseUsage(IUpgradeTile tile, int def) {
+        if (tile.supportsUpgrades()) {
+            //getGasPerTickMean * required ticks (not rounded)
+            if (tile.supportsUpgrade(Upgrade.GAS)) {
+                // def * (upgradeMultiplier ^ ((2 * speed - gas) / 8)) * (upgradeMultiplier ^ (-speed / 8)) =
+                // def * upgradeMultiplier ^ ((speed - gas) / 8)
+                //TODO: We may want to validate this provides the numbers we desire if we ever end up with any machines
+                // that use this that are not statistical and have gas upgrades so would go through this code path
+                return Math.round(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(),
+                      fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.GAS)));
+            }
+            //If it doesn't support gas upgrades, we can fall through to the default value as the math would be:
+            // def * (upgradeMultiplier ^ (speed / 8)) * (upgradeMultiplier ^ (-speed / 8)) =
+            // def * 1
+        }
+        return def;
+    }
+
     /**
      * Gets the operating ticks required for a machine via it's upgrades.
      *
@@ -244,10 +263,8 @@ public final class MekanismUtils {
      * @return required operating ticks
      */
     public static int getTicks(IUpgradeTile tile, int def) {
-        //TODO - 10.1: Re-evaluate this especially calls from things like the progress machine. Should we be validating that speed upgrades are even
-        // supported before doing this, or potentially in the fraction upgrades be checking if it supports a given upgrade before factoring it in
         if (tile.supportsUpgrades()) {
-            return (int) (def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(tile, Upgrade.SPEED)));
+            return MathUtils.clampToInt(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), -fractionUpgrades(tile, Upgrade.SPEED)));
         }
         return def;
     }
@@ -276,7 +293,7 @@ public final class MekanismUtils {
      */
     public static double getGasPerTickMeanMultiplier(IUpgradeTile tile) {
         if (tile.supportsUpgrades()) {
-            if (tile.getComponent().supports(Upgrade.GAS)) {
+            if (tile.supportsUpgrade(Upgrade.GAS)) {
                 return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), 2 * fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.GAS));
             }
             return Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), fractionUpgrades(tile, Upgrade.SPEED));

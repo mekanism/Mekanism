@@ -12,7 +12,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.PigmentMixingCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ChemicalChemicalToChemicalCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -187,7 +187,7 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @Nonnull
     @Override
     public CachedRecipe<PigmentMixingRecipe> createNewCachedRecipe(@Nonnull PigmentMixingRecipe recipe, int cacheIndex) {
-        return new PigmentMixingCachedRecipe(recipe, leftInputHandler, rightInputHandler, outputHandler)
+        return new ChemicalChemicalToChemicalCachedRecipe<>(recipe, leftInputHandler, rightInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

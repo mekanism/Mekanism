@@ -32,7 +32,7 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
      * @param recipe           Recipe.
      * @param itemInputHandler Item input handler.
      * @param gasInputHandler  Chemical input handler.
-     * @param gasUsage         Gas usage multiplier, must return values of at least one.
+     * @param gasUsage         Gas usage multiplier.
      * @param outputHandler    Output handler.
      */
     public ChemicalDissolutionCachedRecipe(ChemicalDissolutionRecipe recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
@@ -46,7 +46,7 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
 
     @Override
     protected void setupVariableValues() {
-        gasUsageMultiplier = gasUsage.getAsLong();
+        gasUsageMultiplier = Math.max(gasUsage.getAsLong(), 0);
     }
 
     @Override
@@ -95,7 +95,10 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
     @Override
     protected void useResources(int operations) {
         super.useResources(operations);
-        if (recipeGas.isEmpty()) {
+        if (gasUsageMultiplier <= 0) {
+            //We don't need to use the gas
+            return;
+        } else if (recipeGas.isEmpty()) {
             //Something went wrong, this if should never really be true if we are in useResources
             return;
         }
@@ -110,7 +113,9 @@ public class ChemicalDissolutionCachedRecipe extends CachedRecipe<ChemicalDissol
             return;
         }
         itemInputHandler.use(recipeItem, operations);
-        gasInputHandler.use(recipeGas, operations);
+        if (gasUsageMultiplier > 0) {
+            gasInputHandler.use(recipeGas, operations * gasUsageMultiplier);
+        }
         outputHandler.handleOutput(recipe.getOutput(recipeItem, recipeGas), operations);
     }
 }

@@ -2,7 +2,6 @@ package mekanism.api.recipes.cache;
 
 import java.util.function.LongSupplier;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -17,7 +16,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Base class to help implement handling of item gas to item recipes.
  */
-@FieldsAreNonnullByDefault
+@Deprecated//TODO - 1.17: Remove this
 @ParametersAreNonnullByDefault
 public class ItemStackGasToItemStackCachedRecipe<RECIPE extends ItemStackGasToItemStackRecipe> extends
       ItemStackConstantChemicalToItemStackCachedRecipe<Gas, GasStack, GasStackIngredient, RECIPE> {
@@ -31,6 +30,6 @@ public class ItemStackGasToItemStackCachedRecipe<RECIPE extends ItemStackGasToIt
      */
     public ItemStackGasToItemStackCachedRecipe(RECIPE recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
           ILongInputHandler<@NonNull GasStack> gasInputHandler, LongSupplier gasUsage, IOutputHandler<@NonNull ItemStack> outputHandler) {
-        super(recipe, itemInputHandler, gasInputHandler, gasUsage, outputHandler);
+        super(recipe, itemInputHandler, gasInputHandler, (usedSoFar, operatingTicks) -> gasUsage.getAsLong(), increment -> {}, outputHandler);
     }
 }

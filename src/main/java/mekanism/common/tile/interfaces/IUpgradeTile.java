@@ -9,6 +9,10 @@ public interface IUpgradeTile {
         return true;
     }
 
+    default boolean supportsUpgrade(Upgrade upgradeType) {
+        return supportsUpgrades() && getComponent().supports(upgradeType);
+    }
+
     TileComponentUpgrade getComponent();
 
     void recalculateUpgrades(Upgrade upgradeType);

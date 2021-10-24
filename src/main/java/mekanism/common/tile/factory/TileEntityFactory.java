@@ -1,6 +1,7 @@
 package mekanism.common.tile.factory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,15 +62,17 @@ import mekanism.common.util.UpgradeUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.IntArrayNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
     /**
      * How many ticks it takes, by default, to run an operation.
      */
-    private static final int BASE_TICKS_REQUIRED = 200;
+    protected static final int BASE_TICKS_REQUIRED = 200;
 
     protected FactoryRecipeCacheLookupMonitor<RECIPE>[] recipeCacheLookupMonitors;
     private final boolean[] activeStates;
@@ -350,8 +353,20 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.load(state, nbtTags);
-        for (int i = 0; i < tier.processes; i++) {
-            progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);
+        if (nbtTags.contains(NBTConstants.PROGRESS, NBT.TAG_INT_ARRAY)) {
+            int[] savedProgress = nbtTags.getIntArray(NBTConstants.PROGRESS);
+            if (tier.processes != savedProgress.length) {
+                Arrays.fill(progress, 0);
+            }
+            for (int i = 0; i < tier.processes && i < savedProgress.length; i++) {
+                progress[i] = savedProgress[i];
+            }
+        } else {
+            //TODO - 1.17: Remove this way of loading the old data with
+            // Arrays.fill(progress, 0);
+            for (int i = 0; i < tier.processes; i++) {
+                progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);
+            }
         }
     }
 
@@ -359,9 +374,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
         super.save(nbtTags);
-        for (int i = 0; i < tier.processes; i++) {
-            nbtTags.putInt(NBTConstants.PROGRESS + i, getProgress(i));
-        }
+        nbtTags.put(NBTConstants.PROGRESS, new IntArrayNBT(Arrays.copyOf(progress, progress.length)));
         return nbtTags;
     }
 

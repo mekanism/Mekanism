@@ -12,7 +12,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ChemicalInfuserCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ChemicalChemicalToChemicalCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -182,7 +182,7 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalI
     @Nonnull
     @Override
     public CachedRecipe<ChemicalInfuserRecipe> createNewCachedRecipe(@Nonnull ChemicalInfuserRecipe recipe, int cacheIndex) {
-        return new ChemicalInfuserCachedRecipe(recipe, leftInputHandler, rightInputHandler, outputHandler)
+        return new ChemicalChemicalToChemicalCachedRecipe<>(recipe, leftInputHandler, rightInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

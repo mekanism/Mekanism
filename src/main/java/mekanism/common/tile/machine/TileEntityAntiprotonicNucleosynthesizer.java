@@ -10,7 +10,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ItemStackChemicalToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
@@ -155,7 +155,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @Nonnull
     @Override
     public CachedRecipe<NucleosynthesizingRecipe> createNewCachedRecipe(@Nonnull NucleosynthesizingRecipe recipe, int cacheIndex) {
-        return new ItemStackGasToItemStackCachedRecipe<>(recipe, itemInputHandler, gasInputHandler, () -> 0, outputHandler)
+        return new ItemStackChemicalToItemStackCachedRecipe<>(recipe, itemInputHandler, gasInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

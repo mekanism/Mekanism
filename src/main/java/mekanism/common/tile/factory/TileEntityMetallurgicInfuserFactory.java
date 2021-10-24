@@ -14,7 +14,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.MetallurgicInfuserCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ItemStackChemicalToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.common.Mekanism;
@@ -140,7 +140,7 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
     @Nonnull
     @Override
     public CachedRecipe<MetallurgicInfuserRecipe> createNewCachedRecipe(@Nonnull MetallurgicInfuserRecipe recipe, int cacheIndex) {
-        return new MetallurgicInfuserCachedRecipe(recipe, infusionInputHandler, inputHandlers[cacheIndex], outputHandlers[cacheIndex])
+        return new ItemStackChemicalToItemStackCachedRecipe<>(recipe, inputHandlers[cacheIndex], infusionInputHandler, outputHandlers[cacheIndex])
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(active -> setActiveState(active, cacheIndex))
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

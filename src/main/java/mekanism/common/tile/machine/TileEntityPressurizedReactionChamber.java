@@ -145,8 +145,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
             recipeDuration = recipe.getDuration();
             recipeEnergyRequired = recipe.getEnergyRequired();
         }
-        boolean update = BASE_TICKS_REQUIRED != recipeDuration;
-        BASE_TICKS_REQUIRED = recipeDuration;
+        boolean update = baseTicksRequired != recipeDuration;
+        baseTicksRequired = recipeDuration;
         if (update) {
             recalculateUpgrades(Upgrade.SPEED);
         }

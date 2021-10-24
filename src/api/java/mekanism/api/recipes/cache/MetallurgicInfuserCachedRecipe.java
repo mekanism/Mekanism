@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Base class to help implement handling of item infuse type to item recipes.
  */
+@Deprecated//TODO - 1.17: Remove this
 @ParametersAreNonnullByDefault
 public class MetallurgicInfuserCachedRecipe extends ItemStackChemicalToItemStackCachedRecipe<InfuseType, InfusionStack, InfusionStackIngredient, MetallurgicInfuserRecipe> {
 
@@ -26,6 +27,5 @@ public class MetallurgicInfuserCachedRecipe extends ItemStackChemicalToItemStack
     public MetallurgicInfuserCachedRecipe(MetallurgicInfuserRecipe recipe, IInputHandler<@NonNull InfusionStack> infusionInputHandler,
           IInputHandler<@NonNull ItemStack> itemInputHandler, IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe, itemInputHandler, infusionInputHandler, outputHandler);
-        //TODO - 1.17: Change the order of infusion input handler and item input handler
     }
 }

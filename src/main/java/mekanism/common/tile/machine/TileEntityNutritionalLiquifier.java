@@ -12,7 +12,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ItemStackToGasCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ItemStackToChemicalCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
@@ -181,7 +181,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     @Nonnull
     @Override
     public CachedRecipe<ItemStackToGasRecipe> createNewCachedRecipe(@Nonnull ItemStackToGasRecipe recipe, int cacheIndex) {
-        return new ItemStackToGasCachedRecipe(recipe, inputHandler, outputHandler)
+        return new ItemStackToChemicalCachedRecipe<>(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

@@ -1,7 +1,6 @@
 package mekanism.api.recipes.cache;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
@@ -15,7 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 /**
  * Base class to help implement handling of fluid slurry to slurry recipes.
  */
-@FieldsAreNonnullByDefault
+@Deprecated//TODO - 1.17: Remove this
 @ParametersAreNonnullByDefault
 public class FluidSlurryToSlurryCachedRecipe extends FluidChemicalToChemicalCachedRecipe<Slurry, SlurryStack, SlurryStackIngredient, FluidSlurryToSlurryRecipe> {
 

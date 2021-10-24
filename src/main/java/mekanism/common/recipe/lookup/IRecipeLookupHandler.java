@@ -84,4 +84,18 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
         @Override
         MekanismRecipeType<RECIPE, INPUT_CACHE> getRecipeType();
     }
+
+    interface ConstantUsageRecipeLookupHandler {
+
+        /**
+         * Returns how much of the constant secondary input had been used for purposes of persisting through saves how far a cached recipe is through processing.
+         *
+         * @param cacheIndex The "recipe index" for which cache to interact with.
+         *
+         * @return Constant amount of secondary input that had been used before saving.
+         */
+        default long getSavedUsedSoFar(int cacheIndex) {
+            return 0;
+        }
+    }
 }

@@ -1,15 +1,18 @@
 package mekanism.common.tile.component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.Action;
+import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerTracker;
@@ -170,6 +173,10 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         return supported;
     }
 
+    private List<IInventorySlot> getSlots() {
+        return Arrays.asList(upgradeSlot, upgradeOutputSlot);
+    }
+
     @Override
     public void read(CompoundNBT nbtTags) {
         if (nbtTags.contains(NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
@@ -179,6 +186,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                 tile.recalculateUpgrades(upgrade);
             }
             //Load the inventory
+            NBTUtils.setListIfPresent(upgradeNBT, NBTConstants.ITEMS, NBT.TAG_COMPOUND, list -> DataHandlerUtils.readContainers(getSlots(), list));
+            //TODO - 1.17: Remove this, it is the legacy way of loading
             NBTUtils.setCompoundIfPresent(upgradeNBT, NBTConstants.SLOT, upgradeSlot::deserializeNBT);
         }
     }
@@ -188,10 +197,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         CompoundNBT upgradeNBT = new CompoundNBT();
         Upgrade.saveMap(upgrades, upgradeNBT);
         //Save the inventory
-        CompoundNBT compoundNBT = upgradeSlot.serializeNBT();
-        if (!compoundNBT.isEmpty()) {
-            upgradeNBT.put(NBTConstants.SLOT, compoundNBT);
-        }
+        upgradeNBT.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getSlots()));
         nbtTags.put(NBTConstants.COMPONENT_UPGRADE, upgradeNBT);
     }
 

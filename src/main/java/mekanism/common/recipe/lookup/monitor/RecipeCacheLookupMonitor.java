@@ -8,8 +8,10 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ICachedRecipeHolder;
+import mekanism.api.recipes.cache.chemical.ItemStackConstantChemicalToItemStackCachedRecipe;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 
 public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements ICachedRecipeHolder<RECIPE>, IContentsListener {
 
@@ -25,6 +27,10 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
     public RecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler, int cacheIndex) {
         this.handler = handler;
         this.cacheIndex= cacheIndex;
+    }
+
+    protected boolean cachedIndexMatches(int cacheIndex) {
+        return this.cacheIndex == cacheIndex;
     }
 
     @Override
@@ -63,26 +69,36 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
     }
 
     @Override
+    public void loadSavedData(@Nonnull CachedRecipe<RECIPE> cached, int cacheIndex) {
+        if (cachedIndexMatches(cacheIndex)) {
+            ICachedRecipeHolder.super.loadSavedData(cached, cacheIndex);
+            if (cached instanceof ItemStackConstantChemicalToItemStackCachedRecipe && handler instanceof IRecipeLookupHandler.ConstantUsageRecipeLookupHandler) {
+                ((ItemStackConstantChemicalToItemStackCachedRecipe<?, ?, ?, ?>) cached).loadSavedUsageSoFar(((ConstantUsageRecipeLookupHandler) handler).getSavedUsedSoFar(cacheIndex));
+            }
+        }
+    }
+
+    @Override
     public int getSavedOperatingTicks(int cacheIndex) {
-        return this.cacheIndex == cacheIndex ? handler.getSavedOperatingTicks(cacheIndex) : ICachedRecipeHolder.super.getSavedOperatingTicks(cacheIndex);
+        return cachedIndexMatches(cacheIndex) ? handler.getSavedOperatingTicks(cacheIndex) : ICachedRecipeHolder.super.getSavedOperatingTicks(cacheIndex);
     }
 
     @Nullable
     @Override
     public CachedRecipe<RECIPE> getCachedRecipe(int cacheIndex) {
-        return this.cacheIndex == cacheIndex ? cachedRecipe : null;
+        return cachedIndexMatches(cacheIndex) ? cachedRecipe : null;
     }
 
     @Nullable
     @Override
     public RECIPE getRecipe(int cacheIndex) {
-        return this.cacheIndex == cacheIndex ? handler.getRecipe(cacheIndex) : null;
+        return cachedIndexMatches(cacheIndex) ? handler.getRecipe(cacheIndex) : null;
     }
 
     @Nullable
     @Override
     public CachedRecipe<RECIPE> createNewCachedRecipe(@Nonnull RECIPE recipe, int cacheIndex) {
-        return this.cacheIndex == cacheIndex ? handler.createNewCachedRecipe(recipe, cacheIndex) : null;
+        return cachedIndexMatches(cacheIndex) ? handler.createNewCachedRecipe(recipe, cacheIndex) : null;
     }
 
     @Override
@@ -92,13 +108,13 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
 
     @Override
     public void setHasNoRecipe(int cacheIndex) {
-        if (this.cacheIndex == cacheIndex) {
+        if (cachedIndexMatches(cacheIndex)) {
             hasNoRecipe = true;
         }
     }
 
     @Override
     public boolean hasNoRecipe(int cacheIndex) {
-        return this.cacheIndex == cacheIndex ? hasNoRecipe : ICachedRecipeHolder.super.hasNoRecipe(cacheIndex);
+        return cachedIndexMatches(cacheIndex) ? hasNoRecipe : ICachedRecipeHolder.super.hasNoRecipe(cacheIndex);
     }
 }

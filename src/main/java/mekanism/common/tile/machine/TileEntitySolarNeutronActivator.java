@@ -11,7 +11,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.GasToGasCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ChemicalToChemicalCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -175,7 +175,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     @Nonnull
     @Override
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
-        return new GasToGasCachedRecipe(recipe, inputHandler, outputHandler)
+        return new ChemicalToChemicalCachedRecipe<>(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setOnFinish(() -> markDirty(false))

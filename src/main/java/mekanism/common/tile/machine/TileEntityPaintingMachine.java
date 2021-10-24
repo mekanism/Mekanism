@@ -10,7 +10,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.PaintingCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ItemStackChemicalToItemStackCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -129,7 +129,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<Paintin
     @Nonnull
     @Override
     public CachedRecipe<PaintingRecipe> createNewCachedRecipe(@Nonnull PaintingRecipe recipe, int cacheIndex) {
-        return new PaintingCachedRecipe(recipe, itemInputHandler, pigmentInputHandler, outputHandler)
+        return new ItemStackChemicalToItemStackCachedRecipe<>(recipe, itemInputHandler, pigmentInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

@@ -13,7 +13,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.GasToGasCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ChemicalToChemicalCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -146,7 +146,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     @Nonnull
     @Override
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
-        return new GasToGasCachedRecipe(recipe, inputHandler, outputHandler)
+        return new ChemicalToChemicalCachedRecipe<>(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setOnFinish(() -> markDirty(false))

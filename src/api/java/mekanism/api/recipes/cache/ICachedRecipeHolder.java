@@ -25,21 +25,21 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
         //If there is no cached recipe or the input doesn't match, attempt to get the recipe based on the input
         if (currentCache == null || !currentCache.isInputValid()) {
             if (cacheInvalid || !hasNoRecipe(cacheIndex)) {
-                //If our cache is not valid or we may have a recipe, check if we do
+                //If our cache is not valid, or we may have a recipe, check if we do
                 RECIPE recipe = getRecipe(cacheIndex);
                 if (recipe == null) {
                     //If we don't mark that we don't have no recipe so that we can cache and short circuit following
                     // recipe lookups until either the cache becomes invalid or we may have a recipe again
                     setHasNoRecipe(cacheIndex);
                 } else {
-                    //Otherwise create a new cached recipe
+                    //Otherwise, create a new cached recipe
                     CachedRecipe<RECIPE> cached = createNewCachedRecipe(recipe, cacheIndex);
                     if (currentCache == null || cached != null) {
                         //Only override our cached recipe if we were able to find a recipe that matches, or we don't have a cached recipe.
                         // This way if we end up getting back to the same recipe we won't have to recalculate quite as much
                         if (currentCache == null && cached != null) {
-                            //If we don't have a current cache try loading our operating ticks from the tile
-                            cached.loadSavedOperatingTicks(getSavedOperatingTicks(cacheIndex));
+                            //If we don't have a current cache try to load any persistent data from the tile
+                            loadSavedData(cached, cacheIndex);
                         }
                         return cached;
                     }
@@ -47,6 +47,16 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
             }
         }
         return currentCache;
+    }
+
+    /**
+     * Used to load any persistent data about the state of the recipe when the holder was saved.
+     *
+     * @param cached     The recipe to load to.
+     * @param cacheIndex The "recipe index" for which cache to interact with.
+     */
+    default void loadSavedData(@Nonnull CachedRecipe<RECIPE> cached, int cacheIndex) {
+        cached.loadSavedOperatingTicks(getSavedOperatingTicks(cacheIndex));
     }
 
     /**

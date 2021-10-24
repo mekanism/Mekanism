@@ -1,7 +1,7 @@
 package mekanism.api.recipes.cache.chemical;
 
 import java.util.Objects;
-import java.util.function.LongSupplier;
+import java.util.function.LongConsumer;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -29,32 +29,48 @@ public class ItemStackConstantChemicalToItemStackCachedRecipe<CHEMICAL extends C
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
     private final ILongInputHandler<@NonNull STACK> chemicalInputHandler;
-    private final LongSupplier chemicalUsage;
+    private final ChemicalUsageMultiplier chemicalUsage;
+    private final LongConsumer chemicalUsedSoFarChanged;
     private long chemicalUsageMultiplier;
+    private long chemicalUsedSoFar;
 
     private ItemStack recipeItem = ItemStack.EMPTY;
     @Nullable//Note: Shouldn't be null in places it is actually used, but we mark it as nullable so we don't have to initialize it
     private STACK recipeChemical;
 
     /**
-     * @param recipe               Recipe.
-     * @param itemInputHandler     Item input handler.
-     * @param chemicalInputHandler Chemical input handler.
-     * @param chemicalUsage        Chemical usage multiplier, must return values of at least one.
-     * @param outputHandler        Output handler.
+     * @param recipe                   Recipe.
+     * @param itemInputHandler         Item input handler.
+     * @param chemicalInputHandler     Chemical input handler.
+     * @param chemicalUsage            Chemical usage multiplier.
+     * @param chemicalUsedSoFarChanged Called when the number chemical usage so far changes.
+     * @param outputHandler            Output handler.
      */
     public ItemStackConstantChemicalToItemStackCachedRecipe(RECIPE recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
-          ILongInputHandler<@NonNull STACK> chemicalInputHandler, LongSupplier chemicalUsage, IOutputHandler<@NonNull ItemStack> outputHandler) {
+          ILongInputHandler<@NonNull STACK> chemicalInputHandler, ChemicalUsageMultiplier chemicalUsage, LongConsumer chemicalUsedSoFarChanged,
+          IOutputHandler<@NonNull ItemStack> outputHandler) {
         super(recipe);
         this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
         this.chemicalInputHandler = Objects.requireNonNull(chemicalInputHandler, "Chemical input handler cannot be null.");
         this.chemicalUsage = Objects.requireNonNull(chemicalUsage, "Chemical usage cannot be null.");
+        this.chemicalUsedSoFarChanged = Objects.requireNonNull(chemicalUsedSoFarChanged, "Chemical used so far changed handler cannot be null.");
         this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");
+    }
+
+    /**
+     * Sets the amount of chemical that have been used so far. This is used to allow {@link CachedRecipe} holders to persist and load recipe progress.
+     *
+     * @param chemicalUsedSoFar Amount of chemical that has been used so far.
+     */
+    public void loadSavedUsageSoFar(long chemicalUsedSoFar) {
+        if (chemicalUsedSoFar > 0) {
+            this.chemicalUsedSoFar = chemicalUsedSoFar;
+        }
     }
 
     @Override
     protected void setupVariableValues() {
-        chemicalUsageMultiplier = chemicalUsage.getAsLong();
+        chemicalUsageMultiplier = Math.max(chemicalUsage.getToUse(chemicalUsedSoFar, getOperatingTicks()), 0);
     }
 
     @Override
@@ -103,12 +119,25 @@ public class ItemStackConstantChemicalToItemStackCachedRecipe<CHEMICAL extends C
     @Override
     protected void useResources(int operations) {
         super.useResources(operations);
-        if (recipeChemical == null || recipeChemical.isEmpty()) {
+        if (chemicalUsageMultiplier <= 0) {
+            //We don't need to use the chemical
+            return;
+        } else if (recipeChemical == null || recipeChemical.isEmpty()) {
             //Something went wrong, this if should never really be true if we are in useResources
             return;
         }
         //Note: We should have enough because of the getOperationsThisTick call to reduce it based on amounts
-        chemicalInputHandler.use(recipeChemical, operations * chemicalUsageMultiplier);
+        long toUse = operations * chemicalUsageMultiplier;
+        chemicalInputHandler.use(recipeChemical, toUse);
+        chemicalUsedSoFar += toUse;
+        chemicalUsedSoFarChanged.accept(chemicalUsedSoFar);
+    }
+
+    @Override
+    protected void resetCache() {
+        super.resetCache();
+        chemicalUsedSoFar = 0;
+        chemicalUsedSoFarChanged.accept(chemicalUsedSoFar);
     }
 
     @Override
@@ -118,7 +147,15 @@ public class ItemStackConstantChemicalToItemStackCachedRecipe<CHEMICAL extends C
             return;
         }
         itemInputHandler.use(recipeItem, operations);
-        chemicalInputHandler.use(recipeChemical, operations);
+        if (chemicalUsageMultiplier > 0) {
+            chemicalInputHandler.use(recipeChemical, operations * chemicalUsageMultiplier);
+        }
         outputHandler.handleOutput(recipe.getOutput(recipeItem, recipeChemical), operations);
+    }
+
+    @FunctionalInterface
+    public interface ChemicalUsageMultiplier {
+
+        long getToUse(long usedSoFar, int operatingTicks);
     }
 }
