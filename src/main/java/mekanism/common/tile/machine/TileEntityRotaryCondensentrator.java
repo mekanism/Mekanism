@@ -32,7 +32,6 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -54,11 +53,8 @@ import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.ChemicalUtil;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundNBT;
@@ -107,7 +103,15 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID)
+              .setCanEject(transmissionType -> {
+                  if (transmissionType == TransmissionType.GAS) {
+                      return mode;
+                  } else if (transmissionType == TransmissionType.FLUID) {
+                      return !mode;
+                  }
+                  return true;
+              });
 
         gasInputHandler = InputHelper.getInputHandler(gasTank);
         fluidInputHandler = InputHelper.getInputHandler(fluidTank);
@@ -175,19 +179,9 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
         if (mode) {//Fluid to Gas
             fluidInputSlot.fillTank(fluidOutputSlot);
             gasInputSlot.drainTank();
-            // emit
-            ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
-            if (config != null && config.isEjecting()) {
-                ChemicalUtil.emit(config.getAllOutputtingSides(), gasTank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
-            }
         } else {//Gas to Fluid
             gasOutputSlot.fillTank();
             fluidInputSlot.drainTank(fluidOutputSlot);
-            // emit
-            ConfigInfo config = configComponent.getConfig(TransmissionType.FLUID);
-            if (config != null && config.isEjecting()) {
-                FluidUtils.emit(config.getAllOutputtingSides(), fluidTank, this, MekanismConfig.general.fluidAutoEjectRate.get());
-            }
         }
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
     }

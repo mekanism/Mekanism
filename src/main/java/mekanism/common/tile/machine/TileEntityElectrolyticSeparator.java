@@ -223,6 +223,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
             } else {
                 ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
                 if (config != null && config.isEjecting()) {
+                    //Manually done to properly not eject when dumping
                     ChemicalUtil.emit(config.getSidesForOutput(right ? DataType.OUTPUT_2 : DataType.OUTPUT_1), tank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
                 }
                 if (mode == GasMode.DUMPING_EXCESS) {

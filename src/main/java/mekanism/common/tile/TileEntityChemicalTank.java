@@ -49,13 +49,11 @@ import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.ChemicalTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -85,7 +83,9 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         configComponent.setupIOConfig(TransmissionType.INFUSION, getInfusionTank(), RelativeSide.FRONT).setEjecting(true);
         configComponent.setupIOConfig(TransmissionType.PIGMENT, getPigmentTank(), RelativeSide.FRONT).setEjecting(true);
         configComponent.setupIOConfig(TransmissionType.SLURRY, getSlurryTank(), RelativeSide.FRONT).setEjecting(true);
-        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent = new TileComponentEjector(this, () -> tier.getOutput());
+        ejectorComponent.setOutputData(configComponent, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY)
+              .setCanEject(type -> MekanismUtils.canFunction(this) && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));
     }
 
     @Override
@@ -145,28 +145,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         super.onUpdateServer();
         drainSlot.drainChemicalTanks();
         fillSlot.fillChemicalTanks();
-        Current current = chemicalTank.getCurrent();
-        if (current != Current.EMPTY) {
-            IChemicalTank<?, ?> currentTank = null;
-            //TODO - 10.1: If/when we add an override to output amount to the config ejector for the entangloporter
-            // we should evaluate changing this so that it can just use the normal ejector part
-            if (MekanismUtils.canFunction(this) && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
-                currentTank = getCurrentTank(current);
-                if (current == Current.GAS) {
-                    doAutoEject(TransmissionType.GAS, currentTank);
-                } else if (current == Current.INFUSION) {
-                    doAutoEject(TransmissionType.INFUSION, currentTank);
-                } else if (current == Current.PIGMENT) {
-                    doAutoEject(TransmissionType.PIGMENT, currentTank);
-                } else if (current == Current.SLURRY) {
-                    doAutoEject(TransmissionType.SLURRY, currentTank);
-                }
-            }
-            if (tier != ChemicalTankTier.CREATIVE) {
+        if (dumping != GasMode.IDLE && tier != ChemicalTankTier.CREATIVE) {
+            Current current = chemicalTank.getCurrent();
+            if (current != Current.EMPTY) {
+                IChemicalTank<?, ?> currentTank = getCurrentTank(current);
                 if (dumping == GasMode.DUMPING) {
-                    getCurrentTank(currentTank, current).shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
-                } else if (dumping == GasMode.DUMPING_EXCESS) {
-                    currentTank = getCurrentTank(currentTank, current);
+                    currentTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
+                } else {//dumping == GasMode.DUMPING_EXCESS
                     long needed = currentTank.getNeeded();
                     if (needed < tier.getOutput()) {
                         currentTank.shrinkStack(tier.getOutput() - needed, Action.EXECUTE);
@@ -174,13 +159,6 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
                 }
             }
         }
-    }
-
-    private IChemicalTank<?, ?> getCurrentTank(IChemicalTank<?, ?> currentTank, Current current) {
-        if (currentTank == null) {
-            return getCurrentTank(current);
-        }
-        return currentTank;
     }
 
     private IChemicalTank<?, ?> getCurrentTank(Current current) {
@@ -194,13 +172,6 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
             return getSlurryTank();
         }
         throw new IllegalStateException("Unknown chemical type");
-    }
-
-    private void doAutoEject(TransmissionType type, IChemicalTank<?, ?> tank) {
-        ConfigInfo config = configComponent.getConfig(type);
-        if (config != null && config.isEjecting()) {
-            ChemicalUtil.emit(config.getAllOutputtingSides(), tank, this, tier.getOutput());
-        }
     }
 
     @Override

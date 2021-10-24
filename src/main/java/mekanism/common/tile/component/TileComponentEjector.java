@@ -2,12 +2,20 @@ package mekanism.common.tile.component;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
@@ -44,12 +52,26 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final TileEntityMekanism tile;
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
     private final EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
+    private final LongSupplier chemicalEjectRate;
+    private final IntSupplier fluidEjectRate;
+    @Nullable
+    private Predicate<TransmissionType> canEject;
     private boolean strictInput;
     private EnumColor outputColor;
     private int tickDelay = 0;
 
     public TileComponentEjector(TileEntityMekanism tile) {
+        this(tile, MekanismConfig.general.chemicalAutoEjectRate);
+    }
+
+    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate) {
+        this(tile, chemicalEjectRate, MekanismConfig.general.fluidAutoEjectRate);
+    }
+
+    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate) {
         this.tile = tile;
+        this.chemicalEjectRate = chemicalEjectRate;
+        this.fluidEjectRate = fluidEjectRate;
         tile.addComponent(this);
     }
 
@@ -60,6 +82,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 configInfo.put(type, info);
             }
         }
+        return this;
+    }
+
+    public TileComponentEjector setCanEject(Predicate<TransmissionType> canEject) {
+        this.canEject = canEject;
         return this;
     }
 
@@ -78,20 +105,42 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private void eject(TransmissionType type) {
         ConfigInfo info = configInfo.get(type);
-        if (info != null && info.isEjecting()) {
+        if (info != null && info.isEjecting() && (canEject == null || canEject.test(type))) {
+            //Used to keep track of tanks to what sides they output to
+            Map<Object, Set<Direction>> outputData = null;
             for (DataType dataType : info.getSupportedDataTypes()) {
-                //TODO - 10.1: Re-evaluate this as strictly speaking we should output evenly if there is a data type set to output
-                // and one set to input/output instead of outputting to one and then outputting to the other after we potentially
-                // already sent it all to the first one
                 if (dataType.canOutput()) {
                     ISlotInfo slotInfo = info.getSlotInfo(dataType);
                     if (slotInfo != null) {
                         Set<Direction> outputSides = info.getSidesForData(dataType);
-                        if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo) {
-                            ((ChemicalSlotInfo<?, ?, ?>) slotInfo).getTanks().forEach(tank -> ChemicalUtil.emit(outputSides, tank, tile, MekanismConfig.general.chemicalAutoEjectRate.get()));
-                        } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
-                            ((FluidSlotInfo) slotInfo).getTanks().forEach(tank -> FluidUtils.emit(outputSides, tank, tile, MekanismConfig.general.fluidAutoEjectRate.get()));
+                        if (!outputSides.isEmpty()) {
+                            if (outputData == null) {
+                                //Lazy init outputData
+                                outputData = new HashMap<>();
+                            }
+                            if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo) {
+                                for (IChemicalTank<?, ?> tank : ((ChemicalSlotInfo<?, ?, ?>) slotInfo).getTanks()) {
+                                    if (!tank.isEmpty()) {
+                                        outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
+                                    }
+                                }
+                            } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
+                                for (IExtendedFluidTank tank : ((FluidSlotInfo) slotInfo).getTanks()) {
+                                    if (!tank.isEmpty()) {
+                                        outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
+                                    }
+                                }
+                            }
                         }
+                    }
+                }
+            }
+            if (outputData != null && !outputData.isEmpty()) {
+                for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
+                    if (type.isChemical()) {
+                        ChemicalUtil.emit(entry.getValue(), (IChemicalTank<?, ?>) entry.getKey(), tile, chemicalEjectRate.getAsLong());
+                    } else if (type == TransmissionType.FLUID) {
+                        FluidUtils.emit(entry.getValue(), (IExtendedFluidTank) entry.getKey(), tile, fluidEjectRate.getAsInt());
                     }
                 }
             }
@@ -100,7 +149,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private void outputItems() {
         ConfigInfo info = configInfo.get(TransmissionType.ITEM);
-        if (info == null || !info.isEjecting()) {
+        if (info == null || !info.isEjecting() || (canEject != null && !canEject.test(TransmissionType.ITEM))) {
             return;
         }
         for (DataType dataType : info.getSupportedDataTypes()) {
