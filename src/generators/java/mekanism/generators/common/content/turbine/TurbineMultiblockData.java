@@ -123,13 +123,14 @@ public class TurbineMultiblockData extends MultiblockData {
                 rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
 
                 flowRate = rate / origRate;
-                energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
-
-                if (!gasTank.isEmpty()) {
-                    gasTank.shrinkStack((long) rate, Action.EXECUTE);
+                if (flowRate < 1) {
+                    clientFlow = 0;
+                } else {
+                    energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
+                    clientFlow = MathUtils.clampToLong(rate);
+                    gasTank.shrinkStack(clientFlow, Action.EXECUTE);
+                    ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
                 }
-                clientFlow = (long) rate;
-                ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
             }
         } else {
             clientFlow = 0;
