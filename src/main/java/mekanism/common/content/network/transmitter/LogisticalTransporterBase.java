@@ -173,7 +173,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 } else if (stack.getPathType() != Path.NONE) {
                                     TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), next);
                                     if (tile != null) {
-                                        TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this),
+                                        TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(tile, stack.getSide(this), 0,
                                               stack.getPathType() == Path.HOME);
                                         if (!response.isEmpty()) {
                                             //We were able to add at least part of the stack to the inventory

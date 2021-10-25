@@ -175,7 +175,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         if (tile instanceof TileEntityLogisticalTransporterBase) {
                             response = ((TileEntityLogisticalTransporterBase) tile).getTransmitter().insert(this.tile, ejectMap, outputColor, true, 0);
                         } else {
-                            response = ejectMap.addToInventory(tile, side, false);
+                            response = ejectMap.addToInventory(tile, side, 0, false);
                         }
                         if (!response.isEmpty()) {
                             // use the items returned by the TransitResponse; will be visible next loop

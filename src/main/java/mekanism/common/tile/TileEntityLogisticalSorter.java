@@ -129,7 +129,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             }
             return transporter.insert(this, request, filterColor, true, min);
         }
-        return request.addToInventory(front, getDirection(), false);
+        return request.addToInventory(front, getDirection(), min, false);
     }
 
     @Nonnull
@@ -216,7 +216,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     public TransitResponse sendHome(TransitRequest request) {
         Direction oppositeDirection = getOppositeDirection();
         TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(oppositeDirection));
-        return request.addToInventory(back, oppositeDirection, true);
+        return request.addToInventory(back, oppositeDirection, 0, true);
     }
 
     @Override
