@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:dissolution",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:storage_blocks/fluorite"
+    }
+  },
+  "gasInput": {
+    "amount": 9,
+    "gas": "mekanism:sulfuric_acid"
+  },
+  "output": {
+    "gas": "mekanism:hydrofluoric_acid",
+    "amount": 9000,
+    "chemicalType": "gas"
+  }
+}

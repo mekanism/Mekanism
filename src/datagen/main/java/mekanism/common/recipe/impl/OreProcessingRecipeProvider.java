@@ -74,14 +74,11 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 16, Tags.Items.COBBLESTONE);
         addOreProcessingGemRecipes(consumer, basePath + "quartz/", Blocks.NETHER_QUARTZ_ORE, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
               MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 8, Tags.Items.NETHERRACK);
-        addOreProcessingGemRecipes(consumer, basePath + "fluorite/", MekanismBlocks.ORES.get(OreType.FLUORITE), MekanismTags.Items.ORES.get(OreType.FLUORITE),
-              MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 8,
-              Tags.Items.COBBLESTONE);
         addRedstoneProcessingRecipes(consumer, basePath + "redstone/");
         addRefinedGlowstoneProcessingRecipes(consumer, basePath + "refined_glowstone/");
         addRefinedObsidianProcessingRecipes(consumer, basePath + "refined_obsidian/");
         addSteelProcessingRecipes(consumer, basePath + "steel/");
-
+        addFluoriteRecipes(consumer, basePath + "fluorite/");
         addUraniumRecipes(consumer, basePath + "uranium/");
     }
 
@@ -437,6 +434,16 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
     }
 
+    private void addFluoriteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+        addOreProcessingGemRecipes(consumer, basePath, MekanismBlocks.ORES.get(OreType.FLUORITE), MekanismTags.Items.ORES.get(OreType.FLUORITE),
+              MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 8,
+              Tags.Items.COBBLESTONE);
+        //Gem from block
+        ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.FLUORITE_GEM, 9)
+              .addIngredient(MekanismTags.Items.STORAGE_BLOCKS_FLUORITE)
+              .build(consumer, Mekanism.rl(basePath + "from_block"));
+    }
+
     private void addUraniumRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         //yellow cake
         ItemStackToItemStackRecipeBuilder.enriching(
@@ -449,6 +456,11 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
               MekanismGases.HYDROFLUORIC_ACID.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "hydrofluoric_acid"));
+        ChemicalDissolutionRecipeBuilder.dissolution(
+              ItemStackIngredient.from(MekanismTags.Items.STORAGE_BLOCKS_FLUORITE),
+              GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 9),
+              MekanismGases.HYDROFLUORIC_ACID.getStack(9_000)
+        ).build(consumer, Mekanism.rl(basePath + "hydrofluoric_acid_from_block"));
         //uranium oxide
         ItemStackToChemicalRecipeBuilder.oxidizing(
               ItemStackIngredient.from(MekanismTags.Items.YELLOW_CAKE_URANIUM),

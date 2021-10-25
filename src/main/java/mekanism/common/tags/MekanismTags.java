@@ -127,6 +127,7 @@ public class MekanismTags {
         public static final INamedTag<Item> STORAGE_BLOCKS_REFINED_GLOWSTONE = forgeTag("storage_blocks/refined_glowstone");
         public static final INamedTag<Item> STORAGE_BLOCKS_REFINED_OBSIDIAN = forgeTag("storage_blocks/refined_obsidian");
         public static final INamedTag<Item> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
+        public static final INamedTag<Item> STORAGE_BLOCKS_FLUORITE = forgeTag("storage_blocks/fluorite");
 
         public static final INamedTag<Item> CIRCUITS = forgeTag("circuits");
         public static final INamedTag<Item> CIRCUITS_BASIC = forgeTag("circuits/basic");
@@ -213,6 +214,7 @@ public class MekanismTags {
         public static final INamedTag<Block> STORAGE_BLOCKS_REFINED_GLOWSTONE = forgeTag("storage_blocks/refined_glowstone");
         public static final INamedTag<Block> STORAGE_BLOCKS_REFINED_OBSIDIAN = forgeTag("storage_blocks/refined_obsidian");
         public static final INamedTag<Block> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
+        public static final INamedTag<Block> STORAGE_BLOCKS_FLUORITE = forgeTag("storage_blocks/fluorite");
 
         private static INamedTag<Block> forgeTag(String name) {
             return BlockTags.bind("forge:" + name);
