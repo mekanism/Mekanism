@@ -449,6 +449,7 @@
   "description.mekanism.induction_cell": "Een zeer geleidende energiecondensator die enorme hoeveelheden energie kan opslaan in één blok. Gehuisvest in een Energized Induction Matrix om de energieopslag van multiblock's uit te breiden.",
   "description.mekanism.induction_port": "Een poort die kan worden geplaatst op een Energized Induction Matrix multiblok, waardoor energie kan worden ingevoegd en uitgeput naar externe kabel.",
   "description.mekanism.induction_provider": "Een geavanceerd complex van koelsystemen, geleiders en transformanten die in staat zijn om het maximale energietransportsnelheid van Energized Induction Matrix uit te breiden.",
+  "description.mekanism.jetpack_unit": "Voegt een waterstof aangedreven jetpack toe aan het Mekapak.",
   "description.mekanism.laser": "Een geavanceerde vorm van lineaire energieoverdracht die gebruik maakt van een extreem gekleurde lichtstraal.",
   "description.mekanism.laser_amplifier": "Een blok dat kan worden gebruikt om laserstralen samen te voegen, door te verwijzen en te vermenigvuldigen, met mooie besturingselementen over wanneer te schieten.",
   "description.mekanism.laser_tractor_beam": "Een blok gebruikt om laserstralen samen te voegen en te omleiden. Verzamelt drops van blokken die het kapot heeft gemaakt.",
