@@ -247,6 +247,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
             //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
             gasTank.deserializeNBT(data.stored.serializeNBT());
             extraSlot.deserializeNBT(data.gasSlot.serializeNBT());
+            System.arraycopy(data.usedSoFar, 0, usedSoFar, 0, data.usedSoFar.length);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }
@@ -255,7 +256,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Nonnull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData() {
-        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, gasTank, extraSlot, energySlot, inputSlots, outputSlots,
+        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), progress, usedSoFar, gasTank, extraSlot, energySlot, inputSlots, outputSlots,
               isSorting(), getComponents());
     }
 

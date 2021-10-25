@@ -185,8 +185,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Nonnull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData() {
-        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), gasTank, secondarySlot, energySlot, inputSlot,
-              outputSlot, getComponents());
+        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), usedSoFar, gasTank, secondarySlot, energySlot,
+              inputSlot, outputSlot, getComponents());
     }
 
     public MachineEnergyContainer<TileEntityAdvancedElectricMachine> getEnergyContainer() {
