@@ -33,6 +33,7 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -152,9 +153,11 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
                 if (dumping == GasMode.DUMPING) {
                     currentTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
                 } else {//dumping == GasMode.DUMPING_EXCESS
-                    long needed = currentTank.getNeeded();
-                    if (needed < tier.getOutput()) {
-                        currentTank.shrinkStack(tier.getOutput() - needed, Action.EXECUTE);
+                    long target = MathUtils.clampToLong(currentTank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
+                    long stored = currentTank.getStored();
+                    if (target < stored) {
+                        //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
+                        currentTank.shrinkStack(Math.min(stored - target, tier.getOutput()), Action.EXECUTE);
                     }
                 }
             }

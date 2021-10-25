@@ -58,6 +58,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Auto eject
     public final CachedIntValue fluidAutoEjectRate;
     public final CachedLongValue chemicalAutoEjectRate;
+    public final CachedDoubleValue dumpExcessKeepRatio;
     //Prefilled
     public final CachedBooleanValue prefilledFluidTanks;
     public final CachedBooleanValue prefilledGasTanks;
@@ -158,6 +159,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("fluid", 1_024));
         chemicalAutoEjectRate = CachedLongValue.wrap(this, builder.comment("Rate at which chemicals gets auto ejected from tiles.")
               .defineInRange("chemical", 1_024L, 1, Long.MAX_VALUE));
+        dumpExcessKeepRatio = CachedDoubleValue.wrap(this, builder.comment("The percentage of a tank's capacity to leave contents in when set to dumping excess.")
+              .defineInRange("dumpExcessKeepRatio", 0.9D, 0.001D, 1D));
         builder.pop();
 
         builder.comment("Prefilled Tanks").push(PREFILLED_CATEGORY);

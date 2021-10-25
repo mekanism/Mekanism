@@ -14,6 +14,7 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
@@ -211,30 +212,49 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         rightOutputSlot.drainTank();
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
 
-        long dumpAmount = 8 * (long) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
-        handleTank(leftTank, false, dumpLeft, dumpAmount);
-        handleTank(rightTank, true, dumpRight, dumpAmount);
+        handleTank(leftTank, DataType.OUTPUT_1, dumpLeft);
+        handleTank(rightTank, DataType.OUTPUT_2, dumpRight);
     }
 
-    private void handleTank(IGasTank tank, boolean right, GasMode mode, long dumpAmount) {
+    private void handleTank(IGasTank tank, DataType output, GasMode mode) {
         if (!tank.isEmpty()) {
             if (mode == GasMode.DUMPING) {
-                tank.shrinkStack(dumpAmount, Action.EXECUTE);
+                tank.shrinkStack(8 * (long) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), Action.EXECUTE);
             } else {
                 ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
                 if (config != null && config.isEjecting()) {
-                    //Manually done to properly not eject when dumping
-                    ChemicalUtil.emit(config.getSidesForOutput(right ? DataType.OUTPUT_2 : DataType.OUTPUT_1), tank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
+                    //We have to manually handle ejection rather than letting the ejector component do it, so that we can properly
+                    // have the corresponding tank not eject when set to dumping
+                    ChemicalUtil.emit(config.getSidesForOutput(output), tank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
                 }
                 if (mode == GasMode.DUMPING_EXCESS) {
-                    long needed = tank.getNeeded();
-                    long output = MekanismConfig.general.chemicalAutoEjectRate.get();
-                    if (needed < output) {
-                        tank.shrinkStack(output - needed, Action.EXECUTE);
+                    long target = getDumpingExcessTarget(tank);
+                    long stored = tank.getStored();
+                    if (target < stored) {
+                        //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
+                        tank.shrinkStack(Math.min(stored - target, MekanismConfig.general.chemicalAutoEjectRate.get()), Action.EXECUTE);
                     }
                 }
             }
         }
+    }
+
+    private long getDumpingExcessTarget(IGasTank tank) {
+        return MathUtils.clampToLong(tank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
+    }
+
+    private boolean atDumpingExcessTarget(IGasTank tank) {
+        //Check >= so that if we are past and our eject rate is just low then we don't continue making it, so we never get to the eject rate
+        return tank.getStored() >= getDumpingExcessTarget(tank);
+    }
+
+    private boolean canFunction() {
+        //We can function if:
+        // - the tile can function
+        // - at least one side is not set to dumping excess
+        // - at least one side is not at the dumping excess target
+        return MekanismUtils.canFunction(this) && (dumpLeft != GasMode.DUMPING_EXCESS || dumpRight != GasMode.DUMPING_EXCESS ||
+                                                   !atDumpingExcessTarget(leftTank) || !atDumpingExcessTarget(rightTank));
     }
 
     public FloatingLong getRecipeEnergyMultiplier() {
@@ -263,7 +283,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     public CachedRecipe<ElectrolysisRecipe> createNewCachedRecipe(@Nonnull ElectrolysisRecipe recipe, int cacheIndex) {
         return new ElectrolysisCachedRecipe(recipe, inputHandler, outputHandler)
-              .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
+              .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
               .setOnFinish(() -> markDirty(false))

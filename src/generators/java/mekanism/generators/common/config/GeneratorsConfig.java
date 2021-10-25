@@ -33,7 +33,6 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue turbineBladesPerCoil;
     public final CachedDoubleValue turbineVentGasFlow;
     public final CachedDoubleValue turbineDisperserGasFlow;
-    public final CachedDoubleValue turbineDumpExcessKeepRatio;
     public final CachedIntValue condenserRate;
     public final CachedFloatingLongValue energyPerFusionFuel;
     public final CachedFloatingLongValue windGenerationMin;
@@ -91,8 +90,6 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .define("turbineDisperserGasFlow", 1_280D));
         condenserRate = CachedIntValue.wrap(this, builder.comment("The rate at which steam is condensed in the turbine.")
               .define("condenserRate", 64_000));
-        turbineDumpExcessKeepRatio = CachedDoubleValue.wrap(this, builder.comment("The percentage of the turbine's steam tank to leave steam in when set to dumping excess.")
-              .defineInRange("dumpExcessKeepRatio", 0.9D, 0.001D, 1D));
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);

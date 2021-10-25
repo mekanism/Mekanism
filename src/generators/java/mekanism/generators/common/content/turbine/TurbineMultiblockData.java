@@ -141,7 +141,7 @@ public class TurbineMultiblockData extends MultiblockData {
                 gasTank.shrinkStack(getDumpingAmount(amount), Action.EXECUTE);
             } else {//DUMPING_EXCESS
                 //Don't allow dumping more than the configured amount
-                long targetLevel = MathUtils.clampToLong(gasTank.getCapacity() * MekanismGeneratorsConfig.generators.turbineDumpExcessKeepRatio.get());
+                long targetLevel = MathUtils.clampToLong(gasTank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
                 if (targetLevel < amount) {
                     gasTank.shrinkStack(Math.min(amount - targetLevel, getDumpingAmount(amount)), Action.EXECUTE);
                 }
