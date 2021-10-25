@@ -37,7 +37,7 @@ import net.minecraft.world.World;
 public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     public int addTicks = 0;
-
+    public int removeTicks = 0;
     private int delayTicks;
 
     private BinTier tier;
@@ -80,6 +80,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     protected void onUpdateServer() {
         super.onUpdateServer();
         addTicks = Math.max(0, addTicks - 1);
+        removeTicks = Math.max(0, removeTicks - 1);
         delayTicks = Math.max(0, delayTicks - 1);
         if (delayTicks == 0) {
             if (getActive()) {
