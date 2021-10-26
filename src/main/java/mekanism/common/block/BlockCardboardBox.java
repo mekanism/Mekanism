@@ -27,6 +27,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent;
 
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
@@ -39,7 +41,12 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
     @Deprecated
     public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
-        if (!world.isClientSide && player.isShiftKeyDown()) {
+        if (!player.isShiftKeyDown()) {
+            return ActionResultType.PASS;
+        } else if (!canReplace(world, player, pos, state)) {
+            return ActionResultType.FAIL;
+        }
+        if (!world.isClientSide) {
             TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
             if (box != null && box.storedData != null) {
                 BlockData data = box.storedData;
@@ -58,7 +65,21 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                 popResource(world, pos, MekanismBlocks.CARDBOARD_BOX.getItemStack());
             }
         }
-        return player.isShiftKeyDown() ? ActionResultType.SUCCESS : ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
+    }
+
+    private static boolean canReplace(World world, PlayerEntity player, BlockPos pos, BlockState state) {
+        //Check if the player is allowed to use the cardboard box in the given position
+        if (world.mayInteract(player, pos)) {
+            //If they are then check if they can "break" the cardboard block that is in that spot
+            if (!MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(world, pos, state, player))) {
+                //If they can then we need to see if they are allowed to "place" the unboxed block in the given position
+                //TODO: Once forge fixes https://github.com/MinecraftForge/MinecraftForge/issues/7609 use block snapshots
+                // and fire a place event to see if the player is able to "place" the cardboard box
+                return true;
+            }
+        }
+        return false;
     }
 
     @Nonnull

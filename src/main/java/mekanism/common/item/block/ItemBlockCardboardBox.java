@@ -25,12 +25,15 @@ import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.event.world.BlockEvent;
 
 public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> {
 
@@ -54,6 +57,20 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         }
     }
 
+    private static boolean canReplace(World world, PlayerEntity player, BlockPos pos, Direction sideClicked, BlockState state, ItemStack stack) {
+        //Check if the player is allowed to use the cardboard box in the given position
+        if (world.mayInteract(player, pos) && player.mayUseItemAt(pos.relative(sideClicked), sideClicked, stack)) {
+            //If they are then check if they can "break" the block that is in that spot
+            if (!MinecraftForge.EVENT_BUS.post(new BlockEvent.BreakEvent(world, pos, state, player))) {
+                //If they can then we need to see if they are allowed to "place" the cardboard box in the given position
+                //TODO: Once forge fixes https://github.com/MinecraftForge/MinecraftForge/issues/7609 use block snapshots
+                // and fire a place event to see if the player is able to "place" the cardboard box
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Nonnull
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context) {
@@ -66,7 +83,9 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
         if (getBlockData(stack) == null && !player.isShiftKeyDown()) {
             BlockState state = world.getBlockState(pos);
             if (!state.isAir(world, pos) && state.getDestroySpeed(world, pos) != -1) {
-                if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST) || MekanismConfig.general.cardboardModBlacklist.get().contains(state.getBlock().getRegistryName().getNamespace())) {
+                if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST) ||
+                    MekanismConfig.general.cardboardModBlacklist.get().contains(state.getBlock().getRegistryName().getNamespace()) ||
+                    !canReplace(world, player, pos, context.getClickedFace(), state, stack)) {
                     return ActionResultType.FAIL;
                 }
                 TileEntity tile = WorldUtils.getTileEntity(world, pos);
