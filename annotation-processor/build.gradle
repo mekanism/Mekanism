@@ -4,6 +4,7 @@ plugins {
 
 group 'mekanism.annotation-processor'
 version '1.0'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 repositories {
     maven {
