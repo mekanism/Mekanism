@@ -437,7 +437,7 @@
   "crafting_formula.mekanism.encoded": "(登録完了)",
   "crafting_formula.mekanism.ingredients": "素材:",
   "death.attack.laser": "%sは火に葬られた。",
-  "death.attack.radiation": "%sは放射線中毒により死亡した",
+  "death.attack.radiation": "%sは放射線中毒により死亡した。",
   "description.mekanism.antiprotonic_nucleosynthesizer": "少量の反物質と物質のエネルギーから様々な資源を原子的に変換する機械。",
   "description.mekanism.attack_amplification_unit": "プレイヤーやモブに対する近接攻撃を強化します。",
   "description.mekanism.bin": "1種類のアイテムを大量に溜め込むことができます。",
