@@ -127,16 +127,14 @@ def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, S
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
-    extendConfigurations(compile, apiCompile, testCompile, datagenmainCompile)
     extendConfigurations(implementation, apiImplementation, testImplementation, datagenmainImplementation)
     extendConfigurations(compileOnly, apiCompileOnly, testCompileOnly, datagenmainCompileOnly)
     extendConfigurations(runtimeOnly, apiRuntimeOnly, datagenmainRuntimeOnly)
-    //Extend configurations for alternate modules. First by making the compile, implementation, compileOnly, runtimeOnly equivalents
+    //Extend configurations for alternate modules. First by making the implementation, compileOnly, runtimeOnly equivalents
     // for those modules extend the main ones, and then by making the corresponding ones for datagen for the module extend those.
     // This way if we add a dependency/integration in a submodule instead of the main module of Mekanism, the datagen of the corresponding
     // module will be able to properly access the dependency
     for (def name : ["additions", "defense", "generators", "tools"]) {
-        maybeCreate("datagen" + name + "Compile").extendsFrom(maybeCreate(name + "Compile").extendsFrom(compile))
         maybeCreate("datagen" + name + "Implementation").extendsFrom(maybeCreate(name + "Implementation").extendsFrom(implementation))
         maybeCreate("datagen" + name + "CompileOnly").extendsFrom(maybeCreate(name + "CompileOnly").extendsFrom(compileOnly))
         maybeCreate("datagen" + name + "RuntimeOnly").extendsFrom(maybeCreate(name + "RuntimeOnly").extendsFrom(runtimeOnly))
@@ -183,8 +181,13 @@ def createReplaceResourcesTask(String output, SourceSet sourceSet) {
                 into "$rootDir/out/production/Mekanism.${output}/"
             }
         }
-        //Note: If eclipse has its own non gradle based runClient as well and has issues due to
-        // the missing mods.toml file, add a check for its path and copy into the correct spot here
+        //If Eclipse's output dir exists, copy it there as well
+        if (new File("$rootDir/bin/${output}/").exists()) {
+            copy {
+                with modsToml
+                into "$rootDir/bin/${output}/"
+            }
+        }
     }
 }
 
@@ -568,9 +571,7 @@ task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defens
     archiveClassifier.set("all")
     manifest.attributes(getManifestAttributes("MekanismAll"))
     //Start by generating the merged data
-    doFirst {
-        MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
-    }
+    MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
     //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
     List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project)

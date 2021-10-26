@@ -70,6 +70,8 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
     @FunctionalInterface
     protected interface GuiFilterCreator<TILE extends TileEntityMekanism & ITileFilterHolder<?>> {
 
-        GuiFilter<?, TILE> create(IGuiWrapper gui, TILE tile);
+        //Note: This needs to be a wildcard for the tile as we don't actually care about it in the return result,
+        // and otherwise eclipse considers it a mismatched bounds error
+        GuiFilter<?, ?> create(IGuiWrapper gui, TILE tile);
     }
 }
