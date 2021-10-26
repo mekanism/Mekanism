@@ -37,11 +37,6 @@
           ],
           "name": "mekanism:qio_dashboard"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

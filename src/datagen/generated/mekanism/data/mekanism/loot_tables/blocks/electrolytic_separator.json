@@ -77,11 +77,6 @@
           ],
           "name": "mekanism:electrolytic_separator"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

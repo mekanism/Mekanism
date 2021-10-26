@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:painting_machine"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:pigment_mixer"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

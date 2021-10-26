@@ -32,6 +32,7 @@ import net.minecraft.block.SlabBlock;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.ILootConditionConsumer;
 import net.minecraft.loot.IRandomRange;
 import net.minecraft.loot.ItemLootEntry;
 import net.minecraft.loot.LootEntry;
@@ -42,6 +43,7 @@ import net.minecraft.loot.conditions.BlockStateProperty;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.conditions.ILootCondition.IBuilder;
 import net.minecraft.loot.conditions.MatchTool;
+import net.minecraft.loot.conditions.SurvivesExplosion;
 import net.minecraft.loot.functions.ApplyBonus;
 import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.loot.functions.CopyNbt.Source;
@@ -125,6 +127,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             }
             CopyNbt.Builder nbtBuilder = CopyNbt.copyData(Source.BLOCK_ENTITY);
             boolean hasData = false;
+            boolean hasContents = false;
             @Nullable
             TileEntity tile = null;
             if (block instanceof IHasTileEntity) {
@@ -168,6 +171,9 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                     if (tileEntity.handles(type) && !type.getContainers(tileEntity).isEmpty()) {
                         nbtBuilder.copy(type.getContainerTag(), NBTConstants.MEK_DATA + "." + type.getContainerTag());
                         hasData = true;
+                        if (type != SubstanceType.ENERGY && type != SubstanceType.HEAT) {
+                            hasContents = true;
+                        }
                     }
                 }
             }
@@ -180,6 +186,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                     if (!(tile instanceof TileEntityMekanism) || ((TileEntityMekanism) tile).persistInventory()) {
                         nbtBuilder.copy(NBTConstants.ITEMS, NBTConstants.MEK_DATA + "." + NBTConstants.ITEMS);
                         hasData = true;
+                        hasContents = true;
                     }
                 }
             }
@@ -194,13 +201,20 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 // that block
                 dropSelf(block);
             } else {
-                add(block, LootTable.lootTable().withPool(applyExplosionCondition(block, LootPool.lootPool()
+                add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
                       .name("main")
                       .setRolls(ConstantRange.exactly(1))
                       .add(ItemLootEntry.lootTableItem(block).apply(nbtBuilder))
                 )));
             }
         }
+    }
+
+    /**
+     * Like vanilla's {@link BlockLootTables#applyExplosionCondition(IItemProvider, ILootConditionConsumer)} except with a boolean for if it is explosion resistant.
+     */
+    private static <T> T applyExplosionCondition(boolean explosionResistant, ILootConditionConsumer<T> condition) {
+        return explosionResistant ? condition.unwrap() : condition.when(SurvivesExplosion.survivesExplosion());
     }
 
     /**

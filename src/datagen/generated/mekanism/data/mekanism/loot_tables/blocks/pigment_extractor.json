@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:pigment_extractor"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

@@ -42,11 +42,6 @@
           ],
           "name": "mekanism:seismic_vibrator"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

@@ -72,11 +72,6 @@
           ],
           "name": "mekanism:creative_chemical_tank"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

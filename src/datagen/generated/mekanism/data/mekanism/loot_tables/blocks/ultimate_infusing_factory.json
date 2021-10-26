@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:ultimate_infusing_factory"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

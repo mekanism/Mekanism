@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:isotopic_centrifuge"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:chemical_injection_chamber"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

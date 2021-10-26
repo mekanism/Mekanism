@@ -52,11 +52,6 @@
           ],
           "name": "mekanism:teleporter"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]
