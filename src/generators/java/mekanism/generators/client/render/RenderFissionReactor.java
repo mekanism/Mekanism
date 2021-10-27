@@ -48,7 +48,7 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                 BlockPos pos = tile.getBlockPos();
                 IVertexBuilder buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
                 if (multiblock.isBurning()) {
-                    //TODO - 10.1: Convert the glow model and stuff to being part of the baked model and using model data
+                    //TODO: Convert the glow model and stuff to being part of the baked model and using model data
                     // as I am fairly sure that should give a decent boost to performance
                     if (glowModel == null) {
                         glowModel = new Model3D();

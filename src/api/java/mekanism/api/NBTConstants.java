@@ -51,6 +51,7 @@ public final class NBTConstants {
     public static final String ACTIVE_NODES = "activeNodes";
     public static final String ACTIVE_STATE = "activeState";
     public static final String ALLOW_DEFAULT = "allowDefault";
+    public static final String AGE = "age";
     public static final String AMOUNT = "amount";
     public static final String AUTO = "auto";
     public static final String BLADES = "blades";
@@ -60,6 +61,7 @@ public final class NBTConstants {
     public static final String BURNING = "burning";
     public static final String BURN_TIME = "burnTime";
     public static final String CACHE = "cache";
+    public static final String CHANCE = "chance";
     public static final String CHANNEL = "channel";
     public static final String CHEMICAL_TYPE = "chemicalType";
     public static final String CHUNK_SET = "chunkSet";
@@ -129,10 +131,12 @@ public final class NBTConstants {
     public static final String LATCHED = "latched";
     public static final String LEVEL = "level";
     public static final String LOGIC_TYPE = "logicType";
+    public static final String MAGNITUDE = "magnitude";
     public static final String MAIN = "main";
     public static final String MAX = "max";
     public static final String MAX_BURN_TIME = "maxBurnTime";
     public static final String MEK_DATA = "mekData";
+    public static final String MELTDOWNS = "meltdowns";
     public static final String MIN = "min";
     public static final String MODE = "mode";
     public static final String MODID = "modID";

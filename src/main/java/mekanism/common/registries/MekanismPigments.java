@@ -25,8 +25,6 @@ public class MekanismPigments {
     }
 
     private static PigmentRegistryObject<Pigment> register(EnumColor color) {
-        //TODO - 10.1: Do we want the tint to be more dynamically based on a color map system to allow resource packs changing
-        // the color palette of EnumColor to also change the coloration of the pigments
         int[] rgb = color.getRgbCode();
         int tint = rgb[0] << 16;
         tint |= rgb[1] << 8;

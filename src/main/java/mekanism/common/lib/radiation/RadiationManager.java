@@ -5,7 +5,9 @@ import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,10 +15,12 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.IntSupplier;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
@@ -33,7 +37,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.collection.HashList;
-import mekanism.api.Chunk3D;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.registries.MekanismParticleTypes;
@@ -48,6 +51,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -103,8 +107,6 @@ public class RadiationManager implements IRadiationManager {
     private boolean loaded;
 
     private final Table<Chunk3D, Coord4D, RadiationSource> radiationTable = HashBasedTable.create();
-    //TODO - 10.1: Re-evaluate the fact this doesn't seem to be persisted between saving and opening
-    // this may not fully matter due to a meltdown only lasting 5 seconds, but may be something we care about
     private final Map<ResourceLocation, List<Meltdown>> meltdowns = new Object2ObjectOpenHashMap<>();
 
     private final Map<UUID, RadiationScale> playerExposureMap = new Object2ObjectOpenHashMap<>();
@@ -121,6 +123,12 @@ public class RadiationManager implements IRadiationManager {
     @Override
     public boolean isRadiationEnabled() {
         return MekanismConfig.general.radiationEnabled.get();
+    }
+
+    private void markDirty() {
+        if (dataHandler != null) {
+            dataHandler.setDirty();
+        }
     }
 
     @Override
@@ -140,12 +148,20 @@ public class RadiationManager implements IRadiationManager {
 
     @Override
     public void removeRadiationSources(Chunk3D chunk) {
-        radiationTable.row(chunk).clear();
+        Map<Coord4D, RadiationSource> chunkSources = radiationTable.row(chunk);
+        if (!chunkSources.isEmpty()) {
+            chunkSources.clear();
+            markDirty();
+        }
     }
 
     @Override
     public void removeRadiationSource(Coord4D coord) {
-        radiationTable.remove(new Chunk3D(coord), coord);
+        Chunk3D chunk = new Chunk3D(coord);
+        if (radiationTable.contains(chunk, coord)) {
+            radiationTable.remove(chunk, coord);
+            markDirty();
+        }
     }
 
     @Override
@@ -178,6 +194,7 @@ public class RadiationManager implements IRadiationManager {
         } else {
             src.radiate(magnitude);
         }
+        markDirty();
     }
 
     @Override
@@ -219,11 +236,15 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void createMeltdown(World world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance) {
-        meltdowns.computeIfAbsent(world.dimension().location(), id -> new ArrayList<>()).add(new Meltdown(world, minPos, maxPos, magnitude, chance));
+        meltdowns.computeIfAbsent(world.dimension().location(), id -> new ArrayList<>()).add(new Meltdown(minPos, maxPos, magnitude, chance));
+        markDirty();
     }
 
     public void clearSources() {
-        radiationTable.clear();
+        if (!radiationTable.isEmpty()) {
+            radiationTable.clear();
+            markDirty();
+        }
     }
 
     private double computeExposure(Coord4D coord, RadiationSource source) {
@@ -305,9 +326,12 @@ public class RadiationManager implements IRadiationManager {
         }
 
         // update meltdowns
-        ResourceLocation dimension = world.dimension().location();
-        if (meltdowns.containsKey(dimension)) {
-            meltdowns.get(dimension).removeIf(Meltdown::update);
+        List<Meltdown> dimensionMeltdowns = meltdowns.getOrDefault(world.dimension().location(), Collections.emptyList());
+        if (!dimensionMeltdowns.isEmpty()) {
+            dimensionMeltdowns.removeIf(meltdown -> meltdown.update(world));
+            //If we have/had any meltdowns mark our data handler as dirty as when a meltdown updates
+            // the number of ticks it has been around for will change
+            markDirty();
         }
     }
 
@@ -318,14 +342,12 @@ public class RadiationManager implements IRadiationManager {
         }
         // each tick, there's a 1/20 chance we'll decay radiation sources (averages to 1 decay operation per second)
         if (RAND.nextInt(20) == 0) {
-            for (Iterator<RadiationSource> iter = radiationTable.values().iterator(); iter.hasNext(); ) {
-                RadiationSource source = iter.next();
-                if (source.decay()) {
-                    // remove if source gets too low
-                    iter.remove();
-                }
-
-                dataHandler.setDirty();
+            Collection<RadiationSource> sources = radiationTable.values();
+            if (!sources.isEmpty()) {
+                // remove if source gets too low
+                sources.removeIf(RadiationSource::decay);
+                //Mark dirty regardless if we have any sources as magnitude changes or radiation sources change
+                markDirty();
             }
         }
     }
@@ -338,15 +360,16 @@ public class RadiationManager implements IRadiationManager {
             //Always associate the world with the over world as the frequencies are global
             DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
             dataHandler = savedData.computeIfAbsent(RadiationDataHandler::new, DATA_HANDLER_NAME);
-            dataHandler.setManager(this);
-            dataHandler.syncManager();
+            dataHandler.setManagerAndSync(this);
+            dataHandler.clearCached();
         }
 
         loaded = true;
     }
 
     public void reset() {
-        clearSources();
+        //Clear the table directly instead of via the method, so it doesn't mark it as dirty
+        radiationTable.clear();
         playerExposureMap.clear();
         meltdowns.clear();
         dataHandler = null;
@@ -446,47 +469,92 @@ public class RadiationManager implements IRadiationManager {
 
     public static class RadiationDataHandler extends WorldSavedData {
 
+        private Map<ResourceLocation, List<Meltdown>> savedMeltdowns = Collections.emptyMap();
+        public List<RadiationSource> loadedSources = Collections.emptyList();
         public RadiationManager manager;
-        public List<RadiationSource> loadedSources;
 
         public RadiationDataHandler() {
             super(DATA_HANDLER_NAME);
         }
 
-        public void setManager(RadiationManager m) {
+        public void setManagerAndSync(RadiationManager m) {
             manager = m;
-        }
-
-        public void syncManager() {
             // don't sync the manager if radiation has been disabled
-            if (loadedSources != null && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+            if (MekanismAPI.getRadiationManager().isRadiationEnabled()) {
                 for (RadiationSource source : loadedSources) {
                     manager.radiationTable.put(new Chunk3D(source.getPos()), source.getPos(), source);
                 }
+                for (Map.Entry<ResourceLocation, List<Meltdown>> entry : savedMeltdowns.entrySet()) {
+                    List<Meltdown> meltdowns = entry.getValue();
+                    manager.meltdowns.computeIfAbsent(entry.getKey(), id -> new ArrayList<>(meltdowns.size())).addAll(meltdowns);
+                }
             }
+        }
+
+        public void clearCached() {
+            //Clear cached sources and meltdowns after loading them to not keep pointers in our data handler
+            // that are referencing objects that eventually will be removed
+            loadedSources = Collections.emptyList();
+            savedMeltdowns = Collections.emptyMap();
         }
 
         @Override
         public void load(@Nonnull CompoundNBT nbtTags) {
             if (nbtTags.contains(NBTConstants.RADIATION_LIST, NBT.TAG_LIST)) {
                 ListNBT list = nbtTags.getList(NBTConstants.RADIATION_LIST, NBT.TAG_COMPOUND);
-                loadedSources = new HashList<>();
-                for (int i = 0; i < list.size(); i++) {
-                    loadedSources.add(RadiationSource.load(list.getCompound(0)));
+                loadedSources = new HashList<>(list.size());
+                for (INBT nbt : list) {
+                    loadedSources.add(RadiationSource.load((CompoundNBT) nbt));
                 }
+            } else {
+                loadedSources = Collections.emptyList();
+            }
+            if (nbtTags.contains(NBTConstants.MELTDOWNS, NBT.TAG_COMPOUND)) {
+                CompoundNBT meltdownNBT = nbtTags.getCompound(NBTConstants.MELTDOWNS);
+                savedMeltdowns = new HashMap<>(meltdownNBT.size());
+                for (String dim : meltdownNBT.getAllKeys()) {
+                    ResourceLocation dimension = ResourceLocation.tryParse(dim);
+                    if (dimension != null) {
+                        //It should be a valid dimension, but validate it just in case
+                        ListNBT meltdowns = meltdownNBT.getList(dim, NBT.TAG_COMPOUND);
+                        savedMeltdowns.put(dimension, meltdowns.stream().map(nbt -> Meltdown.load((CompoundNBT) nbt)).collect(Collectors.toList()));
+                    }
+                }
+            } else {
+                savedMeltdowns = Collections.emptyMap();
             }
         }
 
         @Nonnull
         @Override
         public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-            ListNBT list = new ListNBT();
-            for (RadiationSource source : manager.radiationTable.values()) {
-                CompoundNBT compound = new CompoundNBT();
-                source.write(compound);
-                list.add(compound);
+            if (!manager.radiationTable.isEmpty()) {
+                ListNBT list = new ListNBT();
+                for (RadiationSource source : manager.radiationTable.values()) {
+                    CompoundNBT compound = new CompoundNBT();
+                    source.write(compound);
+                    list.add(compound);
+                }
+                nbtTags.put(NBTConstants.RADIATION_LIST, list);
             }
-            nbtTags.put(NBTConstants.RADIATION_LIST, list);
+            if (!manager.meltdowns.isEmpty()) {
+                CompoundNBT meltdownNBT = new CompoundNBT();
+                for (Map.Entry<ResourceLocation, List<Meltdown>> entry : manager.meltdowns.entrySet()) {
+                    List<Meltdown> meltdowns = entry.getValue();
+                    if (!meltdowns.isEmpty()) {
+                        ListNBT list = new ListNBT();
+                        for (Meltdown meltdown : meltdowns) {
+                            CompoundNBT compound = new CompoundNBT();
+                            meltdown.write(compound);
+                            list.add(compound);
+                        }
+                        meltdownNBT.put(entry.getKey().toString(), list);
+                    }
+                }
+                if (!meltdownNBT.isEmpty()) {
+                    nbtTags.put(NBTConstants.MELTDOWNS, meltdownNBT);
+                }
+            }
             return nbtTags;
         }
     }

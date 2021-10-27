@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import mekanism.api.NBTConstants;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -12,6 +13,8 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootParameters;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -25,21 +28,42 @@ public class Meltdown {
 
     private static final int DURATION = 100;
 
-    private final World world;
     private final BlockPos minPos, maxPos;
     private final double magnitude, chance;
 
     private int ticksExisted;
 
-    public Meltdown(World world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance) {
-        this.world = world;
+    public Meltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance) {
+        this(minPos, maxPos, magnitude, chance, 0);
+    }
+
+    private Meltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance, int ticksExisted) {
         this.minPos = minPos;
         this.maxPos = maxPos;
         this.magnitude = magnitude;
         this.chance = chance;
+        this.ticksExisted = ticksExisted;
     }
 
-    public boolean update() {
+    public static Meltdown load(CompoundNBT tag) {
+        return new Meltdown(
+              NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MIN)),
+              NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MAX)),
+              tag.getDouble(NBTConstants.MAGNITUDE),
+              tag.getDouble(NBTConstants.CHANCE),
+              tag.getInt(NBTConstants.AGE)
+        );
+    }
+
+    public void write(CompoundNBT tag) {
+        tag.put(NBTConstants.MIN, NBTUtil.writeBlockPos(minPos));
+        tag.put(NBTConstants.MAX, NBTUtil.writeBlockPos(maxPos));
+        tag.putDouble(NBTConstants.MAGNITUDE, magnitude);
+        tag.putDouble(NBTConstants.CHANCE, chance);
+        tag.putInt(NBTConstants.AGE, ticksExisted);
+    }
+
+    public boolean update(World world) {
         ticksExisted++;
 
         if (world.random.nextInt() % 10 == 0 && world.random.nextDouble() < magnitude * chance) {
