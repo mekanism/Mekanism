@@ -204,8 +204,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                 hitSide = side;
             }
             transmitter.setConnectionTypeRaw(hitSide, transmitter.getConnectionTypeRaw(hitSide).getNext());
-            //TODO - 10.1: Re-evaluate how much of this is needed because in theory we could try and get most
-            // of it to be handled in the sideChanged method
+            //Note: This stuff happens here and not in sideChanged because we don't want it to happen on load
+            // or things which also would cause sideChanged to be called
             getTransmitter().onModeChange(Direction.from3DDataValue(hitSide.ordinal()));
             getTransmitter().refreshConnections();
             getTransmitter().notifyTileChange();

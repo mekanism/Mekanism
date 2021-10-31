@@ -40,9 +40,11 @@ public class QIOCraftingTransferHelper {
      */
     public final Map<HashedItem, HashedItemSource> reverseLookup;
     private byte emptyInventorySlots;
+    private boolean isValid;
 
     public QIOCraftingTransferHelper(Object2LongMap<UUIDAwareHashedItem> cachedInventory, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots,
           QIOCraftingWindow craftingWindow, PlayerEntity player) {
+        isValid = true;
         reverseLookup = new HashMap<>();
         for (Object2LongMap.Entry<UUIDAwareHashedItem> entry : cachedInventory.object2LongEntrySet()) {
             UUIDAwareHashedItem source = entry.getKey();
@@ -57,7 +59,11 @@ public class QIOCraftingTransferHelper {
                 if (!slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
                     reverseLookup.computeIfAbsent(HashedItem.raw(slot.getStack()), item -> new HashedItemSource()).addSlot(inventorySlotIndex, slot.getCount());
                 } else {
-                    //TODO - 10.1: Fail? We always should be able to take it but it is probably a good thing to validate
+                    isValid = false;
+                    //Can stop initializing things if we are not valid due to not being able to remove things from the input.
+                    // Eventually, we may want to make this be able to special case and allow this to happen for if the items
+                    // would end up in this slot anyways, but for now it doesn't really matter as this should never happen
+                    return;
                 }
             }
         }
@@ -78,6 +84,10 @@ public class QIOCraftingTransferHelper {
             inventorySlotIndex++;
         }
         return inventorySlotIndex;
+    }
+
+    public boolean isInvalid() {
+        return !isValid;
     }
 
     public byte getEmptyInventorySlots() {
@@ -181,7 +191,9 @@ public class QIOCraftingTransferHelper {
             }
             //If we didn't find an item to use for it, we look at the qio slots
             if (qioSources != null) {
-                //TODO - 10.1: Do we even want to allow this to be like this as if the stacks have different UUIDs then they aren't going to end up being stackable
+                //TODO: This needs more thought at some point if we want to allow sending ones that have different UUIDs to the
+                // server as we know they won't end up as stackable on the server, but if we are also sending some items, then
+                // one of our matching QIO stacks might be able to stack with it and we won't have a good way of knowing which
                 for (ObjectIterator<Object2LongMap.Entry<UUID>> iter = qioSources.object2LongEntrySet().iterator(); iter.hasNext(); ) {
                     Object2LongMap.Entry<UUID> entry = iter.next();
                     long stored = entry.getLongValue();

@@ -39,6 +39,7 @@ import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.to_server.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredient;
 import mezz.jei.api.helpers.IStackHelper;
@@ -97,7 +98,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
                 if (!inputSlot.isEmpty()) {
                     //Copy it in case any recipe does weird things and tries to mutate the stack
-                    dummy.setItem(slot, inputSlot.getStack().copy());
+                    dummy.setItem(slot, StackUtils.size(inputSlot.getStack(), 1));
                     //Count how many crafting slots are not empty
                     nonEmptyCraftingSlots++;
                 }
@@ -167,6 +168,10 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         // as far as the client is concerned are the same instead of keeping them UUID separated, and add all
         // the items in the currently selected crafting window and the player's inventory to our available items
         QIOCraftingTransferHelper qioTransferHelper = container.getTransferHelper(player, craftingWindow);
+        if (qioTransferHelper.isInvalid()) {
+            Mekanism.logger.warn("Error initializing QIO transfer handler for crafting window: {}", selectedCraftingGrid);
+            return handlerHelper.createInternalError();
+        }
         //Note: We do this in a reversed manner (HashedItem -> slots, vs slot -> HashedItem) so that we can more easily
         // calculate the split for how we handle maxTransfer by quickly being able to see how many of each type we have
         Map<HashedItem, ByteList> matchedItems = new HashMap<>(inputCount);

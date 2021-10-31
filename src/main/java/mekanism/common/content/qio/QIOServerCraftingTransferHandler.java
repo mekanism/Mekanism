@@ -33,6 +33,7 @@ import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -144,7 +145,7 @@ public class QIOServerCraftingTransferHandler {
         }
         CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
         for (int slot = 0; slot < 9; slot++) {
-            dummy.setItem(slot, recipeToTest.get(slot));
+            dummy.setItem(slot, StackUtils.size(recipeToTest.get(slot), 1));
         }
         if (!recipe.matches(dummy, player.level)) {
             Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipeID);

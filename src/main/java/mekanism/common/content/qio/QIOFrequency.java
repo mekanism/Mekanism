@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -231,6 +232,10 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
         if (itemsByFuzzy != null && itemsByFuzzy.remove(type) && itemsByFuzzy.isEmpty()) {
             fuzzyItemLookupMap.remove(item);
         }
+    }
+
+    public Set<HashedItem> getTypesForItem(Item item) {
+        return Collections.unmodifiableSet(fuzzyItemLookupMap.getOrDefault(item, Collections.emptySet()));
     }
 
     public Object2LongMap<HashedItem> getStacksByItem(Item item) {
