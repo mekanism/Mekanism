@@ -21,7 +21,7 @@ public class CCEnergyHelper extends CCMethodCaller implements IDynamicLuaObject,
     private static CCEnergyHelper energyHelper;
 
     public static CCEnergyHelper create(@Nonnull IComputerSystem computer) {
-        //Lazy init the energy helper as the API is the same across and computer
+        //Lazy init the energy helper as the API is the same across all computers
         if (energyHelper == null) {
             //Linked map to ensure that the order is persisted
             Map<String, BoundComputerMethod> boundMethods = new LinkedHashMap<>();

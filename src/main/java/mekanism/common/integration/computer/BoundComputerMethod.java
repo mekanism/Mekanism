@@ -5,8 +5,6 @@ import java.lang.invoke.MethodType;
 import java.util.List;
 import javax.annotation.Nullable;
 
-//TODO - 10.1: Validate this all works in Java9+ as it is possible something changed with primitives given the previous
-// issues we had with changes LambdaMetaFactory received in relation to primitives
 public class BoundComputerMethod {
 
     private final String methodName;
@@ -30,7 +28,7 @@ public class BoundComputerMethod {
             //If we only have one method implementation then validate it with more accurate error messages
             return validateArguments(argumentHandler, 0, true);
         }
-        //Otherwise try each method (without throwing errors)
+        //Otherwise, try each method (without throwing errors)
         for (int overloadIndex = 0; overloadIndex < implementationCount; overloadIndex++) {
             SelectedMethodInfo implementation = validateArguments(argumentHandler, overloadIndex, false);
             if (implementation != null) {
@@ -38,7 +36,7 @@ public class BoundComputerMethod {
                 return implementation;
             }
         }
-        //Otherwise if none match print a generic error message
+        //Otherwise, if none match print a generic error message
         throw argumentHandler.error("Parameters do not match any signatures of %s.", methodName);
     }
 
@@ -158,7 +156,7 @@ public class BoundComputerMethod {
                       methodInfo.arguments[5], methodInfo.arguments[6], methodInfo.arguments[7], methodInfo.arguments[8]);
             } else {
                 //Note: If we ever really get to the point this needs to be used for the number of parameters, we should heavily consider
-                // adding in more argumentCount based special cases so as to improve the overall performance in the calls to the method
+                // adding in more argumentCount based special cases to improve the overall performance in the calls to the method
                 result = methodHandle.invokeWithArguments(methodInfo.arguments);
             }
         } catch (Throwable e) {
@@ -168,8 +166,8 @@ public class BoundComputerMethod {
             // - Throwable anything thrown by the underlying method propagates unchanged through the method handle call
             // In theory none of these should actually happen given we do parameter validation, but just in case one does
             // we wrap the message into an error message that can be displayed by our handler
-            // Note: If the throwable is a computer exception we won't have a stacktrace. We don't use it anywhere here
-            // so it shouldn't matter but it is something to keep in mind if we ever change this catch block, as then
+            // Note: If the throwable is a computer exception we won't have a stacktrace. We don't use it anywhere here,
+            // so it shouldn't matter, but it is something to keep in mind if we ever change this catch block, as then
             // we should extract the computer exception case to an earlier catch block
             throw argumentHandler.error(e.getMessage());
         }
