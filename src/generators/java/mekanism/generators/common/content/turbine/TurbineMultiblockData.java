@@ -121,13 +121,10 @@ public class TurbineMultiblockData extends MultiblockData {
                 double proportion = stored / (double) getSteamCapacity();
                 double origRate = rate;
                 rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
-
-                flowRate = rate / origRate;
-                if (flowRate < 1) {
-                    clientFlow = 0;
-                } else {
+                clientFlow = MathUtils.clampToLong(rate);
+                if (clientFlow > 0) {
+                    flowRate = rate / origRate;
                     energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
-                    clientFlow = MathUtils.clampToLong(rate);
                     gasTank.shrinkStack(clientFlow, Action.EXECUTE);
                     ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
                 }
