@@ -1,6 +1,7 @@
 package mekanism.common.integration;
 
 import java.util.Optional;
+import mekanism.common.integration.computer.ComputerCapabilityHelper;
 import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.NSSHelper;
 import net.minecraft.entity.LivingEntity;
@@ -52,6 +53,9 @@ public final class MekanismHooks {
         ProjectELoaded = modList.isLoaded(PROJECTE_MOD_ID);
         TOPLoaded = modList.isLoaded(TOP_MOD_ID);
         FluxNetworksLoaded = modList.isLoaded(FLUX_NETWORKS_MOD_ID);
+        if (CCLoaded) {
+            ComputerCapabilityHelper.registerCCMathHelper();
+        }
     }
 
     public void sendIMCMessages(InterModEnqueueEvent event) {

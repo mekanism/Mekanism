@@ -31,7 +31,12 @@ public @interface WrappingComputerMethod {
     MethodRestriction restriction() default MethodRestriction.NONE;
 
     /**
-     * Whether or not the generated wrapped methods are thread-safe or needs to be queued to run on the main thread.
+     * Array of modids that are required for if the method wrappers should be generated and applied to a handler.
+     */
+    String[] requiredMods() default "";
+
+    /**
+     * Whether the generated wrapped methods are thread-safe or needs to be queued to run on the main thread.
      */
     boolean threadSafe() default false;
 
