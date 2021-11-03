@@ -18,14 +18,12 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
     private double heatLost;
     private double heatTransferred;
 
-    public HeatNetwork() {
-    }
-
     public HeatNetwork(UUID networkID) {
         super(networkID);
     }
 
     public HeatNetwork(Collection<HeatNetwork> networks) {
+        this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
 

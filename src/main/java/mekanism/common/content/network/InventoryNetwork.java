@@ -40,14 +40,12 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
 
     private final Map<BlockPos, LogisticalTransporterBase> positionedTransmitters = new Object2ObjectOpenHashMap<>();
 
-    public InventoryNetwork() {
-    }
-
     public InventoryNetwork(UUID networkID) {
         super(networkID);
     }
 
     public InventoryNetwork(Collection<InventoryNetwork> networks) {
+        this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
 

@@ -157,11 +157,6 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     }
 
     @Override
-    public EnergyNetwork createEmptyNetwork() {
-        return new EnergyNetwork();
-    }
-
-    @Override
     public EnergyNetwork createEmptyNetworkWithID(UUID networkID) {
         return new EnergyNetwork(networkID);
     }

@@ -40,11 +40,6 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     //TODO: Make fluid storage support storing as longs?
     private int intCapacity;
 
-    public FluidNetwork() {
-        fluidTank = VariableCapacityFluidTank.create(this::getCapacityAsInt, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, this);
-        fluidTanks = Collections.singletonList(fluidTank);
-    }
-
     public FluidNetwork(UUID networkID) {
         super(networkID);
         fluidTank = VariableCapacityFluidTank.create(this::getCapacityAsInt, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrueBi, BasicFluidTank.alwaysTrue, this);
@@ -52,7 +47,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     public FluidNetwork(Collection<FluidNetwork> networks) {
-        this();
+        this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
 
@@ -226,11 +221,6 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     @Override
     public boolean isCompatibleWith(FluidNetwork other) {
         return super.isCompatibleWith(other) && (this.fluidTank.isEmpty() || other.fluidTank.isEmpty() || this.fluidTank.isFluidEqual(other.fluidTank.getFluid()));
-    }
-
-    @Override
-    public boolean compatibleWithBuffer(@Nonnull FluidStack buffer) {
-        return super.compatibleWithBuffer(buffer) && (this.fluidTank.isEmpty() || buffer.isEmpty() || this.fluidTank.isFluidEqual(buffer));
     }
 
     @Override

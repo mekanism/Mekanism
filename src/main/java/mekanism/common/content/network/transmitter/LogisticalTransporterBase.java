@@ -84,11 +84,11 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public boolean isValidTransmitter(Transmitter<?, ?, ?> transmitter) {
-        if (transmitter instanceof LogisticalTransporterBase) {
-            LogisticalTransporterBase transporter = (LogisticalTransporterBase) transmitter;
+    public boolean isValidTransmitterBasic(TileEntityTransmitter transmitter, Direction side) {
+        if (transmitter.getTransmitter() instanceof LogisticalTransporterBase) {
+            LogisticalTransporterBase transporter = (LogisticalTransporterBase) transmitter.getTransmitter();
             if (getColor() == null || transporter.getColor() == null || getColor() == transporter.getColor()) {
-                return super.isValidTransmitter(transporter);
+                return super.isValidTransmitterBasic(transmitter, side);
             }
         }
         return false;
@@ -257,11 +257,6 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                 TransporterManager.remove(getTileWorld(), stack);
             }
         }
-    }
-
-    @Override
-    public InventoryNetwork createEmptyNetwork() {
-        return new InventoryNetwork();
     }
 
     @Override

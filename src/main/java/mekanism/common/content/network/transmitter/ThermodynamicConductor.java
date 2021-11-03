@@ -57,11 +57,6 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public HeatNetwork createEmptyNetwork() {
-        return new HeatNetwork();
-    }
-
-    @Override
     public HeatNetwork createEmptyNetworkWithID(UUID networkID) {
         return new HeatNetwork(networkID);
     }

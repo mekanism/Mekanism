@@ -67,6 +67,9 @@ public class BoxedChemicalStack implements IHasTextComponent {
      * Gets the boxed type of this stack.
      */
     public BoxedChemical getType() {
+        if (isEmpty()) {
+            return BoxedChemical.EMPTY;
+        }
         return new BoxedChemical(chemicalType, chemicalStack.getType());
     }
 
