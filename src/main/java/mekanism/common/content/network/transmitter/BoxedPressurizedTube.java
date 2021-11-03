@@ -32,6 +32,8 @@ import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.content.network.BoxedChemicalNetwork;
+import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
+import mekanism.common.lib.transmitter.CompatibleTransmitterValidator.CompatibleChemicalTransmitterValidator;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.BoxedChemicalAcceptorCache;
@@ -217,11 +219,6 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     }
 
     @Override
-    public BoxedChemicalNetwork createEmptyNetwork() {
-        return new BoxedChemicalNetwork();
-    }
-
-    @Override
     public BoxedChemicalNetwork createEmptyNetworkWithID(UUID networkID) {
         return new BoxedChemicalNetwork(networkID);
     }
@@ -232,13 +229,18 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     }
 
     @Override
-    public boolean isValidTransmitter(Transmitter<?, ?, ?> transmitter) {
-        if (super.isValidTransmitter(transmitter) && transmitter instanceof BoxedPressurizedTube) {
+    public CompatibleTransmitterValidator<BoxedChemicalHandler, BoxedChemicalNetwork, BoxedPressurizedTube> getNewOrphanValidator() {
+        return new CompatibleChemicalTransmitterValidator(this);
+    }
+
+    @Override
+    public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
+        if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof BoxedPressurizedTube) {
+            BoxedPressurizedTube other = (BoxedPressurizedTube) transmitter.getTransmitter();
             BoxedChemical buffer = getBufferWithFallback().getType();
             if (buffer.isEmpty() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
                 buffer = getTransmitterNetwork().lastChemical;
             }
-            BoxedPressurizedTube other = (BoxedPressurizedTube) transmitter;
             BoxedChemical otherBuffer = other.getBufferWithFallback().getType();
             if (otherBuffer.isEmpty() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
                 otherBuffer = other.getTransmitterNetwork().lastChemical;

@@ -406,13 +406,15 @@ public class WorldUtils {
      * @return if the block is indirectly getting powered by LOADED chunks
      */
     public static boolean isGettingPowered(World world, BlockPos pos) {
-        for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos offset = pos.offset(side);
-            if (isBlockLoaded(world, pos) && isBlockLoaded(world, offset)) {
-                BlockState blockState = world.getBlockState(offset);
-                boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
-                if (weakPower && isDirectlyGettingPowered(world, offset) || !weakPower && blockState.getWeakPower(world, offset, side) > 0) {
-                    return true;
+        if (isBlockLoaded(world, pos)) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
+                BlockPos offset = pos.offset(side);
+                if (isBlockLoaded(world, offset)) {
+                    BlockState blockState = world.getBlockState(offset);
+                    boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
+                    if (weakPower && isDirectlyGettingPowered(world, offset) || !weakPower && blockState.getWeakPower(world, offset, side) > 0) {
+                        return true;
+                    }
                 }
             }
         }

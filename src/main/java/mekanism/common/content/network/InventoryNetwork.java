@@ -33,14 +33,12 @@ import net.minecraftforge.items.IItemHandler;
 
 public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetwork, LogisticalTransporterBase> {
 
-    public InventoryNetwork() {
-    }
-
     public InventoryNetwork(UUID networkID) {
         super(networkID);
     }
 
     public InventoryNetwork(Collection<InventoryNetwork> networks) {
+        this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
 

@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -182,24 +183,17 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return !isOrphan() && getTransmitterNetwork() != null;
     }
 
-    public abstract NETWORK createEmptyNetwork();
-
     public abstract NETWORK createEmptyNetworkWithID(UUID networkID);
 
     public abstract NETWORK createNetworkByMerging(Collection<NETWORK> toMerge);
-
-    public NETWORK getExternalNetwork(BlockPos from) {
-        TileEntityTransmitter transmitter = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), from);
-        if (transmitter != null && supportsTransmissionType(transmitter)) {
-            return (NETWORK) transmitter.getTransmitter().getTransmitterNetwork();
-        }
-        return null;
-    }
 
     public boolean isValid() {
         return !getTransmitterTile().isRemoved() && getTransmitterTile().isLoaded();
     }
 
+    public CompatibleTransmitterValidator<ACCEPTOR, NETWORK, TRANSMITTER> getNewOrphanValidator() {
+        return new CompatibleTransmitterValidator<>();
+    }
 
     public boolean isOrphan() {
         return orphaned;
@@ -244,12 +238,9 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             return connections;
         }
         for (Direction side : EnumUtils.DIRECTIONS) {
-            TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().offset(side));
-            if (canConnectMutual(side, tile) && tile instanceof TileEntityTransmitter) {
-                Transmitter<?, ?, ?> transmitter = ((TileEntityTransmitter) tile).getTransmitter();
-                if (supportsTransmissionType(transmitter) && isValidTransmitter(transmitter)) {
-                    connections |= 1 << side.ordinal();
-                }
+            TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().offset(side));
+            if (tile != null && isValidTransmitter(tile, side)) {
+                connections |= 1 << side.ordinal();
             }
         }
         return connections;
@@ -277,12 +268,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         if (handlesRedstone() && redstoneReactive && redstonePowered) {
             return false;
         }
-        TileEntity tile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().offset(side));
-        if (canConnectMutual(side, tile) && tile instanceof TileEntityTransmitter) {
-            Transmitter<?, ?, ?> transmitter = ((TileEntityTransmitter) tile).getTransmitter();
-            return supportsTransmissionType(transmitter) && isValidTransmitter(transmitter);
-        }
-        return false;
+        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, getTileWorld(), getTilePos().offset(side));
+        return tile != null && isValidTransmitter(tile, side);
     }
 
     /**
@@ -315,26 +302,17 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return (byte) (currentTransmitterConnections | acceptorCache.currentAcceptorConnections);
     }
 
-    public boolean isValidTransmitter(Transmitter<?, ?, ?> transmitter) {
-        return true;
+    public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
+        return isValidTransmitterBasic(transmitter, side);
+    }
+
+    public boolean isValidTransmitterBasic(TileEntityTransmitter transmitter, Direction side) {
+        return supportsTransmissionType(transmitter) && canConnectMutual(side, transmitter);
     }
 
     public boolean canConnectToAcceptor(Direction side) {
         ConnectionType type = getConnectionTypeRaw(side);
         return type == ConnectionType.NORMAL || type == ConnectionType.PUSH;
-    }
-
-    @Nullable
-    public BlockPos getAdjacentConnectableTransmitterPos(Direction side) {
-        BlockPos sidePos = getTilePos().offset(side);
-        TileEntity potentialTransmitterTile = WorldUtils.getTileEntity(getTileWorld(), sidePos);
-        if (canConnectMutual(side, potentialTransmitterTile) && potentialTransmitterTile instanceof TileEntityTransmitter) {
-            Transmitter<?, ?, ?> transmitter = ((TileEntityTransmitter) potentialTransmitterTile).getTransmitter();
-            if (supportsTransmissionType(transmitter) && isValidTransmitter(transmitter)) {
-                return sidePos;
-            }
-        }
-        return null;
     }
 
     /**
@@ -575,6 +553,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     protected void markDirtyTransmitters() {
         notifyTileChange();
         if (hasTransmitterNetwork()) {
+            //TODO - 10.1: Can this be done in a way that doesn't require reforming the network if it is still valid and the same
             TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
         }
     }

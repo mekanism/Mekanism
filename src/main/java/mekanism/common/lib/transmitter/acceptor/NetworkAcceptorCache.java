@@ -72,6 +72,11 @@ public class NetworkAcceptorCache<ACCEPTOR> {
         }
     }
 
+    public void deregister() {
+        cachedAcceptors.clear();
+        changedAcceptors.clear();
+    }
+
     /**
      * @apiNote Listeners should not be added to these LazyOptionals here as they may not correspond to an actual handler and may not get invalidated.
      */

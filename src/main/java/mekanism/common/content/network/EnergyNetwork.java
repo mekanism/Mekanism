@@ -38,11 +38,6 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     private FloatingLong prevTransferAmount = FloatingLong.ZERO;
     private FloatingLong floatingLongCapacity = FloatingLong.ZERO;
 
-    public EnergyNetwork() {
-        energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsFloatingLong, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
-        energyContainers = Collections.singletonList(energyContainer);
-    }
-
     public EnergyNetwork(UUID networkID) {
         super(networkID);
         energyContainer = VariableCapacityEnergyContainer.create(this::getCapacityAsFloatingLong, BasicEnergyContainer.alwaysTrue, BasicEnergyContainer.alwaysTrue, this);
@@ -50,7 +45,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     }
 
     public EnergyNetwork(Collection<EnergyNetwork> networks) {
-        this();
+        this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
 
