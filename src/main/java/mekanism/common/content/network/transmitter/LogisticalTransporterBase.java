@@ -151,6 +151,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                         }
                     }
 
+                    int prevProgress = stack.progress;
                     stack.progress += tier.getSpeed();
                     if (stack.progress >= 100) {
                         BlockPos prevSet = null;
@@ -201,7 +202,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                         } else {
                             stack.progress = 0;
                         }
-                    } else if (stack.progress == 50) {
+                    } else if (prevProgress < 50 && stack.progress >= 50) {
                         boolean tryRecalculate;
                         if (stack.isFinal(this)) {
                             Path pathType = stack.getPathType();
@@ -215,7 +216,16 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                 tryRecalculate = pathType == Path.NONE;
                             }
                         } else {
-                            tryRecalculate = !stack.canInsertToTransporter(network.getTransmitter(stack.getNext(this)), stack.getSide(this), this);
+                            LogisticalTransporterBase nextTransmitter = network.getTransmitter(stack.getNext(this));
+                            if (nextTransmitter == null && stack.getPathType() == Path.NONE && stack.getPath().size() == 2) {
+                                //If there is no next transmitter, and it was an idle path, assume that we are idling
+                                // in a single length transmitter, in which case we only recalculate it at 50 if it won't
+                                // be able to go into that connection type
+                                ConnectionType connectionType = getConnectionType(stack.getSide(this));
+                                tryRecalculate = connectionType != ConnectionType.NORMAL && connectionType != ConnectionType.PUSH;
+                            } else {
+                                tryRecalculate = !stack.canInsertToTransporter(nextTransmitter, stack.getSide(this), this);
+                            }
                         }
                         if (tryRecalculate && !recalculate(stackId, stack, null)) {
                             deletes.add(stackId);
@@ -308,13 +318,10 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     protected void readFromNBT(CompoundNBT nbtTags) {
         if (nbtTags.contains(NBTConstants.ITEMS, NBT.TAG_LIST)) {
-            readStacksFromNBT(nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
-        }
-    }
-
-    public void readStacksFromNBT(ListNBT tagList) {
-        for (int i = 0; i < tagList.size(); i++) {
-            addStack(nextId++, TransporterStack.readFromNBT(tagList.getCompound(i)));
+            ListNBT tagList = nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND);
+            for (int i = 0; i < tagList.size(); i++) {
+                addStack(nextId++, TransporterStack.readFromNBT(tagList.getCompound(i)));
+            }
         }
     }
 
@@ -327,20 +334,16 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     public void writeToNBT(CompoundNBT nbtTags) {
-        ListNBT stacks = writeStackToNBT();
-        if (!stacks.isEmpty()) {
+        Collection<TransporterStack> transit = getTransit();
+        if (!transit.isEmpty()) {
+            ListNBT stacks = new ListNBT();
+            for (TransporterStack stack : transit) {
+                CompoundNBT tagCompound = new CompoundNBT();
+                stack.write(tagCompound);
+                stacks.add(tagCompound);
+            }
             nbtTags.put(NBTConstants.ITEMS, stacks);
         }
-    }
-
-    public ListNBT writeStackToNBT() {
-        ListNBT stacks = new ListNBT();
-        for (TransporterStack stack : getTransit()) {
-            CompoundNBT tagCompound = new CompoundNBT();
-            stack.write(tagCompound);
-            stacks.add(tagCompound);
-        }
-        return stacks;
     }
 
     @Override
@@ -364,10 +367,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     private boolean recalculate(int stackId, TransporterStack stack, BlockPos from) {
-        boolean noPath = stack.getPathType() == Path.NONE;
-        if (!noPath) {
-            noPath = stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
-        }
+        boolean noPath = stack.getPathType() == Path.NONE || stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
         if (noPath && !stack.calculateIdle(this)) {
             TransporterUtils.drop(this, stack);
             return false;

@@ -75,11 +75,11 @@ public class TransmitterNetworkRegistry {
     }
 
     public static void registerOrphanTransmitter(Transmitter<?, ?, ?> transmitter) {
-        Coord4D coord = transmitter.getTileCoord();
         if (!getInstance().invalidTransmitters.remove(transmitter)) {
             //If we weren't an invalid transmitter, then we need to add it as a new orphan, otherwise removing it is good enough
             // as if it was an orphan before it still will be one, and if it wasn't then it still will be part of the network it
             // was in.
+            Coord4D coord = transmitter.getTileCoord();
             Transmitter<?, ?, ?> previous = getInstance().newOrphanTransmitters.put(coord, transmitter);
             if (previous != null && previous != transmitter) {
                 Mekanism.logger.error("Different orphan transmitter was already registered at location! {}", coord);
