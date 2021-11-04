@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
-import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -64,8 +64,8 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
                 return tile.mode;
             }
         }, ProgressType.LARGE_LEFT, this, 64, 39).jeiCategories(decondensentrating));
-        addButton(new MekanismImageButton(this, 4, 4, 18, getButtonLocation("toggle"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
+        addButton(new ToggleButton(this, 4, 4, () -> tile.mode, () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
+              getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }
 
     @Override
