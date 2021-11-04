@@ -683,13 +683,13 @@ publishing {
                     NodeList allDeps = dependencies.'*'
 
                     // Remove forge deps
-                    allDeps.<Node>findAll() { Node el ->
+                    allDeps.<Node> findAll() { Node el ->
                         el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
                     }.forEach() { Node el ->
                         el.parent().remove(el)
                     }
                     //remove ForgeGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
-                    allDeps.<Node>findAll() { Node el ->
+                    allDeps.<Node> findAll() { Node el ->
                         el.version.text().contains('_mapped_')
                     }.each { Node el ->
                         el.version.each { Node version ->
@@ -738,16 +738,19 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 grgit.log {
                     range(prevCommit, currentCommit)
                 }.reverse().each { commit ->
-                    String message = commit.shortMessage
+                    //Use full message rather than short message to get any new lines, and trim it so that any trailing new lines
+                    // get removed so that we don't end up with extra spaces
+                    String message = commit.fullMessage.trim()
                     if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {
-                        //Ignore PRs and Merges
+                        //Ignore Merges and PR Merges
                         message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
                             return "<a href=\"https://github.com/mekanism/Mekanism/issues/${match[1]}\">${match[0]}</a>"
-                        })
+                        }).replaceAll("\\n", "<br>&emsp;")//convert new lines that are part of a commit message into actual new lines and a tab
                         if (generatedChangelog != "") {
+                            //If this isn't the first commit prepend an extra newline
                             generatedChangelog += "<br>"
                         }
-                        generatedChangelog += "<a href=\"https://github.com/mekanism/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
+                        generatedChangelog += "<a href=\"https://github.com/mekanism/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}"
                     }
                 }
                 println "Changelog generated"
