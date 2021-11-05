@@ -32,9 +32,9 @@ public class TransmitterNetworkRegistry {
     private static final TransmitterNetworkRegistry INSTANCE = new TransmitterNetworkRegistry();
     private static boolean loaderRegistered = false;
     private final Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
-    private final Set<Transmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
     private final Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
     private Map<Coord4D, Transmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
+    private Set<Transmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
     private Set<DynamicNetwork<?, ?, ?>> networksToChange = new ObjectOpenHashSet<>();
 
     public void addClientNetwork(UUID networkID, DynamicNetwork<?, ?, ?> network) {
@@ -117,13 +117,19 @@ public class TransmitterNetworkRegistry {
     }
 
     private void removeInvalidTransmitters() {
-        if (MekanismAPI.debug && !invalidTransmitters.isEmpty()) {
-            Mekanism.logger.info("Dealing with {} invalid Transmitters", invalidTransmitters.size());
+        if (!invalidTransmitters.isEmpty()) {
+            //Ensure we copy the invalid transmitters, so that when we iterate and remove invalid ones
+            // and add still valid ones as orphans, we actually add them as orphans rather than try
+            // removing them as invalid and find out they are invalid
+            Set<Transmitter<?, ?, ?>> toInvalidate = invalidTransmitters;
+            invalidTransmitters = new ObjectOpenHashSet<>();
+            if (MekanismAPI.debug) {
+                Mekanism.logger.info("Dealing with {} invalid Transmitters", toInvalidate.size());
+            }
+            for (Transmitter<?, ?, ?> invalid : toInvalidate) {
+                removeInvalidTransmitter(invalid);
+            }
         }
-        for (Transmitter<?, ?, ?> invalid : invalidTransmitters) {
-            removeInvalidTransmitter(invalid);
-        }
-        invalidTransmitters.clear();
     }
 
     private <NETWORK extends DynamicNetwork<?, NETWORK, TRANSMITTER>, TRANSMITTER extends Transmitter<?, NETWORK, TRANSMITTER>>
