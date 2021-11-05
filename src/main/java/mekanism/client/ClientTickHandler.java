@@ -2,7 +2,7 @@ package mekanism.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -73,7 +73,7 @@ public class ClientTickHandler {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
     public static final Random rand = new Random();
-    public static final Map<PlayerEntity, TeleportData> portableTeleports = new Object2ObjectOpenHashMap<>();
+    public static final Map<PlayerEntity, TeleportData> portableTeleports = new Object2ObjectArrayMap<>(1);
     public boolean initHoliday = false;
     public boolean shouldReset = false;
     public static boolean firstTick = true;

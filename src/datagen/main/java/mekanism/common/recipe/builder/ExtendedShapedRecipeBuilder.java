@@ -2,7 +2,7 @@ package mekanism.common.recipe.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.chars.Char2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import it.unimi.dsi.fastutil.chars.CharSet;
@@ -23,7 +23,7 @@ import net.minecraft.util.ResourceLocation;
 @MethodsReturnNonnullByDefault
 public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShapedRecipeBuilder> {
 
-    private final Char2ObjectMap<Ingredient> key = new Char2ObjectLinkedOpenHashMap<>();
+    private final Char2ObjectMap<Ingredient> key = new Char2ObjectArrayMap<>(9);
     private final List<String> pattern = new ArrayList<>();
 
     protected ExtendedShapedRecipeBuilder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {

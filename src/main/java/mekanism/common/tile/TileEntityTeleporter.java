@@ -1,9 +1,8 @@
 package mekanism.common.tile;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -191,15 +191,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     private void cleanTeleportCache() {
-        List<UUID> list = new ArrayList<>();
-        for (Entity e : level.getEntitiesOfClass(Entity.class, teleportBounds)) {
-            list.add(e.getUUID());
-        }
-        Set<UUID> teleportCopy = new ObjectOpenHashSet<>(didTeleport);
-        for (UUID id : teleportCopy) {
-            if (!list.contains(id)) {
-                didTeleport.remove(id);
-            }
+        List<UUID> inTeleporter = level.getEntitiesOfClass(Entity.class, teleportBounds).stream().map(Entity::getUUID).collect(Collectors.toList());
+        if (inTeleporter.isEmpty()) {
+            didTeleport.clear();
+        } else {
+            didTeleport.removeIf(id -> !inTeleporter.contains(id));
         }
     }
 
@@ -494,7 +490,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         int yComponent = direction.getStepY();
         int zComponent = direction.getStepZ();
         //Cache the chunks we are looking up to check the frames of
-        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+        // Note: We can use an array based map, because we check suck a small area, that if we do go across chunks
+        // we will be in at most two in general due to the size of our teleporter. But given we need to check multiple
+        // directions we might end up checking two different cross chunk directions which would end up at three
+        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectArrayMap<>(3);
         return isFramePair(chunkMap, 0, alternatingX, 0, alternatingY, 0, alternatingZ) &&
                isFramePair(chunkMap, xComponent, alternatingX, yComponent, alternatingY, zComponent, alternatingZ) &&
                isFramePair(chunkMap, 2 * xComponent, alternatingX, 2 * yComponent, alternatingY, 2 * zComponent, alternatingZ) &&

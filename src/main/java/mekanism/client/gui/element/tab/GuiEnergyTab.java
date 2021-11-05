@@ -24,8 +24,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiEnergyTab extends GuiBiDirectionalTab {
 
+    private static final Map<EnergyType, ResourceLocation> ICONS = new EnumMap<>(EnergyType.class);
     private final IInfoHandler infoHandler;
-    private final Map<EnergyType, ResourceLocation> icons = new EnumMap<>(EnergyType.class);
 
     public GuiEnergyTab(IGuiWrapper gui, IInfoHandler handler) {
         super(MekanismUtils.getResource(ResourceType.GUI_TAB, "energy_info.png"), gui, -26, 137, 26, 26);
@@ -71,7 +71,7 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
 
     @Override
     protected ResourceLocation getResource() {
-        return icons.computeIfAbsent(MekanismConfig.general.energyUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
+        return ICONS.computeIfAbsent(MekanismConfig.general.energyUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
               "energy_info_" + type.name().toLowerCase(Locale.ROOT) + ".png"));
     }
 
