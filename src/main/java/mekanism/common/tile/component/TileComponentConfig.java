@@ -201,10 +201,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public ConfigInfo setupIOConfig(TransmissionType type, Object inputContainer, Object outputContainer, RelativeSide outputSide, boolean alwaysAllow) {
+        return setupIOConfig(type, inputContainer, outputContainer, outputSide, alwaysAllow, alwaysAllow);
+    }
+
+    public ConfigInfo setupIOConfig(TransmissionType type, Object inputContainer, Object outputContainer, RelativeSide outputSide, boolean alwaysAllowInput,
+          boolean alwaysAllowOutput) {
         ConfigInfo config = getConfig(type);
         if (config != null) {
-            config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, inputContainer));
-            config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, outputContainer));
+            config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllowOutput, inputContainer));
+            config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllowInput, true, outputContainer));
             config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, Arrays.asList(inputContainer, outputContainer)));
             config.fill(DataType.INPUT);
             config.setDataType(DataType.OUTPUT, outputSide);

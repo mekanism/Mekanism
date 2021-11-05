@@ -62,7 +62,6 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -151,7 +150,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS)
+              .setCanTankEject(tank -> {
+                  if (tank == leftTank) {
+                      return dumpLeft != GasMode.DUMPING;
+                  } else if (tank == rightTank) {
+                      return dumpRight != GasMode.DUMPING;
+                  }
+                  return true;
+              });
 
         inputHandler = InputHelper.getInputHandler(fluidTank);
         outputHandler = OutputHelper.getOutputHandler(leftTank, rightTank);
@@ -212,28 +219,20 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         rightOutputSlot.drainTank();
         clientEnergyUsed = recipeCacheLookupMonitor.updateAndProcess(energyContainer);
 
-        handleTank(leftTank, DataType.OUTPUT_1, dumpLeft);
-        handleTank(rightTank, DataType.OUTPUT_2, dumpRight);
+        handleTank(leftTank, dumpLeft);
+        handleTank(rightTank, dumpRight);
     }
 
-    private void handleTank(IGasTank tank, DataType output, GasMode mode) {
+    private void handleTank(IGasTank tank, GasMode mode) {
         if (!tank.isEmpty()) {
             if (mode == GasMode.DUMPING) {
                 tank.shrinkStack(8 * (long) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), Action.EXECUTE);
-            } else {
-                ConfigInfo config = configComponent.getConfig(TransmissionType.GAS);
-                if (config != null && config.isEjecting()) {
-                    //We have to manually handle ejection rather than letting the ejector component do it, so that we can properly
-                    // have the corresponding tank not eject when set to dumping
-                    ChemicalUtil.emit(config.getSidesForOutput(output), tank, this, MekanismConfig.general.chemicalAutoEjectRate.get());
-                }
-                if (mode == GasMode.DUMPING_EXCESS) {
-                    long target = getDumpingExcessTarget(tank);
-                    long stored = tank.getStored();
-                    if (target < stored) {
-                        //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
-                        tank.shrinkStack(Math.min(stored - target, MekanismConfig.general.chemicalAutoEjectRate.get()), Action.EXECUTE);
-                    }
+            } else if (mode == GasMode.DUMPING_EXCESS) {
+                long target = getDumpingExcessTarget(tank);
+                long stored = tank.getStored();
+                if (target < stored) {
+                    //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
+                    tank.shrinkStack(Math.min(stored - target, MekanismConfig.general.chemicalAutoEjectRate.get()), Action.EXECUTE);
                 }
             }
         }

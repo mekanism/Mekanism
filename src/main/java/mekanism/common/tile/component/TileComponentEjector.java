@@ -56,6 +56,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final IntSupplier fluidEjectRate;
     @Nullable
     private Predicate<TransmissionType> canEject;
+    @Nullable//TODO: At some point it would be nice to be able to generify this further
+    private Predicate<IChemicalTank<?, ?>> canTankEject;
     private boolean strictInput;
     private EnumColor outputColor;
     private int tickDelay = 0;
@@ -90,6 +92,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return this;
     }
 
+    public TileComponentEjector setCanTankEject(Predicate<IChemicalTank<?, ?>> canTankEject) {
+        this.canTankEject = canTankEject;
+        return this;
+    }
+
     public void tickServer() {
         if (tickDelay == 0) {
             outputItems();
@@ -120,7 +127,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             }
                             if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo) {
                                 for (IChemicalTank<?, ?> tank : ((ChemicalSlotInfo<?, ?, ?>) slotInfo).getTanks()) {
-                                    if (!tank.isEmpty()) {
+                                    if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
                                         outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
                                     }
                                 }
