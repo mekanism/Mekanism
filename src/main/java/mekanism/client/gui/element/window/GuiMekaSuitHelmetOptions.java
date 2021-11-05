@@ -8,12 +8,12 @@ import mekanism.client.gui.element.GuiSlider;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement.HUDColor;
-import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 
 public class GuiMekaSuitHelmetOptions extends GuiWindow {
 
     public GuiMekaSuitHelmetOptions(IGuiWrapper gui, int x, int y) {
-        super(gui, x, y, 140, 115, SelectedWindowData.UNSPECIFIED);
+        super(gui, x, y, 140, 115, WindowType.MEKA_SUIT_HELMET);
         interactionStrategy = InteractionStrategy.NONE;
         addChild(new GuiColorPickerSlot(gui, relativeX + 12, relativeY + 32, HUDColor.REGULAR::getColor, color -> {
             MekanismConfig.client.hudColor.set(color.argb());

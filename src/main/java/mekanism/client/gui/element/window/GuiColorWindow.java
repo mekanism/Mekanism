@@ -12,12 +12,12 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.common.util.text.InputValidator;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -42,7 +42,7 @@ public class GuiColorWindow extends GuiWindow {
     private float value = 0.5F;
 
     public GuiColorWindow(IGuiWrapper gui, int x, int y, Consumer<Color> callback) {
-        super(gui, x, y, 160, 140, SelectedWindowData.UNSPECIFIED);
+        super(gui, x, y, 160, 140, WindowType.COLOR);
         interactionStrategy = InteractionStrategy.NONE;
         addChild(new GuiElementHolder(gui, relativeX + 6, relativeY + 17, 43, 82));
         addChild(new GuiColorView(gui, relativeX + 7, relativeY + 18, 41, 80));
