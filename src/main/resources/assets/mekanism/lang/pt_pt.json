@@ -576,7 +576,6 @@
   "direction.mekanism.west": "Oeste",
   "direction.mekanism.west.short": "W",
   "disassembler.mekanism.efficiency": "Eficiência: %s",
-  "disassembler.mekanism.extended_vein": "mineração de veia estendida",
   "disassembler.mekanism.fast": "rápido",
   "disassembler.mekanism.mode_change": "Modo alternado para: %s (%s)",
   "disassembler.mekanism.normal": "Maior",
