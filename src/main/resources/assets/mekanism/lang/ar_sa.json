@@ -422,7 +422,6 @@
   "direction.mekanism.up": "أعلى",
   "direction.mekanism.west": "الغرب",
   "disassembler.mekanism.efficiency": "الكفاءة: %s",
-  "disassembler.mekanism.extended_vein": "تعدين النغمات الموسع",
   "disassembler.mekanism.fast": "سريع",
   "disassembler.mekanism.mode_change": "تم تبديل الوضع إلى: %s (%s)",
   "disassembler.mekanism.normal": "طبيعي",
