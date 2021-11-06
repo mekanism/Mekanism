@@ -505,7 +505,6 @@
   "direction.mekanism.up": "Omhoog",
   "direction.mekanism.west": "West",
   "disassembler.mekanism.efficiency": "Efficiëntie: %s",
-  "disassembler.mekanism.extended_vein": "verlengde ader minen",
   "disassembler.mekanism.fast": "snel",
   "disassembler.mekanism.mode_change": "Modus omgeschakeld naar: %s (%s)",
   "disassembler.mekanism.normal": "normaal",
