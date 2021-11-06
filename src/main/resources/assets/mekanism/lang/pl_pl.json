@@ -596,7 +596,6 @@
   "direction.mekanism.west": "Zachód",
   "direction.mekanism.west.short": "W",
   "disassembler.mekanism.efficiency": "Wydajność: %s",
-  "disassembler.mekanism.extended_vein": "rozszerzone kopanie złóż",
   "disassembler.mekanism.fast": "szybko",
   "disassembler.mekanism.mode_change": "Tryb zmieniony na: %s (%s)",
   "disassembler.mekanism.normal": "normalny",
