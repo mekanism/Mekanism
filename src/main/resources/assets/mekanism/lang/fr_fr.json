@@ -596,7 +596,6 @@
   "direction.mekanism.west": "West",
   "direction.mekanism.west.short": "O",
   "disassembler.mekanism.efficiency": "Efficacité : %s",
-  "disassembler.mekanism.extended_vein": "extraction par filon prolongé",
   "disassembler.mekanism.fast": "rapide",
   "disassembler.mekanism.mode_change": "Mode basculé sur: %s (%s)",
   "disassembler.mekanism.normal": "normal",
