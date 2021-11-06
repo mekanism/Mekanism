@@ -596,7 +596,6 @@
   "direction.mekanism.west": "Запад",
   "direction.mekanism.west.short": "З",
   "disassembler.mekanism.efficiency": "Эффективность: %s",
-  "disassembler.mekanism.extended_vein": "Расширенная область добычи",
   "disassembler.mekanism.fast": "Быстро",
   "disassembler.mekanism.mode_change": "Режим переключен: %s (%s)",
   "disassembler.mekanism.normal": "Обычный",
