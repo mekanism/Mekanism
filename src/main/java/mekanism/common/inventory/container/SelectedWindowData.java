@@ -47,6 +47,9 @@ public class SelectedWindowData {
         return Objects.hash(type, extraData);
     }
 
+    /**
+     * @apiNote Only call this on the client.
+     */
     public void updateLastPosition(int x, int y) {
         String saveName = type.getSaveName(extraData);
         if (saveName != null) {
@@ -112,7 +115,7 @@ public class SelectedWindowData {
         }
 
         @Nullable
-        protected String getSaveName(byte extraData) {
+        String getSaveName(byte extraData) {
             return maxData == 1 ? saveName : saveName + extraData;
         }
 

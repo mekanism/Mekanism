@@ -239,9 +239,12 @@ public class MekanismTags {
         public static final INamedTag<Fluid> HEAVY_WATER = forgeTag("heavy_water");
         public static final INamedTag<Fluid> HYDROGEN = forgeTag("hydrogen");
         public static final INamedTag<Fluid> HYDROGEN_CHLORIDE = forgeTag("hydrogen_chloride");
+        public static final INamedTag<Fluid> URANIUM_OXIDE = forgeTag("uranium_oxide");
+        public static final INamedTag<Fluid> URANIUM_HEXAFLUORIDE = forgeTag("uranium_hexafluoride");
         public static final INamedTag<Fluid> LITHIUM = forgeTag("lithium");
         public static final INamedTag<Fluid> OXYGEN = forgeTag("oxygen");
         public static final INamedTag<Fluid> SODIUM = forgeTag("sodium");
+        public static final INamedTag<Fluid> SUPERHEATED_SODIUM = forgeTag("superheated_sodium");
         public static final INamedTag<Fluid> STEAM = forgeTag("steam");
         public static final INamedTag<Fluid> SULFUR_DIOXIDE = forgeTag("sulfur_dioxide");
         public static final INamedTag<Fluid> SULFUR_TRIOXIDE = forgeTag("sulfur_trioxide");

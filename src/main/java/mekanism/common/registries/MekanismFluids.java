@@ -26,9 +26,12 @@ public class MekanismFluids {
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SULFURIC_ACID = FLUIDS.registerLiquidChemical(ChemicalConstants.SULFURIC_ACID);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HYDROGEN_CHLORIDE = FLUIDS.registerLiquidChemical(ChemicalConstants.HYDROGEN_CHLORIDE);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> HYDROFLUORIC_ACID = FLUIDS.registerLiquidChemical(ChemicalConstants.HYDROFLUORIC_ACID);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> URANIUM_OXIDE = FLUIDS.registerLiquidChemical(ChemicalConstants.URANIUM_OXIDE);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> URANIUM_HEXAFLUORIDE = FLUIDS.registerLiquidChemical(ChemicalConstants.URANIUM_HEXAFLUORIDE);
     //Internal gases
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> ETHENE = FLUIDS.registerLiquidChemical(ChemicalConstants.ETHENE);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SODIUM = FLUIDS.registerLiquidChemical(ChemicalConstants.SODIUM);
+    public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> SUPERHEATED_SODIUM = FLUIDS.registerLiquidChemical(ChemicalConstants.SUPERHEATED_SODIUM);
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> BRINE = FLUIDS.register("brine", fluidAttributes -> fluidAttributes.color(0xFFFEEF9C));
     public static final FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> LITHIUM = FLUIDS.registerLiquidChemical(ChemicalConstants.LITHIUM);
 
