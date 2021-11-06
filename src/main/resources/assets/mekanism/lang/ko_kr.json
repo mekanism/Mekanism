@@ -596,7 +596,6 @@
   "direction.mekanism.west": "서쪽",
   "direction.mekanism.west.short": "서",
   "disassembler.mekanism.efficiency": "효율: %s",
-  "disassembler.mekanism.extended_vein": "광범위 광맥 채굴",
   "disassembler.mekanism.fast": "빠름",
   "disassembler.mekanism.mode_change": "모드가 다음으로 변경됨: %s (%s)",
   "disassembler.mekanism.normal": "기본",
