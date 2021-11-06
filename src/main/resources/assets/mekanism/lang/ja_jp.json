@@ -596,7 +596,6 @@
   "direction.mekanism.west": "西側",
   "direction.mekanism.west.short": "西",
   "disassembler.mekanism.efficiency": "効率: %s",
-  "disassembler.mekanism.extended_vein": "広範囲鉱脈採掘",
   "disassembler.mekanism.fast": "早い",
   "disassembler.mekanism.mode_change": "モードを%s (%s)に切り替えました",
   "disassembler.mekanism.normal": "通常",
