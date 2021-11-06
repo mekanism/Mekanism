@@ -127,8 +127,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     FluidStackIngredient.from(MekanismTags.Fluids.ETHENE, 50),
                     GasStackIngredient.from(MekanismGases.OXYGEN, 10),
                     60,
-                    MekanismItems.HDPE_PELLET.getItemStack(),
-                    MekanismGases.OXYGEN.getStack(5)
+                    MekanismItems.HDPE_PELLET.getItemStack()
               ).energyRequired(FloatingLong.createConst(1_000))
               .build(consumer, Mekanism.rl(basePath + "ethene_oxygen"));
         //Water + ethene

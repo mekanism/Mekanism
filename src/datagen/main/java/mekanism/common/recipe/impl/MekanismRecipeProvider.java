@@ -540,7 +540,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.INGOT, Pattern.EMPTY, Pattern.INGOT),
                     TripleLine.of(Pattern.INGOT, Pattern.DYE, Pattern.INGOT))
               ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD))
-              .key(Pattern.DYE, Tags.Items.DYES_ORANGE)
+              .key(Pattern.DYE, Tags.Items.DYES_BLACK)
               .build(consumer);
         //HDPE rod
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.HDPE_ROD)
