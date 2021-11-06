@@ -403,7 +403,6 @@
   "direction.mekanism.west": "Západ",
   "direction.mekanism.west.short": "Z",
   "disassembler.mekanism.efficiency": "Efektivita: %s",
-  "disassembler.mekanism.extended_vein": "rozšírené žílové taženie",
   "disassembler.mekanism.fast": "rýchly",
   "disassembler.mekanism.mode_change": "Režim zmenení na: %s (%s)",
   "disassembler.mekanism.normal": "normálny",
