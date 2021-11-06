@@ -508,7 +508,6 @@
   "direction.mekanism.west": "Väst",
   "direction.mekanism.west.short": "V",
   "disassembler.mekanism.efficiency": "Effektivitet: %s",
-  "disassembler.mekanism.extended_vein": "Förlängd åderbrytning",
   "disassembler.mekanism.fast": "snabb",
   "disassembler.mekanism.mode_change": "Läge växlat till: %s (%s)",
   "disassembler.mekanism.normal": "normal",
