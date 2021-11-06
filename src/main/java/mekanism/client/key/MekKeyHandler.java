@@ -52,7 +52,9 @@ public class MekKeyHandler {
             //If the conflict context (game) isn't active try it as being a gui but without it normally actually conflicting with gui keybindings
             conflictContext = KeyConflictContext.GUI;
         }
-        if (conflictContext.isActive() && keyBinding.getKeyModifier().isActive(conflictContext)) {
+        //If we have no modifier set on the radial key allow it to be "active" even if another modifier is pressed, as we only
+        // check the radial menu at specific times, so we don't want to close it if the player hits shift or something
+        if (conflictContext.isActive() && (keyBinding.getKeyModifier() == KeyModifier.NONE || keyBinding.getKeyModifier().isActive(conflictContext))) {
             //Manually check in case keyBinding#pressed just never got a chance to be updated
             return isKeyDown(keyBinding);
         }
