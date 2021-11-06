@@ -575,7 +575,6 @@
   "direction.mekanism.west": "西",
   "direction.mekanism.west.short": "W",
   "disassembler.mekanism.efficiency": "效率: %s",
-  "disassembler.mekanism.extended_vein": "扩展矿脉挖掘",
   "disassembler.mekanism.fast": "快",
   "disassembler.mekanism.mode_change": "模式切换为: %s (%s)",
   "disassembler.mekanism.normal": "普通",
