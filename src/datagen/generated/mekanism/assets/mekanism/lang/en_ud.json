@@ -599,7 +599,6 @@
   "direction.mekanism.west": "\u0287s\u01DDM",
   "direction.mekanism.west.short": "M",
   "disassembler.mekanism.efficiency": "%s :\u028E\u0254u\u01DD\u1D09\u0254\u1D09\u025F\u025F\u018E",
-  "disassembler.mekanism.extended_vein": "\u1D77u\u1D09u\u1D09\u026F u\u1D09\u01DD\u028C p\u01DDpu\u01DD\u0287x\u01DD",
   "disassembler.mekanism.fast": "\u0287s\u0250\u025F",
   "disassembler.mekanism.mode_change": "(%2$s) %1$s :o\u0287 p\u01DD\uA781\u1D77\u1D77o\u0287 \u01DDpoW",
   "disassembler.mekanism.normal": "\uA781\u0250\u026F\u0279ou",

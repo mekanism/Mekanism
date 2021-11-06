@@ -147,31 +147,25 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             return super.onBlockStartBreak(stack, pos, player);
         }
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-        if (energyContainer != null) {
+        if (energyContainer != null && getMode(stack) == DisassemblerMode.VEIN) {
             World world = player.level;
             BlockState state = world.getBlockState(pos);
             FloatingLong baseDestroyEnergy = getDestroyEnergy(stack);
             FloatingLong energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
             if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
-                DisassemblerMode mode = getMode(stack);
-                boolean extended = mode == DisassemblerMode.EXTENDED_VEIN;
-                if (extended || mode == DisassemblerMode.VEIN) {
-                    //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
-                    if (!(state.getBlock() instanceof BlockBounding)) {
-                        //If it is extended or should be treated as an ore
-                        if (extended || state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
-                            List<BlockPos> found = findPositions(state, pos, world, extended ? MekanismConfig.gear.disassemblerMiningRange.get() : -1);
-                            MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayerEntity) player, stack, this, found, false,
-                                  hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), state);
-                        }
-                    }
+                //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
+                // only allow mining things that are considered an ore
+                if (!(state.getBlock() instanceof BlockBounding) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                    List<BlockPos> found = findPositions(state, pos, world);
+                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayerEntity) player, stack, this, found, false,
+                          hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), state);
                 }
             }
         }
         return super.onBlockStartBreak(stack, pos, player);
     }
 
-    private static List<BlockPos> findPositions(BlockState state, BlockPos location, World world, int maxRange) {
+    private static List<BlockPos> findPositions(BlockState state, BlockPos location, World world) {
         List<BlockPos> found = new ArrayList<>();
         Set<BlockPos> checked = new ObjectOpenHashSet<>();
         found.add(location);
@@ -183,18 +177,16 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             for (BlockPos pos : BlockPos.betweenClosed(blockPos.offset(-1, -1, -1), blockPos.offset(1, 1, 1))) {
                 //We can check contains as mutable
                 if (!checked.contains(pos)) {
-                    if (maxRange == -1 || WorldUtils.distanceBetween(location, pos) <= maxRange) {
-                        Optional<BlockState> blockState = WorldUtils.getBlockState(world, pos);
-                        if (blockState.isPresent() && startBlock == blockState.get().getBlock()) {
-                            //Make sure to add it as immutable
-                            found.add(pos.immutable());
-                            //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
-                            // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
-                            Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
-                                  Vector3d.atCenterOf(blockPos), Vector3d.atCenterOf(pos), 10), world, blockPos);
-                            if (found.size() > maxCount) {
-                                return found;
-                            }
+                    Optional<BlockState> blockState = WorldUtils.getBlockState(world, pos);
+                    if (blockState.isPresent() && startBlock == blockState.get().getBlock()) {
+                        //Make sure to add it as immutable
+                        found.add(pos.immutable());
+                        //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
+                        // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
+                        Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
+                              Vector3d.atCenterOf(blockPos), Vector3d.atCenterOf(pos), 10), world, blockPos);
+                        if (found.size() > maxCount) {
+                            return found;
                         }
                     }
                 }
@@ -294,7 +286,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_slow.png")),
         FAST(MekanismLang.DISASSEMBLER_FAST, 128, MekanismConfig.gear.disassemblerFastMode, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_fast.png")),
         VEIN(MekanismLang.DISASSEMBLER_VEIN, 20, MekanismConfig.gear.disassemblerVeinMining, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_vein.png")),
-        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, MekanismConfig.gear.disassemblerExtendedMining, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_extended_vein.png")),
         OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "void.png"));
 
         private static final DisassemblerMode[] MODES = values();

@@ -619,7 +619,6 @@ public enum MekanismLang implements ILangEntry {
     DISASSEMBLER_SLOW("disassembler", "slow"),
     DISASSEMBLER_FAST("disassembler", "fast"),
     DISASSEMBLER_VEIN("disassembler", "vein"),
-    DISASSEMBLER_EXTENDED_VEIN("disassembler", "extended_vein"),
     DISASSEMBLER_OFF("disassembler", "off"),
     //Flamethrower Modes
     FLAMETHROWER_MODE_CHANGE("flamethrower", "mode_change"),

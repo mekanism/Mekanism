@@ -37,12 +37,10 @@ public class GearConfig extends BaseMekanismConfig {
     //Atomic Disassembler
     public final CachedFloatingLongValue disassemblerEnergyUsage;
     public final CachedFloatingLongValue disassemblerEnergyUsageWeapon;
-    public final CachedIntValue disassemblerMiningRange;
     public final CachedIntValue disassemblerMiningCount;
     public final CachedBooleanValue disassemblerSlowMode;
     public final CachedBooleanValue disassemblerFastMode;
     public final CachedBooleanValue disassemblerVeinMining;
-    public final CachedBooleanValue disassemblerExtendedMining;
     public final CachedIntValue disassemblerMinDamage;
     public final CachedIntValue disassemblerMaxDamage;
     public final CachedFloatingLongValue disassemblerMaxEnergy;
@@ -143,8 +141,6 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsage", FloatingLong.createConst(10));
         disassemblerEnergyUsageWeapon = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Atomic Disassembler as a weapon.",
               "energyUsageWeapon", FloatingLong.createConst(2_000));
-        disassemblerMiningRange = CachedIntValue.wrap(this, builder.comment("The Range of the Atomic Disassembler Extended Vein Mining.")
-              .define("miningRange", 10));
         disassemblerMiningCount = CachedIntValue.wrap(this, builder.comment("The max Atomic Disassembler Vein Mining Block Count.")
               .define("miningCount", 128));
         disassemblerSlowMode = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Slow' mode for the Atomic Disassembler.")
@@ -153,8 +149,6 @@ public class GearConfig extends BaseMekanismConfig {
               .define("fastMode", true));
         disassemblerVeinMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Vein Mining' mode for the Atomic Disassembler.")
               .define("veinMining", true));
-        disassemblerExtendedMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Extended Vein Mining' mode for the Atomic Disassembler. (Allows vein mining everything not just ores/logs)")
-              .define("extendedMining", true));
         disassemblerMinDamage = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it is out of power. (Value is in number of half hearts)")
               .define("minDamage", 4));
         disassemblerMaxDamage = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it has at least energyUsageWeapon power stored. (Value is in number of half hearts)")

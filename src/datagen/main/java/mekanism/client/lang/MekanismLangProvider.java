@@ -1116,7 +1116,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DISASSEMBLER_SLOW, "slow");
         add(MekanismLang.DISASSEMBLER_FAST, "fast");
         add(MekanismLang.DISASSEMBLER_VEIN, "vein");
-        add(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, "extended vein mining");
         add(MekanismLang.DISASSEMBLER_OFF, "off");
         //Flamethrower Modes
         add(MekanismLang.FLAMETHROWER_MODE_CHANGE, "Flamethrower mode changed to: %s");
