@@ -14,7 +14,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
-import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
@@ -28,13 +28,16 @@ import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler;
+import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UnitDisplayUtils;
+import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
@@ -135,10 +138,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
               (stack, automationType) -> isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
         gasTanks.addAll(Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank));
-        heatCapacitor = MultiblockHeatCapacitor.create(this, tile,
-              MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
-              () -> INVERSE_CONDUCTION_COEFFICIENT,
-              () -> INVERSE_INSULATION_COEFFICIENT);
+        heatCapacitor = MultiblockHeatCapacitor.create(this, tile, MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
+              () -> INVERSE_CONDUCTION_COEFFICIENT, () -> INVERSE_INSULATION_COEFFICIENT);
         heatCapacitors.add(heatCapacitor);
     }
 
@@ -240,18 +241,72 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         // consider a meltdown only if it's config-enabled, we're passed the damage threshold and the temperature is still dangerous
         if (MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get() && reactorDamage >= MAX_DAMAGE && temp >= MIN_DAMAGE_TEMPERATURE) {
             if (world.random.nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
-                double radiation = wasteTank.getStored() * MekanismGases.NUCLEAR_WASTE.get().get(GasAttributes.Radiation.class).getRadioactivity();
-                if (wasteTank.getStack().has(GasAttributes.Radiation.class)) {
-                    radiation += wasteTank.getStored() * wasteTank.getStack().get(GasAttributes.Radiation.class).getRadioactivity();
-                }
-                radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
-                MekanismAPI.getRadiationManager().radiate(new Coord4D(getBounds().getCenter(), world), radiation);
-                RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE);
+                RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE, inventoryID);
             }
         }
         if (reactorDamage != lastDamage) {
             markDirty();
         }
+    }
+
+    public void meltdownHappened(World world) {
+        if (isFormed()) {
+            IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
+            //Calculate radiation level and clear any tanks that had radioactive substances and are contributing to the
+            // amount of radiation released
+            double radiation = getTankRadioactivityAndDump(fuelTank) + getWasteTankRadioactivity(true) +
+                               getTankRadioactivityAndDump(gasCoolantTank) + getTankRadioactivityAndDump(heatedCoolantTank);
+            radiation *= MekanismGeneratorsConfig.generators.fissionMeltdownRadiationMultiplier.get();
+            //When the meltdown actually happens, release radiation into the atmosphere
+            radiationManager.radiate(new Coord4D(getBounds().getCenter(), world), radiation);
+            //Dump the heated coolant as "loss" that didn't survive the meltdown
+            heatedCoolantTank.setEmpty();
+            //Disable the reactor so that if the person rebuilds it, it isn't on by default (QoL)
+            active = false;
+            //Update reactor damage to the specified level for post meltdown
+            reactorDamage = MekanismGeneratorsConfig.generators.fissionPostMeltdownDamage.get();
+            //Reset burnRemaining to zero as it is reasonable to have the burnRemaining get wasted when the reactor explodes
+            burnRemaining = 0;
+            //Reset the partial waste as we just irradiated it and there is not much sense having it exist in limbo
+            partialWaste = 0;
+            //Reset the heat to the default of the heat capacitor
+            heatCapacitor.setHeat(heatCapacitor.getHeatCapacity() * HeatAPI.AMBIENT_TEMP);
+            //Force sync the update to the cache that corresponds to this multiblock
+            MultiblockManager<FissionReactorMultiblockData>.CacheWrapper cacheWrapper = MekanismGenerators.fissionReactorManager.inventories.get(inventoryID);
+            if (cacheWrapper != null) {
+                MultiblockCache<FissionReactorMultiblockData> cache = cacheWrapper.getCache();
+                if (cache != null) {
+                    cache.sync(this);
+                }
+            }
+        }
+    }
+
+    private double getWasteTankRadioactivity(boolean dump) {
+        if (wasteTank.isEmpty()) {
+            return partialWaste * MekanismGases.NUCLEAR_WASTE.get().get(GasAttributes.Radiation.class).getRadioactivity();
+        }
+        GasStack stored = wasteTank.getStack();
+        if (stored.has(GasAttributes.Radiation.class)) {
+            if (dump) {
+                //If we want to dump if we have a radioactive substance, then we need to set the tank to empty
+                wasteTank.setEmpty();
+            }
+            return (stored.getAmount() + partialWaste) * stored.get(GasAttributes.Radiation.class).getRadioactivity();
+        }
+        return 0;
+    }
+
+    private double getTankRadioactivityAndDump(IGasTank tank) {
+        if (!tank.isEmpty()) {
+            GasStack stored = tank.getStack();
+            if (stored.has(GasAttributes.Radiation.class)) {
+                //If we have a radioactive substance, then we need to set the tank to empty
+                tank.setEmpty();
+                return stored.getAmount() * stored.get(GasAttributes.Radiation.class).getRadioactivity();
+            }
+        }
+        return 0;
     }
 
     private void handleCoolant() {
@@ -320,15 +375,12 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
         if (radiationManager.isRadiationEnabled() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
             List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesOfClass(LivingEntity.class, hotZone);
-            for (LivingEntity entity : entitiesToRadiate) {
-                double wasteRadiation = 0;
-                if (wasteTank.getStored() > 0) {
-                    Radiation r = wasteTank.getType().get(Radiation.class);
-                    if (r != null) {
-                        wasteRadiation = r.getRadioactivity() * wasteTank.getStored() / 3_600F; // divide down to Sv/s
-                    }
+            if (!entitiesToRadiate.isEmpty()) {
+                double wasteRadiation = getWasteTankRadioactivity(false) / 3_600F; // divide down to Sv/s
+                double magnitude = lastBurnRate + wasteRadiation;
+                for (LivingEntity entity : entitiesToRadiate) {
+                    radiationManager.radiate(entity, magnitude);
                 }
-                radiationManager.radiate(entity, lastBurnRate + wasteRadiation);
             }
         }
     }

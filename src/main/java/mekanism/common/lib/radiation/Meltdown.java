@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
@@ -30,18 +31,20 @@ public class Meltdown {
 
     private final BlockPos minPos, maxPos;
     private final double magnitude, chance;
+    private final UUID multiblockID;
 
     private int ticksExisted;
 
-    public Meltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance) {
-        this(minPos, maxPos, magnitude, chance, 0);
+    public Meltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance, UUID multiblockID) {
+        this(minPos, maxPos, magnitude, chance, multiblockID, 0);
     }
 
-    private Meltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance, int ticksExisted) {
+    private Meltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance, UUID multiblockID, int ticksExisted) {
         this.minPos = minPos;
         this.maxPos = maxPos;
         this.magnitude = magnitude;
         this.chance = chance;
+        this.multiblockID = multiblockID;
         this.ticksExisted = ticksExisted;
     }
 
@@ -51,6 +54,7 @@ public class Meltdown {
               NBTUtil.readBlockPos(tag.getCompound(NBTConstants.MAX)),
               tag.getDouble(NBTConstants.MAGNITUDE),
               tag.getDouble(NBTConstants.CHANCE),
+              tag.getUUID(NBTConstants.INVENTORY_ID),
               tag.getInt(NBTConstants.AGE)
         );
     }
@@ -60,6 +64,7 @@ public class Meltdown {
         tag.put(NBTConstants.MAX, NBTUtil.writeBlockPos(maxPos));
         tag.putDouble(NBTConstants.MAGNITUDE, magnitude);
         tag.putDouble(NBTConstants.CHANCE, chance);
+        tag.putUUID(NBTConstants.INVENTORY_ID, multiblockID);
         tag.putInt(NBTConstants.AGE, ticksExisted);
     }
 
@@ -84,7 +89,7 @@ public class Meltdown {
      * Creates an explosion and ensures all blocks that are inside our meltdown radius actually get destroyed
      */
     private void createExplosion(World world, double x, double y, double z, float radius, boolean causesFire, Explosion.Mode mode) {
-        Explosion explosion = new Explosion(world, null, null, null, x, y, z, radius, causesFire, mode);
+        Explosion explosion = new MeltdownExplosion(world, x, y, z, radius, causesFire, mode, multiblockID);
         //Calculate which block positions should get broken based on the logic that would happen in Explosion#explode
         List<BlockPos> toBlow = new ArrayList<>();
         for (int j = 0; j < 16; ++j) {
@@ -173,5 +178,19 @@ public class Meltdown {
             }
         }
         dropPositions.add(Pair.of(stack, pos));
+    }
+
+    public static class MeltdownExplosion extends Explosion {
+
+        private final UUID multiblockID;
+
+        private MeltdownExplosion(World world, double x, double y, double z, float radius, boolean causesFire, Mode mode, UUID multiblockID) {
+            super(world, null, null, null, x, y, z, radius, causesFire, mode);
+            this.multiblockID = multiblockID;
+        }
+
+        public UUID getMultiblockID() {
+            return multiblockID;
+        }
     }
 }
