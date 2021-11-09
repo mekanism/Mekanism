@@ -195,6 +195,7 @@
   "block.mekanism.ultimate_thermodynamic_conductor": "Conductor Termodinámico Definitivo",
   "block.mekanism.ultimate_universal_cable": "Cable Universal Definitivo",
   "block.mekanism.uranium_ore": "Mena de Uranio",
+  "block.mekanism.uranium_oxide": "Óxido de Uranio Líquido",
   "boiler.mekanism.boil_rate": "Tasa de hervor: %s mB/t",
   "boiler.mekanism.capacity": "Capacidad de hervor: %s mB/t",
   "boiler.mekanism.coolant_tank": "Tanque de Refrigerante",
