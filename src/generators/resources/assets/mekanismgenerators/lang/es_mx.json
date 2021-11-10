@@ -111,7 +111,7 @@
   "fluid.mekanismgenerators.flowing_tritium": "Tritio líquido fluyente",
   "fluid.mekanismgenerators.fusion_fuel": "Combustible D-T líquido",
   "fluid.mekanismgenerators.tritium": "Tritio líquido",
-  "gas.mekanismgenerators.deuterium": "Deuterium",
+  "gas.mekanismgenerators.deuterium": "Deuterio",
   "gas.mekanismgenerators.fusion_fuel": "Combustible D-T",
   "gas.mekanismgenerators.tritium": "Tritio",
   "gui.mekanismgenerators.bio_generator.bio_fuel": "Biocombustible: %s",
