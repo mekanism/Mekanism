@@ -1,5 +1,8 @@
 package mekanism.api.heat;
 
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorldReader;
+
 public class HeatAPI {
 
     private HeatAPI() {
@@ -7,6 +10,9 @@ public class HeatAPI {
 
     /**
      * Default atmospheric temperature, automatically set in all heat capacitors. Heat is grounded in 0 degrees Kelvin.
+     *
+     * @see #getAmbientTemp(IWorldReader, BlockPos)
+     * @see #getAmbientTemp(double)
      */
     public static final double AMBIENT_TEMP = 300;
     /**
@@ -25,6 +31,43 @@ public class HeatAPI {
      * Default inverse insulation coefficient
      */
     public static final double DEFAULT_INVERSE_INSULATION = 0;
+
+    /**
+     * Gets the atmospheric temperature at a given spot in the specified world based on the biome's temperature modifier at that position. The baseline temperature
+     * modifier is taken to be the plains biome, or a biome with a temperature modifier of 0.8.
+     *
+     * @param world World.
+     * @param pos   Position in the world.
+     *
+     * @return Atmospheric temperature at the given position.
+     *
+     * @implNote This method is a helper to call {@link #getAmbientTemp(double)} using the temperature of the biome at the location specified.
+     * @see #AMBIENT_TEMP
+     */
+    public static double getAmbientTemp(IWorldReader world, BlockPos pos) {
+        return getAmbientTemp(world.getBiome(pos).getTemperature(pos));
+    }
+
+    /**
+     * Gets the atmospheric temperature based on the temperature modifier of a {@link net.minecraft.world.biome.Biome}, with the baseline being the same as the plains
+     * biome, or 0.8.
+     *
+     * @param biomeTemp Temperature of the biome.
+     *
+     * @return Atmospheric temperature at the given position.
+     *
+     * @implNote Biome temperature is clamped in the range of [-5, 5] as vanilla only uses values in the range [-0.7, 2.0], and we want to normalize it slightly so that
+     * we ensure this does not return below absolute zero Kelvin. While there is a larger buffer zone that could return valid values, they are likely super extreme and
+     * may indicate an issue in another mod's biome.
+     * @see #AMBIENT_TEMP
+     */
+    public static double getAmbientTemp(double biomeTemp) {
+        //See implementation note about this range. If any other mods do have valid more extreme temperatures,
+        // we may want to consider expanding this range to [-10, 10]
+        biomeTemp = Math.max(Math.min(biomeTemp, 5), -5);
+        //TODO: Make use of this and the other getAmbientTemp helper in more places than just evaporation multiblocks
+        return AMBIENT_TEMP + 25 * (biomeTemp - 0.8);
+    }
 
     public static class HeatTransfer {
 

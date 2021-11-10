@@ -64,7 +64,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
 
     private boolean temperatureSet;
 
-    private double biomeTemp;
+    private double biomeAmbientTemp;
     private double tempMultiplier;
 
     public float prevScale;
@@ -148,19 +148,21 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
 
     private void updateTemperature(World world) {
         if (!temperatureSet) {
-            biomeTemp = world.getBiomeManager().getBiome(getMinPos()).getTemperature(getMinPos());
+            //Take a rough average of the biome temperature between the min and max positions of the multiblock
+            double biomeTemp = (world.getBiome(getMinPos()).getTemperature(getMinPos()) + world.getBiome(getMaxPos()).getTemperature(getMaxPos())) / 2;
+            biomeAmbientTemp = HeatAPI.getAmbientTemp(biomeTemp);
             temperatureSet = true;
         }
-        heatCapacitor.handleHeat(MekanismConfig.general.evaporationSolarMultiplier.get() * getActiveSolars() * heatCapacitor.getHeatCapacity());
-        double biome = biomeTemp - 0.5;
-        double base = biome > 0 ? biome * 20 : biomeTemp * 40;
-        base += HeatAPI.AMBIENT_TEMP;
-        if (Math.abs(getTemp() - base) < 0.001) {
-            heatCapacitor.handleHeat((base * heatCapacitor.getHeatCapacity()) - heatCapacitor.getHeat());
+        int activeSolars = getActiveSolars();
+        if (activeSolars > 0) {
+            heatCapacitor.handleHeat(MekanismConfig.general.evaporationSolarMultiplier.get() * activeSolars * heatCapacitor.getHeatCapacity());
+        }
+        if (Math.abs(heatCapacitor.getTemperature() - biomeAmbientTemp) < 0.001) {
+            heatCapacitor.handleHeat((biomeAmbientTemp * heatCapacitor.getHeatCapacity()) - heatCapacitor.getHeat());
             totalLoss = 0;
         } else {
-            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(heatCapacitor.getTemperature() - base));
-            if (heatCapacitor.getTemperature() > base) {
+            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(heatCapacitor.getTemperature() - biomeAmbientTemp));
+            if (heatCapacitor.getTemperature() > biomeAmbientTemp) {
                 incr = -incr;
             }
             heatCapacitor.handleHeat(heatCapacitor.getHeatCapacity() * incr);
