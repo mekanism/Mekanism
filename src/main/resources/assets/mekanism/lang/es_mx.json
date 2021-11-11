@@ -1106,7 +1106,7 @@
   "network_reader.mekanism.buffer": " *Búfer: %s",
   "network_reader.mekanism.capacity": " *Capacidad: %s",
   "network_reader.mekanism.connected": " *Caras conectadas: %s",
-  "network_reader.mekanism.needed": " *Necesitado: %s",
+  "network_reader.mekanism.needed": " *Necesario: %s",
   "network_reader.mekanism.temperature": " *Temperatura: %s",
   "network_reader.mekanism.throughput": " *Entrada: %s",
   "network_reader.mekanism.transmitters": " *Transmisores: %s",
