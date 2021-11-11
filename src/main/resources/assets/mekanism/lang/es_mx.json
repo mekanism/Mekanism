@@ -1,7 +1,7 @@
 {
   "assemblicator.mekanism.auto_mode_toggle": "Modo Automático: %s",
-  "assemblicator.mekanism.craft_available": "Fabricar Ítems Disponibles",
-  "assemblicator.mekanism.craft_single": "Fabricar un Ítem",
+  "assemblicator.mekanism.craft_available": "Fabricar objetos disponibles",
+  "assemblicator.mekanism.craft_single": "Fabricar un objeto",
   "assemblicator.mekanism.encode_formula": "Codificar Receta",
   "assemblicator.mekanism.fill_empty": "Llenar/Vaciar Tabla",
   "assemblicator.mekanism.stock_control": "Control de almacenaje: %s",
@@ -48,7 +48,7 @@
   "block.mekanism.basic_purifying_factory": "Fábrica de Purificación Básica",
   "block.mekanism.basic_sawing_factory": "Fábrica de aserrado básica",
   "block.mekanism.basic_smelting_factory": "Fábrica de Fundición Básica",
-  "block.mekanism.basic_thermodynamic_conductor": "Conductor Termodinámico Básico",
+  "block.mekanism.basic_thermodynamic_conductor": "Conductor Termodinámico Básico (calor)",
   "block.mekanism.basic_universal_cable": "Cable Universal Básico",
   "block.mekanism.block_bronze": "Bloque de bronce",
   "block.mekanism.block_charcoal": "Bloque de carbón vegetal",
