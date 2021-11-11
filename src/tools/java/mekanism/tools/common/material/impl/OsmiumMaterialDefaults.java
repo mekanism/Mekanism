@@ -14,47 +14,27 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 1_344;
+        return 672;
     }
 
     @Override
     public float getAxeDamage() {
-        return 4;
+        return 8;
     }
 
     @Override
     public float getAxeAtkSpeed() {
-        return -3.0F;
-    }
-
-    @Override
-    public float getPaxelDamage() {
-        return 5;
-    }
-
-    @Override
-    public int getPaxelHarvestLevel() {
-        return 3;
-    }
-
-    @Override
-    public int getPaxelMaxUses() {
-        return 700;
-    }
-
-    @Override
-    public float getPaxelEfficiency() {
-        return 12;
+        return -3.3F;
     }
 
     @Override
     public int getUses() {
-        return 500;
+        return 1_024;
     }
 
     @Override
     public float getSpeed() {
-        return 10;
+        return 4;
     }
 
     @Override
@@ -69,12 +49,12 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getCommonEnchantability() {
-        return 12;
+        return 14;
     }
 
     @Override
     public float getToughness() {
-        return 1;
+        return 3;
     }
 
     @Override
@@ -100,22 +80,23 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
             case LEGS:
                 return 6;
             case CHEST:
-                return 5;
+                return 8;
             case HEAD:
-                return 3;
+                return 4;
         }
         return 0;
     }
 
     @Nonnull
     @Override
-    public String getRegistryPrefix() {
-        return "osmium";
+    public String getConfigCommentName() {
+        return "Osmium";
     }
 
+    @Nonnull
     @Override
-    public int getPaxelEnchantability() {
-        return 16;
+    public String getRegistryPrefix() {
+        return "osmium";
     }
 
     @Nonnull
@@ -132,6 +113,6 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public float getKnockbackResistance() {
-        return 0;
+        return 0.1F;
     }
 }

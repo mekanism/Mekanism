@@ -12,62 +12,42 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 2_240;
+        return 1_680;
     }
 
     @Override
     public float getAxeDamage() {
-        return 2;
+        return 7;
     }
 
     @Override
     public float getAxeAtkSpeed() {
-        return -2;
-    }
-
-    @Override
-    public float getPaxelDamage() {
-        return 4;
-    }
-
-    @Override
-    public int getPaxelHarvestLevel() {
-        return 3;
-    }
-
-    @Override
-    public int getPaxelMaxUses() {
-        return 3_000;
-    }
-
-    @Override
-    public float getPaxelEfficiency() {
-        return 25;
+        return -2.9F;
     }
 
     @Override
     public int getUses() {
-        return 2_500;
+        return 4_096;
     }
 
     @Override
     public float getSpeed() {
-        return 20;
+        return 12;
     }
 
     @Override
     public float getAttackDamageBonus() {
-        return 10;
+        return 8;
     }
 
     @Override
     public int getLevel() {
-        return 3;
+        return 4;
     }
 
     @Override
     public int getCommonEnchantability() {
-        return 40;
+        return 18;
     }
 
     @Override
@@ -77,20 +57,20 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public float getToughness() {
-        return 4;
+        return 5;
     }
 
     @Override
     public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 650;
+                return 975;
             case LEGS:
-                return 750;
+                return 1_125;
             case CHEST:
-                return 800;
+                return 1_200;
             case HEAD:
-                return 550;
+                return 825;
         }
         return 0;
     }
@@ -105,20 +85,21 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
             case CHEST:
                 return 12;
             case HEAD:
-                return 5;
+                return 6;
         }
         return 0;
     }
 
     @Nonnull
     @Override
-    public String getRegistryPrefix() {
-        return "refined_obsidian";
+    public String getConfigCommentName() {
+        return "Refined Obsidian";
     }
 
+    @Nonnull
     @Override
-    public int getPaxelEnchantability() {
-        return 50;
+    public String getRegistryPrefix() {
+        return "refined_obsidian";
     }
 
     @Nonnull
@@ -135,6 +116,6 @@ public class RefinedObsidianMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public float getKnockbackResistance() {
-        return 0.1F;
+        return 0.2F;
     }
 }

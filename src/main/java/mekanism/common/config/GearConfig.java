@@ -215,7 +215,7 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
         builder.comment("Armored Jetpack Settings").push(ARMORED_JETPACK_SUBCATEGORY);
         armoredJetpackArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Jetpack.")
-              .define("armor", 12));
+              .define("armor", 8));
         armoredJetpackToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Jetpack.")
               .define("toughness", 2.0));
         builder.pop(2);

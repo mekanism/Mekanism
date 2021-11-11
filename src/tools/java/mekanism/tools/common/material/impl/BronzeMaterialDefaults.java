@@ -12,52 +12,32 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 1_568;
+        return 403;
     }
 
     @Override
     public float getAxeDamage() {
-        return 2;
+        return 7;
     }
 
     @Override
     public float getAxeAtkSpeed() {
-        return -3.1F;
-    }
-
-    @Override
-    public float getPaxelDamage() {
-        return 8;
-    }
-
-    @Override
-    public int getPaxelHarvestLevel() {
-        return 3;
-    }
-
-    @Override
-    public int getPaxelMaxUses() {
-        return 1_100;
-    }
-
-    @Override
-    public float getPaxelEfficiency() {
-        return 16;
+        return -3.0F;
     }
 
     @Override
     public int getUses() {
-        return 800;
+        return 375;
     }
 
     @Override
     public float getSpeed() {
-        return 14;
+        return 7;
     }
 
     @Override
     public float getAttackDamageBonus() {
-        return 6;
+        return 2;
     }
 
     @Override
@@ -72,20 +52,20 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public float getToughness() {
-        return 0;
+        return 1;
     }
 
     @Override
     public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 455;
+                return 234;
             case LEGS:
-                return 525;
+                return 270;
             case CHEST:
-                return 560;
+                return 288;
             case HEAD:
-                return 385;
+                return 198;
         }
         return 0;
     }
@@ -96,9 +76,9 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
             case FEET:
                 return 2;
             case LEGS:
-                return 5;
-            case CHEST:
                 return 6;
+            case CHEST:
+                return 7;
             case HEAD:
                 return 3;
         }
@@ -107,13 +87,14 @@ public class BronzeMaterialDefaults extends BaseMekanismMaterial {
 
     @Nonnull
     @Override
-    public String getRegistryPrefix() {
-        return "bronze";
+    public String getConfigCommentName() {
+        return "Bronze";
     }
 
+    @Nonnull
     @Override
-    public int getPaxelEnchantability() {
-        return 14;
+    public String getRegistryPrefix() {
+        return "bronze";
     }
 
     @Nonnull

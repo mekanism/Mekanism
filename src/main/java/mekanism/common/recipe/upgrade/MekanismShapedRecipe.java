@@ -8,42 +8,24 @@ import java.util.Map.Entry;
 import java.util.Set;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.registries.MekanismRecipeSerializers;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.common.crafting.IShapedRecipe;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<CraftingInventory> {
-
-    private final ShapedRecipe internal;
+public class MekanismShapedRecipe extends WrappedShapedRecipe {
 
     public MekanismShapedRecipe(ShapedRecipe internal) {
-        this.internal = internal;
-    }
-
-    public ShapedRecipe getInternal() {
-        return internal;
+        super(internal);
     }
 
     @Override
     public IRecipeSerializer<?> getSerializer() {
         return MekanismRecipeSerializers.MEK_DATA.getRecipeSerializer();
-    }
-
-    @Override
-    public boolean matches(CraftingInventory inv, World world) {
-        //Note: We do not override the matches method if it matches ignoring NBT,
-        // to ensure that we return the proper value for if there is a match that gives a proper output
-        return internal.matches(inv, world) && !assemble(inv).isEmpty();
     }
 
     @Override
@@ -94,55 +76,5 @@ public class MekanismShapedRecipe implements ICraftingRecipe, IShapedRecipe<Craf
             }
         }
         return toReturn;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return internal.canCraftInDimensions(width, height);
-    }
-
-    @Override
-    public ItemStack getResultItem() {
-        return internal.getResultItem();
-    }
-
-    @Override
-    public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-        return internal.getRemainingItems(inv);
-    }
-
-    @Override
-    public NonNullList<Ingredient> getIngredients() {
-        return internal.getIngredients();
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return internal.isSpecial();
-    }
-
-    @Override
-    public String getGroup() {
-        return internal.getGroup();
-    }
-
-    @Override
-    public ItemStack getToastSymbol() {
-        return internal.getToastSymbol();
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return internal.getId();
-    }
-
-    @Override
-    public int getRecipeWidth() {
-        return internal.getRecipeWidth();
-    }
-
-    @Override
-    public int getRecipeHeight() {
-        return internal.getRecipeHeight();
     }
 }

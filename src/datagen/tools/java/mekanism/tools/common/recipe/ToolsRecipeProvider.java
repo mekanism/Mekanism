@@ -1,4 +1,4 @@
-package mekanism.tools.common;
+package mekanism.tools.common.recipe;
 
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
@@ -17,6 +17,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.data.DataGenerator;
@@ -125,7 +126,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         tool(AXE, axe, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "axe"));
         tool(SHOVEL, shovel, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "shovel"));
         tool(HOE, hoe, ingot, rod).build(consumer, MekanismTools.rl(baseToolsPath + "hoe"));
-        ExtendedShapedRecipeBuilder.shapedRecipe(paxel)
+        PaxelShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
               .key(AXE_CHAR, axe)
               .key(PICKAXE_CHAR, pickaxe)
@@ -150,7 +151,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     }
 
     private void registerVanillaPaxel(Consumer<IFinishedRecipe> consumer, IItemProvider paxel, Item axe, Item pickaxe, Item shovel, @Nullable Item nugget) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(paxel)
+        PaxelShapedRecipeBuilder.shapedRecipe(paxel)
               .pattern(PAXEL)
               .key(AXE_CHAR, axe)
               .key(PICKAXE_CHAR, pickaxe)
