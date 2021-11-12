@@ -191,8 +191,8 @@
   "turbine.mekanismgenerators.stats.max_water_output": "最大水輸出: %s mB/t",
   "turbine.mekanismgenerators.stats.production": "產出",
   "turbine.mekanismgenerators.stats.steam_flow": "蒸汽處理",
-  "turbine.mekanismgenerators.stats.tank_volume": "儲罐容量: %s",
-  "turbine.mekanismgenerators.stats.vents": "排氣口: %s %s",
+  "turbine.mekanismgenerators.stats.tank_volume": "液槽容量: %s",
+  "turbine.mekanismgenerators.stats.vents": "排氣口數量: %s %s",
   "turbine.mekanismgenerators.steam_input": "蒸汽輸入: %s mB/t",
   "wind_generator.mekanismgenerators.no_wind": "沒有風",
   "wind_generator.mekanismgenerators.sky_blocked": "上方被遮擋"
