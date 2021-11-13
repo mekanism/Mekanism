@@ -67,13 +67,13 @@ mekanism_version=1.16.5-10.0.24.453
 
 # Credits #
 
-  * aidancbrady
+  * [aidancbrady](https://twitter.com/aidancbrady) - [Patreon](https://www.patreon.com/user?u=260704)
   * thommy101
-  * thiakil
-  * pupnewfster
+  * [thiakil](https://twitter.com/thiakil)
+  * [pupnewfster](https://twitter.com/pupnewfster) - [Patreon](https://www.patreon.com/pupnewfster)
   * dizzyd  
   * unpairedbracket
-  * CyanideX (artwork)
+  * [CyanideX](https://twitter.com/theCyanideX) (artwork)
   * Cheapshot (artwork)
   * Archadia (artwork)
   * micdoodle
