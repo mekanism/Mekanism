@@ -95,10 +95,8 @@ public class ThreadMinerSearch extends Thread {
         }
 
         state = State.FINISHED;
-        tile.oresToMine = oresToMine;
         chunkCache = null;
-        tile.markDirty(false);
-        tile.cachedToMine = found;
+        tile.updateFromSearch(oresToMine, found);
     }
 
     public enum State implements IHasTextComponent {

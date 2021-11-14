@@ -3,8 +3,9 @@ package mekanism.common.tile.machine;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -111,7 +113,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class TileEntityDigitalMiner extends TileEntityMekanism implements ISustainedData, IChunkLoader, IBoundingBlock, ITileFilterHolder<MinerFilter<?>>,
       IHasSortableFilters {
 
-    public Long2ObjectMap<BitSet> oresToMine = new Long2ObjectOpenHashMap<>();
+    private Long2ObjectMap<BitSet> oresToMine = Long2ObjectMaps.emptyMap();
     private HashList<MinerFilter<?>> filters = new HashList<>();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
@@ -124,9 +126,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     private boolean doEject = false;
     private boolean doPull = false;
     public ItemStack missingStack = ItemStack.EMPTY;
-    public int delay;
+    private int delay;
     private int delayLength = MekanismConfig.general.minerTicksPerMine.get();
-    public int cachedToMine;
+    private int cachedToMine;
     private boolean silkTouch;
     private boolean running;
     private int delayTicks;
@@ -135,6 +137,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     public boolean clientRendering = false;
 
     private final TileComponentChunkLoader<TileEntityDigitalMiner> chunkLoaderComponent = new TileComponentChunkLoader<>(this);
+    @Nullable
+    private ChunkPos targetChunk;
 
     private MinerEnergyContainer energyContainer;
     private List<IInventorySlot> mainSlots;
@@ -198,7 +202,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         super.onUpdateServer();
         closeInvalidScreens();
         if (!initCalc) {
-            //If it had finished searching and we didn't initialize things yet,
+            //If it had finished searching, and we didn't initialize things yet,
             // reset it and start running again if needed. This happens after saving the miner to disk
             if (searcher.state == State.FINISHED) {
                 boolean prevRunning = running;
@@ -252,6 +256,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         } else if (delayTicks > 0) {
             delayTicks--;
         }
+    }
+
+    public void updateFromSearch(Long2ObjectMap<BitSet> oresToMine, int found) {
+        this.oresToMine = oresToMine;
+        cachedToMine = found;
+        updateTargetChunk(null);
+        markDirty(false);
     }
 
     public int getDelay() {
@@ -346,7 +357,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         radius = newRadius;
         if (changed && (hasLevel() && !isRemote())) {
             energyContainer.updateMinerEnergyPerTick();
-            // If the radius changed and we're on the server, go ahead and refresh the chunk set
+            // If the radius changed, and we're on the server, go ahead and refresh the chunk set
             getChunkLoader().refreshChunkTickets();
         }
     }
@@ -398,8 +409,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private void tryMineBlock() {
-        for (ObjectIterator<BitSet> it = oresToMine.values().iterator(); it.hasNext(); ) {
-            BitSet chunkToMine = it.next();
+        long target = targetChunk == null ? ChunkPos.INVALID_CHUNK_POS : targetChunk.toLong();
+        for (ObjectIterator<Long2ObjectMap.Entry<BitSet>> it = oresToMine.long2ObjectEntrySet().iterator(); it.hasNext(); ) {
+            Long2ObjectMap.Entry<BitSet> entry = it.next();
+            long chunk = entry.getLongKey();
+            BitSet chunkToMine = entry.getValue();
+            ChunkPos currentChunk = null;
+            if (target == chunk) {
+                //If our current chunk is the one we are already targeting, just make it reference it, so we don't need to
+                // do any initialization
+                currentChunk = targetChunk;
+            }
             int next = 0;
             while (true) {
                 int index = chunkToMine.nextSetBit(next);
@@ -407,6 +427,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     //If there is no found index, remove it and continue on
                     it.remove();
                     break;
+                } else if (currentChunk == null) {
+                    //Lazy init the current chunk so that if it is empty, and we are just going to remove it
+                    // we don't need to try and load it
+                    updateTargetChunk(currentChunk = new ChunkPos(chunk));
+                    target = chunk;
                 }
                 BlockPos pos = getPosFromIndex(index);
                 Optional<BlockState> blockState = WorldUtils.getBlockState(level, pos);
@@ -423,7 +448,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                             }
                         }
                         //If our hasFilter state matches our inversion state, that means we should try to mine
-                        // the block so we check if we can mine it
+                        // the block, so we check if we can mine it
                         if (inverse == (matchingFilter == null) && canMine(state, pos)) {
                             //If we can, then
                             List<ItemStack> drops = getDrops(state, pos);
@@ -438,6 +463,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                                     // if we are out of stored elements then we remove this chunk and continue to check other chunks
                                     // remove it so that we don't have to check the chunk next time around
                                     it.remove();
+                                    // we no longer have a chunk we are targeting, so remove it. We might get a new chunk to target
+                                    // next time we try to mine but there is no reason to keep the old chunk in memory in the meantime
+                                    updateTargetChunk(null);
                                 }
                             }
                             //Exit out. We either mined the block or don't have room so there is no reason to continue checking
@@ -459,6 +487,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 next = index + 1;
             }
         }
+        //If we didn't exit early due to actually mining a block that means we don't have a target chunk anymore
+        updateTargetChunk(null);
     }
 
     /**
@@ -530,7 +560,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 if (!request.isEmpty()) {
                     TransitResponse response = request.createSimpleResponse();
                     if (response.useAll().isEmpty()) {
-                        //If the request isn't empty and we were able to successfully use it all
+                        //If the request isn't empty, and we were able to successfully use it all
                         return StackUtils.size(response.getStack(), 1);
                     }
                 }
@@ -557,7 +587,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 // continue trying the next slots
                 boolean wasEmpty = slot.isEmpty();
                 if (wasEmpty && cachedStacks.containsKey(i)) {
-                    //If we have cached information about the slot and our slot is currently empty so we can't simulate
+                    //If we have cached information about the slot and our slot is currently empty, so we can't simulate
                     ItemCount cachedItem = cachedStacks.get(i);
                     if (ItemHandlerHelper.canItemStacksStack(stack, cachedItem.stack)) {
                         //If our stack can stack with the item we already put there
@@ -574,7 +604,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                         }
                         int toAdd = total - limit;
                         if (toAdd > 0) {
-                            //Otherwise add what can fit and update the stack to be a reference of that
+                            //Otherwise, add what can fit and update the stack to be a reference of that
                             // stack with the proper size
                             cachedItem.count += toAdd;
                             stack = StackUtils.size(stack, stackSize - toAdd);
@@ -585,7 +615,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     stack = slot.insertItem(stack, Action.SIMULATE, AutomationType.INTERNAL);
                     int remainderSize = stack.getCount();
                     if (wasEmpty && remainderSize < stackSize) {
-                        //If the slot was empty, and accepted at least some of the item we are inserting
+                        //If the slot was empty, and accepted at least some item we are inserting
                         // then cache the item type that we put into that slot
                         cachedStacks.put(i, new ItemCount(stackToInsert, stackSize - remainderSize));
                     }
@@ -596,7 +626,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 }
             }
             if (!stack.isEmpty()) {
-                //If our stack is not empty that means we could not fit it all inside of our inventory
+                //If our stack is not empty that means we could not fit it all inside of our inventory,
                 // so we return false to being able to insert all the items.
                 return false;
             }
@@ -643,6 +673,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         } else if (searcher.state == State.FINISHED) {
             running = false;
             markDirty(false);
+            //Reset the target chunk, so it isn't loaded as we might don't want to let the user just have two chunks loaded
+            // eternally (or until server restart) by intentionally stopping the miner
+            updateTargetChunk(null);
         }
     }
 
@@ -650,9 +683,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         searcher = new ThreadMinerSearch(this);
         running = false;
         cachedToMine = 0;
-        oresToMine.clear();
+        oresToMine = Long2ObjectMaps.emptyMap();
         missingStack = ItemStack.EMPTY;
         setActive(false);
+        updateTargetChunk(null);
         markDirty(false);
     }
 
@@ -676,7 +710,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
      * @apiNote Assumes that inverse is checked before this is called
      */
     private boolean inverseReplaceTargetMatches(Item target) {
-        return  inverseReplaceTarget != Items.AIR && inverseReplaceTarget == target;
+        return inverseReplaceTarget != Items.AIR && inverseReplaceTarget == target;
     }
 
     @Override
@@ -687,7 +721,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         numPowering = nbtTags.getInt(NBTConstants.NUM_POWERING);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.STATE, State::byIndexStatic, s -> searcher.state = s);
         //Update energy per tick in case any of the values changed. It would be slightly cleaner to also validate the fact
-        // the values changed, but it would make the code a decent bit messier as we couldn't use NBTUtils, and it is a
+        // the values changed, but it would make the code a decent bit messier, as we couldn't use NBTUtils, and it is a
         // rather quick check to update the energy per tick, and in most cases at least one of the settings will not be at
         // the default value
         energyContainer.updateMinerEnergyPerTick();
@@ -843,7 +877,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         if (isRunning()) {
             //If it was running when we updated the configuration data, stop it, reset it, and start it again
             // to ensure that there are no desyncs in energy cost due to things like the radius changing but
-            // it having had the blocks to mine calculated based on the old radius
+            // having the blocks to mine be calculated based on the old radius
             stop();
             reset();
             start();
@@ -970,7 +1004,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             //Get item handler cap directly from here as we disable it entirely for the main block as we only have it enabled from ports
             return itemHandlerManager.resolve(capability, side);
         }
-        //Otherwise we can just grab the capability from the tile normally
+        //Otherwise, we can just grab the capability from the tile normally
         return getCapability(capability, side);
     }
 
@@ -985,7 +1019,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return notEnergyPort(side, offset);
         } else if (canEverResolve(capability) && !canAccessFromAnySide(capability)) {
-            //If we are not an item handler or energy capability and it is a capability that we can support,
+            //If we are not an item handler or energy capability, and it is a capability that we can support,
             // but it is not one that we can access from any side so is only a capability that we want to expose
             // via our ports for things like computer integration capabilities, then we treat the capability as
             // disabled if it is not against one of our ports
@@ -1030,19 +1064,36 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return chunkLoaderComponent;
     }
 
+    /**
+     * @apiNote Should only be called on the server, but probably won't cause major issues if called on the client
+     */
+    private void updateTargetChunk(@Nullable ChunkPos target) {
+        if (!Objects.equals(targetChunk, target)) {
+            //Only update the target if it has changed
+            targetChunk = target;
+            getChunkLoader().refreshChunkTickets();
+        }
+    }
+
     @Override
     public Set<ChunkPos> getChunkSet() {
-        int chunkXMin = (worldPosition.getX() - radius) >> 4;
-        int chunkXMax = (worldPosition.getX() + radius) >> 4;
-        int chunkZMin = (worldPosition.getZ() - radius) >> 4;
-        int chunkZMax = (worldPosition.getZ() + radius) >> 4;
-        Set<ChunkPos> set = new ObjectOpenHashSet<>();
-        for (int chunkX = chunkXMin; chunkX <= chunkXMax; chunkX++) {
-            for (int chunkZ = chunkZMin; chunkZ <= chunkZMax; chunkZ++) {
-                set.add(new ChunkPos(chunkX, chunkZ));
+        ChunkPos minerChunk = new ChunkPos(worldPosition);
+        if (targetChunk != null) {
+            //If we have a target check to make sure it is in the radius (most likely it is)
+            if ((worldPosition.getX() - radius) >> 4 <= targetChunk.x && targetChunk.x <= (worldPosition.getX() + radius) >> 4 &&
+                (worldPosition.getZ() - radius) >> 4 <= targetChunk.z && targetChunk.z <= (worldPosition.getZ() + radius) >> 4) {
+                // if it is, return the chunks we should be loading, provide the chunk the miner is in
+                // and the chunk that the miner is currently mining
+                Set<ChunkPos> chunks = new ObjectArraySet<>(2);
+                chunks.add(minerChunk);
+                //TODO: At some point we may want to change the ticket of the chunk the miner is mining to be
+                // at a lower level and not cause tiles in it to actually tick
+                chunks.add(targetChunk);
+                return chunks;
             }
         }
-        return set;
+        //Otherwise, just return the miner's chunk
+        return Collections.singleton(minerChunk);
     }
 
     @Override
@@ -1117,7 +1168,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
         super.handleUpdateTag(state, tag);
-        NBTUtils.setIntIfPresent(tag, NBTConstants.RADIUS, this::setRadius);//client allowed to use whatever server sends
+        NBTUtils.setIntIfPresent(tag, NBTConstants.RADIUS, this::setRadius);//the client is allowed to use whatever server sends
         NBTUtils.setIntIfPresent(tag, NBTConstants.MIN, this::setMinY);
         NBTUtils.setIntIfPresent(tag, NBTConstants.MAX, this::setMaxY);
     }
