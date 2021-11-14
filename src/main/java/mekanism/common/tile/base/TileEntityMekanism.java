@@ -444,7 +444,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && MekanismUtils.canUseAsWrench(stack)) {
+        if (MekanismUtils.canUseAsWrench(stack)) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
                 return WrenchResult.NO_SECURITY;

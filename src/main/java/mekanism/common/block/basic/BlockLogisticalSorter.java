@@ -57,11 +57,11 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
         if (tile == null) {
             return ActionResultType.PASS;
         } else if (world.isClientSide) {
-            return genericClientActivated(player, hand, hit);
+            return genericClientActivated(player, hand);
         }
         //TODO: Make this be moved into the logistical sorter tile
         ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && MekanismUtils.canUseAsWrench(stack)) {
+        if (MekanismUtils.canUseAsWrench(stack)) {
             if (SecurityUtils.canAccess(player, tile)) {
                 if (player.isShiftKeyDown()) {
                     WorldUtils.dismantleBlock(state, world, pos);

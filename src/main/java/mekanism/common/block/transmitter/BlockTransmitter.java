@@ -56,7 +56,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player, @Nonnull Hand hand,
           @Nonnull BlockRayTraceResult hit) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && MekanismUtils.canUseAsWrench(stack) && player.isShiftKeyDown()) {
+        if (MekanismUtils.canUseAsWrench(stack) && player.isShiftKeyDown()) {
             if (!world.isClientSide) {
                 WorldUtils.dismantleBlock(state, world, pos);
             }

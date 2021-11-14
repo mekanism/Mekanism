@@ -63,7 +63,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         if (tile == null) {
             return ActionResultType.PASS;
         } else if (world.isClientSide) {
-            return genericClientActivated(player, hand, hit);
+            return genericClientActivated(player, hand);
         } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
         }

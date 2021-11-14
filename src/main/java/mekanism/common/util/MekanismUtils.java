@@ -546,6 +546,9 @@ public final class MekanismUtils {
      * Gets the wrench if the item is an IMekWrench, or a generic implementation if the item is in the forge wrenches tag
      */
     public static boolean canUseAsWrench(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
         Item item = stack.getItem();
         if (item instanceof ItemConfigurator) {
             return ((ItemConfigurator) item).getMode(stack) == ConfiguratorMode.WRENCH;
