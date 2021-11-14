@@ -19,11 +19,9 @@ import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.EnergyCubeUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.block.BlockState;
@@ -51,7 +49,8 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         configComponent = new TileComponentConfig(this, TransmissionType.ENERGY, TransmissionType.ITEM);
         configComponent.setupIOConfig(TransmissionType.ITEM, chargeSlot, dischargeSlot, RelativeSide.FRONT, true).setCanEject(false);
         configComponent.setupIOConfig(TransmissionType.ENERGY, energyContainer, RelativeSide.FRONT).setEjecting(true);
-        ejectorComponent = new TileComponentEjector(this);
+        ejectorComponent = new TileComponentEjector(this, () -> tier.getOutput());
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ENERGY).setCanEject(type -> MekanismUtils.canFunction(this));
     }
 
     @Override
@@ -88,12 +87,6 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         super.onUpdateServer();
         chargeSlot.drainContainer();
         dischargeSlot.fillContainerOrConvert();
-        if (!energyContainer.isEmpty() && MekanismUtils.canFunction(this)) {
-            ConfigInfo info = configComponent.getConfig(TransmissionType.ENERGY);
-            if (info != null && info.isEjecting()) {
-                CableUtils.emit(info.getAllOutputtingSides(), energyContainer, this, tier.getOutput());
-            }
-        }
         float newScale = MekanismUtils.getScale(prevScale, energyContainer);
         if (newScale != prevScale) {
             prevScale = newScale;

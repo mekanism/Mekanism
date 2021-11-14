@@ -79,7 +79,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawString(matrix, MekanismLang.ROBIT.translate(), titleLabelX, titleLabelY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, screenTextColor(), 119);
-        drawTextScaledBound(matrix, MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer().getEnergy(), robit.getEnergyContainer().getMaxEnergy())), 29, 36 - 4, screenTextColor(), 119);
+        drawTextScaledBound(matrix, MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer())), 29, 36 - 4, screenTextColor(), 119);
         drawTextScaledBound(matrix, MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, screenTextColor(), 119);
         drawTextScaledBound(matrix, MekanismLang.ROBIT_DROP_PICKUP.translate(robit.getDropPickup()), 29, 54 - 4, screenTextColor(), 119);
         CharSequence owner = robit.getOwnerName().length() > 14 ? robit.getOwnerName().subSequence(0, 14) : robit.getOwnerName();

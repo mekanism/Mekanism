@@ -41,7 +41,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
             @Override
             public ITextComponent getTooltip() {
                 IEnergyContainer container = StorageUtils.getEnergyContainer(menu.getStack(), 0);
-                return container == null ? EnergyDisplay.ZERO.getTextComponent() : EnergyDisplay.of(container.getEnergy(), container.getMaxEnergy()).getTextComponent();
+                return container == null ? EnergyDisplay.ZERO.getTextComponent() : EnergyDisplay.of(container).getTextComponent();
             }
 
             @Override

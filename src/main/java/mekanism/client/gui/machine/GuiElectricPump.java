@@ -33,7 +33,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
         super.addGuiElements();
         addButton(new GuiInnerScreen(this, 54, 23, 80, 41, () -> {
             List<ITextComponent> list = new ArrayList<>();
-            list.add(EnergyDisplay.of(tile.getEnergyContainer().getEnergy(), tile.getEnergyContainer().getMaxEnergy()).getTextComponent());
+            list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
             FluidStack fluidStack = tile.fluidTank.getFluid();
             if (fluidStack.isEmpty()) {
                 list.add(MekanismLang.NO_FLUID.translate());

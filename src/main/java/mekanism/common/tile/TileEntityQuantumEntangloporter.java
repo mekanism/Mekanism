@@ -66,7 +66,6 @@ import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.ProxySlotInfo
 import mekanism.common.tile.component.config.slot.IProxiedSlotInfo.SlurryProxy;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
-import mekanism.common.util.CableUtils;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.item.ItemStack;
@@ -104,8 +103,9 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         }
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.INFUSION,
-              TransmissionType.PIGMENT, TransmissionType.SLURRY);
+        //Note: All eject types except for items is handled by the frequency
+        //Only allow trying to eject if we have a frequency, because otherwise all our containers and sides will just be empty anyways
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM).setCanEject(type -> hasFrequency());
 
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.INVENTORY, true, true, true);
@@ -175,12 +175,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (hasFrequency()) {
-            ConfigInfo info = configComponent.getConfig(TransmissionType.ENERGY);
-            if (info != null && info.isEjecting()) {
-                CableUtils.emit(info.getAllOutputtingSides(), getFreq().storedEnergy, this);
-            }
-        }
-        if (hasFrequency()) {
+            getFreq().handleEject(level.getGameTime());
             updateHeatCapacitors(null); // manually trigger heat capacitor update
             HeatTransfer loss = simulate();
             lastTransferLoss = loss.getAdjacentTransfer();

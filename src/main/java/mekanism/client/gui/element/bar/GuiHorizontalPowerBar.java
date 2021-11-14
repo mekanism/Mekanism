@@ -26,7 +26,7 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
         this(gui, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return EnergyDisplay.of(container.getEnergy(), container.getMaxEnergy()).getTextComponent();
+                return EnergyDisplay.of(container).getTextComponent();
             }
 
             @Override

@@ -51,7 +51,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     protected void onUpdateServer() {
         super.onUpdateServer();
         if (MekanismUtils.canFunction(this)) {
-            //TODO: Cache the directions?
+            //TODO: Cache the directions or maybe even make some generators have a side config/ejector component and move this to the ejector component?
             Set<Direction> emitDirections = EnumSet.noneOf(Direction.class);
             Direction direction = getDirection();
             for (RelativeSide energySide : getEnergySides()) {

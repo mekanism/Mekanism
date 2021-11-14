@@ -57,7 +57,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             public ITextComponent getTooltip() {
                 TurbineMultiblockData multiblock = tile.getMultiblock();
                 if (multiblock.isFormed()) {
-                    return EnergyDisplay.of(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy()).getTextComponent();
+                    return EnergyDisplay.of(multiblock.energyContainer).getTextComponent();
                 }
                 return EnergyDisplay.ZERO.getTextComponent();
             }
@@ -97,7 +97,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             EnergyDisplay producing;
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
-                storing = EnergyDisplay.of(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy());
+                storing = EnergyDisplay.of(multiblock.energyContainer);
                 producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
                       .multiply(multiblock.clientFlow * Math.min(multiblock.blades,
                             multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));

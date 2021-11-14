@@ -42,7 +42,7 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
         super.addGuiElements();
         addButton(new GuiEnergyTab(this, () -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
-            return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy())),
+            return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer)),
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, true))));
         }));
         addButton(new GuiNumberGauge(new INumberInfoHandler() {

@@ -36,7 +36,7 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
         addButton(new GuiFrequencySelector<>(this, 14));
         addButton(new GuiEnergyTab(this, () -> {
             InventoryFrequency frequency = getFrequency();
-            EnergyDisplay storing = frequency == null ? EnergyDisplay.ZERO : EnergyDisplay.of(frequency.storedEnergy.getEnergy(), frequency.storedEnergy.getMaxEnergy());
+            EnergyDisplay storing = frequency == null ? EnergyDisplay.ZERO : EnergyDisplay.of(frequency.storedEnergy);
             EnergyDisplay rate = EnergyDisplay.of(tile.getInputRate());
             return Arrays.asList(MekanismLang.STORING.translate(storing), MekanismLang.MATRIX_INPUT_RATE.translate(rate));
         }));
