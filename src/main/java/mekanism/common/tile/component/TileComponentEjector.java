@@ -26,7 +26,7 @@ import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerT
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.lib.inventory.TransitRequest;
+import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -192,32 +192,33 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 continue;
             }
             ISlotInfo slotInfo = info.getSlotInfo(dataType);
-            if (!(slotInfo instanceof InventorySlotInfo)) {
-                //We need it to be inventory slot info
-                return;
-            }
-            Set<Direction> outputs = info.getSidesForData(dataType);
-            if (!outputs.isEmpty()) {
-                TransitRequest ejectMap = InventoryUtils.getEjectItemMap(tile, ((InventorySlotInfo) slotInfo).getSlots(), outputs.iterator().next());
-                if (!ejectMap.isEmpty()) {
-                    for (Direction side : outputs) {
-                        TileEntity tile = WorldUtils.getTileEntity(this.tile.getLevel(), this.tile.getBlockPos().relative(side));
-                        if (tile == null) {
-                            //If the spot is not loaded just skip trying to eject to it
-                            continue;
-                        }
-                        TransitResponse response;
-                        if (tile instanceof TileEntityLogisticalTransporterBase) {
-                            response = ((TileEntityLogisticalTransporterBase) tile).getTransmitter().insert(this.tile, ejectMap, outputColor, true, 0);
-                        } else {
-                            response = ejectMap.addToInventory(tile, side, 0, false);
-                        }
-                        if (!response.isEmpty()) {
-                            // use the items returned by the TransitResponse; will be visible next loop
-                            response.useAll();
-                            if (ejectMap.isEmpty()) {
-                                //If we are out of items to eject, break
-                                break;
+            if (slotInfo instanceof InventorySlotInfo) {
+                //Validate the slot info is of the correct type
+                Set<Direction> outputs = info.getSidesForData(dataType);
+                if (!outputs.isEmpty()) {
+                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(tile, outputs.iterator().next()),
+                          ((InventorySlotInfo) slotInfo).getSlots());
+                    if (!ejectMap.isEmpty()) {
+                        for (Direction side : outputs) {
+                            TileEntity target = WorldUtils.getTileEntity(tile.getLevel(), tile.getBlockPos().relative(side));
+                            if (target != null) {
+                                //Update the side so that if/when the response uses it, it makes sure it is grabbing from the correct side
+                                ejectMap.side = side;
+                                //If the spot is not loaded just skip trying to eject to it
+                                TransitResponse response;
+                                if (target instanceof TileEntityLogisticalTransporterBase) {
+                                    response = ((TileEntityLogisticalTransporterBase) target).getTransmitter().insert(tile, ejectMap, outputColor, true, 0);
+                                } else {
+                                    response = ejectMap.addToInventory(target, side, 0, false);
+                                }
+                                if (!response.isEmpty()) {
+                                    // use the items returned by the TransitResponse; will be visible next loop
+                                    response.useAll();
+                                    if (ejectMap.isEmpty()) {
+                                        //If we are out of items to eject, break
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -397,4 +398,19 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         setOutputColor(color);
     }
     //End computer related methods
+
+    private static class EjectTransitRequest extends TileTransitRequest {
+
+        public Direction side;
+
+        public EjectTransitRequest(TileEntity tile, Direction side) {
+            super(tile, side);
+            this.side = side;
+        }
+
+        @Override
+        public Direction getSide() {
+            return side;
+        }
+    }
 }

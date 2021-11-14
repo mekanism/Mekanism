@@ -124,8 +124,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         IInventorySlot extraSlot = getExtraSlot();
         if (extraSlot != null) {
             ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
-            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
-            itemConfig.setDataType(DataType.EXTRA, RelativeSide.BOTTOM);
+            if (itemConfig != null) {
+                itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
+                itemConfig.setDataType(DataType.EXTRA, RelativeSide.BOTTOM);
+            }
         }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 

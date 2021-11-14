@@ -239,7 +239,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             TileEntity ejectInv = WorldUtils.getTileEntity(level, getBlockPos().above().relative(oppositeDirection, 2));
             TileEntity ejectTile = WorldUtils.getTileEntity(getLevel(), getBlockPos().above().relative(oppositeDirection));
             if (ejectInv != null && ejectTile != null) {
-                TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectTile, mainSlots, oppositeDirection);
+                TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectTile, oppositeDirection, mainSlots);
                 if (!ejectMap.isEmpty()) {
                     TransitResponse response;
                     if (ejectInv instanceof TileEntityLogisticalTransporterBase) {
