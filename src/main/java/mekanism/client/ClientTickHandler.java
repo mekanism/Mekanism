@@ -91,10 +91,10 @@ public class ClientTickHandler {
             if (!chest.isEmpty()) {
                 JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chest);
                 if (mode == JetpackMode.NORMAL) {
-                    return minecraft.screen == null && minecraft.options.keyJump.isDown();
+                    return minecraft.screen == null && minecraft.player.input.jumping;
                 } else if (mode == JetpackMode.HOVER) {
-                    boolean ascending = minecraft.options.keyJump.isDown();
-                    boolean descending = minecraft.options.keyShift.isDown();
+                    boolean ascending = minecraft.player.input.jumping;
+                    boolean descending = minecraft.player.input.shiftKeyDown;
                     if (!ascending || descending || minecraft.screen != null) {
                         return !CommonPlayerTickHandler.isOnGroundOrSleeping(player);
                     }
@@ -207,12 +207,12 @@ public class ClientTickHandler {
             IModule<ModuleJetpackUnit> jetpackModule = MekanismAPI.getModuleHelper().load(chestStack, MekanismModules.JETPACK_UNIT);
 
             if (!chestStack.isEmpty() && (chestStack.getItem() instanceof ItemJetpack || jetpackModule != null)) {
-                MekanismClient.updateKey(minecraft.options.keyJump, KeySync.ASCEND);
+                MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
             }
 
             if (isJetpackActive(minecraft.player)) {
                 JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chestStack);
-                if (CommonPlayerTickHandler.handleJetpackMotion(minecraft.player, mode, minecraft.options.keyJump::isDown)) {
+                if (CommonPlayerTickHandler.handleJetpackMotion(minecraft.player, mode, () -> minecraft.player.input.jumping)) {
                     minecraft.player.fallDistance = 0.0F;
                 }
             }
