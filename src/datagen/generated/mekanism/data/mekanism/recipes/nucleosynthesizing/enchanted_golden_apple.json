@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "item": "minecraft:golden_apple"
+    }
+  },
+  "gasInput": {
+    "amount": 3,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:enchanted_golden_apple"
+  },
+  "duration": 750
+}

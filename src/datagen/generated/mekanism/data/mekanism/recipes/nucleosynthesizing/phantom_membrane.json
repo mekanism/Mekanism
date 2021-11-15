@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "tag": "forge:leather"
+    }
+  },
+  "gasInput": {
+    "amount": 3,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:phantom_membrane"
+  },
+  "duration": 750
+}
