@@ -79,7 +79,20 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
         }));
         activateButton = addButton(new TranslationButton(this, 6, 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
               () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 1)), null,
-              () -> EnumColor.DARK_GREEN));
+              () -> EnumColor.DARK_GREEN) {
+            @Override
+            public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+                super.renderForeground(matrix, mouseX, mouseY);
+                if (!active && tile.getMultiblock().isForceDisabled()) {
+                    active = true;
+                    //Temporarily set active to true, so we can easily check if the mouse is over the button
+                    if (isMouseOverCheckWindows(mouseX, mouseY)) {
+                        displayTooltip(matrix, GeneratorsLang.FISSION_FORCE_DISABLED.translate(), mouseX - getGuiLeft(), mouseY - getGuiTop());
+                    }
+                    active = false;
+                }
+            }
+        });
         scramButton = addButton(new TranslationButton(this, 89, 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
               () -> MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE, tile, 0)), null,
               () -> EnumColor.DARK_RED));
@@ -103,14 +116,13 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
 
     private void updateButtons() {
         FissionReactorMultiblockData multiblock = tile.getMultiblock();
-        activateButton.active = !multiblock.isActive();
+        activateButton.active = !multiblock.isActive() && !multiblock.isForceDisabled();
         scramButton.active = multiblock.isActive();
     }
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         updateButtons();
-
         drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR.translate(), titleLabelY);
         drawString(matrix, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, titleTextColor());
         drawString(matrix, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, titleTextColor());

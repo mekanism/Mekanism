@@ -134,7 +134,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .define("casingHeatCapacity", 1_000D));
         fissionSurfaceAreaTarget = CachedDoubleValue.wrap(this, builder.comment("The average surface area of a Fission Reactor's fuel assemblies to reach 100% boil efficiency. Higher values make it harder to cool the reactor.")
               .defineInRange("surfaceAreaTarget", 4D, 1D, Double.MAX_VALUE));
-        fissionMeltdownsEnabled = CachedBooleanValue.wrap(this, builder.comment("Whether catastrophic meltdowns can occur from Fission Reactors.")
+        fissionMeltdownsEnabled = CachedBooleanValue.wrap(this, builder.comment("Whether catastrophic meltdowns can occur from Fission Reactors. If disabled instead of melting down the reactor will turn off and not be able to be turned back on until the damage level decreases.")
               .define("meltdownsEnabled", true));
         fissionMeltdownChance = CachedDoubleValue.wrap(this, builder.comment("The chance of a meltdown occurring once damage passes 100%. Will linearly scale as damage continues increasing.")
               .defineInRange("meltdownChance", 0.001D, 0D, 1D));

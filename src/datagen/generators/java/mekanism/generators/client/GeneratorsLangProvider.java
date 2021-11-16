@@ -170,6 +170,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.FISSION_SCRAM, "SCRAM");
         add(GeneratorsLang.FISSION_DAMAGE, "Damage: %s");
         add(GeneratorsLang.FISSION_HEAT_STATISTICS, "Heat Statistics");
+        add(GeneratorsLang.FISSION_FORCE_DISABLED, "Reactor must reach safe damage and temperature levels before it can be reactivated.");
         add(GeneratorsLang.FISSION_FUEL_STATISTICS, "Fuel Statistics");
         add(GeneratorsLang.FISSION_HEAT_CAPACITY, "Heat Capacity: %s J/K");
         add(GeneratorsLang.FISSION_SURFACE_AREA, "Fuel Surface Area: %s m2");

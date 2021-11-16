@@ -80,6 +80,7 @@
   "fission.mekanismgenerators.coolant_tank": "\u029Eu\u0250\u27D8 \u0287u\u0250\uA781oo\u0186",
   "fission.mekanismgenerators.damage": "%s :\u01DD\u1D77\u0250\u026F\u0250\u15E1",
   "fission.mekanismgenerators.fission_reactor": "\u0279o\u0287\u0254\u0250\u01DD\u1D1A uo\u1D09ss\u1D09\u2132",
+  "fission.mekanismgenerators.force_disabled": "\u02D9p\u01DD\u0287\u0250\u028C\u1D09\u0287\u0254\u0250\u01DD\u0279 \u01DDq u\u0250\u0254 \u0287\u1D09 \u01DD\u0279o\u025F\u01DDq s\uA781\u01DD\u028C\u01DD\uA781 \u01DD\u0279n\u0287\u0250\u0279\u01DDd\u026F\u01DD\u0287 pu\u0250 \u01DD\u1D77\u0250\u026F\u0250p \u01DD\u025F\u0250s \u0265\u0254\u0250\u01DD\u0279 \u0287sn\u026F \u0279o\u0287\u0254\u0250\u01DD\u1D1A",
   "fission.mekanismgenerators.fuel_statistics": "s\u0254\u1D09\u0287s\u1D09\u0287\u0250\u0287S \uA781\u01DDn\u2132",
   "fission.mekanismgenerators.fuel_tank": "\u029Eu\u0250\u27D8 \uA781\u01DDn\u2132",
   "fission.mekanismgenerators.heat_capacity": "\uA7B0/\u0550 %s :\u028E\u0287\u1D09\u0254\u0250d\u0250\u0186 \u0287\u0250\u01DDH",

@@ -102,7 +102,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     @SyntheticComputerMethod(getter = "getActualBurnRate")
     public double lastBurnRate = 0;
-    public boolean clientBurning;
+    private boolean clientBurning;
     @ContainerSync
     public double reactorDamage = 0;
     @ContainerSync
@@ -111,6 +111,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     public double burnRemaining = 0, partialWaste = 0;
     @ContainerSync
     private boolean active;
+    //For use when meltdowns are disabled to make the reactor stop and require going under the threshold
+    @ContainerSync
+    private boolean forceDisable;
 
     private AxisAlignedBB hotZone;
 
@@ -238,11 +241,24 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             double repairRate = (MIN_DAMAGE_TEMPERATURE - temp) / (MIN_DAMAGE_TEMPERATURE * 100);
             reactorDamage = Math.max(0, reactorDamage - repairRate);
         }
-        // consider a meltdown only if it's config-enabled, we're passed the damage threshold and the temperature is still dangerous
-        if (MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get() && reactorDamage >= MAX_DAMAGE && temp >= MIN_DAMAGE_TEMPERATURE) {
-            if (world.random.nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
+        // consider a meltdown only if we're passed the damage threshold and the temperature is still dangerous
+        if (reactorDamage >= MAX_DAMAGE && temp >= MIN_DAMAGE_TEMPERATURE) {
+            if (isForceDisabled() && MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get()) {
+                //If we have meltdowns enabled and would have had one before, but they were disabled, just meltdown immediately
+                // if we still meet the requirements for a meltdown
+                setForceDisable(false);
                 RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE, inventoryID);
+            } else if (world.random.nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
+                // Otherwise, if our chance is hit either create a meltdown if it is enabled in the config, or force disable the reactor
+                if (MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get()) {
+                    RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE, inventoryID);
+                } else {
+                    setForceDisable(true);
+                }
             }
+        } else if (reactorDamage < MAX_DAMAGE && temp < MIN_DAMAGE_TEMPERATURE) {
+            //If we are at a safe temperature and damage level, allow enabling the reactor again
+            setForceDisable(false);
         }
         if (reactorDamage != lastDamage) {
             markDirty();
@@ -385,13 +401,30 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
+    void setForceDisable(boolean forceDisable) {
+        if (this.forceDisable != forceDisable) {
+            this.forceDisable = forceDisable;
+            markDirty();
+            if (this.forceDisable) {
+                //If we are force disabling it, deactivate the reactor
+                setActive(false);
+            }
+        }
+    }
+
+    @ComputerMethod
+    public boolean isForceDisabled() {
+        return forceDisable;
+    }
+
     @ComputerMethod(nameOverride = "getStatus")
     public boolean isActive() {
         return active;
     }
 
     public void setActive(boolean active) {
-        if (this.active != active) {
+        //Don't allow setting it to active if we are forcibly disabled
+        if (this.active != active && (!active || !isForceDisabled())) {
             this.active = active;
             markDirty();
         }
@@ -439,6 +472,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private void activate() throws ComputerException {
         if (isActive()) {
             throw new ComputerException("Reactor is already active.");
+        } else if (isForceDisabled()) {
+            throw new ComputerException("Reactor must reach safe damage and temperature levels before it can be reactivated.");
         }
         setActive(true);
     }

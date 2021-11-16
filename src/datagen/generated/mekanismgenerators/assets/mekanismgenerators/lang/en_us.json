@@ -80,6 +80,7 @@
   "fission.mekanismgenerators.coolant_tank": "Coolant Tank",
   "fission.mekanismgenerators.damage": "Damage: %s",
   "fission.mekanismgenerators.fission_reactor": "Fission Reactor",
+  "fission.mekanismgenerators.force_disabled": "Reactor must reach safe damage and temperature levels before it can be reactivated.",
   "fission.mekanismgenerators.fuel_statistics": "Fuel Statistics",
   "fission.mekanismgenerators.fuel_tank": "Fuel Tank",
   "fission.mekanismgenerators.heat_capacity": "Heat Capacity: %s J/K",

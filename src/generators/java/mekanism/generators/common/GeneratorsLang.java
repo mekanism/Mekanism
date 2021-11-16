@@ -90,6 +90,7 @@ public enum GeneratorsLang implements ILangEntry {
     FISSION_SCRAM("fission", "scram"),
     FISSION_DAMAGE("fission", "damage"),
     FISSION_HEAT_STATISTICS("fission", "heat_statistics"),
+    FISSION_FORCE_DISABLED("fission", "force_disabled"),
     FISSION_FUEL_STATISTICS("fission", "fuel_statistics"),
     FISSION_HEAT_CAPACITY("fission", "heat_capacity"),
     FISSION_SURFACE_AREA("fission", "surface_area"),
