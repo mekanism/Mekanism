@@ -80,7 +80,7 @@
   "fission.mekanismgenerators.coolant_tank": "冷卻液槽",
   "fission.mekanismgenerators.damage": "損壞: %s",
   "fission.mekanismgenerators.fission_reactor": "裂變反應爐",
-  "fission.mekanismgenerators.force_disabled": "反應器需要達到安全的傷害和溫度等級才可以被重新激活。",
+  "fission.mekanismgenerators.force_disabled": "反應爐需達到安全的損壞程度和溫度值才能重新啟動.",
   "fission.mekanismgenerators.fuel_statistics": "燃料數據",
   "fission.mekanismgenerators.fuel_tank": "燃料槽",
   "fission.mekanismgenerators.heat_capacity": "熱容: %s J/K",
