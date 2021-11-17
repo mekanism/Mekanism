@@ -80,6 +80,7 @@
   "fission.mekanismgenerators.coolant_tank": "Zbiornik chłodziwa",
   "fission.mekanismgenerators.damage": "Zniszczenie: %s",
   "fission.mekanismgenerators.fission_reactor": "Reaktor rozszczepiania atomów",
+  "fission.mekanismgenerators.force_disabled": "Reaktor musi osiągnąć bezpieczne poziomy zniszczeń i temperatury, aby móc go ponownie aktywować.",
   "fission.mekanismgenerators.fuel_statistics": "Statystyki paliwa",
   "fission.mekanismgenerators.fuel_tank": "Zbiornik paliwa",
   "fission.mekanismgenerators.heat_capacity": "Pojemność ciepła: %s J/K",
