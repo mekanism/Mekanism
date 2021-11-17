@@ -80,6 +80,7 @@
   "fission.mekanismgenerators.coolant_tank": "Бак для охлаждающей жидкости",
   "fission.mekanismgenerators.damage": "Повреждение: %s",
   "fission.mekanismgenerators.fission_reactor": "Ядерный реактор",
+  "fission.mekanismgenerators.force_disabled": "Реактор должен достичь безопасных уровней повреждения и температуры, прежде чем он будет реактивирован.",
   "fission.mekanismgenerators.fuel_statistics": "Статистика топлива",
   "fission.mekanismgenerators.fuel_tank": "Топливный бак",
   "fission.mekanismgenerators.heat_capacity": "Теплоемкость: %s J/K",
