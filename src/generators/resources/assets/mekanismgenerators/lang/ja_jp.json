@@ -80,6 +80,7 @@
   "fission.mekanismgenerators.coolant_tank": "冷媒タンク",
   "fission.mekanismgenerators.damage": "ダメージ: %s",
   "fission.mekanismgenerators.fission_reactor": "核分裂炉",
+  "fission.mekanismgenerators.force_disabled": "炉の再起動には、安全なダメージ及び温度レベルに達する必要があります。",
   "fission.mekanismgenerators.fuel_statistics": "燃料の統計",
   "fission.mekanismgenerators.fuel_tank": "燃料タンク",
   "fission.mekanismgenerators.heat_capacity": "熱容量: %s J/K",
