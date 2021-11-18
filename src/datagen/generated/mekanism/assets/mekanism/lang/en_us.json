@@ -844,6 +844,8 @@
   "holiday.mekanism.new_year.2": "Best wishes to you as we enter this",
   "holiday.mekanism.new_year.3": "new and exciting year of %s! :)",
   "holiday.mekanism.signature": "-aidancbrady",
+  "info.mekanism.jei.heavy_water": "%s mB of Heavy Water can be extracted from a water source block via an electric pump with a filter upgrade installed.",
+  "info.mekanism.jei.module_installation": "Using a Modification Station, modules can be installed on the various MekaSuit pieces and on the Meka-Tool.",
   "infuse_type.mekanism.bio": "Biomass",
   "infuse_type.mekanism.carbon": "Carbon",
   "infuse_type.mekanism.diamond": "Diamond",

@@ -192,6 +192,7 @@ public final class NBTConstants {
     public static final String STOCK_CONTROL = "stockControl";
     public static final String STORED = "stored";
     public static final String STRICT_INPUT = "strictInput";
+    @Deprecated//TODO - 1.17: Remove
     public static final String SUCKED_LAST_OPERATION = "suckedLastOperation";
     public static final String TAG_NAME = "tagName";
     public static final String TANK = "Tank";

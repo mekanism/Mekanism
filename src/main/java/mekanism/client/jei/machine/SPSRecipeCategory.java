@@ -66,7 +66,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
     public void setRecipe(IRecipeLayout recipeLayout, SPSJEIRecipe recipe, @Nonnull IIngredients ingredients) {
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initChemical(gasStacks, 0, true, input, recipe.input.getRepresentations());
-        initChemical(gasStacks, 2, false, output, Collections.singletonList(recipe.output));
+        initChemical(gasStacks, 1, false, output, Collections.singletonList(recipe.output));
     }
 
     public static List<SPSJEIRecipe> getSPSRecipes() {

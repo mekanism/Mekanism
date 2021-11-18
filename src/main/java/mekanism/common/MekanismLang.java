@@ -74,6 +74,8 @@ public enum MekanismLang implements ILangEntry {
     LIST_SORT("qio", "list_sort"),
     //JEI
     JEI_AMOUNT_WITH_CAPACITY("tooltip", "jei.amount.with.capacity"),
+    JEI_INFO_HEAVY_WATER("info", "jei.heavy_water"),
+    JEI_INFO_MODULE_INSTALLATION("info", "jei.module_installation"),
     //Built into JEI
     JEI_MISSING_ITEMS("jei.tooltip.error.recipe.transfer.missing"),
     JEI_INVENTORY_FULL("jei.tooltip.error.recipe.transfer.inventory.full"),
