@@ -48,7 +48,7 @@
   "description.mekanismgenerators.fission_fuel_assembly": "一組燃料棒, 用於在裂變反應爐中容納裂變燃料. 這些可以彼此堆疊.",
   "description.mekanismgenerators.fission_reactor_casing": "用於製造裂變反應爐的注入鉛的鋼製外殼. 通常是耐熱, 防輻射, 且安全的!",
   "description.mekanismgenerators.fission_reactor_logic_adapter": "一個可以通過紅石信號來對裂變反應爐進行監控或控制的方塊.",
-  "description.mekanismgenerators.fission_reactor_port": "可在裂變反應爐上放置的端口, 用於輸送冷卻液, 燃料和廢料.",
+  "description.mekanismgenerators.fission_reactor_port": "一個可放置在裂變反應爐上的端口, 用來輸送冷卻液, 燃料和廢料.",
   "description.mekanismgenerators.fusion_reactor_controller": "整個聚變反應爐的控制方塊.",
   "description.mekanismgenerators.fusion_reactor_frame": "能用於聚變反應爐的強化框架.",
   "description.mekanismgenerators.fusion_reactor_logic_adapter": "一個可以通過紅石信號來對反應爐進行基本監控的方塊.",
