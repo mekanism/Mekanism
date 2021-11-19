@@ -844,6 +844,8 @@
   "holiday.mekanism.new_year.2": "Najlepsze życzenia z okazji",
   "holiday.mekanism.new_year.3": "nowego i ekscytującego %s roku! :)",
   "holiday.mekanism.signature": "-aidancbrady",
+  "info.mekanism.jei.heavy_water": "%s mB ciężkiej wody może być wydobytych z bloku wody poprzez pompę elektryczną z zainstalowanym ulepszeniem: filtr.",
+  "info.mekanism.jei.module_installation": "Korzystając z stacji modifikacji, moduły mogą być instalowane na różnych elementach MekaPancerzu oraz na Meka-Narzędziu.",
   "infuse_type.mekanism.bio": "Biomasa",
   "infuse_type.mekanism.carbon": "Karbon",
   "infuse_type.mekanism.diamond": "Diament",
