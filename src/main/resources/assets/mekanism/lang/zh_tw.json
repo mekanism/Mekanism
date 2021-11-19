@@ -844,6 +844,8 @@
   "holiday.mekanism.new_year.2": "在我們進入這個激動人心",
   "holiday.mekanism.new_year.3": "新的 %s 年之際,向你至上最好的祝福! :)",
   "holiday.mekanism.signature": "-aidancbrady",
+  "info.mekanism.jei.heavy_water": "通過安裝過濾升級的電動泵, 可以從水源塊提取出%s mB的重水.",
+  "info.mekanism.jei.module_installation": "利用改裝站, 可以將模塊安裝至MekaSuit的各種部位和Meka-工具.",
   "infuse_type.mekanism.bio": "生物質",
   "infuse_type.mekanism.carbon": "碳",
   "infuse_type.mekanism.diamond": "鑽石",
