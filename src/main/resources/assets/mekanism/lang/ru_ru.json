@@ -844,6 +844,8 @@
   "holiday.mekanism.new_year.2": "С наилучшими пожеланиями для вас, где бы Вы не находились",
   "holiday.mekanism.new_year.3": "нового и захватывающего года %s! :)",
   "holiday.mekanism.signature": "-aidancbrady",
+  "info.mekanism.jei.heavy_water": "%s mB тяжелой воды можно извлечь из блока воды при помощи электрического насоса с установленным улучшением фильтра.",
+  "info.mekanism.jei.module_installation": "Используя Модификационную станцию, модули могут быть установлены на различные части MekaSuit, а также на Meka-Tool.",
   "infuse_type.mekanism.bio": "Биомасса",
   "infuse_type.mekanism.carbon": "Углерод",
   "infuse_type.mekanism.diamond": "Алмаз",
