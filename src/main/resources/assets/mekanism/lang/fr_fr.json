@@ -844,6 +844,8 @@
   "holiday.mekanism.new_year.2": "Meilleurs voeux à vous en entrant dans cette",
   "holiday.mekanism.new_year.3": "nouvelle et excitante année de %s ! :)",
   "holiday.mekanism.signature": "-aidancbrady",
+  "info.mekanism.jei.heavy_water": "%s mB d'eau lourde peuvent être extraits d'un bloc de source d'eau via une pompe électrique avec une mise à niveau de filtre installée.",
+  "info.mekanism.jei.module_installation": "À l'aide d'une station de modification, les modules peuvent être installés sur les différentes pièces d'armures Meka et sur l'outil Meka.",
   "infuse_type.mekanism.bio": "Biomasse",
   "infuse_type.mekanism.carbon": "Carbone",
   "infuse_type.mekanism.diamond": "Diamant",
