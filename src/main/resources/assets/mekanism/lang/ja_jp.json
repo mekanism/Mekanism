@@ -1318,7 +1318,7 @@
   "upgrade.mekanism.energy": "エネルギー",
   "upgrade.mekanism.energy.description": "マシンのエネルギー効率とエネルギー容量を増やします。",
   "upgrade.mekanism.filter": "フィルター",
-  "upgrade.mekanism.filter.description": "マシンの処理速度を上昇させます。",
+  "upgrade.mekanism.filter.description": "普通の水から重水を分離するフィルターです。",
   "upgrade.mekanism.gas": "ガス",
   "upgrade.mekanism.gas.description": "ガスの使用効率を上昇させます。",
   "upgrade.mekanism.muffling": "消音",
