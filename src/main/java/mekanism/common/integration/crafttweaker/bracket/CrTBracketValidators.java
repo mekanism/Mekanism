@@ -24,7 +24,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_GAS)
     public static boolean validateGasStack(String tokens) {
-        return validateChemicalStack(CrTConstants.BRACKET_GAS, tokens, MekanismAPI.gasRegistry());
+        return validate(CrTConstants.BRACKET_GAS, tokens, MekanismAPI.gasRegistry());
     }
 
     /**
@@ -37,7 +37,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_INFUSE_TYPE)
     public static boolean validateInfusionStack(String tokens) {
-        return validateChemicalStack(CrTConstants.BRACKET_INFUSE_TYPE, tokens, MekanismAPI.infuseTypeRegistry());
+        return validate(CrTConstants.BRACKET_INFUSE_TYPE, tokens, MekanismAPI.infuseTypeRegistry());
     }
 
     /**
@@ -50,7 +50,7 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_PIGMENT)
     public static boolean validatePigmentStack(String tokens) {
-        return validateChemicalStack(CrTConstants.BRACKET_PIGMENT, tokens, MekanismAPI.pigmentRegistry());
+        return validate(CrTConstants.BRACKET_PIGMENT, tokens, MekanismAPI.pigmentRegistry());
     }
 
     /**
@@ -63,10 +63,23 @@ public class CrTBracketValidators {
     @ZenCodeType.Method
     @BracketValidator(CrTConstants.BRACKET_SLURRY)
     public static boolean validateSlurryStack(String tokens) {
-        return validateChemicalStack(CrTConstants.BRACKET_SLURRY, tokens, MekanismAPI.slurryRegistry());
+        return validate(CrTConstants.BRACKET_SLURRY, tokens, MekanismAPI.slurryRegistry());
     }
 
-    private static boolean validateChemicalStack(String bracket, String tokens, IForgeRegistry<?> registry) {
+    /**
+     * Validates if there is a {@link mekanism.api.robit.RobitSkin} with the given registry name.
+     *
+     * @param tokens The resource location to validate.
+     *
+     * @return {@code true} if valid, {@code false} otherwise.
+     */
+    @ZenCodeType.Method
+    @BracketValidator(CrTConstants.BRACKET_ROBIT_SKIN)
+    public static boolean validateRobitSkin(String tokens) {
+        return validate(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.robitSkinRegistry());
+    }
+
+    private static boolean validate(String bracket, String tokens, IForgeRegistry<?> registry) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
             CraftTweakerAPI.logError("Could not get BEP <%s:%s>. Syntax is <%1$s:modid:%1$s_name>", bracket, tokens);

@@ -78,6 +78,10 @@ public class PacketGuiButtonPress implements IMekanismPacket {
         this.extra = extra;
     }
 
+    public PacketGuiButtonPress(ClickedEntityButton buttonClicked, Entity entity) {
+        this(buttonClicked, entity.getId());
+    }
+
     public PacketGuiButtonPress(ClickedEntityButton buttonClicked, int entityID) {
         type = Type.ENTITY;
         this.entityButton = buttonClicked;

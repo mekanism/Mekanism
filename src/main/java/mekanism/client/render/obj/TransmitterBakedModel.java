@@ -1,10 +1,10 @@
 package mekanism.client.render.obj;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -83,7 +83,7 @@ public class TransmitterBakedModel implements IBakedModel {
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
         if (side != null) {
-            return ImmutableList.of();
+            return Collections.emptyList();
         }
         if (extraData.hasProperty(TileEntityTransmitter.TRANSMITTER_PROPERTY)) {
             TransmitterModelData data = extraData.getData(TileEntityTransmitter.TRANSMITTER_PROPERTY);

@@ -49,7 +49,7 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
 
         public static final Loader INSTANCE = new Loader();
 
-        private Loader() {
+        protected Loader() {
         }
 
         @Override
@@ -58,7 +58,11 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
 
         @Nonnull
         @Override
-        public MekanismModel read(@Nonnull JsonDeserializationContext ctx, JsonObject modelContents) {
+        public MekanismModel read(@Nonnull JsonDeserializationContext ctx, @Nonnull JsonObject modelContents) {
+            return new MekanismModel(readElements(ctx, modelContents));
+        }
+
+        protected static Multimap<String, BlockPartWrapper> readElements(@Nonnull JsonDeserializationContext ctx, @Nonnull JsonObject modelContents) {
             Multimap<String, BlockPartWrapper> multimap = HashMultimap.create();
             if (modelContents.has("elements")) {
                 for (JsonElement element : JSONUtils.getAsJsonArray(modelContents, "elements")) {
@@ -84,7 +88,7 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
                     }
                 }
             }
-            return new MekanismModel(multimap);
+            return multimap;
         }
     }
 

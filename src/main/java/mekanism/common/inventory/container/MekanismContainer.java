@@ -71,6 +71,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     public static final int TRANSPORTER_CONFIG_WINDOW = 0;
     public static final int SIDE_CONFIG_WINDOW = 1;
     public static final int UPGRADE_WINDOW = 2;
+    public static final int SKIN_SELECT_WINDOW = 3;
 
     protected final PlayerInventory inv;
     protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();

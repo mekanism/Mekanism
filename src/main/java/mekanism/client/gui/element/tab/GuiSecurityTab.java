@@ -115,7 +115,7 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
                 } else if (dataSource instanceof TileEntity) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_SECURITY_MODE, (TileEntity) dataSource));
                 } else if (dataSource instanceof Entity) {
-                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, ((Entity) dataSource).getId()));
+                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, (Entity) dataSource));
                 }
             }
         }

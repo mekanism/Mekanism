@@ -20,11 +20,8 @@ public class FrequencyListPropertyData<FREQUENCY extends Frequency> extends List
         return new FrequencyListPropertyData<>(property, values);
     }
 
-
     @Override
-    protected void writeListElements(PacketBuffer buffer) {
-        for (FREQUENCY value : values) {
-            value.write(buffer);
-        }
+    protected void writeListElement(PacketBuffer buffer, FREQUENCY value) {
+        value.write(buffer);
     }
 }

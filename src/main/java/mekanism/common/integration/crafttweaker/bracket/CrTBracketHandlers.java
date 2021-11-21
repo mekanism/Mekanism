@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.robit.RobitSkin;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
@@ -14,6 +15,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTP
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -72,16 +74,33 @@ public class CrTBracketHandlers {
         return getChemicalStack(CrTConstants.BRACKET_SLURRY, tokens, MekanismAPI.slurryRegistry(), CrTUtils::stackFromSlurry);
     }
 
+    /**
+     * Gets the {@link RobitSkin} based on registry name. Throws an error if it can't find the {@link RobitSkin}.
+     *
+     * @param tokens The {@link RobitSkin}'s resource location.
+     *
+     * @return A reference to the {@link RobitSkin}.
+     */
+    @ZenCodeType.Method
+    @BracketResolver(CrTConstants.BRACKET_ROBIT_SKIN)
+    public static RobitSkin getRobitSkin(String tokens) {
+        return getValue(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.robitSkinRegistry());
+    }
+
     private static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> CRT_STACK getChemicalStack(String bracket,
           String tokens, IForgeRegistry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
+        return getter.apply(getValue(bracket, tokens, registry));
+    }
+
+    private static <V extends IForgeRegistryEntry<V>> V getValue(String bracket, String tokens, IForgeRegistry<V> registry) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {
-            throw new IllegalArgumentException("Could not get " + bracket + " for <" + bracket + ":" + tokens + ">. Syntax is <" + bracket + ":modid:" + bracket + "_name>");
-        }
-        if (!registry.containsKey(registryName)) {
+            String typeName = bracket.replace("_", " ");
+            throw new IllegalArgumentException("Could not get " + typeName + " for <" + bracket + ":" + tokens + ">. Syntax is <" + bracket + ":modid:" + bracket + "_name>");
+        } else if (!registry.containsKey(registryName)) {
             String typeName = bracket.replace("_", " ");
             throw new IllegalArgumentException("Could not get " + typeName + " for <" + bracket + ":" + tokens + ">, " + typeName + " does not appear to exist!");
         }
-        return getter.apply(registry.getValue(registryName));
+        return registry.getValue(registryName);
     }
 }

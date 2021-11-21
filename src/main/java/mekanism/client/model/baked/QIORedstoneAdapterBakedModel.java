@@ -1,6 +1,7 @@
 package mekanism.client.model.baked;
 
 import java.util.List;
+import javax.annotation.Nullable;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformation;
@@ -27,6 +28,7 @@ public class QIORedstoneAdapterBakedModel extends ExtensionBakedModel<Boolean> {
         return quads;
     }
 
+    @Nullable
     @Override
     public QuadsKey<Boolean> createKey(QuadsKey<Boolean> key, IModelData data) {
         Boolean powering = data.getData(TileEntityQIORedstoneAdapter.POWERING_PROPERTY);

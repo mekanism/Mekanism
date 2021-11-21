@@ -11,6 +11,7 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -37,11 +38,20 @@ public class CrTBracketDumpers {
         return getChemicalStackDump(MekanismAPI.slurryRegistry(), CrTUtils::stackFromSlurry);
     }
 
+    @BracketDumper(value = CrTConstants.BRACKET_ROBIT_SKIN, subCommandName = "robitSkins")
+    public static Collection<String> getRobitSkinDump() {
+        return getDump(MekanismAPI.robitSkinRegistry(), skin -> "<" + CrTConstants.BRACKET_ROBIT_SKIN + ":" + skin.getRegistryName() + ">");
+    }
+
     private static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> Collection<String>
     getChemicalStackDump(IForgeRegistry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
+        return getDump(registry, chemical -> getter.apply(chemical).getCommandString());
+    }
+
+    private static <V extends IForgeRegistryEntry<V>> Collection<String> getDump(IForgeRegistry<V> registry, Function<V, String> getter) {
         return registry.getValues()
               .stream()
-              .map(chemical -> getter.apply(chemical).getCommandString())
+              .map(getter)
               .collect(Collectors.toList());
     }
 }

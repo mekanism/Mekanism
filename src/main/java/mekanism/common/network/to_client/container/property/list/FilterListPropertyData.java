@@ -21,11 +21,8 @@ public class FilterListPropertyData<FILTER extends IFilter<?>> extends ListPrope
         return new FilterListPropertyData<>(property, values);
     }
 
-
     @Override
-    protected void writeListElements(PacketBuffer buffer) {
-        for (FILTER value : values) {
-            value.write(buffer);
-        }
+    protected void writeListElement(PacketBuffer buffer, FILTER value) {
+        value.write(buffer);
     }
 }

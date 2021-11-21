@@ -77,6 +77,7 @@ import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
 import mekanism.client.model.baked.MekanismModel;
 import mekanism.client.model.baked.QIORedstoneAdapterBakedModel;
+import mekanism.client.model.robit.RobitModel;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
@@ -151,6 +152,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -378,8 +381,9 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerModelLoaders(ModelRegistryEvent event) {
-        ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(Mekanism.rl("mekanism"), MekanismModel.Loader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
         MekanismModelCache.INSTANCE.setup();
         ModelLoader.addSpecialModel(Mekanism.rl("block/liquifier_blade"));
     }
@@ -402,8 +406,21 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.RADIATION, RadiationParticle.Factory::new);
     }
 
+    private static void createRobitTextureAtlas() {
+        //TODO - 1.17: Move registering the sprite uploader to RegisterClientReloadListenersEvent
+        Minecraft minecraft = Minecraft.getInstance();
+        RobitSpriteUploader spriteUploader = new RobitSpriteUploader(minecraft.getTextureManager());
+        IResourceManager resourceManager = minecraft.getResourceManager();
+        if (resourceManager instanceof IReloadableResourceManager) {
+            IReloadableResourceManager reloadableResourceManager = (IReloadableResourceManager) resourceManager;
+            reloadableResourceManager.registerReloadListener(spriteUploader);
+        }
+    }
+
     @SubscribeEvent
     public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
+        //Create the texture atlas for the robit's textures here as there isn't a great spot to do it until 1.17
+        createRobitTextureAtlas();
         BlockColors blockColors = event.getBlockColors();
         ItemColors itemColors = event.getItemColors();
         ClientRegistrationUtil.registerBlockColorHandler(blockColors, (state, world, pos, tintIndex) -> {

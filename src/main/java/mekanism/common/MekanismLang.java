@@ -653,6 +653,8 @@ public enum MekanismLang implements ILangEntry {
     ROBIT_TELEPORT("robit", "teleport"),
     ROBIT_TOGGLE_PICKUP("robit", "toggle_pickup"),
     ROBIT_RENAME("robit", "rename"),
+    ROBIT_SKIN("robit", "skin"),
+    ROBIT_SKIN_SELECT("robit", "skin.select"),
     ROBIT_TOGGLE_FOLLOW("robit", "toggle_follow"),
     ROBIT_GREETING("robit", "greeting"),
     ROBIT_OWNER("robit", "owner"),

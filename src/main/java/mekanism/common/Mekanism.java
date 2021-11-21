@@ -17,6 +17,7 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.robit.RobitSkin;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
 import mekanism.common.base.LootTableModifierReloadListener;
@@ -72,6 +73,7 @@ import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import mekanism.common.recipe.ingredient.IngredientWithout;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismFluids;
@@ -83,6 +85,7 @@ import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismPlacements;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
@@ -216,10 +219,12 @@ public class Mekanism {
         MekanismPlacements.PLACEMENTS.register(modEventBus);
         MekanismFeatures.FEATURES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
+        MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
         MekanismGases.GASES.createAndRegister(modEventBus, "gas", builder -> builder.tagFolder("gases").setDefaultKey(rl("empty_gas")));
         MekanismInfuseTypes.INFUSE_TYPES.createAndRegister(modEventBus, "infuse_type", builder -> builder.tagFolder("infuse_types").setDefaultKey(rl("empty_infuse_type")));
         MekanismPigments.PIGMENTS.createAndRegister(modEventBus, "pigment", builder -> builder.tagFolder("pigments").setDefaultKey(rl("empty_pigment")));
         MekanismSlurries.SLURRIES.createAndRegister(modEventBus, "slurry", builder -> builder.tagFolder("slurries").setDefaultKey(rl("empty_slurry")));
+        MekanismRobitSkins.ROBIT_SKINS.createAndRegister(modEventBus, "robit_skin", builder -> builder.setDefaultKey(rl("robit")));
         MekanismModules.MODULES.createAndRegister(modEventBus, "module");
         modEventBus.addGenericListener(Gas.class, this::registerGases);
         modEventBus.addGenericListener(InfuseType.class, this::registerInfuseTypes);
@@ -248,6 +253,7 @@ public class Mekanism {
             crtModEventBus.addGenericListener(InfuseType.class, EventPriority.LOWEST, CrTContentUtils::registerCrTInfuseTypes);
             crtModEventBus.addGenericListener(Pigment.class, EventPriority.LOWEST, CrTContentUtils::registerCrTPigments);
             crtModEventBus.addGenericListener(Slurry.class, EventPriority.LOWEST, CrTContentUtils::registerCrTSlurries);
+            crtModEventBus.addGenericListener(RobitSkin.class, EventPriority.LOWEST, CrTContentUtils::registerCrTRobitSkins);
         }
     }
 

@@ -12,6 +12,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.robit.RobitSkin;
 import mekanism.api.text.ITooltipHelper;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
@@ -40,6 +41,7 @@ public class MekanismAPI {
     private static IForgeRegistry<Pigment> PIGMENT_REGISTRY;
     private static IForgeRegistry<Slurry> SLURRY_REGISTRY;
     private static IForgeRegistry<ModuleData<?>> MODULE_REGISTRY;
+    private static IForgeRegistry<RobitSkin> ROBIT_SKIN_REGISTRY;
     private static IModuleHelper MODULE_HELPER;
     private static IRadiationManager RADIATION_MANAGER;
     private static ITooltipHelper TOOLTIP_HELPER;
@@ -150,6 +152,24 @@ public class MekanismAPI {
             MODULE_REGISTRY = RegistryManager.ACTIVE.getRegistry(ModuleData.class);
         }
         return MODULE_REGISTRY;
+    }
+
+    /**
+     * Gets the Forge Registry for {@link RobitSkin}.
+     *
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister< RobitSkin >} instead of {@link
+     * net.minecraftforge.event.RegistryEvent.Register< RobitSkin >} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(Class, String)}
+     * rather than passing the result of this method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link
+     * net.minecraftforge.event.RegistryEvent.NewRegistry} events have been fired. For convenience the class can be gotten via {@link ModuleData#getClassWithGeneric()} as
+     * to reduce the unchecked cast warnings. This method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code
+     * null}.
+     */
+    @Nonnull
+    public static IForgeRegistry<RobitSkin> robitSkinRegistry() {
+        if (ROBIT_SKIN_REGISTRY == null) {
+            ROBIT_SKIN_REGISTRY = RegistryManager.ACTIVE.getRegistry(RobitSkin.class);
+        }
+        return ROBIT_SKIN_REGISTRY;
     }
 
     /**

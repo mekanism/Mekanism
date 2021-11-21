@@ -14,7 +14,7 @@ public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit
 
     protected RobitContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, EntityRobit robit) {
         super(type, id, inv, robit);
-        robit.addContainerTrackers(getType(), this);
+        robit.addContainerTrackers(this);
     }
 
     @Override

@@ -25,6 +25,7 @@ import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismPigments;
+import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.resource.OreType;
@@ -52,6 +53,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addPigments();
         addSlurries();
         addDamageSources();
+        addRobitSkins();
         addSubtitles();
         addMisc();
     }
@@ -412,6 +414,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addDamageSources() {
         add(MekanismDamageSource.LASER, "%s was incinerated.");
         add(MekanismDamageSource.RADIATION, "%s was killed by radiation poisoning.");
+    }
+
+    private void addRobitSkins() {
+        add(MekanismRobitSkins.BASE, "Default");
     }
 
     private void addSubtitles() {
@@ -1150,6 +1156,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ROBIT_TELEPORT, "Teleport back home");
         add(MekanismLang.ROBIT_TOGGLE_PICKUP, "Toggle 'drop pickup' mode");
         add(MekanismLang.ROBIT_RENAME, "Rename this Robit");
+        add(MekanismLang.ROBIT_SKIN, "Skin: %s");
+        add(MekanismLang.ROBIT_SKIN_SELECT, "Change this Robit's appearance");
         add(MekanismLang.ROBIT_TOGGLE_FOLLOW, "Toggle 'follow' mode");
         add(MekanismLang.ROBIT_GREETING, "Hi, I'm %s!");
         add(MekanismLang.ROBIT_OWNER, "Owner: %s");

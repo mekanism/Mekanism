@@ -3,6 +3,7 @@ package mekanism.client.model.baked;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nullable;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
@@ -53,6 +54,7 @@ public class DriveArrayBakedModel extends ExtensionBakedModel<byte[]> {
         return QuadUtils.transformBakedQuads(ret, QuadTransformation.translate(new Vector3d(translation[0], translation[1], 0)));
     }
 
+    @Nullable
     @Override
     public QuadsKey<byte[]> createKey(QuadsKey<byte[]> key, IModelData data) {
         byte[] driveStatus = data.getData(TileEntityQIODriveArray.DRIVE_STATUS_PROPERTY);

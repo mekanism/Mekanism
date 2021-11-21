@@ -12,6 +12,7 @@ import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -23,6 +24,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongConsumer;
+import mekanism.api.robit.RobitSkin;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -250,6 +252,18 @@ public class NBTUtils {
                 setter.accept(value);
             }
         }
+    }
+
+    public static <REG extends IForgeRegistryEntry<REG>> void setRegistryEntryIfPresentElse(CompoundNBT nbt, String key, IForgeRegistry<REG> registry,
+          Consumer<REG> setter, Runnable notPresent) {
+        setResourceLocationIfPresentElse(nbt, key, rl -> {
+            REG reg = registry.getValue(rl);
+            if (reg == null) {
+                notPresent.run();
+            } else {
+                setter.accept(reg);
+            }
+        }, notPresent);
     }
 
     public static <ENUM extends Enum<ENUM>> void setEnumIfPresent(CompoundNBT nbt, String key, Int2ObjectFunction<ENUM> indexLookup, Consumer<ENUM> setter) {

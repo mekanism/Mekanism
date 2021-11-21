@@ -29,7 +29,7 @@ public class GuiRobitRename extends GuiWindow {
 
     private void changeName() {
         if (!nameChangeField.getText().isEmpty()) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getId(), TextComponentUtil.getString(nameChangeField.getText())));
+            Mekanism.packetHandler.sendToServer(new PacketRobit(robit, TextComponentUtil.getString(nameChangeField.getText())));
             close();
         }
     }
