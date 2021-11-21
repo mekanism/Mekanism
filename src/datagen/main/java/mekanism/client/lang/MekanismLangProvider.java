@@ -412,8 +412,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addDamageSources() {
-        add(MekanismDamageSource.LASER, "%s was incinerated.");
-        add(MekanismDamageSource.RADIATION, "%s was killed by radiation poisoning.");
+        add(MekanismDamageSource.LASER, "%s was incinerated.", "%s was incinerated whilst trying to escape %s.");
+        add(MekanismDamageSource.RADIATION, "%s was killed by radiation poisoning.", "%s was killed by radiation poisoning whilst trying to escape %s.");
+    }
+
+    private void add(MekanismDamageSource damageSource, String value, String valueEscaping) {
+        add(damageSource, value);
+        add(damageSource.getTranslationKey() + ".player", valueEscaping);
     }
 
     private void addRobitSkins() {
