@@ -18,7 +18,7 @@ import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiHybridGauge;
 import mekanism.client.gui.element.tab.GuiHeatTab;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
+import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.BooleanStateDisplay.ActiveDisabled;
@@ -35,7 +35,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorCasing, EmptyTileContainer<TileEntityFissionReactorCasing>> {
+public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorCasing, MekanismTileContainer<TileEntityFissionReactorCasing>> {
 
     private static final ResourceLocation JEI_LOCATION = MekanismGenerators.rl("fission");
     private TranslationButton activateButton;
@@ -43,11 +43,14 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
 
     private GuiGraph heatGraph;
 
-    public GuiFissionReactor(EmptyTileContainer<TileEntityFissionReactorCasing> container, PlayerInventory inv, ITextComponent title) {
+    public GuiFissionReactor(MekanismTileContainer<TileEntityFissionReactorCasing> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         imageWidth = 195;
-        imageHeight += 6;
+        imageHeight += 89;
+        inventoryLabelX = 6;
+        inventoryLabelY = imageHeight - 92;
         titleLabelY = 5;
+        dynamicSlots = true;
     }
 
     @Override
@@ -107,8 +110,8 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             public double getLevel() {
                 return Math.min(1, tile.getMultiblock().heatCapacitor.getTemperature() / FissionReactorMultiblockData.MAX_DAMAGE_TEMPERATURE);
             }
-        }, 5, 104, imageWidth - 12));
-        heatGraph = addButton(new GuiGraph(this, 5, 127, imageWidth - 10, 38,
+        }, 5, 102, imageWidth - 12));
+        heatGraph = addButton(new GuiGraph(this, 5, 123, imageWidth - 10, 38,
               temp -> MekanismUtils.getTemperatureDisplay(temp, TemperatureUnit.KELVIN, true)));
         heatGraph.setMinScale(1_600);
         updateButtons();
@@ -124,8 +127,9 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         updateButtons();
         drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR.translate(), titleLabelY);
-        drawString(matrix, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 95, titleTextColor());
-        drawString(matrix, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 118, titleTextColor());
+        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(matrix, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 93, titleTextColor());
+        drawString(matrix, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 114, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

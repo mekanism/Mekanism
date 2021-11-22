@@ -74,7 +74,7 @@ public class PacketGeneratorsGuiButtonPress implements IMekanismPacket {
             if (tile instanceof TileEntityTurbineCasing) {
                 return new ContainerProvider(GeneratorsLang.TURBINE, (i, inv, player) -> new MekanismTileContainer<>(GeneratorsContainerTypes.INDUSTRIAL_TURBINE, i, inv, (TileEntityTurbineCasing) tile));
             } else if (tile instanceof TileEntityFissionReactorCasing) {
-                return new ContainerProvider(GeneratorsLang.FISSION_REACTOR, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.FISSION_REACTOR, i, inv, (TileEntityFissionReactorCasing) tile));
+                return new ContainerProvider(GeneratorsLang.FISSION_REACTOR, (i, inv, player) -> new MekanismTileContainer<>(GeneratorsContainerTypes.FISSION_REACTOR, i, inv, (TileEntityFissionReactorCasing) tile));
             }
             return null;
         }),
