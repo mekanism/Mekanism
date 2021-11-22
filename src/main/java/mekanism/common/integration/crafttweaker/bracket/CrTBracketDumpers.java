@@ -40,12 +40,21 @@ public class CrTBracketDumpers {
 
     @BracketDumper(value = CrTConstants.BRACKET_ROBIT_SKIN, subCommandName = "robitSkins")
     public static Collection<String> getRobitSkinDump() {
-        return getDump(MekanismAPI.robitSkinRegistry(), skin -> "<" + CrTConstants.BRACKET_ROBIT_SKIN + ":" + skin.getRegistryName() + ">");
+        return getDump(MekanismAPI.robitSkinRegistry(), CrTConstants.BRACKET_ROBIT_SKIN);
+    }
+
+    @BracketDumper(value = CrTConstants.BRACKET_MODULE_DATA, subCommandName = "moduleData")
+    public static Collection<String> getModuleDataDump() {
+        return getDump(MekanismAPI.moduleRegistry(), CrTConstants.BRACKET_MODULE_DATA);
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> Collection<String>
     getChemicalStackDump(IForgeRegistry<CHEMICAL> registry, Function<CHEMICAL, CRT_STACK> getter) {
         return getDump(registry, chemical -> getter.apply(chemical).getCommandString());
+    }
+
+    private static <V extends IForgeRegistryEntry<V>> Collection<String> getDump(IForgeRegistry<V> registry, String bracket) {
+        return getDump(registry, v -> "<" + bracket + ":" + v.getRegistryName() + ">");
     }
 
     private static <V extends IForgeRegistryEntry<V>> Collection<String> getDump(IForgeRegistry<V> registry, Function<V, String> getter) {

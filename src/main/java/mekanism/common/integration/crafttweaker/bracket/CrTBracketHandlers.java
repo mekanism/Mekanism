@@ -5,6 +5,7 @@ import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.gear.ModuleData;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
@@ -85,6 +86,19 @@ public class CrTBracketHandlers {
     @BracketResolver(CrTConstants.BRACKET_ROBIT_SKIN)
     public static RobitSkin getRobitSkin(String tokens) {
         return getValue(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.robitSkinRegistry());
+    }
+
+    /**
+     * Gets the {@link ModuleData} based on registry name. Throws an error if it can't find the {@link ModuleData}.
+     *
+     * @param tokens The {@link ModuleData}'s resource location.
+     *
+     * @return A reference to the {@link ModuleData}.
+     */
+    @ZenCodeType.Method
+    @BracketResolver(CrTConstants.BRACKET_MODULE_DATA)
+    public static ModuleData<?> getModuleData(String tokens) {
+        return getValue(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.moduleRegistry());
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, CRT_STACK extends ICrTChemicalStack<CHEMICAL, ?, CRT_STACK>> CRT_STACK getChemicalStack(String bracket,

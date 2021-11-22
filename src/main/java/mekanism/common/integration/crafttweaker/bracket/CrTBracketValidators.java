@@ -79,6 +79,19 @@ public class CrTBracketValidators {
         return validate(CrTConstants.BRACKET_ROBIT_SKIN, tokens, MekanismAPI.robitSkinRegistry());
     }
 
+    /**
+     * Validates if there is a {@link mekanism.api.gear.ModuleData} with the given registry name.
+     *
+     * @param tokens The resource location to validate.
+     *
+     * @return {@code true} if valid, {@code false} otherwise.
+     */
+    @ZenCodeType.Method
+    @BracketValidator(CrTConstants.BRACKET_MODULE_DATA)
+    public static boolean validateModuleData(String tokens) {
+        return validate(CrTConstants.BRACKET_MODULE_DATA, tokens, MekanismAPI.moduleRegistry());
+    }
+
     private static boolean validate(String bracket, String tokens, IForgeRegistry<?> registry) {
         ResourceLocation registryName = ResourceLocation.tryParse(tokens);
         if (registryName == null) {

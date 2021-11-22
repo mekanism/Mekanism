@@ -14,10 +14,13 @@ public class CrTConstants {
     public static final String BRACKET_PIGMENT = "pigment";
     public static final String BRACKET_SLURRY = "slurry";
     public static final String BRACKET_ROBIT_SKIN = "robit_skin";
+    public static final String BRACKET_MODULE_DATA = "module_data";
 
     public static final String CLASS_BRACKET_DUMPERS = "mods." + Mekanism.MODID + ".api.BracketDumpers";
     public static final String CLASS_BRACKET_HANDLER = "mods." + Mekanism.MODID + ".api.BracketHandlers";
     public static final String CLASS_BRACKET_VALIDATORS = "mods." + Mekanism.MODID + ".api.BracketValidators";
+
+    public static final String CLASS_HAS_TRANSLATION = "mods." + Mekanism.MODID + ".api.text.HasTranslation";
 
     public static final String CLASS_CHEMICAL = "mods." + Mekanism.MODID + ".api.chemical.Chemical";
     public static final String CLASS_GAS = "mods." + Mekanism.MODID + ".api.chemical.Gas";
@@ -32,6 +35,12 @@ public class CrTConstants {
 
     public static final String CLASS_ROBIT = "mods." + Mekanism.MODID + ".api.entity.robit.Robit";
     public static final String CLASS_ROBIT_SKIN = "mods." + Mekanism.MODID + ".api.entity.robit.RobitSkin";
+
+    public static final String CLASS_MODULE = "mods." + Mekanism.MODID + ".api.gear.Module";
+    public static final String CLASS_MODULE_DATA = "mods." + Mekanism.MODID + ".api.gear.ModuleData";
+    public static final String CLASS_MODULE_HELPER = "mods." + Mekanism.MODID + ".api.gear.ModuleHelper";
+    public static final String CLASS_CUSTOM_MODULE = "mods." + Mekanism.MODID + ".api.gear.CustomModule";
+    public static final String CLASS_MODULE_DATA_PROVIDER = "mods." + Mekanism.MODID + ".api.gear.ModuleDataProvider";
 
     public static final String CLASS_CHEMICAL_TAG_MANAGER = "mods." + Mekanism.MODID + ".api.tag.ChemicalTagManager";
     public static final String CLASS_GAS_TAG_MANAGER = "mods." + Mekanism.MODID + ".api.tag.GasTagManager";

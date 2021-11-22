@@ -10,7 +10,6 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 @NativeMethod(name = "isEmptyType", parameters = {}, getterName = "empty")
 @NativeMethod(name = "isHidden", parameters = {}, getterName = "hidden")
 @NativeMethod(name = "getTags", parameters = {}, getterName = "tags")
-@NativeMethod(name = "getTranslationKey", parameters = {})
 @NativeTypeRegistration(value = Chemical.class, zenCodeName = CrTConstants.CLASS_CHEMICAL)
 public class CrTChemical {
 

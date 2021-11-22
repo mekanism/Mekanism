@@ -18,6 +18,7 @@ public class ExpandEntityRobit {
      * @return Current skin.
      */
     @ZenCodeType.Method
+    @ZenCodeType.Getter("skin")
     public static RobitSkin getSkin(EntityRobit internal) {
         return internal.getSkin();
     }
