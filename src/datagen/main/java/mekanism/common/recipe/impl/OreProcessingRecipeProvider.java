@@ -67,13 +67,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         addBronzeProcessingRecipes(consumer, basePath + "bronze/");
         addCoalOreProcessingRecipes(consumer, basePath + "coal/");
         addOreProcessingGemRecipes(consumer, basePath + "diamond/", Blocks.DIAMOND_ORE, Tags.Items.ORES_DIAMOND, MekanismItems.DIAMOND_DUST,
-              MekanismTags.Items.DUSTS_DIAMOND, Items.DIAMOND, Tags.Items.GEMS_DIAMOND, 2, 3, Tags.Items.COBBLESTONE);
+              MekanismTags.Items.DUSTS_DIAMOND, Items.DIAMOND, Tags.Items.GEMS_DIAMOND, 2, 5, Tags.Items.COBBLESTONE);
         addOreProcessingGemRecipes(consumer, basePath + "emerald/", Blocks.EMERALD_ORE, Tags.Items.ORES_EMERALD, MekanismItems.EMERALD_DUST,
-              MekanismTags.Items.DUSTS_EMERALD, Items.EMERALD, Tags.Items.GEMS_EMERALD, 2, 3, Tags.Items.COBBLESTONE);
+              MekanismTags.Items.DUSTS_EMERALD, Items.EMERALD, Tags.Items.GEMS_EMERALD, 2, 5, Tags.Items.COBBLESTONE);
         addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", Blocks.LAPIS_ORE, Tags.Items.ORES_LAPIS, MekanismItems.LAPIS_LAZULI_DUST,
-              MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 16, Tags.Items.COBBLESTONE);
+              MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 27, Tags.Items.COBBLESTONE);
         addOreProcessingGemRecipes(consumer, basePath + "quartz/", Blocks.NETHER_QUARTZ_ORE, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
-              MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 8, Tags.Items.NETHERRACK);
+              MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 14, Tags.Items.NETHERRACK);
         addRedstoneProcessingRecipes(consumer, basePath + "redstone/");
         addRefinedGlowstoneProcessingRecipes(consumer, basePath + "refined_glowstone/");
         addRefinedObsidianProcessingRecipes(consumer, basePath + "refined_obsidian/");
@@ -436,7 +436,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
     private void addFluoriteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
         addOreProcessingGemRecipes(consumer, basePath, MekanismBlocks.ORES.get(OreType.FLUORITE), MekanismTags.Items.ORES.get(OreType.FLUORITE),
-              MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 8,
+              MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 14,
               Tags.Items.COBBLESTONE);
         //Gem from block
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.FLUORITE_GEM, 9)
