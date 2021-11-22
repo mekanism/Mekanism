@@ -96,7 +96,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
         if (energyHandler == null) {
             return false;
         }
-        FloatingLong energyToGive = energyContainer.getEnergy();
+        FloatingLong energyToGive = energyContainer.getEnergyPerTick();
         FloatingLong simulatedRemainder = energyHandler.insertEnergy(energyToGive, Action.SIMULATE);
         if (simulatedRemainder.smallerThan(energyToGive)) {
             //We are able to fit at least some of the energy from our container into the item
