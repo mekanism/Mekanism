@@ -372,7 +372,8 @@ public final class TransporterPathfinder {
             openSet.add(start);
             gScore.put(start, 0D);
             //Note: This is gScore + estimate, but given our gScore starts at zero we just skip getting it back out
-            fScore.put(start, WorldUtils.distanceBetween(start, finalNode));
+            double totalDistance = WorldUtils.distanceBetween(start, finalNode);
+            fScore.put(start, totalDistance);
             boolean hasValidDirection = false;
             LogisticalTransporterBase startTransmitter = network.getTransmitter(start);
             for (Direction direction : EnumUtils.DIRECTIONS) {
@@ -392,8 +393,8 @@ public final class TransporterPathfinder {
                 //If there is no valid direction that the stack can go just exit
                 return false;
             }
-            //If the blocks are very close together, allow for path finding up to three blocks away
-            double maxSearchDistance = Math.max(2 * WorldUtils.distanceBetween(start, finalNode), 3);
+            //If the blocks are very close together, allow for path finding up to four blocks away
+            double maxSearchDistance = Math.max(2 * totalDistance, 4);
             while (!openSet.isEmpty()) {
                 BlockPos currentNode = null;
                 double lowestFScore = 0;
