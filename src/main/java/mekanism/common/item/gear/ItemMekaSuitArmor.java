@@ -53,6 +53,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemStack.TooltipDisplayFlags;
@@ -437,12 +438,22 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }
     }
 
-    // This is unused for the most part; toughness / damage reduction is handled manually
+    // This is unused for the most part; toughness / damage reduction is handled manually, though it can fall back to netherite values
     protected static class MekaSuitMaterial extends BaseSpecialArmorMaterial {
 
         @Override
+        public int getDefenseForSlot(@Nonnull EquipmentSlotType slot) {
+            return ArmorMaterial.NETHERITE.getDefenseForSlot(slot);
+        }
+
+        @Override
+        public float getToughness() {
+            return ArmorMaterial.NETHERITE.getToughness();
+        }
+
+        @Override
         public float getKnockbackResistance() {
-            return 0.1F;
+            return ArmorMaterial.NETHERITE.getKnockbackResistance();
         }
 
         @Nonnull
