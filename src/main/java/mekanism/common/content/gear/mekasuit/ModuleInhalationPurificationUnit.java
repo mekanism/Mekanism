@@ -100,7 +100,7 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
 
     private void speedupEffect(PlayerEntity player, EffectInstance effect) {
         for (int i = 0; i < 9; i++) {
-            effect.tick(player, () -> MekanismUtils.onChangedPotionEffect(player, effect, true));
+            MekanismUtils.speedUpEffectSafely(player, effect);
         }
     }
 

@@ -576,17 +576,31 @@ public final class MekanismUtils {
     }
 
     /**
+     * Copy of {@link EffectInstance#tick(LivingEntity, Runnable)}, but modified to not apply the effect to avoid extra damage and the like.
+     */
+    public static void speedUpEffectSafely(LivingEntity entity, EffectInstance effectInstance) {
+        if (effectInstance.getDuration() > 0) {
+            int remainingDuration = effectInstance.tickDownDuration();
+            if (remainingDuration == 0 && effectInstance.hiddenEffect != null) {
+                effectInstance.setDetailsFrom(effectInstance.hiddenEffect);
+                effectInstance.hiddenEffect = effectInstance.hiddenEffect.hiddenEffect;
+                onChangedPotionEffect(entity, effectInstance, true);
+            }
+        }
+    }
+
+    /**
      * Copy of LivingEntity#onChangedPotionEffect(EffectInstance, boolean) due to not being able to AT the method as it is protected.
      */
-    public static void onChangedPotionEffect(LivingEntity entity, EffectInstance id, boolean reapply) {
+    private static void onChangedPotionEffect(LivingEntity entity, EffectInstance effectInstance, boolean reapply) {
         entity.effectsDirty = true;
         if (reapply && !entity.level.isClientSide) {
-            Effect effect = id.getEffect();
-            effect.removeAttributeModifiers(entity, entity.getAttributes(), id.getAmplifier());
-            effect.addAttributeModifiers(entity, entity.getAttributes(), id.getAmplifier());
+            Effect effect = effectInstance.getEffect();
+            effect.removeAttributeModifiers(entity, entity.getAttributes(), effectInstance.getAmplifier());
+            effect.addAttributeModifiers(entity, entity.getAttributes(), effectInstance.getAmplifier());
         }
         if (entity instanceof ServerPlayerEntity) {
-            ((ServerPlayerEntity) entity).connection.send(new SPlayEntityEffectPacket(entity.getId(), id));
+            ((ServerPlayerEntity) entity).connection.send(new SPlayEntityEffectPacket(entity.getId(), effectInstance));
             CriteriaTriggers.EFFECTS_CHANGED.trigger(((ServerPlayerEntity) entity));
         }
     }

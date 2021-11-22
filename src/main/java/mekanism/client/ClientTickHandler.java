@@ -220,7 +220,7 @@ public class ClientTickHandler {
             if (isScubaMaskOn(minecraft.player) && minecraft.player.getAirSupply() == 300) {
                 for (EffectInstance effect : minecraft.player.getActiveEffects()) {
                     for (int i = 0; i < 9; i++) {
-                        effect.tick(minecraft.player, () -> MekanismUtils.onChangedPotionEffect(minecraft.player, effect, true));
+                        MekanismUtils.speedUpEffectSafely(minecraft.player, effect);
                     }
                 }
             }
