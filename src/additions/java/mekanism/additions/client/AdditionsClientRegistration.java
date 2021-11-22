@@ -7,7 +7,6 @@ import mekanism.additions.client.render.entity.RenderBabyEnderman;
 import mekanism.additions.client.render.entity.RenderBalloon;
 import mekanism.additions.client.render.entity.RenderObsidianTNTPrimed;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.item.AdditionsSpawnEggItem;
 import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.item.ItemWalkieTalkie;
 import mekanism.additions.common.registries.AdditionsBlocks;
@@ -90,8 +89,6 @@ public class AdditionsClientRegistration {
         for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
             ClientRegistrationUtil.registerItemColorHandler(event.getItemColors(), balloonColorHandler, balloon);
         }
-        registerSpawnEggColorHandler(event.getItemColors(), AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG,
-              AdditionsItems.BABY_SKELETON_SPAWN_EGG, AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
     }
 
     @SafeVarargs
@@ -100,13 +97,6 @@ public class AdditionsClientRegistration {
             for (BlockRegistryObject<?, ?> block : blockMap.values()) {
                 ClientRegistrationUtil.registerIColoredBlockHandler(blockColors, itemColors, block);
             }
-        }
-    }
-
-    @SafeVarargs
-    private static void registerSpawnEggColorHandler(ItemColors colors, ItemRegistryObject<AdditionsSpawnEggItem>... spawnEggs) {
-        for (ItemRegistryObject<AdditionsSpawnEggItem> spawnEgg : spawnEggs) {
-            ClientRegistrationUtil.registerItemColorHandler(colors, (stack, tintIndex) -> spawnEgg.getItem().getColor(tintIndex), spawnEgg);
         }
     }
 }

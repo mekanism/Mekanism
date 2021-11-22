@@ -2,29 +2,17 @@ package mekanism.additions.common.entity;
 
 import java.util.List;
 import java.util.stream.Stream;
-import javax.annotation.Nonnull;
 import mekanism.additions.common.config.AdditionsCommonConfig;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.baby.EntityBabyStray;
-import mekanism.additions.common.item.AdditionsSpawnEggItem;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.EntityTypeRegistryObject;
-import mekanism.common.registration.impl.ItemRegistryObject;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.passive.ParrotEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.biome.MobSpawnInfo;
@@ -45,9 +33,6 @@ public class SpawnHelper {
         //Slightly different restrictions for the baby stray, as strays have a slightly different spawn restriction
         EntitySpawnPlacementRegistry.register(AdditionsEntityTypes.BABY_STRAY.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND,
               Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, EntityBabyStray::spawnRestrictions);
-        //Add dispenser spawn egg behaviors
-        registerDelayedDispenserBehavior(AdditionsItems.BABY_CREEPER_SPAWN_EGG, AdditionsItems.BABY_ENDERMAN_SPAWN_EGG, AdditionsItems.BABY_SKELETON_SPAWN_EGG,
-              AdditionsItems.BABY_STRAY_SPAWN_EGG, AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG);
         //Add parrot sound imitations for baby mobs
         //Note: There is no imitation sound for endermen
         ParrotEntity.MOB_SOUND_MAP.put(AdditionsEntityTypes.BABY_CREEPER.get(), SoundEvents.PARROT_IMITATE_CREEPER);
@@ -61,25 +46,6 @@ public class SpawnHelper {
         for (EntityTypeRegistryObject<? extends MonsterEntity> entityTypeRO : entityTypeROs) {
             EntitySpawnPlacementRegistry.register(entityTypeRO.get(), EntitySpawnPlacementRegistry.PlacementType.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                   MonsterEntity::checkMonsterSpawnRules);
-        }
-    }
-
-    @SafeVarargs
-    private static void registerDelayedDispenserBehavior(ItemRegistryObject<AdditionsSpawnEggItem>... spawnEggs) {
-        IDispenseItemBehavior dispenseBehavior = new DefaultDispenseItemBehavior() {
-            @Nonnull
-            @Override
-            public ItemStack execute(IBlockSource source, ItemStack stack) {
-                Direction direction = source.getBlockState().getValue(DispenserBlock.FACING);
-                EntityType<?> entityType = ((SpawnEggItem) stack.getItem()).getType(stack.getTag());
-                entityType.spawn(source.getLevel(), stack, null, source.getPos().relative(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
-                stack.shrink(1);
-                return stack;
-            }
-        };
-        //TODO: Remove this when we can, for now just lazy add the dispense behavior
-        for (ItemRegistryObject<AdditionsSpawnEggItem> spawnEgg : spawnEggs) {
-            DispenserBlock.registerBehavior(spawnEgg, dispenseBehavior);
         }
     }
 
