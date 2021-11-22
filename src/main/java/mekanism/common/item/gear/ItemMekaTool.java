@@ -231,8 +231,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             World world = player.level;
             BlockState state = world.getBlockState(pos);
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
-            FloatingLong baseDestroyEnergy = getDestroyEnergy(stack, silk);
-            FloatingLong energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
+            FloatingLong energyRequired = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), silk);
             if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
                 IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
                 //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
@@ -240,6 +239,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                     boolean extended = veinMiningUnit.getCustomInstance().isExtended();
                     //If it is extended or should be treated as an ore
                     if (extended || state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                        //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
+                        FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
                         Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, extended ? veinMiningUnit.getCustomInstance().getExcavationRange() : -1);
                         MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayerEntity) player, stack, this, found,
                               isModuleEnabled(stack, MekanismModules.SHEARING_UNIT), hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), state);
@@ -248,6 +249,10 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             }
         }
         return super.onBlockStartBreak(stack, pos, player);
+    }
+
+    private FloatingLong getDestroyEnergy(boolean silk) {
+        return silk ? MekanismConfig.gear.mekaToolEnergyUsageSilk.get() : MekanismConfig.gear.mekaToolEnergyUsage.get();
     }
 
     private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness, boolean silk) {
@@ -259,7 +264,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
     }
 
     private FloatingLong getDestroyEnergy(ItemStack itemStack, boolean silk) {
-        FloatingLong destroyEnergy = silk ? MekanismConfig.gear.mekaToolEnergyUsageSilk.get() : MekanismConfig.gear.mekaToolEnergyUsage.get();
+        FloatingLong destroyEnergy = getDestroyEnergy(silk);
         IModule<ModuleExcavationEscalationUnit> module = getModule(itemStack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
         float efficiency = module == null || !module.isEnabled() ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
         return destroyEnergy.multiply(efficiency);
