@@ -87,6 +87,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
             //If we are not switching to JEI then run the super close method
             // which will exit the container. We don't want to mark the
             // container as exited if it will be revived when leaving JEI
+            // Note: We start by closing all open windows so that any cleanup
+            // they need to have done such as saving positions can be done
+            windows.forEach(GuiWindow::close);
             super.removed();
         }
     }
