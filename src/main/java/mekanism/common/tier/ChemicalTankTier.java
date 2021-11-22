@@ -7,10 +7,10 @@ import mekanism.common.config.value.CachedLongValue;
 import net.minecraft.util.IStringSerializable;
 
 public enum ChemicalTankTier implements ITier, IStringSerializable {
-    BASIC(BaseTier.BASIC, 64_000, 256),
-    ADVANCED(BaseTier.ADVANCED, 128_000, 512),
-    ELITE(BaseTier.ELITE, 256_000, 1_028),
-    ULTIMATE(BaseTier.ULTIMATE, 512_000, 2_056),
+    BASIC(BaseTier.BASIC, 64_000, 1_000),
+    ADVANCED(BaseTier.ADVANCED, 256_000, 16_000),
+    ELITE(BaseTier.ELITE, 1_024_000, 128_000),
+    ULTIMATE(BaseTier.ULTIMATE, 8_192_000, 512_000),
     CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Long.MAX_VALUE / 2);
 
     private final long baseStorage;

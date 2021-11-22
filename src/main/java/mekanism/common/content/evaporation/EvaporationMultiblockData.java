@@ -19,7 +19,6 @@ import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.MultiblockHeatCapacitor;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -52,6 +51,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     private static final int MAX_OUTPUT = 10_000;
     public static final int MAX_HEIGHT = 18;
     public static final double MAX_MULTIPLIER_TEMP = 3_000;
+    public static final int FLUID_PER_TANK = 64_000;
 
     @ContainerSync
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInput", "getInputCapacity", "getInputNeeded", "getInputFilledPercentage"})
@@ -177,7 +177,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     public int getMaxFluid() {
-        return height() * 4 * TankMultiblockData.FLUID_PER_TANK;
+        return height() * 4 * FLUID_PER_TANK;
     }
 
     @Nonnull

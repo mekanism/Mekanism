@@ -15,6 +15,7 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -34,8 +35,6 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
 
-    public static final int FLUID_PER_TANK = 64_000;
-
     @ContainerSync
     public final MergedTank mergedTank;
     @ContainerSync
@@ -47,16 +46,17 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private HybridInventorySlot outputSlot;
     private int tankCapacity;
+    private long chemicalTankCapacity;
     public float prevScale;
 
     public TankMultiblockData(TileEntityDynamicTank tile) {
         super(tile);
         mergedTank = MergedTank.create(
               MultiblockFluidTank.create(this, tile, this::getTankCapacity, BasicFluidTank.alwaysTrue),
-              MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getTankCapacity, ChemicalTankBuilder.GAS.alwaysTrue),
-              MultiblockChemicalTankBuilder.INFUSION.create(this, tile, this::getTankCapacity, ChemicalTankBuilder.INFUSION.alwaysTrue),
-              MultiblockChemicalTankBuilder.PIGMENT.create(this, tile, this::getTankCapacity, ChemicalTankBuilder.PIGMENT.alwaysTrue),
-              MultiblockChemicalTankBuilder.SLURRY.create(this, tile, this::getTankCapacity, ChemicalTankBuilder.SLURRY.alwaysTrue)
+              MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getChemicalTankCapacity, ChemicalTankBuilder.GAS.alwaysTrue),
+              MultiblockChemicalTankBuilder.INFUSION.create(this, tile, this::getChemicalTankCapacity, ChemicalTankBuilder.INFUSION.alwaysTrue),
+              MultiblockChemicalTankBuilder.PIGMENT.create(this, tile, this::getChemicalTankCapacity, ChemicalTankBuilder.PIGMENT.alwaysTrue),
+              MultiblockChemicalTankBuilder.SLURRY.create(this, tile, this::getChemicalTankCapacity, ChemicalTankBuilder.SLURRY.alwaysTrue)
         );
         fluidTanks.add(mergedTank.getFluidTank());
         gasTanks.add(mergedTank.getGasTank());
@@ -126,7 +126,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
             case SLURRY:
                 return MekanismUtils.getScale(prevScale, getSlurryTank());
         }
-        return MekanismUtils.getScale(prevScale, 0, getTankCapacity(), true);
+        return MekanismUtils.getScale(prevScale, 0, getChemicalTankCapacity(), true);
     }
 
     @ComputerMethod
@@ -134,15 +134,22 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         return tankCapacity;
     }
 
+    @ComputerMethod
+    public long getChemicalTankCapacity() {
+        return chemicalTankCapacity;
+    }
+
     @Override
     public void setVolume(int volume) {
         super.setVolume(volume);
-        tankCapacity = getVolume() * FLUID_PER_TANK;
+        tankCapacity = getVolume() * MekanismConfig.general.dynamicTankFluidPerTank.get();
+        chemicalTankCapacity = getVolume() * MekanismConfig.general.dynamicTankChemicalPerTank.get();
     }
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(getStoredAmount(), getTankCapacity());
+        long capacity = mergedTank.getCurrentType() == CurrentType.FLUID ? getTankCapacity() : getChemicalTankCapacity();
+        return MekanismUtils.redstoneLevelFromContents(getStoredAmount(), capacity);
     }
 
     private long getStoredAmount() {
@@ -223,7 +230,8 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     @ComputerMethod
     private double getFilledPercentage() {
-        return getStoredAmount() / (double) getTankCapacity();
+        long capacity = mergedTank.getCurrentType() == CurrentType.FLUID ? getTankCapacity() : getChemicalTankCapacity();
+        return getStoredAmount() / (double) capacity;
     }
     //End computer related methods
 }

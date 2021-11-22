@@ -41,12 +41,14 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         addButton(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
             List<ITextComponent> ret = new ArrayList<>();
             TankMultiblockData multiblock = tile.getMultiblock();
+            long capacity = multiblock.getChemicalTankCapacity();
             switch (multiblock.mergedTank.getCurrentType()) {
                 case EMPTY:
                     ret.add(MekanismLang.EMPTY.translate());
                     break;
                 case FLUID:
                     addStored(ret, multiblock.getFluidTank().getFluid(), FluidStack::getAmount);
+                    capacity = multiblock.getTankCapacity();
                     break;
                 case GAS:
                     addStored(ret, multiblock.getGasTank());
@@ -62,8 +64,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
                     break;
             }
             ret.add(MekanismLang.CAPACITY.translate(""));
-            // capacity is the same for the tank no matter what type it is currently stored
-            ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(multiblock.getTankCapacity())));
+            ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(capacity)));
             return ret;
         }).spacing(2));
         addButton(new GuiDownArrow(this, 150, 39));

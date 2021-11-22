@@ -28,6 +28,7 @@ public class GeneralConfig extends BaseMekanismConfig {
 
     private static final String EJECT_CATEGORY = "auto_eject";
     private static final String MINER_CATEGORY = "digital_miner";
+    private static final String DYNAMIC_TANK = "dynamic_tank";
     private static final String LASER_SETTINGS = "laser";
     private static final String OREDICTIONIFICATOR_CATEGORY = "oredictionificator";
     private static final String PUMP_CATEGORY = "pump";
@@ -59,6 +60,9 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue fluidAutoEjectRate;
     public final CachedLongValue chemicalAutoEjectRate;
     public final CachedDoubleValue dumpExcessKeepRatio;
+    //Dynamic Tank
+    public final CachedIntValue dynamicTankFluidPerTank;
+    public final CachedLongValue dynamicTankChemicalPerTank;
     //Prefilled
     public final CachedBooleanValue prefilledFluidTanks;
     public final CachedBooleanValue prefilledGasTanks;
@@ -154,6 +158,14 @@ public class GeneralConfig extends BaseMekanismConfig {
         maxSolarNeutronActivatorRate = CachedIntValue.wrap(this, builder.comment("Peak processing rate for the Solar Neutron Activator. Note: It can go higher than this value in some extreme environments.")
               .define("maxSolarNeutronActivatorRate", 64));
 
+        builder.comment("Dynamic Tank Settings").push(DYNAMIC_TANK);
+        int maxVolume = 18 * 18 * 18;
+        dynamicTankFluidPerTank = CachedIntValue.wrap(this, builder.comment("Amount of fluid (mB) that each block of the dynamic tank contributes to the volume. Max = volume * fluidPerTank")
+              .defineInRange("fluidPerTank", 350_000, 1, Integer.MAX_VALUE / maxVolume));
+        dynamicTankChemicalPerTank = CachedLongValue.wrap(this, builder.comment("Amount of chemical (mB) that each block of the dynamic tank contributes to the volume. Max = volume * chemicalPerTank")
+              .defineInRange("chemicalPerTank", 16_000_000, 1, Long.MAX_VALUE / maxVolume));
+        builder.pop();
+
         builder.comment("Auto Eject Settings").push(EJECT_CATEGORY);
         fluidAutoEjectRate = CachedIntValue.wrap(this, builder.comment("Rate at which fluid gets auto ejected from tiles.")
               .define("fluid", 1_024));
@@ -216,9 +228,9 @@ public class GeneralConfig extends BaseMekanismConfig {
         radiationNegativeEffectsMinSeverity = CachedDoubleValue.wrap(this, builder.comment("Defines the minimum severity radiation dosage severity (scale of 0 to 1) for which negative effects can take place. Set to 1 to disable negative effects completely.")
               .defineInRange("negativeEffectsMinSeverity", 0.1D, 0, 1));
         radioactiveWasteBarrelMaxGas = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that can be stored in a Radioactive Waste Barrel.")
-              .defineInRange("radioactiveWasteBarrelMaxGas", 64_000, 1, Long.MAX_VALUE));
+              .defineInRange("radioactiveWasteBarrelMaxGas", 512_000, 1, Long.MAX_VALUE));
         radioactiveWasteBarrelProcessTicks = CachedIntValue.wrap(this, builder.comment("Number of ticks required for radioactive gas stored in a Radioactive Waste Barrel to decay radioactiveWasteBarrelDecayAmount mB.")
-              .defineInRange("radioactiveWasteBarrelProcessTicks", 1_200, 1, Integer.MAX_VALUE));
+              .defineInRange("radioactiveWasteBarrelProcessTicks", 20, 1, Integer.MAX_VALUE));
         radioactiveWasteBarrelDecayAmount = CachedLongValue.wrap(this, builder.comment("Number of mB of gas that decay every radioactiveWasteBarrelProcessTicks ticks when stored in a Radioactive Waste Barrel. Set to zero to disable decay all together. (Gases in the mekanism:waste_barrel_decay_blacklist tag will not decay).")
               .defineInRange("radioactiveWasteBarrelDecayAmount", 1, 0, Long.MAX_VALUE));
         builder.pop();
