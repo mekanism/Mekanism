@@ -343,6 +343,7 @@ public class MekanismRenderer {
         float g = getGreen(color);
         float b = getBlue(color);
         float a = getAlpha(color);
+        RenderSystem.disableDepthTest();
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.disableAlphaTest();
@@ -361,6 +362,7 @@ public class MekanismRenderer {
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
+        RenderSystem.enableDepthTest();
     }
 
     public static float getPartialTick() {
