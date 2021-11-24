@@ -35,7 +35,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         addButton(new GuiInnerScreen(this, 48, 19, 80, 40, () -> {
             EvaporationMultiblockData multiblock = tile.getMultiblock();
             return Arrays.asList(MekanismLang.MULTIBLOCK_FORMED.translate(), MekanismLang.EVAPORATION_HEIGHT.translate(multiblock.height()),
-                  MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(multiblock.getTemp(), TemperatureUnit.KELVIN, true)),
+                  MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(multiblock.getTemperature(), TemperatureUnit.KELVIN, true)),
                   MekanismLang.FLUID_PRODUCTION.translate(Math.round(multiblock.lastGain * 100D) / 100D));
         }).spacing(1).jeiCategory(tile));
         addButton(new GuiDownArrow(this, 32, 39));
@@ -43,18 +43,18 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
         addButton(new GuiHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
             public ITextComponent getTooltip() {
-                return MekanismUtils.getTemperatureDisplay(tile.getMultiblock().getTemp(), TemperatureUnit.KELVIN, true);
+                return MekanismUtils.getTemperatureDisplay(tile.getMultiblock().getTemperature(), TemperatureUnit.KELVIN, true);
             }
 
             @Override
             public double getLevel() {
-                return Math.min(1, tile.getMultiblock().getTemp() / EvaporationMultiblockData.MAX_MULTIPLIER_TEMP);
+                return Math.min(1, tile.getMultiblock().getTemperature() / EvaporationMultiblockData.MAX_MULTIPLIER_TEMP);
             }
         }, 48, 63));
         addButton(new GuiFluidGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
         addButton(new GuiFluidGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getFluidTanks(null), GaugeType.STANDARD, this, 152, 13));
         addButton(new GuiHeatTab(this, () -> {
-            ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().totalLoss, TemperatureUnit.KELVIN, false);
+            ITextComponent environment = MekanismUtils.getTemperatureDisplay(tile.getMultiblock().lastEnvironmentLoss, TemperatureUnit.KELVIN, false);
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
     }

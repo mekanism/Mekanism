@@ -62,8 +62,6 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @ContainerSync
     public BasicHeatCapacitor heatCapacitor;
 
-    private boolean temperatureSet;
-
     private double biomeAmbientTemp;
     private double tempMultiplier;
 
@@ -73,11 +71,11 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     public double lastGain;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
-    public double totalLoss;
+    public double lastEnvironmentLoss;
 
     private final RecipeCacheLookupMonitor<FluidToFluidRecipe> recipeCacheLookupMonitor;
 
-    private IEvaporationSolar[] solars = new IEvaporationSolar[4];
+    private final IEvaporationSolar[] solars = new IEvaporationSolar[4];
 
     private final IOutputHandler<@NonNull FluidStack> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
@@ -94,6 +92,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     public EvaporationMultiblockData(TileEntityThermalEvaporationBlock tile) {
         super(tile);
         recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
+        //Default biome temp to the ambient temperature at the block we are at
+        biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
         fluidTanks.add(inputTank = MultiblockFluidTank.input(this, tile, this::getMaxFluid, this::containsRecipe, recipeCacheLookupMonitor));
         fluidTanks.add(outputTank = MultiblockFluidTank.output(this, tile, () -> MAX_OUTPUT, BasicFluidTank.alwaysTrue));
         inputHandler = InputHelper.getInputHandler(inputTank);
@@ -104,12 +104,14 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         inventorySlots.add(outputOutputSlot = OutputInventorySlot.at(this, 132, 51));
         inputInputSlot.setSlotType(ContainerSlotType.INPUT);
         inputOutputSlot.setSlotType(ContainerSlotType.INPUT);
-        heatCapacitors.add(heatCapacitor = MultiblockHeatCapacitor.create(this, tile, MekanismConfig.general.evaporationHeatCapacity.get() * 3));
+        heatCapacitors.add(heatCapacitor = MultiblockHeatCapacitor.create(this, tile, MekanismConfig.general.evaporationHeatCapacity.get() * 3,
+              () -> biomeAmbientTemp));
     }
 
     @Override
     public void onCreated(World world) {
         super.onCreated(world);
+        biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismConfig.general.evaporationHeatCapacity.get() * height(), true);
         updateSolars(world);
@@ -118,7 +120,14 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public boolean tick(World world) {
         boolean needsPacket = super.tick(world);
-        updateTemperature(world);
+        // external heat dissipation
+        lastEnvironmentLoss = simulateEnvironment();
+        // update temperature
+        updateHeatCapacitors(null);
+        //After we update the heat capacitors, update our temperature multiplier
+        // Note: We use the ambient temperature without taking our biome into account as we want to have a consistent multiplier
+        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() *
+                         ((double) height() / MAX_HEIGHT);
         inputOutputSlot.drainTank(outputOutputSlot);
         inputInputSlot.fillTank(outputInputSlot);
         recipeCacheLookupMonitor.updateAndProcess();
@@ -146,35 +155,28 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         writeValves(tag);
     }
 
-    private void updateTemperature(World world) {
-        if (!temperatureSet) {
-            //Take a rough average of the biome temperature between the min and max positions of the multiblock
-            double biomeTemp = (world.getBiome(getMinPos()).getTemperature(getMinPos()) + world.getBiome(getMaxPos()).getTemperature(getMaxPos())) / 2;
-            biomeAmbientTemp = HeatAPI.getAmbientTemp(biomeTemp);
-            temperatureSet = true;
-        }
-        int activeSolars = getActiveSolars();
-        if (activeSolars > 0) {
-            heatCapacitor.handleHeat(MekanismConfig.general.evaporationSolarMultiplier.get() * activeSolars * heatCapacitor.getHeatCapacity());
-        }
-        if (Math.abs(heatCapacitor.getTemperature() - biomeAmbientTemp) < 0.001) {
-            heatCapacitor.handleHeat((biomeAmbientTemp * heatCapacitor.getHeatCapacity()) - heatCapacitor.getHeat());
-            totalLoss = 0;
+    @Override
+    public double simulateEnvironment() {
+        double currentTemperature = getTemperature();
+        double heatCapacity = heatCapacitor.getHeatCapacity();
+        heatCapacitor.handleHeat(getActiveSolars() * MekanismConfig.general.evaporationSolarMultiplier.get() * heatCapacity);
+        if (Math.abs(currentTemperature - biomeAmbientTemp) < 0.001) {
+            heatCapacitor.handleHeat(biomeAmbientTemp * heatCapacity - heatCapacitor.getHeat());
         } else {
-            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(heatCapacitor.getTemperature() - biomeAmbientTemp));
-            if (heatCapacitor.getTemperature() > biomeAmbientTemp) {
+            double incr = MekanismConfig.general.evaporationHeatDissipation.get() * Math.sqrt(Math.abs(currentTemperature - biomeAmbientTemp));
+            if (currentTemperature > biomeAmbientTemp) {
                 incr = -incr;
             }
-            heatCapacitor.handleHeat(heatCapacitor.getHeatCapacity() * incr);
-            totalLoss = incr < 0 ? -incr / heatCapacitor.getHeatCapacity() : 0;
+            heatCapacitor.handleHeat(heatCapacity * incr);
+            if (incr < 0) {
+                return -incr / heatCapacity;
+            }
         }
-
-        tempMultiplier = (Math.min(MAX_MULTIPLIER_TEMP, heatCapacitor.getTemperature()) - HeatAPI.AMBIENT_TEMP) * MekanismConfig.general.evaporationTempMultiplier.get() * ((double) height() / MAX_HEIGHT);
-        updateHeatCapacitors(null);
+        return 0;
     }
 
-    @ComputerMethod(nameOverride = "getTemperature")
-    public double getTemp() {
+    @ComputerMethod
+    public double getTemperature() {
         return heatCapacitor.getTemperature();
     }
 
@@ -238,22 +240,38 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         return ret;
     }
 
-    private void addSolarPanel(TileEntity tile, int i) {
-        if (tile != null && !tile.isRemoved()) {
-            CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN).ifPresent(solar -> solars[i] = solar);
+    private void updateSolarSpot(World world, BlockPos pos, int i) {
+        TileEntity tile = WorldUtils.getTileEntity(world, pos);
+        if (tile == null || tile.isRemoved()) {
+            solars[i] = null;
+        } else {
+            solars[i] = CapabilityUtils.getCapability(tile, Capabilities.EVAPORATION_SOLAR_CAPABILITY, Direction.DOWN).resolve().orElse(null);
         }
     }
 
-    public boolean isSolarSpot(BlockPos pos) {
-        return pos.getY() == getMaxPos().getY() && getBounds().isOnCorner(pos);
+    public void updateSolarSpot(World world, BlockPos pos) {
+        BlockPos maxPos = getMaxPos();
+        //Validate it is actually one of the spots solar panels can go
+        if (pos.getY() == maxPos.getY() && getBounds().isOnCorner(pos)) {
+            int i = 0;
+            if (pos.getX() + 3 == maxPos.getX()) {
+                //If we are westwards our index goes up by one
+                i++;
+            }
+            if (pos.getZ() + 3 == maxPos.getZ()) {
+                //If we are northwards it goes up by two
+                i += 2;
+            }
+            updateSolarSpot(world, pos, i);
+        }
     }
 
-    public void updateSolars(World world) {
-        solars = new IEvaporationSolar[4];
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos()), 0);
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().offset(-3, 0, 0)), 1);
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().offset(0, 0, -3)), 2);
-        addSolarPanel(WorldUtils.getTileEntity(world, getMaxPos().offset(-3, 0, -3)), 3);
+    private void updateSolars(World world) {
+        BlockPos maxPos = getMaxPos();
+        updateSolarSpot(world, maxPos, 0);
+        updateSolarSpot(world, maxPos.west(3), 1);
+        updateSolarSpot(world, maxPos.north(3), 2);
+        updateSolarSpot(world, maxPos.offset(-3, 0, -3), 3);
     }
 
     @Override

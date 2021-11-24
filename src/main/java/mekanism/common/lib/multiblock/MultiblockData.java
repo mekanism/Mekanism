@@ -22,6 +22,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
@@ -131,6 +132,12 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
             data.prevActive = data.activeTicks > 0;
         }
         return needsPacket;
+    }
+
+    protected double calculateAverageAmbientTemperature(World world) {
+        //Take a rough average of the biome temperature between the min and max positions of the multiblock
+        double biomeTemp = (world.getBiome(getMinPos()).getTemperature(getMinPos()) + world.getBiome(getMaxPos()).getTemperature(getMaxPos())) / 2;
+        return HeatAPI.getAmbientTemp(biomeTemp);
     }
 
     public boolean setShape(IShape shape) {

@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.RelativeSide;
-import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.AutomationType;
@@ -14,6 +13,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
@@ -49,6 +49,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     public static final int MAX_FLUID = 24_000;
     private static final double THERMAL_EFFICIENCY = 0.5;
     private static final FloatingLong MAX_PRODUCTION = FloatingLong.createConst(500);
+
     /**
      * The FluidTank for this generator.
      */
@@ -92,9 +93,9 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     @Nonnull
     @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+    protected IHeatCapacitorHolder getInitialHeatCapacitors(CachedAmbientTemperature ambientTemperature) {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(10, 5, 100, this));
+        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(10, 5, 100, ambientTemperature, this));
         return builder.build();
     }
 
@@ -159,10 +160,11 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Nonnull
     @Override
     public HeatTransfer simulate() {
+        double ambientTemp = ambientTemperature.getAsDouble();
         double temp = getTotalTemperature();
         // 1 - Qc / Qh
-        double carnotEfficiency = 1 - Math.min(HeatAPI.AMBIENT_TEMP, temp) / Math.max(HeatAPI.AMBIENT_TEMP, temp);
-        double heatLost = THERMAL_EFFICIENCY * (temp - HeatAPI.AMBIENT_TEMP);
+        double carnotEfficiency = 1 - Math.min(ambientTemp, temp) / Math.max(ambientTemp, temp);
+        double heatLost = THERMAL_EFFICIENCY * (temp - ambientTemp);
         heatCapacitor.handleHeat(-heatLost);
         getEnergyContainer().insert(MAX_PRODUCTION.min(FloatingLong.create(Math.abs(heatLost) * carnotEfficiency)), Action.EXECUTE, AutomationType.INTERNAL);
         return super.simulate();

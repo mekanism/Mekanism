@@ -8,13 +8,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.content.network.HeatNetwork;
 import mekanism.common.lib.Color;
@@ -33,15 +33,17 @@ import net.minecraftforge.common.util.Constants.NBT;
 public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwork, ThermodynamicConductor> implements ITileHeatHandler,
       IUpgradeableTransmitter<ThermodynamicConductorUpgradeData> {
 
+    private final CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getTileWorld, this::getTilePos);
     public final ConductorTier tier;
-    private double clientTemperature = HeatAPI.AMBIENT_TEMP;
+    //Default to negative one, so we know we need to calculate it when needed
+    private double clientTemperature = -1;
     private final List<IHeatCapacitor> capacitors;
     public final BasicHeatCapacitor buffer;
 
     public ThermodynamicConductor(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.HEAT);
         this.tier = Attribute.getTier(blockProvider, ConductorTier.class);
-        buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), this);
+        buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), ambientTemperature, this);
         capacitors = Collections.singletonList(buffer);
     }
 
@@ -134,12 +136,20 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @Override
     public void onContentsChanged() {
         if (!isRemote()) {
+            if (clientTemperature == -1) {
+                clientTemperature = ambientTemperature.getAsDouble();
+            }
             if (Math.abs(buffer.getTemperature() - clientTemperature) > (buffer.getTemperature() / 20)) {
                 clientTemperature = buffer.getTemperature();
                 getTransmitterTile().sendUpdatePacket();
             }
         }
         getTransmitterTile().markDirty(false);
+    }
+
+    @Override
+    public double getAmbientTemperature(@Nonnull Direction side) {
+        return ambientTemperature.getTemperature(side);
     }
 
     @Nullable

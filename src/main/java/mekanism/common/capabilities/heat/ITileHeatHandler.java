@@ -44,6 +44,10 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
         return new HeatTransfer(simulateAdjacent(), simulateEnvironment());
     }
 
+    default double getAmbientTemperature(Direction side) {
+        return HeatAPI.AMBIENT_TEMP;
+    }
+
     default double simulateEnvironment() {
         double environmentTransfer = 0;
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -51,7 +55,7 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
             //transfer to air otherwise
             double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + getTotalInverseInsulation(side) + getTotalInverseConductionCoefficient(side);
             //transfer heat difference based on environment temperature (ambient)
-            double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
+            double tempToTransfer = (getTotalTemperature(side) - getAmbientTemperature(side)) / invConduction;
             handleHeat(-tempToTransfer * heatCapacity, side);
             environmentTransfer += tempToTransfer;
         }
@@ -66,7 +70,7 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
             double heatCapacity = getTotalHeatCapacity(side);
             if (sink != null) {
                 double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
-                double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
+                double tempToTransfer = (getTotalTemperature(side) - sink.getTotalTemperature()) / invConduction;
                 handleHeat(-tempToTransfer * heatCapacity, side);
                 sink.handleHeat(tempToTransfer * heatCapacity);
                 if (!(sink instanceof TileEntityTransmitter) || !TransmissionType.HEAT.checkTransmissionType((TileEntityTransmitter) sink)) {

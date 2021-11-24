@@ -28,6 +28,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
@@ -111,7 +112,8 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         slurryTanks = Collections.singletonList(storedSlurry = ChemicalTankBuilder.SLURRY.create(MekanismConfig.general.entangloporterChemicalBuffer.get(), this));
         inventorySlots = Collections.singletonList(storedItem = EntangloporterInventorySlot.create(this));
         energyContainers = Collections.singletonList(storedEnergy = BasicEnergyContainer.create(MekanismConfig.general.entangloporterEnergyBuffer.get(), this));
-        heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(1, 1, 1_000, this));
+        heatCapacitors = Collections.singletonList(storedHeat = BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, HeatAPI.DEFAULT_INVERSE_CONDUCTION,
+              1_000, null, this));
     }
 
     @Override

@@ -11,6 +11,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.heat.HeatCapacitorHelper;
@@ -61,9 +62,9 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+    protected IHeatCapacitorHolder getInitialHeatCapacitors(CachedAmbientTemperature ambientTemperature) {
         HeatCapacitorHelper builder = HeatCapacitorHelper.forSide(this::getDirection);
-        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(100, 5, 100, this));
+        builder.addCapacitor(heatCapacitor = BasicHeatCapacitor.create(100, 5, 100, ambientTemperature, this));
         return builder.build();
     }
 

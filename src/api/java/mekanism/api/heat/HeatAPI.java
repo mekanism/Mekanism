@@ -1,5 +1,6 @@
 package mekanism.api.heat;
 
+import javax.annotation.Nullable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
 
@@ -36,7 +37,7 @@ public class HeatAPI {
      * Gets the atmospheric temperature at a given spot in the specified world based on the biome's temperature modifier at that position. The baseline temperature
      * modifier is taken to be the plains biome, or a biome with a temperature modifier of 0.8.
      *
-     * @param world World.
+     * @param world World; if {@code null} {@link #AMBIENT_TEMP} is returned instead.
      * @param pos   Position in the world.
      *
      * @return Atmospheric temperature at the given position.
@@ -44,7 +45,11 @@ public class HeatAPI {
      * @implNote This method is a helper to call {@link #getAmbientTemp(double)} using the temperature of the biome at the location specified.
      * @see #AMBIENT_TEMP
      */
-    public static double getAmbientTemp(IWorldReader world, BlockPos pos) {
+    public static double getAmbientTemp(@Nullable IWorldReader world, BlockPos pos) {
+        if (world == null) {
+            return AMBIENT_TEMP;
+        }
+        //TODO - 10.1: Do we need to do checks about if the position is loaded (and if the position is in the world?, for example not above max y)
         return getAmbientTemp(world.getBiome(pos).getTemperature(pos));
     }
 
@@ -65,7 +70,6 @@ public class HeatAPI {
         //See implementation note about this range. If any other mods do have valid more extreme temperatures,
         // we may want to consider expanding this range to [-10, 10]
         biomeTemp = Math.max(Math.min(biomeTemp, 5), -5);
-        //TODO: Make use of this and the other getAmbientTemp helper in more places than just evaporation multiblocks
         return AMBIENT_TEMP + 25 * (biomeTemp - 0.8);
     }
 

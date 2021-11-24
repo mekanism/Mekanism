@@ -9,6 +9,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -59,7 +60,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
 
     @Nonnull
     @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+    protected IHeatCapacitorHolder getInitialHeatCapacitors(CachedAmbientTemperature ambientTemperature) {
         return side -> getMultiblock().getHeatCapacitors(side);
     }
 
