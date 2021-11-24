@@ -44,7 +44,7 @@ public class MekanismSoundProvider extends BaseSoundProvider {
         addSoundEventWithSubtitle(MekanismSounds.ENERGIZED_SMELTER, Mekanism.rl(basePath + "energized_smelter"));
         addSoundEventWithSubtitle(MekanismSounds.ISOTOPIC_CENTRIFUGE, Mekanism.rl(basePath + "isotopic_centrifuge"));
         addSoundEventWithSubtitle(MekanismSounds.NUTRITIONAL_LIQUIFIER, Mekanism.rl(basePath + "nutritional_liquifier"));
-        addSoundEventWithSubtitle(MekanismSounds.INDUSTRIAL_ALARM, Mekanism.rl(basePath + "industrial_alarm"));
+        addSoundEventWithSubtitle(MekanismSounds.INDUSTRIAL_ALARM, Mekanism.rl(basePath + "industrial_alarm"), 128);
         addSoundEventWithSubtitle(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER, Mekanism.rl(basePath + "antiprotonic_nucleosynthesizer"));
         //TODO - 10.1: Actually create sounds for these machines and add them
         //addSoundEventWithSubtitle(MekanismSounds.PIGMENT_EXTRACTOR, Mekanism.rl(basePath + "pigment_extractor"));

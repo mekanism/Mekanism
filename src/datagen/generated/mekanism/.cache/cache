@@ -154,7 +154,7 @@ c7181d53186374a647e7cf34237820a1a0dd81a0 assets/mekanism/models/item/superheated
 fa6512208feb8d8194da7f12d003bd97c57e69e3 assets/mekanism/models/item/uranium_hexafluoride_bucket.json
 728c060c219764de51661a9cae75980bb60f18f7 assets/mekanism/models/item/uranium_ore.json
 dba7d09f164a0f838d403d5fcbb0662584fbcd0c assets/mekanism/models/item/uranium_oxide_bucket.json
-45aa875b37c740360e768f3845358c49e860d225 assets/mekanism/sounds.json
+a7cfb1683e13e40abd38c6e773fc608472aeb91b assets/mekanism/sounds.json
 8e559c50c083efd4ea1d44deefe886dfa41aba1d data/create/tags/fluids/no_infinite_draining.json
 5ba124118746786175ed10c4eea2834b7622e7d9 data/forge/tags/blocks/chests.json
 8d9a785d66c9847b06109e41ad61c71906f7c585 data/forge/tags/blocks/chests/electric.json

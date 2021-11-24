@@ -33,6 +33,10 @@ public abstract class BaseSoundProvider extends SoundDefinitionsProvider {
         add(soundEventRO, definition().with(sound(location)));
     }
 
+    protected void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location, int attenuationDistance) {
+        add(soundEventRO, definition(soundEventRO).with(sound(location).attenuationDistance(attenuationDistance)));
+    }
+
     protected void addSoundEventWithSubtitle(SoundEventRegistryObject<?> soundEventRO, ResourceLocation location) {
         add(soundEventRO, definition(soundEventRO).with(sound(location)));
     }
