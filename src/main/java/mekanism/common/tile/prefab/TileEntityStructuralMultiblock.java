@@ -219,8 +219,9 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    protected void dumpRadiation() {
-        //NO-OP we handle dumping radiation separately for multiblocks
+    protected boolean shouldDumpRadiation() {
+        //We handle dumping radiation separately for multiblocks
+        return false;
     }
 
     @Override

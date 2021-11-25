@@ -18,7 +18,9 @@ public interface ITileComponent {
     default void trackForMainContainer(MekanismContainer container) {
     }
 
-    void addToUpdateTag(CompoundNBT updateTag);
+    default void addToUpdateTag(CompoundNBT updateTag) {
+    }
 
-    void readFromUpdateTag(CompoundNBT updateTag);
+    default void readFromUpdateTag(CompoundNBT updateTag) {
+    }
 }

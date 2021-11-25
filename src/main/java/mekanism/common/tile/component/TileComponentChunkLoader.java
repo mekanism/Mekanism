@@ -230,14 +230,6 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         }
     }
 
-    @Override
-    public void addToUpdateTag(CompoundNBT updateTag) {
-    }
-
-    @Override
-    public void readFromUpdateTag(CompoundNBT updateTag) {
-    }
-
     private void markDirty() {
         if (tile.hasLevel()) {
             //Marks the chunk as dirty so it can properly save
