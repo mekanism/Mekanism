@@ -418,6 +418,7 @@ public class MekanismRenderer {
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_helmet"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_exoskeleton"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_gravitational_modulator"));
+        event.addSprite(Mekanism.rl("entity/armor/mekasuit_elytra"));
         event.addSprite(Mekanism.rl("entity/armor/mekasuit_armor_modules"));
         event.addSprite(Mekanism.rl("entity/armor/mekatool"));
 

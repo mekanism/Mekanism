@@ -11,6 +11,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +31,7 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.client.model.BaseModelCache.ModelData;
+import mekanism.client.model.BaseModelCache.OBJModelData;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.lib.QuadTransformation;
@@ -57,7 +60,9 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -89,6 +94,20 @@ public class MekaSuitArmor extends CustomArmor {
         registerModule("solar_helmet", MekanismModules.SOLAR_RECHARGING_UNIT, EquipmentSlotType.HEAD);
         registerModule("jetpack", MekanismModules.JETPACK_UNIT, EquipmentSlotType.CHEST);
         registerModule("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlotType.CHEST);
+        registerModule(MekanismModules.ELYTRA_UNIT, EquipmentSlotType.CHEST, (slot, module) -> new ModuleModelSpec(slot, module, "elytra") {
+            @Override
+            public boolean isActive(LivingEntity entity) {
+                return entity.isFallFlying();
+            }
+
+            @Override
+            public boolean activeStateMatches(String name, boolean active) {
+                return active != name.contains("inactive_elytra_");
+            }
+        });
+        //TODO - 10.1: Should inactive ones be on the various arms instead of body?? Or maybe a wing model type transform
+        //TODO - 10.1: Figure out why when fall flying but "walking" the mesh for the wings do very weird things, wrong rotation??
+        //TODO - 10.1: Revert changes to old modules models? Previous attempt caused crashes
     }
 
     private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vector3d(-1, 0.5, 0)));
@@ -97,7 +116,7 @@ public class MekaSuitArmor extends CustomArmor {
         @Override
         @SuppressWarnings("unchecked")
         public ArmorQuads load(@Nonnull QuickHash key) {
-            return createQuads((Set<ModuleModelSpec>) key.get()[0], (Set<EquipmentSlotType>) key.get()[1], (boolean) key.get()[2]);
+            return createQuads((Set<Pair<ModuleModelSpec, Boolean>>) key.get()[0], (Set<EquipmentSlotType>) key.get()[1], (boolean) key.get()[2]);
         }
     });
 
@@ -239,7 +258,7 @@ public class MekaSuitArmor extends CustomArmor {
         }
     }
 
-    private ArmorQuads createQuads(Set<ModuleModelSpec> modules, Set<EquipmentSlotType> wornParts, boolean hasMekaTool) {
+    private ArmorQuads createQuads(Set<Pair<ModuleModelSpec, Boolean>> modules, Set<EquipmentSlotType> wornParts, boolean hasMekaTool) {
         Map<ModelData, Map<ModelPos, Set<String>>> specialQuadsToRender = new Object2ObjectOpenHashMap<>();
         Map<ModelData, Map<ModelPos, Set<String>>> specialLEDQuadsToRender = new Object2ObjectOpenHashMap<>();
         // map of normal model part name to overwritten model part name (i.e. helmet_head_center1 -> override_solar_helmet_helmet_head_center1)
@@ -248,36 +267,25 @@ public class MekaSuitArmor extends CustomArmor {
 
         if (!modules.isEmpty()) {
             //TODO: At some point it may make sense to source this from specialModels
-            ModelData modelData = MekanismModelCache.INSTANCE.MEKASUIT_MODULES;
+            ModuleOBJModelData modelData = MekanismModelCache.INSTANCE.MEKASUIT_MODULES;
             Map<ModelPos, Set<String>> quadsToRender = specialQuadsToRender.computeIfAbsent(modelData, d -> new EnumMap<>(ModelPos.class));
             Map<ModelPos, Set<String>> ledQuadsToRender = specialLEDQuadsToRender.computeIfAbsent(modelData, d -> new EnumMap<>(ModelPos.class));
             Set<String> matchedParts = new HashSet<>();
-            for (IModelGeometryPart part : modelData.getModel().getParts()) {
-                String name = part.name();
-                //Find the "best" spec by checking all the specs and finding out which one is listed first
-                // this way if we are overriding another module, then we just put the module that is overriding
-                // the other one first in the name so that it gets the spec matched to it
-                ModuleModelSpec matchingSpec = null;
-                int bestIndex = -1;
-                for (ModuleModelSpec spec : modules) {
-                    int index = name.indexOf(spec.name + "_");
-                    if (index != -1 && (bestIndex == -1 || index < bestIndex)) {
-                        bestIndex = index;
-                        matchingSpec = spec;
+            for (Pair<ModuleModelSpec, Boolean> specData : modules) {
+                ModuleModelSpec spec = specData.getLeft();
+                boolean active = specData.getRight();
+                for (String name : modelData.getPartsForSpec(spec)) {
+                    if (spec.activeStateMatches(name, active)) {
+                        if (name.contains(OVERRIDDEN_TAG)) {
+                            overrides.put(spec.processOverrideName(name), Pair.of(modelData, name));
+                        }
+                        // if this armor unit controls rendering of this module
+                        if (type == spec.slotType) {
+                            // then add the part as one we will need to add to render, this way we can ensure
+                            // we respect any overrides that might be in a later model part
+                            matchedParts.add(name);
+                        }
                     }
-                }
-                if (matchingSpec == null) {
-                    // skip if there is no matching spec
-                    continue;
-                }
-                if (name.contains(OVERRIDDEN_TAG)) {
-                    overrides.put(matchingSpec.processOverrideName(name), Pair.of(modelData, name));
-                }
-                // if this armor unit controls rendering of this module
-                if (type == matchingSpec.slotType) {
-                    // then add the part as one we will need to add to render, this way we can ensure
-                    // we respect any overrides that might be in a later model part
-                    matchedParts.add(name);
                 }
             }
             //For all the parts we matched, go through and try adding them, while respecting any overrides we might have
@@ -425,6 +433,21 @@ public class MekaSuitArmor extends CustomArmor {
             this.modelSpec = s -> s.contains(this.name + "_");
         }
 
+        /**
+         * Score closest to zero is considered best, negative one for no match at all.
+         */
+        public int score(String name) {
+            return name.indexOf(this.name + "_");
+        }
+
+        public boolean isActive(LivingEntity entity) {
+            return true;
+        }
+
+        public boolean activeStateMatches(String name, boolean active) {
+            return true;
+        }
+
         public boolean contains(String s) {
             return modelSpec.test(s);
         }
@@ -443,12 +466,17 @@ public class MekaSuitArmor extends CustomArmor {
     }
 
     private static void registerModule(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlotType slotType) {
+        registerModule(moduleDataProvider, slotType, (slot, module) -> new ModuleModelSpec(slot, module, name));
+    }
+
+    private static void registerModule(IModuleDataProvider<?> moduleDataProvider, EquipmentSlotType slotType,
+          BiFunction<ModuleData<?>, EquipmentSlotType, ModuleModelSpec> specCreator) {
         ModuleData<?> module = moduleDataProvider.getModuleData();
-        moduleModelSpec.put(slotType, module, new ModuleModelSpec(module, slotType, name));
+        moduleModelSpec.put(slotType, module, specCreator.apply(module, slotType));
     }
 
     public QuickHash key(LivingEntity player) {
-        Set<ModuleModelSpec> modules = new ObjectOpenHashSet<>();
+        Set<Pair<ModuleModelSpec, Boolean>> modules = new ObjectOpenHashSet<>();
         Set<EquipmentSlotType> wornParts = EnumSet.noneOf(EquipmentSlotType.class);
         boolean hasMekaTool = player.getItemBySlot(EquipmentSlotType.MAINHAND).getItem() instanceof ItemMekaTool;
         IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
@@ -459,11 +487,49 @@ public class MekaSuitArmor extends CustomArmor {
             }
             for (Map.Entry<ModuleData<?>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {
                 if (moduleHelper.isEnabled(wornItem, entry.getKey())) {
-                    modules.add(entry.getValue());
+                    ModuleModelSpec spec = entry.getValue();
+                    modules.add(Pair.of(spec, spec.isActive(player)));
                 }
             }
         }
         return new QuickHash(modules, wornParts, hasMekaTool);
+    }
+
+    public static class ModuleOBJModelData extends OBJModelData {
+
+        private final Map<ModuleModelSpec, Set<String>> specParts = new Object2ObjectOpenHashMap<>();
+
+        public ModuleOBJModelData(ResourceLocation rl) {
+            super(rl);
+        }
+
+        public Set<String> getPartsForSpec(ModuleModelSpec spec) {
+            return specParts.getOrDefault(spec, Collections.emptySet());
+        }
+
+        @Override
+        protected void reload(ModelBakeEvent evt) {
+            super.reload(evt);
+            Collection<ModuleModelSpec> modules = moduleModelSpec.values();
+            for (IModelGeometryPart part : getModel().getParts()) {
+                String name = part.name();
+                //Find the "best" spec by checking all the specs and finding out which one is listed first
+                // this way if we are overriding another module, then we just put the module that is overriding
+                // the other one first in the name so that it gets the spec matched to it
+                ModuleModelSpec matchingSpec = null;
+                int bestScore = -1;
+                for (ModuleModelSpec spec : modules) {
+                    int score = spec.score(name);
+                    if (score != -1 && (bestScore == -1 || score < bestScore)) {
+                        bestScore = score;
+                        matchingSpec = spec;
+                    }
+                }
+                if (matchingSpec != null) {
+                    specParts.computeIfAbsent(matchingSpec, spec -> new HashSet<>()).add(name);
+                }
+            }
+        }
     }
 
     private static class MekaSuitModelConfiguration implements IModelConfiguration {

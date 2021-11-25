@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.robit.RobitSkin;
+import mekanism.client.render.armor.MekaSuitArmor.ModuleOBJModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -22,7 +23,7 @@ public class MekanismModelCache extends BaseModelCache {
     private final Set<Runnable> callbacks = new HashSet<>();
 
     public final OBJModelData MEKASUIT = registerOBJ(Mekanism.rl("models/entity/mekasuit.obj"));
-    public final OBJModelData MEKASUIT_MODULES = registerOBJ(Mekanism.rl("models/entity/mekasuit_modules.obj"));
+    public final ModuleOBJModelData MEKASUIT_MODULES = register(Mekanism.rl("models/entity/mekasuit_modules.obj"), ModuleOBJModelData::new);
     public final OBJModelData MEKATOOL = registerOBJ(Mekanism.rl("models/entity/mekatool.obj"));
 
     public final JSONModelData[] QIO_DRIVES = new JSONModelData[DriveStatus.STATUSES.length];
