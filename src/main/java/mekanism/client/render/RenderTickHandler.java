@@ -378,9 +378,9 @@ public class RenderTickHandler {
                         actualState = world.getBlockState(actualPos);
                     }
                 }
-                if (Attribute.has(actualState.getBlock(), AttributeCustomSelectionBox.class)) {
+                if (Attribute.has(actualState, AttributeCustomSelectionBox.class)) {
                     WireFrameRenderer renderWireFrame = null;
-                    if (Attribute.get(actualState.getBlock(), AttributeCustomSelectionBox.class).isJavaModel()) {
+                    if (Attribute.get(actualState, AttributeCustomSelectionBox.class).isJavaModel()) {
                         //If we use a TER to render the wire frame, grab the tile
                         TileEntity tile = WorldUtils.getTileEntity(world, actualPos);
                         if (tile != null) {

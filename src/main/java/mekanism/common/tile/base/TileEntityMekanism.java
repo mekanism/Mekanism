@@ -484,7 +484,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
 
-            NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(blockProvider.getBlock(), AttributeGui.class).getProvider(this), worldPosition);
+            NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(getBlockType(), AttributeGui.class).getProvider(this), worldPosition);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
@@ -879,7 +879,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
-            return Attribute.get(blockProvider.getBlock(), AttributeUpgradeSupport.class).getSupportedUpgrades();
+            return Attribute.get(getBlockType(), AttributeUpgradeSupport.class).getSupportedUpgrades();
         }
         return Collections.emptySet();
     }

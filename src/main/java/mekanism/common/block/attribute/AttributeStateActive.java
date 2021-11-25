@@ -29,7 +29,7 @@ public class AttributeStateActive implements AttributeState {
 
     @Override
     public BlockState copyStateData(BlockState oldState, BlockState newState) {
-        if (Attribute.has(newState.getBlock(), AttributeStateActive.class)) {
+        if (Attribute.has(newState, AttributeStateActive.class)) {
             newState = newState.setValue(activeProperty, oldState.getValue(activeProperty));
         }
         return newState;

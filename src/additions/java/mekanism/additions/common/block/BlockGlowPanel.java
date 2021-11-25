@@ -48,7 +48,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     @Deprecated
     public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
-        if (facing.getOpposite() == Attribute.get(state.getBlock(), AttributeStateFacing.class).getDirection(state) && !state.canSurvive(world, currentPos)) {
+        if (facing.getOpposite() == Attribute.get(state, AttributeStateFacing.class).getDirection(state) && !state.canSurvive(world, currentPos)) {
             return Blocks.AIR.defaultBlockState();
         }
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
@@ -57,7 +57,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
     @Override
     @Deprecated
     public boolean canSurvive(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos) {
-        Direction side = Attribute.get(state.getBlock(), AttributeStateFacing.class).getDirection(state);
+        Direction side = Attribute.get(state, AttributeStateFacing.class).getDirection(state);
         Direction sideOn = side.getOpposite();
         BlockPos offsetPos = pos.relative(sideOn);
         VoxelShape projected = world.getBlockState(offsetPos).getBlockSupportShape(world, offsetPos).getFaceShape(side);

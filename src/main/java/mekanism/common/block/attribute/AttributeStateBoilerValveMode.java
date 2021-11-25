@@ -21,7 +21,7 @@ public class AttributeStateBoilerValveMode implements AttributeState {
 
     @Override
     public BlockState copyStateData(BlockState oldState, BlockState newState) {
-        if (Attribute.has(newState.getBlock(), AttributeStateBoilerValveMode.class)) {
+        if (Attribute.has(newState, AttributeStateBoilerValveMode.class)) {
             newState = newState.setValue(modeProperty, oldState.getValue(modeProperty));
         }
         return newState;

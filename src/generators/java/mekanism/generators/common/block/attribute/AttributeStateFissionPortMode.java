@@ -23,7 +23,7 @@ public class AttributeStateFissionPortMode implements AttributeState {
 
     @Override
     public BlockState copyStateData(BlockState oldState, BlockState newState) {
-        if (Attribute.has(newState.getBlock(), AttributeStateFissionPortMode.class)) {
+        if (Attribute.has(newState, AttributeStateFissionPortMode.class)) {
             newState = newState.setValue(modeProperty, oldState.getValue(modeProperty));
         }
         return newState;

@@ -26,7 +26,7 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     private EnumColor color;
 
     public LogisticalTransporter(IBlockProvider blockProvider, TileEntityTransmitter tile) {
-        super(tile, Attribute.getTier(blockProvider.getBlock(), TransporterTier.class));
+        super(tile, Attribute.getTier(blockProvider, TransporterTier.class));
     }
 
     @Override
