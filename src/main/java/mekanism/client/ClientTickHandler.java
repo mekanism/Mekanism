@@ -217,7 +217,7 @@ public class ClientTickHandler {
                 }
             }
 
-            if (isScubaMaskOn(minecraft.player) && minecraft.player.getAirSupply() == 300) {
+            if (isScubaMaskOn(minecraft.player) && minecraft.player.getAirSupply() == minecraft.player.getMaxAirSupply()) {
                 for (EffectInstance effect : minecraft.player.getActiveEffects()) {
                     for (int i = 0; i < 9; i++) {
                         MekanismUtils.speedUpEffectSafely(minecraft.player, effect);

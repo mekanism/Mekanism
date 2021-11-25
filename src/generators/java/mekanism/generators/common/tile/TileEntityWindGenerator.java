@@ -95,15 +95,19 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
     private FloatingLong getMultiplier() {
-        if (level != null && level.canSeeSky(getBlockPos().above(4))) {
-            int minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
-            int maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
-            float clampedY = Math.min(maxY, Math.max(minY, getBlockPos().getY() + 4));
-            FloatingLong minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
-            FloatingLong maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
-            FloatingLong slope = maxG.subtract(minG).divide(maxY - minY);
-            FloatingLong toGen = minG.add(slope.multiply(clampedY - minY));
-            return toGen.divide(minG);
+        if (level != null) {
+            BlockPos top = getBlockPos().above(4);
+            if (level.getFluidState(top).isEmpty() && level.canSeeSky(top)) {
+                //Validate it isn't fluid logged to help try and prevent https://github.com/mekanism/Mekanism/issues/7344
+                int minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
+                int maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
+                float clampedY = Math.min(maxY, Math.max(minY, top.getY()));
+                FloatingLong minG = MekanismGeneratorsConfig.generators.windGenerationMin.get();
+                FloatingLong maxG = MekanismGeneratorsConfig.generators.windGenerationMax.get();
+                FloatingLong slope = maxG.subtract(minG).divide(maxY - minY);
+                FloatingLong toGen = minG.add(slope.multiply(clampedY - minY));
+                return toGen.divide(minG);
+            }
         }
         return FloatingLong.ZERO;
     }
