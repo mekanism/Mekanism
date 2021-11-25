@@ -168,7 +168,6 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFissionReactorCasing> FISSION_REACTOR_CASING = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_CASING, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_CASING)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
-          .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
@@ -177,7 +176,6 @@ public class GeneratorsBlockTypes {
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT)
           .with(new AttributeStateFissionPortMode(), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
-          .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
           .withComputerSupport("fissionReactorPort")
           .build();

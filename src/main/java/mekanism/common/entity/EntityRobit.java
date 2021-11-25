@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -15,6 +16,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.DataHandlerUtils;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.energy.IEnergyContainer;
@@ -24,6 +26,7 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToItemStackCachedRecipe;
@@ -31,6 +34,9 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
+import mekanism.api.robit.IRobit;
+import mekanism.api.robit.RobitSkin;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -57,8 +63,10 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDamageSource;
+import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.MekanismUtils;
@@ -85,11 +93,13 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -98,6 +108,9 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraft.world.server.TicketType;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ITeleporter;
@@ -106,14 +119,21 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends CreatureEntity implements IMekanismInventory, ISustainedInventory, ISecurityObject, IMekanismStrictEnergyHandler,
+public class EntityRobit extends CreatureEntity implements IRobit, IMekanismInventory, ISustainedInventory, ISecurityObject, IMekanismStrictEnergyHandler,
       ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
+    public static final ModelProperty<ResourceLocation> SKIN_TEXTURE_PROPERTY = new ModelProperty<>();
+
+    private static <T> DataParameter<T> define(IDataSerializer<T> dataSerializer) {
+        return EntityDataManager.defineId(EntityRobit.class, dataSerializer);
+    }
+
     private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, 20);
-    private static final DataParameter<String> OWNER_UUID = EntityDataManager.defineId(EntityRobit.class, DataSerializers.STRING);
-    private static final DataParameter<String> OWNER_NAME = EntityDataManager.defineId(EntityRobit.class, DataSerializers.STRING);
-    private static final DataParameter<Boolean> FOLLOW = EntityDataManager.defineId(EntityRobit.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> DROP_PICKUP = EntityDataManager.defineId(EntityRobit.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<UUID> OWNER_UUID = define(MekanismDataSerializers.UUID.getSerializer());
+    private static final DataParameter<String> OWNER_NAME = define(DataSerializers.STRING);
+    private static final DataParameter<Boolean> FOLLOW = define(DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DROP_PICKUP = define(DataSerializers.BOOLEAN);
+    private static final DataParameter<RobitSkin> SKIN = define(MekanismDataSerializers.<RobitSkin>getRegistryEntrySerializer());
     public static final FloatingLong MAX_ENERGY = FloatingLong.createConst(100_000);
     private static final FloatingLong DISTANCE_MULTIPLIER = FloatingLong.createConst(1.5);
     //TODO: Note the robit smelts at double normal speed, we may want to make this configurable
@@ -121,7 +141,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     private static final int ticksRequired = 100;
     private SecurityMode securityMode = SecurityMode.PUBLIC;
     public Coord4D homeLocation;
-    public boolean texTick;
+    private int lastTextureUpdate;
+    private int textureIndex;
     private int progress;
 
     /**
@@ -212,10 +233,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        entityData.define(OWNER_UUID, "");
+        //Default before it has a brief chance to get set the owner to mekanism's fake player
+        entityData.define(OWNER_UUID, Mekanism.gameProfile.getId());
         entityData.define(OWNER_NAME, "");
         entityData.define(FOLLOW, false);
         entityData.define(DROP_PICKUP, false);
+        entityData.define(SKIN, MekanismRobitSkins.BASE.get());
     }
 
     private FloatingLong getRoundedTravelEnergy() {
@@ -389,6 +412,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         item.setName(stack, getName());
         item.setOwnerUUID(stack, getOwnerUUID());
         item.setSecurity(stack, getSecurityMode());
+        item.setSkin(stack, getSkin());
         return stack;
     }
 
@@ -425,6 +449,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         nbtTags.put(NBTConstants.ENERGY_CONTAINERS, DataHandlerUtils.writeContainers(getEnergyContainers(null)));
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
+        nbtTags.putString(NBTConstants.SKIN, getSkin().getRegistryName().toString());
     }
 
     @Override
@@ -438,6 +463,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
         DataHandlerUtils.readContainers(getEnergyContainers(null), nbtTags.getList(NBTConstants.ENERGY_CONTAINERS, NBT.TAG_COMPOUND));
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
+        NBTUtils.setRegistryEntryIfPresentElse(nbtTags, NBTConstants.SKIN, MekanismAPI.robitSkinRegistry(), skin -> setSkin(skin, null),
+              () -> setSkin(MekanismRobitSkins.BASE, null));
     }
 
     @Override
@@ -453,10 +480,12 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
         }
         amount = getDamageAfterArmorAbsorb(damageSource, amount);
         amount = getDamageAfterMagicAbsorb(damageSource, amount);
-        float j = getHealth();
-
+        if (damageSource == DamageSource.FALL) {
+            //Half the "potential" damage the Robit can take from falling
+            amount /= 2;
+        }
         energyContainer.extract(FloatingLong.create(1_000 * amount), Action.EXECUTE, AutomationType.INTERNAL);
-        getCombatTracker().recordDamage(damageSource, j, amount);
+        getCombatTracker().recordDamage(damageSource, getHealth(), amount);
     }
 
     @Override
@@ -485,7 +514,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     @Nonnull
     @Override
     public UUID getOwnerUUID() {
-        return UUID.fromString(entityData.get(OWNER_UUID));
+        return entityData.get(OWNER_UUID);
     }
 
     @Override
@@ -528,7 +557,7 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
     }
 
     public void setOwnerUUID(UUID uuid) {
-        entityData.set(OWNER_UUID, uuid.toString());
+        entityData.set(OWNER_UUID, uuid);
         entityData.set(OWNER_NAME, MekanismUtils.getLastKnownUsername(uuid));
     }
 
@@ -623,7 +652,8 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
               .setOperatingTicksChanged(operatingTicks -> progress = operatingTicks);
     }
 
-    public void addContainerTrackers(@Nonnull ContainerType<?> containerType, MekanismContainer container) {
+    public void addContainerTrackers(MekanismContainer container) {
+        ContainerType<?> containerType = container.getType();
         container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, this::getSecurityMode, this::setSecurityMode));
         if (containerType == MekanismContainerTypes.MAIN_ROBIT.getContainerType()) {
             container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
@@ -642,5 +672,69 @@ public class EntityRobit extends CreatureEntity implements IMekanismInventory, I
                 return Optional.ofNullable(worldBlockPosTBiFunction.apply(getCommandSenderWorld(), blockPosition()));
             }
         };
+    }
+
+    @Nonnull
+    @Override
+    public RobitSkin getSkin() {
+        return entityData.get(SKIN);
+    }
+
+    @Override
+    public boolean setSkin(@Nonnull IRobitSkinProvider skinProvider, @Nullable PlayerEntity player) {
+        Objects.requireNonNull(skinProvider, "Robit skin cannot be null.");
+        RobitSkin skin = skinProvider.getSkin();
+        if (player != null) {
+            if (!SecurityUtils.canAccess(player, this) || !skin.isUnlocked(player)) {
+                return false;
+            }
+        }
+        entityData.set(SKIN, skin);
+        return true;
+    }
+
+    /**
+     * @apiNote Only call on the client.
+     */
+    public IModelData getModelData() {
+        //TODO: Eventually we might want to evaluate caching this model data object
+        return new ModelDataMap.Builder().withInitial(SKIN_TEXTURE_PROPERTY, getModelTexture()).build();
+    }
+
+    /**
+     * @apiNote Only call on the client.
+     */
+    private ResourceLocation getModelTexture() {
+        RobitSkin skin = getSkin();
+        List<ResourceLocation> textures = skin.getTextures();
+        if (textures.isEmpty()) {
+            textureIndex = 0;
+            Mekanism.logger.error("Robit Skin: {}, has no textures; resetting skin to base.", skin.getRegistryName());
+            setSkin(MekanismRobitSkins.BASE, null);
+            if (getSkin().getTextures().isEmpty()) {
+                //This should not happen but if it does throw a cleaner error than a stack overflow
+                throw new IllegalStateException("Base robit skin has no textures defined.");
+            }
+            return getModelTexture();
+        }
+        int textureCount = textures.size();
+        if (textureCount == 1) {
+            textureIndex = 0;
+        } else {
+            if (lastTextureUpdate < tickCount) {
+                //Only check for movement and if the texture index needs to update if we haven't already done so this tick
+                lastTextureUpdate = tickCount;
+                if (Math.abs(getX() - xo) + Math.abs(getZ() - zo) > 0.001) {
+                    //If the robit moved and the ticks are such that it should update, update the index
+                    if (tickCount % 3 == 0) {
+                        textureIndex++;
+                    }
+                }
+            }
+            if (textureIndex >= textureCount) {
+                textureIndex = textureIndex % textureCount;
+            }
+        }
+        return textures.get(textureIndex);
     }
 }

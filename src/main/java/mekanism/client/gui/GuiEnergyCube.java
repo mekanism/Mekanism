@@ -21,11 +21,11 @@ public class GuiEnergyCube extends GuiConfigurableTile<TileEntityEnergyCube, Mek
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.WIDE, this, 55, 18));
-        addButton(new GuiEnergyTab(() -> Arrays.asList(MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getInputRate())),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getTier().getOutput()))), this));
+        addButton(new GuiEnergyTab(this, () -> Arrays.asList(MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(tile.getInputRate())),
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getTier().getOutput())))));
     }
 
     @Override

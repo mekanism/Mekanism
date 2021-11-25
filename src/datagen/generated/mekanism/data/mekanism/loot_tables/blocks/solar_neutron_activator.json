@@ -52,11 +52,6 @@
           ],
           "name": "mekanism:solar_neutron_activator"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

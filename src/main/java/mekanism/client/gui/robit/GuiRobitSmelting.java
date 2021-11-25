@@ -19,8 +19,8 @@ public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiProgress(robit::getScaledProgress, ProgressType.BAR, this, 78, 38).jeiCategories(MekanismBlocks.ENERGIZED_SMELTER.getRegistryName()));
     }
 

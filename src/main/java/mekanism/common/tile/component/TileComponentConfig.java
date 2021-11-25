@@ -201,15 +201,36 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public ConfigInfo setupIOConfig(TransmissionType type, Object inputContainer, Object outputContainer, RelativeSide outputSide, boolean alwaysAllow) {
-        ConfigInfo gasConfig = getConfig(type);
-        if (gasConfig != null) {
-            gasConfig.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, inputContainer));
-            gasConfig.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, outputContainer));
-            gasConfig.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, Arrays.asList(inputContainer, outputContainer)));
-            gasConfig.fill(DataType.INPUT);
-            gasConfig.setDataType(DataType.OUTPUT, outputSide);
+        return setupIOConfig(type, inputContainer, outputContainer, outputSide, alwaysAllow, alwaysAllow);
+    }
+
+    public ConfigInfo setupIOConfig(TransmissionType type, Object inputContainer, Object outputContainer, RelativeSide outputSide, boolean alwaysAllowInput,
+          boolean alwaysAllowOutput) {
+        ConfigInfo config = getConfig(type);
+        if (config != null) {
+            config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllowOutput, inputContainer));
+            config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllowInput, true, outputContainer));
+            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, Arrays.asList(inputContainer, outputContainer)));
+            config.fill(DataType.INPUT);
+            config.setDataType(DataType.OUTPUT, outputSide);
         }
-        return gasConfig;
+        return config;
+    }
+
+    public ConfigInfo setupIOConfig(TransmissionType type, Object info, RelativeSide outputSide) {
+        return setupIOConfig(type, info, outputSide, false);
+    }
+
+    public ConfigInfo setupIOConfig(TransmissionType type, Object info, RelativeSide outputSide, boolean alwaysAllow) {
+        ConfigInfo config = getConfig(type);
+        if (config != null) {
+            config.addSlotInfo(DataType.INPUT, createInfo(type, true, alwaysAllow, info));
+            config.addSlotInfo(DataType.OUTPUT, createInfo(type, alwaysAllow, true, info));
+            config.addSlotInfo(DataType.INPUT_OUTPUT, createInfo(type, true, true, info));
+            config.fill(DataType.INPUT);
+            config.setDataType(DataType.OUTPUT, outputSide);
+        }
+        return config;
     }
 
     public ConfigInfo setupItemIOConfig(IInventorySlot inputSlot, IInventorySlot outputSlot, IInventorySlot energySlot) {
@@ -436,16 +457,20 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     private void incrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
-        configInfo.get(type).incrementDataType(side);
-        sideChanged(type, side);
+        ConfigInfo configInfo = this.configInfo.get(type);
+        if (configInfo.getDataType(side) != configInfo.incrementDataType(side)) {
+            sideChanged(type, side);
+        }
     }
 
     @ComputerMethod
     private void decrementMode(TransmissionType type, RelativeSide side) throws ComputerException {
         tile.validateSecurityIsPublic();
         validateSupportedTransmissionType(type);
-        configInfo.get(type).decrementDataType(side);
-        sideChanged(type, side);
+        ConfigInfo configInfo = this.configInfo.get(type);
+        if (configInfo.getDataType(side) != configInfo.decrementDataType(side)) {
+            sideChanged(type, side);
+        }
     }
     //End computer related methods
 }

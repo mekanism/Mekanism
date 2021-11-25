@@ -7,8 +7,8 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
-import mekanism.client.MekKeyHandler;
-import mekanism.client.MekanismKeyHandler;
+import mekanism.client.key.MekKeyHandler;
+import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.inventory.container.ContainerProvider;
@@ -38,9 +38,9 @@ public class ItemSeismicReader extends ItemEnergized {
 
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.descriptionKey)) {
+        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
             tooltip.add(MekanismLang.DESCRIPTION_SEISMIC_READER.translate());
-        } else if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
+        } else if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             super.appendHoverText(stack, world, tooltip, flag);
         } else {
             tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));

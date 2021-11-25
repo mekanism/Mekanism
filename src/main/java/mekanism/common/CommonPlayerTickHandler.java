@@ -16,7 +16,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
-import mekanism.common.content.gear.mekasuit.ModuleInhalationPurificationUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
 import mekanism.common.entity.EntityFlame;
@@ -154,7 +153,7 @@ public class CommonPlayerTickHandler {
             if (player.getAirSupply() == max) {
                 for (EffectInstance effect : player.getActiveEffects()) {
                     for (int i = 0; i < 9; i++) {
-                        effect.tick(player, () -> MekanismUtils.onChangedPotionEffect(player, effect, true));
+                        MekanismUtils.speedUpEffectSafely(player, effect);
                     }
                 }
             }
@@ -244,36 +243,26 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onEntityAttacked(LivingAttackEvent event) {
-        if (event.getAmount() <= 0) {
+        LivingEntity entity = event.getEntityLiving();
+        if (event.getAmount() <= 0 || !entity.isAlive()) {
             //If some mod does weird things and causes the damage value to be negative or zero then exit
             // as our logic assumes there is actually damage happening and can crash if someone tries to
-            // use a negative number as the damage value
+            // use a negative number as the damage value. We also check to make sure that we don't do
+            // anything if the entity is dead as living attack is still fired when the entity is dead
+            // for things like fall damage if the entity dies before hitting the ground, and then energy
+            // would be depleted regardless if keep inventory is on even if no damage was stopped as the
+            // entity can't take damage while dead
             return;
         }
-        LivingEntity entity = event.getEntityLiving();
         //Gas Mask checks
         if (event.getSource().isMagic()) {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlotType.HEAD);
-            if (!headStack.isEmpty()) {
-                if (headStack.getItem() instanceof ItemScubaMask) {
-                    ItemStack chestStack = entity.getItemBySlot(EquipmentSlotType.CHEST);
-                    if (!chestStack.isEmpty()) {
-                        if (chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
-                            ChemicalUtil.hasGas(chestStack)) {
-                            event.setCanceled(true);
-                            return;
-                        }
-                    }
-                } else {
-                    //Note: We have this here in addition to listening to LivingHurt, so as if we can fully block the damage
-                    // then we don't play the hurt effect/sound, as cancelling LivingHurtEvent still causes that to happen
-                    IModule<ModuleInhalationPurificationUnit> module = MekanismAPI.getModuleHelper().load(headStack, MekanismModules.INHALATION_PURIFICATION_UNIT);
-                    if (module != null && module.isEnabled()) {
-                        if (tryAbsorbAll(event, module.getEnergyContainer(), MekanismConfig.gear.mekaSuitMagicDamageRatio,
-                              MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce)) {
-                            return;
-                        }
-                    }
+            if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
+                ItemStack chestStack = entity.getItemBySlot(EquipmentSlotType.CHEST);
+                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
+                    ChemicalUtil.hasGas(chestStack)) {
+                    event.setCanceled(true);
+                    return;
                 }
             }
         }
@@ -282,10 +271,11 @@ public class CommonPlayerTickHandler {
         if (event.getSource() == DamageSource.FALL) {
             //Free runner checks
             FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
-            if (info != null) {
-                tryAbsorbAll(event, info.container, info.damageRatio, info.energyCost);
+            if (info != null && tryAbsorbAll(event, info.container, info.damageRatio, info.energyCost)) {
+                return;
             }
-        } else if (entity instanceof PlayerEntity) {
+        }
+        if (entity instanceof PlayerEntity) {
             if (ItemMekaSuitArmor.tryAbsorbAll((PlayerEntity) entity, event.getSource(), event.getAmount())) {
                 event.setCanceled(true);
             }
@@ -294,26 +284,23 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
-        if (event.getAmount() <= 0) {
-            //If some mod does weird things and causes the damage value to be negative (or zero instead of just cancelling)
-            // then exit as our logic assumes there is actually damage happening and can crash if someone tries to use a
-            // negative number as the damage value
+        LivingEntity entity = event.getEntityLiving();
+        if (event.getAmount() <= 0 || !entity.isAlive()) {
+            //If some mod does weird things and causes the damage value to be negative or zero then exit
+            // as our logic assumes there is actually damage happening and can crash if someone tries to
+            // use a negative number as the damage value. We also check to make sure that we don't do
+            // anything if the entity is dead as living attack is still fired when the entity is dead
+            // for things like fall damage if the entity dies before hitting the ground, and then energy
+            // would be depleted regardless if keep inventory is on even if no damage was stopped as the
+            // entity can't take damage while dead. While living hurt is not fired, we catch this case
+            // just in case anyways because it is a simple boolean check and there is no guarantee that
+            // other mods may not be firing the event manually even when the entity is dead
             return;
         }
-        LivingEntity entity = event.getEntityLiving();
         if (event.getSource() == DamageSource.FALL) {
             FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
             if (info != null && handleDamage(event, info.container, info.damageRatio, info.energyCost)) {
                 return;
-            }
-        } else if (event.getSource().isMagic()) {
-            ItemStack headStack = entity.getItemBySlot(EquipmentSlotType.HEAD);
-            if (!headStack.isEmpty()) {
-                IModule<ModuleInhalationPurificationUnit> module = MekanismAPI.getModuleHelper().load(headStack, MekanismModules.INHALATION_PURIFICATION_UNIT);
-                if (module != null && module.isEnabled() && handleDamage(event, module.getEnergyContainer(), MekanismConfig.gear.mekaSuitMagicDamageRatio,
-                      MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce)) {
-                    return;
-                }
             }
         }
         if (entity instanceof PlayerEntity) {

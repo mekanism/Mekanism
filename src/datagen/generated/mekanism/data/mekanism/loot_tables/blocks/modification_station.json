@@ -42,11 +42,6 @@
           ],
           "name": "mekanism:modification_station"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

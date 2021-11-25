@@ -47,6 +47,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         TYPE mode = getMode();
         if (mode != null) {
             displayTooltip(matrix, mode.getDescription(), mouseX, mouseY);

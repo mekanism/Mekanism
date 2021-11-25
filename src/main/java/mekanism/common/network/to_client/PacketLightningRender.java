@@ -1,6 +1,8 @@
 package mekanism.common.network.to_client;
 
+import java.util.function.BooleanSupplier;
 import mekanism.client.render.RenderTickHandler;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
@@ -28,7 +30,9 @@ public class PacketLightningRender implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        RenderTickHandler.renderBolt(renderer, preset.boltCreator.create(start, end, segments));
+        if (preset.shouldAdd.getAsBoolean()) {
+            RenderTickHandler.renderBolt(renderer, preset.boltCreator.create(start, end, segments));
+        }
     }
 
     @Override
@@ -56,12 +60,16 @@ public class PacketLightningRender implements IMekanismPacket {
     }
 
     public enum LightningPreset {
-        MAGNETIC_ATTRACTION((start, end, segments) -> new BoltEffect(BoltRenderInfo.ELECTRICITY, start, end, segments).size(0.04F).lifespan(8).spawn(SpawnFunction.noise(8, 4))),
-        TOOL_AOE((start, end, segments) -> new BoltEffect(BoltRenderInfo.ELECTRICITY, start, end, segments).size(0.015F).lifespan(12).spawn(SpawnFunction.NO_DELAY));
+        MAGNETIC_ATTRACTION(MekanismConfig.client.renderMagneticAttractionParticles, (start, end, segments) ->
+              new BoltEffect(BoltRenderInfo.ELECTRICITY, start, end, segments).size(0.04F).lifespan(8).spawn(SpawnFunction.noise(8, 4))),
+        TOOL_AOE(MekanismConfig.client.renderToolAOEParticles, (start, end, segments) ->
+              new BoltEffect(BoltRenderInfo.ELECTRICITY, start, end, segments).size(0.015F).lifespan(12).spawn(SpawnFunction.NO_DELAY));
 
+        private final BooleanSupplier shouldAdd;
         private final BoltCreator boltCreator;
 
-        LightningPreset(BoltCreator boltCreator) {
+        LightningPreset(BooleanSupplier shouldAdd, BoltCreator boltCreator) {
+            this.shouldAdd = shouldAdd;
             this.boltCreator = boltCreator;
         }
     }

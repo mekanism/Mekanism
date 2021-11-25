@@ -22,6 +22,7 @@ public class GuiTransporterConfigTab<TILE extends TileEntityMekanism & ISideConf
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         displayTooltip(matrix, MekanismLang.TRANSPORTER_CONFIG.translate(), mouseX, mouseY);
     }
 

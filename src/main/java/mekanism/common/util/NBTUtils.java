@@ -12,6 +12,7 @@ import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Coord4D;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfuseType;
@@ -23,6 +24,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongConsumer;
+import mekanism.api.robit.RobitSkin;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -31,6 +33,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 @ParametersAreNonnullByDefault
 public class NBTUtils {
@@ -239,9 +243,45 @@ public class NBTUtils {
         }
     }
 
+    public static void setResourceLocationIfPresentElse(CompoundNBT nbt, String key, Consumer<ResourceLocation> setter, Runnable notPresent) {
+        if (nbt.contains(key, NBT.TAG_STRING)) {
+            ResourceLocation value = ResourceLocation.tryParse(nbt.getString(key));
+            if (value == null) {
+                notPresent.run();
+            } else {
+                setter.accept(value);
+            }
+        }
+    }
+
+    public static <REG extends IForgeRegistryEntry<REG>> void setRegistryEntryIfPresentElse(CompoundNBT nbt, String key, IForgeRegistry<REG> registry,
+          Consumer<REG> setter, Runnable notPresent) {
+        setResourceLocationIfPresentElse(nbt, key, rl -> {
+            REG reg = registry.getValue(rl);
+            if (reg == null) {
+                notPresent.run();
+            } else {
+                setter.accept(reg);
+            }
+        }, notPresent);
+    }
+
     public static <ENUM extends Enum<ENUM>> void setEnumIfPresent(CompoundNBT nbt, String key, Int2ObjectFunction<ENUM> indexLookup, Consumer<ENUM> setter) {
         if (nbt.contains(key, NBT.TAG_INT)) {
             setter.accept(indexLookup.apply(nbt.getInt(key)));
         }
+    }
+
+    public static <V extends IForgeRegistryEntry<V>> V readRegistryEntry(CompoundNBT nbt, String key, IForgeRegistry<V> registry, V fallback) {
+        if (nbt.contains(key, NBT.TAG_STRING)) {
+            ResourceLocation rl = ResourceLocation.tryParse(nbt.getString(key));
+            if (rl != null) {
+                V result = registry.getValue(rl);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return fallback;
     }
 }

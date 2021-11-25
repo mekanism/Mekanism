@@ -32,11 +32,12 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
     }
 
     @Override
-    protected void onUpdateServer(MatrixMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(MatrixMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed() && getActive()) {
             CableUtils.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.getEnergyContainer(), this);
         }
+        return needsPacket;
     }
 
     @Override

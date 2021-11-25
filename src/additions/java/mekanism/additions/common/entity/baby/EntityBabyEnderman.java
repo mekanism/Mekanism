@@ -1,18 +1,15 @@
 package mekanism.additions.common.entity.baby;
 
 import javax.annotation.Nonnull;
-import mekanism.additions.common.registries.AdditionsItems;
 import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.monster.EndermanEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -65,11 +62,6 @@ public class EntityBabyEnderman extends EndermanEntity implements IBabyEntity {
     @Override
     protected float getStandingEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
         return this.isBaby() ? 1.3F : super.getStandingEyeHeight(pose, size);
-    }
-
-    @Override
-    public ItemStack getPickedResult(RayTraceResult target) {
-        return AdditionsItems.BABY_ENDERMAN_SPAWN_EGG.getItemStack();
     }
 
     @Nonnull

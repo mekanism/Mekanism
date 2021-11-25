@@ -37,12 +37,10 @@ public class GearConfig extends BaseMekanismConfig {
     //Atomic Disassembler
     public final CachedFloatingLongValue disassemblerEnergyUsage;
     public final CachedFloatingLongValue disassemblerEnergyUsageWeapon;
-    public final CachedIntValue disassemblerMiningRange;
     public final CachedIntValue disassemblerMiningCount;
     public final CachedBooleanValue disassemblerSlowMode;
     public final CachedBooleanValue disassemblerFastMode;
     public final CachedBooleanValue disassemblerVeinMining;
-    public final CachedBooleanValue disassemblerExtendedMining;
     public final CachedIntValue disassemblerMinDamage;
     public final CachedIntValue disassemblerMaxDamage;
     public final CachedFloatingLongValue disassemblerMaxEnergy;
@@ -63,6 +61,7 @@ public class GearConfig extends BaseMekanismConfig {
     //Flamethrower
     public final CachedLongValue flamethrowerMaxGas;
     public final CachedLongValue flamethrowerFillRate;
+    public final CachedBooleanValue flamethrowerDestroyItems;
     //Free runner
     public final CachedFloatingLongValue freeRunnerFallEnergyCost;
     public final CachedFloatValue freeRunnerFallDamageRatio;
@@ -105,6 +104,8 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedFloatingLongValue mekaToolEnergyUsageHoe;
     public final CachedFloatingLongValue mekaToolEnergyUsageShovel;
     public final CachedFloatingLongValue mekaToolEnergyUsageAxe;
+    public final CachedFloatingLongValue mekaToolEnergyUsageShearBlock;
+    public final CachedFloatingLongValue mekaToolEnergyUsageShearEntity;
     public final CachedBooleanValue mekaToolExtendedMining;
     //MekaSuit
     public final CachedFloatingLongValue mekaSuitBaseEnergyCapacity;
@@ -140,8 +141,6 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsage", FloatingLong.createConst(10));
         disassemblerEnergyUsageWeapon = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Atomic Disassembler as a weapon.",
               "energyUsageWeapon", FloatingLong.createConst(2_000));
-        disassemblerMiningRange = CachedIntValue.wrap(this, builder.comment("The Range of the Atomic Disassembler Extended Vein Mining.")
-              .define("miningRange", 10));
         disassemblerMiningCount = CachedIntValue.wrap(this, builder.comment("The max Atomic Disassembler Vein Mining Block Count.")
               .define("miningCount", 128));
         disassemblerSlowMode = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Slow' mode for the Atomic Disassembler.")
@@ -149,9 +148,7 @@ public class GearConfig extends BaseMekanismConfig {
         disassemblerFastMode = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Fast' mode for the Atomic Disassembler.")
               .define("fastMode", true));
         disassemblerVeinMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Vein Mining' mode for the Atomic Disassembler.")
-              .define("veinMining", true));
-        disassemblerExtendedMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Extended Vein Mining' mode for the Atomic Disassembler. (Allows vein mining everything not just ores/logs)")
-              .define("extendedMining", true));
+              .define("veinMining", false));
         disassemblerMinDamage = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it is out of power. (Value is in number of half hearts)")
               .define("minDamage", 4));
         disassemblerMaxDamage = CachedIntValue.wrap(this, builder.comment("The amount of damage the Atomic Disassembler does when it has at least energyUsageWeapon power stored. (Value is in number of half hearts)")
@@ -196,6 +193,8 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("maxGas", 24_000, 1, Long.MAX_VALUE));
         flamethrowerFillRate = CachedLongValue.wrap(this, builder.comment("Amount of hydrogen the Flamethrower can accept per tick.")
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
+        flamethrowerDestroyItems = CachedBooleanValue.wrap(this, builder.comment("Determines whether or not the Flamethrower can destroy items if it fails to smelt them.")
+              .define("destroyItems", true));
         builder.pop();
 
         builder.comment("Free Runner Settings").push(FREE_RUNNER_CATEGORY);
@@ -216,7 +215,7 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
         builder.comment("Armored Jetpack Settings").push(ARMORED_JETPACK_SUBCATEGORY);
         armoredJetpackArmor = CachedIntValue.wrap(this, builder.comment("Armor value of the Armored Jetpack.")
-              .define("armor", 12));
+              .define("armor", 8));
         armoredJetpackToughness = CachedFloatValue.wrap(this, builder.comment("Toughness value of the Armored Jetpack.")
               .define("toughness", 2.0));
         builder.pop(2);
@@ -287,6 +286,10 @@ public class GearConfig extends BaseMekanismConfig {
               "energyUsageShovel", FloatingLong.createConst(10));
         mekaToolEnergyUsageAxe = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool as an axe for stripping logs.",
               "energyUsageAxe", FloatingLong.createConst(10));
+        mekaToolEnergyUsageShearBlock = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to shear blocks (beehives, pumpkins).",
+              "energyUsageShearBlock", FloatingLong.createConst(10));
+        mekaToolEnergyUsageShearEntity = CachedFloatingLongValue.define(this, builder, "Cost in Joules of using the Meka-Tool to shear entities.",
+              "energyUsageShearEntity", FloatingLong.createConst(10));
         mekaToolExtendedMining = CachedBooleanValue.wrap(this, builder.comment("Enable the 'Extended Vein Mining' mode for the Meka-Tool. (Allows vein mining everything not just ores/logs)")
               .define("extendedMining", true));
         builder.pop();

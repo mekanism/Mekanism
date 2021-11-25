@@ -116,10 +116,13 @@ public class MultiblockManager<T extends MultiblockData> {
         inventories.computeIfAbsent(tile.getCacheID(), id -> new CacheWrapper()).update(tile, multiblock);
     }
 
-    private class CacheWrapper {
+    public class CacheWrapper {
 
         private MultiblockCache<T> cache;
         private final Set<Coord4D> locations = new ObjectOpenHashSet<>();
+
+        private CacheWrapper() {
+        }
 
         public MultiblockCache<T> getCache() {
             return cache;

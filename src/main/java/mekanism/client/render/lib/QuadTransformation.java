@@ -94,7 +94,7 @@ public interface QuadTransformation {
 
         private final Direction side;
 
-        public SideTransformation(Direction side) {
+        protected SideTransformation(Direction side) {
             this.side = side;
         }
 
@@ -121,7 +121,7 @@ public interface QuadTransformation {
 
         private final Color color;
 
-        public ColorTransformation(Color color) {
+        protected ColorTransformation(Color color) {
             this.color = color;
         }
 
@@ -174,7 +174,7 @@ public interface QuadTransformation {
 
         private final Quaternion quaternion;
 
-        public RotationTransformation(Quaternion quaternion) {
+        protected RotationTransformation(Quaternion quaternion) {
             this.quaternion = quaternion;
         }
 
@@ -205,7 +205,7 @@ public interface QuadTransformation {
 
         private final Vector3d translation;
 
-        public TranslationTransformation(Vector3d translation) {
+        protected TranslationTransformation(Vector3d translation) {
             this.translation = translation;
         }
 
@@ -229,7 +229,7 @@ public interface QuadTransformation {
 
         private final TextureAtlasSprite texture;
 
-        public TextureTransformation(TextureAtlasSprite texture) {
+        protected TextureTransformation(TextureAtlasSprite texture) {
             this.texture = texture;
         }
 
@@ -258,7 +258,7 @@ public interface QuadTransformation {
         private final QuadTransformation original;
         private final Predicate<ResourceLocation> verifier;
 
-        public TextureFilteredTransformation(QuadTransformation original, Predicate<ResourceLocation> verifier) {
+        protected TextureFilteredTransformation(QuadTransformation original, Predicate<ResourceLocation> verifier) {
             this.original = original;
             this.verifier = verifier;
         }
@@ -290,7 +290,7 @@ public interface QuadTransformation {
         private final List<QuadTransformation> list;
         private final int hashCode;
 
-        public TransformationList(List<QuadTransformation> list) {
+        protected TransformationList(List<QuadTransformation> list) {
             this.list = list;
             hashCode = list.hashCode();
         }

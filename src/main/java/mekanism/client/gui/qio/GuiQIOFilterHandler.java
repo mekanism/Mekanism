@@ -49,8 +49,8 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiQIOFrequencyTab(this, tile));
         addButton(new GuiInnerScreen(this, 9, 16, imageWidth - 18, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
@@ -76,7 +76,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         addButton(new GuiElementHolder(this, 9, 30, 144, 68));
         //new filter button border
         addButton(new GuiElementHolder(this, 9, 98, 144, 22));
-        addButton(new TranslationButton(this, leftPos + 10, topPos + 99, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addButton(new TranslationButton(this, 10, 99, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiQIOFilerSelect(this, tile))));
         scrollBar = addButton(new GuiScrollBar(this, 153, 30, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info

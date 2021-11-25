@@ -72,11 +72,6 @@
           ],
           "name": "mekanism:elite_chemical_tank"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

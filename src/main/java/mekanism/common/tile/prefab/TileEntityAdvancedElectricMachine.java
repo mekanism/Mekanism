@@ -1,8 +1,8 @@
 package mekanism.common.tile.prefab;
 
-import java.util.function.LongSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
@@ -14,7 +14,8 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.ItemStackGasToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ItemStackConstantChemicalToItemStackCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ItemStackConstantChemicalToItemStackCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
@@ -38,21 +39,28 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.lookup.IDoubleRecipeLookupHandler.ItemChemicalRecipeLookupHandler;
+import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntityType;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackGasToItemStackRecipe> implements
-      ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe> {
+      ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
 
     public static final int BASE_TICKS_REQUIRED = 200;
     public static final long MAX_GAS = 210;
 
-    private double gasUsage = 1;
+    private final ChemicalUsageMultiplier gasUsageMultiplier;
+    private double gasPerTickMeanMultiplier = 1;
+    private long baseTotalUsage;
+    private long usedSoFar;
+
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
                                                                                         "getChemicalFilledPercentage"})
     public IGasTank gasTank;
@@ -84,6 +92,25 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         itemInputHandler = InputHelper.getInputHandler(inputSlot);
         gasInputHandler = InputHelper.getInputHandler(gasTank);
         outputHandler = OutputHelper.getOutputHandler(outputSlot);
+        baseTotalUsage = baseTicksRequired;
+        if (useStatisticalMechanics()) {
+            //Note: Statistical mechanics works best by just using the mean gas usage we want to target
+            // rather than adjusting the mean each time to try and reach a given target
+            gasUsageMultiplier = (usedSoFar, operatingTicks) -> StatUtils.inversePoisson(gasPerTickMeanMultiplier);
+        } else {
+            gasUsageMultiplier = (usedSoFar, operatingTicks) -> {
+                long baseRemaining = baseTotalUsage - usedSoFar;
+                int remainingTicks = getTicksRequired() - operatingTicks;
+                if (baseRemaining < remainingTicks) {
+                    //If we already used more than we would need to use (due to removing speed upgrades or adding gas upgrades)
+                    // then just don't use any gas this tick
+                    return 0;
+                } else if (baseRemaining == remainingTicks) {
+                    return 1;
+                }
+                return Math.max(MathUtils.clampToLong(baseRemaining / (double) remainingTicks), 0);
+            };
+        }
     }
 
     @Nonnull
@@ -115,12 +142,13 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     @Override
     protected void onUpdateServer() {
+        super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         secondarySlot.fillTankOrConvert();
         recipeCacheLookupMonitor.updateAndProcess();
     }
 
-    public boolean useStatisticalMechanics() {
+    protected boolean useStatisticalMechanics() {
         return false;
     }
 
@@ -133,13 +161,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Nonnull
     @Override
     public CachedRecipe<ItemStackGasToItemStackRecipe> createNewCachedRecipe(@Nonnull ItemStackGasToItemStackRecipe recipe, int cacheIndex) {
-        LongSupplier gasUsageMultiplier;
-        if (useStatisticalMechanics()) {
-            gasUsageMultiplier = () -> StatUtils.inversePoisson(gasUsage);
-        } else {
-            gasUsageMultiplier = () -> MathUtils.clampToLong(Math.ceil(gasUsage));
-        }
-        return new ItemStackGasToItemStackCachedRecipe<>(recipe, itemInputHandler, gasInputHandler, gasUsageMultiplier, outputHandler)
+        return new ItemStackConstantChemicalToItemStackCachedRecipe<>(recipe, itemInputHandler, gasInputHandler, gasUsageMultiplier, used -> usedSoFar = used, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)
@@ -151,16 +173,20 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
-        if (upgrade == Upgrade.SPEED || (upgrade == Upgrade.GAS && getSupportedUpgrade().contains(Upgrade.GAS))) {
-            gasUsage = MekanismUtils.getGasPerTickMeanMultiplier(this);
+        if (upgrade == Upgrade.SPEED || (upgrade == Upgrade.GAS && supportsUpgrade(Upgrade.GAS))) {
+            if (useStatisticalMechanics()) {
+                gasPerTickMeanMultiplier = MekanismUtils.getGasPerTickMeanMultiplier(this);
+            } else {
+                baseTotalUsage = MekanismUtils.getBaseUsage(this, baseTicksRequired);
+            }
         }
     }
 
     @Nonnull
     @Override
     public AdvancedMachineUpgradeData getUpgradeData() {
-        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), gasTank, secondarySlot, energySlot, inputSlot,
-              outputSlot, getComponents());
+        return new AdvancedMachineUpgradeData(redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), usedSoFar, gasTank, secondarySlot, energySlot,
+              inputSlot, outputSlot, getComponents());
     }
 
     public MachineEnergyContainer<TileEntityAdvancedElectricMachine> getEnergyContainer() {
@@ -171,6 +197,25 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
         //Allow exact match or factories of the same type (as we will just ignore the extra data)
         return super.isConfigurationDataCompatible(tileType) || MekanismUtils.isSameTypeFactory(getBlockType(), tileType);
+    }
+
+    @Override
+    public long getSavedUsedSoFar(int cacheIndex) {
+        return usedSoFar;
+    }
+
+    @Override
+    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
+        usedSoFar = nbtTags.getLong(NBTConstants.USED_SO_FAR);
+    }
+
+    @Nonnull
+    @Override
+    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        super.save(nbtTags);
+        nbtTags.putLong(NBTConstants.USED_SO_FAR, usedSoFar);
+        return nbtTags;
     }
 
     //Methods relating to IComputerTile

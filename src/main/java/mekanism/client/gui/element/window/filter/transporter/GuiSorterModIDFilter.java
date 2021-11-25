@@ -27,13 +27,13 @@ public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, Tile
 
     @Override
     protected int getLeftButtonX() {
-        return x + 24;
+        return relativeX + 24;
     }
 
     @Override
     protected void init() {
         super.init();
-        addSorterDefaults(gui(), filter, x, y, getSlotOffset(), this::addChild, tile::getSingleItem, (min, max) -> {
+        addSorterDefaults(gui(), filter, getSlotOffset(), this::addChild, tile::getSingleItem, (min, max) -> {
             minField = min;
             maxField = max;
         });

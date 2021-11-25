@@ -2,7 +2,7 @@ package mekanism.client;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,6 +11,7 @@ import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.gear.IModule;
 import mekanism.client.gui.GuiRadialSelector;
+import mekanism.client.key.MekKeyHandler;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.sound.GeigerSound;
 import mekanism.client.sound.SoundHandler;
@@ -21,7 +22,6 @@ import mekanism.common.base.KeySync;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
-import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemHDPEElytra;
 import mekanism.common.item.gear.ItemJetpack;
@@ -30,11 +30,11 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IRadialModeItem;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
+import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.to_server.PacketModeChange;
-import mekanism.common.network.to_server.PacketPortableTeleporterGui;
-import mekanism.common.network.to_server.PacketPortableTeleporterGui.PortableTeleporterPacketType;
+import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
 import mekanism.common.network.to_server.PacketRadialModeChange;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismModules;
@@ -73,7 +73,7 @@ public class ClientTickHandler {
 
     public static final Minecraft minecraft = Minecraft.getInstance();
     public static final Random rand = new Random();
-    public static final Map<PlayerEntity, TeleportData> portableTeleports = new Object2ObjectOpenHashMap<>();
+    public static final Map<PlayerEntity, TeleportData> portableTeleports = new Object2ObjectArrayMap<>(1);
     public boolean initHoliday = false;
     public boolean shouldReset = false;
     public static boolean firstTick = true;
@@ -91,10 +91,10 @@ public class ClientTickHandler {
             if (!chest.isEmpty()) {
                 JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chest);
                 if (mode == JetpackMode.NORMAL) {
-                    return minecraft.screen == null && minecraft.options.keyJump.isDown();
+                    return minecraft.screen == null && minecraft.player.input.jumping;
                 } else if (mode == JetpackMode.HOVER) {
-                    boolean ascending = minecraft.options.keyJump.isDown();
-                    boolean descending = minecraft.options.keyShift.isDown();
+                    boolean ascending = minecraft.player.input.jumping;
+                    boolean descending = minecraft.player.input.shiftKeyDown;
                     if (!ascending || descending || minecraft.screen != null) {
                         return !CommonPlayerTickHandler.isOnGroundOrSleeping(player);
                     }
@@ -136,12 +136,12 @@ public class ClientTickHandler {
         return !currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem);
     }
 
-    public static void portableTeleport(PlayerEntity player, Hand hand, TeleporterFrequency freq) {
+    public static void portableTeleport(PlayerEntity player, Hand hand, FrequencyIdentity identity) {
         int delay = MekanismConfig.gear.portableTeleporterDelay.get();
         if (delay == 0) {
-            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.TELEPORT, hand, freq));
+            Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterTeleport(hand, identity));
         } else {
-            portableTeleports.put(player, new TeleportData(hand, freq, minecraft.level.getGameTime() + delay));
+            portableTeleports.put(player, new TeleportData(hand, identity, minecraft.level.getGameTime() + delay));
         }
     }
 
@@ -196,9 +196,9 @@ public class ClientTickHandler {
                     double z = player.getZ() + rand.nextDouble() - 0.5D;
                     minecraft.level.addParticle(ParticleTypes.PORTAL, x, y, z, 0, 1, 0);
                 }
-
-                if (minecraft.level.getGameTime() == entry.getValue().teleportTime) {
-                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterGui(PortableTeleporterPacketType.TELEPORT, entry.getValue().hand, entry.getValue().freq));
+                TeleportData data = entry.getValue();
+                if (minecraft.level.getGameTime() == data.teleportTime) {
+                    Mekanism.packetHandler.sendToServer(new PacketPortableTeleporterTeleport(data.hand, data.identity));
                     iter.remove();
                 }
             }
@@ -207,12 +207,12 @@ public class ClientTickHandler {
             IModule<ModuleJetpackUnit> jetpackModule = MekanismAPI.getModuleHelper().load(chestStack, MekanismModules.JETPACK_UNIT);
 
             if (!chestStack.isEmpty() && (chestStack.getItem() instanceof ItemJetpack || jetpackModule != null)) {
-                MekanismClient.updateKey(minecraft.options.keyJump, KeySync.ASCEND);
+                MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
             }
 
             if (isJetpackActive(minecraft.player)) {
                 JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chestStack);
-                if (CommonPlayerTickHandler.handleJetpackMotion(minecraft.player, mode, minecraft.options.keyJump::isDown)) {
+                if (CommonPlayerTickHandler.handleJetpackMotion(minecraft.player, mode, () -> minecraft.player.input.jumping)) {
                     minecraft.player.fallDistance = 0.0F;
                 }
             }
@@ -220,29 +220,31 @@ public class ClientTickHandler {
             if (isScubaMaskOn(minecraft.player) && minecraft.player.getAirSupply() == 300) {
                 for (EffectInstance effect : minecraft.player.getActiveEffects()) {
                     for (int i = 0; i < 9; i++) {
-                        effect.tick(minecraft.player, () -> MekanismUtils.onChangedPotionEffect(minecraft.player, effect, true));
+                        MekanismUtils.speedUpEffectSafely(minecraft.player, effect);
                     }
                 }
             }
 
             if (isVisionEnhancementOn(minecraft.player)) {
                 visionEnhancement = true;
-                // adds if it doesn't exist, otherwise tops off duration to 200
-                minecraft.player.addEffect(new EffectInstance(Effects.NIGHT_VISION, 200, 0, false, true, false));
+                // adds if it doesn't exist, otherwise tops off duration to 220. equal or less than 200 will make vision flickers
+                minecraft.player.addEffect(new EffectInstance(Effects.NIGHT_VISION, 220, 0, false, true, false));
             } else if (visionEnhancement) {
                 visionEnhancement = false;
-                minecraft.player.removeEffect(Effects.NIGHT_VISION);
+                EffectInstance effect = minecraft.player.getEffect(Effects.NIGHT_VISION);
+                if (effect != null && effect.getDuration() <= 220) {
+                    //Only remove it if it is our effect and not one that has a longer remaining duration
+                    minecraft.player.removeEffect(Effects.NIGHT_VISION);
+                }
             }
 
             ItemStack stack = minecraft.player.getItemBySlot(EquipmentSlotType.MAINHAND);
-            if (MekKeyHandler.isKeyDown(MekanismKeyHandler.handModeSwitchKey) && stack.getItem() instanceof IRadialModeItem) {
+            if (MekKeyHandler.isRadialPressed() && stack.getItem() instanceof IRadialModeItem) {
                 if (minecraft.screen == null || minecraft.screen instanceof GuiRadialSelector) {
                     updateSelectorRenderer((IRadialModeItem<?>) stack.getItem());
                 }
-            } else {
-                if (minecraft.screen instanceof GuiRadialSelector) {
-                    minecraft.setScreen(null);
-                }
+            } else if (minecraft.screen instanceof GuiRadialSelector) {
+                minecraft.setScreen(null);
             }
 
             if (MekanismConfig.client.enablePlayerSounds.get()) {
@@ -397,16 +399,17 @@ public class ClientTickHandler {
         }
     }
 
+    //TODO - 1.17: Convert this to a record
     private static class TeleportData {
 
         private final Hand hand;
-        private final TeleporterFrequency freq;
+        private final FrequencyIdentity identity;
         private final long teleportTime;
 
-        public TeleportData(Hand h, TeleporterFrequency f, long t) {
-            hand = h;
-            freq = f;
-            teleportTime = t;
+        public TeleportData(Hand hand, FrequencyIdentity identity, long teleportTime) {
+            this.hand = hand;
+            this.identity = identity;
+            this.teleportTime = teleportTime;
         }
     }
 }

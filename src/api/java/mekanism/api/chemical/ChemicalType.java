@@ -1,6 +1,6 @@
 package mekanism.api.chemical;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
@@ -26,10 +26,12 @@ public enum ChemicalType implements IStringSerializable {
     PIGMENT("pigment", c -> c instanceof Pigment),
     SLURRY("slurry", c -> c instanceof Slurry);
 
-    private static final Map<String, ChemicalType> nameToType = new Object2ObjectOpenHashMap<>();
+    private static final Map<String, ChemicalType> nameToType;
 
     static {
-        for (ChemicalType type : values()) {
+        ChemicalType[] values = values();
+        nameToType = new Object2ObjectArrayMap<>(values.length);
+        for (ChemicalType type : values) {
             nameToType.put(type.getSerializedName(), type);
         }
     }

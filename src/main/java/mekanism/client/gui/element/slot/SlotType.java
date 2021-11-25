@@ -19,6 +19,10 @@ public enum SlotType {
     ORE("ore.png", 18, 18),
     INNER_HOLDER_SLOT("inner_holder_slot.png", 18, 18);
 
+    private static final ResourceLocation WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_warning.png");
+    private static final ResourceLocation WIDE_WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_wide_warning.png");
+    private static final ResourceLocation LARGE_WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_large_warning.png");
+
     private final ResourceLocation texture;
     private final int width;
     private final int height;
@@ -27,6 +31,17 @@ public enum SlotType {
         this.texture = MekanismUtils.getResource(ResourceType.GUI_SLOT, texture);
         this.width = width;
         this.height = height;
+    }
+
+    public ResourceLocation getWarningTexture() {
+        switch (this) {
+            case OUTPUT_WIDE:
+                return WIDE_WARNING;
+            case OUTPUT_LARGE:
+                return LARGE_WARNING;
+            default:
+                return WARNING;
+        }
     }
 
     public ResourceLocation getTexture() {

@@ -1,6 +1,8 @@
 package mekanism.common.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.value.CachedBooleanValue;
@@ -11,6 +13,7 @@ import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
+import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
@@ -25,7 +28,9 @@ public class GeneralConfig extends BaseMekanismConfig {
 
     private static final String EJECT_CATEGORY = "auto_eject";
     private static final String MINER_CATEGORY = "digital_miner";
+    private static final String DYNAMIC_TANK = "dynamic_tank";
     private static final String LASER_SETTINGS = "laser";
+    private static final String OREDICTIONIFICATOR_CATEGORY = "oredictionificator";
     private static final String PUMP_CATEGORY = "pump";
     private static final String ENTANGLOPORTER_CATEGORY = "quantum_entangloporter";
     private static final String SECURITY_CATEGORY = "security";
@@ -54,6 +59,10 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Auto eject
     public final CachedIntValue fluidAutoEjectRate;
     public final CachedLongValue chemicalAutoEjectRate;
+    public final CachedDoubleValue dumpExcessKeepRatio;
+    //Dynamic Tank
+    public final CachedIntValue dynamicTankFluidPerTank;
+    public final CachedLongValue dynamicTankChemicalPerTank;
     //Prefilled
     public final CachedBooleanValue prefilledFluidTanks;
     public final CachedBooleanValue prefilledGasTanks;
@@ -90,6 +99,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue laserRange;
     public final CachedFloatingLongValue laserEnergyNeededPerHardness;
     public final CachedFloatingLongValue laserEnergyPerDamage;
+    //Oredictionificator
+    public final CachedOredictionificatorConfigValue validOredictionificatorFilters;
     //Pump
     public final CachedIntValue maxPumpRange;
     public final CachedBooleanValue pumpWaterSources;
@@ -147,11 +158,21 @@ public class GeneralConfig extends BaseMekanismConfig {
         maxSolarNeutronActivatorRate = CachedIntValue.wrap(this, builder.comment("Peak processing rate for the Solar Neutron Activator. Note: It can go higher than this value in some extreme environments.")
               .define("maxSolarNeutronActivatorRate", 64));
 
+        builder.comment("Dynamic Tank Settings").push(DYNAMIC_TANK);
+        int maxVolume = 18 * 18 * 18;
+        dynamicTankFluidPerTank = CachedIntValue.wrap(this, builder.comment("Amount of fluid (mB) that each block of the dynamic tank contributes to the volume. Max = volume * fluidPerTank")
+              .defineInRange("fluidPerTank", 350_000, 1, Integer.MAX_VALUE / maxVolume));
+        dynamicTankChemicalPerTank = CachedLongValue.wrap(this, builder.comment("Amount of chemical (mB) that each block of the dynamic tank contributes to the volume. Max = volume * chemicalPerTank")
+              .defineInRange("chemicalPerTank", 16_000_000, 1, Long.MAX_VALUE / maxVolume));
+        builder.pop();
+
         builder.comment("Auto Eject Settings").push(EJECT_CATEGORY);
         fluidAutoEjectRate = CachedIntValue.wrap(this, builder.comment("Rate at which fluid gets auto ejected from tiles.")
               .define("fluid", 1_024));
         chemicalAutoEjectRate = CachedLongValue.wrap(this, builder.comment("Rate at which chemicals gets auto ejected from tiles.")
               .defineInRange("chemical", 1_024L, 1, Long.MAX_VALUE));
+        dumpExcessKeepRatio = CachedDoubleValue.wrap(this, builder.comment("The percentage of a tank's capacity to leave contents in when set to dumping excess.")
+              .defineInRange("dumpExcessKeepRatio", 0.9D, 0.001D, 1D));
         builder.pop();
 
         builder.comment("Prefilled Tanks").push(PREFILLED_CATEGORY);
@@ -207,9 +228,9 @@ public class GeneralConfig extends BaseMekanismConfig {
         radiationNegativeEffectsMinSeverity = CachedDoubleValue.wrap(this, builder.comment("Defines the minimum severity radiation dosage severity (scale of 0 to 1) for which negative effects can take place. Set to 1 to disable negative effects completely.")
               .defineInRange("negativeEffectsMinSeverity", 0.1D, 0, 1));
         radioactiveWasteBarrelMaxGas = CachedLongValue.wrap(this, builder.comment("Amount of gas (mB) that can be stored in a Radioactive Waste Barrel.")
-              .defineInRange("radioactiveWasteBarrelMaxGas", 64_000, 1, Long.MAX_VALUE));
+              .defineInRange("radioactiveWasteBarrelMaxGas", 512_000, 1, Long.MAX_VALUE));
         radioactiveWasteBarrelProcessTicks = CachedIntValue.wrap(this, builder.comment("Number of ticks required for radioactive gas stored in a Radioactive Waste Barrel to decay radioactiveWasteBarrelDecayAmount mB.")
-              .defineInRange("radioactiveWasteBarrelProcessTicks", 1_200, 1, Integer.MAX_VALUE));
+              .defineInRange("radioactiveWasteBarrelProcessTicks", 20, 1, Integer.MAX_VALUE));
         radioactiveWasteBarrelDecayAmount = CachedLongValue.wrap(this, builder.comment("Number of mB of gas that decay every radioactiveWasteBarrelProcessTicks ticks when stored in a Radioactive Waste Barrel. Set to zero to disable decay all together. (Gases in the mekanism:waste_barrel_decay_blacklist tag will not decay).")
               .defineInRange("radioactiveWasteBarrelDecayAmount", 1, 0, Long.MAX_VALUE));
         builder.pop();
@@ -232,6 +253,11 @@ public class GeneralConfig extends BaseMekanismConfig {
               "energyNeededPerHardness", FloatingLong.createConst(100_000));
         laserEnergyPerDamage = CachedFloatingLongValue.define(this, builder, "Energy used per half heart of damage being transferred to entities.",
               "energyPerDamage", FloatingLong.createConst(2_500), CachedFloatingLongValue.POSITIVE);
+        builder.pop();
+
+        builder.comment("Oredictionificator Settings").push(OREDICTIONIFICATOR_CATEGORY);
+        validOredictionificatorFilters = CachedOredictionificatorConfigValue.define(this, builder.comment("The list of valid tag prefixes for the Oredictionificator. Note: It is highly recommended to only include well known/defined tag prefixes otherwise it is very easy to potentially add in accidental conversions of things that are not actually equivalent."),
+              "validItemFilters", () -> Collections.singletonMap("forge", Arrays.asList("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/")));
         builder.pop();
 
         builder.comment("Pump Settings").push(PUMP_CATEGORY);
@@ -261,7 +287,7 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("opsBypassRestrictions", false));
         builder.pop();
 
-        builder.comment("Nutritional PasteSettings").push(NUTRITIONAL_PASTE_CATEGORY);
+        builder.comment("Nutritional Paste Settings").push(NUTRITIONAL_PASTE_CATEGORY);
         nutritionalPasteSaturation = CachedFloatValue.wrap(this, builder.comment("Saturation level of Nutritional Paste when eaten.")
               .define("saturation", 0.8));
         nutritionalPasteMBPerFood = CachedIntValue.wrap(this, builder.comment("How much mB of Nutritional Paste equates to one 'half-food.'")

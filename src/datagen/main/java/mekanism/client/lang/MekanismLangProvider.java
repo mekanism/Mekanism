@@ -25,6 +25,7 @@ import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.registries.MekanismPigments;
+import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.resource.OreType;
@@ -52,6 +53,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addPigments();
         addSlurries();
         addDamageSources();
+        addRobitSkins();
         addSubtitles();
         addMisc();
     }
@@ -295,6 +297,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.CHARCOAL_BLOCK, "Charcoal Block");
         add(MekanismBlocks.REFINED_GLOWSTONE_BLOCK, "Refined Glowstone");
         add(MekanismBlocks.STEEL_BLOCK, "Steel Block");
+        add(MekanismBlocks.FLUORITE_BLOCK, "Fluorite Block");
         //Dynamic storage blocks
         for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             add(entry.getValue(), formatAndCapitalize(entry.getKey().getName()) + " Block");
@@ -332,8 +335,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addFluid(MekanismFluids.SULFURIC_ACID, "Sulfuric Acid");
         addFluid(MekanismFluids.HYDROGEN_CHLORIDE, "Liquid Hydrogen Chloride");
         addFluid(MekanismFluids.HYDROFLUORIC_ACID, "Liquid Hydrofluoric Acid");
+        addFluid(MekanismFluids.URANIUM_OXIDE, "Liquid Uranium Oxide");
+        addFluid(MekanismFluids.URANIUM_HEXAFLUORIDE, "Liquid Uranium Hexafluoride");
         addFluid(MekanismFluids.ETHENE, "Liquid Ethylene");
         addFluid(MekanismFluids.SODIUM, "Liquid Sodium");
+        addFluid(MekanismFluids.SUPERHEATED_SODIUM, "Liquid Superheated Sodium");
         addFluid(MekanismFluids.BRINE, "Brine");
         addFluid(MekanismFluids.LITHIUM, "Liquid Lithium");
         addFluid(MekanismFluids.STEAM, "Liquid Steam");
@@ -406,8 +412,17 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addDamageSources() {
-        add(MekanismDamageSource.LASER, "%s was incinerated.");
-        add(MekanismDamageSource.RADIATION, "%s was killed by radiation poisoning.");
+        add(MekanismDamageSource.LASER, "%s was incinerated.", "%s was incinerated whilst trying to escape %s.");
+        add(MekanismDamageSource.RADIATION, "%s was killed by radiation poisoning.", "%s was killed by radiation poisoning whilst trying to escape %s.");
+    }
+
+    private void add(MekanismDamageSource damageSource, String value, String valueEscaping) {
+        add(damageSource, value);
+        add(damageSource.getTranslationKey() + ".player", valueEscaping);
+    }
+
+    private void addRobitSkins() {
+        add(MekanismRobitSkins.BASE, "Default");
     }
 
     private void addSubtitles() {
@@ -551,6 +566,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.LIST_SORT, "Sort:");
         //JEI
         add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY, "%s / %s mB");
+        add(MekanismLang.JEI_INFO_HEAVY_WATER, "%s mB of Heavy Water can be extracted from a water source block via an electric pump with a filter upgrade installed.");
+        add(MekanismLang.JEI_INFO_MODULE_INSTALLATION, "Using a Modification Station, modules can be installed on the various MekaSuit pieces and on the Meka-Tool.");
         //Key
         add(MekanismLang.KEY_HAND_MODE, "Item Mode Switch");
         add(MekanismLang.KEY_HEAD_MODE, "Head Mode Switch");
@@ -716,6 +733,15 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DANGER, "Danger");
         add(MekanismLang.COMPASS, "Compass");
         add(MekanismLang.RADIAL_SCREEN, "Radial Selector Screen");
+        //GUI Issues
+        add(MekanismLang.ISSUES, "Issues:");
+        add(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY, " - Not enough energy to operate");
+        add(MekanismLang.ISSUE_NOT_ENOUGH_ENERGY_REDUCED_RATE, " - Not enough energy to run at maximum speed");
+        add(MekanismLang.ISSUE_NO_SPACE_IN_OUTPUT, " - Not enough room in output");
+        add(MekanismLang.ISSUE_NO_MATCHING_RECIPE, " - No matching recipe or not enough input");
+        add(MekanismLang.ISSUE_INPUT_DOESNT_PRODUCE_OUTPUT, " - Input does not produce output");
+        add(MekanismLang.ISSUE_INVALID_OREDICTIONIFICATOR_FILTER, " - Filter is no longer valid or supported");
+        add(MekanismLang.ISSUE_FILTER_HAS_BLACKLISTED_ELEMENT, " - Filter contains at least one element that is blacklisted");
         //Laser Amplifier
         add(MekanismLang.ENTITY_DETECTION, "Entity Detection");
         add(MekanismLang.ENERGY_CONTENTS, "Energy Contents");
@@ -882,7 +908,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.SORTER_FILTER_OVER_SIZED, "Max > 64");
         add(MekanismLang.SORTER_FILTER_SIZE_MISSING, "Max/min");
         add(MekanismLang.OREDICTIONIFICATOR_FILTER, "Oredictionificator Filter");
-        add(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG, "Incompatible tag");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_NAMESPACE, "Invalid tag namespace");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_PATH, "Invalid tag path");
+        add(MekanismLang.OREDICTIONIFICATOR_FILTER_UNSUPPORTED_TAG, "Unsupported tag");
         //Radioactive Waste Barrel
         add(MekanismLang.WASTE_BARREL_DECAY_RATE, "Decay Rate: %s mB/t");
         add(MekanismLang.WASTE_BARREL_DECAY_RATE_ACTUAL, "Actual Decay Rate: %s mB / %s ticks");
@@ -1010,7 +1038,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.MINER_VISUALS, "Visuals: %s");
         add(MekanismLang.MINER_VISUALS_TOO_BIG, "Radius too big to display visuals");
         add(MekanismLang.MINER_REQUIRE_REPLACE, "Require replace: %s");
-        add(MekanismLang.MINER_IS_INVERSE, "I: %s");
+        add(MekanismLang.MINER_REQUIRE_REPLACE_INVERSE, "Inverse mode requires replacement: %s");
         add(MekanismLang.MINER_RADIUS, "Radi: %s");
         add(MekanismLang.MINER_IDLE, "Not ready");
         add(MekanismLang.MINER_SEARCHING, "Searching");
@@ -1101,7 +1129,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DISASSEMBLER_SLOW, "slow");
         add(MekanismLang.DISASSEMBLER_FAST, "fast");
         add(MekanismLang.DISASSEMBLER_VEIN, "vein");
-        add(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, "extended vein mining");
         add(MekanismLang.DISASSEMBLER_OFF, "off");
         //Flamethrower Modes
         add(MekanismLang.FLAMETHROWER_MODE_CHANGE, "Flamethrower mode changed to: %s");
@@ -1134,6 +1161,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ROBIT_TELEPORT, "Teleport back home");
         add(MekanismLang.ROBIT_TOGGLE_PICKUP, "Toggle 'drop pickup' mode");
         add(MekanismLang.ROBIT_RENAME, "Rename this Robit");
+        add(MekanismLang.ROBIT_SKIN, "Skin: %s");
+        add(MekanismLang.ROBIT_SKIN_SELECT, "Change this Robit's appearance");
         add(MekanismLang.ROBIT_TOGGLE_FOLLOW, "Toggle 'follow' mode");
         add(MekanismLang.ROBIT_GREETING, "Hi, I'm %s!");
         add(MekanismLang.ROBIT_OWNER, "Owner: %s");
@@ -1208,8 +1237,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DESCRIPTION_PIGMENT_EXTRACTOR, "A machine used to extract pigments from blocks and items.");
         add(MekanismLang.DESCRIPTION_PIGMENT_MIXER, "A sturdy machine capable of mixing two pigments together to produce a new pigment.");
         add(MekanismLang.DESCRIPTION_PAINTING_MACHINE, "A machine used to color blocks and items via a careful application of a stored pigment.");
-        //TODO - 10.1: Re-evaluate if there is any way we can fix the single quotes not actually rendering around these words
-        // Using two single quotation marks before and after works, but will probably require special handling for making en_ud not have two
         add(MekanismLang.DESCRIPTION_RADIOACTIVE_WASTE_BARREL, "A barrel that can be used to 'safely' store radioactive waste. WARNING: breaking this barrel will release its contents into the atmosphere.");
         add(MekanismLang.DESCRIPTION_INDUSTRIAL_ALARM, "Not just your everyday alarm... this is an 'industrial' alarm!");
         add(MekanismLang.DESCRIPTION_ENERGY_CUBE, "An advanced device for storing and distributing energy.");
@@ -1266,6 +1293,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismModules.SILK_TOUCH_UNIT, "Silk Touch Unit", "Allows all mined blocks to drop as themselves.");
         add(MekanismModules.VEIN_MINING_UNIT, "Vein Mining Unit", "Allows for quick mining of ore deposits and rapid felling of trees.");
         add(MekanismModules.FARMING_UNIT, "Farming Unit", "Allows for soil tilling, log stripping, and soil flattening.");
+        add(MekanismModules.SHEARING_UNIT, "Shearing Unit", "Allows the creation of energy blades for precise cutting jobs. Does not add laser swords.");
         add(MekanismModules.TELEPORTATION_UNIT, "Teleportation Unit", "Provides for quick travel to nearby blocks.");
 
         add(MekanismModules.ELECTROLYTIC_BREATHING_UNIT, "Electrolytic Breathing Unit",

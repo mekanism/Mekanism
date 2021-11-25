@@ -54,17 +54,17 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
         getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
         addButton(new GuiInnerScreen(this, 7, 15, imageWidth - 16, 12, () -> {
             List<ITextComponent> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
-            if (freq != null) {
-                list.add(MekanismLang.FREQUENCY.translate(freq.getKey()));
-            } else {
+            if (freq == null) {
                 list.add(MekanismLang.NO_FREQUENCY.translate());
+            } else {
+                list.add(MekanismLang.FREQUENCY.translate(freq.getKey()));
             }
             return list;
         }).tooltip(() -> {
@@ -99,10 +99,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
-        drawString(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor());
+        drawTextScaledBound(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor(), 41);
         ITextComponent text = MekanismLang.LIST_SORT.translate();
-        int width = getStringWidth(text);
-        drawString(matrix, text, imageWidth - 66 - width, imageHeight - 92, titleTextColor());
+        drawString(matrix, text, imageWidth - 66 - getStringWidth(text), imageHeight - 92, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

@@ -38,10 +38,17 @@ public class NetworkAcceptorCache<ACCEPTOR> {
         for (Entry<BlockPos, Map<Direction, LazyOptional<ACCEPTOR>>> entry : other.cachedAcceptors.entrySet()) {
             BlockPos pos = entry.getKey();
             if (cachedAcceptors.containsKey(pos)) {
-                Map<Direction, LazyOptional<ACCEPTOR>> cached = cachedAcceptors.get(pos);
-                entry.getValue().forEach(cached::put);
+                cachedAcceptors.get(pos).putAll(entry.getValue());
             } else {
                 cachedAcceptors.put(pos, entry.getValue());
+            }
+        }
+        for (Entry<Transmitter<ACCEPTOR, ?, ?>, Set<Direction>> entry : other.changedAcceptors.entrySet()) {
+            Transmitter<ACCEPTOR, ?, ?> transmitter = entry.getKey();
+            if (changedAcceptors.containsKey(transmitter)) {
+                changedAcceptors.get(transmitter).addAll(entry.getValue());
+            } else {
+                changedAcceptors.put(transmitter, entry.getValue());
             }
         }
     }
@@ -64,6 +71,11 @@ public class NetworkAcceptorCache<ACCEPTOR> {
             }
             changedAcceptors.clear();
         }
+    }
+
+    public void deregister() {
+        cachedAcceptors.clear();
+        changedAcceptors.clear();
     }
 
     /**

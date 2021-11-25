@@ -39,6 +39,7 @@ import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
 import mekanism.common.inventory.container.sync.SyncableShort;
 import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
 import mekanism.common.inventory.container.sync.chemical.SyncableGasStack;
@@ -62,6 +63,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IntReferenceHolder;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public abstract class MekanismContainer extends Container implements ISecurityContainer {
 
@@ -69,6 +71,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     public static final int TRANSPORTER_CONFIG_WINDOW = 0;
     public static final int SIDE_CONFIG_WINDOW = 1;
     public static final int UPGRADE_WINDOW = 2;
+    public static final int SKIN_SELECT_WINDOW = 3;
 
     protected final PlayerInventory inv;
     protected final List<InventoryContainerSlot> inventoryContainerSlots = new ArrayList<>();
@@ -94,10 +97,18 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv) {
         super(type.getContainerType(), id);
         this.inv = inv;
-        if (!this.inv.player.level.isClientSide) {
+        if (!isRemote()) {
             //Only keep track of uuid based selected grids on the server (we use a size of one as for the most part containers are actually 1:1)
             selectedWindows = new HashMap<>(1);
         }
+    }
+
+    public boolean isRemote() {
+        return inv.player.level.isClientSide;
+    }
+
+    public UUID getPlayerUUID() {
+        return inv.player.getUUID();
     }
 
     @Nonnull
@@ -153,7 +164,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     @Override
     public boolean stillValid(@Nonnull PlayerEntity player) {
         //Is this the proper default
-        //TODO - 10.1: Re-evaluate this and maybe add in some distance based checks??
+        //TODO: Re-evaluate this and maybe add in some distance based checks??
         return true;
     }
 
@@ -164,7 +175,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
             if (!insertableSlot.canMergeWith(stack)) {
                 return false;
             }
-            SelectedWindowData selectedWindow = inv.player.level.isClientSide ? getSelectedWindow() : getSelectedWindow(inv.player.getUUID());
+            SelectedWindowData selectedWindow = isRemote() ? getSelectedWindow() : getSelectedWindow(getPlayerUUID());
             return insertableSlot.exists(selectedWindow) && super.canTakeItemForPickAll(stack, slot);
         }
         return super.canTakeItemForPickAll(stack, slot);
@@ -218,6 +229,10 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     protected void addSlots() {
     }
 
+    public List<InventoryContainerSlot> getInventoryContainerSlots() {
+        return Collections.unmodifiableList(inventoryContainerSlots);
+    }
+
     public List<MainInventorySlot> getMainInventorySlots() {
         return Collections.unmodifiableList(mainInventorySlots);
     }
@@ -263,7 +278,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
                 //Then as long as if we still have the same number of items (failed to insert), try to insert it into the tile's inventory slots allowing for empty items
                 stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, false, selectedWindow);
                 if (slotStack.getCount() == stackToInsert.getCount()) {
-                    //Else if we failed to do that also, try transferring to armor inventory, main inventory or the hot bar, depending which one we currently are in
+                    //Else if we failed to do that also, try transferring to armor inventory, main inventory or the hot bar, depending on which one we currently are in
                     if (currentSlot instanceof ArmorSlot || currentSlot instanceof OffhandSlot) {
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, true, selectedWindow);
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, true, selectedWindow);
@@ -271,12 +286,10 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
                         stackToInsert = insertItem(mainInventorySlots, stackToInsert, false, selectedWindow);
                     } else if (currentSlot instanceof MainInventorySlot) {
                         stackToInsert = insertItem(armorSlots, stackToInsert, false, selectedWindow);
-                        stackToInsert = insertItem(hotBarSlots, stackToInsert, true, selectedWindow);
-                        stackToInsert = insertItem(hotBarSlots, stackToInsert, false, selectedWindow);
+                        stackToInsert = insertItem(hotBarSlots, stackToInsert, selectedWindow);
                     } else if (currentSlot instanceof HotBarSlot) {
                         stackToInsert = insertItem(armorSlots, stackToInsert, false, selectedWindow);
-                        stackToInsert = insertItem(mainInventorySlots, stackToInsert, true, selectedWindow);
-                        stackToInsert = insertItem(mainInventorySlots, stackToInsert, false, selectedWindow);
+                        stackToInsert = insertItem(mainInventorySlots, stackToInsert, selectedWindow);
                     } else {
                         //TODO: Should we add a warning message so we can find out if we ever end up here. (Given we should never end up here anyways)
                     }
@@ -287,8 +300,22 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
             //If nothing changed then return that fact
             return ItemStack.EMPTY;
         }
-        //Otherwise decrease the stack by the amount we inserted, and return it as a new stack for what is now in the slot
+        //Otherwise, decrease the stack by the amount we inserted, and return it as a new stack for what is now in the slot
         return transferSuccess(currentSlot, player, slotStack, stackToInsert);
+    }
+
+    /**
+     * Helper to first try inserting ignoring empty slots, and then insert not ignoring empty slots
+     *
+     * @param slots          Slots to insert into
+     * @param stack          Stack to insert (do not modify).
+     * @param selectedWindow Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
+     *
+     * @return Remainder
+     */
+    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, @Nullable SelectedWindowData selectedWindow) {
+        stack = insertItem(slots, stack, true, selectedWindow);
+        return insertItem(slots, stack, false, selectedWindow);
     }
 
     /**
@@ -307,7 +334,7 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     /**
      * @param slots          Slots to insert into
      * @param stack          Stack to insert (do not modify).
-     * @param ignoreEmpty    {@code true} to ignore/skip empty slots.
+     * @param ignoreEmpty    {@code true} to ignore/skip empty slots, {@code false} to ignore/skip non-empty slots.
      * @param selectedWindow Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
      *
      * @return Remainder
@@ -315,14 +342,45 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
     @Nonnull
     public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty,
           @Nullable SelectedWindowData selectedWindow, Action action) {
+        return insertItem(slots, stack, ignoreEmpty, false, selectedWindow, action);
+    }
+
+    /**
+     * Helper to try inserting into any slots that exist empty or otherwise not bothering to try and stack first.
+     *
+     * @param slots          Slots to insert into
+     * @param stack          Stack to insert (do not modify).
+     * @param selectedWindow Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
+     *
+     * @return Remainder
+     */
+    @Nonnull
+    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItemCheckAll(List<SLOT> slots, @Nonnull ItemStack stack,
+          @Nullable SelectedWindowData selectedWindow, Action action) {
+        //Ignore empty is ignored when check all is true
+        return insertItem(slots, stack, false, true, selectedWindow, action);
+    }
+
+    /**
+     * @param slots          Slots to insert into
+     * @param stack          Stack to insert (do not modify).
+     * @param ignoreEmpty    {@code true} to ignore/skip empty slots, {@code false} to ignore/skip non-empty slots.
+     * @param checkAll       {@code true} to check all slots regardless of empty state. When this is {@code true}, {@code ignoreEmpty} is ignored.
+     * @param selectedWindow Selected window, or null if there is no window selected. This mostly only really matters in relation to VirtualInventoryContainerSlots
+     *
+     * @return Remainder
+     */
+    @Nonnull
+    public static <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @Nonnull ItemStack stack, boolean ignoreEmpty, boolean checkAll,
+          @Nullable SelectedWindowData selectedWindow, Action action) {
         if (stack.isEmpty()) {
             //Skip doing anything if the stack is already empty.
             // Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call
             return stack;
         }
         for (SLOT slot : slots) {
-            if (ignoreEmpty && !slot.hasItem()) {
-                //Skip checking empty stacks if we want to ignore them
+            if (!checkAll && ignoreEmpty != slot.hasItem()) {
+                //Skip checking empty stacks if we want to ignore them, and skipp non-empty stacks if we don't want ot ignore them
                 continue;
             } else if (!slot.exists(selectedWindow)) {
                 // or if the slot doesn't "exist" for the current window configuration
@@ -522,6 +580,13 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         ISyncableData data = trackedData.get(property);
         if (data instanceof SyncableBlockPos) {
             ((SyncableBlockPos) data).set(value);
+        }
+    }
+
+    public <V extends IForgeRegistryEntry<V>> void handleWindowProperty(short property, @Nonnull V value) {
+        ISyncableData data = trackedData.get(property);
+        if (data instanceof SyncableRegistryEntry) {
+            ((SyncableRegistryEntry<V>) data).set(value);
         }
     }
 

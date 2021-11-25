@@ -13,6 +13,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 /**
  * Base class to help implement handling of chemical infusing recipes.
  */
+@Deprecated//TODO - 1.17: Remove this
 @ParametersAreNonnullByDefault
 public class ChemicalInfuserCachedRecipe extends ChemicalChemicalToChemicalCachedRecipe<Gas, GasStack, GasStackIngredient, ChemicalInfuserRecipe> {
 

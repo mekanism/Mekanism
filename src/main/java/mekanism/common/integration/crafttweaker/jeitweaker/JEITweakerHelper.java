@@ -1,8 +1,8 @@
 package mekanism.common.integration.crafttweaker.jeitweaker;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -16,82 +16,37 @@ import net.minecraft.util.text.ITextComponent;
 public class JEITweakerHelper {
 
     /**
-     * Gets what gas stacks are supposed to be hidden from JEI.
+     * Removes chemical stacks that are supposed to be hidden from JEI.
      */
-    public static Collection<GasStack> getHiddenGasStacks() {
+    public static void removeHiddenStacks(Consumer<Collection<GasStack>> gasRemover, Consumer<Collection<InfusionStack>> infusionRemover,
+          Consumer<Collection<PigmentStack>> pigmentRemover, Consumer<Collection<SlurryStack>> slurryRemover) {
         if (Mekanism.hooks.JEITweakerLoaded) {
-            return JEITweakerExpansion.HIDDEN_GASES;
+            removeIfNotEmpty(JEITweakerExpansion.HIDDEN_GASES, gasRemover);
+            removeIfNotEmpty(JEITweakerExpansion.HIDDEN_INFUSE_TYPES, infusionRemover);
+            removeIfNotEmpty(JEITweakerExpansion.HIDDEN_PIGMENTS, pigmentRemover);
+            removeIfNotEmpty(JEITweakerExpansion.HIDDEN_SLURRIES, slurryRemover);
         }
-        return Collections.emptySet();
     }
 
     /**
-     * Gets the descriptions to add to various gases in JEI.
+     * Helper to remove via the consumer if the collection is not empty
      */
-    public static Map<GasStack, ITextComponent[]> getGasDescriptions() {
-        if (Mekanism.hooks.JEITweakerLoaded) {
-            return JEITweakerExpansion.GAS_DESCRIPTIONS;
+    private static <T> void removeIfNotEmpty(Collection<T> hidden, Consumer<Collection<T>> remover) {
+        if (!hidden.isEmpty()) {
+            remover.accept(hidden);
         }
-        return Collections.emptyMap();
     }
 
     /**
-     * Gets what infusion stacks are supposed to be hidden from JEI.
+     * Adds the descriptions to add to various chemicals in JEI.
      */
-    public static Collection<InfusionStack> getHiddenInfusionStacks() {
+    public static void addDescriptions(BiConsumer<GasStack, ITextComponent[]> gasDescriptionAdder, BiConsumer<InfusionStack, ITextComponent[]> infusionDescriptionAdder,
+          BiConsumer<PigmentStack, ITextComponent[]> pigmentDescriptionAdder, BiConsumer<SlurryStack, ITextComponent[]> slurryDescriptionAdder) {
         if (Mekanism.hooks.JEITweakerLoaded) {
-            return JEITweakerExpansion.HIDDEN_INFUSE_TYPES;
+            JEITweakerExpansion.GAS_DESCRIPTIONS.forEach(gasDescriptionAdder);
+            JEITweakerExpansion.INFUSE_TYPE_DESCRIPTIONS.forEach(infusionDescriptionAdder);
+            JEITweakerExpansion.PIGMENT_DESCRIPTIONS.forEach(pigmentDescriptionAdder);
+            JEITweakerExpansion.SLURRY_DESCRIPTIONS.forEach(slurryDescriptionAdder);
         }
-        return Collections.emptySet();
-    }
-
-    /**
-     * Gets the descriptions to add to various infuse types in JEI.
-     */
-    public static Map<InfusionStack, ITextComponent[]> getInfusionDescriptions() {
-        if (Mekanism.hooks.JEITweakerLoaded) {
-            return JEITweakerExpansion.INFUSE_TYPE_DESCRIPTIONS;
-        }
-        return Collections.emptyMap();
-    }
-
-    /**
-     * Gets what pigment stacks are supposed to be hidden from JEI.
-     */
-    public static Collection<PigmentStack> getHiddenPigmentStacks() {
-        if (Mekanism.hooks.JEITweakerLoaded) {
-            return JEITweakerExpansion.HIDDEN_PIGMENTS;
-        }
-        return Collections.emptySet();
-    }
-
-    /**
-     * Gets the descriptions to add to various pigments in JEI.
-     */
-    public static Map<PigmentStack, ITextComponent[]> getPigmentDescriptions() {
-        if (Mekanism.hooks.JEITweakerLoaded) {
-            return JEITweakerExpansion.PIGMENT_DESCRIPTIONS;
-        }
-        return Collections.emptyMap();
-    }
-
-    /**
-     * Gets what slurry stacks are supposed to be hidden from JEI.
-     */
-    public static Collection<SlurryStack> getHiddenSlurryStacks() {
-        if (Mekanism.hooks.JEITweakerLoaded) {
-            return JEITweakerExpansion.HIDDEN_SLURRIES;
-        }
-        return Collections.emptySet();
-    }
-
-    /**
-     * Gets the descriptions to add to various slurries in JEI.
-     */
-    public static Map<SlurryStack, ITextComponent[]> getSlurryDescriptions() {
-        if (Mekanism.hooks.JEITweakerLoaded) {
-            return JEITweakerExpansion.SLURRY_DESCRIPTIONS;
-        }
-        return Collections.emptyMap();
     }
 }

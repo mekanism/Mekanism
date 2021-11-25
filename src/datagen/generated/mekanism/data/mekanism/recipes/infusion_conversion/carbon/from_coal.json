@@ -1,17 +1,15 @@
 {
   "type": "mekanism:infusion_conversion",
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
+        "tag": "forge:dusts/coal"
+      },
+      {
         "item": "minecraft:coal"
       }
-    },
-    {
-      "ingredient": {
-        "tag": "forge:dusts/coal"
-      }
-    }
-  ],
+    ]
+  },
   "output": {
     "infuse_type": "mekanism:carbon",
     "amount": 10

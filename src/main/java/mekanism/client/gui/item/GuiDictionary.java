@@ -35,8 +35,8 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiSlot(SlotType.NORMAL, this, 5, 5).setRenderHover(true));
         scrollList = addButton(new GuiTextScrollList(this, 7, 29, 162, 42));
         //TODO: Ideally we would eventually replace this with some sort of tab system as it would probably look better

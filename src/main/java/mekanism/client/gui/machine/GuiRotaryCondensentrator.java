@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
-import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
@@ -35,11 +35,11 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiDownArrow(this, 159, 44));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getEnergyUsed, this));
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 133, 13));
         addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 25, 13));
         addButton(new GuiProgress(new IBooleanProgressInfoHandler() {
@@ -64,8 +64,8 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
                 return tile.mode;
             }
         }, ProgressType.LARGE_LEFT, this, 64, 39).jeiCategories(decondensentrating));
-        addButton(new MekanismImageButton(this, leftPos + 4, topPos + 4, 18, getButtonLocation("toggle"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
+        addButton(new ToggleButton(this, 4, 4, () -> tile.mode, () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)),
+              getOnHover(MekanismLang.CONDENSENTRATOR_TOGGLE)));
     }
 
     @Override

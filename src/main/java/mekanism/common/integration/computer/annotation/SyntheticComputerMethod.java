@@ -16,12 +16,17 @@ public @interface SyntheticComputerMethod {
     MethodRestriction restriction() default MethodRestriction.NONE;
 
     /**
+     * Array of modids that are required for synthetic methods to be generated and applied to a handler.
+     */
+    String[] requiredMods() default "";
+
+    /**
      * Name to use for the synthetic getter.
      */
     String getter() default "";
 
     /**
-     * Whether or not the synthetic getter is thread-safe or needs to be queued to run on the main thread.
+     * Whether the synthetic getter is thread-safe or needs to be queued to run on the main thread.
      */
     boolean threadSafeGetter() default false;
 
@@ -31,7 +36,7 @@ public @interface SyntheticComputerMethod {
     String setter() default "";
 
     /**
-     * Whether or not the synthetic setter is thread-safe or needs to be queued to run on the main thread.
+     * Whether the synthetic setter is thread-safe or needs to be queued to run on the main thread.
      */
     boolean threadSafeSetter() default false;
 }

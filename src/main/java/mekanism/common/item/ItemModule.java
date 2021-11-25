@@ -7,8 +7,8 @@ import mekanism.api.gear.ModuleData;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
-import mekanism.client.MekKeyHandler;
-import mekanism.client.MekanismKeyHandler;
+import mekanism.client.key.MekKeyHandler;
+import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.IModuleItem;
 import net.minecraft.client.util.ITooltipFlag;
@@ -48,7 +48,7 @@ public class ItemModule extends Item implements IModuleItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
-        if (MekKeyHandler.getIsKeyPressed(MekanismKeyHandler.detailsKey)) {
+        if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             for (Item item : MekanismAPI.getModuleHelper().getSupported(getModuleData())) {
                 tooltip.add(item.getName(new ItemStack(item)));
             }

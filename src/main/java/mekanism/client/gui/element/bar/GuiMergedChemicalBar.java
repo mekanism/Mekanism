@@ -71,7 +71,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
                 IChemicalTank<?, ?> currentTank = getCurrentTank();
                 return currentTank == null ? 0 : currentTank.getStored() / (double) currentTank.getCapacity();
             }
-        }, x, y, width, height);
+        }, x, y, width, height, horizontal);
         this.chemicalTank = chemicalTank;
         gasBar = addPositionOnlyChild(new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getGasTank(), handler.getGasTanks(null)), x, y, width, height, horizontal));
         infusionBar = addPositionOnlyChild(new GuiChemicalBar<>(gui, GuiChemicalBar.getProvider(this.chemicalTank.getInfusionTank(), handler.getInfusionTanks(null)), x, y, width, height, horizontal));
@@ -90,11 +90,16 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
     }
 
     @Override
-    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    void drawContentsChecked(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
         GuiChemicalBar<?, ?> currentBar = getCurrentBarNoFallback();
         if (currentBar != null) {
-            currentBar.drawBackground(matrix, mouseX, mouseY, partialTicks);
+            currentBar.drawContentsChecked(matrix, mouseX, mouseY, partialTicks, handlerLevel, warning);
         }
+    }
+
+    @Override
+    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+        //Rendering is redirected in drawContentsChecked
     }
 
     @Override
@@ -103,15 +108,11 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
         if (currentBar == null) {
             //If all the tanks are currently empty, pass the click event to all of them;
             // if multiple types are somehow stored in the dropper, insertion checks should prevent them from being inserted at the same time
-            gasBar.mouseClicked(mouseX, mouseY, button);
-            infusionBar.mouseClicked(mouseX, mouseY, button);
-            pigmentBar.mouseClicked(mouseX, mouseY, button);
-            slurryBar.mouseClicked(mouseX, mouseY, button);
-        } else {
-            //Otherwise just send the click event to the corresponding bar
-            currentBar.mouseClicked(mouseX, mouseY, button);
+            return gasBar.mouseClicked(mouseX, mouseY, button) | infusionBar.mouseClicked(mouseX, mouseY, button) |
+                   pigmentBar.mouseClicked(mouseX, mouseY, button) | slurryBar.mouseClicked(mouseX, mouseY, button);
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        //Otherwise just send the click event to the corresponding bar
+        return currentBar.mouseClicked(mouseX, mouseY, button);
     }
 
     @Nullable

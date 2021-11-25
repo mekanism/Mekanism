@@ -6,18 +6,16 @@
       "type": "forge:mod_loaded"
     }
   ],
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
         "item": "biomesoplenty:violet"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "item": "biomesoplenty:lavender"
       }
-    }
-  ],
+    ]
+  },
   "output": {
     "item": "minecraft:purple_dye",
     "count": 2

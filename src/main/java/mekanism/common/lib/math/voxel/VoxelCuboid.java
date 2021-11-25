@@ -164,7 +164,7 @@ public class VoxelCuboid implements IShape {
 
     @Override
     public String toString() {
-        return "Cuboid(start=" + minPos + ",bounds=(" + length() + "," + height() + "," + width() + "))";
+        return "Cuboid(start=" + minPos + ", bounds=(" + length() + "," + height() + "," + width() + "))";
     }
 
     public enum WallRelative {

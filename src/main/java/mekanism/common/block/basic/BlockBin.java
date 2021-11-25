@@ -39,32 +39,34 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
     public void attack(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player) {
         if (!world.isClientSide) {
             TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
-            if (bin == null) {
-                return;
-            }
-            BlockRayTraceResult mop = MekanismUtils.rayTrace(player);
-            if (mop.getType() != Type.MISS && mop.getDirection() == bin.getDirection()) {
-                BinInventorySlot binSlot = bin.getBinSlot();
-                if (!binSlot.isEmpty()) {
-                    ItemStack stack;
-                    if (player.isShiftKeyDown()) {
-                        stack = StackUtils.size(binSlot.getStack(), 1);
-                        MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(1, Action.EXECUTE), 1);
-                    } else {
-                        stack = binSlot.getBottomStack();
-                        if (!stack.isEmpty()) {
-                            MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(stack.getCount(), Action.EXECUTE), stack.getCount());
+            if (bin != null) {
+                BlockRayTraceResult mop = MekanismUtils.rayTrace(player);
+                if (mop.getType() != Type.MISS && mop.getDirection() == bin.getDirection()) {
+                    BinInventorySlot binSlot = bin.getBinSlot();
+                    if (!binSlot.isEmpty()) {
+                        ItemStack stack;
+                        if (bin.removeTicks == 0) {
+                            bin.removeTicks = 3;
+                            if (player.isShiftKeyDown()) {
+                                stack = StackUtils.size(binSlot.getStack(), 1);
+                                MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(1, Action.EXECUTE), 1);
+                            } else {
+                                stack = binSlot.getBottomStack();
+                                if (!stack.isEmpty()) {
+                                    MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(stack.getCount(), Action.EXECUTE), stack.getCount());
+                                }
+                            }
+                            if (!player.inventory.add(stack)) {
+                                BlockPos dropPos = pos.relative(bin.getDirection());
+                                Entity item = new ItemEntity(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
+                                Vector3d motion = item.getDeltaMovement();
+                                item.push(-motion.x(), -motion.y(), -motion.z());
+                                world.addFreshEntity(item);
+                            } else {
+                                world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS,
+                                      0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            }
                         }
-                    }
-                    if (!player.inventory.add(stack)) {
-                        BlockPos dropPos = pos.relative(bin.getDirection());
-                        Entity item = new ItemEntity(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
-                        Vector3d motion = item.getDeltaMovement();
-                        item.push(-motion.x(), -motion.y(), -motion.z());
-                        world.addFreshEntity(item);
-                    } else {
-                        world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS,
-                              0.2F, ((world.random.nextFloat() - world.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                     }
                 }
             }

@@ -12,9 +12,14 @@ buildscript {
             name "forge"
             url "https://maven.minecraftforge.net/"
         }
+        maven {
+            name 'parchment'
+            url 'https://maven.parchmentmc.org'
+        }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.0.16', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath 'org.parchmentmc:librarian:1.+'
     }
 }
 
@@ -28,10 +33,11 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.1'
+    gradleVersion = '7.3'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -103,11 +109,14 @@ def setupSourceSet(SourceSet sourceSet, String name) {
 // base module to the dependencies of the data generators source set that we are setting up
 def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, String name) {
     datagenSourceSet.java.srcDirs = ['src/datagen/' + name + '/java']
-    //Data gen sourceSets have no resources
-    datagenSourceSet.resources.srcDirs = []
     datagenSourceSet.compileClasspath += project.sourceSets.api.output
     datagenSourceSet.compileClasspath += project.sourceSets.main.output
-    if (baseSourceSet != null) {
+    if (baseSourceSet == null) {
+        //Base source set has resources that we put files that our annotation processor generates for consumption by our datagen
+        datagenSourceSet.resources.srcDirs = ['src/datagen/' + name + '/resources']
+    } else {
+        //Data gen sourceSets outside of the main one have no resources
+        datagenSourceSet.resources.srcDirs = []
         //Only case it is null is when we are doing datagenmain so other cases also add access to the stuff
         // in datagenmain so we can add helper classes
         datagenSourceSet.compileClasspath += project.sourceSets.datagenmain.output
@@ -118,16 +127,14 @@ def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, S
 configurations {
     //Make sure all our sub source set stuff extends the proper base methods so that
     // they can see all the dependencies we have in dependencies including forge
-    extendConfigurations(compile, apiCompile, testCompile, datagenmainCompile)
     extendConfigurations(implementation, apiImplementation, testImplementation, datagenmainImplementation)
     extendConfigurations(compileOnly, apiCompileOnly, testCompileOnly, datagenmainCompileOnly)
     extendConfigurations(runtimeOnly, apiRuntimeOnly, datagenmainRuntimeOnly)
-    //Extend configurations for alternate modules. First by making the compile, implementation, compileOnly, runtimeOnly equivalents
+    //Extend configurations for alternate modules. First by making the implementation, compileOnly, runtimeOnly equivalents
     // for those modules extend the main ones, and then by making the corresponding ones for datagen for the module extend those.
     // This way if we add a dependency/integration in a submodule instead of the main module of Mekanism, the datagen of the corresponding
     // module will be able to properly access the dependency
     for (def name : ["additions", "defense", "generators", "tools"]) {
-        maybeCreate("datagen" + name + "Compile").extendsFrom(maybeCreate(name + "Compile").extendsFrom(compile))
         maybeCreate("datagen" + name + "Implementation").extendsFrom(maybeCreate(name + "Implementation").extendsFrom(implementation))
         maybeCreate("datagen" + name + "CompileOnly").extendsFrom(maybeCreate(name + "CompileOnly").extendsFrom(compileOnly))
         maybeCreate("datagen" + name + "RuntimeOnly").extendsFrom(maybeCreate(name + "RuntimeOnly").extendsFrom(runtimeOnly))
@@ -174,8 +181,13 @@ def createReplaceResourcesTask(String output, SourceSet sourceSet) {
                 into "$rootDir/out/production/Mekanism.${output}/"
             }
         }
-        //Note: If eclipse has its own non gradle based runClient as well and has issues due to
-        // the missing mods.toml file, add a check for its path and copy into the correct spot here
+        //If Eclipse's output dir exists, copy it there as well
+        if (new File("$rootDir/bin/${output}/").exists()) {
+            copy {
+                with modsToml
+                into "$rootDir/bin/${output}/"
+            }
+        }
     }
 }
 
@@ -315,6 +327,13 @@ repositories {
         }
     }
     maven {
+        name 'curios'
+        url "https://maven.theillusivec4.top/"
+        content {
+            includeGroup 'top.theillusivec4.curios'
+        }
+    }
+    maven {
         name 'tterrag'
         url 'https://maven.tterrag.com/'
         content {
@@ -366,6 +385,7 @@ repositories {
                         excludeGroup 'org.squiddev'
                         excludeGroup 'com.blamejared.crafttweaker'
                         excludeGroup 'com.blamejared.jeitweaker'
+                        excludeGroup 'top.theillusivec4.curios'
                     }
                     println("Adding exclusions to ${it.url}")
                 } catch (Exception ignored) {
@@ -382,6 +402,8 @@ test {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    annotationProcessor project(":annotation-processor")
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
@@ -407,9 +429,10 @@ dependencies {
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
     compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
-    compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:${computer_craft_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
-    testRuntimeOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:${computer_craft_version}")
+    testRuntimeOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
 
     //Dependencies for data generators for mod compat reference
     datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}") {
@@ -417,8 +440,10 @@ dependencies {
     }
     datagenmainCompileOnly fg.deobf("curse.maven:biomes-o-plenty-api-220318:${biomesoplenty_api_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
+    datagenmainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
+    datagenmainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
 }
 
@@ -448,6 +473,7 @@ processAdditionsResources { setupProcessResources(processAdditionsResources, add
 processDefenseResources { setupProcessResources(processDefenseResources, defenseReplaceResources) }
 processGeneratorsResources { setupProcessResources(processGeneratorsResources, generatorsReplaceResources) }
 processToolsResources { setupProcessResources(processToolsResources, toolsReplaceResources) }
+processDatagenmainResources { dependsOn(compileJava) }
 
 def setupProcessResources(ProcessResources process, TaskProvider<Task> replaceResources) {
     process.duplicatesStrategy(DuplicatesStrategy.FAIL)
@@ -545,9 +571,7 @@ task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defens
     archiveClassifier.set("all")
     manifest.attributes(getManifestAttributes("MekanismAll"))
     //Start by generating the merged data
-    doFirst {
-        MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
-    }
+    MergeJars.merge(project, sourceSets.main, sourceSets.additions, sourceSets.defense, sourceSets.generators, sourceSets.tools)
     //Then copy all the files except for ones we are going to include from the merged
     from(sourceSets.api.output)
     List<String> baseExcludeData = MergeJars.getGeneralPathsToExclude(project)
@@ -565,6 +589,14 @@ task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defens
 tasks.withType(JavaCompile).configureEach({
     it.options.encoding = 'UTF-8'
 })
+
+compileJava {
+    options.annotationProcessorPath = configurations.annotationProcessor
+    options.annotationProcessorGeneratedSourcesDirectory = layout.buildDirectory.file("src/datagen/main/resources/").map(r -> r.asFile)
+    options.compilerArgs = [
+            "-processor", "mekanism.CraftTweakerParamNameMapper"
+    ]
+}
 
 artifacts {
     archives apiJar
@@ -651,13 +683,13 @@ publishing {
                     NodeList allDeps = dependencies.'*'
 
                     // Remove forge deps
-                    allDeps.<Node>findAll() { Node el ->
+                    allDeps.<Node> findAll() { Node el ->
                         el.artifactId.text() == 'forge' && el.groupId.text() == 'net.minecraftforge'
                     }.forEach() { Node el ->
                         el.parent().remove(el)
                     }
                     //remove ForgeGradle's mapped suffix from versions & set as optional so anyone else doesn't inherit them
-                    allDeps.<Node>findAll() { Node el ->
+                    allDeps.<Node> findAll() { Node el ->
                         el.version.text().contains('_mapped_')
                     }.each { Node el ->
                         el.version.each { Node version ->
@@ -706,16 +738,19 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                 grgit.log {
                     range(prevCommit, currentCommit)
                 }.reverse().each { commit ->
-                    String message = commit.shortMessage
+                    //Use full message rather than short message to get any new lines, and trim it so that any trailing new lines
+                    // get removed so that we don't end up with extra spaces
+                    String message = commit.fullMessage.trim()
                     if (!message.startsWith("Merge branch") && !message.startsWith("Merge pull request")) {
-                        //Ignore PRs and Merges
+                        //Ignore Merges and PR Merges
                         message = message.replaceAll("#(\\d+)", { match ->//turn issues/prs into links (github currently supports prs being linked as issues)
                             return "<a href=\"https://github.com/mekanism/Mekanism/issues/${match[1]}\">${match[0]}</a>"
-                        })
+                        }).replaceAll("\\n", "<br>&emsp;")//convert new lines that are part of a commit message into actual new lines and a tab
                         if (generatedChangelog != "") {
+                            //If this isn't the first commit prepend an extra newline
                             generatedChangelog += "<br>"
                         }
-                        generatedChangelog += "<a href=\"https://github.com/mekanism/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}\n"
+                        generatedChangelog += "<a href=\"https://github.com/mekanism/Mekanism/commit/${commit.id}\">${commit.getAbbreviatedId()}</a> - ${message}"
                     }
                 }
                 println "Changelog generated"
@@ -748,17 +783,21 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
             releaseType = "${curse_release_type}"
             mainArtifact(jar) {
                 relations {
+                    optionalDependency "applied-energistics-2"
                     optionalDependency "biomes-o-plenty"
                     optionalDependency "cc-tweaked"
                     optionalDependency "crafttweaker"
                     optionalDependency "ctm"
+                    optionalDependency "curios"
                     optionalDependency "flux-networks"
                     optionalDependency "hwyla"
                     optionalDependency "i-like-wood"
                     optionalDependency "i-like-wood-biomes-o-plenty-plugin"
+                    optionalDependency "i-like-wood-oh-the-biomes-youll-go-plugin"
                     optionalDependency "jade"
                     optionalDependency "jei"
                     optionalDependency "jeitweaker"
+                    optionalDependency "oh-the-biomes-youll-go"
                     optionalDependency "perviaminvenire"
                     optionalDependency "projecte"
                     optionalDependency "the-one-probe"

@@ -13,7 +13,7 @@ import mekanism.common.lib.Color;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiColorPickerSlot extends GuiRelativeElement {
+public class GuiColorPickerSlot extends GuiElement {
 
     private final Supplier<Color> supplier;
     private final Consumer<Color> consumer;
@@ -22,8 +22,7 @@ public class GuiColorPickerSlot extends GuiRelativeElement {
         super(gui, x, y, 18, 18);
         this.supplier = supplier;
         this.consumer = consumer;
-
-        addChild(new GuiElementHolder(gui, x, y, 18, 18));
+        addChild(new GuiElementHolder(gui, relativeX, relativeY, 18, 18));
     }
 
     @Override

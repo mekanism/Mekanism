@@ -3,7 +3,6 @@ package mekanism.common.content.gear;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -44,7 +43,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     public static final String ENABLED_KEY = "enabled";
     public static final String HANDLE_MODE_CHANGE_KEY = "handleModeChange";
 
-    protected final List<ModuleConfigItem<?>> configItems = new ArrayList<>();
+    private final List<ModuleConfigItem<?>> configItems = new ArrayList<>();
 
     private final ModuleData<MODULE> data;
     private final ItemStack container;
@@ -68,7 +67,20 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     public void init() {
-        enabled = addConfigItem(new ModuleConfigItem<>(this, ENABLED_KEY, MekanismLang.MODULE_ENABLED, new ModuleBooleanData(!data.isDisabledByDefault())));
+        enabled = addConfigItem(new ModuleConfigItem<Boolean>(this, ENABLED_KEY, MekanismLang.MODULE_ENABLED, new ModuleBooleanData(!data.isDisabledByDefault())) {
+            @Override
+            public void set(@Nonnull Boolean val, @Nullable Runnable callback) {
+                //Custom override of set to see if it changed and if so notify the custom module of that fact
+                boolean wasEnabled = get();
+                super.set(val, callback);
+                //Note: This isn't the best but given we only call set for enabled from within Mekanism, we can use the
+                // implementation detail that if the callback is null we are on the client side so if it isn't null then
+                // we can assume it is server side
+                if (callback == null && wasEnabled != get()) {
+                    customModule.onEnabledStateChange(Module.this);
+                }
+            }
+        });
         if (data.handlesModeChange()) {
             handleModeChange = addConfigItem(new ModuleConfigItem<>(this, HANDLE_MODE_CHANGE_KEY, MekanismLang.MODULE_HANDLE_MODE_CHANGE, new ModuleBooleanData()));
         }
@@ -158,7 +170,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return FloatingLong.ZERO;
     }
 
-    public final void read(CompoundNBT nbt) {
+    public void read(CompoundNBT nbt) {
         if (nbt.contains(NBTConstants.AMOUNT, NBT.TAG_INT)) {
             installed = nbt.getInt(NBTConstants.AMOUNT);
         }
@@ -173,7 +185,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
      *
      * @param callback - will run after the NBT data is saved
      */
-    public final void save(@Nullable Consumer<ItemStack> callback) {
+    public void save(@Nullable Runnable callback) {
         CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
         String registryName = data.getRegistryName().toString();
         CompoundNBT nbt;
@@ -207,7 +219,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         ItemDataUtils.setCompound(container, NBTConstants.MODULES, modulesTag);
 
         if (callback != null) {
-            callback.accept(container);
+            callback.run();
         }
     }
 
@@ -230,9 +242,17 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return enabled.get();
     }
 
-    public void setDisabledForce() {
-        enabled.getData().set(false);
-        save(null);
+    public void setDisabledForce(boolean hasCallback) {
+        if (isEnabled()) {
+            enabled.getData().set(false);
+            save(null);
+            //Manually call state changed as we bypassed the check we injected into set if we are on the server
+            // we use the implementation detail about whether or not there was a callback to determine if it was
+            // on the server or not
+            if (!hasCallback) {
+                customModule.onEnabledStateChange(this);
+            }
+        }
     }
 
     @Override
@@ -278,7 +298,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             if (module.getData() != getData()) {
                 // disable other exclusive modules if this is an exclusive module, as this one will now be active
                 if (getData().isExclusive() && module.getData().isExclusive()) {
-                    module.setDisabledForce();
+                    module.setDisabledForce(false);
                 }
                 if (handlesModeChange() && module.handlesModeChange()) {
                     module.setModeHandlingDisabledForce();
@@ -299,7 +319,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Override
     public void toggleEnabled(PlayerEntity player, ITextComponent modeName) {
-        enabled.set(!isEnabled(), null);
+        enabled.set(!isEnabled());
         ITextComponent message;
         if (isEnabled()) {
             message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER);

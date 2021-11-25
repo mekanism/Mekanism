@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:zelkova_pressure_plate"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:zelkova_planks",
+    "count": 2
+  }
+}

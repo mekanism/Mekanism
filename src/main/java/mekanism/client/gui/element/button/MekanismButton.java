@@ -56,11 +56,12 @@ public class MekanismButton extends GuiElement {
                 return true;
             }
         }
-        return false;
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         if (onHover != null) {
             onHover.onHover(this, matrix, mouseX, mouseY);
         }

@@ -5,8 +5,10 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.common.util.text.InputValidator;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
@@ -24,6 +26,11 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
 
     protected GuiModIDFilter(IGuiWrapper gui, int x, int y, int width, int height, TILE tile, @Nullable FILTER origFilter) {
         super(gui, x, y, width, height, MekanismLang.MODID_FILTER.translate(), tile, origFilter);
+    }
+
+    @Override
+    protected CharPredicate getInputValidator() {
+        return InputValidator.RL_NAMESPACE.or(InputValidator.WILDCARD_CHARS);
     }
 
     @Override

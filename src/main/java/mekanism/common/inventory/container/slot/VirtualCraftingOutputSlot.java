@@ -90,7 +90,10 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @Override
     public boolean mayPickup(@Nonnull PlayerEntity player) {
-        return canCraft && super.mayPickup(player);
+        if (player.level.isClientSide || !(player instanceof ServerPlayerEntity)) {
+            return canCraft && super.mayPickup(player);
+        }
+        return craftingWindow.canViewRecipe((ServerPlayerEntity) player) && super.mayPickup(player);
     }
 
     @Nonnull

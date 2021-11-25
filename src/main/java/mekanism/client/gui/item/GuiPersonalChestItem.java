@@ -19,8 +19,8 @@ public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiSecurityTab(this, menu.getHand()));
     }
 

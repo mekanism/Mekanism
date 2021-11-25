@@ -231,11 +231,13 @@ public class StorageUtils {
 
     @Nullable
     public static IEnergyContainer getEnergyContainer(ItemStack stack, int container) {
-        Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
-        if (energyCapability.isPresent()) {
-            IStrictEnergyHandler energyHandlerItem = energyCapability.get();
-            if (energyHandlerItem instanceof IMekanismStrictEnergyHandler) {
-                return ((IMekanismStrictEnergyHandler) energyHandlerItem).getEnergyContainer(container, null);
+        if (!stack.isEmpty()) {
+            Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
+            if (energyCapability.isPresent()) {
+                IStrictEnergyHandler energyHandlerItem = energyCapability.get();
+                if (energyHandlerItem instanceof IMekanismStrictEnergyHandler) {
+                    return ((IMekanismStrictEnergyHandler) energyHandlerItem).getEnergyContainer(container, null);
+                }
             }
         }
         return null;

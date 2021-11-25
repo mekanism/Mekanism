@@ -10,13 +10,13 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.inventory.TileTransitRequest;
-import mekanism.common.lib.inventory.TransitRequest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.jetbrains.annotations.Contract;
 
 public final class InventoryUtils {
 
@@ -57,8 +57,12 @@ public final class InventoryUtils {
         return CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).isPresent();
     }
 
-    public static TransitRequest getEjectItemMap(TileEntity tile, List<IInventorySlot> slots, Direction side) {
-        TileTransitRequest request = new TileTransitRequest(tile, side);
+    public static TileTransitRequest getEjectItemMap(TileEntity tile, Direction side, List<IInventorySlot> slots) {
+        return getEjectItemMap(new TileTransitRequest(tile, side), slots);
+    }
+
+    @Contract("_, _ -> param1")
+    public static <REQUEST extends TileTransitRequest> REQUEST getEjectItemMap(REQUEST request, List<IInventorySlot> slots) {
         // shuffle the order we look at our slots to avoid ejection patterns
         List<IInventorySlot> shuffled = new ArrayList<>(slots);
         Collections.shuffle(shuffled);

@@ -43,7 +43,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     boolean isEnabled();
 
     /**
-     * Gets if this module type ({@link #getData()}) handles mode changes and and if this module is configured to handle mode changes in the Module Tweaker.
+     * Gets if this module type ({@link #getData()}) handles mode changes and if this module is configured to handle mode changes in the Module Tweaker.
      *
      * @return {@code true} if this module can handle mode changes.
      */
@@ -104,7 +104,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return {@code true} if the energy can be used/provided.
      *
-     * @implNote By default this method checks players in creative as well.
+     * @implNote By default, this method checks players in creative as well.
      */
     boolean canUseEnergy(LivingEntity wearer, FloatingLong energy);
 
@@ -131,7 +131,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return {@code true} if the energy can be used/provided.
      *
-     * @apiNote This method is mostly for use in not having to lookup the energy container multiple times.
+     * @apiNote This method is mostly for use in not having to look up the energy container multiple times.
      */
     boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean ignoreCreative);
 
@@ -143,7 +143,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return Actual amount of energy used.
      *
-     * @implNote By default this method does not use any energy from players that are in creative.
+     * @implNote By default, this method does not use any energy from players that are in creative.
      */
     FloatingLong useEnergy(LivingEntity wearer, FloatingLong energy);
 
@@ -170,7 +170,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return Actual amount of energy used.
      *
-     * @apiNote This method is mostly for use in not having to lookup the energy container multiple times.
+     * @apiNote This method is mostly for use in not having to look up the energy container multiple times.
      */
     FloatingLong useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean freeCreative);
 }

@@ -30,17 +30,17 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
 
     @Override
     protected int getLeftButtonX() {
-        return x + 24;
+        return relativeX + 24;
     }
 
     @Override
     protected void init() {
         super.init();
-        addSorterDefaults(gui(), filter, x, y, getSlotOffset(), this::addChild, tile::getSingleItem, (min, max) -> {
+        addSorterDefaults(gui(), filter, getSlotOffset(), this::addChild, tile::getSingleItem, (min, max) -> {
             minField = min;
             maxField = max;
         });
-        addChild(new MekanismImageButton(gui(), x + 148, y + 68, 11, 14, getButtonLocation("fuzzy"),
+        addChild(new MekanismImageButton(gui(), relativeX + 148, relativeY + 68, 11, 14, getButtonLocation("fuzzy"),
               () -> filter.fuzzyMode = !filter.fuzzyMode, getOnHover(MekanismLang.FUZZY_MODE)));
     }
 

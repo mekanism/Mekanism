@@ -16,7 +16,6 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.to_server.PacketGuiInteract;
@@ -33,7 +32,7 @@ public class GuiUpgradeWindow extends GuiWindow {
     private final GuiUpgradeScrollList scrollList;
 
     public GuiUpgradeWindow(IGuiWrapper gui, int x, int y, TileEntityMekanism tile) {
-        super(gui, x, y, 156, 76 + 12 * GuiSupportedUpgrades.calculateNeededRows(), new SelectedWindowData(WindowType.UPGRADE));
+        super(gui, x, y, 156, 76 + 12 * GuiSupportedUpgrades.calculateNeededRows(), WindowType.UPGRADE);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         scrollList = addChild(new GuiUpgradeScrollList(gui, relativeX + 6, relativeY + 18, 66, 50, tile.getComponent(), this::updateEnabledButtons));
@@ -41,7 +40,7 @@ public class GuiUpgradeWindow extends GuiWindow {
         addChild(new GuiInnerScreen(gui, relativeX + 72, relativeY + 18, 59, 50));
         addChild(new GuiProgress(() -> this.tile.getComponent().getScaledUpgradeProgress(), ProgressType.INSTALLING, gui, relativeX + 134, relativeY + 37));
         addChild(new GuiProgress(() -> 0, ProgressType.UNINSTALLING, gui, relativeX + 134, relativeY + 59));
-        removeButton = addChild(new DigitalButton(gui, gui.getLeft() + relativeX + 73, gui.getTop() + relativeY + 54, 56, 12,
+        removeButton = addChild(new DigitalButton(gui, relativeX + 73, relativeY + 54, 56, 12,
               MekanismLang.UPGRADE_UNINSTALL, () -> {
             if (scrollList.hasSelection()) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiInteract(Screen.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,

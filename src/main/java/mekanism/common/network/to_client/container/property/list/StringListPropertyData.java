@@ -20,11 +20,8 @@ public class StringListPropertyData extends ListPropertyData<String> {
         return new StringListPropertyData(property, values);
     }
 
-
     @Override
-    protected void writeListElements(PacketBuffer buffer) {
-        for (String value : values) {
-            buffer.writeUtf(value);
-        }
+    protected void writeListElement(PacketBuffer buffer, String value) {
+        buffer.writeUtf(value);
     }
 }

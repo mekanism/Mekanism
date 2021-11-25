@@ -70,12 +70,14 @@ import mekanism.client.gui.robit.GuiRobitInventory;
 import mekanism.client.gui.robit.GuiRobitMain;
 import mekanism.client.gui.robit.GuiRobitRepair;
 import mekanism.client.gui.robit.GuiRobitSmelting;
+import mekanism.client.key.MekanismKeyHandler;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
 import mekanism.client.model.baked.MekanismModel;
 import mekanism.client.model.baked.QIORedstoneAdapterBakedModel;
+import mekanism.client.model.robit.RobitModel;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
@@ -150,6 +152,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.Item;
+import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -185,7 +189,7 @@ public class ClientRegistration {
             // properly initialized and will have the wrong value
             MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, RenderTickHandler::guiOpening);
         }
-        new MekanismKeyHandler();
+        MekanismKeyHandler.registerKeybindings();
         HolidayManager.init();
 
         //Register entity rendering handlers
@@ -203,8 +207,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SEISMIC_VIBRATOR, RenderSeismicVibrator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR, RenderSolarNeutronActivator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.TELEPORTER, RenderTeleporter::new);
-        ClientRegistrationUtil.bindTileEntityRenderer(RenderThermalEvaporationPlant::new, MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER,
-              MekanismTileEntityTypes.THERMAL_EVAPORATION_BLOCK, MekanismTileEntityTypes.THERMAL_EVAPORATION_VALVE);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, RenderThermalEvaporationPlant::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.INDUSTRIAL_ALARM, RenderIndustrialAlarm::new);
         ClientRegistrationUtil.bindTileEntityRenderer(RenderSPS::new, MekanismTileEntityTypes.SPS_CASING, MekanismTileEntityTypes.SPS_PORT);
         ClientRegistrationUtil.bindTileEntityRenderer(RenderBin::new, MekanismTileEntityTypes.BASIC_BIN, MekanismTileEntityTypes.ADVANCED_BIN, MekanismTileEntityTypes.ELITE_BIN,
@@ -378,8 +381,9 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerModelLoaders(ModelRegistryEvent event) {
-        ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
         ModelLoaderRegistry.registerLoader(Mekanism.rl("mekanism"), MekanismModel.Loader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
+        ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
         MekanismModelCache.INSTANCE.setup();
         ModelLoader.addSpecialModel(Mekanism.rl("block/liquifier_blade"));
     }
@@ -402,8 +406,21 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerParticleFactory(MekanismParticleTypes.RADIATION, RadiationParticle.Factory::new);
     }
 
+    private static void createRobitTextureAtlas() {
+        //TODO - 1.17: Move registering the sprite uploader to RegisterClientReloadListenersEvent
+        Minecraft minecraft = Minecraft.getInstance();
+        RobitSpriteUploader spriteUploader = new RobitSpriteUploader(minecraft.getTextureManager());
+        IResourceManager resourceManager = minecraft.getResourceManager();
+        if (resourceManager instanceof IReloadableResourceManager) {
+            IReloadableResourceManager reloadableResourceManager = (IReloadableResourceManager) resourceManager;
+            reloadableResourceManager.registerReloadListener(spriteUploader);
+        }
+    }
+
     @SubscribeEvent
     public static void registerItemColorHandlers(ColorHandlerEvent.Item event) {
+        //Create the texture atlas for the robit's textures here as there isn't a great spot to do it until 1.17
+        createRobitTextureAtlas();
         BlockColors blockColors = event.getBlockColors();
         ItemColors itemColors = event.getItemColors();
         ClientRegistrationUtil.registerBlockColorHandler(blockColors, (state, world, pos, tintIndex) -> {

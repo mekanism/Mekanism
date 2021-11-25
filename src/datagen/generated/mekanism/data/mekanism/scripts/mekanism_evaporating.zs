@@ -2,7 +2,7 @@ import mods.mekanism.api.ingredient.FluidStackIngredient;
 
 //Adds an Evaporating Recipe that evaporates 10 mB of Lithium and produces 1 mB of Chlorine.
 
-// <recipetype:mekanism:evaporating>.addRecipe(arg0 as string, arg1 as FluidStackIngredient, arg2 as IFluidStack)
+// <recipetype:mekanism:evaporating>.addRecipe(name as string, input as FluidStackIngredient, output as IFluidStack)
 
 <recipetype:mekanism:evaporating>.addRecipe("evaporate_lithium", FluidStackIngredient.from(<tag:fluids:forge:lithium>, 10), <fluid:mekanism:chlorine>);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:

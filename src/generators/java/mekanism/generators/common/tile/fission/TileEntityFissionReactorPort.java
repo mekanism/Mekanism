@@ -34,8 +34,8 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     @Override
-    protected void onUpdateServer(FissionReactorMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(FissionReactorMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
             FissionPortMode mode = getMode();
             if (mode == FissionPortMode.OUTPUT_COOLANT) {
@@ -44,6 +44,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
                 ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.wasteTank, this);
             }
         }
+        return needsPacket;
     }
 
     @Nullable

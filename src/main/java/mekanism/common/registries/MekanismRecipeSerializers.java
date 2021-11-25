@@ -65,7 +65,6 @@ import mekanism.common.recipe.serializer.ItemStackToGasRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToInfuseTypeRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToItemStackRecipeSerializer;
 import mekanism.common.recipe.serializer.ItemStackToPigmentRecipeSerializer;
-import mekanism.common.recipe.serializer.MekanismShapedRecipeSerializer;
 import mekanism.common.recipe.serializer.MetallurgicInfuserRecipeSerializer;
 import mekanism.common.recipe.serializer.NucleosynthesizingRecipeSerializer;
 import mekanism.common.recipe.serializer.PaintingRecipeSerializer;
@@ -73,6 +72,7 @@ import mekanism.common.recipe.serializer.PigmentMixingRecipeSerializer;
 import mekanism.common.recipe.serializer.PressurizedReactionRecipeSerializer;
 import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
 import mekanism.common.recipe.serializer.SawmillRecipeSerializer;
+import mekanism.common.recipe.serializer.WrappedShapedRecipeSerializer;
 import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import mekanism.common.registration.impl.IRecipeSerializerDeferredRegister;
 import mekanism.common.registration.impl.IRecipeSerializerRegistryObject;
@@ -133,7 +133,7 @@ public class MekanismRecipeSerializers {
 
     public static final IRecipeSerializerRegistryObject<SawmillRecipe> SAWING = RECIPE_SERIALIZERS.register("sawing", () -> new SawmillRecipeSerializer<>(SawmillIRecipe::new));
 
-    public static final IRecipeSerializerRegistryObject<MekanismShapedRecipe> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", MekanismShapedRecipeSerializer::new);
+    public static final IRecipeSerializerRegistryObject<MekanismShapedRecipe> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", () -> new WrappedShapedRecipeSerializer<>(MekanismShapedRecipe::new));
     public static final IRecipeSerializerRegistryObject<BinInsertRecipe> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new SpecialRecipeSerializer<>(BinInsertRecipe::new));
     public static final IRecipeSerializerRegistryObject<BinExtractRecipe> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new SpecialRecipeSerializer<>(BinExtractRecipe::new));
 }

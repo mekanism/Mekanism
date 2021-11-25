@@ -42,8 +42,8 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     @Override
-    protected void onUpdateServer(BoilerMultiblockData multiblock) {
-        super.onUpdateServer(multiblock);
+    protected boolean onUpdateServer(BoilerMultiblockData multiblock) {
+        boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
             BoilerValveMode mode = getMode();
             if (mode == BoilerValveMode.OUTPUT_STEAM) {
@@ -52,6 +52,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
                 ChemicalUtil.emit(multiblock.getDirectionsToEmit(getBlockPos()), multiblock.cooledCoolantTank, this);
             }
         }
+        return needsPacket;
     }
 
     @Override

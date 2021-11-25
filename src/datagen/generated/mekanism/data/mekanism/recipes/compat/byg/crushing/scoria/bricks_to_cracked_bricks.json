@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:scoria_stonebricks"
+    }
+  },
+  "output": {
+    "item": "byg:cracked_scoria_stone_bricks"
+  }
+}

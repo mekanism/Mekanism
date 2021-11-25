@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Base class to help implement handling of item to gas recipes.
  */
+@Deprecated//TODO - 1.17: Remove this
 @ParametersAreNonnullByDefault
 public class ItemStackToGasCachedRecipe extends ItemStackToChemicalCachedRecipe<Gas, GasStack, ItemStackToGasRecipe> {
 

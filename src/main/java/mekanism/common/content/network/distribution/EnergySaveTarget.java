@@ -1,16 +1,12 @@
 package mekanism.common.content.network.distribution;
 
+import java.util.Collection;
+import javax.annotation.ParametersAreNonnullByDefault;
 import mcp.MethodsReturnNonnullByDefault;
-import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
-import net.minecraft.nbt.CompoundNBT;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collection;
 
 public class EnergySaveTarget extends Target<EnergySaveTarget.SaveHandler, FloatingLong, FloatingLong> {
 

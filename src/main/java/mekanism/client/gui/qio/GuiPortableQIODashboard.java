@@ -16,8 +16,8 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiQIOFrequencyTab(this, menu.getHand()));
     }
 
@@ -34,7 +34,7 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
 
     @Override
     public FrequencyIdentity getFrequency() {
-        return ((IFrequencyItem) menu.getStack().getItem()).getFrequency(menu.getStack());
+        return ((IFrequencyItem) menu.getStack().getItem()).getFrequencyIdentity(menu.getStack());
     }
 
     private ITextComponent getName() {

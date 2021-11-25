@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "tag": "minecraft:beds"
+    }
+  },
+  "gasInput": {
+    "amount": 3,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:respawn_anchor"
+  },
+  "duration": 750
+}

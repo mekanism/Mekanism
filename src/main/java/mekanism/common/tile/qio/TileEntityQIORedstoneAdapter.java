@@ -1,10 +1,9 @@
 package mekanism.common.tile.qio;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
-import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -13,11 +12,11 @@ import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -30,7 +29,7 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
+public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent implements ISustainedData {
 
     public static final ModelProperty<Boolean> POWERING_PROPERTY = new ModelProperty<>();
 
@@ -41,7 +40,6 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     public TileEntityQIORedstoneAdapter() {
         super(MekanismBlocks.QIO_REDSTONE_ADAPTER);
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
     public boolean isPowering() {
@@ -90,7 +88,6 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     @Override
     public void writeSustainedData(ItemStack itemStack) {
-        super.writeSustainedData(itemStack);
         if (itemType != null) {
             ItemDataUtils.setCompound(itemStack, NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
         }
@@ -99,7 +96,6 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        super.readSustainedData(itemStack);
         if (ItemDataUtils.hasData(itemStack, NBTConstants.SINGLE_ITEM, NBT.TAG_COMPOUND)) {
             itemType = HashedItem.create(ItemStack.of(ItemDataUtils.getCompound(itemStack, NBTConstants.SINGLE_ITEM)));
         }
@@ -108,27 +104,10 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
 
     @Override
     public Map<String, String> getTileDataRemap() {
-        Map<String, String> remap = super.getTileDataRemap();
+        Map<String, String> remap = new Object2ObjectOpenHashMap<>();
         remap.put(NBTConstants.SINGLE_ITEM, NBTConstants.SINGLE_ITEM);
         remap.put(NBTConstants.AMOUNT, NBTConstants.AMOUNT);
         return remap;
-    }
-
-    @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = super.getConfigurationData(player);
-        if (itemType != null) {
-            data.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
-        }
-        data.putLong(NBTConstants.AMOUNT, count);
-        return data;
-    }
-
-    @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
-        NBTUtils.setItemStackIfPresent(data, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
-        NBTUtils.setLongIfPresent(data, NBTConstants.AMOUNT, value -> count = value);
     }
 
     @Nonnull
@@ -148,21 +127,19 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        NBTUtils.setItemStackIfPresent(nbtTags, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
-        NBTUtils.setLongIfPresent(nbtTags, NBTConstants.AMOUNT, value -> count = value);
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
+        NBTUtils.setItemStackIfPresent(data, NBTConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
+        NBTUtils.setLongIfPresent(data, NBTConstants.AMOUNT, value -> count = value);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
         if (itemType != null) {
-            nbtTags.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
+            data.put(NBTConstants.SINGLE_ITEM, itemType.getStack().save(new CompoundNBT()));
         }
-        nbtTags.putLong(NBTConstants.AMOUNT, count);
-        return nbtTags;
+        data.putLong(NBTConstants.AMOUNT, count);
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")

@@ -6,12 +6,12 @@ import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.render.lib.QuadTransformation;
@@ -101,6 +101,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
         return original.doesHandlePerspectives();
     }
 
+    @Nullable
     protected QuadsKey<T> createKey(QuadsKey<T> key, IModelData data) {
         return key;
     }
@@ -133,13 +134,8 @@ public class ExtensionBakedModel<T> implements IBakedModel {
     @Override
     public List<Pair<IBakedModel, RenderType>> getLayerModels(ItemStack stack, boolean fabulous) {
         //Cache the remappings so then the inner wrapped ones can cache their quads
-        return cachedLayerRedirects.computeIfAbsent(original.getLayerModels(stack, fabulous), originalLayerModels -> {
-            List<Pair<IBakedModel, RenderType>> layerModels = new ArrayList<>();
-            for (Pair<IBakedModel, RenderType> layerModel : originalLayerModels) {
-                layerModels.add(Pair.of(wrapModel(layerModel.getFirst()), layerModel.getSecond()));
-            }
-            return layerModels;
-        });
+        return cachedLayerRedirects.computeIfAbsent(original.getLayerModels(stack, fabulous), originalLayerModels ->
+              originalLayerModels.stream().map(layerModel -> layerModel.<IBakedModel>mapFirst(this::wrapModel)).collect(Collectors.toList()));
     }
 
     protected ExtensionBakedModel<T> wrapModel(IBakedModel model) {
@@ -182,6 +178,7 @@ public class ExtensionBakedModel<T> implements IBakedModel {
             return this;
         }
 
+        @Nullable
         @Override
         protected QuadsKey<T> createKey(QuadsKey<T> key, IModelData data) {
             return key.transform(transform);

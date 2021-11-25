@@ -142,15 +142,14 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    protected CompoundNBT getGeneralPersistentData(CompoundNBT nbtTags) {
-        super.getGeneralPersistentData(nbtTags);
-        nbtTags.putBoolean(NBTConstants.AUTO, exportWithoutFilter);
-        return nbtTags;
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
+        data.putBoolean(NBTConstants.AUTO, exportWithoutFilter);
     }
 
     @Override
-    protected void setGeneralPersistentData(CompoundNBT data) {
-        super.setGeneralPersistentData(data);
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
         NBTUtils.setBooleanIfPresent(data, NBTConstants.AUTO, value -> exportWithoutFilter = value);
     }
 

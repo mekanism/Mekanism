@@ -8,7 +8,7 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.to_server.PacketRobit;
 
 public class GuiRobitRename extends GuiWindow {
@@ -17,9 +17,9 @@ public class GuiRobitRename extends GuiWindow {
     private final EntityRobit robit;
 
     public GuiRobitRename(IGuiWrapper gui, int x, int y, EntityRobit robit) {
-        super(gui, x, y, 122, 58, SelectedWindowData.UNSPECIFIED);
+        super(gui, x, y, 122, 58, WindowType.RENAME);
         this.robit = robit;
-        addChild(new TranslationButton(gui, this.x + 31, this.y + 32, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
+        addChild(new TranslationButton(gui, relativeX + 31, relativeY + 32, 60, 20, MekanismLang.BUTTON_CONFIRM, this::changeName));
         nameChangeField = addChild(new GuiTextField(gui, relativeX + 21, relativeY + 17, 80, 12));
         nameChangeField.setMaxStringLength(12);
         nameChangeField.setCanLoseFocus(false);
@@ -29,7 +29,7 @@ public class GuiRobitRename extends GuiWindow {
 
     private void changeName() {
         if (!nameChangeField.getText().isEmpty()) {
-            Mekanism.packetHandler.sendToServer(new PacketRobit(robit.getId(), TextComponentUtil.getString(nameChangeField.getText())));
+            Mekanism.packetHandler.sendToServer(new PacketRobit(robit, TextComponentUtil.getString(nameChangeField.getText())));
             close();
         }
     }

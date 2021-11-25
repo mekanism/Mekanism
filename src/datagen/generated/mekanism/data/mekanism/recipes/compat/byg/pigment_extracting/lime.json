@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "tag": "byg:lime_dye"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:lime",
+    "amount": 768
+  }
+}

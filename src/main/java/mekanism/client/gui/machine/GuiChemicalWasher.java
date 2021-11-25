@@ -27,17 +27,13 @@ public class GuiChemicalWasher extends GuiConfigurableTile<TileEntityChemicalWas
     }
 
     @Override
-    protected void initPreSlots() {
+    protected void addGuiElements() {
         //Add the side holder before the slots, as it holds a couple of the slots
         addButton(GuiSideHolder.create(this, imageWidth, 66, 57, false, true, SpecialColors.TAB_CHEMICAL_WASHER));
-    }
-
-    @Override
-    public void init() {
-        super.init();
+        super.addGuiElements();
         addButton(new GuiDownArrow(this, imageWidth + 8, 91));
         addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getEnergyUsed, this));
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 7, 13));
         addButton(new GuiSlurryGauge(() -> tile.inputTank, () -> tile.getSlurryTanks(null), GaugeType.STANDARD, this, 28, 13));
         addButton(new GuiSlurryGauge(() -> tile.outputTank, () -> tile.getSlurryTanks(null), GaugeType.STANDARD, this, 131, 13));

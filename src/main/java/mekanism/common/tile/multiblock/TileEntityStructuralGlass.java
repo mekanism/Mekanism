@@ -1,6 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import java.util.Locale;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;

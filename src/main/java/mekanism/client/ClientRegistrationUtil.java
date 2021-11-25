@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -117,6 +118,12 @@ public class ClientRegistrationUtil {
                 return new GuiAdvancedElectricMachine<>(container, inv, title);
             }
         });
+    }
+
+    public static synchronized void registerKeyBindings(KeyBinding... keys) {
+        for (KeyBinding key : keys) {
+            ClientRegistry.registerKeyBinding(key);
+        }
     }
 
     public static void setPropertyOverride(IItemProvider itemProvider, ResourceLocation override, IItemPropertyGetter propertyGetter) {

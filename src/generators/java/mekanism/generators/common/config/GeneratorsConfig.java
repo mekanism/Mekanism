@@ -8,6 +8,7 @@ import mekanism.common.config.value.CachedFloatingLongValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
+import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
@@ -33,7 +34,6 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedIntValue turbineBladesPerCoil;
     public final CachedDoubleValue turbineVentGasFlow;
     public final CachedDoubleValue turbineDisperserGasFlow;
-    public final CachedDoubleValue turbineDumpExcessKeepRatio;
     public final CachedIntValue condenserRate;
     public final CachedFloatingLongValue energyPerFusionFuel;
     public final CachedFloatingLongValue windGenerationMin;
@@ -48,6 +48,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedBooleanValue fissionMeltdownsEnabled;
     public final CachedDoubleValue fissionMeltdownChance;
     public final CachedDoubleValue fissionMeltdownRadiationMultiplier;
+    public final CachedDoubleValue fissionPostMeltdownDamage;
     public final CachedDoubleValue defaultBurnRate;
     public final CachedLongValue burnPerAssembly;
 
@@ -91,8 +92,6 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .define("turbineDisperserGasFlow", 1_280D));
         condenserRate = CachedIntValue.wrap(this, builder.comment("The rate at which steam is condensed in the turbine.")
               .define("condenserRate", 64_000));
-        turbineDumpExcessKeepRatio = CachedDoubleValue.wrap(this, builder.comment("The percentage of the turbine's steam tank to leave steam in when set to dumping excess.")
-              .defineInRange("dumpExcessKeepRatio", 0.9D, 0.001D, 1D));
         builder.pop();
 
         builder.comment("Wind Generator Settings").push(WIND_CATEGORY);
@@ -135,12 +134,14 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .define("casingHeatCapacity", 1_000D));
         fissionSurfaceAreaTarget = CachedDoubleValue.wrap(this, builder.comment("The average surface area of a Fission Reactor's fuel assemblies to reach 100% boil efficiency. Higher values make it harder to cool the reactor.")
               .defineInRange("surfaceAreaTarget", 4D, 1D, Double.MAX_VALUE));
-        fissionMeltdownsEnabled = CachedBooleanValue.wrap(this, builder.comment("Whether catastrophic meltdowns can occur from Fission Reactors.")
+        fissionMeltdownsEnabled = CachedBooleanValue.wrap(this, builder.comment("Whether catastrophic meltdowns can occur from Fission Reactors. If disabled instead of melting down the reactor will turn off and not be able to be turned back on until the damage level decreases.")
               .define("meltdownsEnabled", true));
         fissionMeltdownChance = CachedDoubleValue.wrap(this, builder.comment("The chance of a meltdown occurring once damage passes 100%. Will linearly scale as damage continues increasing.")
               .defineInRange("meltdownChance", 0.001D, 0D, 1D));
         fissionMeltdownRadiationMultiplier = CachedDoubleValue.wrap(this, builder.comment("How much radioactivity of fuel/waste contents are multiplied during a meltdown.")
               .define("meltdownRadiationMultiplier", 50D));
+        fissionPostMeltdownDamage = CachedDoubleValue.wrap(this, builder.comment("Damage to reset the reactor to after a meltdown.")
+              .defineInRange("postMeltdownDamage", 0.75 * FissionReactorMultiblockData.MAX_DAMAGE, 0, FissionReactorMultiblockData.MAX_DAMAGE));
         defaultBurnRate = CachedDoubleValue.wrap(this, builder.comment("The default burn rate of the fission reactor.")
               .defineInRange("defaultBurnRate", 0.1D, 0.001D, 1D));
         burnPerAssembly = CachedLongValue.wrap(this, builder.comment("The burn rate increase each fuel assembly provides. Max Burn Rate = fuelAssemblies * burnPerAssembly")

@@ -21,7 +21,12 @@ public @interface ComputerMethod {
     MethodRestriction restriction() default MethodRestriction.NONE;
 
     /**
-     * Whether or not this method is thread-safe or needs to be queued to run on the main thread.
+     * Array of modids that are required for this method to be applied to a handler.
+     */
+    String[] requiredMods() default "";
+
+    /**
+     * Whether this method is thread-safe or needs to be queued to run on the main thread.
      */
     boolean threadSafe() default false;
 }

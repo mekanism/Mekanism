@@ -12,9 +12,8 @@ public class TagResolverHelper {
     private TagResolverHelper() {
     }
 
-    @Deprecated
+    @Deprecated//TODO - 1.17: Remove this, presuming that the changes to when JEI loads made this no longer necessary
     public static <TYPE> List<TYPE> getRepresentations(ITag<TYPE> tag) {
-        //TODO - 10.1: Can we remove this and then just force a JEI version that gets tags at the correct time?
         try {
             return tag.getValues();
         } catch (IllegalStateException e) {

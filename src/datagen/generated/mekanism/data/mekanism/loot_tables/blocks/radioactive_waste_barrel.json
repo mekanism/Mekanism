@@ -22,11 +22,6 @@
           ],
           "name": "mekanism:radioactive_waste_barrel"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

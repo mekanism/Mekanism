@@ -15,7 +15,7 @@ public class GuiTextScrollList extends GuiScrollList {
     private int selected = -1;
 
     public GuiTextScrollList(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(gui, x, y, width, height, 10, new GuiInnerScreen(gui, x, y, width, height));
+        super(gui, x, y, width, height, 10, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE);
     }
 
     @Override

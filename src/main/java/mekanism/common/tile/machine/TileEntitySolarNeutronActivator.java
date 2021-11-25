@@ -9,9 +9,11 @@ import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.api.inventory.AutomationType;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.GasToGasCachedRecipe;
+import mekanism.api.recipes.cache.chemical.ChemicalToChemicalCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -72,11 +74,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         super(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS);
         configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot, RelativeSide.FRONT);
-        configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT, false, true).setEjecting(true);
         configComponent.addDisabledSides(RelativeSide.TOP);
 
         ejectorComponent = new TileComponentEjector(this);
-        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS);
+        ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM, TransmissionType.GAS)
+              .setCanTankEject(tank -> tank != inputTank);
         inputHandler = InputHelper.getInputHandler(inputTank);
         outputHandler = OutputHelper.getOutputHandler(outputTank);
     }
@@ -85,8 +88,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     @Override
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
-        builder.addTank(inputTank = ChemicalTankBuilder.GAS.create(MAX_GAS, ChemicalTankBuilder.GAS.notExternal, ChemicalTankBuilder.GAS.alwaysTrueBi,
-              this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheLookupMonitor));
+        //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
+        builder.addTank(inputTank = ChemicalTankBuilder.GAS.create(MAX_GAS,
+              (type, automationType) -> automationType != AutomationType.EXTERNAL || (outputTank.isEmpty() && type.has(GasAttributes.Radiation.class)),
+              ChemicalTankBuilder.GAS.alwaysTrueBi, this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheLookupMonitor));
         builder.addTank(outputTank = ChemicalTankBuilder.GAS.output(MAX_GAS, this));
         return builder.build();
     }
@@ -120,7 +125,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness
         // on the scaling factor. Also note that we only use rainfall as a proxy if it CAN rain; some dimensions
         // (like the End) have rainfall set, but can't actually support rain.
-        float humidityEff = -0.3F * (needsRainCheck ? b.getDownfall() : 0.0F);
+        float humidityEff = needsRainCheck ? -0.3F * b.getDownfall() : 0.0F;
         peakProductionRate = MekanismConfig.general.maxSolarNeutronActivatorRate.get() * (1.0F + tempEff + humidityEff);
         settingsChecked = true;
     }
@@ -175,7 +180,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     @Nonnull
     @Override
     public CachedRecipe<GasToGasRecipe> createNewCachedRecipe(@Nonnull GasToGasRecipe recipe, int cacheIndex) {
-        return new GasToGasCachedRecipe(recipe, inputHandler, outputHandler)
+        return new ChemicalToChemicalCachedRecipe<>(recipe, inputHandler, outputHandler)
               .setCanHolderFunction(this::canFunction)
               .setActive(this::setActive)
               .setOnFinish(() -> markDirty(false))

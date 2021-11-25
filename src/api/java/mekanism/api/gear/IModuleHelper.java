@@ -40,7 +40,7 @@ public interface IModuleHelper {
      *
      * @param container Module container, for example a Meka-Tool or MekaSuit piece.
      *
-     * @return Set of supported moduel types.
+     * @return Set of supported module types.
      */
     Set<ModuleData<?>> getSupported(ItemStack container);
 
@@ -54,7 +54,7 @@ public interface IModuleHelper {
     Set<Item> getSupported(IModuleDataProvider<?> typeProvider);
 
     /**
-     * Helper method to check if an item has a module installed and the module is set to enabled.
+     * Helper method to check if an item has a module installed and the module is enabled.
      *
      * @param container    Module container, for example a Meka-Tool or MekaSuit piece.
      * @param typeProvider Module type.
@@ -84,7 +84,17 @@ public interface IModuleHelper {
     List<? extends IModule<?>> loadAll(ItemStack container);
 
     /**
-     * Gets a all the module types on an item stack.
+     * Gets a list of all modules on an item stack that have a custom module matching a given class.
+     *
+     * @param container   Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param moduleClass Class representing the type of module's to load.
+     *
+     * @return List of modules on an item of the given class, or an empty list if the item doesn't support modules or has no modules of that type.
+     */
+    <MODULE extends ICustomModule<?>> List<? extends IModule<? extends MODULE>> loadAll(ItemStack container, Class<MODULE> moduleClass);
+
+    /**
+     * Gets all the module types on an item stack.
      *
      * @param container Module container, for example a Meka-Tool or MekaSuit piece.
      *
@@ -118,7 +128,7 @@ public interface IModuleHelper {
      *
      * @param icon  Element icon.
      * @param ratio Ratio. Values below 0.1 will display using {@link HUDColor#DANGER}, values above 0.1 and below 0.2 will display using {@link HUDColor#WARNING}, and
-     *              values above 0.2 will dusplay using {@link HUDColor#REGULAR}.
+     *              values above 0.2 will display using {@link HUDColor#REGULAR}.
      *
      * @return A new HUD element.
      */

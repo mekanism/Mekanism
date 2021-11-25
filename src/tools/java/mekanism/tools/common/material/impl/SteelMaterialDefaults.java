@@ -12,12 +12,12 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getShieldDurability() {
-        return 1_792;
+        return 448;
     }
 
     @Override
     public float getAxeDamage() {
-        return 4;
+        return 7;
     }
 
     @Override
@@ -26,38 +26,18 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public float getPaxelDamage() {
-        return 8;
-    }
-
-    @Override
-    public int getPaxelHarvestLevel() {
-        return 3;
-    }
-
-    @Override
-    public int getPaxelMaxUses() {
-        return 1_250;
-    }
-
-    @Override
-    public float getPaxelEfficiency() {
-        return 18;
-    }
-
-    @Override
     public int getUses() {
-        return 850;
+        return 500;
     }
 
     @Override
     public float getSpeed() {
-        return 14;
+        return 8;
     }
 
     @Override
     public float getAttackDamageBonus() {
-        return 4;
+        return 3;
     }
 
     @Override
@@ -67,25 +47,25 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
 
     @Override
     public int getCommonEnchantability() {
-        return 10;
+        return 16;
     }
 
     @Override
     public float getToughness() {
-        return 1;
+        return 2;
     }
 
     @Override
     public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
         switch (slotType) {
             case FEET:
-                return 520;
+                return 260;
             case LEGS:
-                return 600;
+                return 300;
             case CHEST:
-                return 640;
+                return 320;
             case HEAD:
-                return 440;
+                return 220;
         }
         return 0;
     }
@@ -98,7 +78,7 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
             case LEGS:
                 return 6;
             case CHEST:
-                return 7;
+                return 8;
             case HEAD:
                 return 3;
         }
@@ -107,13 +87,14 @@ public class SteelMaterialDefaults extends BaseMekanismMaterial {
 
     @Nonnull
     @Override
-    public String getRegistryPrefix() {
-        return "steel";
+    public String getConfigCommentName() {
+        return "Steel";
     }
 
+    @Nonnull
     @Override
-    public int getPaxelEnchantability() {
-        return 14;
+    public String getRegistryPrefix() {
+        return "steel";
     }
 
     @Nonnull

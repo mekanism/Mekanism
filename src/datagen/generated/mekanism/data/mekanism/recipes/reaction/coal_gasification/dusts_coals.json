@@ -1,17 +1,15 @@
 {
   "type": "mekanism:reaction",
-  "itemInput": [
-    {
-      "ingredient": {
+  "itemInput": {
+    "ingredient": [
+      {
         "tag": "forge:dusts/coal"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "tag": "forge:dusts/charcoal"
       }
-    }
-  ],
+    ]
+  },
   "fluidInput": {
     "amount": 100,
     "tag": "minecraft:water"

@@ -2,7 +2,7 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient.GasStackIngredient;
 
 //Adds an Activating Recipe that converts 1 mB of Water Vapor to 1 mB of Gaseous Brine.
 
-// <recipetype:mekanism:activating>.addRecipe(arg0 as string, arg1 as GasStackIngredient, arg2 as ICrTGasStack)
+// <recipetype:mekanism:activating>.addRecipe(name as string, input as GasStackIngredient, output as ICrTGasStack)
 
 <recipetype:mekanism:activating>.addRecipe("activate_water_vapor", GasStackIngredient.from(<gas:mekanism:water_vapor>), <gas:mekanism:brine>);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:

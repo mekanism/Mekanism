@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "tag": "byg:white_dye"
+      },
+      {
+        "item": "byg:oddity_cactus"
+      }
+    ]
+  },
+  "output": {
+    "item": "minecraft:white_dye",
+    "count": 2
+  }
+}

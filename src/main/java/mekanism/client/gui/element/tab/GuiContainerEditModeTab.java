@@ -39,6 +39,7 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         displayTooltip(matrix, dataSource.getContainerEditMode().getTextComponent(), mouseX, mouseY);
     }
 

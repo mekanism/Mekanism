@@ -32,8 +32,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements IC
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
         itemNameField = addButton(new TextFieldWidget(font, leftPos + 62, topPos + 24, 103, 12, StringTextComponent.EMPTY));
         itemNameField.setCanLoseFocus(false);

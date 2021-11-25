@@ -41,4 +41,9 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<Evap
     public MultiblockManager<EvaporationMultiblockData> getManager() {
         return Mekanism.evaporationManager;
     }
+
+    @Override
+    public boolean canBeMaster() {
+        return false;
+    }
 }

@@ -50,8 +50,8 @@ public class PacketSecurityUpdate implements IMekanismPacket {
             }
         } else {
             MekanismClient.clientSecurityMap.clear();
-            securityMap.forEach(MekanismClient.clientSecurityMap::put);
-            uuidMap.forEach(MekanismClient.clientUUIDMap::put);
+            MekanismClient.clientSecurityMap.putAll(securityMap);
+            MekanismClient.clientUUIDMap.putAll(uuidMap);
         }
     }
 

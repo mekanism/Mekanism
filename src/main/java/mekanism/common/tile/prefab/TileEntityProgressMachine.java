@@ -18,14 +18,13 @@ import net.minecraft.util.text.ITextComponent;
 public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> extends TileEntityRecipeMachine<RECIPE> {
 
     private int operatingTicks;
-
-    public int BASE_TICKS_REQUIRED;
-
+    protected int baseTicksRequired;
     public int ticksRequired;
 
     protected TileEntityProgressMachine(IBlockProvider blockProvider, int baseTicksRequired) {
         super(blockProvider);
-        ticksRequired = BASE_TICKS_REQUIRED = baseTicksRequired;
+        this.baseTicksRequired = baseTicksRequired;
+        ticksRequired = this.baseTicksRequired;
     }
 
     public double getScaledProgress() {
@@ -69,7 +68,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
-            ticksRequired = MekanismUtils.getTicks(this, BASE_TICKS_REQUIRED);
+            ticksRequired = MekanismUtils.getTicks(this, baseTicksRequired);
         }
     }
 

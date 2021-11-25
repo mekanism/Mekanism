@@ -67,7 +67,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         if (!isFocusOverlay()) {
             if (isNew && getFilterSelect(gui, tile) != null) {
                 //If it is a new filter and we have a filter select screen add a back button instead of a close button
-                addChild(new MekanismImageButton(gui, this.x + 6, this.y + 6, 11, 14, getButtonLocation("back"), this::openFilterSelect));
+                addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), this::openFilterSelect));
             } else {
                 super.addCloseButton();
             }
@@ -95,21 +95,21 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     }
 
     protected int getLeftButtonX() {
-        return x + width / 2 - 61;
+        return relativeX + width / 2 - 61;
     }
 
     protected void init() {
         int screenTop = relativeY + 18;
         int screenBottom = screenTop + getScreenHeight();
         addChild(new GuiInnerScreen(gui(), relativeX + 29, screenTop, getScreenWidth(), getScreenHeight(), this::getScreenText).clearFormat());
-        addChild(new TranslationButton(gui(), getLeftButtonX(), getGuiTop() + screenBottom + 2, 60, 20,
+        addChild(new TranslationButton(gui(), getLeftButtonX(), screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
             if (origFilter != null) {
                 Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getBlockPos(), true, origFilter, null));
             }
             close();
         }));
-        addChild(new TranslationButton(gui(), getLeftButtonX() + 62, getGuiTop() + screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
+        addChild(new TranslationButton(gui(), getLeftButtonX() + 62, screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, this::validateAndSave));
         addChild(new GuiSlot(SlotType.NORMAL, gui(), relativeX + 7, relativeY + getSlotOffset()).setRenderHover(true).setGhostHandler(getGhostHandler()));
         slotDisplay = addChild(new GuiSequencedSlotDisplay(gui(), relativeX + 8, relativeY + getSlotOffset() + 1, this::getRenderStacks));
     }
@@ -122,7 +122,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     private void openFilterSelect() {
         //Add the window for the filter select dialog to the parent gui
         gui().addWindow(getFilterSelect(gui(), tile));
-        //And close the filter filter
+        //And close the filter
         close();
     }
 
@@ -163,8 +163,8 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         }
     }
 
-    protected void filterSaveFailed(ILangEntry reason) {
-        status = reason.translateColored(EnumColor.DARK_RED);
+    protected void filterSaveFailed(ILangEntry reason, Object... args) {
+        status = reason.translateColored(EnumColor.DARK_RED, args);
         ticker = 20;
     }
 

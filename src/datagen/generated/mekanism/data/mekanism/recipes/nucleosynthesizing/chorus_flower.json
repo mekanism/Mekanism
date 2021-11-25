@@ -1,0 +1,16 @@
+{
+  "type": "mekanism:nucleosynthesizing",
+  "itemInput": {
+    "ingredient": {
+      "tag": "minecraft:small_flowers"
+    }
+  },
+  "gasInput": {
+    "amount": 2,
+    "gas": "mekanism:antimatter"
+  },
+  "output": {
+    "item": "minecraft:chorus_flower"
+  },
+  "duration": 500
+}

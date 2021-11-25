@@ -24,12 +24,13 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        drawString(matrix, OnOff.of(dataSource.isSorting()).getTextComponent(), x + 5, y + 24, titleTextColor());
+        drawTextScaledBound(matrix, OnOff.of(dataSource.isSorting()).getTextComponent(), x + 3, y + 24, titleTextColor(), 21);
         MekanismRenderer.resetColor();
     }
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         displayTooltip(matrix, MekanismLang.AUTO_SORT.translate(), mouseX, mouseY);
     }
 

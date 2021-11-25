@@ -22,7 +22,7 @@
       "item": "mekanism:dynamic_tank"
     },
     "P": {
-      "tag": "forge:chests/personal"
+      "item": "mekanism:personal_chest"
     }
   }
 }

@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:bulbis_composter"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:bulbis_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "byg:bulbis_fence",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

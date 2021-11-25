@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:willow_fence_gate"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:willow_planks",
+    "count": 2
+  },
+  "secondaryOutput": {
+    "item": "minecraft:stick",
+    "count": 4
+  },
+  "secondaryChance": 1.0
+}

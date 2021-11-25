@@ -99,7 +99,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     /**
-     * @param ticketsChanged {@code true} if the chunk set of our tile changed and we need to force adjusting our registered tickets.
+     * @param ticketsChanged {@code true} if the chunk set of our tile changed, and we need to force adjusting our registered tickets.
      *
      * @apiNote Only call server side
      */
@@ -107,7 +107,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         boolean canOperate = canOperate();
         if (hasRegistered && prevWorld != null && prevPos != null) {
             //Note: If we have already registered the previous world and previous position
-            // should never be null but we validate this just in case
+            // should never be null, but we validate this just in case
             if (prevWorld != world || !pos.equals(prevPos)) {
                 //If the location changed clear all old tickets
                 releaseChunkTickets(prevWorld, prevPos);
@@ -116,7 +116,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                     registerChunkTickets(world);
                 }
             } else if (!canOperate) {
-                //If we can't operate anymore clear all old tickets
+                //If we can't operate any more clear all old tickets
                 releaseChunkTickets(world, pos);
             } else if (ticketsChanged) {
                 //We can operate, the location didn't change. If the tickets changed, remove ones that are no longer valid
@@ -127,7 +127,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                     // just register our tickets normally
                     registerChunkTickets(world);
                 } else {
-                    //Otherwise we need to do some more checks
+                    //Otherwise, we need to do some more checks
                     LongSet chunks = getTileChunks();
                     if (chunks.isEmpty()) {
                         //Probably never the case, but if we have no chunks that should be loaded anymore;
@@ -184,7 +184,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                     releaseChunkTickets((ServerWorld) world, tile.getBlockPos());
                 }
             }
-            //Update tickets if the position changed or we are no longer able to operate
+            //Update tickets if the position changed, or we are no longer able to operate
             refreshChunkTickets((ServerWorld) world, tile.getBlockPos(), false);
         }
     }
@@ -198,7 +198,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                 // prevWorld and prevPos should both be nonnull, but validate them just in case
                 releaseChunkTickets(prevWorld, prevPos);
             } else {
-                //Otherwise just clear the set if it somehow has elements but isn't marked as registered
+                //Otherwise, just clear the set if it somehow has elements but isn't marked as registered
                 chunkSet.clear();
             }
         }
@@ -250,7 +250,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         if (chunks.isEmpty()) {
             return LongSets.EMPTY_SET;
         }
-        LongSet chunksAsLongs = new LongOpenHashSet();
+        LongSet chunksAsLongs = new LongOpenHashSet(chunks.size());
         for (ChunkPos chunkPos : chunks) {
             chunksAsLongs.add(chunkPos.toLong());
         }
@@ -319,7 +319,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                                 }
                                 //And add any that are valid now that weren't before
                                 // Note: We can safely call forceChunk here as nothing is iterating the list of forced chunks
-                                // as the loading validators get passed a
+                                // as the loading validators get past a
                                 for (long chunkPos : chunks) {
                                     if (chunkLoader.chunkSet.add(chunkPos)) {
                                         //If we didn't already have it in our chunk set and added actually added it as it is new
@@ -336,7 +336,8 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                                     LOGGER.debug("Tickets for position: {} in {}, successfully validated.", pos, worldName);
                                 } else {
                                     chunkLoader.markDirty();
-                                    //Note: Info level as this may be intended/expected when configs change (for example reducing max radius of digital miner)
+                                    //Note: Info level as this may be intended/expected when configs change (for example reducing max radius of digital miner),
+                                    // or if some of it needs to be recalculated such as the miner no longer having a target chunk
                                     LOGGER.info("Removed {} no longer valid chunk tickets, and added {} newly valid chunk tickets. Pos: {} World: {}",
                                           removed, added, pos, worldName);
                                 }
@@ -370,7 +371,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
             chunkLoader.chunkSet.clear();
             chunkLoader.hasRegistered = false;
             chunkLoader.prevWorld = null;
-            //Mark the the chunk as dirty to ensure that it saves the fact the component
+            //Mark the chunk as dirty to ensure that it saves the fact the component
             // shouldn't have any chunks loaded
             chunkLoader.markDirty();
         }

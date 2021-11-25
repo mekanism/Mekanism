@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "mekanism:mek_data",
   "result": {
     "item": "mekanism:laser_tractor_beam"
   },
@@ -9,7 +9,7 @@
   ],
   "key": {
     "P": {
-      "tag": "forge:chests/personal"
+      "item": "mekanism:personal_chest"
     },
     "#": {
       "item": "mekanism:laser_amplifier"

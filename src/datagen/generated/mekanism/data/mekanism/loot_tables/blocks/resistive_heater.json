@@ -47,11 +47,6 @@
           ],
           "name": "mekanism:resistive_heater"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

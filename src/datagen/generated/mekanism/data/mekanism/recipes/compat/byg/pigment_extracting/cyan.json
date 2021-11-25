@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "tag": "byg:cyan_dye"
+      },
+      {
+        "item": "byg:warped_cactus"
+      }
+    ]
+  },
+  "output": {
+    "pigment": "mekanism:cyan",
+    "amount": 768
+  }
+}

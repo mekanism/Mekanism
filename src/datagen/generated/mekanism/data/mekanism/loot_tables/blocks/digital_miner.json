@@ -28,6 +28,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "inverseReplace",
+                  "target": "mekData.inverseReplace",
+                  "op": "replace"
+                },
+                {
                   "source": "pull",
                   "target": "mekData.pull",
                   "op": "replace"
@@ -63,6 +68,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "replaceStack",
+                  "target": "mekData.replaceStack",
+                  "op": "replace"
+                },
+                {
                   "source": "inverse",
                   "target": "mekData.inverse",
                   "op": "replace"
@@ -86,11 +96,6 @@
             }
           ],
           "name": "mekanism:digital_miner"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

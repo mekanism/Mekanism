@@ -2,13 +2,9 @@ package mekanism.common.integration.projecte;
 
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
-import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.resource.PrimaryResource;
-import mekanism.common.resource.ResourceType;
 import moze_intel.projecte.api.data.CustomConversionProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
 
 public class MekanismCustomConversions extends CustomConversionProvider {
 
@@ -31,9 +27,5 @@ public class MekanismCustomConversions extends CustomConversionProvider {
     @Override
     public String getName() {
         return super.getName() + ": " + Mekanism.MODID;
-    }
-
-    private static ItemRegistryObject<Item> ingot(PrimaryResource resource) {
-        return MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
     }
 }

@@ -22,7 +22,7 @@ public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectr
     }
 
     @Override
-    public boolean useStatisticalMechanics() {
+    protected boolean useStatisticalMechanics() {
         return true;
     }
 }

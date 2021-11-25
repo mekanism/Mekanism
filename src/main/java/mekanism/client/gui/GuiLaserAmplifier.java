@@ -1,13 +1,14 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.math.BigDecimal;
 import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiAmplifierTab;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.client.gui.element.text.InputValidator;
+import mekanism.common.util.text.InputValidator;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -31,8 +32,8 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.STANDARD, this, 6, 10));
         addButton(new GuiAmplifierTab(this, tile));
         timerField = addButton(new GuiTextField(this, 96, 28, 36, 11));
@@ -54,21 +55,31 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         renderTitleText(matrix);
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         if (tile.getDelay() > 0) {
-            drawString(matrix, MekanismLang.DELAY.translate(tile.getDelay()), 26, 30, titleTextColor());
+            drawTextScaledBound(matrix, MekanismLang.DELAY.translate(tile.getDelay()), 26, 30, titleTextColor(), 68);
         } else {
-            drawString(matrix, MekanismLang.NO_DELAY.translate(), 26, 30, titleTextColor());
+            drawTextScaledBound(matrix, MekanismLang.NO_DELAY.translate(), 26, 30, titleTextColor(), 68);
         }
-        drawString(matrix, MekanismLang.MIN.translate(EnergyDisplay.of(tile.getMinThreshold())), 26, 45, titleTextColor());
-        drawString(matrix, MekanismLang.MAX.translate(EnergyDisplay.of(tile.getMaxThreshold())), 26, 60, titleTextColor());
+        drawTextScaledBound(matrix, MekanismLang.MIN.translate(EnergyDisplay.of(tile.getMinThreshold())), 26, 45, titleTextColor(), 68);
+        drawTextScaledBound(matrix, MekanismLang.MAX.translate(EnergyDisplay.of(tile.getMaxThreshold())), 26, 60, titleTextColor(), 68);
         super.drawForegroundText(matrix, mouseX, mouseY);
+    }
+
+    private FloatingLong parseFloatingLong(GuiTextField textField) {
+        String text = textField.getText();
+        if (text.contains("E")) {
+            //TODO: Improve how we handle scientific notation, we currently create a big decimal and then
+            // we parse it as a floating long, ideally we could skip the big decimal side of things
+            text = new BigDecimal(text).toPlainString();
+        }
+        return FloatingLong.parseFloatingLong(text);
     }
 
     private void setMinThreshold() {
         if (!minField.getText().isEmpty()) {
             try {
                 Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MIN_THRESHOLD, tile.getBlockPos(),
-                      MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(minField.getText()))));
-            } catch (Exception ignored) {
+                      MekanismUtils.convertToJoules(parseFloatingLong(minField))));
+            } catch (NumberFormatException ignored) {
             }
             minField.setText("");
         }
@@ -78,7 +89,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         if (!maxField.getText().isEmpty()) {
             try {
                 Mekanism.packetHandler.sendToServer(new PacketGuiSetEnergy(GuiEnergyValue.MAX_THRESHOLD, tile.getBlockPos(),
-                      MekanismUtils.convertToJoules(FloatingLong.parseFloatingLong(maxField.getText()))));
+                      MekanismUtils.convertToJoules(parseFloatingLong(maxField))));
             } catch (NumberFormatException ignored) {
             }
             maxField.setText("");
@@ -87,7 +98,10 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
 
     private void setTime() {
         if (!timerField.getText().isEmpty()) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SET_TIME, tile, Integer.parseInt(timerField.getText())));
+            try {
+                Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SET_TIME, tile, Integer.parseInt(timerField.getText())));
+            } catch (NumberFormatException ignored) {
+            }
             timerField.setText("");
         }
     }

@@ -8,7 +8,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 
-public class GuiSlider extends GuiRelativeElement {
+public class GuiSlider extends GuiElement {
 
     private static final ResourceLocation SLIDER = MekanismUtils.getResource(ResourceType.GUI, "smooth_slider.png");
 

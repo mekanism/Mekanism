@@ -7,13 +7,11 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 
 public enum ButtonType {
-    NORMAL((field, callback) -> new MekanismImageButton(field.gui(), field.getGuiLeft() + field.getRelativeX() + field.getWidth() - field.getHeight(),
-          field.getGuiTop() + field.getRelativeY(), field.getHeight(), 12,
-          MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"), callback)),
+    NORMAL((field, callback) -> new MekanismImageButton(field.gui(), field.getRelativeX() + field.getWidth() - field.getHeight(), field.getRelativeY(),
+          field.getHeight(), 12, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark.png"), callback)),
     DIGITAL((field, callback) -> {
-        MekanismImageButton ret = new MekanismImageButton(field.gui(), field.getGuiLeft() + field.getRelativeX() + field.getWidth() - field.getHeight(),
-              field.getGuiTop() + field.getRelativeY(), field.getHeight(), 12,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark_digital.png"), callback);
+        MekanismImageButton ret = new MekanismImageButton(field.gui(), field.getRelativeX() + field.getWidth() - field.getHeight(), field.getRelativeY(),
+              field.getHeight(), 12, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "checkmark_digital.png"), callback);
         ret.setButtonBackground(ButtonBackground.DIGITAL);
         return ret;
     });

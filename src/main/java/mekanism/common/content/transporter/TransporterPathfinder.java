@@ -24,6 +24,7 @@ import mekanism.common.content.transporter.TransporterStack.Path;
 import mekanism.common.lib.SidedBlockPos;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.TransporterUtils;
@@ -221,9 +222,25 @@ public final class TransporterPathfinder {
         }
 
         @Nullable
-        private Destination getDestination(ArrayList<BlockPos> ret, @Nullable LogisticalTransporterBase startTransmitter) {
+        private Destination getDestination(List<BlockPos> ret, @Nullable LogisticalTransporterBase startTransmitter) {
             Direction newSide = findSide(startTransmitter);
             if (newSide == null) {
+                if (startTransmitter != null) {
+                    //If we have an idle dir, use that as the "closest" side, otherwise use the side we are closest
+                    // to of the current path
+                    Direction sideClosest = transportStack.idleDir == null ? transportStack.getSide(startTransmitter) : transportStack.idleDir;
+                    //Check all the sides except the one we currently are closest to, as if we only are connected to one side
+                    // then we want to fail
+                    for (Direction side : EnumSet.complementOf(EnumSet.of(sideClosest))) {
+                        if (startTransmitter.getConnectionType(side) != ConnectionType.NONE) {
+                            //If we are connected to a side, idle towards it, the path not pointing at a transmitter
+                            // is gracefully handled
+                            transportStack.idleDir = side;
+                            ret.add(start.relative(side));
+                            return new Destination(ret, true, null, 0).setPathType(Path.NONE);
+                        }
+                    }
+                }
                 return null;
             }
             transportStack.idleDir = newSide;
@@ -246,25 +263,26 @@ public final class TransporterPathfinder {
         private Direction findSide(@Nullable LogisticalTransporterBase startTransmitter) {
             if (transportStack.idleDir == null) {
                 for (Direction side : EnumUtils.DIRECTIONS) {
-                    LogisticalTransporterBase transmitter = network.getTransmitter(start.relative(side));
-                    if (transportStack.canInsertToTransporter(transmitter, side, startTransmitter)) {
+                    if (canInsertToTransporter(side, startTransmitter)) {
                         return side;
                     }
                 }
             } else {
                 Direction opposite = transportStack.idleDir.getOpposite();
                 for (Direction side : EnumSet.complementOf(EnumSet.of(opposite))) {
-                    LogisticalTransporterBase transmitter = network.getTransmitter(start.relative(side));
-                    if (transportStack.canInsertToTransporter(transmitter, side, startTransmitter)) {
+                    if (canInsertToTransporter(side, startTransmitter)) {
                         return side;
                     }
                 }
-                LogisticalTransporterBase transmitter = network.getTransmitter(start.relative(opposite));
-                if (transportStack.canInsertToTransporter(transmitter, opposite, startTransmitter)) {
+                if (canInsertToTransporter(opposite, startTransmitter)) {
                     return opposite;
                 }
             }
             return null;
+        }
+
+        private boolean canInsertToTransporter(Direction from, @Nullable LogisticalTransporterBase startTransmitter) {
+            return transportStack.canInsertToTransporter(network.getTransmitter(start.relative(from)), from, startTransmitter);
         }
     }
 
@@ -354,7 +372,8 @@ public final class TransporterPathfinder {
             openSet.add(start);
             gScore.put(start, 0D);
             //Note: This is gScore + estimate, but given our gScore starts at zero we just skip getting it back out
-            fScore.put(start, WorldUtils.distanceBetween(start, finalNode));
+            double totalDistance = WorldUtils.distanceBetween(start, finalNode);
+            fScore.put(start, totalDistance);
             boolean hasValidDirection = false;
             LogisticalTransporterBase startTransmitter = network.getTransmitter(start);
             for (Direction direction : EnumUtils.DIRECTIONS) {
@@ -374,7 +393,8 @@ public final class TransporterPathfinder {
                 //If there is no valid direction that the stack can go just exit
                 return false;
             }
-            double maxSearchDistance = 2 * WorldUtils.distanceBetween(start, finalNode);
+            //If the blocks are very close together, allow for path finding up to four blocks away
+            double maxSearchDistance = Math.max(2 * totalDistance, 4);
             while (!openSet.isEmpty()) {
                 BlockPos currentNode = null;
                 double lowestFScore = 0;

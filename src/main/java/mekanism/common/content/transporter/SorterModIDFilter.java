@@ -12,6 +12,14 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
 
     private String modID;
 
+    public SorterModIDFilter() {
+    }
+
+    public SorterModIDFilter(SorterModIDFilter filter) {
+        super(filter);
+        modID = filter.modID;
+    }
+
     @Override
     public Finder getFinder() {
         return Finder.modID(modID);
@@ -56,10 +64,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
 
     @Override
     public SorterModIDFilter clone() {
-        SorterModIDFilter filter = new SorterModIDFilter();
-        copyTo(filter);
-        filter.modID = modID;
-        return filter;
+        return new SorterModIDFilter(this);
     }
 
     @Override

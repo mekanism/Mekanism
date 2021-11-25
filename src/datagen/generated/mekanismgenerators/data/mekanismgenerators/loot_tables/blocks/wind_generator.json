@@ -47,11 +47,6 @@
           ],
           "name": "mekanismgenerators:wind_generator"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

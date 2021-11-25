@@ -19,6 +19,8 @@ public class ItemStackToItemStackCachedRecipe extends CachedRecipe<ItemStackToIt
     private final IOutputHandler<@NonNull ItemStack> outputHandler;
     private final IInputHandler<@NonNull ItemStack> inputHandler;
 
+    private ItemStack recipeItem = ItemStack.EMPTY;
+
     /**
      * @param recipe        Recipe.
      * @param inputHandler  Input handler.
@@ -38,13 +40,13 @@ public class ItemStackToItemStackCachedRecipe extends CachedRecipe<ItemStackToIt
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        ItemStack recipeItem = inputHandler.getRecipeInput(recipe.getInput());
+        recipeItem = inputHandler.getRecipeInput(recipe.getInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeItem.isEmpty()) {
             return -1;
         }
         //Calculate the current max based on the input
-        currentMax = inputHandler.operationsCanSupport(recipe.getInput(), currentMax);
+        currentMax = inputHandler.operationsCanSupport(recipeItem, currentMax);
         if (currentMax <= 0) {
             //If our input can't handle it return that we should be resetting
             return -1;
@@ -60,8 +62,6 @@ public class ItemStackToItemStackCachedRecipe extends CachedRecipe<ItemStackToIt
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
-        ItemStack recipeItem = inputHandler.getRecipeInput(recipe.getInput());
         if (recipeItem.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;

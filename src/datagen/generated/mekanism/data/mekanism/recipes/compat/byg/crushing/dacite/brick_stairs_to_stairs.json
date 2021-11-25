@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:dacite_brick_stairs"
+    }
+  },
+  "output": {
+    "item": "byg:dacite_stairs"
+  }
+}

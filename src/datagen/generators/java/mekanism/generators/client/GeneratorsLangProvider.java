@@ -7,6 +7,7 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsItems;
+import mekanism.generators.common.registries.GeneratorsModules;
 import mekanism.generators.common.registries.GeneratorsSounds;
 import net.minecraft.data.DataGenerator;
 
@@ -143,6 +144,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.TURBINE_INVALID_ROTORS_NOT_CONTIGUOUS, "Couldn't form, rotors are invalid (non-contiguous).");
         add(GeneratorsLang.TURBINE_INVALID_TOO_NARROW, "Couldn't form, structure is too narrow to support turbine size.");
         add(GeneratorsLang.TURBINE_INVALID_VENT_BELOW_COMPLEX, "Couldn't form, found a Turbine Vent below Pressure Disperser layer. Vents must be at or above vertical position of disperser layer.");
+        add(GeneratorsLang.TURBINE_INVALID_MISSING_COILS, "Couldn't form, no Electromagnetic Coils present.");
 
         add(GeneratorsLang.TURBINE, "Industrial Turbine");
         add(GeneratorsLang.TURBINE_BLADES, "Blades: %s %s");
@@ -168,6 +170,7 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.FISSION_SCRAM, "SCRAM");
         add(GeneratorsLang.FISSION_DAMAGE, "Damage: %s");
         add(GeneratorsLang.FISSION_HEAT_STATISTICS, "Heat Statistics");
+        add(GeneratorsLang.FISSION_FORCE_DISABLED, "Reactor must reach safe damage and temperature levels before it can be reactivated.");
         add(GeneratorsLang.FISSION_FUEL_STATISTICS, "Fuel Statistics");
         add(GeneratorsLang.FISSION_HEAT_CAPACITY, "Heat Capacity: %s J/K");
         add(GeneratorsLang.FISSION_SURFACE_AREA, "Fuel Surface Area: %s m2");
@@ -223,5 +226,8 @@ public class GeneratorsLangProvider extends BaseLanguageProvider {
         add(GeneratorsLang.DESCRIPTION_TURBINE_ROTOR, "The steel rod that is used to house Turbine Blades within an Industrial Turbine.");
         add(GeneratorsLang.DESCRIPTION_TURBINE_VALVE, "A type of Turbine Casing that includes a port for the transfer of energy and steam.");
         add(GeneratorsLang.DESCRIPTION_TURBINE_VENT, "A type of Turbine Casing with an integrated vent for the release of steam. These should be placed on the level of or above the turbine's Rotational Complex.");
+
+        //Modules
+        add(GeneratorsModules.GEOTHERMAL_GENERATOR_UNIT, "Geothermal Generator Unit", "Harnesses geothermal energy from the surrounding environment, and improves protection against damage from heat sources. Install multiple for faster charging and greater protection.");
     }
 }

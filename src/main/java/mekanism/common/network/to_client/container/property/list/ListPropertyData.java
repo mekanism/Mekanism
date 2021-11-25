@@ -30,6 +30,8 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
                 return (ListPropertyData<TYPE>) FilterListPropertyData.read(property, elements, buffer);
             case FREQUENCY:
                 return (ListPropertyData<TYPE>) FrequencyListPropertyData.read(property, elements, buffer);
+            case REGISTRY_ENTRY:
+                return (ListPropertyData<TYPE>) RegistryEntryListPropertyData.read(property, elements, buffer);
             default:
                 Mekanism.logger.error("Unrecognized list type received: {}", listType);
                 return null;
@@ -46,8 +48,10 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
         super.writeToPacket(buffer);
         buffer.writeEnum(listType);
         buffer.writeVarInt(values.size());
-        writeListElements(buffer);
+        for (TYPE value : values) {
+            writeListElement(buffer, value);
+        }
     }
 
-    protected abstract void writeListElements(PacketBuffer buffer);
+    protected abstract void writeListElement(PacketBuffer buffer, TYPE value);
 }

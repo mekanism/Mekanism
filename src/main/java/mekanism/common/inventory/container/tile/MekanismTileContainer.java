@@ -75,7 +75,6 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         }
         if (tile.supportsUpgrades()) {
             //Add the virtual slot for the upgrade (add them before the main inventory to make sure they take priority in targeting)
-            //TODO - 10.1: Test this and test how it handles
             addSlot(upgradeSlot = tile.getComponent().getUpgradeSlot().createContainerSlot());
             addSlot(upgradeOutputSlot = tile.getComponent().getUpgradeOutputSlot().createContainerSlot());
         }

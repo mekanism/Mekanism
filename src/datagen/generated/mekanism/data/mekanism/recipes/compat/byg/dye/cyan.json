@@ -1,0 +1,23 @@
+{
+  "type": "mekanism:enriching",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "tag": "byg:cyan_dye"
+      },
+      {
+        "item": "byg:warped_cactus"
+      }
+    ]
+  },
+  "output": {
+    "item": "minecraft:cyan_dye",
+    "count": 2
+  }
+}

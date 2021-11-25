@@ -33,6 +33,7 @@ import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -49,18 +50,14 @@ import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
-import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.ChemicalTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
@@ -83,11 +80,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         configComponent = new TileComponentConfig(this, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY,
               TransmissionType.ITEM);
         configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, RelativeSide.FRONT, true).setCanEject(false);
-        configComponent.setupIOConfig(TransmissionType.GAS, getGasTank(), getGasTank(), RelativeSide.FRONT).setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.INFUSION, getInfusionTank(), getInfusionTank(), RelativeSide.FRONT).setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.PIGMENT, getPigmentTank(), getPigmentTank(), RelativeSide.FRONT).setEjecting(true);
-        configComponent.setupIOConfig(TransmissionType.SLURRY, getSlurryTank(), getSlurryTank(), RelativeSide.FRONT).setEjecting(true);
-        ejectorComponent = new TileComponentEjector(this);
+        configComponent.setupIOConfig(TransmissionType.GAS, getGasTank(), RelativeSide.FRONT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.INFUSION, getInfusionTank(), RelativeSide.FRONT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.PIGMENT, getPigmentTank(), RelativeSide.FRONT).setEjecting(true);
+        configComponent.setupIOConfig(TransmissionType.SLURRY, getSlurryTank(), RelativeSide.FRONT).setEjecting(true);
+        ejectorComponent = new TileComponentEjector(this, () -> tier.getOutput());
+        ejectorComponent.setOutputData(configComponent, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY)
+              .setCanEject(type -> MekanismUtils.canFunction(this) && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));
     }
 
     @Override
@@ -147,40 +146,22 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         super.onUpdateServer();
         drainSlot.drainChemicalTanks();
         fillSlot.fillChemicalTanks();
-        Current current = chemicalTank.getCurrent();
-        if (current != Current.EMPTY) {
-            IChemicalTank<?, ?> currentTank = null;
-            if (MekanismUtils.canFunction(this) && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING)) {
-                currentTank = getCurrentTank(current);
-                if (current == Current.GAS) {
-                    doAutoEject(TransmissionType.GAS, currentTank);
-                } else if (current == Current.INFUSION) {
-                    doAutoEject(TransmissionType.INFUSION, currentTank);
-                } else if (current == Current.PIGMENT) {
-                    doAutoEject(TransmissionType.PIGMENT, currentTank);
-                } else if (current == Current.SLURRY) {
-                    doAutoEject(TransmissionType.SLURRY, currentTank);
-                }
-            }
-            if (tier != ChemicalTankTier.CREATIVE) {
+        if (dumping != GasMode.IDLE && tier != ChemicalTankTier.CREATIVE) {
+            Current current = chemicalTank.getCurrent();
+            if (current != Current.EMPTY) {
+                IChemicalTank<?, ?> currentTank = getCurrentTank(current);
                 if (dumping == GasMode.DUMPING) {
-                    getCurrentTank(currentTank, current).shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
-                } else if (dumping == GasMode.DUMPING_EXCESS) {
-                    currentTank = getCurrentTank(currentTank, current);
-                    long needed = currentTank.getNeeded();
-                    if (needed < tier.getOutput()) {
-                        currentTank.shrinkStack(tier.getOutput() - needed, Action.EXECUTE);
+                    currentTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
+                } else {//dumping == GasMode.DUMPING_EXCESS
+                    long target = MathUtils.clampToLong(currentTank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
+                    long stored = currentTank.getStored();
+                    if (target < stored) {
+                        //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
+                        currentTank.shrinkStack(Math.min(stored - target, tier.getOutput()), Action.EXECUTE);
                     }
                 }
             }
         }
-    }
-
-    private IChemicalTank<?, ?> getCurrentTank(IChemicalTank<?, ?> currentTank, Current current) {
-        if (currentTank == null) {
-            return getCurrentTank(current);
-        }
-        return currentTank;
     }
 
     private IChemicalTank<?, ?> getCurrentTank(Current current) {
@@ -196,13 +177,6 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         throw new IllegalStateException("Unknown chemical type");
     }
 
-    private void doAutoEject(TransmissionType type, IChemicalTank<?, ?> tank) {
-        ConfigInfo config = configComponent.getConfig(type);
-        if (config != null && config.isEjecting()) {
-            ChemicalUtil.emit(config.getAllOutputtingSides(), tank, this, tier.getOutput());
-        }
-    }
-
     @Override
     public void nextMode(int tank) {
         if (tank == 0) {
@@ -212,30 +186,15 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = super.getConfigurationData(player);
-        data.putInt(NBTConstants.DUMP_MODE, dumping.ordinal());
-        return data;
-    }
-
-    @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
         NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_MODE, GasMode::byIndexStatic, mode -> dumping = mode);
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.DUMP_MODE, GasMode::byIndexStatic, mode -> dumping = mode);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
-        nbtTags.putInt(NBTConstants.DUMP_MODE, dumping.ordinal());
-        return nbtTags;
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
+        data.putInt(NBTConstants.DUMP_MODE, dumping.ordinal());
     }
 
     @Override

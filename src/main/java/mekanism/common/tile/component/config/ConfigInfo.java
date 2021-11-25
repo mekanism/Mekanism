@@ -186,7 +186,7 @@ public class ConfigInfo {
      * @return The new data type
      */
     @Nonnull
-    public DataType incrementDataType(@Nonnull RelativeSide relativeSide) {//TODO - 10.1: Check if changed on things that use this?
+    public DataType incrementDataType(@Nonnull RelativeSide relativeSide) {
         DataType current = getDataType(relativeSide);
         if (isSideEnabled(relativeSide)) {
             Set<DataType> supportedDataTypes = getSupportedDataTypes();
@@ -201,7 +201,7 @@ public class ConfigInfo {
      * @return The new data type
      */
     @Nonnull
-    public DataType decrementDataType(@Nonnull RelativeSide relativeSide) {//TODO - 10.1: Check if changed on things that use this?
+    public DataType decrementDataType(@Nonnull RelativeSide relativeSide) {
         DataType current = getDataType(relativeSide);
         if (isSideEnabled(relativeSide)) {
             Set<DataType> supportedDataTypes = getSupportedDataTypes();

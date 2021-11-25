@@ -2,12 +2,22 @@ package mekanism.common.tile.component;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
@@ -16,17 +26,19 @@ import mekanism.common.inventory.container.MekanismContainer.ISpecificContainerT
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableInt;
-import mekanism.common.lib.inventory.TransitRequest;
+import mekanism.common.lib.inventory.TileTransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
+import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
+import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
@@ -44,12 +56,39 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final TileEntityMekanism tile;
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
     private final EnumColor[] inputColors = new EnumColor[]{null, null, null, null, null, null};
+    private final LongSupplier chemicalEjectRate;
+    private final IntSupplier fluidEjectRate;
+    @Nullable
+    private final FloatingLongSupplier energyEjectRate;
+    @Nullable
+    private Predicate<TransmissionType> canEject;
+    @Nullable//TODO: At some point it would be nice to be able to generify this further
+    private Predicate<IChemicalTank<?, ?>> canTankEject;
     private boolean strictInput;
     private EnumColor outputColor;
     private int tickDelay = 0;
 
     public TileComponentEjector(TileEntityMekanism tile) {
+        this(tile, MekanismConfig.general.chemicalAutoEjectRate);
+    }
+
+    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate) {
+        this(tile, chemicalEjectRate, MekanismConfig.general.fluidAutoEjectRate);
+    }
+
+    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate) {
+        this(tile, chemicalEjectRate, fluidEjectRate, null);
+    }
+
+    public TileComponentEjector(TileEntityMekanism tile, FloatingLongSupplier energyEjectRate) {
+        this(tile, MekanismConfig.general.chemicalAutoEjectRate, MekanismConfig.general.fluidAutoEjectRate, energyEjectRate);
+    }
+
+    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable FloatingLongSupplier energyEjectRate) {
         this.tile = tile;
+        this.chemicalEjectRate = chemicalEjectRate;
+        this.fluidEjectRate = fluidEjectRate;
+        this.energyEjectRate = energyEjectRate;
         tile.addComponent(this);
     }
 
@@ -63,77 +102,123 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return this;
     }
 
-    public void tickServer() {
-        if (tickDelay == 0) {
-            outputItems();
-        } else {
-            tickDelay--;
-        }
-        eject(TransmissionType.GAS);
-        eject(TransmissionType.INFUSION);
-        eject(TransmissionType.SLURRY);
-        eject(TransmissionType.PIGMENT);
-        eject(TransmissionType.FLUID);
+    public TileComponentEjector setCanEject(Predicate<TransmissionType> canEject) {
+        this.canEject = canEject;
+        return this;
     }
 
-    private void eject(TransmissionType type) {
-        ConfigInfo info = configInfo.get(type);
-        if (info != null && info.isEjecting()) {
-            for (DataType dataType : info.getSupportedDataTypes()) {
-                //TODO - 10.1: Re-evaluate this as strictly speaking we should output evenly if there is a data type set to output
-                // and one set to input/output instead of outputting to one and then outputting to the other after we potentially
-                // already sent it all to the first one
-                if (dataType.canOutput()) {
-                    ISlotInfo slotInfo = info.getSlotInfo(dataType);
-                    if (slotInfo != null) {
-                        Set<Direction> outputSides = info.getSidesForData(dataType);
-                        if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo) {
-                            ((ChemicalSlotInfo<?, ?, ?>) slotInfo).getTanks().forEach(tank -> ChemicalUtil.emit(outputSides, tank, tile, MekanismConfig.general.chemicalAutoEjectRate.get()));
-                        } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
-                            ((FluidSlotInfo) slotInfo).getTanks().forEach(tank -> FluidUtils.emit(outputSides, tank, tile, MekanismConfig.general.fluidAutoEjectRate.get()));
-                        }
+    public TileComponentEjector setCanTankEject(Predicate<IChemicalTank<?, ?>> canTankEject) {
+        this.canTankEject = canTankEject;
+        return this;
+    }
+
+    public void tickServer() {
+        for (Map.Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
+            TransmissionType type = entry.getKey();
+            ConfigInfo info = entry.getValue();
+            if (info.isEjecting() && (canEject == null || canEject.test(type))) {
+                if (type == TransmissionType.ITEM) {
+                    if (tickDelay == 0) {
+                        outputItems(info);
+                    } else {
+                        tickDelay--;
                     }
+                } else if (type != TransmissionType.HEAT) {
+                    eject(type, info);
                 }
             }
         }
     }
 
-    private void outputItems() {
-        ConfigInfo info = configInfo.get(TransmissionType.ITEM);
-        if (info == null || !info.isEjecting()) {
-            return;
+    /**
+     * @apiNote Ensure that it can eject before calling this method.
+     */
+    private void eject(TransmissionType type, ConfigInfo info) {
+        //Used to keep track of tanks to what sides they output to
+        Map<Object, Set<Direction>> outputData = null;
+        for (DataType dataType : info.getSupportedDataTypes()) {
+            if (dataType.canOutput()) {
+                ISlotInfo slotInfo = info.getSlotInfo(dataType);
+                if (slotInfo != null) {
+                    Set<Direction> outputSides = info.getSidesForData(dataType);
+                    if (!outputSides.isEmpty()) {
+                        if (outputData == null) {
+                            //Lazy init outputData
+                            outputData = new HashMap<>();
+                        }
+                        if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo) {
+                            for (IChemicalTank<?, ?> tank : ((ChemicalSlotInfo<?, ?, ?>) slotInfo).getTanks()) {
+                                if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
+                                    outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
+                                }
+                            }
+                        } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
+                            for (IExtendedFluidTank tank : ((FluidSlotInfo) slotInfo).getTanks()) {
+                                if (!tank.isEmpty()) {
+                                    outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
+                                }
+                            }
+                        } else if (type == TransmissionType.ENERGY && slotInfo instanceof EnergySlotInfo) {
+                            for (IEnergyContainer container : ((EnergySlotInfo) slotInfo).getContainers()) {
+                                if (!container.isEmpty()) {
+                                    outputData.computeIfAbsent(container, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+        if (outputData != null && !outputData.isEmpty()) {
+            for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
+                if (type.isChemical()) {
+                    ChemicalUtil.emit(entry.getValue(), (IChemicalTank<?, ?>) entry.getKey(), tile, chemicalEjectRate.getAsLong());
+                } else if (type == TransmissionType.FLUID) {
+                    FluidUtils.emit(entry.getValue(), (IExtendedFluidTank) entry.getKey(), tile, fluidEjectRate.getAsInt());
+                } else if (type == TransmissionType.ENERGY) {
+                    IEnergyContainer container = (IEnergyContainer) entry.getKey();
+                    CableUtils.emit(entry.getValue(), container, tile, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.get());
+                }
+            }
+        }
+    }
+
+    /**
+     * @apiNote Ensure that it can eject before calling this method.
+     */
+    private void outputItems(ConfigInfo info) {
         for (DataType dataType : info.getSupportedDataTypes()) {
             if (!dataType.canOutput()) {
                 continue;
             }
             ISlotInfo slotInfo = info.getSlotInfo(dataType);
-            if (!(slotInfo instanceof InventorySlotInfo)) {
-                //We need it to be inventory slot info
-                return;
-            }
-            Set<Direction> outputs = info.getSidesForData(dataType);
-            if (!outputs.isEmpty()) {
-                TransitRequest ejectMap = getEjectItemMap((InventorySlotInfo) slotInfo, outputs.iterator().next());
-                if (!ejectMap.isEmpty()) {
-                    for (Direction side : outputs) {
-                        TileEntity tile = WorldUtils.getTileEntity(this.tile.getLevel(), this.tile.getBlockPos().relative(side));
-                        if (tile == null) {
-                            //If the spot is not loaded just skip trying to eject to it
-                            continue;
-                        }
-                        TransitResponse response;
-                        if (tile instanceof TileEntityLogisticalTransporterBase) {
-                            response = ((TileEntityLogisticalTransporterBase) tile).getTransmitter().insert(this.tile, ejectMap, outputColor, true, 0);
-                        } else {
-                            response = ejectMap.addToInventory(tile, side, false);
-                        }
-                        if (!response.isEmpty()) {
-                            // use the items returned by the TransitResponse; will be visible next loop
-                            response.useAll();
-                            if (ejectMap.isEmpty()) {
-                                //If we are out of items to eject, break
-                                break;
+            if (slotInfo instanceof InventorySlotInfo) {
+                //Validate the slot info is of the correct type
+                Set<Direction> outputs = info.getSidesForData(dataType);
+                if (!outputs.isEmpty()) {
+                    EjectTransitRequest ejectMap = InventoryUtils.getEjectItemMap(new EjectTransitRequest(tile, outputs.iterator().next()),
+                          ((InventorySlotInfo) slotInfo).getSlots());
+                    if (!ejectMap.isEmpty()) {
+                        for (Direction side : outputs) {
+                            TileEntity target = WorldUtils.getTileEntity(tile.getLevel(), tile.getBlockPos().relative(side));
+                            if (target != null) {
+                                //Update the side so that if/when the response uses it, it makes sure it is grabbing from the correct side
+                                ejectMap.side = side;
+                                //If the spot is not loaded just skip trying to eject to it
+                                TransitResponse response;
+                                if (target instanceof TileEntityLogisticalTransporterBase) {
+                                    response = ((TileEntityLogisticalTransporterBase) target).getTransmitter().insert(tile, ejectMap, outputColor, true, 0);
+                                } else {
+                                    response = ejectMap.addToInventory(target, side, 0, false);
+                                }
+                                if (!response.isEmpty()) {
+                                    // use the items returned by the TransitResponse; will be visible next loop
+                                    response.useAll();
+                                    if (ejectMap.isEmpty()) {
+                                        //If we are out of items to eject, break
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
@@ -142,10 +227,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         }
 
         tickDelay = 10;
-    }
-
-    private TransitRequest getEjectItemMap(InventorySlotInfo slotInfo, Direction side) {
-        return InventoryUtils.getEjectItemMap(tile, slotInfo.getSlots(), side);
     }
 
     @ComputerMethod
@@ -317,4 +398,19 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         setOutputColor(color);
     }
     //End computer related methods
+
+    private static class EjectTransitRequest extends TileTransitRequest {
+
+        public Direction side;
+
+        public EjectTransitRequest(TileEntity tile, Direction side) {
+            super(tile, side);
+            this.side = side;
+        }
+
+        @Override
+        public Direction getSide() {
+            return side;
+        }
+    }
 }

@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.ToIntFunction;
 import mekanism.common.lib.math.voxel.BlockPosBuilder;
@@ -29,7 +28,7 @@ public class Structure {
 
     private final Map<BlockPos, IMultiblockBase> nodes = new Object2ObjectOpenHashMap<>();
 
-    private final Map<Axis, SortedMap<Integer, VoxelPlane>> minorPlaneMap = new EnumMap<>(Axis.class);
+    private final Map<Axis, NavigableMap<Integer, VoxelPlane>> minorPlaneMap = new EnumMap<>(Axis.class);
     private final Map<Axis, NavigableMap<Integer, VoxelPlane>> planeMap = new EnumMap<>(Axis.class);
 
     private boolean valid;
@@ -54,7 +53,7 @@ public class Structure {
         for (Axis axis : Axis.AXES) {
             getMinorAxisMap(axis).put(axis.getCoord(pos), new VoxelPlane(axis, pos, node instanceof IMultiblock));
         }
-        if (node instanceof IMultiblock && (controller == null || ((IMultiblock<?>) node).canBeMaster())) {
+        if (node instanceof IMultiblock && (getController() == null || ((IMultiblock<?>) node).canBeMaster())) {
             controller = (IMultiblock<?>) node;
         }
     }
@@ -64,7 +63,14 @@ public class Structure {
     }
 
     public void setMultiblockData(MultiblockData multiblockData) {
+        boolean changed = this.multiblockData != multiblockData;
         this.multiblockData = multiblockData;
+        if (changed) {
+            //If the multiblock changed, then reset the formed status so that we don't potentially end up with multiple masters
+            for (IMultiblockBase node : this.nodes.values()) {
+                node.resetForFormed();
+            }
+        }
     }
 
     public IMultiblock<?> getController() {
@@ -72,14 +78,14 @@ public class Structure {
     }
 
     public MultiblockManager<?> getManager() {
-        return controller != null && valid ? controller.getManager() : null;
+        return getController() != null && valid ? getController().getManager() : null;
     }
 
     public IMultiblockBase getTile(BlockPos pos) {
         return nodes.get(pos);
     }
 
-    public SortedMap<Integer, VoxelPlane> getMinorAxisMap(Axis axis) {
+    public NavigableMap<Integer, VoxelPlane> getMinorAxisMap(Axis axis) {
         return minorPlaneMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
     }
 
@@ -117,10 +123,10 @@ public class Structure {
 
     public void add(Structure s) {
         if (s != this) {
-            if (s.controller != null && s.controller.canBeMaster()) {
-                //If the controller of the other structure isn't null and it can be a master block
-                // override our structure's controller
-                controller = s.controller;
+            if (s.getController() != null && s.getController().canBeMaster() && (getController() == null || !getController().canBeMaster())) {
+                //If the controller of the other structure isn't null and it can be a master block override our structure's controller
+                // if our structure's controller is only the controller because of lack of a better and more proper one
+                controller = s.getController();
             }
             //Merge nodes, and update their structure to point to our structure
             MultiblockManager<?> manager = getManager();
@@ -130,7 +136,7 @@ public class Structure {
             });
             //Iterate through the over the other structure's minor plane map and merge
             // the minor planes into our structure.
-            for (Entry<Axis, SortedMap<Integer, VoxelPlane>> entry : s.minorPlaneMap.entrySet()) {
+            for (Entry<Axis, NavigableMap<Integer, VoxelPlane>> entry : s.minorPlaneMap.entrySet()) {
                 Axis axis = entry.getKey();
                 Map<Integer, VoxelPlane> minorMap = getMinorAxisMap(axis);
                 Map<Integer, VoxelPlane> majorMap = getMajorAxisMap(axis);
@@ -234,9 +240,8 @@ public class Structure {
                         managers.addAll(((IStructuralMultiblock) node).getStructureMap().keySet());
                         managers.addAll(((IStructuralMultiblock) adj).getStructureMap().keySet());
                         // if both are structural, they should merge all manager structures
-                        //TODO - 10.1 (or earlier): Figure out what this should be as having it just be
-                        // equals seems incorrect. My guess is it should be the commended code down below
-                        // but maybe it should be |= instead
+                        //TODO - 10.1: Figure out what this should be as having it just be equals seems incorrect.
+                        // My guess is it should be the commented code down below but maybe it should be |= instead
                         for (MultiblockManager<?> manager : managers) {
                             didMerge = mergeIfNecessary(node, adj, manager);
                         }
@@ -352,6 +357,6 @@ public class Structure {
             return AXES[side.getAxis().ordinal()];
         }
 
-        protected static final Axis[] AXES = values();
+        static final Axis[] AXES = values();
     }
 }

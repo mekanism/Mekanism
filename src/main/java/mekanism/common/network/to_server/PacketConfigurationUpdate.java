@@ -78,18 +78,16 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
                 TileComponentConfig configComponent = config.getConfig();
                 ConfigInfo info = configComponent.getConfig(transmission);
                 if (info != null) {
-                    boolean changed = true;
+                    DataType type = info.getDataType(inputSide);
+                    boolean changed = false;
                     if (clickType == 0) {
-                        info.incrementDataType(inputSide);
+                        changed = type != info.incrementDataType(inputSide);
                     } else if (clickType == 1) {
-                        info.decrementDataType(inputSide);
-                    } else if (clickType == 2) {
-                        if (info.getDataType(inputSide) == DataType.NONE) {
-                            //If it was already none, we don't need to invalidate capabilities
-                            changed = false;
-                        } else {
-                            info.setDataType(DataType.NONE, inputSide);
-                        }
+                        changed = type != info.decrementDataType(inputSide);
+                    } else if (clickType == 2 && type != DataType.NONE) {
+                        //We only need to update it if we are changing it to none
+                        changed = true;
+                        info.setDataType(DataType.NONE, inputSide);
                     }
                     if (changed) {
                         configComponent.sideChanged(transmission, inputSide);

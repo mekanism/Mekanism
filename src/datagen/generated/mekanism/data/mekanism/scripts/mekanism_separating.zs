@@ -7,8 +7,8 @@ import mods.mekanism.api.ingredient.FluidStackIngredient;
  * 2) Adds a recipe that separates 1 mB of Liquid Sulfur Acid into 1 mB of Water Vapor and 1 mB of Sulfur Trioxide, using one and a half times as much energy as it takes to separate Oxygen and Hydrogen from Water.
 */
 
-// <recipetype:mekanism:separating>.addRecipe(arg0 as string, arg1 as FluidStackIngredient, arg2 as ICrTGasStack, arg3 as ICrTGasStack)
-// <recipetype:mekanism:separating>.addRecipe(arg0 as string, arg1 as FluidStackIngredient, arg2 as ICrTGasStack, arg3 as ICrTGasStack, arg4 as FloatingLong)
+// <recipetype:mekanism:separating>.addRecipe(name as string, input as FluidStackIngredient, leftGasOutput as ICrTGasStack, rightGasOutput as ICrTGasStack)
+// <recipetype:mekanism:separating>.addRecipe(name as string, input as FluidStackIngredient, leftGasOutput as ICrTGasStack, rightGasOutput as ICrTGasStack, energyMultiplier as FloatingLong)
 
 <recipetype:mekanism:separating>.addRecipe("separator/sulfur_trioxide", FluidStackIngredient.from(<tag:fluids:forge:sulfur_trioxide>, 2), <gas:mekanism:oxygen>, <gas:mekanism:sulfur_dioxide> * 2);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:

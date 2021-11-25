@@ -122,15 +122,15 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
      * @return if we need an update packet
      */
     public boolean tick(World world) {
-        boolean ret = false;
+        boolean needsPacket = false;
         for (ValveData data : valves) {
             data.activeTicks = Math.max(0, data.activeTicks - 1);
             if (data.activeTicks > 0 != data.prevActive) {
-                ret = true;
+                needsPacket = true;
             }
             data.prevActive = data.activeTicks > 0;
         }
-        return ret;
+        return needsPacket;
     }
 
     public boolean setShape(IShape shape) {

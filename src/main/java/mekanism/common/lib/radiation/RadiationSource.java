@@ -1,5 +1,6 @@
 package mekanism.common.lib.radiation;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import mekanism.api.Coord4D;
 import mekanism.api.NBTConstants;
@@ -47,5 +48,21 @@ public class RadiationSource implements IRadiationSource {
     public void write(CompoundNBT tag) {
         pos.write(tag);
         tag.putDouble(NBTConstants.RADIATION, magnitude);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RadiationSource other = (RadiationSource) o;
+        return magnitude == other.magnitude && pos.equals(other.pos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pos, magnitude);
     }
 }

@@ -70,9 +70,11 @@ import mekanism.common.item.block.machine.ItemBlockLaserTractorBeam;
 import mekanism.common.item.block.machine.ItemBlockLogisticalSorter;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.item.block.machine.ItemBlockOredictionificator;
+import mekanism.common.item.block.machine.ItemBlockQIOComponent;
 import mekanism.common.item.block.machine.ItemBlockQuantumEntangloporter;
 import mekanism.common.item.block.machine.ItemBlockSeismicVibrator;
 import mekanism.common.item.block.machine.ItemBlockSolarNeutronActivator;
+import mekanism.common.item.block.machine.ItemBlockTeleporter;
 import mekanism.common.item.block.transmitter.ItemBlockDiversionTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockLogisticalTransporter;
 import mekanism.common.item.block.transmitter.ItemBlockMechanicalPipe;
@@ -205,6 +207,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockResource, ItemBlockResource> CHARCOAL_BLOCK = registerResourceBlock(BlockResourceInfo.CHARCOAL);
     public static final BlockRegistryObject<BlockResource, ItemBlockResource> REFINED_GLOWSTONE_BLOCK = registerResourceBlock(BlockResourceInfo.REFINED_GLOWSTONE);
     public static final BlockRegistryObject<BlockResource, ItemBlockResource> STEEL_BLOCK = registerResourceBlock(BlockResourceInfo.STEEL);
+    public static final BlockRegistryObject<BlockResource, ItemBlockResource> FLUORITE_BLOCK = registerResourceBlock(BlockResourceInfo.FLUORITE);
 
     public static final BlockRegistryObject<BlockBin, ItemBlockBin> BASIC_BIN = registerBin(MekanismBlockTypes.BASIC_BIN);
     public static final BlockRegistryObject<BlockBin, ItemBlockBin> ADVANCED_BIN = registerBin(MekanismBlockTypes.ADVANCED_BIN);
@@ -250,7 +253,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockFactoryMachineModel<TileEntityMetallurgicInfuser>, ItemBlockMachine> METALLURGIC_INFUSER = BLOCKS.register("metallurgic_infuser", () -> new BlockFactoryMachineModel<>(MekanismBlockTypes.METALLURGIC_INFUSER), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityPurificationChamber, FactoryMachine<TileEntityPurificationChamber>>, ItemBlockMachine> PURIFICATION_CHAMBER = BLOCKS.register("purification_chamber", () -> new BlockFactoryMachine<>(MekanismBlockTypes.PURIFICATION_CHAMBER), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockFactoryMachine<TileEntityEnergizedSmelter, FactoryMachine<TileEntityEnergizedSmelter>>, ItemBlockMachine> ENERGIZED_SMELTER = BLOCKS.register("energized_smelter", () -> new BlockFactoryMachine<>(MekanismBlockTypes.ENERGIZED_SMELTER), ItemBlockMachine::new);
-    public static final BlockRegistryObject<BlockTile<TileEntityTeleporter, Machine<TileEntityTeleporter>>, ItemBlockMachine> TELEPORTER = BLOCKS.register("teleporter", () -> new BlockTile<>(MekanismBlockTypes.TELEPORTER), ItemBlockMachine::new);
+    public static final BlockRegistryObject<BlockTile<TileEntityTeleporter, Machine<TileEntityTeleporter>>, ItemBlockMachine> TELEPORTER = BLOCKS.register("teleporter", () -> new BlockTile<>(MekanismBlockTypes.TELEPORTER), ItemBlockTeleporter::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityElectricPump, Machine<TileEntityElectricPump>>, ItemBlockMachine> ELECTRIC_PUMP = BLOCKS.register("electric_pump", () -> new BlockTileModel<>(MekanismBlockTypes.ELECTRIC_PUMP), ItemBlockMachine::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityPersonalChest, BlockTypeTile<TileEntityPersonalChest>>, ItemBlockPersonalChest> PERSONAL_CHEST = BLOCKS.register("personal_chest", () -> new BlockTileModel<>(MekanismBlockTypes.PERSONAL_CHEST), ItemBlockPersonalChest::new);
     public static final BlockRegistryObject<BlockTileModel<TileEntityChargepad, BlockTypeTile<TileEntityChargepad>>, ItemBlockChargepad> CHARGEPAD = BLOCKS.register("chargepad", () -> new BlockTileModel<>(MekanismBlockTypes.CHARGEPAD), ItemBlockChargepad::new);
@@ -294,11 +297,11 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockBasicMultiblock<TileEntitySPSPort>, ItemBlockTooltip<BlockBasicMultiblock<TileEntitySPSPort>>> SPS_PORT = registerBlock("sps_port", () -> new BlockBasicMultiblock<>(MekanismBlockTypes.SPS_PORT), Rarity.EPIC);
     public static final BlockRegistryObject<BlockTileModel<TileEntitySuperchargedCoil, BlockTypeTile<TileEntitySuperchargedCoil>>, ItemBlockTooltip<BlockTileModel<TileEntitySuperchargedCoil, BlockTypeTile<TileEntitySuperchargedCoil>>>> SUPERCHARGED_COIL = registerBlock("supercharged_coil", () -> new BlockTileModel<>(MekanismBlockTypes.SUPERCHARGED_COIL), Rarity.EPIC);
 
-    public static final BlockRegistryObject<BlockTileModel<TileEntityQIODriveArray, BlockTypeTile<TileEntityQIODriveArray>>, ItemBlockMachine> QIO_DRIVE_ARRAY = BLOCKS.register("qio_drive_array", () -> new BlockTileModel<>(MekanismBlockTypes.QIO_DRIVE_ARRAY), ItemBlockMachine::new);
-    public static final BlockRegistryObject<BlockTile<TileEntityQIODashboard, BlockTypeTile<TileEntityQIODashboard>>, ItemBlockMachine> QIO_DASHBOARD = BLOCKS.register("qio_dashboard", () -> new BlockTile<>(MekanismBlockTypes.QIO_DASHBOARD), ItemBlockMachine::new);
-    public static final BlockRegistryObject<BlockTile<TileEntityQIOImporter, BlockTypeTile<TileEntityQIOImporter>>, ItemBlockMachine> QIO_IMPORTER = BLOCKS.register("qio_importer", () -> new BlockTile<>(MekanismBlockTypes.QIO_IMPORTER), ItemBlockMachine::new);
-    public static final BlockRegistryObject<BlockTile<TileEntityQIOExporter, BlockTypeTile<TileEntityQIOExporter>>, ItemBlockMachine> QIO_EXPORTER = BLOCKS.register("qio_exporter", () -> new BlockTile<>(MekanismBlockTypes.QIO_EXPORTER), ItemBlockMachine::new);
-    public static final BlockRegistryObject<BlockTile<TileEntityQIORedstoneAdapter, BlockTypeTile<TileEntityQIORedstoneAdapter>>, ItemBlockMachine> QIO_REDSTONE_ADAPTER = BLOCKS.register("qio_redstone_adapter", () -> new BlockTile<>(MekanismBlockTypes.QIO_REDSTONE_ADAPTER), ItemBlockMachine::new);
+    public static final BlockRegistryObject<BlockTileModel<TileEntityQIODriveArray, BlockTypeTile<TileEntityQIODriveArray>>, ItemBlockMachine> QIO_DRIVE_ARRAY = BLOCKS.register("qio_drive_array", () -> new BlockTileModel<>(MekanismBlockTypes.QIO_DRIVE_ARRAY), ItemBlockQIOComponent::new);
+    public static final BlockRegistryObject<BlockTile<TileEntityQIODashboard, BlockTypeTile<TileEntityQIODashboard>>, ItemBlockMachine> QIO_DASHBOARD = BLOCKS.register("qio_dashboard", () -> new BlockTile<>(MekanismBlockTypes.QIO_DASHBOARD), ItemBlockQIOComponent::new);
+    public static final BlockRegistryObject<BlockTile<TileEntityQIOImporter, BlockTypeTile<TileEntityQIOImporter>>, ItemBlockMachine> QIO_IMPORTER = BLOCKS.register("qio_importer", () -> new BlockTile<>(MekanismBlockTypes.QIO_IMPORTER), ItemBlockQIOComponent::new);
+    public static final BlockRegistryObject<BlockTile<TileEntityQIOExporter, BlockTypeTile<TileEntityQIOExporter>>, ItemBlockMachine> QIO_EXPORTER = BLOCKS.register("qio_exporter", () -> new BlockTile<>(MekanismBlockTypes.QIO_EXPORTER), ItemBlockQIOComponent::new);
+    public static final BlockRegistryObject<BlockTile<TileEntityQIORedstoneAdapter, BlockTypeTile<TileEntityQIORedstoneAdapter>>, ItemBlockMachine> QIO_REDSTONE_ADAPTER = BLOCKS.register("qio_redstone_adapter", () -> new BlockTile<>(MekanismBlockTypes.QIO_REDSTONE_ADAPTER), ItemBlockQIOComponent::new);
 
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> BASIC_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.BASIC_ENERGY_CUBE);
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> ADVANCED_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.ADVANCED_ENERGY_CUBE);

@@ -1,0 +1,36 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": [
+      {
+        "item": "ilikewood:baobab_post"
+      },
+      {
+        "item": "ilikewood:stripped_baobab_post"
+      }
+    ]
+  },
+  "mainOutput": {
+    "item": "byg:baobab_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "mekanism:sawdust"
+  },
+  "secondaryChance": 0.125
+}

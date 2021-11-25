@@ -19,14 +19,15 @@ import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
-import mekanism.client.gui.element.custom.GuiCrystallizerScreen;
-import mekanism.client.gui.element.custom.GuiCrystallizerScreen.IOreInfo;
+import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiGasGauge;
 import mekanism.client.gui.element.gauge.GuiGauge;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
+import mekanism.client.gui.machine.GuiChemicalCrystallizer;
+import mekanism.client.gui.machine.GuiChemicalCrystallizer.IOreInfo;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -50,19 +51,20 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     //Note: We use a weak hashmap so that when the recipe stops existing either due to disconnecting from the server
     // or because of a reload, then it can be properly garbage collected, but until then we keep track of the pairing
     // between the recipe and the ingredient group JEI has so that we can ensure we draw the correct information
-    private final Map<ChemicalCrystallizerRecipe, IGuiIngredientGroup<? extends ChemicalStack<?>>> ingredients = new WeakHashMap<>();
-    private final GuiCrystallizerScreen screen;
-    private final OreInfo oreInfo;
+    private final Map<ChemicalCrystallizerRecipe, IngredientTarget> ingredients = new WeakHashMap<>();
+    private final OreInfo oreInfo = new OreInfo();
     private final GuiGauge<?> gauge;
     private final GuiSlot output;
+    private final GuiSlot slurryOreSlot;
 
     public ChemicalCrystallizerRecipeCategory(IGuiHelper helper) {
         super(helper, MekanismBlocks.CHEMICAL_CRYSTALLIZER, 5, 3, 147, 79);
-        screen = addElement(new GuiCrystallizerScreen(this, 31, 13, oreInfo = new OreInfo()));
         gauge = addElement(GuiGasGauge.getDummy(GaugeType.STANDARD.with(DataType.INPUT), this, 7, 4));
         addSlot(SlotType.INPUT, 8, 65).with(SlotOverlay.PLUS);
         output = addSlot(SlotType.OUTPUT, 129, 57);
         addSimpleProgress(ProgressType.LARGE_RIGHT, 53, 61);
+        addElement(new GuiInnerScreen(this, 31, 13, 115, 42, () -> GuiChemicalCrystallizer.getScreenRenderStrings(this.oreInfo)));
+        slurryOreSlot = addElement(new GuiSlot(SlotType.ORE, this, 128, 13).setRenderAboveSlots());
     }
 
     @Override
@@ -73,14 +75,16 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     @Override
     public void draw(ChemicalCrystallizerRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our ore info
-        IGuiIngredientGroup<? extends ChemicalStack<?>> group = ingredients.get(recipe);
-        if (group != null) {
-            oreInfo.currentRecipe = recipe;
-            oreInfo.ingredient = group.getGuiIngredients().get(0);
+        oreInfo.currentRecipe = recipe;
+        IngredientTarget target = ingredients.get(recipe);
+        if (target != null) {
+            oreInfo.ingredient = target.ingredientGroup.getGuiIngredients().get(0);
+            oreInfo.itemIngredient = target.itemIngredientGroup == null ? null : target.itemIngredientGroup.getGuiIngredients().get(1);
         }
         super.draw(recipe, matrixStack, mouseX, mouseY);
         oreInfo.currentRecipe = null;
         oreInfo.ingredient = null;
+        oreInfo.itemIngredient = null;
     }
 
     @Override
@@ -104,14 +108,13 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
         initItem(itemStacks, 0, false, output, recipe.getOutputDefinition());
         IChemicalStackIngredient<?, ?> input = recipe.getInput();
         if (input instanceof GasStackIngredient) {
-            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_GAS, (GasStackIngredient) input);
+            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_GAS, (GasStackIngredient) input, null);
         } else if (input instanceof InfusionStackIngredient) {
-            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_INFUSION, (InfusionStackIngredient) input);
+            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_INFUSION, (InfusionStackIngredient) input, null);
         } else if (input instanceof PigmentStackIngredient) {
-            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_PIGMENT, (PigmentStackIngredient) input);
+            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_PIGMENT, (PigmentStackIngredient) input, null);
         } else if (input instanceof SlurryStackIngredient) {
             SlurryStackIngredient slurryInput = (SlurryStackIngredient) input;
-            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_SLURRY, slurryInput);
             Set<ITag<Item>> tags = new HashSet<>();
             for (SlurryStack slurryStack : slurryInput.getRepresentations()) {
                 Slurry slurry = slurryStack.getType();
@@ -123,20 +126,34 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
                 }
             }
             if (tags.size() == 1) {
+                initChemical(recipeLayout, recipe, MekanismJEI.TYPE_SLURRY, slurryInput, itemStacks);
                 //TODO: Eventually come up with a better way to do this to allow for if there outputs based on the input and multiple input types
-                tags.stream().findFirst().ifPresent(tag -> {
-                    itemStacks.init(1, false, screen.getSlotX(), screen.y);
-                    itemStacks.set(1, tag.getValues().stream().map(ItemStack::new).collect(Collectors.toList()));
-                });
+                tags.stream().findFirst().ifPresent(tag -> initItem(itemStacks, 1, false, slurryOreSlot,
+                      tag.getValues().stream().map(ItemStack::new).collect(Collectors.toList())));
+            } else {
+                initChemical(recipeLayout, recipe, MekanismJEI.TYPE_SLURRY, slurryInput, null);
             }
         }
     }
 
     private <STACK extends ChemicalStack<?>> void initChemical(IRecipeLayout recipeLayout, ChemicalCrystallizerRecipe recipe, IIngredientType<STACK> type,
-          IChemicalStackIngredient<?, STACK> ingredient) {
+          IChemicalStackIngredient<?, STACK> ingredient, @Nullable IGuiItemStackGroup itemIngredientGroup) {
         IGuiIngredientGroup<STACK> stacks = recipeLayout.getIngredientsGroup(type);
         initChemical(stacks, 0, true, gauge, ingredient.getRepresentations());
-        this.ingredients.put(recipe, stacks);
+        this.ingredients.put(recipe, new IngredientTarget(stacks, itemIngredientGroup));
+    }
+
+    //TODO - 1.17: Make this a record
+    private static class IngredientTarget {
+
+        private final IGuiIngredientGroup<? extends ChemicalStack<?>> ingredientGroup;
+        @Nullable
+        private final IGuiItemStackGroup itemIngredientGroup;
+
+        public IngredientTarget(IGuiIngredientGroup<? extends ChemicalStack<?>> ingredientGroup, @Nullable IGuiItemStackGroup itemIngredientGroup) {
+            this.ingredientGroup = ingredientGroup;
+            this.itemIngredientGroup = itemIngredientGroup;
+        }
     }
 
     private static class OreInfo implements IOreInfo {
@@ -145,6 +162,8 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
         private ChemicalCrystallizerRecipe currentRecipe;
         @Nullable
         private IGuiIngredient<? extends ChemicalStack<?>> ingredient;
+        @Nullable
+        private IGuiIngredient<ItemStack> itemIngredient;
 
         @Nonnull
         @Override
@@ -160,6 +179,16 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
         @Override
         public ChemicalCrystallizerRecipe getRecipe() {
             return currentRecipe;
+        }
+
+        @Override
+        @Nonnull
+        public ItemStack getRenderStack() {
+            if (itemIngredient == null) {
+                return ItemStack.EMPTY;
+            }
+            ItemStack displayedIngredient = itemIngredient.getDisplayedIngredient();
+            return displayedIngredient == null ? ItemStack.EMPTY : displayedIngredient;
         }
     }
 }

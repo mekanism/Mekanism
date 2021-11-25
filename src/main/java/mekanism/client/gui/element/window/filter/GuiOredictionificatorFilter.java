@@ -10,26 +10,26 @@ import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
-import mekanism.client.gui.element.text.InputValidator;
+import mekanism.common.util.text.InputValidator;
 import mekanism.common.MekanismLang;
+import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiOredictionificatorFilter extends GuiTextFilter<OredictionificatorFilter, TileEntityOredictionificator> {
+public class GuiOredictionificatorFilter extends GuiTextFilter<OredictionificatorItemFilter, TileEntityOredictionificator> {
 
     public static GuiOredictionificatorFilter create(IGuiWrapper gui, TileEntityOredictionificator tile) {
         return new GuiOredictionificatorFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);
     }
 
-    public static GuiOredictionificatorFilter edit(IGuiWrapper gui, TileEntityOredictionificator tile, OredictionificatorFilter filter) {
+    public static GuiOredictionificatorFilter edit(IGuiWrapper gui, TileEntityOredictionificator tile, OredictionificatorItemFilter filter) {
         return new GuiOredictionificatorFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, filter);
     }
 
-    private GuiOredictionificatorFilter(IGuiWrapper gui, int x, int y, TileEntityOredictionificator tile, @Nullable OredictionificatorFilter origFilter) {
+    private GuiOredictionificatorFilter(IGuiWrapper gui, int x, int y, TileEntityOredictionificator tile, @Nullable OredictionificatorItemFilter origFilter) {
         super(gui, x, y, 152, 100, MekanismLang.OREDICTIONIFICATOR_FILTER.translate(), tile, origFilter);
     }
 
@@ -46,13 +46,13 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     @Override
     protected void init() {
         super.init();
-        addChild(new MekanismImageButton(gui(), x + 10, y + 18, 12, getButtonLocation("left"), () -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 10, relativeY + 18, 12, getButtonLocation("left"), () -> {
             if (filter.hasFilter()) {
                 filter.previous();
                 slotDisplay.updateStackList();
             }
         }, getOnHover(MekanismLang.LAST_ITEM)));
-        addChild(new MekanismImageButton(gui(), x + 10, y + 52, 12, getButtonLocation("right"), () -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 10, relativeY + 52, 12, getButtonLocation("right"), () -> {
             if (filter.hasFilter()) {
                 filter.next();
                 slotDisplay.updateStackList();
@@ -62,7 +62,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
 
     @Override
     protected CharPredicate getInputValidator() {
-        return InputValidator.or(InputValidator.LETTER, InputValidator.DIGIT, InputValidator.from('_', ':', '/'));
+        return InputValidator.RESOURCE_LOCATION;
     }
 
     @Override
@@ -84,12 +84,12 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             modid = split[0];
             newFilter = split[1];
             if (modid.contains("/")) {
-                filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
+                filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_NAMESPACE);
                 return false;
             }
         }
         if (newFilter.contains(":")) {
-            filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
+            filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_PATH);
             return false;
         }
         ResourceLocation filterLocation = new ResourceLocation(modid, newFilter);
@@ -101,7 +101,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             text.setText("");
             return true;
         } else {
-            filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG);
+            filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_UNSUPPORTED_TAG);
         }
         return false;
     }
@@ -120,8 +120,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     }
 
     @Override
-    protected OredictionificatorFilter createNewFilter() {
-        return new OredictionificatorFilter();
+    protected OredictionificatorItemFilter createNewFilter() {
+        return new OredictionificatorItemFilter();
     }
 
     @Nonnull

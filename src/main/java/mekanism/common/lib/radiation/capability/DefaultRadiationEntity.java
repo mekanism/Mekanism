@@ -52,9 +52,14 @@ public class DefaultRadiationEntity implements IRadiationEntity {
         double severityScale = RadiationScale.getScaledDoseSeverity(radiation);
         double chance = minSeverity + rand.nextDouble() * (1 - minSeverity);
 
-        // Hurt randomly
-        if (severityScale > chance && rand.nextInt() % 2 == 0) {
-            entity.hurt(MekanismDamageSource.RADIATION, 1);
+        float strength = 0;
+        if (severityScale > chance) {
+            //Calculate effect strength based on radiation severity
+            strength = Math.max(1, (float) Math.log1p(radiation));
+            //Hurt randomly
+            if (rand.nextBoolean()) {
+                entity.hurt(MekanismDamageSource.RADIATION, strength);
+            }
         }
 
         if (entity instanceof PlayerEntity) {
@@ -65,8 +70,8 @@ public class DefaultRadiationEntity implements IRadiationEntity {
                 PacketRadiationData.sync(player);
             }
 
-            if (severityScale > chance) {
-                player.getFoodData().addExhaustion(1F);
+            if (strength > 0) {
+                player.getFoodData().addExhaustion(strength);
             }
         }
     }

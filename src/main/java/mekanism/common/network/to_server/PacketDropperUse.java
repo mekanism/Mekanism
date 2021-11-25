@@ -1,6 +1,5 @@
 package mekanism.common.network.to_server;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import mekanism.api.Action;
@@ -93,20 +92,23 @@ public class PacketDropperUse implements IMekanismPacket {
             if (fluidTank != null) {
                 handleFluidTank(player, stack, fluidTank);
             }
-        } else {
-            List<? extends IChemicalTank<?, ?>> tanks = Collections.emptyList();
-            if (tankType == TankType.GAS_TANK) {
-                tanks = handler.getGasTanks(null);
-            } else if (tankType == TankType.INFUSION_TANK) {
-                tanks = handler.getInfusionTanks(null);
-            } else if (tankType == TankType.PIGMENT_TANK) {
-                tanks = handler.getPigmentTanks(null);
-            } else if (tankType == TankType.SLURRY_TANK) {
-                tanks = handler.getSlurryTanks(null);
-            }
-            if (tankId < tanks.size()) {
-                handleChemicalTank(player, stack, tanks.get(tankId), coord);
-            }
+        } else if (tankType == TankType.GAS_TANK) {
+            handleChemicalTanks(player, stack, handler.getGasTanks(null), coord);
+        } else if (tankType == TankType.INFUSION_TANK) {
+            handleChemicalTanks(player, stack, handler.getInfusionTanks(null), coord);
+        } else if (tankType == TankType.PIGMENT_TANK) {
+            handleChemicalTanks(player, stack, handler.getPigmentTanks(null), coord);
+        } else if (tankType == TankType.SLURRY_TANK) {
+            handleChemicalTanks(player, stack, handler.getSlurryTanks(null), coord);
+        }
+    }
+
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void handleChemicalTanks(
+          PlayerEntity player, ItemStack stack, List<TANK> tanks, Coord4D coord) {
+        //This method is a workaround for Eclipse's compiler showing an error/warning if we try to just assign the tanks
+        // to a variable in handleTankType and then have the size check and call to handleChemicalTank happen there
+        if (tankId < tanks.size()) {
+            handleChemicalTank(player, stack, tanks.get(tankId), coord);
         }
     }
 

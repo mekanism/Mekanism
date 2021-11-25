@@ -5,12 +5,18 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public interface Finder {
 
     Finder ANY = stack -> true;
+
+    static Finder item(Item itemType) {
+        return stack -> itemType != Items.AIR && itemType == stack.getItem();
+    }
 
     static Finder item(ItemStack itemType) {
         return stack -> ItemStack.isSame(itemType, stack);

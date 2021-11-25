@@ -12,6 +12,14 @@ public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> imp
 
     private ItemStack materialItem = ItemStack.EMPTY;
 
+    public SorterMaterialFilter() {
+    }
+
+    public SorterMaterialFilter(SorterMaterialFilter filter) {
+        super(filter);
+        materialItem = filter.materialItem.copy();
+    }
+
     @Override
     public Finder getFinder() {
         return Finder.material(getMaterial());
@@ -56,10 +64,7 @@ public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> imp
 
     @Override
     public SorterMaterialFilter clone() {
-        SorterMaterialFilter filter = new SorterMaterialFilter();
-        copyTo(filter);
-        filter.materialItem = materialItem;
-        return filter;
+        return new SorterMaterialFilter(this);
     }
 
     @Override

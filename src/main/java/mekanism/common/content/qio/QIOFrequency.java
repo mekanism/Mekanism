@@ -7,6 +7,8 @@ import com.google.common.collect.SetMultimap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,6 +31,7 @@ import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.lib.collection.BiMultimap;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.to_client.PacketQIOItemViewerGuiSync;
@@ -41,7 +44,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
-public class QIOFrequency extends Frequency {
+public class QIOFrequency extends Frequency implements IColorableFrequency {
 
     private static final Random rand = new Random();
 
@@ -54,8 +57,13 @@ public class QIOFrequency extends Frequency {
     private final Map<String, Set<HashedItem>> modIDLookupMap = new HashMap<>();
     // efficiently keep track of the items for use in fuzzy lookup utilized by the items stored
     private final Map<Item, Set<HashedItem>> fuzzyItemLookupMap = new HashMap<>();
-    //Keep track of a UUID for each hashed item
+    // keep track of a UUID for each hashed item
     private final BiMap<HashedItem, UUID> itemTypeLookup = HashBiMap.create();
+    // allows for lazily removing the UUIDs assigned to items in the itemTypeLookup BiMap without having any issues
+    // come up related to updatedItems being a set and UUIDAwareHashedItems server side intentionally not comparing
+    // the UUIDs, so then if multiple add/remove calls happened at once the items in need of updating potentially
+    // would sync using a different UUID to the client, causing the client to not know the old stack needed to be removed
+    private final Set<UUID> uuidsToInvalidate = new HashSet<>();
     // a sensitive cache for wildcard tag lookups (wildcard -> [matching tags])
     private final SetMultimap<String, String> tagWildcardCache = HashMultimap.create();
     private final Set<String> failedWildcardTags = new HashSet<>();
@@ -126,7 +134,7 @@ public class QIOFrequency extends Frequency {
         if (!tags.isEmpty()) {
             boolean hasAllKeys = tagLookupMap.hasAllKeys(tags);
             if (tagLookupMap.putAll(tags, type) && !hasAllKeys) {
-                //If we added any tag item combinations and we didn't have all the keys for tags this item has,
+                //If we added any tag item combinations, and we didn't have all the keys for tags this item has,
                 // then we need to clear our wildcard cache as our new tags may be valid for some of our wildcards
                 tagWildcardCache.clear();
                 failedWildcardTags.clear();
@@ -141,7 +149,15 @@ public class QIOFrequency extends Frequency {
         }).add(type);
         //Fuzzy item lookup has no wildcard cache related to it
         fuzzyItemLookupMap.computeIfAbsent(stack.getItem(), item -> new HashSet<>()).add(type);
-        itemTypeLookup.put(type, UUID.randomUUID());
+        UUID oldUUID = getUUIDForType(type);
+        if (oldUUID != null) {
+            //If there was a UUID stored and prepped to be invalidated, remove it from the UUIDS we are trying to invalidate
+            // so that it is able to continue being used/sync'd to the client
+            uuidsToInvalidate.remove(oldUUID);
+        } else {
+            // otherwise, create a new uuid for use with this item type
+            itemTypeLookup.put(type, UUID.randomUUID());
+        }
         return new QIOItemTypeData(type);
     }
 
@@ -154,7 +170,7 @@ public class QIOFrequency extends Frequency {
     }
 
     public ItemStack removeByType(@Nullable HashedItem itemType, int amount) {
-        if (itemDataMap.isEmpty()) {
+        if (itemDataMap.isEmpty() || amount <= 0) {
             return ItemStack.EMPTY;
         }
 
@@ -180,7 +196,11 @@ public class QIOFrequency extends Frequency {
 
     private void removeItemData(HashedItem type) {
         itemDataMap.remove(type);
-        itemTypeLookup.remove(type);
+        //If the item has a UUID that corresponds to it, add that UUID to our list of uuids to invalidate
+        UUID toInvalidate = getUUIDForType(type);
+        if (toInvalidate != null) {
+            uuidsToInvalidate.add(toInvalidate);
+        }
         //Note: We need to copy the tags to a new collection as otherwise when we start removing them from the lookup
         // they will also get removed from this view
         Set<String> tags = new HashSet<>(tagLookupMap.getKeys(type));
@@ -193,7 +213,7 @@ public class QIOFrequency extends Frequency {
         ItemStack stack = type.getStack();
         String modID = MekanismUtils.getModId(stack);
         Set<HashedItem> itemsForMod = modIDLookupMap.get(modID);
-        //In theory if we are removing an item and it existed we should have a set corresponding to it,
+        //In theory if we are removing an item, and it existed we should have a set corresponding to it,
         // but double check that it is not null just in case
         // Next if we removed the item successfully, check if the items for that mod is now empty, and if they are
         // remove the modid from the lookup map, and clear our wildcard cache as it may have some wildcards that are
@@ -205,13 +225,17 @@ public class QIOFrequency extends Frequency {
         }
         Item item = stack.getItem();
         Set<HashedItem> itemsByFuzzy = fuzzyItemLookupMap.get(item);
-        //In theory if we are removing an item and it existed we should have a set corresponding to it,
+        //In theory if we are removing an item, and it existed we should have a set corresponding to it,
         // but double check that it is not null just in case
         // Next if we removed the item successfully, check if the "fuzzy" items for that item is now empty, and if they are
         // remove the item completely from the lookup map
         if (itemsByFuzzy != null && itemsByFuzzy.remove(type) && itemsByFuzzy.isEmpty()) {
             fuzzyItemLookupMap.remove(item);
         }
+    }
+
+    public Set<HashedItem> getTypesForItem(Item item) {
+        return Collections.unmodifiableSet(fuzzyItemLookupMap.getOrDefault(item, Collections.emptySet()));
     }
 
     public Object2LongMap<HashedItem> getStacksByItem(Item item) {
@@ -309,10 +333,12 @@ public class QIOFrequency extends Frequency {
         playersViewingItems.remove(player);
     }
 
+    @Override
     public EnumColor getColor() {
         return color;
     }
 
+    @Override
     public void setColor(EnumColor color) {
         this.color = color;
     }
@@ -343,9 +369,23 @@ public class QIOFrequency extends Frequency {
         return driveMap.get(key);
     }
 
+    /**
+     * This is mainly for use by things that need to do simulation, and should not have any of the values of the drive get changed directly.
+     */
+    public Collection<QIODriveData> getAllDrives() {
+        return driveMap.values();
+    }
+
     @Override
     public void tick() {
         super.tick();
+        if (!uuidsToInvalidate.isEmpty()) {
+            //If we have uuids we need to invalidate the Item UUID pairing of them
+            for (UUID uuidToInvalidate : uuidsToInvalidate) {
+                itemTypeLookup.inverse().remove(uuidToInvalidate);
+            }
+            uuidsToInvalidate.clear();
+        }
         if (!updatedItems.isEmpty() || needsUpdate) {
             Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>();
             updatedItems.forEach(type -> {
@@ -438,7 +478,7 @@ public class QIOFrequency extends Frequency {
         totalCountCapacity = buf.readVarLong();
         clientTypes = buf.readVarInt();
         totalTypeCapacity = buf.readVarInt();
-        color = buf.readEnum(EnumColor.class);
+        setColor(buf.readEnum(EnumColor.class));
     }
 
     @Override
@@ -450,7 +490,7 @@ public class QIOFrequency extends Frequency {
     @Override
     protected void read(CompoundNBT nbtTags) {
         super.read(nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, value -> color = value);
+        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, this::setColor);
     }
 
     public void addDrive(QIODriveKey key) {

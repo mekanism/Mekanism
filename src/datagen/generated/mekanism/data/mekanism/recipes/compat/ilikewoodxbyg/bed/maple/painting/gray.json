@@ -1,0 +1,74 @@
+{
+  "type": "mekanism:painting",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "itemInput": {
+    "ingredient": [
+      {
+        "item": "ilikewood:white_maple_bed"
+      },
+      {
+        "item": "ilikewood:orange_maple_bed"
+      },
+      {
+        "item": "ilikewood:magenta_maple_bed"
+      },
+      {
+        "item": "ilikewood:light_blue_maple_bed"
+      },
+      {
+        "item": "ilikewood:yellow_maple_bed"
+      },
+      {
+        "item": "ilikewood:lime_maple_bed"
+      },
+      {
+        "item": "ilikewood:pink_maple_bed"
+      },
+      {
+        "item": "ilikewood:light_gray_maple_bed"
+      },
+      {
+        "item": "ilikewood:cyan_maple_bed"
+      },
+      {
+        "item": "ilikewood:purple_maple_bed"
+      },
+      {
+        "item": "ilikewood:blue_maple_bed"
+      },
+      {
+        "item": "ilikewood:brown_maple_bed"
+      },
+      {
+        "item": "ilikewood:green_maple_bed"
+      },
+      {
+        "item": "ilikewood:red_maple_bed"
+      },
+      {
+        "item": "ilikewood:black_maple_bed"
+      }
+    ]
+  },
+  "chemicalInput": {
+    "amount": 256,
+    "pigment": "mekanism:gray"
+  },
+  "output": {
+    "item": "ilikewood:gray_maple_bed"
+  }
+}

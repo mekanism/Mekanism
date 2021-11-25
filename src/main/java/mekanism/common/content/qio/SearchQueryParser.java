@@ -1,8 +1,8 @@
 package mekanism.common.content.qio;
 
 import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectMap;
-import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -170,10 +170,12 @@ public class SearchQueryParser {
               .anyMatch(tooltip -> tooltip.contains(key.toLowerCase(Locale.ROOT)))),
         TAG('#', (key, stack) -> TagCache.getItemTags(stack).stream().anyMatch(itemTag -> itemTag.toLowerCase(Locale.ROOT).contains(key.toLowerCase(Locale.ROOT))));
 
-        private static final Char2ObjectMap<QueryType> charLookupMap = new Char2ObjectOpenHashMap<>();
+        private static final Char2ObjectMap<QueryType> charLookupMap;
 
         static {
-            for (QueryType type : QueryType.values()) {
+            QueryType[] values = values();
+            charLookupMap = new Char2ObjectArrayMap<>(values.length);
+            for (QueryType type : values) {
                 charLookupMap.put(type.prefix, type);
             }
         }

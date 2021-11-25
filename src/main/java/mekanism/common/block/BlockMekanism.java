@@ -32,6 +32,7 @@ import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
@@ -43,7 +44,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -57,7 +57,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
@@ -98,7 +97,12 @@ public abstract class BlockMekanism extends Block {
         if (tile == null) {
             return itemStack;
         }
+        //TODO: Some of the data doesn't get properly "picked", because there are cases such as before opening the GUI where
+        // the server doesn't bother syncing the data to the client. For example with what frequencies there are
         Item item = itemStack.getItem();
+        if (tile.getFrequencyComponent().hasCustomFrequencies()) {
+            tile.getFrequencyComponent().write(ItemDataUtils.getDataMap(itemStack));
+        }
         if (item instanceof ISecurityItem && tile.hasSecurity()) {
             ISecurityItem securityItem = (ISecurityItem) item;
             securityItem.setOwnerUUID(itemStack, tile.getOwnerUUID());
@@ -242,6 +246,12 @@ public abstract class BlockMekanism extends Block {
         Item item = stack.getItem();
         setTileData(world, pos, state, placer, stack, tile);
 
+        //TODO - 10.1: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
+        // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
+        // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
+        if (!world.isClientSide && tile.getFrequencyComponent().hasCustomFrequencies()) {
+            tile.getFrequencyComponent().read(ItemDataUtils.getDataMap(stack));
+        }
         if (tile instanceof TileEntitySecurityDesk && placer != null) {
             tile.getSecurity().setOwnerUUID(placer.getUUID());
         }
@@ -389,11 +399,10 @@ public abstract class BlockMekanism extends Block {
         return true;
     }
 
-    protected ActionResultType genericClientActivated(@Nonnull PlayerEntity player, @Nonnull Hand hand, @Nonnull BlockRayTraceResult hit) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace() && !Attribute.has(this, AttributeGui.class)) {
-            return ActionResultType.PASS;
+    protected ActionResultType genericClientActivated(@Nonnull PlayerEntity player, @Nonnull Hand hand) {
+        if (Attribute.has(this, AttributeGui.class) || MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
+            return ActionResultType.SUCCESS;
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.PASS;
     }
 }

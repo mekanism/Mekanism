@@ -7,7 +7,7 @@ import mods.mekanism.api.ingredient.ChemicalStackIngredient.InfusionStackIngredi
  * 2) Adds a recipe that produces one Gold Nugget out of 9 mB of the Gold Infuse Type.
 */
 
-// <recipetype:mekanism:crystallizing>.addRecipe(arg0 as string, arg1 as IChemicalStackIngredient, arg2 as IItemStack)
+// <recipetype:mekanism:crystallizing>.addRecipe(name as string, input as IChemicalStackIngredient, output as IItemStack)
 
 <recipetype:mekanism:crystallizing>.addRecipe("paste_to_carrots", GasStackIngredient.from(<gas:mekanism:nutritional_paste> * 150), <item:minecraft:carrot>);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:

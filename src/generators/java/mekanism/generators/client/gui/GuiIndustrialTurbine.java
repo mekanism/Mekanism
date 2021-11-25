@@ -38,8 +38,8 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiInnerScreen(this, 50, 18, 112, 50, () -> {
             List<ITextComponent> list = new ArrayList<>();
             TurbineMultiblockData multiblock = tile.getMultiblock();
@@ -57,7 +57,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             public ITextComponent getTooltip() {
                 TurbineMultiblockData multiblock = tile.getMultiblock();
                 if (multiblock.isFormed()) {
-                    return EnergyDisplay.of(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy()).getTextComponent();
+                    return EnergyDisplay.of(multiblock.energyContainer).getTextComponent();
                 }
                 return EnergyDisplay.ZERO.getTextComponent();
             }
@@ -92,12 +92,12 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             }
         }, 40, 13));
         addButton(new GuiGasGauge(() -> tile.getMultiblock().gasTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.MEDIUM, this, 6, 13));
-        addButton(new GuiEnergyTab(() -> {
+        addButton(new GuiEnergyTab(this, () -> {
             EnergyDisplay storing;
             EnergyDisplay producing;
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
-                storing = EnergyDisplay.of(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy());
+                storing = EnergyDisplay.of(multiblock.energyContainer);
                 producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
                       .multiply(multiblock.clientFlow * Math.min(multiblock.blades,
                             multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
@@ -106,8 +106,8 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
                 producing = EnergyDisplay.ZERO;
             }
             return Arrays.asList(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
-        }, this));
-        addButton(new GuiGasMode(this, leftPos + 159, topPos + 72, true, () -> tile.getMultiblock().dumpMode, tile.getBlockPos(), 0));
+        }));
+        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.getMultiblock().dumpMode, tile.getBlockPos(), 0));
     }
 
     @Override

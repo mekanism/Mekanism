@@ -32,11 +32,6 @@
           ],
           "name": "mekanism:personal_chest"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

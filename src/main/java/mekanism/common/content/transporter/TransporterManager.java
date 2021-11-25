@@ -172,7 +172,8 @@ public class TransporterManager {
     }
 
     /**
-     * Gets the {@link TransitResponse} of what items we expect to be able to get used/inserted into the item handler at a given position.
+     * Gets the {@link TransitResponse} of what items we expect to be able to get used/inserted into the item handler at a given position, taking into account any already
+     * "in-flight" items that are being transferred to the handler.
      *
      * @param position Position of the target
      * @param side     Side of the target we are connecting to
@@ -219,7 +220,21 @@ public class TransporterManager {
         }
 
         //Now for each of the items in the request, simulate the insert, using the state from all the in-flight
-        // items to ensure we have an accurate model of what will happen in future. We try each stack in the
+        // items to ensure we have an accurate model of what will happen in the future.
+        return getPredictedInsert(inventoryInfo, handler, request);
+    }
+
+    /**
+     * Gets the {@link TransitResponse} of what items we expect to be able to get used/inserted into the item handler with the current inventory info.
+     *
+     * @param inventoryInfo The current state of handler's target inventory
+     * @param handler       The item handler the target has
+     * @param request       Transit request
+     *
+     * @return {@link TransitResponse} of expected items to use
+     */
+    private static TransitResponse getPredictedInsert(InventoryInfo inventoryInfo, IItemHandler handler, TransitRequest request) {
+        //For each of the items in the request, simulate the insert. We try each stack in the
         // request; it might be possible to not send the first item, but the second could work, etc.
         for (ItemData data : request.getItemData()) {
             //Create a sending ItemStack with the hashed item type and total item count within the request
@@ -235,6 +250,19 @@ public class TransporterManager {
             return request.createResponse(StackUtils.size(stack, numToSend - numLeftOver), data);
         }
         return request.getEmptyResponse();
+    }
+
+    /**
+     * Gets the {@link TransitResponse} of what items we expect to be able to get used/inserted into the item handler not taking into account any stacks that are in
+     * transit to the handler.
+     *
+     * @param handler The item handler the target has
+     * @param request Transit request
+     *
+     * @return {@link TransitResponse} of expected items to use
+     */
+    public static TransitResponse getPredictedInsert(IItemHandler handler, TransitRequest request) {
+        return getPredictedInsert(new InventoryInfo(handler), handler, request);
     }
 
     /**

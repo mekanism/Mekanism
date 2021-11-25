@@ -45,7 +45,7 @@ public abstract class TransitRequest {
             ItemStack stack = inventory.extractItem(i, max, true);
 
             if (!stack.isEmpty() && finder.modifies(stack)) {
-                HashedItem hashed = HashedItem.create(stack);
+                HashedItem hashed = HashedItem.raw(stack);
                 int toUse = Math.min(stack.getCount(), max - ret.getCount(hashed));
                 if (toUse == 0) {
                     continue; // continue if we don't need anymore of this item type
@@ -61,7 +61,7 @@ public abstract class TransitRequest {
     public abstract Collection<? extends ItemData> getItemData();
 
     @Nonnull
-    public TransitResponse addToInventory(TileEntity tile, Direction side, boolean force) {
+    public TransitResponse addToInventory(TileEntity tile, Direction side, int min, boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tile).sendHome(this);
         }
@@ -71,6 +71,19 @@ public abstract class TransitRequest {
         Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).resolve();
         if (capability.isPresent()) {
             IItemHandler inventory = capability.get();
+            if (min > 1) {
+                //If we have a minimum amount of items we are trying to send, we need to start by simulating
+                // to see if we actually have enough room to send the minimum amount of our item. We can
+                // skip this step if we don't have a minimum amount being sent, as then whatever we are
+                // able to insert will be "good enough"
+                TransitResponse response = TransporterManager.getPredictedInsert(inventory, this);
+                if (response.isEmpty() || response.getSendingAmount() < min) {
+                    //If we aren't able to send any items or are only able to send less than we have room for
+                    // return that we aren't able to insert the requested amount
+                    return getEmptyResponse();
+                }
+                // otherwise, continue on to actually sending items to the inventory
+            }
             for (ItemData data : getItemData()) {
                 ItemStack origInsert = StackUtils.size(data.getStack(), data.getTotalCount());
                 ItemStack toInsert = origInsert.copy();

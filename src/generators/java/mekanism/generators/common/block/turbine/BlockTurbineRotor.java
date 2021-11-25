@@ -53,7 +53,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         if (tile == null) {
             return ActionResultType.PASS;
         } else if (world.isClientSide) {
-            return genericClientActivated(player, hand, hit);
+            return genericClientActivated(player, hand);
         } else if (tile.tryWrench(state, player, hand, hit) != WrenchResult.PASS) {
             return ActionResultType.SUCCESS;
         }

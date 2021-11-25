@@ -1,6 +1,6 @@
 package mekanism.common.base;
 
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import java.util.Calendar;
 import java.util.Set;
 import mekanism.api.math.MathUtils;
@@ -18,7 +18,7 @@ public final class HolidayManager {
 
     private static final Calendar calendar = Calendar.getInstance();
 
-    private static final Set<Holiday> holidays = new ObjectOpenHashSet<>();
+    private static final Set<Holiday> holidays = new ObjectArraySet<>();
 
     public static final Holiday CHRISTMAS = register(new Christmas());
     public static final Holiday NEW_YEAR = register(new NewYear());

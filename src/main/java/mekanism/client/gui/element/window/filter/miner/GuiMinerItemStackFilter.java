@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.window.filter.miner;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.window.filter.GuiItemStackFilter;
@@ -34,12 +33,6 @@ public class GuiMinerItemStackFilter extends GuiItemStackFilter<MinerItemStackFi
     @Override
     protected MinerItemStackFilter createNewFilter() {
         return new MinerItemStackFilter();
-    }
-
-    @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
-        super.renderForeground(matrix, mouseX, mouseY);
-        renderReplaceStack(matrix, gui(), filter);
     }
 
     @Nullable

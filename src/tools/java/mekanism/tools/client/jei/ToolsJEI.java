@@ -21,7 +21,7 @@ public class ToolsJEI implements IModPlugin {
     }
 
     @Override
-    public void registerRecipes(IRecipeRegistration registry) {
+    public void registerRecipes(@Nonnull IRecipeRegistration registry) {
         //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
         for (IItemProvider toolsItem : ToolsItems.ITEMS.getAllItems()) {
             RecipeRegistryHelper.addAnvilRecipes(registry, toolsItem, item -> {

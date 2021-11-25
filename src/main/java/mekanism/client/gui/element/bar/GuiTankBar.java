@@ -25,11 +25,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> implements IJEIIngredientHelper {
 
-    private final boolean horizontal;
-
     public GuiTankBar(IGuiWrapper gui, TankInfoProvider<STACK> infoProvider, int x, int y, int width, int height, boolean horizontal) {
-        super(AtlasTexture.LOCATION_BLOCKS, gui, infoProvider, x, y, width, height);
-        this.horizontal = horizontal;
+        super(AtlasTexture.LOCATION_BLOCKS, gui, infoProvider, x, y, width, height, horizontal);
     }
 
     protected abstract boolean isEmpty(STACK stack);
@@ -61,17 +58,17 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     protected abstract TextureAtlasSprite getIcon(STACK stack);
 
     @Override
-    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         STACK stored = getHandler().getStack();
         if (!isEmpty(stored)) {
-            double level = getHandler().getLevel();
-            if (level > 0) {
+            int displayInt = (int) (handlerLevel * ((horizontal ? width : height) - 2));
+            if (displayInt > 0) {
                 applyRenderColor(stored);
                 TextureAtlasSprite icon = getIcon(stored);
                 if (horizontal) {
-                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, (int) (level * (width - 2)), height - 2, icon, TilingDirection.DOWN_RIGHT);
+                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, displayInt, height - 2, icon, TilingDirection.DOWN_RIGHT);
                 } else {
-                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, (int) (level * (height - 2)), icon, TilingDirection.DOWN_RIGHT);
+                    drawTiledSprite(matrix, x + 1, y + 1, height - 2, width - 2, displayInt, icon, TilingDirection.DOWN_RIGHT);
                 }
                 MekanismRenderer.resetColor();
             }

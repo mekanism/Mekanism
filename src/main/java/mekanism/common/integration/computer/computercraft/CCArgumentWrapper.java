@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -29,6 +30,8 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.content.miner.MinerFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorFilter;
+import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.transporter.SorterFilter;
@@ -37,7 +40,7 @@ import mekanism.common.integration.computer.ComputerArgumentHandler;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import mekanism.common.tile.machine.TileEntityOredictionificator.OredictionificatorFilter;
+import mekanism.common.util.text.InputValidator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -165,6 +168,11 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 if (sanitized != null) {
                     return sanitized;
                 }
+            } else if (Item.class.isAssignableFrom(expectedType)) {
+                Item item = tryCreateItem(argument);
+                if (expectedType.isInstance(item)) {
+                    return item;
+                }
             }
         } else if (argument instanceof Map) {
             if (IFilter.class.isAssignableFrom(expectedType)) {
@@ -266,14 +274,8 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             }
             if (result instanceof MinerFilter) {
                 MinerFilter<?> minerFilter = (MinerFilter<?>) result;
-                wrapped.put("requireReplace", minerFilter.requireStack);
-                wrapped.put("replaceItem", wrapReturnType(minerFilter.replaceStack.getItem()));
-                if (!minerFilter.replaceStack.isEmpty()) {
-                    CompoundNBT tag = minerFilter.replaceStack.getTag();
-                    if (tag != null && !tag.isEmpty()) {
-                        wrapped.put("replaceItemNBT", wrapNBT(tag));
-                    }
-                }
+                wrapped.put("requiresReplacement", minerFilter.requiresReplacement);
+                wrapped.put("replaceTarget", wrapReturnType(minerFilter.replaceTarget));
             } else if (result instanceof SorterFilter) {
                 SorterFilter<?> sorterFilter = (SorterFilter<?>) result;
                 wrapped.put("allowDefault", sorterFilter.allowDefault);
@@ -292,9 +294,9 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     wrapped.put("fuzzy", filter.fuzzyMode);
                 }
             } else if (result instanceof OredictionificatorFilter) {
-                OredictionificatorFilter filter = (OredictionificatorFilter) result;
+                OredictionificatorFilter<?, ?, ?> filter = (OredictionificatorFilter<?, ?, ?>) result;
                 wrapped.put("target", filter.getFilterText());
-                wrapped.put("selected", filter.getIndex());
+                wrapped.put("selected", wrapReturnType(filter.getResultElement()));
             }
             return wrapped;
         } else if (result instanceof Map) {
@@ -386,25 +388,33 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
     }
 
     private static ItemStack tryCreateFilterItem(@Nullable Object rawName, @Nullable Object rawNBT) {
+        Item item = tryCreateItem(rawName);
+        if (item == Items.AIR) {
+            return ItemStack.EMPTY;
+        }
+        ItemStack stack = new ItemStack(item);
+        if (rawNBT != null) {
+            INBT nbt = sanitizeNBT(CompoundNBT.class, rawNBT.getClass(), rawNBT);
+            if (!(nbt instanceof CompoundNBT)) {
+                //Failed to deserialize properly, there is an issue with the passed in lua side
+                return ItemStack.EMPTY;
+            }
+            stack.setTag((CompoundNBT) nbt);
+        }
+        return stack;
+    }
+
+    private static Item tryCreateItem(@Nullable Object rawName) {
         if (rawName instanceof String) {
             ResourceLocation itemName = ResourceLocation.tryParse((String) rawName);
             if (itemName != null) {
                 Item item = ForgeRegistries.ITEMS.getValue(itemName);
-                if (item != null && item != Items.AIR) {
-                    ItemStack stack = new ItemStack(item);
-                    if (rawNBT != null) {
-                        INBT nbt = sanitizeNBT(CompoundNBT.class, rawNBT.getClass(), rawNBT);
-                        if (!(nbt instanceof CompoundNBT)) {
-                            //Failed to deserialize properly, there is an issue with the passed in lua side
-                            return ItemStack.EMPTY;
-                        }
-                        stack.setTag((CompoundNBT) nbt);
-                    }
-                    return stack;
+                if (item != null) {
+                    return item;
                 }
             }
         }
-        return ItemStack.EMPTY;
+        return Items.AIR;
     }
 
     @Nullable
@@ -412,8 +422,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         if (rawTag instanceof String) {
             String tag = (String) rawTag;
             if (!tag.isEmpty()) {
-                //TODO - 10.1: Evaluate adding some extra validation here such as pertaining to capitals or other restrictions
-                return tag;
+                tag = tag.toLowerCase(Locale.ROOT);
+                if (InputValidator.test(tag, InputValidator.RESOURCE_LOCATION.or(InputValidator.WILDCARD_CHARS))) {
+                    return tag;
+                }
             }
         }
         return null;
@@ -424,8 +436,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         if (rawModId instanceof String) {
             String modId = (String) rawModId;
             if (!modId.isEmpty()) {
-                //TODO - 10.1: Evaluate adding some extra validation here such as pertaining to capitals or other restrictions
-                return modId;
+                modId = modId.toLowerCase(Locale.ROOT);
+                if (InputValidator.test(modId, InputValidator.RL_NAMESPACE.or(InputValidator.WILDCARD_CHARS))) {
+                    return modId;
+                }
             }
         }
         return null;
@@ -484,8 +498,8 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     }
                     if (filter instanceof MinerFilter) {
                         MinerFilter<?> minerFilter = (MinerFilter<?>) filter;
-                        minerFilter.requireStack = getBooleanFromRaw(map.get("requireReplace"));
-                        minerFilter.replaceStack = tryCreateFilterItem(map.get("replaceItem"), map.get("replaceItemNBT"));
+                        minerFilter.requiresReplacement = getBooleanFromRaw(map.get("requiresReplacement"));
+                        minerFilter.replaceTarget = tryCreateItem(map.get("replaceTarget"));
                     } else if (filter instanceof SorterFilter) {
                         SorterFilter<?> sorterFilter = (SorterFilter<?>) filter;
                         sorterFilter.allowDefault = getBooleanFromRaw(map.get("allowDefault"));
@@ -510,8 +524,8 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                             qioItemFilter.fuzzyMode = getBooleanFromRaw(map.get("fuzzy"));
                         }
                     } else if (filter instanceof OredictionificatorFilter) {
-                        OredictionificatorFilter oredictionificatorFilter = (OredictionificatorFilter) filter;
-                        Object rawTag = map.get("tag");
+                        OredictionificatorFilter<?, ?, ?> oredictionificatorFilter = (OredictionificatorFilter<?, ?, ?>) filter;
+                        Object rawTag = map.get("target");
                         if (!(rawTag instanceof String)) {
                             return null;
                         }
@@ -524,9 +538,11 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                             return null;
                         }
                         oredictionificatorFilter.setFilter(rl);
-                        ItemStack stack = tryCreateFilterItem(map.get("selected"), null);
-                        if (!stack.isEmpty()) {
-                            oredictionificatorFilter.setSelectedOutput(stack.getItem());
+                        if (oredictionificatorFilter instanceof OredictionificatorItemFilter) {
+                            Item item = tryCreateItem(map.get("selected"));
+                            if (item != Items.AIR) {
+                                ((OredictionificatorItemFilter) oredictionificatorFilter).setSelectedOutput(item);
+                            }
                         }
                     }
                     return filter;
@@ -578,11 +594,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                             return ShortNBT.valueOf((short) d);
                         } else if (d >= Integer.MIN_VALUE && d <= Integer.MAX_VALUE) {
                             return IntNBT.valueOf((int) d);
-                        } else if (d >= Long.MIN_VALUE && d <= Long.MAX_VALUE) {
-                            return LongNBT.valueOf((long) d);
                         }
+                        return LongNBT.valueOf((long) d);
                     } else if (d >= -Float.MAX_VALUE && d <= Float.MAX_VALUE) {
-                        //Otherwise if it is in the range of a float give float nbt
+                        //Otherwise, if it is in the range of a float give float nbt
                         return FloatNBT.valueOf((float) d);
                     }
                     return DoubleNBT.valueOf(d);

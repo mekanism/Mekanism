@@ -5,12 +5,10 @@ import mekanism.common.block.prefab.BlockTileGlass;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.WrenchResult;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -32,8 +30,7 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
         if (tile == null) {
             return ActionResultType.PASS;
         } else if (world.isClientSide) {
-            ItemStack stack = player.getItemInHand(hand);
-            if (stack.getItem() instanceof BlockItem && new BlockItemUseContext(player, hand, stack, hit).canPlace()) {
+            if (!MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
                 if (!tile.structuralGuiAccessAllowed() || !tile.hasFormedMultiblock()) {
                     //If the block's multiblock doesn't allow gui access via structural multiblocks (for example the evaporation plant),
                     // or if the multiblock is not formed then pass

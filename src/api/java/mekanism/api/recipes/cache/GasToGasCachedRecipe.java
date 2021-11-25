@@ -1,7 +1,6 @@
 package mekanism.api.recipes.cache;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -14,7 +13,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 /**
  * Base class to help implement handling of gas to gas recipes.
  */
-@FieldsAreNonnullByDefault
+@Deprecated//TODO - 1.17: Remove this
 @ParametersAreNonnullByDefault
 public class GasToGasCachedRecipe extends ChemicalToChemicalCachedRecipe<Gas, GasStack, GasStackIngredient, GasToGasRecipe> {
 

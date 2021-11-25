@@ -6,8 +6,9 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 
 //TODO: Once https://github.com/MinecraftForge/MinecraftForge/pull/6464 is merged make this extend CachedPrimitiveValue<Float>
 // and make it so that our get is cleaner
-public class CachedFloatValue extends CachedPrimitiveValue<Double> implements FloatSupplier {
+public class CachedFloatValue extends CachedValue<Double> implements FloatSupplier {
 
+    private boolean resolved;
     private float cachedValue;
 
     private CachedFloatValue(IMekanismConfig config, ConfigValue<Double> internal) {
@@ -47,5 +48,17 @@ public class CachedFloatValue extends CachedPrimitiveValue<Double> implements Fl
     public void set(float value) {
         internal.set((double) value);
         cachedValue = value;
+    }
+
+    @Override
+    protected boolean clearCachedValue(boolean checkChanged) {
+        if (!resolved) {
+            //Isn't cached don't need to clear it or run any invalidation listeners
+            return false;
+        }
+        float oldCachedValue = cachedValue;
+        resolved = false;
+        //Return if we are meant to check the changed ones, and it is different than it used to be
+        return checkChanged && oldCachedValue != get();
     }
 }

@@ -31,11 +31,14 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.LITHIUM, MekanismFluids.LITHIUM, MekanismTags.Fluids.LITHIUM);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.OXYGEN, MekanismFluids.OXYGEN, MekanismTags.Fluids.OXYGEN);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SODIUM, MekanismFluids.SODIUM, MekanismTags.Fluids.SODIUM);
+        addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SUPERHEATED_SODIUM, MekanismFluids.SUPERHEATED_SODIUM, MekanismTags.Fluids.SUPERHEATED_SODIUM);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.STEAM, MekanismFluids.STEAM, MekanismTags.Fluids.STEAM);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFUR_DIOXIDE, MekanismFluids.SULFUR_DIOXIDE, MekanismTags.Fluids.SULFUR_DIOXIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFUR_TRIOXIDE, MekanismFluids.SULFUR_TRIOXIDE, MekanismTags.Fluids.SULFUR_TRIOXIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.SULFURIC_ACID, MekanismFluids.SULFURIC_ACID, MekanismTags.Fluids.SULFURIC_ACID);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.HYDROFLUORIC_ACID, MekanismFluids.HYDROFLUORIC_ACID, MekanismTags.Fluids.HYDROFLUORIC_ACID);
+        addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.URANIUM_OXIDE, MekanismFluids.URANIUM_OXIDE, MekanismTags.Fluids.URANIUM_OXIDE);
+        addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.URANIUM_HEXAFLUORIDE, MekanismFluids.URANIUM_HEXAFLUORIDE, MekanismTags.Fluids.URANIUM_HEXAFLUORIDE);
         addRotaryCondensentratorRecipe(consumer, basePath, MekanismGases.WATER_VAPOR, new IFluidProvider() {
             @Nonnull
             @Override

@@ -15,7 +15,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketConfigurationUpdate;
 import mekanism.common.network.to_server.PacketConfigurationUpdate.ConfigurationPacket;
@@ -33,15 +33,15 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     private final TILE tile;
 
     public GuiTransporterConfig(IGuiWrapper gui, int x, int y, TILE tile) {
-        super(gui, x, y, 156, 95, SelectedWindowData.UNSPECIFIED);
+        super(gui, x, y, 156, 95, WindowType.TRANSPORTER_CONFIG);
         this.tile = tile;
         interactionStrategy = InteractionStrategy.ALL;
         addChild(new GuiInnerScreen(gui, relativeX + 41, relativeY + 15, 74, 12,
               () -> Collections.singletonList(MekanismLang.STRICT_INPUT_ENABLED.translate(OnOff.of(tile.getEjector().hasStrictInput())))));
         addChild(new GuiSlot(SlotType.NORMAL, gui, relativeX + 111, relativeY + 48));
-        addChild(new MekanismImageButton(gui, gui.getLeft() + relativeX + 136, gui.getTop() + relativeY + 6, 14, getButtonLocation("strict_input"),
+        addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, 16, getButtonLocation("exclamation"),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos())), getOnHover(MekanismLang.STRICT_INPUT)));
-        addChild(new ColorButton(gui, gui.getLeft() + relativeX + 112, gui.getTop() + relativeY + 49, 16, 16,
+        addChild(new ColorButton(gui, relativeX + 112, relativeY + 49, 16, 16,
               () -> this.tile.getEjector().getOutputColor(),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), Screen.hasShiftDown() ? 2 : 0)),
               () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), 1))));
@@ -56,7 +56,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     private void addSideDataButton(RelativeSide side, int xPos, int yPos) {
-        SideDataButton button = addChild(new SideDataButton(gui(), getGuiLeft() + relativeX + xPos, getGuiTop() + relativeY + yPos, side,
+        SideDataButton button = addChild(new SideDataButton(gui(), relativeX + xPos, relativeY + yPos, side,
               () -> tile.getConfig().getDataType(TransmissionType.ITEM, side), () -> tile.getEjector().getInputColor(side), tile, () -> null,
               ConfigurationPacket.INPUT_COLOR, getOnHover(side)));
         if (!tile.getEjector().isInputSideEnabled(side)) {

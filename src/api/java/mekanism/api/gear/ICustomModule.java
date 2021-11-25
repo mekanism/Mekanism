@@ -1,14 +1,22 @@
 package mekanism.api.gear;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
+import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.IHasTextComponent;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 
 /**
@@ -99,6 +107,27 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
+     * Called when the enabled state of this module changes.
+     *
+     * @param module Module instance.
+     */
+    default void onEnabledStateChange(IModule<MODULE> module) {
+    }
+
+    /**
+     * Gets information about if and how this module blocks a given type of damage.
+     *
+     * @param module       Module instance.
+     * @param damageSource Source of the damage.
+     *
+     * @return Information about how damage can be absorbed, or {@code null} if the given damage type cannot be absorbed.
+     */
+    @Nullable
+    default ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<MODULE> module, DamageSource damageSource) {
+        return null;
+    }
+
+    /**
      * Called when the Meka-Tool is used to allow modules to implement custom use behavior.
      *
      * @param module  Module instance.
@@ -109,5 +138,83 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     @Nonnull
     default ActionResultType onItemUse(IModule<MODULE> module, ItemUseContext context) {
         return ActionResultType.PASS;
+    }
+
+    /**
+     * Called when the Meka-Tool is used on an entity to allow modules to implement custom interact behavior.
+     *
+     * @param module Module instance.
+     * @param player Player using the Meka-Tool.
+     * @param entity Entity type being interacted with.
+     * @param hand   Hand used.
+     *
+     * @return Result type or {@link ActionResultType#PASS} to pass.
+     */
+    @Nonnull
+    default ActionResultType onInteract(IModule<MODULE> module, PlayerEntity player, LivingEntity entity, Hand hand) {
+        return ActionResultType.PASS;
+    }
+
+    /**
+     * Called on enabled modules when the Meka-Tool or MekaSuit is "dispensed" from a dispenser. The MekaSuit will prioritize performing the vanilla armor dispense
+     * behavior of equipping on entities before checking if any of the modules have a custom behavior.
+     *
+     * @param module Module instance.
+     * @param source Dispenser source information.
+     *
+     * @return The {@link ModuleDispenseResult} defining how this dispenser should behave.
+     */
+    @Nonnull
+    default ModuleDispenseResult onDispense(IModule<MODULE> module, IBlockSource source) {
+        return ModuleDispenseResult.DEFAULT;
+    }
+
+    //TODO - 1.17: Switch this to a record
+    class ModuleDamageAbsorbInfo {
+
+        private final FloatSupplier absorptionRatio;
+        private final FloatingLongSupplier energyCost;
+
+        /**
+         * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.
+         * @param energyCost      Energy cost per point of damage reduced.
+         */
+        public ModuleDamageAbsorbInfo(FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
+            this.absorptionRatio = Objects.requireNonNull(absorptionRatio, "Absorption ratio supplier cannot be null");
+            this.energyCost = Objects.requireNonNull(energyCost, "Energy cost supplier cannot be null");
+        }
+
+        /**
+         * Gets the ratio of damage this module can absorb up to, returns a value between zero and one.
+         */
+        public FloatSupplier getAbsorptionRatio() {
+            return absorptionRatio;
+        }
+
+        /**
+         * Gets the energy cost per point of damage reduced.
+         */
+        public FloatingLongSupplier getEnergyCost() {
+            return energyCost;
+        }
+    }
+
+    /**
+     * Represents the different result states of {@link ICustomModule#onDispense(IModule, IBlockSource)}.
+     */
+    enum ModuleDispenseResult {
+        /**
+         * Represents that the module did perform some logic and that no further modules should be checked.
+         */
+        HANDLED,
+        /**
+         * Represents that the module did not preform any behavior and to continue checking other installed modules, and then dispense/drop the item.
+         */
+        DEFAULT,
+        /**
+         * Represents that the module did not perform any behavior and to continue checking other installed modules, but dispensing/dropping the item should be prevented
+         * so that the item can continue being used in the dispenser on future redstone interaction.
+         */
+        FAIL_PREVENT_DROP
     }
 }

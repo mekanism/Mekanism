@@ -1,6 +1,7 @@
 package mekanism.api.recipes.cache.chemical;
 
 import java.util.Objects;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -26,6 +27,10 @@ public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<
     private final IInputHandler<@NonNull STACK> chemicalInputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
 
+    private ItemStack recipeItem = ItemStack.EMPTY;
+    @Nullable//Note: Shouldn't be null in places it is actually used, but we mark it as nullable so we don't have to initialize it
+    private STACK recipeChemical;
+
     /**
      * @param recipe               Recipe.
      * @param itemInputHandler     Item input handler.
@@ -47,21 +52,21 @@ public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
+        recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputItem)
         if (recipeItem.isEmpty()) {
             return -1;
         }
         //Now check the chemical input
-        STACK recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
+        recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputChemical)
         if (recipeChemical.isEmpty()) {
             return -1;
         }
         //Calculate the current max based on the item input
-        currentMax = itemInputHandler.operationsCanSupport(recipe.getItemInput(), currentMax);
+        currentMax = itemInputHandler.operationsCanSupport(recipeItem, currentMax);
         //Calculate the current max based on the infusion input
-        currentMax = chemicalInputHandler.operationsCanSupport(recipe.getChemicalInput(), currentMax);
+        currentMax = chemicalInputHandler.operationsCanSupport(recipeChemical, currentMax);
         if (currentMax <= 0) {
             //If our input can't handle it return that we should be resetting
             return -1;
@@ -77,16 +82,7 @@ public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<
 
     @Override
     protected void finishProcessing(int operations) {
-        //TODO - Performance: Eventually we should look into caching this stuff from when getOperationsThisTick was called?
-        ItemStack recipeItem = itemInputHandler.getRecipeInput(recipe.getItemInput());
-        if (recipeItem.isEmpty()) {
-            //Something went wrong, this if should never really be true if we got to finishProcessing
-            return;
-        }
-        //Now check the chemical input
-        STACK recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
-        //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputChemical)
-        if (recipeChemical.isEmpty()) {
+        if (recipeItem.isEmpty() || recipeChemical == null || recipeChemical.isEmpty()) {
             //Something went wrong, this if should never really be true if we got to finishProcessing
             return;
         }

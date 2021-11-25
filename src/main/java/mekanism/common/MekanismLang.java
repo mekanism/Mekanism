@@ -74,6 +74,8 @@ public enum MekanismLang implements ILangEntry {
     LIST_SORT("qio", "list_sort"),
     //JEI
     JEI_AMOUNT_WITH_CAPACITY("tooltip", "jei.amount.with.capacity"),
+    JEI_INFO_HEAVY_WATER("info", "jei.heavy_water"),
+    JEI_INFO_MODULE_INSTALLATION("info", "jei.module_installation"),
     //Built into JEI
     JEI_MISSING_ITEMS("jei.tooltip.error.recipe.transfer.missing"),
     JEI_INVENTORY_FULL("jei.tooltip.error.recipe.transfer.inventory.full"),
@@ -232,6 +234,15 @@ public enum MekanismLang implements ILangEntry {
     DANGER("gui", "danger"),
     COMPASS("gui", "compass"),
     RADIAL_SCREEN("gui", "radial_screen"),
+    //GUI Issues
+    ISSUES("gui", "issues"),
+    ISSUE_NOT_ENOUGH_ENERGY("gui", "issues.no_energy"),
+    ISSUE_NOT_ENOUGH_ENERGY_REDUCED_RATE("gui", "issues.no_energy.reduced_rate"),
+    ISSUE_NO_SPACE_IN_OUTPUT("gui", "issues.no_space"),
+    ISSUE_NO_MATCHING_RECIPE("gui", "issues.no_recipe"),
+    ISSUE_INPUT_DOESNT_PRODUCE_OUTPUT("gui", "issues.input_doesnt_produce_output"),
+    ISSUE_INVALID_OREDICTIONIFICATOR_FILTER("gui", "issues.invalid_oredictionificator_filter"),
+    ISSUE_FILTER_HAS_BLACKLISTED_ELEMENT("gui", "issues.filter_has_blacklisted_element"),
     //Laser Amplifier
     ENTITY_DETECTION("laser_amplifier", "entity_detection"),
     ENERGY_CONTENTS("laser_amplifier", "energy_contents"),
@@ -398,7 +409,9 @@ public enum MekanismLang implements ILangEntry {
     SORTER_FILTER_OVER_SIZED("filter", "sorter.over_sized"),
     SORTER_FILTER_SIZE_MISSING("filter", "sorter.size_missing"),
     OREDICTIONIFICATOR_FILTER("filter", "oredictionificator"),
-    OREDICTIONIFICATOR_FILTER_INCOMPATIBLE_TAG("filter", "oredictionificator.invalid_key"),
+    OREDICTIONIFICATOR_FILTER_INVALID_NAMESPACE("filter", "oredictionificator.invalid_namespace"),
+    OREDICTIONIFICATOR_FILTER_INVALID_PATH("filter", "oredictionificator.invalid_path"),
+    OREDICTIONIFICATOR_FILTER_UNSUPPORTED_TAG("filter", "oredictionificator.unsupported_tag"),
     //Radioactive Waste Barrel
     WASTE_BARREL_DECAY_RATE("waste_barrel", "decay_rate"),
     WASTE_BARREL_DECAY_RATE_ACTUAL("waste_barrel", "decay_rate.actual"),
@@ -517,7 +530,7 @@ public enum MekanismLang implements ILangEntry {
     MINER_VISUALS("miner", "visuals"),
     MINER_VISUALS_TOO_BIG("miner", "visuals.too_big"),
     MINER_REQUIRE_REPLACE("miner", "require_replace"),
-    MINER_IS_INVERSE("miner", "is_inverse"),
+    MINER_REQUIRE_REPLACE_INVERSE("miner", "require_replace.inverse"),
     MINER_RADIUS("miner", "radius"),
     MINER_IDLE("miner", "idle"),
     MINER_SEARCHING("miner", "searching"),
@@ -608,7 +621,6 @@ public enum MekanismLang implements ILangEntry {
     DISASSEMBLER_SLOW("disassembler", "slow"),
     DISASSEMBLER_FAST("disassembler", "fast"),
     DISASSEMBLER_VEIN("disassembler", "vein"),
-    DISASSEMBLER_EXTENDED_VEIN("disassembler", "extended_vein"),
     DISASSEMBLER_OFF("disassembler", "off"),
     //Flamethrower Modes
     FLAMETHROWER_MODE_CHANGE("flamethrower", "mode_change"),
@@ -641,6 +653,8 @@ public enum MekanismLang implements ILangEntry {
     ROBIT_TELEPORT("robit", "teleport"),
     ROBIT_TOGGLE_PICKUP("robit", "toggle_pickup"),
     ROBIT_RENAME("robit", "rename"),
+    ROBIT_SKIN("robit", "skin"),
+    ROBIT_SKIN_SELECT("robit", "skin.select"),
     ROBIT_TOGGLE_FOLLOW("robit", "toggle_follow"),
     ROBIT_GREETING("robit", "greeting"),
     ROBIT_OWNER("robit", "owner"),

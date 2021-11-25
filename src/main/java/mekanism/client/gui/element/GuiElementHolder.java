@@ -15,10 +15,11 @@ import net.minecraft.util.ResourceLocation;
 public class GuiElementHolder extends GuiScalableElement {
 
     public static final ResourceLocation HOLDER = MekanismUtils.getResource(ResourceType.GUI, "element_holder.png");
+    public static final int HOLDER_SIZE = 32;
     private static int BACKGROUND_COLOR = 0xFF787878;
 
     public GuiElementHolder(IGuiWrapper gui, int x, int y, int width, int height) {
-        super(HOLDER, gui, x, y, width, height, 2, 2);
+        super(HOLDER, gui, x, y, width, height, HOLDER_SIZE, HOLDER_SIZE);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class GuiElementHolder extends GuiScalableElement {
         try {
             IResource resource = Minecraft.getInstance().getResourceManager().getResource(HOLDER);
             BufferedImage img = ImageIO.read(resource.getInputStream());
-            int rgb = img.getRGB(3, 3);
+            int rgb = img.getRGB(HOLDER_SIZE + 1, HOLDER_SIZE + 1);
             if (rgb >> 24 == 0) {
                 //Don't allow fully transparent colors, fallback to default color.
                 // Mark as null for now so that it can default to the proper color

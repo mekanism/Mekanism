@@ -6,18 +6,16 @@
       "type": "forge:mod_loaded"
     }
   ],
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
         "item": "ilikewood:spruce_post"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "item": "ilikewood:stripped_spruce_post"
       }
-    }
-  ],
+    ]
+  },
   "mainOutput": {
     "item": "minecraft:spruce_planks",
     "count": 3

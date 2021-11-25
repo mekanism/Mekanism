@@ -403,13 +403,15 @@ public class WorldUtils {
      * @return if the block is indirectly getting powered by LOADED chunks
      */
     public static boolean isGettingPowered(World world, BlockPos pos) {
-        for (Direction side : EnumUtils.DIRECTIONS) {
-            BlockPos offset = pos.relative(side);
-            if (isBlockLoaded(world, pos) && isBlockLoaded(world, offset)) {
-                BlockState blockState = world.getBlockState(offset);
-                boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
-                if (weakPower && isDirectlyGettingPowered(world, offset) || !weakPower && blockState.getSignal(world, offset, side) > 0) {
-                    return true;
+        if (isBlockLoaded(world, pos)) {
+            for (Direction side : EnumUtils.DIRECTIONS) {
+                BlockPos offset = pos.relative(side);
+                if (isBlockLoaded(world, offset)) {
+                    BlockState blockState = world.getBlockState(offset);
+                    boolean weakPower = blockState.getBlock().shouldCheckWeakPower(blockState, world, pos, side);
+                    if (weakPower && isDirectlyGettingPowered(world, offset) || !weakPower && blockState.getSignal(world, offset, side) > 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -620,7 +622,7 @@ public class WorldUtils {
         //Note: We manually handle the world#isDaytime check by just checking the subtracted skylight
         // as vanilla returns false if the world's time is set to a fixed value even if that time
         // would effectively be daytime
-        return world != null && world.dimensionType().hasSkyLight() && world.getSkyDarken() < 4 && world.canSeeSkyFromBelowWater(pos);
+        return world != null && world.dimensionType().hasSkyLight() && world.getSkyDarken() < 4 && world.canSeeSky(pos);
     }
 
     /**

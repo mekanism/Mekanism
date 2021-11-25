@@ -81,11 +81,7 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
     @Override
     public void catchFire(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
         if (!world.isClientSide) {
-            TNTEntity tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
-            if (tnt != null) {
-                world.addFreshEntity(tnt);
-                world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            }
+            createAndAddEntity(world, pos, igniter);
         }
     }
 
@@ -127,5 +123,13 @@ public class BlockObsidianTNT extends TNTBlock implements IStateFluidLoggable {
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+    }
+
+    public static void createAndAddEntity(@Nonnull World world, @Nonnull BlockPos pos, @Nullable LivingEntity igniter) {
+        TNTEntity tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
+        if (tnt != null) {
+            world.addFreshEntity(tnt);
+            world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        }
     }
 }

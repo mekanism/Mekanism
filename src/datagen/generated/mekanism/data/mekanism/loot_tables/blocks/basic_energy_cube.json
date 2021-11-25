@@ -52,11 +52,6 @@
           ],
           "name": "mekanism:basic_energy_cube"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

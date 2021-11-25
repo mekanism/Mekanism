@@ -9,8 +9,8 @@ import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
-import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.Color;
 import mekanism.common.util.EnumUtils;
@@ -19,7 +19,7 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.opengl.GL11;
 
-public class GuiSupportedUpgrades extends GuiRelativeElement {
+public class GuiSupportedUpgrades extends GuiElement {
 
     private static final int ELEMENT_SIZE = 12;
     private static final int FIRST_ROW_ROOM = (123 - 55) / ELEMENT_SIZE;
@@ -35,11 +35,9 @@ public class GuiSupportedUpgrades extends GuiRelativeElement {
     }
 
     private final Set<Upgrade> supportedUpgrades;
-    private final GuiElementHolder background;
 
     public GuiSupportedUpgrades(IGuiWrapper gui, int x, int y, Set<Upgrade> supportedUpgrades) {
         super(gui, x, y, 125, ELEMENT_SIZE * calculateNeededRows() + 2);
-        background = addPositionOnlyChild(new GuiElementHolder(gui, x, y, this.width, this.height));
         this.supportedUpgrades = supportedUpgrades;
     }
 
@@ -47,7 +45,7 @@ public class GuiSupportedUpgrades extends GuiRelativeElement {
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw the background
-        background.render(matrix, mouseX, mouseY, partialTicks);
+        renderBackgroundTexture(matrix, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, GuiElementHolder.HOLDER_SIZE);
         int backgroundColor = Color.argb(GuiElementHolder.getBackgroundColor()).alpha(0.5).argb();
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
             Upgrade upgrade = EnumUtils.UPGRADES[i];

@@ -13,8 +13,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
@@ -82,6 +85,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class BaseCrTExampleProvider implements IDataProvider {
 
+    public static final Map<String, Map<String, List<String>>> PARAMETER_NAMES = new HashMap<>();
+
     private final Map<Class<?>, List<ClassConversionInfo<?>>> supportedConversions = new HashMap<>();
     private final Map<String, CrTExampleBuilder<?>> examples = new LinkedHashMap<>();
     private final Map<Class<?>, String> nameLookupOverrides = new HashMap<>();
@@ -131,6 +136,27 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
               CrTPigmentStack::new, CrTPigmentTagManager.INSTANCE, ChemicalIngredientDeserializer.PIGMENT);
         addSupportedChemical(SlurryStack.class, ICrTSlurryStack.class, SlurryStackIngredient.class, CrTConstants.CLASS_SLURRY_STACK_INGREDIENT,
               CrTSlurryStack::new, CrTSlurryTagManager.INSTANCE, ChemicalIngredientDeserializer.SLURRY);
+        if (PARAMETER_NAMES.isEmpty()) {
+            //Lazy initialize the parameter names, ideally we would find a better time to do this and
+            // support multiple instances better but for now this will work
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("crafttweaker_param_names.txt")))) {
+                String line;
+                Map<String, List<String>> methods = null;
+                while ((line = reader.readLine()) != null) {
+                    if (!line.isEmpty()) {
+                        if (line.startsWith("Class: ")) {
+                            methods = new HashMap<>();
+                            PARAMETER_NAMES.put(line.substring(7), methods);
+                        } else {
+                            String[] parts = line.split("=");
+                            methods.put(parts[0], Arrays.stream(parts[1].split(",")).collect(Collectors.toList()));
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     protected void addNameLookupOverride(Class<?> clazz, String name) {

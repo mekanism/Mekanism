@@ -26,8 +26,8 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiMergedChemicalBar<>(this, tile, tile.getChemicalTank(), 42, 16, 116, 10, true));
         addButton(new GuiInnerScreen(this, 42, 37, 118, 28, () -> {
             List<ITextComponent> ret = new ArrayList<>();
@@ -48,7 +48,7 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
             }
             return ret;
         }));
-        addButton(new GuiGasMode(this, leftPos + 159, topPos + 72, true, () -> tile.dumping, tile.getBlockPos(), 0));
+        addButton(new GuiGasMode(this, 159, 72, true, () -> tile.dumping, tile.getBlockPos(), 0));
     }
 
     private void addStored(List<ITextComponent> ret, IChemicalTank<?, ?> tank, ILangEntry langKey) {

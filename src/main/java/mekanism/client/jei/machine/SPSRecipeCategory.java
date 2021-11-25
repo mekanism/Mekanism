@@ -34,8 +34,8 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
     private final GuiGauge<?> output;
 
     public SPSRecipeCategory(IGuiHelper helper) {
-        super(helper, MekanismBlocks.SPS_CASING.getRegistryName(), MekanismLang.SPS.translate(), 3, 12, 168, 74);
-        icon = helper.createDrawableIngredient(MekanismItems.ANTIMATTER_PELLET.getItemStack());
+        super(helper, MekanismBlocks.SPS_CASING.getRegistryName(), MekanismLang.SPS.translate(), createIcon(helper, MekanismItems.ANTIMATTER_PELLET),
+              3, 12, 168, 74);
         addElement(new GuiInnerScreen(this, 26, 13, 122, 60, () -> {
             List<ITextComponent> list = new ArrayList<>();
             list.add(MekanismLang.STATUS.translate(MekanismLang.ACTIVE));
@@ -66,7 +66,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
     public void setRecipe(IRecipeLayout recipeLayout, SPSJEIRecipe recipe, @Nonnull IIngredients ingredients) {
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initChemical(gasStacks, 0, true, input, recipe.input.getRepresentations());
-        initChemical(gasStacks, 2, false, output, Collections.singletonList(recipe.output));
+        initChemical(gasStacks, 1, false, output, Collections.singletonList(recipe.output));
     }
 
     public static List<SPSJEIRecipe> getSPSRecipes() {

@@ -444,7 +444,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!stack.isEmpty() && MekanismUtils.canUseAsWrench(stack)) {
+        if (MekanismUtils.canUseAsWrench(stack)) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
                 return WrenchResult.NO_SECURITY;
@@ -615,9 +615,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.read(nbtTags);
         }
-        if (supportsRedstone()) {
-            NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
-        }
+        loadGeneralPersistentData(nbtTags);
         if (hasInventory() && persistInventory()) {
             DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
         }
@@ -643,9 +641,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.write(nbtTags);
         }
-        if (supportsRedstone()) {
-            nbtTags.putInt(NBTConstants.CONTROL_TYPE, controlType.ordinal());
-        }
+        addGeneralPersistentData(nbtTags);
         if (hasInventory() && persistInventory()) {
             nbtTags.put(NBTConstants.ITEMS, DataHandlerUtils.writeContainers(getInventorySlots(null)));
         }
@@ -664,6 +660,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             nbtTags.putInt(NBTConstants.CURRENT_REDSTONE, currentRedstoneLevel);
         }
         return nbtTags;
+    }
+
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        if (supportsRedstone()) {
+            data.putInt(NBTConstants.CONTROL_TYPE, controlType.ordinal());
+        }
+    }
+
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        if (supportsRedstone()) {
+            NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
+        }
     }
 
     @Override
@@ -1050,17 +1058,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public CompoundNBT getConfigurationData(PlayerEntity player) {
         CompoundNBT data = new CompoundNBT();
-        if (supportsRedstone()) {
-            data.putInt(NBTConstants.CONTROL_TYPE, controlType.ordinal());
-        }
+        addGeneralPersistentData(data);
+        getFrequencyComponent().writeConfiguredFrequencies(data);
         return data;
     }
 
     @Override
     public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        if (supportsRedstone()) {
-            NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
-        }
+        loadGeneralPersistentData(data);
+        getFrequencyComponent().readConfiguredFrequencies(player, data);
     }
 
     @Override
@@ -1181,10 +1187,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     private boolean isFullyMuffled() {
-        if (!hasSound() || !supportsUpgrades()) {
-            return false;
-        }
-        if (getComponent().supports(Upgrade.MUFFLING)) {
+        if (hasSound() && supportsUpgrade(Upgrade.MUFFLING)) {
             return getComponent().getUpgrades(Upgrade.MUFFLING) == Upgrade.MUFFLING.getMax();
         }
         return false;

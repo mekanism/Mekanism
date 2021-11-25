@@ -1,6 +1,5 @@
 package mekanism.client.jei;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -51,18 +50,21 @@ import mekanism.client.jei.machine.RotaryCondensentratorRecipeCategory;
 import mekanism.client.jei.machine.SPSRecipeCategory;
 import mekanism.client.jei.machine.SawmillRecipeCategory;
 import mekanism.common.Mekanism;
+import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.integration.crafttweaker.jeitweaker.JEITweakerHelper;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
-import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.container.tile.QIODashboardContainer;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
+import mekanism.common.tile.machine.TileEntityElectricPump;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
@@ -311,13 +313,20 @@ public class MekanismJEI implements IModPlugin {
         RecipeRegistryHelper.register(registry, GAS_CONVERSION, MekanismRecipeType.GAS_CONVERSION);
         RecipeRegistryHelper.register(registry, INFUSION_CONVERSION, MekanismRecipeType.INFUSION_CONVERSION);
         RecipeRegistryHelper.addAnvilRecipes(registry, MekanismItems.HDPE_REINFORCED_ELYTRA, item -> new ItemStack[]{MekanismItems.HDPE_SHEET.getItemStack()});
+        //Note: Use a "full" bucket's worth of heavy water, so that JEI renders it as desired in the info page
+        registry.addIngredientInfo(MekanismFluids.HEAVY_WATER.getFluidStack(FluidAttributes.BUCKET_VOLUME), VanillaTypes.FLUID,
+              MekanismLang.JEI_INFO_HEAVY_WATER.translate(TileEntityElectricPump.HEAVY_WATER_AMOUNT));
+        registry.addIngredientInfo(MekanismAPI.moduleRegistry().getValues().stream().map(data -> data.getItemProvider().getItemStack()).collect(Collectors.toList()),
+              VanillaTypes.ITEM, MekanismLang.JEI_INFO_MODULE_INSTALLATION.translate());
 
         if (Mekanism.hooks.JEITweakerLoaded) {
             //JEI Tweaker compat
-            JEITweakerHelper.getGasDescriptions().forEach((gas, descriptions) -> registry.addIngredientInfo(gas, TYPE_GAS, descriptions));
-            JEITweakerHelper.getInfusionDescriptions().forEach((infuseType, descriptions) -> registry.addIngredientInfo(infuseType, TYPE_INFUSION, descriptions));
-            JEITweakerHelper.getPigmentDescriptions().forEach((pigment, descriptions) -> registry.addIngredientInfo(pigment, TYPE_PIGMENT, descriptions));
-            JEITweakerHelper.getSlurryDescriptions().forEach((slurry, descriptions) -> registry.addIngredientInfo(slurry, TYPE_SLURRY, descriptions));
+            JEITweakerHelper.addDescriptions(
+                  (gas, descriptions) -> registry.addIngredientInfo(gas, TYPE_GAS, descriptions),
+                  (infuseType, descriptions) -> registry.addIngredientInfo(infuseType, TYPE_INFUSION, descriptions),
+                  (pigment, descriptions) -> registry.addIngredientInfo(pigment, TYPE_PIGMENT, descriptions),
+                  (slurry, descriptions) -> registry.addIngredientInfo(slurry, TYPE_SLURRY, descriptions)
+            );
         }
     }
 
@@ -368,8 +377,7 @@ public class MekanismJEI implements IModPlugin {
         IRecipeTransferHandlerHelper transferHelper = registry.getTransferHelper();
         IStackHelper stackHelper = registry.getJeiHelpers().getStackHelper();
         registry.addRecipeTransferHandler(CraftingRobitContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 10, 36);
-        //TODO - 10.1: Validate we are properly allowing for searching all slots in the formulaic assemblicator and the player's inventory
-        registry.addRecipeTransferHandler(FormulaicAssemblicatorContainer.class, VanillaRecipeCategoryUid.CRAFTING, 19, 9, 35, 36);
+        registry.addRecipeTransferHandler(new FormulaicRecipeTransferInfo());
         registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, QIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
         registry.addRecipeTransferHandler(new QIOCraftingTransferHandler<>(transferHelper, stackHelper, PortableQIODashboardContainer.class), VanillaRecipeCategoryUid.CRAFTING);
     }
@@ -379,16 +387,12 @@ public class MekanismJEI implements IModPlugin {
         if (Mekanism.hooks.JEITweakerLoaded) {
             //JEI Tweaker compat
             IIngredientManager ingredientManager = jeiRuntime.getIngredientManager();
-            removeIfNotEmpty(ingredientManager, TYPE_GAS, JEITweakerHelper.getHiddenGasStacks());
-            removeIfNotEmpty(ingredientManager, TYPE_INFUSION, JEITweakerHelper.getHiddenInfusionStacks());
-            removeIfNotEmpty(ingredientManager, TYPE_PIGMENT, JEITweakerHelper.getHiddenPigmentStacks());
-            removeIfNotEmpty(ingredientManager, TYPE_SLURRY, JEITweakerHelper.getHiddenSlurryStacks());
-        }
-    }
-
-    private <T> void removeIfNotEmpty(IIngredientManager ingredientManager, IIngredientType<T> ingredientType, Collection<T> ingredients) {
-        if (!ingredients.isEmpty()) {
-            ingredientManager.removeIngredientsAtRuntime(ingredientType, ingredients);
+            JEITweakerHelper.removeHiddenStacks(
+                  (stacks) -> ingredientManager.removeIngredientsAtRuntime(TYPE_GAS, stacks),
+                  (stacks) -> ingredientManager.removeIngredientsAtRuntime(TYPE_INFUSION, stacks),
+                  (stacks) -> ingredientManager.removeIngredientsAtRuntime(TYPE_PIGMENT, stacks),
+                  (stacks) -> ingredientManager.removeIngredientsAtRuntime(TYPE_SLURRY, stacks)
+            );
         }
     }
 }

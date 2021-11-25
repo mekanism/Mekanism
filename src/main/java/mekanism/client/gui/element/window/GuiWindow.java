@@ -2,6 +2,7 @@ package mekanism.client.gui.element.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.datafixers.util.Pair;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
@@ -13,6 +14,7 @@ import mekanism.client.gui.element.button.GuiCloseButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
 import net.minecraft.inventory.container.Container;
 import org.lwjgl.glfw.GLFW;
@@ -31,8 +33,45 @@ public class GuiWindow extends GuiTexturedElement {
 
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
+    //TODO - 1.17: Switch this method to returning a record instead of a pair
+    private static Pair<Integer, Integer> calculateOpenPosition(IGuiWrapper gui, SelectedWindowData windowData, int x, int y, int width, int height) {
+        Pair<Integer, Integer> lastPosition = windowData.getLastPosition();
+        int lastX = lastPosition.getFirst();
+        if (lastX != Integer.MAX_VALUE) {
+            int guiLeft = gui.getLeft();
+            if (guiLeft + lastX < 0) {
+                //If our x position would be off the screen, then we shift it to as close as we can go
+                lastX = -guiLeft;
+            } else if (guiLeft + lastX + width > minecraft.getWindow().getGuiScaledWidth()) {
+                //If our window's end would be off the screen shift it to be as close as we can go
+                lastX = minecraft.getWindow().getGuiScaledWidth() - guiLeft - width;
+            }
+        }
+        int lastY = lastPosition.getSecond();
+        if (lastY != Integer.MAX_VALUE) {
+            int guiTop = gui.getTop();
+            if (guiTop + lastY < 0) {
+                //If our y position would be off the screen, then we shift it to as close as we can go
+                lastY = -guiTop;
+            } else if (guiTop + lastY + height > minecraft.getWindow().getGuiScaledHeight()) {
+                //If our window's end would be off the screen shift it to be as close as we can go
+                lastY = minecraft.getWindow().getGuiScaledHeight() - guiTop - height;
+            }
+        }
+        return Pair.of(lastX == Integer.MAX_VALUE ? x : lastX, lastY == Integer.MAX_VALUE ? y : lastY);
+    }
+
+    public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height, WindowType windowType) {
+        this(gui, x, y, width, height, windowType == WindowType.UNSPECIFIED ? SelectedWindowData.UNSPECIFIED : new SelectedWindowData(windowType));
+    }
+
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height, SelectedWindowData windowData) {
-        super(GuiMekanism.BASE_BACKGROUND, gui, x, y, width, height);
+        //Hacky system to calculate proper x and y positions
+        this(gui, calculateOpenPosition(gui, windowData, x, y, width, height), width, height, windowData);
+    }
+
+    private GuiWindow(IGuiWrapper gui, Pair<Integer, Integer> calculatedPosition, int width, int height, SelectedWindowData windowData) {
+        super(GuiMekanism.BASE_BACKGROUND, gui, calculatedPosition.getFirst(), calculatedPosition.getSecond(), width, height);
         this.windowData = windowData;
         isOverlay = true;
         active = true;
@@ -49,7 +88,7 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     protected void addCloseButton() {
-        addChild(new GuiCloseButton(gui(), this.x + 6, this.y + 6, this));
+        addChild(new GuiCloseButton(gui(), relativeX + 6, relativeY + 6, this));
     }
 
     @Override
@@ -156,6 +195,8 @@ public class GuiWindow extends GuiTexturedElement {
         if (closeListener != null) {
             closeListener.accept(this);
         }
+        //Only save new position when we are finally closing a specific window
+        windowData.updateLastPosition(relativeX, relativeY);
     }
 
     protected boolean isFocusOverlay() {

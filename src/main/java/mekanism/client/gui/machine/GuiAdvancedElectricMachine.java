@@ -22,10 +22,10 @@ public class GuiAdvancedElectricMachine<TILE extends TileEntityAdvancedElectricM
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiEnergyTab(tile.getEnergyContainer(), tile::getActive, this));
+        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
         addButton(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 86, 38).jeiCategory(tile));
         addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(tile.gasTank, tile.getGasTanks(null)), 68, 36, 6, 12, false));
     }

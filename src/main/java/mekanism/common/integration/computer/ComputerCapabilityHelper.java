@@ -1,10 +1,12 @@
 package mekanism.common.integration.computer;
 
+import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import java.util.function.Consumer;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
+import mekanism.common.integration.computer.computercraft.CCEnergyHelper;
 import mekanism.common.integration.computer.computercraft.MekanismPeripheral;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -27,8 +29,13 @@ public class ComputerCapabilityHelper {
 
     private static <TILE extends TileEntity & IComputerTile> ICapabilityResolver getComputerCraftCapability(TILE tile) {
         if (tile.isComputerCapabilityPersistent()) {
-            return BasicCapabilityResolver.persistent(COMPUTER_CRAFT_CAPABILITY, () -> new MekanismPeripheral<>(tile));
+            return BasicCapabilityResolver.persistent(COMPUTER_CRAFT_CAPABILITY, () -> MekanismPeripheral.create(tile));
         }
-        return BasicCapabilityResolver.create(COMPUTER_CRAFT_CAPABILITY, () -> new MekanismPeripheral<>(tile));
+        return BasicCapabilityResolver.create(COMPUTER_CRAFT_CAPABILITY, () -> MekanismPeripheral.create(tile));
+    }
+
+    //Only call this if ComputerCraft is loaded
+    public static void registerCCMathHelper() {
+        ComputerCraftAPI.registerAPIFactory(CCEnergyHelper::create);
     }
 }

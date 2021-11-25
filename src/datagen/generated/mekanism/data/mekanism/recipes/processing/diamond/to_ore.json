@@ -1,7 +1,7 @@
 {
   "type": "mekanism:combining",
   "mainInput": {
-    "amount": 3,
+    "amount": 5,
     "ingredient": {
       "tag": "forge:dusts/diamond"
     }

@@ -141,30 +141,15 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = super.getConfigurationData(player);
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
         data.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
-        return data;
     }
 
     @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
         NBTUtils.setEnumIfPresent(data, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
-        nbtTags.putInt(NBTConstants.EDIT_MODE, editMode.ordinal());
-        return nbtTags;
-    }
-
-    @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.EDIT_MODE, ContainerEditMode::byIndexStatic, mode -> editMode = mode);
     }
 
     @Override

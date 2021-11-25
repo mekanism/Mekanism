@@ -1,0 +1,32 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:lime_byg_cherry_bed"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:cherry_planks",
+    "count": 3
+  },
+  "secondaryOutput": {
+    "item": "minecraft:lime_wool",
+    "count": 3
+  },
+  "secondaryChance": 1.0
+}

@@ -87,9 +87,6 @@ public class MekanismTags {
         public static final INamedTag<Item> FUELS = forgeTag("fuels");
         public static final INamedTag<Item> FUELS_BIO = forgeTag("fuels/bio");
 
-        public static final INamedTag<Item> CHESTS_ELECTRIC = forgeTag("chests/electric");
-        public static final INamedTag<Item> CHESTS_PERSONAL = forgeTag("chests/personal");
-
         public static final INamedTag<Item> SALT = forgeTag("salt");
         public static final INamedTag<Item> SAWDUST = forgeTag("sawdust");
         public static final INamedTag<Item> YELLOW_CAKE_URANIUM = forgeTag("yellow_cake_uranium");
@@ -130,6 +127,7 @@ public class MekanismTags {
         public static final INamedTag<Item> STORAGE_BLOCKS_REFINED_GLOWSTONE = forgeTag("storage_blocks/refined_glowstone");
         public static final INamedTag<Item> STORAGE_BLOCKS_REFINED_OBSIDIAN = forgeTag("storage_blocks/refined_obsidian");
         public static final INamedTag<Item> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
+        public static final INamedTag<Item> STORAGE_BLOCKS_FLUORITE = forgeTag("storage_blocks/fluorite");
 
         public static final INamedTag<Item> CIRCUITS = forgeTag("circuits");
         public static final INamedTag<Item> CIRCUITS_BASIC = forgeTag("circuits/basic");
@@ -205,6 +203,7 @@ public class MekanismTags {
 
         public static final INamedTag<Block> RELOCATION_NOT_SUPPORTED = forgeTag("relocation_not_supported");
         public static final INamedTag<Block> CARDBOARD_BLACKLIST = tag("cardboard_blacklist");
+        public static final INamedTag<Block> MINER_BLACKLIST = tag("miner_blacklist");
         public static final INamedTag<Block> ATOMIC_DISASSEMBLER_ORE = tag("atomic_disassembler_ore");
 
         public static final INamedTag<Block> CHESTS_ELECTRIC = forgeTag("chests/electric");
@@ -215,6 +214,7 @@ public class MekanismTags {
         public static final INamedTag<Block> STORAGE_BLOCKS_REFINED_GLOWSTONE = forgeTag("storage_blocks/refined_glowstone");
         public static final INamedTag<Block> STORAGE_BLOCKS_REFINED_OBSIDIAN = forgeTag("storage_blocks/refined_obsidian");
         public static final INamedTag<Block> STORAGE_BLOCKS_STEEL = forgeTag("storage_blocks/steel");
+        public static final INamedTag<Block> STORAGE_BLOCKS_FLUORITE = forgeTag("storage_blocks/fluorite");
 
         private static INamedTag<Block> forgeTag(String name) {
             return BlockTags.bind("forge:" + name);
@@ -239,9 +239,12 @@ public class MekanismTags {
         public static final INamedTag<Fluid> HEAVY_WATER = forgeTag("heavy_water");
         public static final INamedTag<Fluid> HYDROGEN = forgeTag("hydrogen");
         public static final INamedTag<Fluid> HYDROGEN_CHLORIDE = forgeTag("hydrogen_chloride");
+        public static final INamedTag<Fluid> URANIUM_OXIDE = forgeTag("uranium_oxide");
+        public static final INamedTag<Fluid> URANIUM_HEXAFLUORIDE = forgeTag("uranium_hexafluoride");
         public static final INamedTag<Fluid> LITHIUM = forgeTag("lithium");
         public static final INamedTag<Fluid> OXYGEN = forgeTag("oxygen");
         public static final INamedTag<Fluid> SODIUM = forgeTag("sodium");
+        public static final INamedTag<Fluid> SUPERHEATED_SODIUM = forgeTag("superheated_sodium");
         public static final INamedTag<Fluid> STEAM = forgeTag("steam");
         public static final INamedTag<Fluid> SULFUR_DIOXIDE = forgeTag("sulfur_dioxide");
         public static final INamedTag<Fluid> SULFUR_TRIOXIDE = forgeTag("sulfur_trioxide");

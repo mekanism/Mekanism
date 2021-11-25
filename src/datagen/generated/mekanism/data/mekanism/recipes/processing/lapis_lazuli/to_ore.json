@@ -1,7 +1,7 @@
 {
   "type": "mekanism:combining",
   "mainInput": {
-    "amount": 16,
+    "amount": 27,
     "ingredient": {
       "tag": "forge:dusts/lapis"
     }

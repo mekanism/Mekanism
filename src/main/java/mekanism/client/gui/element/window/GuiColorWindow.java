@@ -7,17 +7,17 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
-import mekanism.client.gui.element.GuiRelativeElement;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.client.gui.element.text.InputValidator;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -42,22 +42,22 @@ public class GuiColorWindow extends GuiWindow {
     private float value = 0.5F;
 
     public GuiColorWindow(IGuiWrapper gui, int x, int y, Consumer<Color> callback) {
-        super(gui, x, y, 160, 140, SelectedWindowData.UNSPECIFIED);
+        super(gui, x, y, 160, 140, WindowType.COLOR);
         interactionStrategy = InteractionStrategy.NONE;
-        addChild(new GuiElementHolder(gui, x + 6, y + 17, 43, 82));
-        addChild(new GuiColorView(gui, x + 7, y + 18, 41, 80));
+        addChild(new GuiElementHolder(gui, relativeX + 6, relativeY + 17, 43, 82));
+        addChild(new GuiColorView(gui, relativeX + 7, relativeY + 18, 41, 80));
 
-        addChild(new GuiElementHolder(gui, x + 52, y + 17, 102, 82));
-        shadePicker = addChild(new GuiShadePicker(gui, x + 53, y + 18, 100, 80));
+        addChild(new GuiElementHolder(gui, relativeX + 52, relativeY + 17, 102, 82));
+        shadePicker = addChild(new GuiShadePicker(gui, relativeX + 53, relativeY + 18, 100, 80));
 
-        addChild(new GuiElementHolder(gui, x + 6, y + 103, 148, 10));
-        huePicker = addChild(new GuiHuePicker(gui, x + 7, y + 104, 146, 8));
+        addChild(new GuiElementHolder(gui, relativeX + 6, relativeY + 103, 148, 10));
+        huePicker = addChild(new GuiHuePicker(gui, relativeX + 7, relativeY + 104, 146, 8));
 
-        textField = addChild(new GuiTextField(gui, x + 30, y + getButtonHeight() - 20, 67, 12));
+        textField = addChild(new GuiTextField(gui, relativeX + 30, relativeY + getButtonHeight() - 20, 67, 12));
         textField.setMaxStringLength(11);
         textField.setInputValidator(InputValidator.DIGIT.or(c -> c == ','));
         textField.setBackground(BackgroundType.ELEMENT_HOLDER);
-        addChild(new TranslationButton(gui, x + 100, y + getButtonHeight() - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, () -> {
+        addChild(new TranslationButton(gui, relativeX + 100, relativeY + getButtonHeight() - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, () -> {
             callback.accept(getColor());
             close();
         }));
@@ -170,7 +170,7 @@ public class GuiColorWindow extends GuiWindow {
         shadePicker.isDragging = false;
     }
 
-    public class GuiColorView extends GuiRelativeElement {
+    public class GuiColorView extends GuiElement {
 
         public GuiColorView(IGuiWrapper gui, int x, int y, int width, int height) {
             super(gui, x, y, width, height);
@@ -192,7 +192,7 @@ public class GuiColorWindow extends GuiWindow {
         }
     }
 
-    public class GuiShadePicker extends GuiRelativeElement {
+    public class GuiShadePicker extends GuiElement {
 
         private boolean isDragging;
 
@@ -220,6 +220,7 @@ public class GuiColorWindow extends GuiWindow {
 
         @Override
         public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+            super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
             if (isDragging) {
                 set(mouseX, mouseY);
             }
@@ -234,7 +235,7 @@ public class GuiColorWindow extends GuiWindow {
         }
     }
 
-    public class GuiHuePicker extends GuiRelativeElement {
+    public class GuiHuePicker extends GuiElement {
 
         private boolean isDragging;
 
@@ -262,6 +263,7 @@ public class GuiColorWindow extends GuiWindow {
 
         @Override
         public void onDrag(double mouseX, double mouseY, double mouseXOld, double mouseYOld) {
+            super.onDrag(mouseX, mouseY, mouseXOld, mouseYOld);
             if (isDragging) {
                 set(mouseX, mouseY);
             }

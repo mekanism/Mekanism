@@ -24,11 +24,11 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
     }
 
     @Override
-    public void init() {
-        super.init();
-        addButton(new GuiEnergyTab(() -> Arrays.asList(
+    protected void addGuiElements() {
+        super.addGuiElements();
+        addButton(new GuiEnergyTab(this, () -> Arrays.asList(
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getGenerationRate().multiply(tile.getUsed()).multiply(tile.getMaxBurnTicks()))),
-              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput()))), this));
+              MekanismLang.MAX_OUTPUT.translate(EnergyDisplay.of(tile.getMaxOutput())))));
         addButton(new GuiGasGauge(() -> tile.fuelTank, () -> tile.getGasTanks(null), GaugeType.WIDE, this, 55, 18));
         addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
     }

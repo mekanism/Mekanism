@@ -22,7 +22,7 @@ public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMac
     }
 
     @Override
-    public boolean useStatisticalMechanics() {
+    protected boolean useStatisticalMechanics() {
         return true;
     }
 }

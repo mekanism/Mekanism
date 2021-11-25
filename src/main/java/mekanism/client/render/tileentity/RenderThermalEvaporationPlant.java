@@ -9,7 +9,7 @@ import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
-import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
@@ -17,16 +17,16 @@ import net.minecraft.profiler.IProfiler;
 import net.minecraft.util.math.BlockPos;
 
 @ParametersAreNonnullByDefault
-public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<TileEntityThermalEvaporationBlock> {
+public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<TileEntityThermalEvaporationController> {
 
     public RenderThermalEvaporationPlant(TileEntityRendererDispatcher renderer) {
         super(renderer);
     }
 
     @Override
-    protected void render(TileEntityThermalEvaporationBlock tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
+    protected void render(TileEntityThermalEvaporationController tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
           IProfiler profiler) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             EvaporationMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.renderLocation != null && !multiblock.inputTank.isEmpty()) {
                 FluidRenderData data = new FluidRenderData(multiblock.inputTank.getFluid());
@@ -53,8 +53,8 @@ public class RenderThermalEvaporationPlant extends MekanismTileEntityRenderer<Ti
     }
 
     @Override
-    public boolean shouldRenderOffScreen(TileEntityThermalEvaporationBlock tile) {
-        if (tile.isMaster) {
+    public boolean shouldRenderOffScreen(TileEntityThermalEvaporationController tile) {
+        if (tile.isMaster()) {
             EvaporationMultiblockData multiblock = tile.getMultiblock();
             return multiblock.isFormed() && !multiblock.inputTank.isEmpty() && multiblock.renderLocation != null;
         }

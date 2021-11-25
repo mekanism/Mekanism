@@ -18,6 +18,7 @@ import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
+import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
@@ -248,16 +249,21 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     }
 
     private void addGearModuleRecipes(Consumer<IFinishedRecipe> consumer) {
+        //Geothermal Generator Unit
+        ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsItems.MODULE_GEOTHERMAL_GENERATOR)
+              .pattern(MekanismRecipeProvider.BASIC_MODULE)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
+              .key(Pattern.CONSTANT, GeneratorsBlocks.HEAT_GENERATOR)
+              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
+              .build(consumer);
         //Solar Recharging Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_SOLAR_RECHARGING)
-              .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.INGOT, Pattern.CONSTANT, Pattern.INGOT),
-                    TripleLine.of(Pattern.INGOT, Pattern.ALLOY, Pattern.INGOT),
-                    TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS))
-              ).key(Pattern.INGOT, MekanismTags.Items.ALLOYS_ELITE)
-              .key(Pattern.ALLOY, MekanismItems.MODULE_BASE)
+              .pattern(MekanismRecipeProvider.BASIC_MODULE)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_ELITE)
+              .key(Pattern.PREVIOUS, MekanismItems.MODULE_BASE)
               .key(Pattern.CONSTANT, GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR)
-              .key(Pattern.PREVIOUS, MekanismItems.POLONIUM_PELLET)
+              .key(Pattern.HDPE_CHAR, MekanismItems.POLONIUM_PELLET)
               .build(consumer);
     }
 

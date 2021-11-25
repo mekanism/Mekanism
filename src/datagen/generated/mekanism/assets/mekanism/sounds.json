@@ -140,7 +140,10 @@
   "tile.machine.industrial_alarm": {
     "subtitle": "sound_event.mekanism.tile.machine.industrial_alarm",
     "sounds": [
-      "mekanism:tile/industrial_alarm"
+      {
+        "name": "mekanism:tile/industrial_alarm",
+        "attenuation_distance": 128
+      }
     ]
   },
   "tile.machine.antiprotonic_nucleosynthesizer": {

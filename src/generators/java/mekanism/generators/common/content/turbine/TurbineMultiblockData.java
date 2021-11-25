@@ -19,7 +19,7 @@ import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.tank.TankMultiblockData;
+import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
@@ -41,7 +41,7 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class TurbineMultiblockData extends MultiblockData {
 
-    public static final long GAS_PER_TANK = TankMultiblockData.FLUID_PER_TANK;
+    public static final long GAS_PER_TANK = EvaporationMultiblockData.FLUID_PER_TANK;
 
     public static final float ROTATION_THRESHOLD = 0.001F;
     public static final Object2FloatMap<UUID> clientRotationMap = new Object2FloatOpenHashMap<>();
@@ -121,15 +121,13 @@ public class TurbineMultiblockData extends MultiblockData {
                 double proportion = stored / (double) getSteamCapacity();
                 double origRate = rate;
                 rate = Math.min(Math.min(stored, rate), energyNeeded.divide(energyMultiplier).doubleValue()) * proportion;
-
-                flowRate = rate / origRate;
-                energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
-
-                if (!gasTank.isEmpty()) {
-                    gasTank.shrinkStack((long) rate, Action.EXECUTE);
+                clientFlow = MathUtils.clampToLong(rate);
+                if (clientFlow > 0) {
+                    flowRate = rate / origRate;
+                    energyContainer.insert(energyMultiplier.multiply(rate), Action.EXECUTE, AutomationType.INTERNAL);
+                    gasTank.shrinkStack(clientFlow, Action.EXECUTE);
+                    ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
                 }
-                clientFlow = (long) rate;
-                ventTank.setStack(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())));
             }
         } else {
             clientFlow = 0;
@@ -141,7 +139,7 @@ public class TurbineMultiblockData extends MultiblockData {
                 gasTank.shrinkStack(getDumpingAmount(amount), Action.EXECUTE);
             } else {//DUMPING_EXCESS
                 //Don't allow dumping more than the configured amount
-                long targetLevel = MathUtils.clampToLong(gasTank.getCapacity() * MekanismGeneratorsConfig.generators.turbineDumpExcessKeepRatio.get());
+                long targetLevel = MathUtils.clampToLong(gasTank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
                 if (targetLevel < amount) {
                     gasTank.shrinkStack(Math.min(amount - targetLevel, getDumpingAmount(amount)), Action.EXECUTE);
                 }

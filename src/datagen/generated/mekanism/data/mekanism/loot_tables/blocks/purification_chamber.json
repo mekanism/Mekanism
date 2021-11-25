@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:purification_chamber"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

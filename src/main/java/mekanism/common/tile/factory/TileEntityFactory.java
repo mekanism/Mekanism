@@ -1,6 +1,7 @@
 package mekanism.common.tile.factory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,18 +60,19 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.IntArrayNBT;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
     /**
      * How many ticks it takes, by default, to run an operation.
      */
-    private static final int BASE_TICKS_REQUIRED = 200;
+    protected static final int BASE_TICKS_REQUIRED = 200;
 
     protected FactoryRecipeCacheLookupMonitor<RECIPE>[] recipeCacheLookupMonitors;
     private final boolean[] activeStates;
@@ -122,8 +124,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         IInventorySlot extraSlot = getExtraSlot();
         if (extraSlot != null) {
             ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
-            itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
-            itemConfig.setDataType(DataType.EXTRA, RelativeSide.BOTTOM);
+            if (itemConfig != null) {
+                itemConfig.addSlotInfo(DataType.EXTRA, new InventorySlotInfo(true, true, extraSlot));
+                itemConfig.setDataType(DataType.EXTRA, RelativeSide.BOTTOM);
+            }
         }
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
 
@@ -351,9 +355,20 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.load(state, nbtTags);
-        sorting = nbtTags.getBoolean(NBTConstants.SORTING);
-        for (int i = 0; i < tier.processes; i++) {
-            progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);
+        if (nbtTags.contains(NBTConstants.PROGRESS, NBT.TAG_INT_ARRAY)) {
+            int[] savedProgress = nbtTags.getIntArray(NBTConstants.PROGRESS);
+            if (tier.processes != savedProgress.length) {
+                Arrays.fill(progress, 0);
+            }
+            for (int i = 0; i < tier.processes && i < savedProgress.length; i++) {
+                progress[i] = savedProgress[i];
+            }
+        } else {
+            //TODO - 1.17: Remove this way of loading the old data with
+            // Arrays.fill(progress, 0);
+            for (int i = 0; i < tier.processes; i++) {
+                progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);
+            }
         }
     }
 
@@ -361,11 +376,20 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
         super.save(nbtTags);
-        nbtTags.putBoolean(NBTConstants.SORTING, isSorting());
-        for (int i = 0; i < tier.processes; i++) {
-            nbtTags.putInt(NBTConstants.PROGRESS + i, getProgress(i));
-        }
+        nbtTags.put(NBTConstants.PROGRESS, new IntArrayNBT(Arrays.copyOf(progress, progress.length)));
         return nbtTags;
+    }
+
+    @Override
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
+        data.putBoolean(NBTConstants.SORTING, isSorting());
+    }
+
+    @Override
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
+        NBTUtils.setBooleanIfPresent(data, NBTConstants.SORTING, value -> sorting = value);
     }
 
     @Override
@@ -379,19 +403,6 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @Override
     public List<ITextComponent> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
-    }
-
-    @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = super.getConfigurationData(player);
-        data.putBoolean(NBTConstants.SORTING, isSorting());
-        return data;
-    }
-
-    @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
-        NBTUtils.setBooleanIfPresent(data, NBTConstants.SORTING, value -> sorting = value);
     }
 
     @Override

@@ -21,8 +21,8 @@ public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, M
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiQIOFrequencyTab(this, tile));
         addButton(new GuiQIOFrequencyDataScreen(this, 15, 19, imageWidth - 32, 46, () -> tile.getFrequency(FrequencyType.QIO)));
     }

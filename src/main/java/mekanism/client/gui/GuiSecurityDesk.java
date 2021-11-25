@@ -1,9 +1,7 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -17,6 +15,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
+import mekanism.common.util.text.InputValidator;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -38,7 +37,6 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
 
     private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
     private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
-    private static final List<Character> SPECIAL_CHARS = Arrays.asList('-', '|', '_');
     private MekanismButton removeButton;
     private MekanismButton publicButton;
     private MekanismButton privateButton;
@@ -56,15 +54,11 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     @Override
-    protected void initPreSlots() {
+    protected void addGuiElements() {
         addButton(new GuiElementHolder(this, 141, 13, 26, 37));
         addButton(new GuiElementHolder(this, 141, 54, 26, 34));
         addButton(new GuiElementHolder(this, 141, 92, 26, 37));
-    }
-
-    @Override
-    public void init() {
-        super.init();
+        super.addGuiElements();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 17));
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 96));
         addButton(new GuiSecurityLight(this, 144, 77, () -> {
@@ -74,7 +68,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         addButton(new GuiTextureOnlyElement(PUBLIC, this, 145, 32, 18, 18));
         addButton(new GuiTextureOnlyElement(PRIVATE, this, 145, 111, 18, 18));
         scrollList = addButton(new GuiTextScrollList(this, 13, 13, 122, 42));
-        removeButton = addButton(new TranslationButton(this, leftPos + 13, topPos + 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
+        removeButton = addButton(new TranslationButton(this, 13, 81, 122, 20, MekanismLang.BUTTON_REMOVE, () -> {
             int selection = scrollList.getSelection();
             if (tile.getFreq() != null && selection != -1) {
                 Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.REMOVE_TRUSTED, tile, selection));
@@ -86,24 +80,24 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
         trustedField.setMaxStringLength(PacketAddTrusted.MAX_NAME_LENGTH);
         trustedField.setBackground(BackgroundType.INNER_SCREEN);
         trustedField.setEnterHandler(this::setTrusted);
-        trustedField.setInputValidator(c -> SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isLetter(c));
+        trustedField.setInputValidator(InputValidator.USERNAME);
         trustedField.addCheckmarkButton(this::setTrusted);
-        publicButton = addButton(new MekanismImageButton(this, leftPos + 13, topPos + 113, 40, 16, 40, 16, getButtonLocation("public"),
+        publicButton = addButton(new MekanismImageButton(this, 13, 113, 40, 16, 40, 16, getButtonLocation("public"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PUBLIC.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.PUBLIC_MODE)));
-        privateButton = addButton(new MekanismImageButton(this, leftPos + 54, topPos + 113, 40, 16, 40, 16, getButtonLocation("private"),
+        privateButton = addButton(new MekanismImageButton(this, 54, 113, 40, 16, 40, 16, getButtonLocation("private"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.PRIVATE.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.PRIVATE_MODE)));
-        trustedButton = addButton(new MekanismImageButton(this, leftPos + 95, topPos + 113, 40, 16, 40, 16, getButtonLocation("trusted"),
+        trustedButton = addButton(new MekanismImageButton(this, 95, 113, 40, 16, 40, 16, getButtonLocation("trusted"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.SECURITY_DESK_MODE, tile, SecurityMode.TRUSTED.ordinal()));
                   updateButtons();
               }, getOnHover(MekanismLang.TRUSTED_MODE)));
-        overrideButton = addButton(new MekanismImageButton(this, leftPos + 146, topPos + 59, 16, 16, getButtonLocation("exclamation"),
+        overrideButton = addButton(new MekanismImageButton(this, 146, 59, 16, 16, getButtonLocation("exclamation"),
               () -> {
                   Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, tile));
                   updateButtons();

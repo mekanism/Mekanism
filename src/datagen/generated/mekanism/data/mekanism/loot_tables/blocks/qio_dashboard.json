@@ -13,6 +13,11 @@
               "source": "block_entity",
               "ops": [
                 {
+                  "source": "componentFrequency",
+                  "target": "mekData.componentFrequency",
+                  "op": "replace"
+                },
+                {
                   "source": "componentSecurity.owner",
                   "target": "mekData.owner",
                   "op": "replace"
@@ -20,16 +25,6 @@
                 {
                   "source": "componentSecurity.securityMode",
                   "target": "mekData.securityMode",
-                  "op": "replace"
-                },
-                {
-                  "source": "frequency.name",
-                  "target": "mekData.frequency.name",
-                  "op": "replace"
-                },
-                {
-                  "source": "frequency.publicFreq",
-                  "target": "mekData.frequency.publicFreq",
                   "op": "replace"
                 },
                 {
@@ -41,11 +36,6 @@
             }
           ],
           "name": "mekanism:qio_dashboard"
-        }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
         }
       ]
     }

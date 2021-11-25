@@ -64,7 +64,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    public void add(String key, String value) {
+    public void add(@Nonnull String key, @Nonnull String value) {
         super.add(key, value);
         if (altProviders.length > 0) {
             List<Component> splitEnglish = FormatSplitter.split(value);
@@ -75,7 +75,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    public void run(DirectoryCache cache) throws IOException {
+    public void run(@Nonnull DirectoryCache cache) throws IOException {
         super.run(cache);
         if (altProviders.length > 0) {
             for (ConvertibleLanguageProvider provider : altProviders) {

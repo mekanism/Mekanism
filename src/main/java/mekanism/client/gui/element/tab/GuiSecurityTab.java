@@ -91,6 +91,7 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         ITextComponent securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(dataSource, Dist.CLIENT));
         ITextComponent ownerComponent = OwnerDisplay.of(minecraft.player, dataSource.getOwnerUUID(), dataSource.getOwnerName()).getTextComponent();
         if (SecurityUtils.isOverridden(dataSource, Dist.CLIENT)) {
@@ -114,7 +115,7 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
                 } else if (dataSource instanceof TileEntity) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_SECURITY_MODE, (TileEntity) dataSource));
                 } else if (dataSource instanceof Entity) {
-                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, ((Entity) dataSource).getId()));
+                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, (Entity) dataSource));
                 }
             }
         }

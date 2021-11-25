@@ -15,7 +15,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public class HashedItem {
 
     public static HashedItem create(@Nonnull ItemStack stack) {
-        //TODO - 10.1: Evaluate uses of this and potentially switch some over to using raw
         return new HashedItem(StackUtils.size(stack, 1));
     }
 

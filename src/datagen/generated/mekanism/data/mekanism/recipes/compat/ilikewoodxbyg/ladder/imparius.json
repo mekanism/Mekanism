@@ -1,0 +1,28 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "amount": 3,
+    "ingredient": {
+      "item": "ilikewood:imparius_ladder"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:imparius_stick",
+    "count": 7
+  }
+}

@@ -52,11 +52,6 @@
           ],
           "name": "mekanismgenerators:bio_generator"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

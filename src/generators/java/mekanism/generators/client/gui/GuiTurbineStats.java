@@ -28,15 +28,15 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiTurbineTab(this, tile, TurbineTab.MAIN));
-        addButton(new GuiEnergyTab(() -> {
+        addButton(new GuiEnergyTab(this, () -> {
             EnergyDisplay storing;
             EnergyDisplay producing;
             TurbineMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed()) {
-                storing = EnergyDisplay.of(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getMaxEnergy());
+                storing = EnergyDisplay.of(multiblock.energyContainer);
                 producing = EnergyDisplay.of(MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES)
                       .multiply(multiblock.clientFlow * Math.min(multiblock.blades,
                             multiblock.coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get())));
@@ -45,7 +45,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
                 producing = EnergyDisplay.ZERO;
             }
             return Arrays.asList(MekanismLang.STORING.translate(storing), GeneratorsLang.PRODUCING_AMOUNT.translate(producing));
-        }, this));
+        }));
     }
 
     @Override

@@ -52,11 +52,6 @@
           ],
           "name": "mekanismgenerators:gas_burning_generator"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

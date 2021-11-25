@@ -17,8 +17,10 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IItemProvider;
+import mekanism.api.robit.RobitSkin;
 import mekanism.common.base.IModModule;
 import mekanism.common.base.KeySync;
+import mekanism.common.base.LootTableModifierReloadListener;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.base.PlayerState;
 import mekanism.common.base.TagCache;
@@ -36,6 +38,8 @@ import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.content.boiler.BoilerValidator;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.content.evaporation.EvaporationValidator;
+import mekanism.common.content.gear.MekaSuitDispenseBehavior;
+import mekanism.common.content.gear.ModuleDispenseBehavior;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.content.matrix.MatrixValidator;
@@ -69,6 +73,7 @@ import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import mekanism.common.recipe.ingredient.IngredientWithout;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
+import mekanism.common.registries.MekanismDataSerializers;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.registries.MekanismFluids;
@@ -80,16 +85,19 @@ import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismPlacements;
 import mekanism.common.registries.MekanismRecipeSerializers;
+import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCallback;
+import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.world.GenHandler;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.IDispenseItemBehavior;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -211,10 +219,12 @@ public class Mekanism {
         MekanismPlacements.PLACEMENTS.register(modEventBus);
         MekanismFeatures.FEATURES.register(modEventBus);
         MekanismRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
+        MekanismDataSerializers.DATA_SERIALIZERS.register(modEventBus);
         MekanismGases.GASES.createAndRegister(modEventBus, "gas", builder -> builder.tagFolder("gases").setDefaultKey(rl("empty_gas")));
         MekanismInfuseTypes.INFUSE_TYPES.createAndRegister(modEventBus, "infuse_type", builder -> builder.tagFolder("infuse_types").setDefaultKey(rl("empty_infuse_type")));
         MekanismPigments.PIGMENTS.createAndRegister(modEventBus, "pigment", builder -> builder.tagFolder("pigments").setDefaultKey(rl("empty_pigment")));
         MekanismSlurries.SLURRIES.createAndRegister(modEventBus, "slurry", builder -> builder.tagFolder("slurries").setDefaultKey(rl("empty_slurry")));
+        MekanismRobitSkins.ROBIT_SKINS.createAndRegister(modEventBus, "robit_skin", builder -> builder.setDefaultKey(rl("robit")));
         MekanismModules.MODULES.createAndRegister(modEventBus, "module");
         modEventBus.addGenericListener(Gas.class, this::registerGases);
         modEventBus.addGenericListener(InfuseType.class, this::registerInfuseTypes);
@@ -243,6 +253,7 @@ public class Mekanism {
             crtModEventBus.addGenericListener(InfuseType.class, EventPriority.LOWEST, CrTContentUtils::registerCrTInfuseTypes);
             crtModEventBus.addGenericListener(Pigment.class, EventPriority.LOWEST, CrTContentUtils::registerCrTPigments);
             crtModEventBus.addGenericListener(Slurry.class, EventPriority.LOWEST, CrTContentUtils::registerCrTSlurries);
+            crtModEventBus.addGenericListener(RobitSkin.class, EventPriority.LOWEST, CrTContentUtils::registerCrTRobitSkins);
         }
     }
 
@@ -298,7 +309,8 @@ public class Mekanism {
     }
 
     private void addReloadListenersLowest(AddReloadListenerEvent event) {
-        //Note: We register reload listeners here which we want to make sure run after CraftTweaker or any other mods that may modify recipes
+        //Note: We register reload listeners here which we want to make sure run after CraftTweaker or any other mods that may modify recipes or loot tables
+        event.addListener(new LootTableModifierReloadListener(event.getDataPackRegistries()));
         event.addListener(getRecipeCacheManager());
     }
 
@@ -335,7 +347,7 @@ public class Mekanism {
         MekanismIMC.addModulesToAll(MekanismModules.ENERGY_UNIT);
         MekanismIMC.addMekaSuitModules(MekanismModules.LASER_DISSIPATION_UNIT, MekanismModules.RADIATION_SHIELDING_UNIT);
         MekanismIMC.addMekaToolModules(MekanismModules.ATTACK_AMPLIFICATION_UNIT, MekanismModules.SILK_TOUCH_UNIT, MekanismModules.VEIN_MINING_UNIT,
-              MekanismModules.FARMING_UNIT, MekanismModules.TELEPORTATION_UNIT, MekanismModules.EXCAVATION_ESCALATION_UNIT);
+              MekanismModules.FARMING_UNIT, MekanismModules.SHEARING_UNIT, MekanismModules.TELEPORTATION_UNIT, MekanismModules.EXCAVATION_ESCALATION_UNIT);
         MekanismIMC.addMekaSuitHelmetModules(MekanismModules.ELECTROLYTIC_BREATHING_UNIT, MekanismModules.INHALATION_PURIFICATION_UNIT,
               MekanismModules.VISION_ENHANCEMENT_UNIT, MekanismModules.SOLAR_RECHARGING_UNIT, MekanismModules.NUTRITIONAL_INJECTION_UNIT);
         MekanismIMC.addMekaSuitBodyarmorModules(MekanismModules.JETPACK_UNIT, MekanismModules.GRAVITATIONAL_MODULATING_UNIT, MekanismModules.CHARGE_DISTRIBUTION_UNIT,
@@ -362,10 +374,15 @@ public class Mekanism {
             MekAnnotationScanner.collectScanData();
             //Add chunk loading callbacks
             ForgeChunkManager.setForcedChunkLoadingCallback(Mekanism.MODID, ChunkValidationCallback.INSTANCE);
+            //Add our custom item predicate serializer even though I don't think we actually need it as json anywhere
+            LootTableModifierReloadListener.registerCustomPredicate();
             //Register dispenser behaviors
             MekanismFluids.FLUIDS.registerBucketDispenserBehavior();
             registerDispenseBehavior(FluidTankItemDispenseBehavior.INSTANCE, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK,
                   MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK);
+            registerDispenseBehavior(new ModuleDispenseBehavior(), MekanismItems.MEKA_TOOL);
+            registerDispenseBehavior(new MekaSuitDispenseBehavior(), MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS,
+                  MekanismItems.MEKASUIT_BOOTS);
         });
 
         //Register player tracker
@@ -453,6 +470,15 @@ public class Mekanism {
         // when the server shuts down
         if (event.getWorld() instanceof ServerWorld) {
             MekFakePlayer.releaseInstance(event.getWorld());
+        }
+        if (event.getWorld() instanceof World && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
+            //If there are any invalidation listeners for the oredictionificator as there was a loaded oredictionificator
+            // then go through the entities and remove the corresponding invalidation listeners from them
+            for (TileEntity tile : ((World) event.getWorld()).blockEntityList) {
+                if (tile instanceof TileEntityOredictionificator) {
+                    ((TileEntityOredictionificator) tile).removeInvalidationListener();
+                }
+            }
         }
     }
 }

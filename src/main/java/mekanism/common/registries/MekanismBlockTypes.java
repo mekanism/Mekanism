@@ -136,7 +136,6 @@ public class MekanismBlockTypes {
     private static final FloatingLong LARGE_LASER = FloatingLong.createConst(5_000_000_000L);
     private static final FloatingLong TELEPORTER_USAGE = FloatingLong.createConst(12_500);
     private static final FloatingLong HUNDRED = FloatingLong.createConst(100);
-    private static final FloatingLong TWENTY_FIVE = FloatingLong.createConst(25);
 
     private static final Table<FactoryTier, FactoryType, Factory<?>> FACTORIES = HashBasedTable.create();
 
@@ -351,7 +350,7 @@ public class MekanismBlockTypes {
     // Chargepad
     public static final BlockTypeTile<TileEntityChargepad> CHARGEPAD = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.CHARGEPAD, MekanismLang.DESCRIPTION_CHARGEPAD)
-          .withEnergyConfig(() -> TWENTY_FIVE, MekanismConfig.storage.chargePad)
+          .withEnergyConfig(MekanismConfig.usage.chargePad, MekanismConfig.storage.chargePad)
           .withSound(MekanismSounds.CHARGEPAD)
           .with(Attributes.ACTIVE_LIGHT, new AttributeStateFacing())
           .withCustomShape(BlockShapes.CHARGEPAD)

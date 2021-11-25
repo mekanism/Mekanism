@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.BoundComputerMethod.ThreadAwareMethodHandle;
@@ -27,6 +29,7 @@ import mekanism.common.lib.MekAnnotationScanner.BaseAnnotationScanner;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
 import org.objectweb.asm.Type;
 
@@ -64,6 +67,10 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
             List<MethodDetails> methodDetails = new ArrayList<>();
             rawMethodDetails.put(annotatedClass, methodDetails);
             for (AnnotationData data : entry.getValue()) {
+                if (getAnnotationValue(data, "requiredMods", Collections.<String>emptyList()).stream().anyMatch(s -> !ModList.get().isLoaded(s))) {
+                    //If the required mods are not loaded, skip this annotation as the restrictions are not met
+                    continue;
+                }
                 if (data.getTargetType() == ElementType.FIELD) {
                     //Synthetic Computer Method(s) need to be generated for the field
                     String fieldName = data.getMemberName();
@@ -213,8 +220,8 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                     return helpers;
                 });
                 //Note: While technically recalculating the method handles above is slightly wasteful if they don't match up
-                // below in size, this is something that should be ran into at dev time as an error, and shouldn't make it
-                // into an actual environment so shouldn't really matter too much
+                // below, this is something that should be run into at dev time as an error, and shouldn't make it into an
+                // actual environment so shouldn't really matter too much
                 if (wrapperHandles.size() != methodNameCount) {
                     Mekanism.logger.warn("Mismatch in count of method names ({}) for generated methods and methods to generate ({}).", methodNameCount,
                           wrapperHandles.size());
@@ -232,17 +239,26 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
     }
 
     /**
-     * @param handler      Handler to bind to
+     * @param handler      Handler to bind to.
      * @param boundMethods Map of method name to actual method to add our methods to.
      */
-    public void getAndBindToHandler(Object handler, Map<String, BoundComputerMethod> boundMethods) {
-        Map<String, List<MethodHandleInfo>> namedMethods = namedMethodHandleCache.computeIfAbsent(handler.getClass(),
+    public void getAndBindToHandler(@Nonnull Object handler, Map<String, BoundComputerMethod> boundMethods) {
+        getAndBindToHandler(handler.getClass(), handler, boundMethods);
+    }
+
+    /**
+     * @param handlerClass Class of the handler to bind to.
+     * @param handler      Handler to bind to, {@code null} if the handler is a static class.
+     * @param boundMethods Map of method name to actual method to add our methods to.
+     */
+    public void getAndBindToHandler(Class<?> handlerClass, @Nullable Object handler, Map<String, BoundComputerMethod> boundMethods) {
+        Map<String, List<MethodHandleInfo>> namedMethods = namedMethodHandleCache.computeIfAbsent(handlerClass,
               clazz -> getData(namedMethodHandleCache, clazz, Collections.emptyMap()));
         boolean hasMethods = !boundMethods.isEmpty();
         for (Map.Entry<String, List<MethodHandleInfo>> entry : namedMethods.entrySet()) {
             String methodName = entry.getKey();
             List<MethodHandleInfo> methods = entry.getValue();
-            //If we have no methods originally none should intersect so we can skip the lookup checks
+            //If we have no methods originally none should intersect, so we can skip the lookup checks
             BoundComputerMethod boundMethod = hasMethods ? boundMethods.get(methodName) : null;
             if (boundMethod == null) {
                 //Use a list that is the min size we need (this is likely to be one)
@@ -252,7 +268,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                 List<ThreadAwareMethodHandle> boundMethodHandles = new ArrayList<>(methods.size());
                 for (MethodHandleInfo method : methods) {
                     if (method.restriction.test(handler)) {
-                        boundMethodHandles.add(new ThreadAwareMethodHandle(method.methodHandle.bindTo(handler), method.threadSafe));
+                        boundMethodHandles.add(method.bindTo(handler));
                     }
                 }
                 if (!boundMethodHandles.isEmpty()) {
@@ -266,7 +282,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                 // but before adding them validate the restrictions on the method are met
                 for (MethodHandleInfo method : methods) {
                     if (method.restriction.test(handler)) {
-                        boundMethod.addMethodImplementation(new ThreadAwareMethodHandle(method.methodHandle.bindTo(handler), method.threadSafe));
+                        boundMethod.addMethodImplementation(method.bindTo(handler));
                     }
                 }
             }
@@ -323,6 +339,10 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
             this.restriction = restriction;
             this.threadSafe = threadSafe;
         }
+
+        public ThreadAwareMethodHandle bindTo(@Nullable Object handler) {
+            return new ThreadAwareMethodHandle(handler == null ? methodHandle : methodHandle.bindTo(handler), threadSafe);
+        }
     }
 
     public enum MethodRestriction implements Predicate<Object> {
@@ -331,7 +351,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
          */
         NONE(handler -> true),
         /**
-         * Handler is an directional tile that is actually directional.
+         * Handler is a directional tile that is actually directional.
          */
         DIRECTIONAL(handler -> handler instanceof ITileDirectional && ((ITileDirectional) handler).isDirectional()),
         /**
@@ -343,7 +363,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
          */
         MULTIBLOCK(handler -> handler instanceof TileEntityMultiblock && ((TileEntityMultiblock<?>) handler).exposesMultiblockToComputer()),
         /**
-         * Handler is an directional tile that is actually directional.
+         * Handler is a tile that can support redstone.
          */
         REDSTONE_CONTROL(handler -> handler instanceof ITileRedstone && ((ITileRedstone) handler).supportsRedstone());
 
@@ -354,7 +374,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         }
 
         @Override
-        public boolean test(Object handler) {
+        public boolean test(@Nullable Object handler) {
             return validator.test(handler);
         }
     }

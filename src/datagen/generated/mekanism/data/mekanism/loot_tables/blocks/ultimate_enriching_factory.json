@@ -57,11 +57,6 @@
           ],
           "name": "mekanism:ultimate_enriching_factory"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:crushing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:chiseled_red_rock_bricks"
+    }
+  },
+  "output": {
+    "item": "byg:red_rock_bricks"
+  }
+}

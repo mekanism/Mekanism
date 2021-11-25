@@ -17,8 +17,8 @@ public class GuiQIOImporter extends GuiQIOFilterHandler<TileEntityQIOImporter> {
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiScreenSwitch(this, 9, 122, imageWidth - 18, MekanismLang.QIO_IMPORT_WITHOUT_FILTER.translate(), tile::getImportWithoutFilter,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.QIO_TOGGLE_IMPORT_WITHOUT_FILTER, tile))));
     }

@@ -1,17 +1,15 @@
 {
   "type": "mekanism:pigment_extracting",
-  "input": [
-    {
-      "ingredient": {
+  "input": {
+    "ingredient": [
+      {
         "item": "minecraft:bone_meal"
-      }
-    },
-    {
-      "ingredient": {
+      },
+      {
         "item": "minecraft:lily_of_the_valley"
       }
-    }
-  ],
+    ]
+  },
   "output": {
     "pigment": "mekanism:white",
     "amount": 768

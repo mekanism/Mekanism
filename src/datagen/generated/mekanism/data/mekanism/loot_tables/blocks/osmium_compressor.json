@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:osmium_compressor"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

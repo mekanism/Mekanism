@@ -1,0 +1,31 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "values": [
+        {
+          "modid": "ilikewoodxbyg",
+          "type": "forge:mod_loaded"
+        },
+        {
+          "modid": "byg",
+          "type": "forge:mod_loaded"
+        }
+      ],
+      "type": "forge:and"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "ilikewood:bulbis_item_frame"
+    }
+  },
+  "mainOutput": {
+    "item": "ilikewood:bulbis_stick",
+    "count": 8
+  },
+  "secondaryOutput": {
+    "item": "minecraft:leather"
+  },
+  "secondaryChance": 1.0
+}

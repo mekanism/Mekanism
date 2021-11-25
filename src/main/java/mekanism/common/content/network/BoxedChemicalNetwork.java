@@ -60,10 +60,6 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     public BoxedChemical lastChemical = BoxedChemical.EMPTY;
     private long prevTransferAmount;
 
-    public BoxedChemicalNetwork() {
-        this(UUID.randomUUID());
-    }
-
     public BoxedChemicalNetwork(UUID networkID) {
         super(networkID);
         chemicalTank = MergedChemicalTank.create(
@@ -79,7 +75,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     public BoxedChemicalNetwork(Collection<BoxedChemicalNetwork> networks) {
-        this();
+        this(UUID.randomUUID());
         adoptAllAndRegister(networks);
     }
 
@@ -332,18 +328,6 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
             Current otherCurrent = other.chemicalTank.getCurrent();
             return otherCurrent == Current.EMPTY || current == otherCurrent && chemicalTank.getTankFromCurrent(current).getType() ==
                                                                                other.chemicalTank.getTankFromCurrent(otherCurrent).getType();
-        }
-        return false;
-    }
-
-    @Override
-    public boolean compatibleWithBuffer(@Nonnull BoxedChemicalStack buffer) {
-        if (super.compatibleWithBuffer(buffer)) {
-            Current current = chemicalTank.getCurrent();
-            if (current == Current.EMPTY || buffer.isEmpty()) {
-                return true;
-            }
-            return ChemicalUtil.compareTypes(buffer.getChemicalType(), current) && chemicalTank.getTankFromCurrent(current).getType() == buffer.getChemicalStack().getType();
         }
         return false;
     }

@@ -85,6 +85,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Override
     protected void onUpdateClient() {
+        super.onUpdateClient();
         if (getActive()) {
             angle = (angle + (getBlockPos().getY() + 4F) / SPEED_SCALED) % 360;
         }
@@ -94,7 +95,7 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
      * Determines the current output multiplier, taking sky visibility and height into account.
      **/
     private FloatingLong getMultiplier() {
-        if (level != null && level.canSeeSkyFromBelowWater(getBlockPos().above(4))) {
+        if (level != null && level.canSeeSky(getBlockPos().above(4))) {
             int minY = MekanismGeneratorsConfig.generators.windGenerationMinY.get();
             int maxY = MekanismGeneratorsConfig.generators.windGenerationMaxY.get();
             float clampedY = Math.min(maxY, Math.max(minY, getBlockPos().getY() + 4));

@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import mekanism.client.gui.GuiMekanism;
+import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
@@ -78,12 +79,22 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
     private <INGREDIENT> List<TargetInfo<INGREDIENT>> getTargets(List<? extends IGuiEventListener> children, INGREDIENT ingredient) {
         List<TargetInfo<INGREDIENT>> ghostTargets = new ArrayList<>();
         for (IGuiEventListener child : children) {
-            if (child instanceof IJEIGhostTarget && child instanceof Widget) {
-                IJEIGhostTarget ghostTarget = (IJEIGhostTarget) child;
-                IGhostIngredientConsumer ghostHandler = ghostTarget.getGhostHandler();
-                if (ghostHandler != null && ghostHandler.supportsIngredient(ingredient)) {
-                    Widget element = (Widget) child;
-                    ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, element.x, element.y, element.getWidth(), element.getHeight()));
+            if (child instanceof Widget) {
+                Widget widget = (Widget) child;
+                if (widget.visible) {
+                    if (widget instanceof GuiElement) {
+                        //Start by adding any grandchild ghost targets we have as they are the "top" layer, and we want them
+                        // to get checked/interacted with first
+                        ghostTargets.addAll(getTargets(((GuiElement) widget).children(), ingredient));
+                    }
+                    //Then go ahead and check if our element is a ghost target and if it is, and it supports the ingredient add it
+                    if (widget instanceof IJEIGhostTarget) {
+                        IJEIGhostTarget ghostTarget = (IJEIGhostTarget) widget;
+                        IGhostIngredientConsumer ghostHandler = ghostTarget.getGhostHandler();
+                        if (ghostHandler != null && ghostHandler.supportsIngredient(ingredient)) {
+                            ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, widget.x, widget.y, widget.getWidth(), widget.getHeight()));
+                        }
+                    }
                 }
             }
         }
@@ -117,7 +128,7 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
                         //If there are no more elements left, just add all the remaining visible parts
                         visible.addAll(uncoveredArea);
                     } else {
-                        //Otherwise grab the remaining unchecked elements from the covering layer
+                        //Otherwise, grab the remaining unchecked elements from the covering layer
                         List<Rectangle2d> coveredAreas = coveredArea.subList(i + 1, size);
                         //And check each of our sub visible areas
                         for (Rectangle2d visibleArea : uncoveredArea) {

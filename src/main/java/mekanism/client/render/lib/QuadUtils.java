@@ -27,7 +27,7 @@ public class QuadUtils {
     }
 
     public static List<Quad> transformQuads(List<Quad> orig, QuadTransformation transformation) {
-        List<Quad> list = new ArrayList<>();
+        List<Quad> list = new ArrayList<>(orig.size());
         for (Quad quad : orig) {
             transformation.transform(quad);
             list.add(quad);
@@ -36,7 +36,7 @@ public class QuadUtils {
     }
 
     public static List<BakedQuad> transformBakedQuads(List<BakedQuad> orig, QuadTransformation transformation) {
-        List<BakedQuad> list = new ArrayList<>();
+        List<BakedQuad> list = new ArrayList<>(orig.size());
         for (BakedQuad bakedQuad : orig) {
             Quad quad = new Quad(bakedQuad);
             transformation.transform(quad);
@@ -46,7 +46,7 @@ public class QuadUtils {
     }
 
     public static List<BakedQuad> transformAndBake(List<Quad> orig, QuadTransformation transformation) {
-        List<BakedQuad> list = new ArrayList<>();
+        List<BakedQuad> list = new ArrayList<>(orig.size());
         for (Quad quad : orig) {
             transformation.transform(quad);
             list.add(quad.bake());

@@ -25,10 +25,13 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60;
+    public static final ResourceLocation WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
+    public static final ResourceLocation WARNING_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning.png");
 
     public static final Minecraft minecraft = Minecraft.getInstance();
 
@@ -42,13 +45,28 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     private final List<GuiElement> positionOnlyChildren = new ArrayList<>();
 
     private IGuiWrapper guiObj;
-
     protected boolean playClickSound;
+    protected int relativeX;
+    protected int relativeY;
     public boolean isOverlay;
 
+    public GuiElement(IGuiWrapper gui, int x, int y, int width, int height) {
+        this(gui, x, y, width, height, StringTextComponent.EMPTY);
+    }
+
     public GuiElement(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text) {
-        super(x, y, width, height, text);
-        guiObj = gui;
+        super(gui.getLeft() + x, gui.getTop() + y, width, height, text);
+        this.relativeX = x;
+        this.relativeY = y;
+        this.guiObj = gui;
+    }
+
+    public int getRelativeX() {
+        return relativeX;
+    }
+
+    public int getRelativeY() {
+        return relativeY;
     }
 
     /**
@@ -79,8 +97,6 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     protected <ELEMENT extends GuiElement> ELEMENT addPositionOnlyChild(ELEMENT element) {
-        //TODO - 10.1: Re-evaluate "children" added here. As it may make sense to try and move some of them to being normal children
-        // or it may turn out that some of them are supposed to be ticking or something
         positionOnlyChildren.add(element);
         return element;
     }
@@ -140,6 +156,10 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     public void move(int changeX, int changeY) {
         x += changeX;
         y += changeY;
+        //Note: When moving we need to adjust our relative position but when resizing, we don't as we are relative to the
+        // positions changing when resizing, instead of moving where we are in relation to
+        relativeX += changeX;
+        relativeY += changeY;
         children.forEach(child -> child.move(changeX, changeY));
         positionOnlyChildren.forEach(child -> child.move(changeX, changeY));
     }
@@ -197,7 +217,13 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
             matrix.translate(getGuiLeft(), getGuiTop(), 0);
             renderForeground(matrix, mouseX, mouseY);
             // translate forward to render child foreground
-            children.forEach(child -> child.onRenderForeground(matrix, mouseX, mouseY, 50, totalOffset + 50));
+            children.forEach(child -> {
+                //Only apply the z shift to each child instead of having future children be translated by more as well
+                // Note: Does not apply to compounding with grandchildren as we want those to compound
+                matrix.pushPose();
+                child.onRenderForeground(matrix, mouseX, mouseY, 50, totalOffset + 50);
+                matrix.popPose();
+            });
         }
     }
 
@@ -312,7 +338,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return super.isMouseOver(mouseX, mouseY) || children.stream().anyMatch(child -> child.isMouseOver(mouseX, mouseY));
+        return super.isMouseOver(mouseX, mouseY) || GuiUtils.checkChildren(children, child -> child.isMouseOver(mouseX, mouseY));
     }
 
     /**
@@ -403,7 +429,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         // Can use a lot of the same logic as GuiMekanism does for its background
 
         renderBg(matrix, minecraft, mouseX, mouseY);
-        //TODO - 10.1: Re-evaluate this and FilterSelectButton#drawBackground as vanilla doesn't disable these after
+        //TODO: Re-evaluate this and FilterSelectButton#drawBackground as vanilla doesn't disable these after
         // it draws a button but I am not sure if that is intentional or causes issues
         RenderSystem.disableBlend();
         RenderSystem.disableDepthTest();
@@ -431,6 +457,12 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     protected void drawTiledSprite(MatrixStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
           TilingDirection tilingDirection) {
         GuiUtils.drawTiledSprite(matrix, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, getBlitOffset(), tilingDirection);
+    }
+
+    @Override
+    public void drawCenteredTextScaledBound(MatrixStack matrix, ITextComponent text, float maxLength, float y, int color) {
+        float scale = Math.min(1, maxLength / getStringWidth(text));
+        drawScaledCenteredText(matrix, text, relativeX + getXSize() / 2F, relativeY + y, color, scale);
     }
 
     public enum ButtonBackground {

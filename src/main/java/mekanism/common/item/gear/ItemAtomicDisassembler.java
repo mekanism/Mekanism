@@ -30,7 +30,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.ItemEnergized;
 import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.item.interfaces.IItemHUDProvider;
-import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.item.interfaces.IRadialModeItem;
 import mekanism.common.item.interfaces.IRadialSelectorEnum;
 import mekanism.common.network.to_client.PacketLightningRender;
@@ -56,8 +55,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemStack.TooltipDisplayFlags;
 import net.minecraft.item.Rarity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.stats.Stats;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
@@ -65,13 +62,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IModeItem, IRadialModeItem<DisassemblerMode> {
+public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode> {
 
     private final Multimap<Attribute, AttributeModifier> attributes;
 
@@ -124,7 +119,17 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public float getDestroySpeed(@Nonnull ItemStack stack, @Nonnull BlockState state) {
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-        return energyContainer == null || energyContainer.isEmpty() ? 1 : getMode(stack).getEfficiency();
+        if (energyContainer == null) {
+            return 0;
+        }
+        //Use raw hardness to get a best guess of if it is zero or not
+        FloatingLong energyRequired = getDestroyEnergy(stack, state.destroySpeed);
+        FloatingLong energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
+        if (energyAvailable.smallerThan(energyRequired)) {
+            //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
+            return DisassemblerMode.NORMAL.getEfficiency() * energyAvailable.divide(energyRequired).floatValue();
+        }
+        return getMode(stack).getEfficiency();
     }
 
     @Override
@@ -138,70 +143,29 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, PlayerEntity player) {
-        World world = player.level;
-        if (!world.isClientSide && !player.isCreative()) {
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-            if (energyContainer == null) {
-                //If something went wrong and we don't have an energy container, just go to super
-                return super.onBlockStartBreak(stack, pos, player);
-            }
-            DisassemblerMode mode = getMode(stack);
-            boolean extended = mode == DisassemblerMode.EXTENDED_VEIN;
-            if (extended || mode == DisassemblerMode.VEIN) {
-                BlockState state = world.getBlockState(pos);
-                if (state.getBlock() instanceof BlockBounding) {
-                    //Even though we now handle breaking bounding blocks properly, don't allow vein mining
-                    // them as an added safety measure
-                    return super.onBlockStartBreak(stack, pos, player);
-                }
-                //If it is extended or should be treated as an ore
-                if (extended || state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
-                    ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
-                    List<BlockPos> found = findPositions(state, pos, world, extended ? MekanismConfig.gear.disassemblerMiningRange.get() : -1);
-                    for (BlockPos foundPos : found) {
-                        if (pos.equals(foundPos)) {
-                            continue;
-                        }
-                        BlockState foundState = world.getBlockState(foundPos);
-                        FloatingLong destroyEnergy = getDestroyEnergy(stack, foundState.getDestroySpeed(world, foundPos));
-                        if (energyContainer.extract(destroyEnergy, Action.SIMULATE, AutomationType.MANUAL).smallerThan(destroyEnergy)) {
-                            //If we don't have energy to break the block continue
-                            //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
-                            // Given we validate the blocks are the same but their block states may be different thus making them have different
-                            // block hardness values in a modded context
-                            continue;
-                        }
-                        int exp = ForgeHooks.onBlockBreakEvent(world, serverPlayerEntity.gameMode.getGameModeForPlayer(), serverPlayerEntity, foundPos);
-                        if (exp == -1) {
-                            //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
-                            continue;
-                        }
-                        //Otherwise break the block
-                        Block block = foundState.getBlock();
-                        //Get the tile now so that we have it for when we try to harvest the block
-                        TileEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);
-                        //Remove the block
-                        boolean removed = foundState.removedByPlayer(world, foundPos, player, true, foundState.getFluidState());
-                        if (removed) {
-                            block.destroy(world, foundPos, foundState);
-                            //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
-                            block.playerDestroy(world, player, foundPos, foundState, tileEntity, stack);
-                            player.awardStat(Stats.ITEM_USED.get(this));
-                            if (exp > 0) {
-                                //If we have xp drop it
-                                block.popExperience((ServerWorld) world, foundPos, exp);
-                            }
-                            //Use energy
-                            energyContainer.extract(destroyEnergy, Action.EXECUTE, AutomationType.MANUAL);
-                        }
-                    }
+        if (player.level.isClientSide || player.isCreative()) {
+            return super.onBlockStartBreak(stack, pos, player);
+        }
+        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        if (energyContainer != null && getMode(stack) == DisassemblerMode.VEIN) {
+            World world = player.level;
+            BlockState state = world.getBlockState(pos);
+            FloatingLong baseDestroyEnergy = getDestroyEnergy(stack);
+            FloatingLong energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
+            if (energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL).greaterOrEqual(energyRequired)) {
+                //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
+                // only allow mining things that are considered an ore
+                if (!(state.getBlock() instanceof BlockBounding) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                    List<BlockPos> found = findPositions(state, pos, world);
+                    MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayerEntity) player, stack, this, found, false,
+                          hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), state);
                 }
             }
         }
         return super.onBlockStartBreak(stack, pos, player);
     }
 
-    private static List<BlockPos> findPositions(BlockState state, BlockPos location, World world, int maxRange) {
+    private static List<BlockPos> findPositions(BlockState state, BlockPos location, World world) {
         List<BlockPos> found = new ArrayList<>();
         Set<BlockPos> checked = new ObjectOpenHashSet<>();
         found.add(location);
@@ -213,18 +177,16 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             for (BlockPos pos : BlockPos.betweenClosed(blockPos.offset(-1, -1, -1), blockPos.offset(1, 1, 1))) {
                 //We can check contains as mutable
                 if (!checked.contains(pos)) {
-                    if (maxRange == -1 || WorldUtils.distanceBetween(location, pos) <= maxRange) {
-                        Optional<BlockState> blockState = WorldUtils.getBlockState(world, pos);
-                        if (blockState.isPresent() && startBlock == blockState.get().getBlock()) {
-                            //Make sure to add it as immutable
-                            found.add(pos.immutable());
-                            //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
-                            // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
-                            Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
-                                  Vector3d.atCenterOf(blockPos), Vector3d.atCenterOf(pos), 10), world, blockPos);
-                            if (found.size() > maxCount) {
-                                return found;
-                            }
+                    Optional<BlockState> blockState = WorldUtils.getBlockState(world, pos);
+                    if (blockState.isPresent() && startBlock == blockState.get().getBlock()) {
+                        //Make sure to add it as immutable
+                        found.add(pos.immutable());
+                        //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
+                        // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
+                        Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
+                              Vector3d.atCenterOf(blockPos), Vector3d.atCenterOf(pos), 10), world, blockPos);
+                        if (found.size() > maxCount) {
+                            return found;
                         }
                     }
                 }
@@ -234,8 +196,15 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     private FloatingLong getDestroyEnergy(ItemStack itemStack, float hardness) {
-        FloatingLong destroyEnergy = MekanismConfig.gear.disassemblerEnergyUsage.get().multiply(getMode(itemStack).getEfficiency());
-        return hardness == 0 ? destroyEnergy.divide(2) : destroyEnergy;
+        return getDestroyEnergy(getDestroyEnergy(itemStack), hardness);
+    }
+
+    private FloatingLong getDestroyEnergy(FloatingLong baseDestroyEnergy, float hardness) {
+        return hardness == 0 ? baseDestroyEnergy.divide(2) : baseDestroyEnergy;
+    }
+
+    private FloatingLong getDestroyEnergy(ItemStack itemStack) {
+        return MekanismConfig.gear.disassemblerEnergyUsage.get().multiply(getMode(itemStack).getEfficiency());
     }
 
     @Override
@@ -317,7 +286,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         SLOW(MekanismLang.DISASSEMBLER_SLOW, 8, MekanismConfig.gear.disassemblerSlowMode, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_slow.png")),
         FAST(MekanismLang.DISASSEMBLER_FAST, 128, MekanismConfig.gear.disassemblerFastMode, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_fast.png")),
         VEIN(MekanismLang.DISASSEMBLER_VEIN, 20, MekanismConfig.gear.disassemblerVeinMining, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_vein.png")),
-        EXTENDED_VEIN(MekanismLang.DISASSEMBLER_EXTENDED_VEIN, 20, MekanismConfig.gear.disassemblerExtendedMining, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "disassembler_extended_vein.png")),
         OFF(MekanismLang.DISASSEMBLER_OFF, 0, () -> true, EnumColor.BRIGHT_GREEN, MekanismUtils.getResource(MekanismUtils.ResourceType.GUI, "void.png"));
 
         private static final DisassemblerMode[] MODES = values();

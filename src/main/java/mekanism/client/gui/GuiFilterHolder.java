@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.button.FilterButton;
 import mekanism.client.gui.element.button.MovableFilterButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.Mekanism;
@@ -42,8 +43,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     @Override
-    public void init() {
-        super.init();
+    protected void addGuiElements() {
+        super.addGuiElements();
         addButton(new GuiInnerScreen(this, 9, 17, 46, 140));
         //Filter holder
         addButton(new GuiElementHolder(this, 55, 17, 98, 118));
@@ -52,7 +53,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         scrollBar = addButton(new GuiScrollBar(this, 153, 17, 140, () -> getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
+            addFilterButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
                 if (index > 0) {
                     Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
                 }
@@ -76,6 +77,10 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
                 return list;
             }));
         }
+    }
+
+    protected FilterButton addFilterButton(FilterButton button) {
+        return addButton(button);
     }
 
     protected HashList<FILTER> getFilters() {

@@ -1,0 +1,18 @@
+{
+  "type": "mekanism:sawing",
+  "conditions": [
+    {
+      "modid": "byg",
+      "type": "forge:mod_loaded"
+    }
+  ],
+  "input": {
+    "ingredient": {
+      "item": "byg:palm_trapdoor"
+    }
+  },
+  "mainOutput": {
+    "item": "byg:palm_planks",
+    "count": 3
+  }
+}

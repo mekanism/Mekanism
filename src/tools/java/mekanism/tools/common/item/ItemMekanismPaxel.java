@@ -4,15 +4,14 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.functions.FloatSupplier;
 import mekanism.common.lib.attribute.AttributeCache;
 import mekanism.common.lib.attribute.IAttributeRefresher;
-import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.tools.common.IHasRepairType;
+import mekanism.tools.common.material.IPaxelMaterial;
 import mekanism.tools.common.material.MaterialCreator;
+import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
 import mekanism.tools.common.util.ToolsUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -28,7 +27,6 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.ToolItem;
@@ -50,48 +48,26 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
 
     private static final ToolType PAXEL_TOOL_TYPE = ToolType.get("paxel");
 
-    private static Item.Properties getItemProperties(ItemTier material) {
-        Item.Properties properties = ItemDeferredRegister.getMekBaseProperties();
-        if (material == ItemTier.NETHERITE) {
-            properties = properties.fireResistant();
-        }
-        return addHarvestLevel(properties, material.getLevel());
-    }
-
-    private static Item.Properties addHarvestLevel(Item.Properties properties, int harvestLevel) {
+    private static Item.Properties addHarvestLevel(Item.Properties properties, IPaxelMaterial material) {
+        int harvestLevel = material.getPaxelHarvestLevel();
         return properties.addToolType(ToolType.AXE, harvestLevel).addToolType(ToolType.PICKAXE, harvestLevel)
               .addToolType(ToolType.SHOVEL, harvestLevel).addToolType(PAXEL_TOOL_TYPE, harvestLevel);
     }
 
-    private final FloatSupplier paxelDamage;
-    private final FloatSupplier paxelAtkSpeed;
-    private final FloatSupplier paxelEfficiency;
-    private final IntSupplier paxelEnchantability;
-    private final IntSupplier paxelMaxDurability;
-    private final IntSupplier paxelHarvestLevel;
+    private final IPaxelMaterial material;
     private final AttributeCache attributeCache;
 
     public ItemMekanismPaxel(MaterialCreator material, Item.Properties properties) {
-        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, Collections.emptySet(), addHarvestLevel(properties, material.getPaxelHarvestLevel()));
-        paxelDamage = material::getPaxelDamage;
-        paxelAtkSpeed = material::getPaxelAtkSpeed;
-        paxelEfficiency = material::getPaxelEfficiency;
-        paxelEnchantability = material::getPaxelEnchantability;
-        paxelMaxDurability = material::getPaxelMaxUses;
-        paxelHarvestLevel = material::getPaxelHarvestLevel;
+        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material, Collections.emptySet(), addHarvestLevel(properties, material));
+        this.material = material;
         this.attributeCache = new AttributeCache(this, material.attackDamage, material.paxelDamage, material.paxelAtkSpeed);
     }
 
-    public ItemMekanismPaxel(ItemTier material) {
-        super(4, -2.4F, material, Collections.emptySet(), getItemProperties(material));
-        paxelDamage = () -> 4;
-        paxelAtkSpeed = () -> -2.4F;
-        paxelEfficiency = material::getSpeed;
-        paxelEnchantability = material::getEnchantmentValue;
-        paxelMaxDurability = material::getUses;
-        paxelHarvestLevel = material::getLevel;
-        //Don't add any listeners as all the values are "static"
-        attributeCache = new AttributeCache(this);
+    public ItemMekanismPaxel(VanillaPaxelMaterialCreator material, Item.Properties properties) {
+        super(material.getPaxelDamage(), material.getPaxelAtkSpeed(), material.getVanillaTier(), Collections.emptySet(), addHarvestLevel(properties, material));
+        this.material = material;
+        //Don't add the material's damage as a listener as the vanilla component is not configurable
+        this.attributeCache = new AttributeCache(this, material.paxelDamage, material.paxelAtkSpeed);
     }
 
     @Override
@@ -103,11 +79,11 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
 
     @Override
     public float getAttackDamage() {
-        return paxelDamage.getAsFloat() + getTier().getAttackDamageBonus();
+        return material.getPaxelDamage() + getTier().getAttackDamageBonus();
     }
 
     private int getHarvestLevel() {
-        return paxelHarvestLevel.getAsInt();
+        return material.getPaxelHarvestLevel();
     }
 
     @Override
@@ -142,7 +118,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
         //Note: We do it this way so that we don't need to check if the AxeItem material set contains the material if one of the pickaxe checks match
         if (material == Material.METAL || material == Material.HEAVY_METAL || material == Material.STONE || AxeItem.DIGGABLE_MATERIALS.contains(material) ||
             getToolTypes(stack).stream().anyMatch(state::isToolEffective) || blocks.contains(state.getBlock())) {
-            return paxelEfficiency.getAsFloat();
+            return this.material.getPaxelEfficiency();
         }
         return 1;
     }
@@ -197,7 +173,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
 
     @Override
     public int getEnchantmentValue() {
-        return paxelEnchantability.getAsInt();
+        return material.getPaxelEnchantability();
     }
 
     @Nonnull
@@ -208,12 +184,12 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return paxelMaxDurability.getAsInt();
+        return material.getPaxelMaxUses();
     }
 
     @Override
     public boolean canBeDepleted() {
-        return paxelMaxDurability.getAsInt() > 0;
+        return material.getPaxelMaxUses() > 0;
     }
 
     @Override
@@ -233,6 +209,6 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
     @Override
     public void addToBuilder(ImmutableMultimap.Builder<Attribute, AttributeModifier> builder) {
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(), Operation.ADDITION));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", paxelAtkSpeed.getAsFloat(), Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", material.getPaxelAtkSpeed(), Operation.ADDITION));
     }
 }

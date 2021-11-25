@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:basic_purifying_factory"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

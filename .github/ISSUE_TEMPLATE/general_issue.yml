@@ -13,7 +13,7 @@ body:
   - type: textarea
     attributes:
       label: Steps to reproduce
-      description: If there are specific steps that need to be taken to reproduce ths issue list them here.
+      description: If there are specific steps that need to be taken to reproduce the issue list them here.
       placeholder: |
         1. Start by doing...
         2. Next do...
@@ -42,10 +42,10 @@ body:
       description: What version of Mekanism are you using?
       options:
         - Current Dev Branch (Manually Compiled)
-        - 10.0.21 (Latest)
-        - 10.0.20
-        - 10.0.19
-        - 10.0.18
+        - 10.0.24 (Latest)
+        - 10.0.23
+        - 10.0.22
+        - 10.0.21
         - Older
     validations:
       required: true

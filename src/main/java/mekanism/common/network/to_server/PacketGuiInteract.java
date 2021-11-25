@@ -1,11 +1,11 @@
 package mekanism.common.network.to_server;
 
 import java.util.UUID;
-import java.util.function.BiConsumer;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.TriConsumer;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
+import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.IMekanismPacket;
@@ -51,10 +51,19 @@ public class PacketGuiInteract implements IMekanismPacket {
     private int entityID;
     private int extra;
 
-    public PacketGuiInteract(GuiInteractionEntity interaction, int entityID) {
+    public PacketGuiInteract(GuiInteractionEntity interaction, Entity entity) {
+        this(interaction, entity, 0);
+    }
+
+    public PacketGuiInteract(GuiInteractionEntity interaction, Entity entity, int extra) {
+        this(interaction, entity.getId(), extra);
+    }
+
+    public PacketGuiInteract(GuiInteractionEntity interaction, int entityID, int extra) {
         this.interactionType = Type.ENTITY;
         this.entityInteraction = interaction;
         this.entityID = entityID;
+        this.extra = extra;
     }
 
     public PacketGuiInteract(GuiInteraction interaction, TileEntity tile) {
@@ -94,7 +103,7 @@ public class PacketGuiInteract implements IMekanismPacket {
             if (interactionType == Type.ENTITY) {
                 Entity entity = player.level.getEntity(entityID);
                 if (entity != null) {
-                    entityInteraction.consume(entity, player);
+                    entityInteraction.consume(entity, player, extra);
                 }
             } else {
                 TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
@@ -115,6 +124,7 @@ public class PacketGuiInteract implements IMekanismPacket {
         if (interactionType == Type.ENTITY) {
             buffer.writeEnum(entityInteraction);
             buffer.writeVarInt(entityID);
+            buffer.writeVarInt(extra);
         } else if (interactionType == Type.INT) {
             buffer.writeEnum(interaction);
             buffer.writeBlockPos(tilePosition);
@@ -129,7 +139,7 @@ public class PacketGuiInteract implements IMekanismPacket {
     public static PacketGuiInteract decode(PacketBuffer buffer) {
         Type type = buffer.readEnum(Type.class);
         if (type == Type.ENTITY) {
-            return new PacketGuiInteract(buffer.readEnum(GuiInteractionEntity.class), buffer.readVarInt());
+            return new PacketGuiInteract(buffer.readEnum(GuiInteractionEntity.class), buffer.readVarInt(), buffer.readVarInt());
         } else if (type == Type.INT) {
             return new PacketGuiInteract(buffer.readEnum(GuiInteraction.class), buffer.readBlockPos(), buffer.readVarInt());
         } else if (type == Type.ITEM) {
@@ -140,6 +150,11 @@ public class PacketGuiInteract implements IMekanismPacket {
     }
 
     public enum GuiInteractionItem {
+        DIGITAL_MINER_INVERSE_REPLACE_ITEM((tile, player, stack) -> {
+            if (tile instanceof TileEntityDigitalMiner) {
+                ((TileEntityDigitalMiner) tile).setInverseReplaceTarget(stack.getItem());
+            }
+        }),
         QIO_REDSTONE_ADAPTER_STACK((tile, player, stack) -> {
             if (tile instanceof TileEntityQIORedstoneAdapter) {
                 ((TileEntityQIORedstoneAdapter) tile).handleStackChange(stack);
@@ -224,6 +239,11 @@ public class PacketGuiInteract implements IMekanismPacket {
         INVERSE_BUTTON((tile, player, extra) -> {
             if (tile instanceof TileEntityDigitalMiner) {
                 ((TileEntityDigitalMiner) tile).toggleInverse();
+            }
+        }),
+        INVERSE_REQUIRES_REPLACEMENT_BUTTON((tile, player, extra) -> {
+            if (tile instanceof TileEntityDigitalMiner) {
+                ((TileEntityDigitalMiner) tile).toggleInverseRequiresReplacement();
             }
         }),
         RESET_BUTTON((tile, player, extra) -> {
@@ -378,7 +398,7 @@ public class PacketGuiInteract implements IMekanismPacket {
     }
 
     public enum GuiInteractionEntity {
-        NEXT_SECURITY_MODE((entity, player) -> {
+        NEXT_SECURITY_MODE((entity, player, extra) -> {
             if (entity instanceof ISecurityObject) {
                 ISecurityObject security = (ISecurityObject) entity;
                 if (security.hasSecurity()) {
@@ -389,16 +409,27 @@ public class PacketGuiInteract implements IMekanismPacket {
                 }
             }
         }),
+        CONTAINER_STOP_TRACKING((entity, player, extra) -> {
+            if (player.containerMenu instanceof MekanismContainer) {
+                ((MekanismContainer) player.containerMenu).stopTracking(extra);
+            }
+        }),
+        CONTAINER_TRACK_SKIN_SELECT((entity, player, extra) -> {
+            if (player.containerMenu instanceof MainRobitContainer) {
+                MainRobitContainer container = (MainRobitContainer) player.containerMenu;
+                container.startTracking(extra, container);
+            }
+        }),
         ;
 
-        private final BiConsumer<Entity, PlayerEntity> consumerForEntity;
+        private final TriConsumer<Entity, PlayerEntity, Integer> consumerForEntity;
 
-        GuiInteractionEntity(BiConsumer<Entity, PlayerEntity> consumerForTile) {
-            this.consumerForEntity = consumerForTile;
+        GuiInteractionEntity(TriConsumer<Entity, PlayerEntity, Integer> consumerForEntity) {
+            this.consumerForEntity = consumerForEntity;
         }
 
-        public void consume(Entity entity, PlayerEntity player) {
-            consumerForEntity.accept(entity, player);
+        public void consume(Entity entity, PlayerEntity player, int extra) {
+            consumerForEntity.accept(entity, player, extra);
         }
     }
 

@@ -77,11 +77,6 @@
           ],
           "name": "mekanism:chemical_dissolution_chamber"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

@@ -43,7 +43,7 @@ public class RenderResizableCuboid {
      */
     public static void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay,
           boolean fakeDisableDiffuse) {
-        //TODO - 10.1: Further attempt to fix z-fighting at larger distances if we make it not render the sides when it is in a solid block
+        //TODO: Further attempt to fix z-fighting at larger distances if we make it not render the sides when it is in a solid block
         // that may improve performance some, but definitely would reduce/remove the majority of remaining z-fighting that is going on
         //Shift it so that the min values are all greater than or equal to zero as the various drawing code
         // has some issues when it comes to handling negative numbers

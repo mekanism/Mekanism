@@ -62,11 +62,6 @@
           ],
           "name": "mekanism:elite_compressing_factory"
         }
-      ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
       ]
     }
   ]

@@ -2,11 +2,13 @@ package mekanism.client.gui.element.progress;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgressInfoHandler;
+import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -21,7 +23,11 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     protected final IProgressInfoHandler handler;
     protected final ProgressType type;
     private ResourceLocation[] recipeCategories;
+    @Nullable
     private ColorDetails colorDetails;
+    @Nullable
+    private BooleanSupplier warningSupplier;
+    private boolean useFullProgressForWarning;
 
     public GuiProgress(IBooleanProgressInfoHandler handler, ProgressType type, IGuiWrapper gui, int x, int y) {
         this((IProgressInfoHandler) handler, type, gui, x, y);
@@ -38,14 +44,26 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         return this;
     }
 
+    //TODO - WARNING SYSTEM: Hook up usage of warnings
+    public GuiProgress warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier) {
+        return warning(type, warningSupplier, true);
+    }
+
+    public GuiProgress warning(@Nonnull WarningType type, @Nonnull BooleanSupplier warningSupplier, boolean useFullProgressForWarning) {
+        this.warningSupplier = gui().trackWarning(type, warningSupplier);
+        //TODO - WARNING SYSTEM: Evaluate if we even want this to be a thing?
+        this.useFullProgressForWarning = useFullProgressForWarning;
+        return this;
+    }
+
     @Override
     public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
             minecraft.textureManager.bind(getResource());
             blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
-            double progress = getProgress();
-            boolean warning = false;//TODO - 10.1: Hook up warnings
+            boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
+            double progress = warning && useFullProgressForWarning ? 1 : getProgress();
             if (type.isVertical()) {
                 int displayInt = (int) (progress * height);
                 if (displayInt > 0) {
@@ -54,7 +72,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
                         innerOffsetY += type.getTextureHeight() - displayInt;
                     }
                     blit(matrix, x, y + innerOffsetY, type.getOverlayX(warning), type.getOverlayY(warning) + innerOffsetY, width, displayInt,
-                          type.getTextureWidth(), type.getTextureHeight(), progress);
+                          type.getTextureWidth(), type.getTextureHeight(), progress, warning);
                 }
             } else {
                 int innerOffsetX = type == ProgressType.BAR ? 1 : 0;
@@ -64,7 +82,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
                         innerOffsetX += type.getTextureWidth() - displayInt;
                     }
                     blit(matrix, x + innerOffsetX, y, type.getOverlayX(warning) + innerOffsetX, type.getOverlayY(warning), displayInt, height,
-                          type.getTextureWidth(), type.getTextureHeight(), progress);
+                          type.getTextureWidth(), type.getTextureHeight(), progress, warning);
                 }
             }
         }
@@ -97,8 +115,10 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         return recipeCategories;
     }
 
-    private void blit(MatrixStack matrixStack, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress) {
-        if (colorDetails == null) {
+    private void blit(MatrixStack matrixStack, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
+          boolean warning) {
+        if (warning || colorDetails == null) {
+            //If we are drawing a warning or don't have any color details just draw it normally
             blit(matrixStack, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
             return;
         }

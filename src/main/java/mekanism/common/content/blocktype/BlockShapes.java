@@ -798,7 +798,7 @@ public final class BlockShapes {
               box(4, 7.99, 1.01, 12, 14.99, 10.01) // glass
         ), ANTIPROTONIC_NUCLEOSYNTHESIZER);
 
-        //TODO - 10.1: Set the porper shapes for the pigment extractor, pigment mixer, and painting machine
+        //TODO - 10.1: Set the proper shapes for the pigment extractor, pigment mixer, and painting machine
         setShape(box(0, 0, 0, 16, 16, 16), PIGMENT_EXTRACTOR);
         setShape(box(0, 0, 0, 16, 32, 16), PIGMENT_MIXER);
         setShape(box(0, 0, 0, 16, 16, 16), PAINTING_MACHINE);

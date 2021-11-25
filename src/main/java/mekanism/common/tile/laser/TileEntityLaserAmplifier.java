@@ -23,8 +23,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
@@ -122,18 +120,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = super.getConfigurationData(player);
-        data.putString(NBTConstants.MIN, minThreshold.toString());
-        data.putString(NBTConstants.MAX, maxThreshold.toString());
-        data.putInt(NBTConstants.TIME, delay);
-        data.putInt(NBTConstants.OUTPUT_MODE, outputMode.ordinal());
-        return data;
-    }
-
-    @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
-        super.setConfigurationData(player, data);
+    protected void loadGeneralPersistentData(CompoundNBT data) {
+        super.loadGeneralPersistentData(data);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MIN, value -> minThreshold = value);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MAX, value -> maxThreshold = value);
         NBTUtils.setIntIfPresent(data, NBTConstants.TIME, value -> delay = value);
@@ -141,23 +129,12 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.MIN, value -> minThreshold = value);
-        NBTUtils.setFloatingLongIfPresent(nbtTags, NBTConstants.MAX, value -> maxThreshold = value);
-        NBTUtils.setIntIfPresent(nbtTags, NBTConstants.TIME, value -> delay = value);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.OUTPUT_MODE, RedstoneOutput::byIndexStatic, mode -> outputMode = mode);
-    }
-
-    @Nonnull
-    @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
-        nbtTags.putString(NBTConstants.MIN, minThreshold.toString());
-        nbtTags.putString(NBTConstants.MAX, maxThreshold.toString());
-        nbtTags.putInt(NBTConstants.TIME, delay);
-        nbtTags.putInt(NBTConstants.OUTPUT_MODE, outputMode.ordinal());
-        return nbtTags;
+    protected void addGeneralPersistentData(CompoundNBT data) {
+        super.addGeneralPersistentData(data);
+        data.putString(NBTConstants.MIN, minThreshold.toString());
+        data.putString(NBTConstants.MAX, maxThreshold.toString());
+        data.putInt(NBTConstants.TIME, delay);
+        data.putInt(NBTConstants.OUTPUT_MODE, outputMode.ordinal());
     }
 
     @Override
@@ -177,7 +154,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
 
     @ComputerMethod
     public FloatingLong getMinThreshold() {
-        return maxThreshold;
+        return minThreshold;
     }
 
     @ComputerMethod

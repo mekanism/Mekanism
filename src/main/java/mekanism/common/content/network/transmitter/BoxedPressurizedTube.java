@@ -32,6 +32,8 @@ import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.content.network.BoxedChemicalNetwork;
+import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
+import mekanism.common.lib.transmitter.CompatibleTransmitterValidator.CompatibleChemicalTransmitterValidator;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.BoxedChemicalAcceptorCache;
@@ -143,9 +145,10 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
             received = connectedAcceptor.extractChemical(ChemicalUtil.copyWithAmount((STACK) bufferWithFallback.getChemicalStack(), availablePull), Action.SIMULATE);
         }
         if (!received.isEmpty() && takeChemical(chemicalType, received, Action.SIMULATE).isEmpty()) {
-            //If we received some chemical and are able to insert it all
-            STACK remainder = takeChemical(chemicalType, received, Action.EXECUTE);
-            connectedAcceptor.extractChemical(ChemicalUtil.copyWithAmount(received, received.getAmount() - remainder.getAmount()), Action.EXECUTE);
+            //If we received some chemical and are able to insert it all, then actually extract it and insert it into our thing.
+            // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
+            // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
+            takeChemical(chemicalType, connectedAcceptor.extractChemical(received, Action.EXECUTE), Action.EXECUTE);
             return true;
         }
         return false;
@@ -217,11 +220,6 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     }
 
     @Override
-    public BoxedChemicalNetwork createEmptyNetwork() {
-        return new BoxedChemicalNetwork();
-    }
-
-    @Override
     public BoxedChemicalNetwork createEmptyNetworkWithID(UUID networkID) {
         return new BoxedChemicalNetwork(networkID);
     }
@@ -232,13 +230,18 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
     }
 
     @Override
-    public boolean isValidTransmitter(Transmitter<?, ?, ?> transmitter) {
-        if (super.isValidTransmitter(transmitter) && transmitter instanceof BoxedPressurizedTube) {
+    public CompatibleTransmitterValidator<BoxedChemicalHandler, BoxedChemicalNetwork, BoxedPressurizedTube> getNewOrphanValidator() {
+        return new CompatibleChemicalTransmitterValidator(this);
+    }
+
+    @Override
+    public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
+        if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof BoxedPressurizedTube) {
+            BoxedPressurizedTube other = (BoxedPressurizedTube) transmitter.getTransmitter();
             BoxedChemical buffer = getBufferWithFallback().getType();
             if (buffer.isEmpty() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
                 buffer = getTransmitterNetwork().lastChemical;
             }
-            BoxedPressurizedTube other = (BoxedPressurizedTube) transmitter;
             BoxedChemical otherBuffer = other.getBufferWithFallback().getType();
             if (otherBuffer.isEmpty() && other.hasTransmitterNetwork() && other.getTransmitterNetwork().getPrevTransferAmount() > 0) {
                 otherBuffer = other.getTransmitterNetwork().lastChemical;

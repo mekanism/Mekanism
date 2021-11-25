@@ -51,7 +51,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
     @Override
     protected void render(TileEntitySPSCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             SPSMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.renderLocation != null && multiblock.getBounds() != null) {
                 BoltRenderer bolts = boltRendererMap.computeIfAbsent(multiblock.inventoryID, mb -> new BoltRenderer());
@@ -126,7 +126,7 @@ public class RenderSPS extends MekanismTileEntityRenderer<TileEntitySPSCasing> {
 
     @Override
     public boolean shouldRenderOffScreen(TileEntitySPSCasing tile) {
-        if (tile.isMaster) {
+        if (tile.isMaster()) {
             SPSMultiblockData multiblock = tile.getMultiblock();
             return multiblock.isFormed() && multiblock.renderLocation != null;
         }

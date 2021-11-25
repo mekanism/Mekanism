@@ -1,8 +1,8 @@
 package mekanism.client.gui.element.tab;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -18,11 +18,11 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiHeatTab extends GuiBiDirectionalTab {
 
+    private static final Map<TempType, ResourceLocation> ICONS = new EnumMap<>(TempType.class);
     private final IInfoHandler infoHandler;
-    private final Map<TempType, ResourceLocation> icons = new Object2ObjectOpenHashMap<>();
 
-    public GuiHeatTab(IInfoHandler handler, IGuiWrapper gui) {
-        super(MekanismUtils.getResource(ResourceType.GUI, "heat_info.png"), gui, -26, 109, 26, 26);
+    public GuiHeatTab(IGuiWrapper gui, IInfoHandler handler) {
+        super(MekanismUtils.getResource(ResourceType.GUI_TAB, "heat_info.png"), gui, -26, 109, 26, 26);
         infoHandler = handler;
     }
 
@@ -35,6 +35,7 @@ public class GuiHeatTab extends GuiBiDirectionalTab {
 
     @Override
     public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        super.renderToolTip(matrix, mouseX, mouseY);
         List<ITextComponent> info = new ArrayList<>(infoHandler.getInfo());
         info.add(MekanismLang.UNIT.translate(MekanismConfig.general.tempUnit.get()));
         displayTooltips(matrix, info, mouseX, mouseY);
@@ -42,8 +43,8 @@ public class GuiHeatTab extends GuiBiDirectionalTab {
 
     @Override
     protected ResourceLocation getResource() {
-        return icons.computeIfAbsent(MekanismConfig.general.tempUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI,
-              "tabs/heat_info_" + type.name().toLowerCase(Locale.ROOT) + ".png"));
+        return ICONS.computeIfAbsent(MekanismConfig.general.tempUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
+              "heat_info_" + type.name().toLowerCase(Locale.ROOT) + ".png"));
     }
 
     @Override

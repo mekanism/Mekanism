@@ -159,7 +159,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     protected void openInventory(@Nonnull PlayerInventory inv) {
         super.openInventory(inv);
-        if (inv.player.level.isClientSide()) {
+        if (isRemote()) {
             Mekanism.packetHandler.sendToServer(PacketGuiItemDataRequest.qioItemViewer());
         }
     }
@@ -240,7 +240,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
             return ((VirtualCraftingOutputSlot) currentSlot).shiftClickSlot(player, hotBarSlots, mainInventorySlots);
         } else if (currentSlot instanceof InventoryContainerSlot) {
-            //Otherwise if we are an inventory container slot (crafting input slots in this case)
+            //Otherwise, if we are an inventory container slot (crafting input slots in this case)
             // use our normal handling to attempt and transfer the contents to the player's inventory
             return super.quickMoveStack(player, slotID);
         }
@@ -258,16 +258,14 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                     ItemStack stackToInsert = slotStack;
                     List<InventoryContainerSlot> craftingGridSlots = getCraftingGridSlots(selectedCraftingGrid);
                     SelectedWindowData windowData = craftingWindow.getWindowData();
-                    //Start by trying to stack it with other things
-                    stackToInsert = insertItem(craftingGridSlots, stackToInsert, true, windowData);
-                    // and if that fails try to insert it into empty slots
-                    stackToInsert = insertItem(craftingGridSlots, stackToInsert, false, windowData);
+                    //Start by trying to stack it with other things and if that fails try to insert it into empty slots
+                    stackToInsert = insertItem(craftingGridSlots, stackToInsert, windowData);
                     if (stackToInsert.getCount() != slotStack.getCount()) {
                         //If something changed, decrease the stack by the amount we inserted,
                         // and return it as a new stack for what is now in the slot
                         return transferSuccess(currentSlot, player, slotStack, stackToInsert);
                     }
-                    //Otherwise if nothing changed, try to transfer into the QIO Frequency
+                    //Otherwise, if nothing changed, try to transfer into the QIO Frequency
                 }
             }
             QIOFrequency frequency = getFrequency();
@@ -324,8 +322,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         cachedInventory.clear();
     }
 
-    public QIOCraftingTransferHelper getTransferHelper(PlayerEntity player, byte selectedCraftingGrid) {
-        return new QIOCraftingTransferHelper(cachedInventory, hotBarSlots, mainInventorySlots, getCraftingWindow(selectedCraftingGrid), player);
+    public QIOCraftingTransferHelper getTransferHelper(PlayerEntity player, QIOCraftingWindow craftingWindow) {
+        return new QIOCraftingTransferHelper(cachedInventory, hotBarSlots, mainInventorySlots, craftingWindow, player);
     }
 
     private void syncItemList() {
@@ -431,8 +429,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     }
 
     public void updateSearch(String queryText) {
-        // searches should only updated on client-side
-        if (!inv.player.level.isClientSide() || itemList == null) {
+        // searches should only be updated on the client-side
+        if (!isRemote() || itemList == null) {
             return;
         }
 

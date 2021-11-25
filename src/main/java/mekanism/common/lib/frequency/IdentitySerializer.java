@@ -17,8 +17,9 @@ public interface IdentitySerializer {
 
         @Override
         public FrequencyIdentity load(CompoundNBT data) {
-            if (!data.getString(NBTConstants.NAME).isEmpty()) {
-                return new FrequencyIdentity(data.getString(NBTConstants.NAME), data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
+            String name = data.getString(NBTConstants.NAME);
+            if (!name.isEmpty()) {
+                return new FrequencyIdentity(name, data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
             }
             return null;
         }
@@ -32,7 +33,7 @@ public interface IdentitySerializer {
         @Override
         public CompoundNBT serialize(FrequencyIdentity data) {
             CompoundNBT tag = new CompoundNBT();
-            tag.putString(NBTConstants.NAME, (String) data.getKey());
+            tag.putString(NBTConstants.NAME, data.getKey().toString());
             tag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, data.isPublic());
             return tag;
         }
@@ -46,8 +47,8 @@ public interface IdentitySerializer {
 
         @Override
         public FrequencyIdentity load(CompoundNBT data) {
-            if (!data.getString(NBTConstants.OWNER_UUID).isEmpty()) {
-                return new FrequencyIdentity(data.getString(NBTConstants.OWNER_UUID), data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
+            if (data.hasUUID(NBTConstants.OWNER_UUID)) {
+                return new FrequencyIdentity(data.getUUID(NBTConstants.OWNER_UUID), data.getBoolean(NBTConstants.PUBLIC_FREQUENCY));
             }
             return null;
         }

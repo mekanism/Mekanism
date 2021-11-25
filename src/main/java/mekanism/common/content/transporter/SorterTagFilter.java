@@ -12,6 +12,14 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
 
     private String tagName;
 
+    public SorterTagFilter() {
+    }
+
+    public SorterTagFilter(SorterTagFilter filter) {
+        super(filter);
+        tagName = filter.tagName;
+    }
+
     @Override
     public Finder getFinder() {
         return Finder.tag(tagName);
@@ -56,10 +64,7 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
 
     @Override
     public SorterTagFilter clone() {
-        SorterTagFilter filter = new SorterTagFilter();
-        copyTo(filter);
-        filter.tagName = tagName;
-        return filter;
+        return new SorterTagFilter(this);
     }
 
     @Override

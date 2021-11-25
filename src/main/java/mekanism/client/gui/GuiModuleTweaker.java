@@ -11,12 +11,10 @@ import mekanism.client.gui.element.scroll.GuiModuleScrollList;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.window.GuiMekaSuitHelmetOptions;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mekanism.common.network.to_server.PacketUpdateInventorySlot;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
@@ -39,16 +37,12 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public void init() {
-        super.init();
-        moduleScreen = addButton(new GuiModuleScreen(this, 138, 20, stack -> {
-            int slotId = menu.slots.get(selected).getSlotIndex();
-            Mekanism.packetHandler.sendToServer(new PacketUpdateInventorySlot(stack, slotId));
-            inventory.player.inventory.setItem(slotId, stack);
-        }));
+    protected void addGuiElements() {
+        super.addGuiElements();
+        moduleScreen = addButton(new GuiModuleScreen(this, 138, 20, () -> menu.slots.get(selected).getSlotIndex()));
         scrollList = addButton(new GuiModuleScrollList(this, 30, 20, 108, 116, () -> getStack(selected), this::onModuleSelected));
         addButton(new GuiElementHolder(this, 30, 136, 108, 18));
-        optionsButton = addButton(new TranslationButton(this, leftPos + 31, topPos + 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
+        optionsButton = addButton(new TranslationButton(this, 31, 137, 106, 16, MekanismLang.BUTTON_OPTIONS, this::openOptions));
         optionsButton.active = false;
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
@@ -78,11 +72,10 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         if (super.keyPressed(key, i, j)) {
             return true;
         }
-
-        if (selected != -1) {
+        if (selected != -1 && (isPreviousButton(key) || isNextButton(key))) {
             int curIndex = -1;
             IntList selectable = new IntArrayList();
-            for (int index = 0; index < menu.slots.size(); index++) {
+            for (int index = 0, slots = menu.slots.size(); index < slots; index++) {
                 if (isValidItem(index)) {
                     selectable.add(index);
                     if (index == selected) {
@@ -90,17 +83,24 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                     }
                 }
             }
-
-            if (key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_LEFT) {
-                curIndex = curIndex == 0 ? curIndex + selectable.size() - 1 : curIndex - 1;
-                select(selectable.getInt(curIndex % selectable.size()));
-                return true;
-            } else if (key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_RIGHT) {
-                select(selectable.getInt((curIndex + 1) % selectable.size()));
-                return true;
+            int targetIndex;
+            if (isPreviousButton(key)) {
+                targetIndex = curIndex == 0 ? selectable.size() - 1 : curIndex - 1;
+            } else {//isNextButton
+                targetIndex = curIndex + 1;
             }
+            select(selectable.getInt(targetIndex % selectable.size()));
+            return true;
         }
         return false;
+    }
+
+    private boolean isPreviousButton(int key) {
+        return key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_LEFT;
+    }
+
+    private boolean isNextButton(int key) {
+        return key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_RIGHT;
     }
 
     @Override

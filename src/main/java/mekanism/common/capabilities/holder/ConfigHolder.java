@@ -39,6 +39,11 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
         }
 
         @Override
+        public boolean equals(Object obj) {
+            return obj == this;
+        }
+
+        @Override
         public String toString() {
             return "No Config";
         }

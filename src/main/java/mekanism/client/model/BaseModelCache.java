@@ -40,6 +40,15 @@ public class BaseModelCache {
         return data;
     }
 
+    public static IBakedModel getBakedModel(ModelBakeEvent evt, ResourceLocation rl) {
+        IBakedModel bakedModel = evt.getModelRegistry().get(rl);
+        if (bakedModel == null) {
+            Mekanism.logger.error("Baked model doesn't exist: {}", rl.toString());
+            return evt.getModelManager().getMissingModel();
+        }
+        return bakedModel;
+    }
+
     public static class ModelData {
 
         protected IModelGeometry<?> model;
@@ -91,11 +100,7 @@ public class BaseModelCache {
         @Override
         protected void reload(ModelBakeEvent evt) {
             super.reload(evt);
-            bakedModel = evt.getModelRegistry().get(rl);
-            if (bakedModel == null) {
-                Mekanism.logger.error("Baked model doesn't exist: {}", rl.toString());
-                bakedModel = evt.getModelManager().getMissingModel();
-            }
+            bakedModel = BaseModelCache.getBakedModel(evt, rl);
             IUnbakedModel unbaked = evt.getModelLoader().getModel(rl);
             if (unbaked instanceof BlockModel) {
                 model = ((BlockModel) unbaked).customData.getCustomGeometry();

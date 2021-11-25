@@ -14,7 +14,7 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
-import mekanism.api.recipes.cache.FluidSlurryToSlurryCachedRecipe;
+import mekanism.api.recipes.cache.chemical.FluidChemicalToChemicalCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
@@ -169,7 +169,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @Nonnull
     @Override
     public CachedRecipe<FluidSlurryToSlurryRecipe> createNewCachedRecipe(@Nonnull FluidSlurryToSlurryRecipe recipe, int cacheIndex) {
-        return new FluidSlurryToSlurryCachedRecipe(recipe, fluidInputHandler, slurryInputHandler, outputHandler)
+        return new FluidChemicalToChemicalCachedRecipe<>(recipe, fluidInputHandler, slurryInputHandler, outputHandler)
               .setCanHolderFunction(() -> MekanismUtils.canFunction(this))
               .setActive(this::setActive)
               .setEnergyRequirements(energyContainer::getEnergyPerTick, energyContainer)

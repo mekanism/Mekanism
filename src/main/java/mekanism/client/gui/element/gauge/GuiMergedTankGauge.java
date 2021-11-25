@@ -62,16 +62,12 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IGasTrac
         if (currentGauge == null) {
             //If all the tanks are currently empty, pass the click event to all of them;
             // if multiple types are somehow stored in the dropper, insertion checks should prevent them from being inserted at the same time
-            fluidGauge.mouseClicked(mouseX, mouseY, button);
-            gasGauge.mouseClicked(mouseX, mouseY, button);
-            infusionGauge.mouseClicked(mouseX, mouseY, button);
-            pigmentGauge.mouseClicked(mouseX, mouseY, button);
-            slurryGauge.mouseClicked(mouseX, mouseY, button);
-        } else {
-            //Otherwise just send the click event to the corresponding gauge
-            currentGauge.mouseClicked(mouseX, mouseY, button);
+            return fluidGauge.mouseClicked(mouseX, mouseY, button) | gasGauge.mouseClicked(mouseX, mouseY, button) |
+                   infusionGauge.mouseClicked(mouseX, mouseY, button) | pigmentGauge.mouseClicked(mouseX, mouseY, button) |
+                   slurryGauge.mouseClicked(mouseX, mouseY, button);
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        //Otherwise, just send the click event to the corresponding gauge
+        return currentGauge.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
