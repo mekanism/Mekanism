@@ -17,7 +17,12 @@ public class VariableHeatCapacitor extends BasicHeatCapacitor {
     private final DoubleSupplier insulationCoefficientSupplier;
 
     public static VariableHeatCapacitor create(double heatCapacity, @Nullable DoubleSupplier ambientTempSupplier, @Nullable IContentsListener listener) {
-        return new VariableHeatCapacitor(heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION, ambientTempSupplier, listener);
+        return create(heatCapacity, () -> HeatAPI.DEFAULT_INVERSE_CONDUCTION, () -> HeatAPI.DEFAULT_INVERSE_INSULATION, ambientTempSupplier, listener);
+    }
+
+    public static VariableHeatCapacitor create(double heatCapacity, DoubleSupplier conductionCoefficient, DoubleSupplier insulationCoefficient,
+          @Nullable DoubleSupplier ambientTempSupplier, @Nullable IContentsListener listener) {
+        return new VariableHeatCapacitor(heatCapacity, conductionCoefficient, insulationCoefficient, ambientTempSupplier, listener);
     }
 
     protected VariableHeatCapacitor(double heatCapacity, DoubleSupplier conductionCoefficient, DoubleSupplier insulationCoefficient,

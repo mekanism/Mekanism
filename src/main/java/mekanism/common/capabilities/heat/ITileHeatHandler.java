@@ -66,13 +66,12 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
         double adjacentTransfer = 0;
         for (Direction side : EnumUtils.DIRECTIONS) {
             IHeatHandler sink = getAdjacent(side);
-            //we use the same heat capacity for all further calculations
-            double heatCapacity = getTotalHeatCapacity(side);
             if (sink != null) {
                 double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
                 double tempToTransfer = (getTotalTemperature(side) - sink.getTotalTemperature()) / invConduction;
-                handleHeat(-tempToTransfer * heatCapacity, side);
-                sink.handleHeat(tempToTransfer * heatCapacity);
+                handleHeat(-tempToTransfer * getTotalHeatCapacity(side), side);
+                //Note: Our sinks in mek are "lazy" but they will update the next tick if needed
+                sink.handleHeat(tempToTransfer * sink.getTotalHeatCapacity());
                 if (!(sink instanceof TileEntityTransmitter) || !TransmissionType.HEAT.checkTransmissionType((TileEntityTransmitter) sink)) {
                     adjacentTransfer += tempToTransfer;
                 }

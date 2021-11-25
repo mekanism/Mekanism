@@ -43,7 +43,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     public ThermodynamicConductor(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.HEAT);
         this.tier = Attribute.getTier(blockProvider, ConductorTier.class);
-        buffer = BasicHeatCapacitor.create(tier.getHeatCapacity(), tier.getInverseConduction(), tier.getInverseConductionInsulation(), ambientTemperature, this);
+        buffer = VariableHeatCapacitor.create(tier.getHeatCapacity(), tier::getInverseConduction, tier::getInverseConductionInsulation, ambientTemperature, this);
         capacitors = Collections.singletonList(buffer);
     }
 

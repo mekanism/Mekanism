@@ -49,7 +49,6 @@ public class HeatAPI {
         if (world == null) {
             return AMBIENT_TEMP;
         }
-        //TODO - 10.1: Do we need to do checks about if the position is loaded (and if the position is in the world?, for example not above max y)
         return getAmbientTemp(world.getBiome(pos).getTemperature(pos));
     }
 
