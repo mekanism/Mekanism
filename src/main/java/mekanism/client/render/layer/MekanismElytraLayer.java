@@ -35,11 +35,11 @@ public class MekanismElytraLayer<T extends LivingEntity, M extends BipedModel<T>
     }
 
     //TODO - 10.1: Uncomment once we have textures, for now just use vanilla's texture
-    /*@Nonnull
+    @Nonnull
     @Override
     public ResourceLocation getElytraTexture(@Nonnull ItemStack stack, @Nonnull T entity) {
         //TODO - 10.1: Have a separate texture for HDPE elytra and the elytra unit
         // Maybe even make the elytra unit have a custom layer with its own rendering logic
         return HDPE_ELYTRA;
-    }*/
+    }
 }
