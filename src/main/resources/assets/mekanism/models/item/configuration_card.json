@@ -2,5 +2,13 @@
     "parent": "minecraft:item/generated",
     "textures": { 
         "layer0": "mekanism:item/configuration_card"
-    }
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "mekanism:encoded": 1
+            },
+            "model": "mekanism:item/configuration_card_encoded"
+        }
+    ]
 }

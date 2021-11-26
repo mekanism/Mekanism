@@ -115,6 +115,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.block.ItemBlockCardboardBox;
@@ -275,6 +276,8 @@ public class ClientRegistration {
                 ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
                 return formula.getInventory(stack) != null && !formula.isInvalid(stack) ? 1 : 0;
             });
+            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATION_CARD, Mekanism.rl("encoded"),
+                  (stack, world, entity) -> ((ItemConfigurationCard) stack.getItem()).hasData(stack) ? 1 : 0);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pull"),
                   (stack, world, entity) -> entity != null && entity.getUseItem() == stack ? (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F : 0);
