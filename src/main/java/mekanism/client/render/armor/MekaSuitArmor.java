@@ -48,6 +48,7 @@ import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
@@ -63,6 +64,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -137,7 +139,7 @@ public class MekaSuitArmor extends CustomArmor {
     private void renderMekaSuit(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
           LivingEntity entity) {
         ArmorQuads armorQuads = cache.getUnchecked(key(entity));
-        render(renderer, matrix, light, overlayLight, hasEffect, armorQuads.getOpaqueMap(), false);
+        render(renderer, matrix, light, overlayLight, hasEffect, entity, armorQuads.getOpaqueMap(), false);
 
         if (type == EquipmentSlotType.CHEST) {
             BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUUID(), id -> new BoltRenderer());
@@ -151,22 +153,22 @@ public class MekaSuitArmor extends CustomArmor {
             }
             //Adjust the matrix so that we render the lightning in the correct spot if the player is crouching
             matrix.pushPose();
-            ModelPos.BODY.translate(this, matrix);
+            ModelPos.BODY.translate(this, matrix, entity);
             boltRenderer.render(partialTicks, matrix, renderer);
             matrix.popPose();
         }
 
-        render(renderer, matrix, light, overlayLight, hasEffect, armorQuads.getTransparentMap(), true);
+        render(renderer, matrix, light, overlayLight, hasEffect, entity, armorQuads.getTransparentMap(), true);
     }
 
-    private void render(IRenderTypeBuffer renderer, MatrixStack matrix, int light, int overlayLight, boolean hasEffect, Map<ModelPos, List<BakedQuad>> quadMap,
-          boolean transparent) {
+    private void render(IRenderTypeBuffer renderer, MatrixStack matrix, int light, int overlayLight, boolean hasEffect, LivingEntity entity,
+          Map<ModelPos, List<BakedQuad>> quadMap, boolean transparent) {
         if (!quadMap.isEmpty()) {
             RenderType renderType = transparent ? RenderType.entityTranslucent(AtlasTexture.LOCATION_BLOCKS) : MekanismRenderType.getMekaSuit();
             IVertexBuilder builder = ItemRenderer.getFoilBufferDirect(renderer, renderType, false, hasEffect);
             for (Map.Entry<ModelPos, List<BakedQuad>> entry : quadMap.entrySet()) {
                 matrix.pushPose();
-                entry.getKey().translate(this, matrix);
+                entry.getKey().translate(this, matrix, entity);
                 MatrixStack.Entry last = matrix.last();
                 for (BakedQuad quad : entry.getValue()) {
                     builder.addVertexData(last, quad, 1, 1, 1, 1, light, overlayLight);
@@ -204,6 +206,11 @@ public class MekaSuitArmor extends CustomArmor {
         LEFT_WING(BASE_TRANSFORM, s -> s.contains("left_wing")),
         RIGHT_WING(BASE_TRANSFORM, s -> s.contains("right_wing"));
 
+        private static final float EXPANDED_WING_X = 1;
+        private static final float EXPANDED_WING_Y = -2.5F;
+        private static final float EXPANDED_WING_Z = 5;
+        private static final float EXPANDED_WING_Y_ROT = 45;
+        private static final float EXPANDED_WING_Z_ROT = 25;
         public static final ModelPos[] VALUES = values();
 
         private final QuadTransformation transform;
@@ -232,7 +239,7 @@ public class MekaSuitArmor extends CustomArmor {
             return null;
         }
 
-        public void translate(MekaSuitArmor armor, MatrixStack matrix) {
+        public void translate(MekaSuitArmor armor, MatrixStack matrix, LivingEntity entity) {
             switch (this) {
                 case HEAD:
                     armor.head.translateAndRotate(matrix);
@@ -254,10 +261,66 @@ public class MekaSuitArmor extends CustomArmor {
                     break;
                 case LEFT_WING:
                 case RIGHT_WING:
-                    armor.body.translateAndRotate(matrix);
-                    //TODO - 10.1: Make it so the wings fan out more when flying?
+                    translateWings(armor, matrix, entity);
                     break;
             }
+        }
+
+        private void translateWings(MekaSuitArmor armor, MatrixStack matrix, LivingEntity entity) {
+            armor.body.translateAndRotate(matrix);
+            float x = 0;
+            float y = 0;
+            float z = 0;
+            float yRot = 0;
+            float zRot = 0;
+            //Note: In theory the entity is always "fall flying" for wing rendering given our conditions
+            // for it rendering, but we validate it just in case.
+            //If the entity is not dive-bombing the ground (at which point the wings will be folded)
+            if (entity.isFallFlying() && entity.xRot < 45) {
+                float scale = 0;
+                // then we check if the entity is not pointing steeply into the sky
+                // if it isn't or if the entity has a lot of movement
+                if (entity.xRot > -45 || entity.getDeltaMovement().y > 1) {
+                    // then we fully expand the wings
+                    scale = 1;
+                } else if (entity.getDeltaMovement().y > 0) {
+                    // otherwise, if the entity is pointing steeply into the sky, and we have a small amount
+                    // of movement (y movement between zero and one) then we partially expand the wings
+                    scale = (float) entity.getDeltaMovement().y;
+                }
+                // if we don't have any upwards momentum, and we are pointing steeply into the sky then we just fold the wings
+                x = EXPANDED_WING_X * scale;
+                y = EXPANDED_WING_Y * scale;
+                z = EXPANDED_WING_Z * scale;
+                yRot = EXPANDED_WING_Y_ROT * scale;
+                zRot = EXPANDED_WING_Z_ROT * scale;
+            }
+            if (entity instanceof AbstractClientPlayerEntity) {
+                //If the entity is a player, then transition the wings gradually to their target position
+                AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) entity;
+                player.elytraRotX = 0;
+                yRot = player.elytraRotY = player.elytraRotY + (yRot - player.elytraRotY) * 0.01F;
+                //Base off of target values
+                float scale = player.elytraRotY / EXPANDED_WING_Y_ROT;
+                x = EXPANDED_WING_X * scale;
+                y = EXPANDED_WING_Y * scale;
+                z = EXPANDED_WING_Z * scale;
+                zRot = player.elytraRotZ = EXPANDED_WING_Z_ROT * scale;
+            }
+            if (this == RIGHT_WING) {
+                //Invert things that need to be inverted for the right wing to mirror it properly
+                x = -x;
+                yRot = -yRot;
+                zRot = -zRot;
+            }
+            matrix.translate(x / 16, y / 16, z / 16);
+            if (yRot != 0.0F) {
+                matrix.mulPose(Vector3f.YP.rotationDegrees(yRot));
+            }
+            if (zRot != 0.0F) {
+                matrix.mulPose(Vector3f.ZP.rotationDegrees(zRot));
+            }
+
         }
     }
 
@@ -304,9 +367,16 @@ public class MekaSuitArmor extends CustomArmor {
 
         // handle mekatool overrides
         if (type == EquipmentSlotType.CHEST && hasMekaTool) {
+            //TODO - 10.1: Should we keep track of if the meka tool is being held in the left hand
+            // and if so ignore pieces of the left model? It probably is worth doing given players
+            // can change which hand is their "main" hand. We also should check if we have any cases
+            // where we may be making assumptions about which hand is the main hand for rendering and
+            // fix them
             for (IModelGeometryPart part : MekanismModelCache.INSTANCE.MEKATOOL.getModel().getParts()) {
                 String name = part.name();
                 if (name.contains(OVERRIDDEN_TAG)) {
+                    //TODO - 10.1: Figure out why the meka tool just adds to an ignore list when the model
+                    // defines quads for the override. Is it intentional that those are not being rendered?
                     ignored.add(processOverrideName(name, "mekatool"));
                 }
             }
