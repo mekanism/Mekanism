@@ -167,33 +167,6 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void renderOverlay(RenderGameOverlayEvent.Pre event) {
-        if (event.getType() == ElementType.ARMOR) {
-            FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
-            for (ItemStack stack : minecraft.player.inventory.armor) {
-                if (stack.getItem() instanceof ItemMekaSuitArmor) {
-                    IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
-                    if (container != null) {
-                        capacity = capacity.plusEqual(container.getMaxEnergy());
-                        stored = stored.plusEqual(container.getEnergy());
-                    }
-                }
-            }
-            if (!capacity.isZero()) {
-                int x = event.getWindow().getGuiScaledWidth() / 2 - 91;
-                int y = event.getWindow().getGuiScaledHeight() - ForgeIngameGui.left_height + 2;
-                int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
-                MatrixStack matrix = event.getMatrixStack();
-                GuiUtils.renderExtendedTexture(matrix, GuiBar.BAR, 2, 2, x, y, 81, 6);
-                minecraft.getTextureManager().bind(POWER_BAR);
-                AbstractGui.blit(matrix, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
-                minecraft.getTextureManager().bind(AbstractGui.GUI_ICONS_LOCATION);
-                ForgeIngameGui.left_height += 8;
-            }
-        }
-    }
-
-    @SubscribeEvent
     public void renderOverlay(RenderGameOverlayEvent.Post event) {
         if (event.getType() == ElementType.HOTBAR) {
             if (!minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
@@ -233,6 +206,28 @@ public class RenderTickHandler {
                 if (minecraft.player.getItemBySlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
                     hudRenderer.renderHUD(matrix, event.getPartialTicks());
                 }
+            }
+        } else if (event.getType() == ElementType.ARMOR) {
+            FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
+            for (ItemStack stack : minecraft.player.inventory.armor) {
+                if (stack.getItem() instanceof ItemMekaSuitArmor) {
+                    IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
+                    if (container != null) {
+                        capacity = capacity.plusEqual(container.getMaxEnergy());
+                        stored = stored.plusEqual(container.getEnergy());
+                    }
+                }
+            }
+            if (!capacity.isZero()) {
+                int x = event.getWindow().getGuiScaledWidth() / 2 - 91;
+                int y = event.getWindow().getGuiScaledHeight() - ForgeIngameGui.left_height + 2;
+                int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
+                MatrixStack matrix = event.getMatrixStack();
+                GuiUtils.renderExtendedTexture(matrix, GuiBar.BAR, 2, 2, x, y, 81, 6);
+                minecraft.getTextureManager().bind(POWER_BAR);
+                AbstractGui.blit(matrix, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
+                minecraft.getTextureManager().bind(AbstractGui.GUI_ICONS_LOCATION);
+                ForgeIngameGui.left_height += 8;
             }
         }
     }
