@@ -47,6 +47,7 @@ import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -62,6 +63,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -107,7 +109,7 @@ public class MekaSuitArmor extends CustomArmor {
         @Override
         @SuppressWarnings("unchecked")
         public ArmorQuads load(@Nonnull QuickHash key) {
-            return createQuads((Object2BooleanMap<ModuleModelSpec>) key.get()[0], (Set<EquipmentSlotType>) key.get()[1], (boolean) key.get()[2]);
+            return createQuads((Object2BooleanMap<ModuleModelSpec>) key.get()[0], (Set<EquipmentSlotType>) key.get()[1], (boolean) key.get()[2], (boolean) key.get()[3]);
         }
     });
 
@@ -324,7 +326,7 @@ public class MekaSuitArmor extends CustomArmor {
         }
     }
 
-    private ArmorQuads createQuads(Object2BooleanMap<ModuleModelSpec> modules, Set<EquipmentSlotType> wornParts, boolean hasMekaTool) {
+    private ArmorQuads createQuads(Object2BooleanMap<ModuleModelSpec> modules, Set<EquipmentSlotType> wornParts, boolean hasMekaToolLeft, boolean hasMekaToolRight) {
         Map<ModelData, Map<ModelPos, Set<String>>> specialQuadsToRender = new Object2ObjectOpenHashMap<>();
         Map<ModelData, Map<ModelPos, Set<String>>> specialLEDQuadsToRender = new Object2ObjectOpenHashMap<>();
         // map of normal model part name to overwritten model part name (i.e. helmet_head_center1 -> override_solar_helmet_helmet_head_center1)
@@ -366,17 +368,14 @@ public class MekaSuitArmor extends CustomArmor {
         }
 
         // handle mekatool overrides
-        if (type == EquipmentSlotType.CHEST && hasMekaTool) {
-            //TODO - 10.1: Should we keep track of if the meka tool is being held in the left hand
-            // and if so ignore pieces of the left model? It probably is worth doing given players
-            // can change which hand is their "main" hand. We also should check if we have any cases
-            // where we may be making assumptions about which hand is the main hand for rendering and
-            // fix them
+        if (type == EquipmentSlotType.CHEST && hasMekaToolRight) {
+            //TODO - 10.1: Make use of hasMekaToolLeft and ignore pieces of the left arm's model?
+            // also make sure to then use a reversed model of the meka tool so that it ends up on
+            // the inside of the arm on the left side third person
             for (IModelGeometryPart part : MekanismModelCache.INSTANCE.MEKATOOL.getModel().getParts()) {
                 String name = part.name();
                 if (name.contains(OVERRIDDEN_TAG)) {
-                    //TODO - 10.1: Figure out why the meka tool just adds to an ignore list when the model
-                    // defines quads for the override. Is it intentional that those are not being rendered?
+                    //Note: We just ignore the pieces here as the override will be rendered as part of the item's model
                     ignored.add(processOverrideName(name, "mekatool"));
                 }
             }
@@ -549,7 +548,6 @@ public class MekaSuitArmor extends CustomArmor {
     public QuickHash key(LivingEntity player) {
         Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlotType> wornParts = EnumSet.noneOf(EquipmentSlotType.class);
-        boolean hasMekaTool = player.getMainHandItem().getItem() instanceof ItemMekaTool;
         IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
         for (EquipmentSlotType slotType : EnumUtils.ARMOR_SLOTS) {
             ItemStack wornItem = player.getItemBySlot(slotType);
@@ -563,7 +561,9 @@ public class MekaSuitArmor extends CustomArmor {
                 }
             }
         }
-        return new QuickHash(modules.isEmpty() ? Object2BooleanMaps.emptyMap() : modules, wornParts.isEmpty() ? Collections.emptySet() : wornParts, hasMekaTool);
+        return new QuickHash(modules.isEmpty() ? Object2BooleanMaps.emptyMap() : modules, wornParts.isEmpty() ? Collections.emptySet() : wornParts,
+              MekanismUtils.getItemInHand(player, HandSide.LEFT).getItem() instanceof ItemMekaTool,
+              MekanismUtils.getItemInHand(player, HandSide.RIGHT).getItem() instanceof ItemMekaTool);
     }
 
     public static class ModuleOBJModelData extends OBJModelData {

@@ -77,6 +77,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -156,6 +157,22 @@ public final class MekanismUtils {
             return registryName.getNamespace();
         }
         return modid;
+    }
+
+    public static ItemStack getItemInHand(LivingEntity entity, HandSide side) {
+        if (entity instanceof PlayerEntity) {
+            return getItemInHand((PlayerEntity) entity, side);
+        } else if (side == HandSide.RIGHT) {
+            return entity.getMainHandItem();
+        }
+        return entity.getOffhandItem();
+    }
+
+    public static ItemStack getItemInHand(PlayerEntity player, HandSide side) {
+        if (player.getMainArm() == side) {
+            return player.getMainHandItem();
+        }
+        return player.getOffhandItem();
     }
 
     /**

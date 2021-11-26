@@ -21,6 +21,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -44,15 +45,16 @@ public class ItemBalloon extends Item {
     @Nonnull
     @Override
     public ActionResult<ItemStack> use(World world, @Nonnull PlayerEntity player, @Nonnull Hand hand) {
+        ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide) {
-            Vector3d pos = new Pos3D(hand == Hand.MAIN_HAND ? -0.4 : 0.4, 0, 0.3).yRot(player.yBodyRot).translate(new Pos3D(player));
+            boolean rightHand = (player.getMainArm() == HandSide.RIGHT) == (hand == Hand.MAIN_HAND);
+            Vector3d pos = new Pos3D(rightHand ? -0.4 : 0.4, 0, 0.3).yRot(player.yBodyRot).translate(new Pos3D(player));
             EntityBalloon balloon = EntityBalloon.create(world, pos.x - 0.5, pos.y - 1.25, pos.z - 0.5, color);
             if (balloon == null) {
-                return new ActionResult<>(ActionResultType.FAIL, player.getItemInHand(hand));
+                return new ActionResult<>(ActionResultType.FAIL, stack);
             }
             world.addFreshEntity(balloon);
         }
-        ItemStack stack = player.getItemInHand(hand);
         if (!player.isCreative()) {
             stack.shrink(1);
         }

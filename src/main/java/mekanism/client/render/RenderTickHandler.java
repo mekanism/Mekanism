@@ -78,6 +78,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -300,13 +301,14 @@ public class RenderTickHandler {
                             ItemStack currentItem = p.getMainHandItem();
                             if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem)) {
                                 Pos3D flameVec;
+                                boolean rightHanded = p.getMainArm() == HandSide.RIGHT;
                                 if (player == p && minecraft.options.getCameraType().isFirstPerson()) {
                                     flameVec = new Pos3D(1, 1, 1)
                                           .multiply(p.getViewVector(event.renderTickTime))
-                                          .yRot(15)
+                                          .yRot(rightHanded ? 15 : -15)
                                           .translate(0, p.getEyeHeight() - 0.1, 0);
                                 } else {
-                                    double flameXCoord = -0.2;
+                                    double flameXCoord = rightHanded ? -0.2 : 0.2;
                                     double flameYCoord = 1;
                                     double flameZCoord = 1.2;
                                     if (p.isCrouching()) {
