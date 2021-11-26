@@ -97,10 +97,6 @@ public class MekaSuitArmor extends CustomArmor {
         registerModule("jetpack", MekanismModules.JETPACK_UNIT, EquipmentSlotType.CHEST);
         registerModule("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlotType.CHEST);
         registerModule("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlotType.CHEST, LivingEntity::isFallFlying);
-        //TODO - 10.1: IMPORTANT something causes extra duped meshes at times and when the meshes render it is rather laggy???
-        // Is there a reason there is multiple, can we get down to one. Easiest way to test is invert the elytra is fall flying check
-        // This seems to happen most often when there are multiple pieces of the meka suit worn
-        //registerModule("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlotType.CHEST, entity -> !entity.isFallFlying());
     }
 
     private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vector3d(-1, 0.5, 0)));
@@ -182,9 +178,16 @@ public class MekaSuitArmor extends CustomArmor {
 
     private static List<BakedQuad> getQuads(ModelData data, Set<String> parts, Set<String> ledParts, @Nullable QuadTransformation transform) {
         Random random = Minecraft.getInstance().level.getRandom();
-        List<BakedQuad> quads = data.bake(new MekaSuitModelConfiguration(parts)).getQuads(null, null, random, EmptyModelData.INSTANCE);
-        List<BakedQuad> ledQuads = data.bake(new MekaSuitModelConfiguration(ledParts)).getQuads(null, null, random, EmptyModelData.INSTANCE);
-        quads.addAll(QuadUtils.transformBakedQuads(ledQuads, QuadTransformation.fullbright));
+        List<BakedQuad> quads = new ArrayList<>();
+        //Note: We need to use a new list to not accidentally pollute the cached bake quads with the LED quads that we match them with
+        // this also means that we can avoid even baking the data against empty part lists entirely
+        if (!parts.isEmpty()) {
+            quads.addAll(data.bake(new MekaSuitModelConfiguration(parts)).getQuads(null, null, random, EmptyModelData.INSTANCE));
+        }
+        if (!ledParts.isEmpty()) {
+            List<BakedQuad> ledQuads = data.bake(new MekaSuitModelConfiguration(ledParts)).getQuads(null, null, random, EmptyModelData.INSTANCE);
+            quads.addAll(QuadUtils.transformBakedQuads(ledQuads, QuadTransformation.fullbright));
+        }
         if (transform != null) {
             quads = QuadUtils.transformBakedQuads(quads, transform);
         }
@@ -316,9 +319,11 @@ public class MekaSuitArmor extends CustomArmor {
             if (!checkEquipment(type, name)) {
                 // skip if it's the wrong equipment type
                 continue;
-            } else if (name.startsWith(EXCLUSIVE_TAG) && wornParts.contains(adjacentType)) {
-                // skip if the part is exclusive and the adjacent part is present
-                continue;
+            } else if (name.startsWith(EXCLUSIVE_TAG)) {
+                if (wornParts.contains(adjacentType)) {
+                    // skip if the part is exclusive and the adjacent part is present
+                    continue;
+                }
             } else if (name.startsWith(SHARED_TAG) && wornParts.contains(adjacentType) && adjacentType.ordinal() > type.ordinal()) {
                 // skip if the part is shared and the shared part already rendered
                 continue;
@@ -369,8 +374,16 @@ public class MekaSuitArmor extends CustomArmor {
         Set<String> transparentRegularQuads = new HashSet<>(), transparentLEDQuads = new HashSet<>();
         parseTransparency(pos, opaqueRegularQuads, transparentRegularQuads, regularQuads);
         parseTransparency(pos, opaqueLEDQuads, transparentLEDQuads, ledQuads);
-        opaqueMap.computeIfAbsent(pos, p -> new ArrayList<>()).addAll(getQuads(modelData, opaqueRegularQuads, opaqueLEDQuads, pos.getTransform()));
-        transparentMap.computeIfAbsent(pos, p -> new ArrayList<>()).addAll(getQuads(modelData, transparentRegularQuads, transparentLEDQuads, pos.getTransform()));
+        addParsedQuads(modelData, pos, opaqueMap, opaqueRegularQuads, opaqueLEDQuads);
+        addParsedQuads(modelData, pos, transparentMap, transparentRegularQuads, transparentLEDQuads);
+    }
+
+    private static void addParsedQuads(ModelData modelData, ModelPos pos, Map<ModelPos, List<BakedQuad>> map, Set<String> quads, Set<String> ledQuads) {
+        //Only add a new entry to our map if we will have any quads. Our getQuads method will return empty if there are no quads
+        List<BakedQuad> bakedQuads = getQuads(modelData, quads, ledQuads, pos.getTransform());
+        if (!bakedQuads.isEmpty()) {
+            map.computeIfAbsent(pos, p -> new ArrayList<>()).addAll(bakedQuads);
+        }
     }
 
     private static void parseTransparency(ModelPos pos, Set<String> opaqueQuads, Set<String> transparentQuads, Map<ModelPos, Set<String>> quads) {
@@ -403,8 +416,8 @@ public class MekaSuitArmor extends CustomArmor {
         private final Map<ModelPos, List<BakedQuad>> transparentQuads;
 
         public ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
-            this.opaqueQuads = opaqueQuads;
-            this.transparentQuads = transparentQuads;
+            this.opaqueQuads = opaqueQuads.isEmpty() ? Collections.emptyMap() : opaqueQuads;
+            this.transparentQuads = transparentQuads.isEmpty() ? Collections.emptyMap() : transparentQuads;
         }
 
         public Map<ModelPos, List<BakedQuad>> getOpaqueMap() {
