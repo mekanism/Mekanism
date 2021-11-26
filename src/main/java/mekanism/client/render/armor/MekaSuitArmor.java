@@ -9,6 +9,7 @@ import com.google.common.collect.Table;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
@@ -23,7 +24,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -96,14 +96,11 @@ public class MekaSuitArmor extends CustomArmor {
         registerModule("solar_helmet", MekanismModules.SOLAR_RECHARGING_UNIT, EquipmentSlotType.HEAD);
         registerModule("jetpack", MekanismModules.JETPACK_UNIT, EquipmentSlotType.CHEST);
         registerModule("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlotType.CHEST);
-        registerModule(MekanismModules.ELYTRA_UNIT, EquipmentSlotType.CHEST, (slot, module) -> new ModuleModelSpec(slot, module, "elytra") {
-            @Override
-            public boolean isActive(LivingEntity entity) {
-                return entity.isFallFlying();
-            }
-        });
+        registerModule("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlotType.CHEST, LivingEntity::isFallFlying);
         //TODO - 10.1: IMPORTANT something causes extra duped meshes at times and when the meshes render it is rather laggy???
-        // Is there a reason there is multiple, can we get down to one
+        // Is there a reason there is multiple, can we get down to one. Easiest way to test is invert the elytra is fall flying check
+        // This seems to happen most often when there are multiple pieces of the meka suit worn
+        //registerModule("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlotType.CHEST, entity -> !entity.isFallFlying());
     }
 
     private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vector3d(-1, 0.5, 0)));
@@ -276,18 +273,15 @@ public class MekaSuitArmor extends CustomArmor {
             Set<String> matchedParts = new HashSet<>();
             for (Object2BooleanMap.Entry<ModuleModelSpec> entry : modules.object2BooleanEntrySet()) {
                 ModuleModelSpec spec = entry.getKey();
-                boolean active = entry.getBooleanValue();
-                for (String name : modelData.getPartsForSpec(spec, active)) {
-                    if (spec.activeStateMatches(name, active)) {
-                        if (name.contains(OVERRIDDEN_TAG)) {
-                            overrides.put(spec.processOverrideName(name), Pair.of(modelData, name));
-                        }
-                        // if this armor unit controls rendering of this module
-                        if (type == spec.slotType) {
-                            // then add the part as one we will need to add to render, this way we can ensure
-                            // we respect any overrides that might be in a later model part
-                            matchedParts.add(name);
-                        }
+                for (String name : modelData.getPartsForSpec(spec, entry.getBooleanValue())) {
+                    if (name.contains(OVERRIDDEN_TAG)) {
+                        overrides.put(spec.processOverrideName(name), Pair.of(modelData, name));
+                    }
+                    // if this armor unit controls rendering of this module
+                    if (type == spec.slotType) {
+                        // then add the part as one we will need to add to render, this way we can ensure
+                        // we respect any overrides that might be in a later model part
+                        matchedParts.add(name);
                     }
                 }
             }
@@ -427,13 +421,13 @@ public class MekaSuitArmor extends CustomArmor {
         private final ModuleData<?> module;
         private final EquipmentSlotType slotType;
         private final String name;
-        private final Predicate<String> modelSpec;
+        private final Predicate<LivingEntity> isActive;
 
-        public ModuleModelSpec(ModuleData<?> module, EquipmentSlotType slotType, String name) {
+        public ModuleModelSpec(ModuleData<?> module, EquipmentSlotType slotType, String name, Predicate<LivingEntity> isActive) {
             this.module = module;
             this.slotType = slotType;
             this.name = name;
-            this.modelSpec = s -> s.contains(this.name + "_");
+            this.isActive = isActive;
         }
 
         /**
@@ -444,15 +438,7 @@ public class MekaSuitArmor extends CustomArmor {
         }
 
         public boolean isActive(LivingEntity entity) {
-            return true;
-        }
-
-        public boolean activeStateMatches(String name, boolean active) {
-            return true;
-        }
-
-        public boolean contains(String s) {
-            return modelSpec.test(s);
+            return isActive.test(entity);
         }
 
         public String processOverrideName(String part) {
@@ -469,19 +455,18 @@ public class MekaSuitArmor extends CustomArmor {
     }
 
     private static void registerModule(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlotType slotType) {
-        registerModule(moduleDataProvider, slotType, (slot, module) -> new ModuleModelSpec(slot, module, name));
+        registerModule(name, moduleDataProvider, slotType, entity -> true);
     }
 
-    private static void registerModule(IModuleDataProvider<?> moduleDataProvider, EquipmentSlotType slotType,
-          BiFunction<ModuleData<?>, EquipmentSlotType, ModuleModelSpec> specCreator) {
+    private static void registerModule(String name, IModuleDataProvider<?> moduleDataProvider, EquipmentSlotType slotType, Predicate<LivingEntity> isActive) {
         ModuleData<?> module = moduleDataProvider.getModuleData();
-        moduleModelSpec.put(slotType, module, specCreator.apply(module, slotType));
+        moduleModelSpec.put(slotType, module, new ModuleModelSpec(module, slotType, name, isActive));
     }
 
     public QuickHash key(LivingEntity player) {
         Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlotType> wornParts = EnumSet.noneOf(EquipmentSlotType.class);
-        boolean hasMekaTool = player.getItemBySlot(EquipmentSlotType.MAINHAND).getItem() instanceof ItemMekaTool;
+        boolean hasMekaTool = player.getMainHandItem().getItem() instanceof ItemMekaTool;
         IModuleHelper moduleHelper = MekanismAPI.getModuleHelper();
         for (EquipmentSlotType slotType : EnumUtils.ARMOR_SLOTS) {
             ItemStack wornItem = player.getItemBySlot(slotType);
@@ -495,7 +480,7 @@ public class MekaSuitArmor extends CustomArmor {
                 }
             }
         }
-        return new QuickHash(modules, wornParts, hasMekaTool);
+        return new QuickHash(modules.isEmpty() ? Object2BooleanMaps.emptyMap() : modules, wornParts.isEmpty() ? Collections.emptySet() : wornParts, hasMekaTool);
     }
 
     public static class ModuleOBJModelData extends OBJModelData {
