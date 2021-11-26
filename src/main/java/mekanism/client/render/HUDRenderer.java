@@ -31,6 +31,7 @@ public class HUDRenderer {
     private static final ResourceLocation CHEST_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_chest.png");
     private static final ResourceLocation LEGS_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_leggings.png");
     private static final ResourceLocation BOOTS_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_boots.png");
+    private static final ResourceLocation TOOL_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekatool.png");
 
     private static final ResourceLocation COMPASS = MekanismUtils.getResource(ResourceType.GUI, "compass.png");
 
@@ -83,16 +84,18 @@ public class HUDRenderer {
         matrix.pushPose();
         matrix.translate(10, 10, 0);
         int posX = 0;
-        posX += renderMekaSuitEnergyIcon(matrix, posX, color, HEAD_ICON, EquipmentSlotType.HEAD);
-        posX += renderMekaSuitEnergyIcon(matrix, posX, color, CHEST_ICON, EquipmentSlotType.CHEST);
-        posX += renderMekaSuitEnergyIcon(matrix, posX, color, LEGS_ICON, EquipmentSlotType.LEGS);
-        renderMekaSuitEnergyIcon(matrix, posX, color, BOOTS_ICON, EquipmentSlotType.FEET);
+        posX += renderEnergyIcon(matrix, posX, color, HEAD_ICON, EquipmentSlotType.HEAD);
+        posX += renderEnergyIcon(matrix, posX, color, CHEST_ICON, EquipmentSlotType.CHEST);
+        posX += renderEnergyIcon(matrix, posX, color, LEGS_ICON, EquipmentSlotType.LEGS);
+        posX += renderEnergyIcon(matrix, posX, color, BOOTS_ICON, EquipmentSlotType.FEET);
+        posX += renderEnergyIcon(matrix, posX, color, TOOL_ICON, EquipmentSlotType.MAINHAND);
+        renderEnergyIcon(matrix, posX, color, TOOL_ICON, EquipmentSlotType.OFFHAND);
         matrix.popPose();
     }
 
-    private int renderMekaSuitEnergyIcon(MatrixStack matrix, int posX, int color, ResourceLocation icon, EquipmentSlotType slot) {
+    private int renderEnergyIcon(MatrixStack matrix, int posX, int color, ResourceLocation icon, EquipmentSlotType slot) {
         ItemStack stack = getStack(slot);
-        if (stack.getItem() instanceof ItemMekaSuitArmor) {
+        if (stack.getItem() instanceof ItemMekaSuitArmor || stack.getItem() instanceof ItemMekaTool) {
             renderHUDElement(matrix, posX, 0, MekanismAPI.getModuleHelper().hudElementPercent(icon, StorageUtils.getEnergyRatio(stack)), color, false);
             return 48;
         }
