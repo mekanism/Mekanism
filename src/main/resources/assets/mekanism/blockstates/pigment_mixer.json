@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,active=false": {
+      "model": "mekanism:block/pigment_mixer"
+    },
+    "facing=south,active=false": {
+      "model": "mekanism:block/pigment_mixer",
+      "y": 180
+    },
+    "facing=east,active=false": {
+      "model": "mekanism:block/pigment_mixer",
+      "y": 90
+    },
+    "facing=west,active=false": {
+      "model": "mekanism:block/pigment_mixer",
+      "y": -90
+    },
+    "facing=north,active=true": {
+      "model": "mekanism:block/pigment_mixer_active"
+    },
+    "facing=south,active=true": {
+      "model": "mekanism:block/pigment_mixer_active",
+      "y": 180
+    },
+    "facing=east,active=true": {
+      "model": "mekanism:block/pigment_mixer_active",
+      "y": 90
+    },
+    "facing=west,active=true": {
+      "model": "mekanism:block/pigment_mixer_active",
+      "y": -90
+    }
+  }
+}

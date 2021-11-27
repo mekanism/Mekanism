@@ -1,0 +1,6 @@
+{
+  "parent": "mekanism:block/pigment_mixer",
+  "textures": {
+	"base": "mekanism:block/pigment_mixer/base_active"
+  }
+}
