@@ -50,7 +50,6 @@ public final class BlockShapes {
     public static final VoxelShape[] SUPERCHARGED_COIL = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] ANTIPROTONIC_NUCLEOSYNTHESIZER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] PIGMENT_MIXER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-    public static final VoxelShape[] PAINTING_MACHINE = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
     static {
         setShape(VoxelShapeUtils.rotate(VoxelShapeUtils.combine(
@@ -808,8 +807,6 @@ public final class BlockShapes {
               box(4, 4, 15.01, 12, 12, 16.01), // port_back
               box(7, 18, 6, 9, 27, 8) // mixer_rod
         ), PIGMENT_MIXER);
-        //TODO - 10.1: Set the proper shapes for the painting machine
-        setShape(box(0, 0, 0, 16, 16, 16), PAINTING_MACHINE);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations
         setShape(box(2, 0, 2, 14, 16, 14), FLUID_TANK);

@@ -519,7 +519,6 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.PAINTING_MACHINE)
           .withEnergyConfig(MekanismConfig.usage.paintingMachine, MekanismConfig.storage.paintingMachine)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
-          .withCustomShape(BlockShapes.PAINTING_MACHINE)
           .withComputerSupport("paintingMachine")
           .build();
 

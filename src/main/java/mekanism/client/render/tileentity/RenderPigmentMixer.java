@@ -30,7 +30,20 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         // which has no shaft
         if (tile.getActive()) {
             matrix.pushPose();
-            matrix.translate(6 / 16F, 0, 7 / 16F);
+            switch (tile.getDirection()) {
+                case NORTH:
+                    matrix.translate(7 / 16F, 0, 6 / 16F);
+                    break;
+                case SOUTH:
+                    matrix.translate(7 / 16F, 0, 0.5F);
+                    break;
+                case WEST:
+                    matrix.translate(6 / 16F, 0, 7 / 16F);
+                    break;
+                case EAST:
+                    matrix.translate(0.5F, 0, 7 / 16F);
+                    break;
+            }
             float shift = 1 / 16F;
             matrix.translate(shift, 0, shift);
             matrix.mulPose(Vector3f.YN.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * SHAFT_SPEED % 360));
