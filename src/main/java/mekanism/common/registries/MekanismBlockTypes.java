@@ -500,7 +500,6 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.PIGMENT_EXTRACTOR)
           .withEnergyConfig(MekanismConfig.usage.pigmentExtractor, MekanismConfig.storage.pigmentExtractor)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
-          .withCustomShape(BlockShapes.PIGMENT_EXTRACTOR)
           .withComputerSupport("pigmentExtractor")
           .build();
     // Pigment Mixer

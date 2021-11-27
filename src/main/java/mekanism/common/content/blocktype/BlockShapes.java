@@ -49,7 +49,6 @@ public final class BlockShapes {
     public static final VoxelShape[] ISOTOPIC_CENTRIFUGE = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] SUPERCHARGED_COIL = new VoxelShape[EnumUtils.DIRECTIONS.length];
     public static final VoxelShape[] ANTIPROTONIC_NUCLEOSYNTHESIZER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
-    public static final VoxelShape[] PIGMENT_EXTRACTOR = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] PIGMENT_MIXER = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
     public static final VoxelShape[] PAINTING_MACHINE = new VoxelShape[EnumUtils.HORIZONTAL_DIRECTIONS.length];
 
@@ -798,8 +797,6 @@ public final class BlockShapes {
               box(4, 7.99, 1.01, 12, 14.99, 10.01) // glass
         ), ANTIPROTONIC_NUCLEOSYNTHESIZER);
 
-        //TODO - 10.1: Set the proper shapes for the pigment extractor, pigment mixer, and painting machine
-        setShape(box(0, 0, 0, 16, 16, 16), PIGMENT_EXTRACTOR);
         setShape(VoxelShapeUtils.combine(
               box(0, 0, 0, 16, 16, 16), // base
               box(5, 27, 4, 11, 28, 16), // mixer_rod_support
@@ -811,6 +808,7 @@ public final class BlockShapes {
               box(4, 4, 15.01, 12, 12, 16.01), // port_back
               box(7, 18, 6, 9, 27, 8) // mixer_rod
         ), PIGMENT_MIXER);
+        //TODO - 10.1: Set the proper shapes for the painting machine
         setShape(box(0, 0, 0, 16, 16, 16), PAINTING_MACHINE);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations
