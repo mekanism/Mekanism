@@ -800,7 +800,17 @@ public final class BlockShapes {
 
         //TODO - 10.1: Set the proper shapes for the pigment extractor, pigment mixer, and painting machine
         setShape(box(0, 0, 0, 16, 16, 16), PIGMENT_EXTRACTOR);
-        setShape(box(0, 0, 0, 16, 32, 16), PIGMENT_MIXER);
+        setShape(VoxelShapeUtils.combine(
+              box(0, 0, 0, 16, 16, 16), // base
+              box(5, 27, 4, 11, 28, 16), // mixer_rod_support
+              box(6, 28, 5, 10, 30, 9), // mixer_motor
+              box(1, 16, 1, 15, 18, 13), // basin_lid
+              box(2, 16, 12, 14, 20, 16), // basin_hinge
+              box(6, 20, 13, 10, 30, 15), // back_electronics_box
+              box(5, 30, 4, 11, 32, 16), // top_electronics_box
+              box(4, 4, 15.01, 12, 12, 16.01), // port_back
+              box(7, 18, 6, 9, 27, 8) // mixer_rod
+        ), PIGMENT_MIXER);
         setShape(box(0, 0, 0, 16, 16, 16), PAINTING_MACHINE);
 
         //TODO: Don't bother rotating the shape, it is the same for all rotations
