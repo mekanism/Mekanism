@@ -17,7 +17,7 @@ import net.minecraft.util.math.vector.Vector3f;
 @ParametersAreNonnullByDefault
 public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPigmentMixer> {
 
-    private static final float BLADE_SPEED = 5F;
+    private static final float SHAFT_SPEED = 5F;
 
     public RenderPigmentMixer(TileEntityRendererDispatcher renderer) {
         super(renderer);
@@ -30,14 +30,14 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         // which has no shaft
         if (tile.getActive()) {
             matrix.pushPose();
-            matrix.translate(7 / 16F, 0, 0.5F);
+            matrix.translate(6 / 16F, 0, 7 / 16F);
             float shift = 1 / 16F;
             matrix.translate(shift, 0, shift);
-            matrix.mulPose(Vector3f.YN.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * BLADE_SPEED % 360));
+            matrix.mulPose(Vector3f.YN.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * SHAFT_SPEED % 360));
             matrix.translate(-shift, 0, -shift);
             Entry entry = matrix.last();
             IVertexBuilder buffer = renderer.getBuffer(Atlases.solidBlockSheet());
-            for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_ROD.getBakedModel().getQuads(null, null, tile.getLevel().random)) {
+            for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel().getQuads(null, null, tile.getLevel().random)) {
                 buffer.addVertexData(entry, quad, 1F, 1F, 1F, 1F, light, overlayLight);
             }
             matrix.popPose();

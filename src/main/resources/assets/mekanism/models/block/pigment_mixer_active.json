@@ -22,7 +22,7 @@
 			}
 		},
 		{
-			"name": "mixer_rod_support",
+			"name": "mixer_shaft_support",
 			"from": [5, 27, 4],
 			"to": [11, 28, 16],
 			"faces": {
