@@ -26,6 +26,8 @@ public class MekanismModelCache extends BaseModelCache {
     public final ModuleOBJModelData MEKASUIT_MODULES = register(Mekanism.rl("models/entity/mekasuit_modules.obj"), ModuleOBJModelData::new);
     public final OBJModelData MEKATOOL = registerOBJ(Mekanism.rl("models/entity/mekatool.obj"));
 
+    public final JSONModelData LIQUIFIER_BLADE = registerJSON(Mekanism.rl("block/liquifier_blade"));
+    public final JSONModelData PIGMENT_MIXER_ROD = registerJSON(Mekanism.rl("block/pigment_mixer_rod"));
     public final JSONModelData[] QIO_DRIVES = new JSONModelData[DriveStatus.STATUSES.length];
     private final Map<ResourceLocation, JSONModelData> ROBIT_SKINS = new HashMap<>();
     private IBakedModel BASE_ROBIT;

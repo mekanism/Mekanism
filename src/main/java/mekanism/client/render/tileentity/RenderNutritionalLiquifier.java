@@ -12,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -68,13 +69,10 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             matrix.mulPose(Vector3f.YP.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * BLADE_SPEED % 360));
             matrix.translate(-0.5, -0.5, -0.5);
         }
-        if (MekanismRenderer.liquifierBlade != null) {
-            List<BakedQuad> quads = MekanismRenderer.liquifierBlade.getQuads(null, null, tile.getLevel().random);
-            Entry entry = matrix.last();
-            IVertexBuilder buffer = renderer.getBuffer(Atlases.solidBlockSheet());
-            for (BakedQuad quad : quads) {
-                buffer.addVertexData(entry, quad, 1F, 1F, 1F, 1F, light, overlayLight);
-            }
+        Entry entry = matrix.last();
+        IVertexBuilder bladeBuffer = renderer.getBuffer(Atlases.solidBlockSheet());
+        for (BakedQuad quad : MekanismModelCache.INSTANCE.LIQUIFIER_BLADE.getBakedModel().getQuads(null, null, tile.getLevel().random)) {
+            bladeBuffer.addVertexData(entry, quad, 1F, 1F, 1F, 1F, light, overlayLight);
         }
         matrix.popPose();
         //Render the item and particle
