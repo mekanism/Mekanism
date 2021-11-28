@@ -375,29 +375,36 @@ public class RenderTickHandler {
                         actualState = world.getBlockState(actualPos);
                     }
                 }
-                if (Attribute.has(actualState.getBlock(), AttributeCustomSelectionBox.class)) {
+                AttributeCustomSelectionBox customSelectionBox = Attribute.get(actualState.getBlock(), AttributeCustomSelectionBox.class);
+                if (customSelectionBox != null) {
                     WireFrameRenderer renderWireFrame = null;
-                    if (Attribute.get(actualState.getBlock(), AttributeCustomSelectionBox.class).isJavaModel()) {
+                    if (customSelectionBox.isJavaModel()) {
                         //If we use a TER to render the wire frame, grab the tile
                         TileEntity tile = WorldUtils.getTileEntity(world, actualPos);
                         if (tile != null) {
                             TileEntityRenderer<TileEntity> tileRenderer = TileEntityRendererDispatcher.instance.getRenderer(tile);
                             if (tileRenderer instanceof IWireFrameRenderer) {
-                                renderWireFrame = (buffer, matrixStack, red, green, blue, alpha) ->
-                                      ((IWireFrameRenderer) tileRenderer).renderWireFrame(tile, event.getPartialTicks(), matrixStack, buffer, red, green, blue, alpha);
+                                IWireFrameRenderer wireFrameRenderer = (IWireFrameRenderer) tileRenderer;
+                                if (wireFrameRenderer.hasSelectionBox(actualState)) {
+                                    renderWireFrame = (buffer, matrixStack, state, red, green, blue, alpha) -> {
+                                        if (wireFrameRenderer.isCombined()) {
+                                            renderQuadsWireFrame(state, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
+                                        }
+                                        wireFrameRenderer.renderWireFrame(tile, event.getPartialTicks(), matrixStack, buffer, red, green, blue, alpha);
+                                    };
+                                }
                             }
                         }
                     } else {
-                        //Otherwise skip getting the tile and just grab the model
-                        BlockState finalActualState = actualState;
-                        renderWireFrame = (buffer, matrixStack, red, green, blue, alpha) ->
-                              renderQuadsWireFrame(finalActualState, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
+                        //Otherwise, skip getting the tile and just grab the model
+                        renderWireFrame = (buffer, matrixStack, state, red, green, blue, alpha) ->
+                              renderQuadsWireFrame(state, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
                     }
                     if (renderWireFrame != null) {
                         matrix.pushPose();
                         Vector3d viewPosition = info.getPosition();
                         matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
-                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, 0, 0, 0, 0.4F);
+                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, actualState, 0, 0, 0, 0.4F);
                         matrix.popPose();
                         shouldCancel = true;
                     }
@@ -445,8 +452,7 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderQuadsWireFrame(BlockState state, IVertexBuilder buffer, Matrix4f matrix, Random rand, float red, float green, float blue,
-          float alpha) {
+    private void renderQuadsWireFrame(BlockState state, IVertexBuilder buffer, Matrix4f matrix, Random rand, float red, float green, float blue, float alpha) {
         List<Vertex[]> allVertices = cachedWireFrames.computeIfAbsent(state, s -> {
             IBakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(s);
             //TODO: Eventually we may want to add support for Model data
@@ -458,6 +464,10 @@ public class RenderTickHandler {
             QuadUtils.unpack(bakedModel.getQuads(s, null, rand, modelData)).stream().map(Quad::getVertices).forEach(vertices::add);
             return vertices;
         });
+        renderVertexWireFrame(allVertices, buffer, matrix, red, green, blue, alpha);
+    }
+
+    public static void renderVertexWireFrame(List<Vertex[]> allVertices, IVertexBuilder buffer, Matrix4f matrix, float red, float green, float blue, float alpha) {
         for (Vertex[] vertices : allVertices) {
             Vector4f vertex = getVertex(matrix, vertices[0]);
             Vector3d normal = vertices[0].getNormal();
@@ -538,6 +548,6 @@ public class RenderTickHandler {
     @FunctionalInterface
     private interface WireFrameRenderer {
 
-        void render(IVertexBuilder buffer, MatrixStack matrix, float red, float green, float blue, float alpha);
+        void render(IVertexBuilder buffer, MatrixStack matrix, BlockState state, float red, float green, float blue, float alpha);
     }
 }

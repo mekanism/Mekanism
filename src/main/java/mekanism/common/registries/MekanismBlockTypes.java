@@ -510,6 +510,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.pigmentMixer, MekanismConfig.storage.pigmentMixer)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
           .withCustomShape(BlockShapes.PIGMENT_MIXER)
+          .with(AttributeCustomSelectionBox.JAVA)
           .withComputerSupport("pigmentMixer")
           .build();
     // Painting Machine
