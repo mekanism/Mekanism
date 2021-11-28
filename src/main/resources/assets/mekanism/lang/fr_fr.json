@@ -305,6 +305,7 @@
   "configuration.mekanism.no_eject": "Ne peut pas éjecter",
   "configuration.mekanism.no_eject.tooltip": "L'éjection automatique n'est pas supportée, l'extraction manuelle peut rester possible.",
   "configuration.mekanism.side": "Configuration des faces",
+  "configuration.mekanism.side.clear": "Effacer la configuration des faces (règle tous les côtés à aucun)",
   "configuration.mekanism.slots": "Emplacements",
   "configuration.mekanism.strict_input": "Entrée stricte",
   "configuration.mekanism.strict_input.enabled": "Entrée stricte (%s)",
