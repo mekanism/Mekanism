@@ -74,6 +74,7 @@ mekanism_version=1.16.5-10.0.24.453
   * dizzyd  
   * unpairedbracket
   * [CyanideX](https://twitter.com/theCyanideX) (artwork)
+  * [Ridanisaurus](https://twitter.com/Ridanisaurus) (artwork)
   * Cheapshot (artwork)
   * Archadia (artwork)
   * micdoodle
