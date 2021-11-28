@@ -33,7 +33,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     public static AttributeEnergy validateBlock(TileEntityMekanism tile) {
         Objects.requireNonNull(tile, "Tile cannot be null");
-        Block block = tile.getBlockType().getBlock();
+        Block block = tile.getBlockType();
         if (!Attribute.has(block, AttributeEnergy.class)) {
             throw new IllegalArgumentException("Block provider must be an electric block");
         }

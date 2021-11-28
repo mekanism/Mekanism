@@ -198,11 +198,8 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @Override
-    protected void dumpRadiation() {
-        if (tier != ChemicalTankTier.CREATIVE) {
-            //Don't dump radioactive materials from creative chemical tanks
-            super.dumpRadiation();
-        }
+    protected boolean shouldDumpRadiation() {
+        return tier != ChemicalTankTier.CREATIVE;
     }
 
     @Override

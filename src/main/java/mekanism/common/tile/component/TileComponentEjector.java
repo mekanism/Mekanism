@@ -302,14 +302,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void addToUpdateTag(CompoundNBT updateTag) {
-    }
-
-    @Override
-    public void readFromUpdateTag(CompoundNBT updateTag) {
-    }
-
-    @Override
     public List<ISyncableData> getSpecificSyncableData() {
         List<ISyncableData> list = new ArrayList<>();
         list.add(SyncableBoolean.create(this::hasStrictInput, input -> strictInput = input));

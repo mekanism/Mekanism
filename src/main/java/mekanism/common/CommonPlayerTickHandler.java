@@ -144,7 +144,7 @@ public class CommonPlayerTickHandler {
 
         if (isScubaMaskOn(player, chest)) {
             ItemScubaTank tank = (ItemScubaTank) chest.getItem();
-            final int max = 300;
+            final int max = player.getMaxAirSupply();
             tank.useGas(chest, 1);
             GasStack received = tank.useGas(chest, max - player.getAirSupply());
             if (!received.isEmpty()) {

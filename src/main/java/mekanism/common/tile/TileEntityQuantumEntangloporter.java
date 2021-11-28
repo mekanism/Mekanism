@@ -203,6 +203,12 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         return false;
     }
 
+    @Override
+    protected boolean shouldDumpRadiation() {
+        //Note: The QE doesn't support radioactive substances but override this method anyways
+        return false;
+    }
+
     @Nullable
     @Override
     public IHeatHandler getAdjacent(Direction side) {

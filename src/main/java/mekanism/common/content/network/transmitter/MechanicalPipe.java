@@ -47,7 +47,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     public MechanicalPipe(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.FLUID);
-        this.tier = Attribute.getTier(blockProvider.getBlock(), PipeTier.class);
+        this.tier = Attribute.getTier(blockProvider, PipeTier.class);
         //TODO: If we make fluids support longs then adjust this
         buffer = BasicFluidTank.create(MathUtils.clampToInt(getCapacity()), BasicFluidTank.alwaysFalse, BasicFluidTank.alwaysTrue, this);
         tanks = Collections.singletonList(buffer);

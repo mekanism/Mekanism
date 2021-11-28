@@ -87,9 +87,9 @@ public class AttributeStateFacing implements AttributeState {
 
     @Override
     public BlockState copyStateData(BlockState oldState, BlockState newState) {
-        if (Attribute.has(newState.getBlock(), AttributeStateFacing.class)) {
-            DirectionProperty oldFacingProperty = Attribute.get(oldState.getBlock(), AttributeStateFacing.class).getFacingProperty();
-            newState = newState.setValue(Attribute.get(newState.getBlock(), AttributeStateFacing.class).getFacingProperty(), oldState.getValue(oldFacingProperty));
+        if (Attribute.has(newState, AttributeStateFacing.class)) {
+            DirectionProperty oldFacingProperty = Attribute.get(oldState, AttributeStateFacing.class).getFacingProperty();
+            newState = newState.setValue(Attribute.get(newState, AttributeStateFacing.class).getFacingProperty(), oldState.getValue(oldFacingProperty));
         }
         return newState;
     }

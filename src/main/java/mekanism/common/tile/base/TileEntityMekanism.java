@@ -99,6 +99,7 @@ import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileActive;
 import mekanism.common.tile.interfaces.ITileDirectional;
+import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.ITileUpgradable;
@@ -140,7 +141,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional, IConfigCardAccess,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
       ITrackableContainer, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile,
-      IComputerTile {
+      IComputerTile, ITileRadioactive {
 
     /**
      * The players currently using this block.
@@ -203,6 +204,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Variables for handling IGasTile
     private final GasHandlerManager gasHandlerManager;
+    private float radiationScale;
     //End variables IGasTile
 
     //Variables for handling IInfusionTile
@@ -484,7 +486,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
 
-            NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(blockProvider.getBlock(), AttributeGui.class).getProvider(this), worldPosition);
+            NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(getBlockType(), AttributeGui.class).getProvider(this), worldPosition);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
@@ -518,6 +520,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 }
             }
             onUpdateServer();
+            updateRadiationScale();
+            //TODO - 10.1: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
             if (persists(SubstanceType.HEAT)) {
                 // update heat after server tick as we now have simulate changes
                 // we use persists, as only one reference should update
@@ -557,15 +561,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (isRemote() && hasSound()) {
             updateSound();
         }
-        if (!isRemote() && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+        if (!isRemote() && MekanismAPI.getRadiationManager().isRadiationEnabled() && shouldDumpRadiation()) {
             //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
-            dumpRadiation();
+            // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
+            MekanismAPI.getRadiationManager().dumpRadiation(getTileCoord(), getGasTanks(null), false);
         }
-    }
-
-    protected void dumpRadiation() {
-        //We handle clearing radioactive contents later in drop calculation due to when things are written to NBT
-        MekanismAPI.getRadiationManager().dumpRadiation(getTileCoord(), getGasTanks(null), false);
     }
 
     @Override
@@ -748,6 +748,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.addToUpdateTag(updateTag);
         }
+        updateTag.putFloat(NBTConstants.RADIATION, radiationScale);
         return updateTag;
     }
 
@@ -757,6 +758,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.readFromUpdateTag(tag);
         }
+        radiationScale = tag.getFloat(NBTConstants.RADIATION);
     }
 
     public void onNeighborChange(Block block, BlockPos neighborPos) {
@@ -879,7 +881,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public Set<Upgrade> getSupportedUpgrade() {
         if (supportsUpgrades()) {
-            return Attribute.get(blockProvider.getBlock(), AttributeUpgradeSupport.class).getSupportedUpgrades();
+            return Attribute.get(getBlockType(), AttributeUpgradeSupport.class).getSupportedUpgrades();
         }
         return Collections.emptySet();
     }
@@ -951,6 +953,28 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public GasHandlerManager getGasManager() {
         return gasHandlerManager;
+    }
+
+    protected boolean shouldDumpRadiation() {
+        return true;
+    }
+
+    /**
+     * @apiNote Only call on server.
+     */
+    private void updateRadiationScale() {
+        if (shouldDumpRadiation()) {
+            float scale = ITileRadioactive.calculateRadiationScale(getGasTanks(null));
+            if (Math.abs(scale - radiationScale) > 0.05F) {
+                radiationScale = scale;
+                sendUpdatePacket();
+            }
+        }
+    }
+
+    @Override
+    public float getRadiationScale() {
+        return MekanismAPI.getRadiationManager().isRadiationEnabled() ? radiationScale : 0;
     }
     //End methods IGasTile
 

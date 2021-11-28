@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,6 +21,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
+import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntitySecurityDesk;
@@ -30,6 +32,7 @@ import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.tile.interfaces.ISustainedInventory;
+import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
@@ -364,7 +367,32 @@ public abstract class BlockMekanism extends Block {
      */
     protected float getDestroyProgress(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
           @Nullable TileEntity tile) {
-        return super.getDestroyProgress(state, player, world, pos);
+        //Call super variant of player relative hardness to get default
+        float speed = super.getDestroyProgress(state, player, world, pos);
+        if (tile instanceof ITileRadioactive && ((ITileRadioactive) tile).getRadiationScale() > 0) {
+            //Our tile has some radioactive substance in it; slow down breaking it
+            return speed / 5F;
+        }
+        return speed;
+    }
+
+    @Override
+    public void animateTick(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Random random) {
+        super.animateTick(state, world, pos, random);
+        TileEntity tile = WorldUtils.getTileEntity(world, pos);
+        if (tile instanceof ITileRadioactive) {
+            int count = ((ITileRadioactive) tile).getRadiationParticleCount();
+            if (count > 0) {
+                //Update count to be randomized but store it instead of calculating our max number each time we loop
+                count = random.nextInt(count);
+                for (int i = 0; i < count; i++) {
+                    double randX = pos.getX() - 0.1 + random.nextDouble() * 1.2;
+                    double randY = pos.getY() - 0.1 + random.nextDouble() * 1.2;
+                    double randZ = pos.getZ() - 0.1 + random.nextDouble() * 1.2;
+                    world.addParticle(MekanismParticleTypes.RADIATION.getParticleType(), randX, randY, randZ, 0, 0, 0);
+                }
+            }
+        }
     }
 
     @Override

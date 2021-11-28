@@ -42,7 +42,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
 
     public UniversalCable(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.ENERGY);
-        this.tier = Attribute.getTier(blockProvider.getBlock(), CableTier.class);
+        this.tier = Attribute.getTier(blockProvider, CableTier.class);
         buffer = BasicEnergyContainer.create(getCapacityAsFloatingLong(), BasicEnergyContainer.alwaysFalse, BasicEnergyContainer.alwaysTrue, this);
         energyContainers = Collections.singletonList(buffer);
     }

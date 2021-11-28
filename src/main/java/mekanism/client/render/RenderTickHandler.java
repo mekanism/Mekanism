@@ -375,7 +375,7 @@ public class RenderTickHandler {
                         actualState = world.getBlockState(actualPos);
                     }
                 }
-                AttributeCustomSelectionBox customSelectionBox = Attribute.get(actualState.getBlock(), AttributeCustomSelectionBox.class);
+                AttributeCustomSelectionBox customSelectionBox = Attribute.get(actualState, AttributeCustomSelectionBox.class);
                 if (customSelectionBox != null) {
                     WireFrameRenderer renderWireFrame = null;
                     if (customSelectionBox.isJavaModel()) {

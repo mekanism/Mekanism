@@ -5,14 +5,17 @@ import java.util.List;
 import java.util.function.BiFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.gas.IGasTank;
+import mekanism.api.chemical.gas.attribute.GasAttributes.Radiation;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
+import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
@@ -36,12 +39,13 @@ import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 
-public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile {
+public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
 
     private final GasHandlerManager gasHandlerManager;
     private final InfusionHandlerManager infusionHandlerManager;
@@ -127,6 +131,34 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             }
             return tankFunction.apply(tube, direction);
         };
+    }
+
+    @Override
+    public float getRadiationScale() {
+        if (MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+            BoxedPressurizedTube tube = getTransmitter();
+            if (isRemote()) {
+                if (tube.hasTransmitterNetwork()) {
+                    BoxedChemicalNetwork network = tube.getTransmitterNetwork();
+                    if (!network.lastChemical.isEmpty() && !network.isTankEmpty() && network.lastChemical.getChemical().has(Radiation.class)) {
+                        //Note: This may act as full when the network isn't actually full if there is radioactive stuff
+                        // going through it, but it shouldn't matter too much
+                        return network.currentScale;
+                    }
+                }
+            } else {
+                IGasTank gasTank = tube.getGasTank();
+                if (!gasTank.isEmpty() && gasTank.getStack().has(Radiation.class)) {
+                    return gasTank.getStored() / (float) gasTank.getCapacity();
+                }
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public int getRadiationParticleCount() {
+        return MathUtils.clampToInt(3 * getRadiationScale());
     }
 
     private List<IGasTank> getGasTanks(@Nullable Direction side) {

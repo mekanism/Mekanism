@@ -34,8 +34,6 @@ import net.minecraft.world.World;
 
 public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism implements IConfigurable {
 
-    private static final float TOLERANCE = 0.05F;
-
     private long lastProcessTick;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded", "getFilledPercentage"})
     private StackedWasteBarrel gasTank;
@@ -70,12 +68,10 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             if (getActive()) {
                 ChemicalUtil.emit(Collections.singleton(Direction.DOWN), gasTank, this);
             }
-
-            float scale = getGasScale();
-            if (Math.abs(scale - prevScale) > TOLERANCE) {
-                sendUpdatePacket();
-                prevScale = scale;
-            }
+            //Note: We don't need to do any checking here if the packet needs due to capacity changing as we do it
+            // in TileentityMekanism after this method is called. And given radioactive waste barrels can only contain
+            // radioactive substances the check for radiation scale also will work for syncing capacity for purposes
+            // of when the client sneak right-clicks on the barrel
         }
     }
 
@@ -83,8 +79,8 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
         return gasTank;
     }
 
-    public float getGasScale() {
-        return (float) (gasTank.getStored() / (double) gasTank.getCapacity());
+    public double getGasScale() {
+        return gasTank.getStored() / (double) gasTank.getCapacity();
     }
 
     public GasStack getGas() {

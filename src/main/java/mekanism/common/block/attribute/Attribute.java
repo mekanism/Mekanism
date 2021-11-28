@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
@@ -21,8 +22,20 @@ public interface Attribute {
     default void adjustProperties(AbstractBlock.Properties props) {
     }
 
+    static boolean has(BlockState state, Class<? extends Attribute> type) {
+        return has(state.getBlock(), type);
+    }
+
     static boolean has(Block block, Class<? extends Attribute> type) {
         return block instanceof ITypeBlock && ((ITypeBlock) block).getType().has(type);
+    }
+
+    static <T extends Attribute> T get(BlockState state, Class<T> type) {
+        return get(state.getBlock(), type);
+    }
+
+    static <T extends Attribute> T get(IBlockProvider blockProvider, Class<T> type) {
+        return get(blockProvider.getBlock(), type);
     }
 
     static <T extends Attribute> T get(Block block, Class<T> type) {
@@ -48,25 +61,30 @@ public interface Attribute {
 
     @Nullable
     static Direction getFacing(BlockState state) {
-        AttributeStateFacing attr = get(state.getBlock(), AttributeStateFacing.class);
+        AttributeStateFacing attr = get(state, AttributeStateFacing.class);
         return attr == null ? null : attr.getDirection(state);
     }
 
     @Nullable
     static BlockState setFacing(BlockState state, Direction facing) {
-        AttributeStateFacing attr = get(state.getBlock(), AttributeStateFacing.class);
+        AttributeStateFacing attr = get(state, AttributeStateFacing.class);
         return attr == null ? null : attr.setDirection(state, facing);
     }
 
     static boolean isActive(BlockState state) {
-        AttributeStateActive attr = get(state.getBlock(), AttributeStateActive.class);
+        AttributeStateActive attr = get(state, AttributeStateActive.class);
         return attr != null && attr.isActive(state);
     }
 
     @Nonnull
     static BlockState setActive(BlockState state, boolean active) {
-        AttributeStateActive attr = get(state.getBlock(), AttributeStateActive.class);
+        AttributeStateActive attr = get(state, AttributeStateActive.class);
         return attr == null ? state : attr.setActive(state, active);
+    }
+
+    @Nullable
+    static <TIER extends ITier> TIER getTier(IBlockProvider blockProvider, Class<TIER> tierClass) {
+        return getTier(blockProvider.getBlock(), tierClass);
     }
 
     @Nullable

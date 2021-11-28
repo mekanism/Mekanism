@@ -23,7 +23,6 @@ import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
-import mekanism.common.block.prefab.BlockFactoryMachine.BlockFactory;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
@@ -107,8 +106,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     protected TileEntityFactory(IBlockProvider blockProvider) {
         super(blockProvider);
-        BlockFactory<?> factoryBlock = (BlockFactory<?>) blockProvider.getBlock();
-        type = Attribute.get(factoryBlock, AttributeFactoryType.class).getFactoryType();
+        type = Attribute.get(blockProvider, AttributeFactoryType.class).getFactoryType();
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();

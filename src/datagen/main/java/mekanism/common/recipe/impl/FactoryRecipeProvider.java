@@ -52,6 +52,6 @@ class FactoryRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.CIRCUIT, circuitTag)
               .key(Pattern.INGOT, ingotTag)
               .key(Pattern.ALLOY, alloyTag)
-              .build(consumer, Mekanism.rl(basePath + Attribute.get(factory.getBlock(), AttributeFactoryType.class).getFactoryType().getRegistryNameComponent()));
+              .build(consumer, Mekanism.rl(basePath + Attribute.get(factory, AttributeFactoryType.class).getFactoryType().getRegistryNameComponent()));
     }
 }

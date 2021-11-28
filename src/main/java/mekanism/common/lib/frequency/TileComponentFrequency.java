@@ -274,14 +274,6 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    @Override
-    public void addToUpdateTag(CompoundNBT updateTag) {
-    }
-
-    @Override
-    public void readFromUpdateTag(CompoundNBT updateTag) {
-    }
-
     private static class FrequencyTrackingData {
 
         private final boolean needsContainerSync;
