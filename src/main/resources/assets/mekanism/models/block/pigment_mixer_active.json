@@ -2,6 +2,7 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
+		"particle": "mekanism:block/pigment_mixer/base_active",
 		"base": "mekanism:block/pigment_mixer/base_active",
 		"details": "mekanism:block/pigment_mixer/details"
 	},

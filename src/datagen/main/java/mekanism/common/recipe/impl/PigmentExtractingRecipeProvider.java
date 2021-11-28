@@ -12,8 +12,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registries.MekanismPigments;
+import net.minecraft.block.BannerBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
@@ -24,6 +26,7 @@ import net.minecraftforge.common.Tags;
 public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
 
     public static final long DYE_RATE = 256;
+    private static final long BANNER_RATE = DYE_RATE / 4;//64
     private static final long CONCRETE_POWDER_RATE = DYE_RATE / 8;//32
     //Concrete shares a rate with terracotta
     private static final long CONCRETE_RATE = CONCRETE_POWDER_RATE * 3 / 4;//24
@@ -206,11 +209,17 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         for (Map.Entry<EnumColor, PigmentRegistryObject<Pigment>> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
             EnumColor color = entry.getKey();
             IPigmentProvider pigment = entry.getValue();
-            if (color.hasDyeName()) {
+            DyeColor dye = color.getDyeColor();
+            if (dye != null) {
                 ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-                      ItemStackIngredient.from(color.getDyeTag()),
+                      ItemStackIngredient.from(dye.getTag()),
                       pigment.getStack(DYE_RATE)
                 ).build(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
+                //TODO: Eventually we may want to consider taking patterns into account
+                ItemStackToChemicalRecipeBuilder.pigmentExtracting(
+                      ItemStackIngredient.from(BannerBlock.byColor(dye)),
+                      pigment.getStack(BANNER_RATE)
+                ).build(consumer, Mekanism.rl(basePath + "banner/" + color.getRegistryPrefix()));
                 addExtractionRecipe(consumer, color, CONCRETE, pigment, CONCRETE_RATE, basePath + "concrete/");
                 addExtractionRecipe(consumer, color, CONCRETE_POWDER, pigment, CONCRETE_POWDER_RATE, basePath + "concrete_powder/");
                 addExtractionRecipe(consumer, color, CARPETS, pigment, CARPET_RATE, basePath + "carpet/");

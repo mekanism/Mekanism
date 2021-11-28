@@ -169,6 +169,7 @@ public class MekanismTags {
         public static final INamedTag<Item> COLORABLE_TERRACOTTA = tag("colorable/terracotta");
         public static final INamedTag<Item> COLORABLE_CONCRETE = tag("colorable/concrete");
         public static final INamedTag<Item> COLORABLE_CONCRETE_POWDER = tag("colorable/concrete_powder");
+        public static final INamedTag<Item> COLORABLE_BANNERS = tag("colorable/banners");
 
         private static INamedTag<Item> forgeTag(String name) {
             return ItemTags.bind("forge:" + name);

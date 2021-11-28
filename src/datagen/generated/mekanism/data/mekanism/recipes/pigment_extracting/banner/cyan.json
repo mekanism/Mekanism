@@ -1,0 +1,12 @@
+{
+  "type": "mekanism:pigment_extracting",
+  "input": {
+    "ingredient": {
+      "item": "minecraft:cyan_banner"
+    }
+  },
+  "output": {
+    "pigment": "mekanism:cyan",
+    "amount": 64
+  }
+}

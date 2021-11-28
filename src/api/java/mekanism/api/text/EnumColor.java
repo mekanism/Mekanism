@@ -1,6 +1,7 @@
 package mekanism.api.text;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.MathUtils;
 import net.minecraft.block.material.MaterialColor;
@@ -22,14 +23,14 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     DARK_BLUE("\u00a71", APILang.COLOR_DARK_BLUE, "Blue", "blue", new int[]{54, 107, 208}, DyeColor.BLUE),
     DARK_GREEN("\u00a72", APILang.COLOR_DARK_GREEN, "Green", "green", new int[]{89, 193, 95}, DyeColor.GREEN),
     DARK_AQUA("\u00a73", APILang.COLOR_DARK_AQUA, "Cyan", "cyan", new int[]{0, 243, 208}, DyeColor.CYAN),
-    DARK_RED("\u00a74", APILang.COLOR_DARK_RED, "Dark Red", "dark_red", new int[]{201, 7, 31}, MaterialColor.NETHER, Tags.Items.DYES_RED, false),
+    DARK_RED("\u00a74", APILang.COLOR_DARK_RED, "Dark Red", "dark_red", new int[]{201, 7, 31}, MaterialColor.NETHER, Tags.Items.DYES_RED, null),
     PURPLE("\u00a75", APILang.COLOR_PURPLE, "Purple", "purple", new int[]{164, 96, 217}, DyeColor.PURPLE),
     ORANGE("\u00a76", APILang.COLOR_ORANGE, "Orange", "orange", new int[]{255, 161, 96}, DyeColor.ORANGE),
     GRAY("\u00a77", APILang.COLOR_GRAY, "Light Gray", "light_gray", new int[]{207, 207, 207}, DyeColor.LIGHT_GRAY),
     DARK_GRAY("\u00a78", APILang.COLOR_DARK_GRAY, "Gray", "gray", new int[]{122, 122, 122}, DyeColor.GRAY),
     INDIGO("\u00a79", APILang.COLOR_INDIGO, "Light Blue", "light_blue", new int[]{85, 158, 255}, DyeColor.LIGHT_BLUE),
     BRIGHT_GREEN("\u00a7a", APILang.COLOR_BRIGHT_GREEN, "Lime", "lime", new int[]{117, 255, 137}, DyeColor.LIME),
-    AQUA("\u00a7b", APILang.COLOR_AQUA, "Aqua", "aqua", new int[]{48, 255, 249}, MaterialColor.COLOR_LIGHT_BLUE, Tags.Items.DYES_LIGHT_BLUE, false),
+    AQUA("\u00a7b", APILang.COLOR_AQUA, "Aqua", "aqua", new int[]{48, 255, 249}, MaterialColor.COLOR_LIGHT_BLUE, Tags.Items.DYES_LIGHT_BLUE, null),
     RED("\u00a7c", APILang.COLOR_RED, "Red", "red", new int[]{255, 56, 60}, DyeColor.RED),
     PINK("\u00a7d", APILang.COLOR_PINK, "Magenta", "magenta", new int[]{213, 94, 203}, DyeColor.MAGENTA),
     YELLOW("\u00a7e", APILang.COLOR_YELLOW, "Yellow", "yellow", new int[]{255, 221, 79}, DyeColor.YELLOW),
@@ -49,22 +50,21 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     private final APILang langEntry;
     private final String englishName;
     private final String registryPrefix;
-    //TODO - 1.17: Potentially make getDyeTag nullable, and just use that for seeing if we have a corresponding dye
-    // Alternatively maybe we want to just have it keep track of a nullable dye color and we can get the tag from there
-    private final boolean hasCorrespondingDye;
+    @Nullable
+    private final DyeColor dyeColor;
     private final MaterialColor mapColor;
     private final ITag<Item> dyeTag;
 
     EnumColor(String s, APILang langEntry, String englishName, String registryPrefix, int[] rgbCode, DyeColor dyeColor) {
-        this(s, langEntry, englishName, registryPrefix, rgbCode, dyeColor.getMaterialColor(), dyeColor.getTag(), true);
+        this(s, langEntry, englishName, registryPrefix, rgbCode, dyeColor.getMaterialColor(), dyeColor.getTag(), dyeColor);
     }
 
     EnumColor(String code, APILang langEntry, String englishName, String registryPrefix, int[] rgbCode, MaterialColor mapColor, ITag<Item> dyeTag,
-          boolean hasCorrespondingDye) {
+          @Nullable DyeColor dyeColor) {
         this.code = code;
         this.langEntry = langEntry;
         this.englishName = englishName;
-        this.hasCorrespondingDye = hasCorrespondingDye;
+        this.dyeColor = dyeColor;
         this.registryPrefix = registryPrefix;
         setColorFromAtlas(rgbCode);
         this.mapColor = mapColor;
@@ -95,14 +95,22 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     /**
      * Gets the item tag that corresponds to the dye this color corresponds to.
      */
+    @Deprecated//TODO - 1.17: Remove this
     public ITag<Item> getDyeTag() {
-        //TODO - 1.17: Make this nullable and replace hasDyeName with just null checking this
         return dyeTag;
     }
 
-    @Deprecated
+    @Deprecated//TODO - 1.17: Remove this
     public boolean hasDyeName() {
-        return hasCorrespondingDye;
+        return dyeColor != null;
+    }
+
+    /**
+     * Gets the corresponding dye color or {@code null} if there isn't one.
+     */
+    @Nullable
+    public DyeColor getDyeColor() {
+        return dyeColor;
     }
 
     /**

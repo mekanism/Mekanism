@@ -452,10 +452,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismSounds.NUTRITIONAL_LIQUIFIER, "Nutrients liquified");
         add(MekanismSounds.INDUSTRIAL_ALARM, "Alarm sounds");
         add(MekanismSounds.ANTIPROTONIC_NUCLEOSYNTHESIZER, "Nucleosynthesizer hums");
-        //TODO - 10.1: Re-evaluate the subtitles for the three new pigment based machines after we actually have sounds for them
         add(MekanismSounds.PIGMENT_EXTRACTOR, "Pigment extractor extracts");
-        add(MekanismSounds.PIGMENT_MIXER, "Pigment mixer slushes");
-        add(MekanismSounds.PAINTING_MACHINE, "Painting machine imbues");
+        add(MekanismSounds.PIGMENT_MIXER, "Pigment mixer sloshes");
+        add(MekanismSounds.PAINTING_MACHINE, "Painting machine sprays");
         add(MekanismSounds.SPS, "SPS hums");
         //Gear
         add(MekanismSounds.FLAMETHROWER_IDLE, "Flamethrower hisses");

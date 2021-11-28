@@ -3,6 +3,7 @@ package mekanism.common.recipe.impl;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
@@ -13,8 +14,11 @@ import mekanism.common.recipe.ingredient.IngredientWithout;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.EnumUtils;
+import net.minecraft.block.BannerBlock;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -70,6 +74,8 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE, eightAtATime, PigmentExtractingRecipeProvider.CONCRETE, basePath + "concrete/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CONCRETE_POWDER, eightAtATime, PigmentExtractingRecipeProvider.CONCRETE_POWDER,
               basePath + "concrete_powder/");
+        //TODO: Eventually we may want to consider taking patterns into account
+        addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BANNERS, oneAtATime, BannerBlock::byColor, basePath + "banner/");
     }
 
     private static void addDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
@@ -98,6 +104,15 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
               PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               new ItemStack(dye)
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
+    }
+
+    private static void addRecoloringRecipes(Consumer<IFinishedRecipe> consumer, ITag<Item> input, long rate, Function<DyeColor, IItemProvider> output, String basePath) {
+        for (EnumColor color : EnumUtils.COLORS) {
+            DyeColor dye = color.getDyeColor();
+            if (dye != null) {
+                addRecoloringRecipe(consumer, color, input, output.apply(dye), rate, basePath);
+            }
+        }
     }
 
     private static void addRecoloringRecipes(Consumer<IFinishedRecipe> consumer, ITag<Item> input, long rate, Map<EnumColor, IItemProvider> outputs, String basePath) {

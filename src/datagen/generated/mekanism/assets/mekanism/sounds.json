@@ -152,6 +152,24 @@
       "mekanism:tile/antiprotonic_nucleosynthesizer"
     ]
   },
+  "tile.machine.painting_machine": {
+    "subtitle": "sound_event.mekanism.tile.machine.painting_machine",
+    "sounds": [
+      "mekanism:tile/painting_machine"
+    ]
+  },
+  "tile.machine.pigment_extractor": {
+    "subtitle": "sound_event.mekanism.tile.machine.pigment_extractor",
+    "sounds": [
+      "mekanism:tile/pigment_extractor"
+    ]
+  },
+  "tile.machine.pigment_mixer": {
+    "subtitle": "sound_event.mekanism.tile.machine.pigment_mixer",
+    "sounds": [
+      "mekanism:tile/pigment_mixer"
+    ]
+  },
   "tile.machine.sps": {
     "subtitle": "sound_event.mekanism.tile.machine.sps",
     "sounds": [

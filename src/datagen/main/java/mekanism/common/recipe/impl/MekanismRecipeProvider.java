@@ -1153,6 +1153,39 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.CONSTANT, Items.BOWL)
               .build(consumer);
+        //Pigment Extractor
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PIGMENT_EXTRACTOR)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.REDSTONE, Pattern.CIRCUIT, Pattern.REDSTONE),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.STEEL_CASING, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.REDSTONE, Pattern.CIRCUIT, Pattern.REDSTONE))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              .key(Pattern.CONSTANT, Items.FLINT)
+              .build(consumer);
+        //Pigment Mixer
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PIGMENT_MIXER)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.STEEL_CASING, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_REINFORCED)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.CONSTANT, MekanismItems.HDPE_ROD)
+              .build(consumer);
+        //Painting Machine
+        ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.PAINTING_MACHINE)
+              .pattern(RecipePattern.createPattern(
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
+                    TripleLine.of(Pattern.CONSTANT, Pattern.STEEL_CASING, Pattern.CONSTANT),
+                    TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
+              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
+              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
+              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
+              .key(Pattern.CONSTANT, MekanismItems.DYE_BASE)
+              .build(consumer);
         //Modification Station
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.MODIFICATION_STATION)
               .pattern(RecipePattern.createPattern(

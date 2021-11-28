@@ -70,7 +70,7 @@ public class ToolsLangProvider extends BaseLanguageProvider {
         add(shield, name);
         //Add names for all the bannered overlay types
         for (EnumColor color : EnumUtils.COLORS) {
-            if (color.hasDyeName()) {
+            if (color.getDyeColor() != null) {
                 add(shield.getTranslationKey() + "." + color.getRegistryPrefix(), color.getEnglishName() + " " + name);
             }
         }

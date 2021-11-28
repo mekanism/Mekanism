@@ -37,9 +37,8 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -108,16 +107,16 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         EnumColor color = result.getItem().getColor();
         String colorString = color.getRegistryPrefix();
         IngredientWithout recolorInput = IngredientWithout.create(Items.BALLOONS, result);
-        if (color.hasDyeName()) {
-            ITag<Item> dye = color.getDyeTag();
+        DyeColor dye = color.getDyeColor();
+        if (dye != null) {
             ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 2)
                   .addIngredient(Tags.Items.LEATHER)
                   .addIngredient(Tags.Items.STRING)
-                  .addIngredient(dye)
+                  .addIngredient(dye.getTag())
                   .build(consumer, MekanismAdditions.rl(basePath + colorString));
             ExtendedShapelessRecipeBuilder.shapelessRecipe(result)
                   .addIngredient(recolorInput)
-                  .addIngredient(dye)
+                  .addIngredient(dye.getTag())
                   .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
@@ -135,14 +134,14 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
 
     private void registerGlowPanel(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
         EnumColor color = result.getBlock().getColor();
-        if (color.hasDyeName()) {
-            ITag<Item> dye = color.getDyeTag();
+        DyeColor dye = color.getDyeColor();
+        if (dye != null) {
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 2)
                   .pattern(GLOW_PANEL)
                   .key(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
                   .key(GLASS_PANES_CHAR, Tags.Items.GLASS_PANES)
                   .key(Pattern.GLOWSTONE, Tags.Items.DUSTS_GLOWSTONE)
-                  .key(Pattern.DYE, dye)
+                  .key(Pattern.DYE, dye.getTag())
                   .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         }
         PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.GLOW_PANELS, color, basePath);
