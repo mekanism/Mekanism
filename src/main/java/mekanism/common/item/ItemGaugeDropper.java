@@ -18,6 +18,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -57,6 +58,10 @@ public class ItemGaugeDropper extends Item {
             //TODO: Technically doesn't support things where the color is part of the texture such as lava
             // for chemicals it is supported via allowing people to override getColorRepresentation in their
             // chemicals
+            if (fluidStack.getFluid().isSame(Fluids.LAVA)) {
+                //Special case lava
+                return 0xFFDB6B19;
+            }
             return fluidStack.getFluid().getAttributes().getColor(fluidStack);
         }
         return ChemicalUtil.getRGBDurabilityForDisplay(stack);
