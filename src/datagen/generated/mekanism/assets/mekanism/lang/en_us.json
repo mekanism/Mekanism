@@ -305,6 +305,7 @@
   "configuration.mekanism.no_eject": "Can't Eject",
   "configuration.mekanism.no_eject.tooltip": "Auto-eject is not supported, manual extraction may still be possible.",
   "configuration.mekanism.side": "Side Config",
+  "configuration.mekanism.side.clear": "Clear Side Config (sets all sides to none)",
   "configuration.mekanism.slots": "Slots",
   "configuration.mekanism.strict_input": "Strict Input",
   "configuration.mekanism.strict_input.enabled": "Strict Input (%s)",

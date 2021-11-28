@@ -264,6 +264,7 @@ public enum MekanismLang implements ILangEntry {
     //Configuration
     TRANSPORTER_CONFIG("configuration", "transporter"),
     SIDE_CONFIG("configuration", "side"),
+    SIDE_CONFIG_CLEAR("configuration", "side.clear"),
     STRICT_INPUT("configuration", "strict_input"),
     STRICT_INPUT_ENABLED("configuration", "strict_input.enabled"),
     CONFIG_TYPE("configuration", "config_type"),

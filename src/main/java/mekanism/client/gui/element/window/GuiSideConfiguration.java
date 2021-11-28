@@ -65,7 +65,11 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
             configTabs.add(tab);
         }
         ejectButton = addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 6, 14, getButtonLocation("auto_eject"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(this.tile.getBlockPos(), currentType)), getOnHover(MekanismLang.AUTO_EJECT)));
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.EJECT, this.tile.getBlockPos(), currentType)),
+              getOnHover(MekanismLang.AUTO_EJECT)));
+        addChild(new MekanismImageButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"),
+              () -> Mekanism.packetHandler.sendToServer(new PacketConfigurationUpdate(ConfigurationPacket.CLEAR_ALL, this.tile.getBlockPos(), currentType)),
+              getOnHover(MekanismLang.SIDE_CONFIG_CLEAR)));
         addSideDataButton(RelativeSide.BOTTOM, 71, 74);
         addSideDataButton(RelativeSide.TOP, 71, 44);
         addSideDataButton(RelativeSide.FRONT, 71, 59);

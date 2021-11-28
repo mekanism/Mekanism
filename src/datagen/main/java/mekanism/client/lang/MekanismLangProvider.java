@@ -763,6 +763,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Configuration
         add(MekanismLang.TRANSPORTER_CONFIG, "Transporter Config");
         add(MekanismLang.SIDE_CONFIG, "Side Config");
+        add(MekanismLang.SIDE_CONFIG_CLEAR, "Clear Side Config (sets all sides to none)");
         add(MekanismLang.STRICT_INPUT, "Strict Input");
         add(MekanismLang.STRICT_INPUT_ENABLED, "Strict Input (%s)");
         add(MekanismLang.CONFIG_TYPE, "%s Config");

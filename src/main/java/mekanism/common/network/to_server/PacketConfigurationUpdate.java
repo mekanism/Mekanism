@@ -9,6 +9,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,8 +26,8 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
     private RelativeSide inputSide;
     private int clickType;
 
-    public PacketConfigurationUpdate(BlockPos pos, TransmissionType trans) {
-        packetType = ConfigurationPacket.EJECT;
+    public PacketConfigurationUpdate(@Nonnull ConfigurationPacket type, BlockPos pos, TransmissionType trans) {
+        packetType = type;
         this.pos = pos;
         transmission = trans;
     }
@@ -45,7 +46,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
     public PacketConfigurationUpdate(@Nonnull ConfigurationPacket type, BlockPos pos, int click, RelativeSide inputSide, TransmissionType trans) {
         packetType = type;
         this.pos = pos;
-        if (packetType == ConfigurationPacket.EJECT) {
+        if (packetType == ConfigurationPacket.EJECT || packetType == ConfigurationPacket.CLEAR_ALL) {
             transmission = trans;
         } else if (packetType == ConfigurationPacket.EJECT_COLOR) {
             clickType = click;
@@ -73,6 +74,17 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
                 if (info != null) {
                     info.setEjecting(!info.isEjecting());
                     WorldUtils.saveChunk(tile);
+                }
+            } else if (packetType == ConfigurationPacket.CLEAR_ALL) {
+                TileComponentConfig configComponent = config.getConfig();
+                ConfigInfo info = configComponent.getConfig(transmission);
+                if (info != null) {
+                    for (RelativeSide side : EnumUtils.SIDES) {
+                        if (info.isSideEnabled(side) && info.getDataType(side) != DataType.NONE) {
+                            info.setDataType(DataType.NONE, side);
+                            configComponent.sideChanged(transmission, side);
+                        }
+                    }
                 }
             } else if (packetType == ConfigurationPacket.SIDE_DATA) {
                 TileComponentConfig configComponent = config.getConfig();
@@ -122,7 +134,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
     public void encode(PacketBuffer buffer) {
         buffer.writeEnum(packetType);
         buffer.writeBlockPos(pos);
-        if (packetType == ConfigurationPacket.EJECT) {
+        if (packetType == ConfigurationPacket.EJECT || packetType == ConfigurationPacket.CLEAR_ALL) {
             buffer.writeEnum(transmission);
         } else if (packetType == ConfigurationPacket.SIDE_DATA) {
             buffer.writeVarInt(clickType);
@@ -142,7 +154,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
         int clickType = 0;
         RelativeSide inputSide = null;
         TransmissionType transmission = null;
-        if (packetType == ConfigurationPacket.EJECT) {
+        if (packetType == ConfigurationPacket.EJECT || packetType == ConfigurationPacket.CLEAR_ALL) {
             transmission = buffer.readEnum(TransmissionType.class);
         } else if (packetType == ConfigurationPacket.SIDE_DATA) {
             clickType = buffer.readVarInt();
@@ -162,6 +174,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
         SIDE_DATA,
         EJECT_COLOR,
         INPUT_COLOR,
-        STRICT_INPUT
+        STRICT_INPUT,
+        CLEAR_ALL
     }
 }

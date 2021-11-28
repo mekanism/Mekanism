@@ -305,6 +305,7 @@
   "configuration.mekanism.no_eject": "\u0287\u0254\u01DD\u027E\u018E \u0287,u\u0250\u0186",
   "configuration.mekanism.no_eject.tooltip": "\u02D9\u01DD\uA781q\u1D09ssod \u01DDq \uA781\uA781\u1D09\u0287s \u028E\u0250\u026F uo\u1D09\u0287\u0254\u0250\u0279\u0287x\u01DD \uA781\u0250nu\u0250\u026F 'p\u01DD\u0287\u0279oddns \u0287ou s\u1D09 \u0287\u0254\u01DD\u027E\u01DD-o\u0287n\u2C6F",
   "configuration.mekanism.side": "\u1D77\u1D09\u025Fuo\u0186 \u01DDp\u1D09S",
+  "configuration.mekanism.side.clear": "(\u01DDuou o\u0287 s\u01DDp\u1D09s \uA781\uA781\u0250 s\u0287\u01DDs) \u1D77\u1D09\u025Fuo\u0186 \u01DDp\u1D09S \u0279\u0250\u01DD\uA781\u0186",
   "configuration.mekanism.slots": "s\u0287o\uA781S",
   "configuration.mekanism.strict_input": "\u0287nduI \u0287\u0254\u1D09\u0279\u0287S",
   "configuration.mekanism.strict_input.enabled": "(%s) \u0287nduI \u0287\u0254\u1D09\u0279\u0287S",
