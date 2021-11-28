@@ -2,7 +2,6 @@
 	"credit": "Made with Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"ports": "mekanism:block/models/ports",
 		"particle": "mekanism:block/pigment_mixer/base",
 		"base": "mekanism:block/pigment_mixer/base",
 		"details": "mekanism:block/pigment_mixer/details"
@@ -97,19 +96,6 @@
 				"west": {"uv": [13, 4, 14, 10], "rotation": 90, "texture": "#details"},
 				"up": {"uv": [10.5, 4, 13.5, 10], "texture": "#details"},
 				"down": {"uv": [10.5, 4, 13.5, 10], "texture": "#details"}
-			}
-		},
-		{
-			"name": "port_back",
-			"from": [4, 4, 15.01],
-			"to": [12, 12, 16.01],
-			"faces": {
-				"north": {"uv": [0, 8, 8, 16], "texture": "#ports", "cullface": "north"},
-				"east": {"uv": [0, 0, 0, 0], "texture": "#details"},
-				"south": {"uv": [8, 8, 16, 16], "texture": "#ports"},
-				"west": {"uv": [0, 0, 0, 0], "texture": "#details"},
-				"up": {"uv": [0, 0, 0, 0], "texture": "#details"},
-				"down": {"uv": [0, 0, 0, 0], "texture": "#details"}
 			}
 		},
 		{

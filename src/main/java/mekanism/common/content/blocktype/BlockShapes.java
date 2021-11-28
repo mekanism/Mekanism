@@ -804,7 +804,6 @@ public final class BlockShapes {
               box(2, 16, 12, 14, 20, 16), // basin_hinge
               box(6, 20, 13, 10, 30, 15), // back_electronics_box
               box(5, 30, 4, 11, 32, 16), // top_electronics_box
-              box(4, 4, 15.01, 12, 12, 16.01), // port_back
               box(7, 18, 6, 9, 27, 8) // mixer_rod
         ), PIGMENT_MIXER);
 
