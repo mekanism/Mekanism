@@ -305,6 +305,7 @@
   "configuration.mekanism.no_eject": "Nie można wysyłać",
   "configuration.mekanism.no_eject.tooltip": "Automatyczne wyrzucanie jest nie wspierane, ręczna ekstrakcja jest nadal możliwa.",
   "configuration.mekanism.side": "Ustawienia stron",
+  "configuration.mekanism.side.clear": "Wyczyść ustawienia stron (ustaw wszystkie strony na brak)",
   "configuration.mekanism.slots": "Sloty",
   "configuration.mekanism.strict_input": "Ścisłe wejście",
   "configuration.mekanism.strict_input.enabled": "Ścisłe wejście (%s)",
