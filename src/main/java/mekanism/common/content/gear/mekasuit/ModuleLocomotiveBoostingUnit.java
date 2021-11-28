@@ -8,7 +8,6 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.gear.config.ModuleEnumData;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
@@ -45,21 +44,18 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
 
     @Override
     public void tickServer(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
-        if (canFunction(module, player)) {
-            float boost = getBoost();
-            if (!player.isOnGround()) {
-                boost /= 5F; // throttle if we're in the air
-            }
-            if (player.isInWater()) {
-                boost /= 5F; // throttle if we're in the water
-            }
-            player.moveRelative(boost, new Vector3d(0, 0, 1));
+        if (tick(module, player)) {
             module.useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
         }
     }
 
     @Override
     public void tickClient(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
+        // leave energy usage up to server
+        tick(module, player);
+    }
+
+    private boolean tick(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
         if (canFunction(module, player)) {
             float boost = getBoost();
             if (!player.isOnGround()) {
@@ -69,13 +65,15 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
                 boost /= 5F; // throttle if we're in the water
             }
             player.moveRelative(boost, new Vector3d(0, 0, 1));
-            // leave energy usage up to server
+            return true;
         }
+        return false;
     }
 
     public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
-        FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F);
-        return player.isSprinting() && module.canUseEnergy(player, usage);
+        //Don't allow boosting unit to work when flying with the elytra, a jetpack should be used instead
+        return !player.isFallFlying() && player.isSprinting() && module.canUseEnergy(player,
+              MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
     }
 
     public float getBoost() {
