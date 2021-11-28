@@ -1,0 +1,8 @@
+{
+  "parent": "mekanism:block/painting_machine",
+  "textures": {
+    "front": "mekanism:block/painting_machine/front_active",
+    "west": "mekanism:block/painting_machine/right_active",
+    "east": "mekanism:block/painting_machine/left_active"
+  }
+}

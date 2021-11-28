@@ -500,7 +500,6 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.PIGMENT_EXTRACTOR)
           .withEnergyConfig(MekanismConfig.usage.pigmentExtractor, MekanismConfig.storage.pigmentExtractor)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
-          .withCustomShape(BlockShapes.PIGMENT_EXTRACTOR)
           .withComputerSupport("pigmentExtractor")
           .build();
     // Pigment Mixer
@@ -511,6 +510,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.pigmentMixer, MekanismConfig.storage.pigmentMixer)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
           .withCustomShape(BlockShapes.PIGMENT_MIXER)
+          .with(AttributeCustomSelectionBox.JAVA)
           .withComputerSupport("pigmentMixer")
           .build();
     // Painting Machine
@@ -520,7 +520,6 @@ public class MekanismBlockTypes {
           .withSound(MekanismSounds.PAINTING_MACHINE)
           .withEnergyConfig(MekanismConfig.usage.paintingMachine, MekanismConfig.storage.paintingMachine)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
-          .withCustomShape(BlockShapes.PAINTING_MACHINE)
           .withComputerSupport("paintingMachine")
           .build();
 

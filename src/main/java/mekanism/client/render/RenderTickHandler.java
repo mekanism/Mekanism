@@ -78,6 +78,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.IProfiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -167,33 +168,6 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void renderOverlay(RenderGameOverlayEvent.Pre event) {
-        if (event.getType() == ElementType.ARMOR) {
-            FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
-            for (ItemStack stack : minecraft.player.inventory.armor) {
-                if (stack.getItem() instanceof ItemMekaSuitArmor) {
-                    IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
-                    if (container != null) {
-                        capacity = capacity.plusEqual(container.getMaxEnergy());
-                        stored = stored.plusEqual(container.getEnergy());
-                    }
-                }
-            }
-            if (!capacity.isZero()) {
-                int x = event.getWindow().getGuiScaledWidth() / 2 - 91;
-                int y = event.getWindow().getGuiScaledHeight() - ForgeIngameGui.left_height + 2;
-                int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
-                MatrixStack matrix = event.getMatrixStack();
-                GuiUtils.renderExtendedTexture(matrix, GuiBar.BAR, 2, 2, x, y, 81, 6);
-                minecraft.getTextureManager().bind(POWER_BAR);
-                AbstractGui.blit(matrix, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
-                minecraft.getTextureManager().bind(AbstractGui.GUI_ICONS_LOCATION);
-                ForgeIngameGui.left_height += 8;
-            }
-        }
-    }
-
-    @SubscribeEvent
     public void renderOverlay(RenderGameOverlayEvent.Post event) {
         if (event.getType() == ElementType.HOTBAR) {
             if (!minecraft.player.isSpectator() && MekanismConfig.client.enableHUD.get() && MekanismClient.renderHUD) {
@@ -233,6 +207,28 @@ public class RenderTickHandler {
                 if (minecraft.player.getItemBySlot(EquipmentSlotType.HEAD).getItem() instanceof ItemMekaSuitArmor) {
                     hudRenderer.renderHUD(matrix, event.getPartialTicks());
                 }
+            }
+        } else if (event.getType() == ElementType.ARMOR) {
+            FloatingLong capacity = FloatingLong.ZERO, stored = FloatingLong.ZERO;
+            for (ItemStack stack : minecraft.player.inventory.armor) {
+                if (stack.getItem() instanceof ItemMekaSuitArmor) {
+                    IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
+                    if (container != null) {
+                        capacity = capacity.plusEqual(container.getMaxEnergy());
+                        stored = stored.plusEqual(container.getEnergy());
+                    }
+                }
+            }
+            if (!capacity.isZero()) {
+                int x = event.getWindow().getGuiScaledWidth() / 2 - 91;
+                int y = event.getWindow().getGuiScaledHeight() - ForgeIngameGui.left_height + 2;
+                int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
+                MatrixStack matrix = event.getMatrixStack();
+                GuiUtils.renderExtendedTexture(matrix, GuiBar.BAR, 2, 2, x, y, 81, 6);
+                minecraft.getTextureManager().bind(POWER_BAR);
+                AbstractGui.blit(matrix, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
+                minecraft.getTextureManager().bind(AbstractGui.GUI_ICONS_LOCATION);
+                ForgeIngameGui.left_height += 8;
             }
         }
     }
@@ -305,13 +301,14 @@ public class RenderTickHandler {
                             ItemStack currentItem = p.getMainHandItem();
                             if (!currentItem.isEmpty() && currentItem.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasGas(currentItem)) {
                                 Pos3D flameVec;
+                                boolean rightHanded = p.getMainArm() == HandSide.RIGHT;
                                 if (player == p && minecraft.options.getCameraType().isFirstPerson()) {
                                     flameVec = new Pos3D(1, 1, 1)
                                           .multiply(p.getViewVector(event.renderTickTime))
-                                          .yRot(15)
+                                          .yRot(rightHanded ? 15 : -15)
                                           .translate(0, p.getEyeHeight() - 0.1, 0);
                                 } else {
-                                    double flameXCoord = -0.2;
+                                    double flameXCoord = rightHanded ? -0.2 : 0.2;
                                     double flameYCoord = 1;
                                     double flameZCoord = 1.2;
                                     if (p.isCrouching()) {
@@ -378,29 +375,36 @@ public class RenderTickHandler {
                         actualState = world.getBlockState(actualPos);
                     }
                 }
-                if (Attribute.has(actualState, AttributeCustomSelectionBox.class)) {
+                AttributeCustomSelectionBox customSelectionBox = Attribute.get(actualState, AttributeCustomSelectionBox.class);
+                if (customSelectionBox != null) {
                     WireFrameRenderer renderWireFrame = null;
-                    if (Attribute.get(actualState, AttributeCustomSelectionBox.class).isJavaModel()) {
+                    if (customSelectionBox.isJavaModel()) {
                         //If we use a TER to render the wire frame, grab the tile
                         TileEntity tile = WorldUtils.getTileEntity(world, actualPos);
                         if (tile != null) {
                             TileEntityRenderer<TileEntity> tileRenderer = TileEntityRendererDispatcher.instance.getRenderer(tile);
                             if (tileRenderer instanceof IWireFrameRenderer) {
-                                renderWireFrame = (buffer, matrixStack, red, green, blue, alpha) ->
-                                      ((IWireFrameRenderer) tileRenderer).renderWireFrame(tile, event.getPartialTicks(), matrixStack, buffer, red, green, blue, alpha);
+                                IWireFrameRenderer wireFrameRenderer = (IWireFrameRenderer) tileRenderer;
+                                if (wireFrameRenderer.hasSelectionBox(actualState)) {
+                                    renderWireFrame = (buffer, matrixStack, state, red, green, blue, alpha) -> {
+                                        if (wireFrameRenderer.isCombined()) {
+                                            renderQuadsWireFrame(state, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
+                                        }
+                                        wireFrameRenderer.renderWireFrame(tile, event.getPartialTicks(), matrixStack, buffer, red, green, blue, alpha);
+                                    };
+                                }
                             }
                         }
                     } else {
-                        //Otherwise skip getting the tile and just grab the model
-                        BlockState finalActualState = actualState;
-                        renderWireFrame = (buffer, matrixStack, red, green, blue, alpha) ->
-                              renderQuadsWireFrame(finalActualState, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
+                        //Otherwise, skip getting the tile and just grab the model
+                        renderWireFrame = (buffer, matrixStack, state, red, green, blue, alpha) ->
+                              renderQuadsWireFrame(state, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
                     }
                     if (renderWireFrame != null) {
                         matrix.pushPose();
                         Vector3d viewPosition = info.getPosition();
                         matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
-                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, 0, 0, 0, 0.4F);
+                        renderWireFrame.render(renderer.getBuffer(RenderType.lines()), matrix, actualState, 0, 0, 0, 0.4F);
                         matrix.popPose();
                         shouldCancel = true;
                     }
@@ -448,8 +452,7 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderQuadsWireFrame(BlockState state, IVertexBuilder buffer, Matrix4f matrix, Random rand, float red, float green, float blue,
-          float alpha) {
+    private void renderQuadsWireFrame(BlockState state, IVertexBuilder buffer, Matrix4f matrix, Random rand, float red, float green, float blue, float alpha) {
         List<Vertex[]> allVertices = cachedWireFrames.computeIfAbsent(state, s -> {
             IBakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(s);
             //TODO: Eventually we may want to add support for Model data
@@ -461,6 +464,10 @@ public class RenderTickHandler {
             QuadUtils.unpack(bakedModel.getQuads(s, null, rand, modelData)).stream().map(Quad::getVertices).forEach(vertices::add);
             return vertices;
         });
+        renderVertexWireFrame(allVertices, buffer, matrix, red, green, blue, alpha);
+    }
+
+    public static void renderVertexWireFrame(List<Vertex[]> allVertices, IVertexBuilder buffer, Matrix4f matrix, float red, float green, float blue, float alpha) {
         for (Vertex[] vertices : allVertices) {
             Vector4f vertex = getVertex(matrix, vertices[0]);
             Vector3d normal = vertices[0].getNormal();
@@ -541,6 +548,6 @@ public class RenderTickHandler {
     @FunctionalInterface
     private interface WireFrameRenderer {
 
-        void render(IVertexBuilder buffer, MatrixStack matrix, float red, float green, float blue, float alpha);
+        void render(IVertexBuilder buffer, MatrixStack matrix, BlockState state, float red, float green, float blue, float alpha);
     }
 }

@@ -99,6 +99,7 @@ import mekanism.client.render.tileentity.RenderFluidTank;
 import mekanism.client.render.tileentity.RenderIndustrialAlarm;
 import mekanism.client.render.tileentity.RenderNutritionalLiquifier;
 import mekanism.client.render.tileentity.RenderPersonalChest;
+import mekanism.client.render.tileentity.RenderPigmentMixer;
 import mekanism.client.render.tileentity.RenderQuantumEntangloporter;
 import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
@@ -115,6 +116,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
 import mekanism.common.integration.MekanismHooks;
+import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.block.ItemBlockCardboardBox;
@@ -161,7 +163,6 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -203,6 +204,7 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.DIGITAL_MINER, RenderDigitalMiner::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.PERSONAL_CHEST, RenderPersonalChest::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.NUTRITIONAL_LIQUIFIER, RenderNutritionalLiquifier::new);
+        ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.PIGMENT_MIXER, RenderPigmentMixer::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.QUANTUM_ENTANGLOPORTER, RenderQuantumEntangloporter::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SEISMIC_VIBRATOR, RenderSeismicVibrator::new);
         ClientRegistrationUtil.bindTileEntityRenderer(MekanismTileEntityTypes.SOLAR_NEUTRON_ACTIVATOR, RenderSolarNeutronActivator::new);
@@ -275,6 +277,8 @@ public class ClientRegistration {
                 ItemCraftingFormula formula = (ItemCraftingFormula) stack.getItem();
                 return formula.getInventory(stack) != null && !formula.isInvalid(stack) ? 1 : 0;
             });
+            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATION_CARD, Mekanism.rl("encoded"),
+                  (stack, world, entity) -> ((ItemConfigurationCard) stack.getItem()).hasData(stack) ? 1 : 0);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pull"),
                   (stack, world, entity) -> entity != null && entity.getUseItem() == stack ? (stack.getUseDuration() - entity.getUseItemRemainingTicks()) / 20.0F : 0);
@@ -287,8 +291,9 @@ public class ClientRegistration {
                 }
                 return 0;
             });
+            //Note: Our implementation allows for a null entity so don't worry about it and pass it
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.HDPE_REINFORCED_ELYTRA, Mekanism.rl("broken"),
-                  (stack, world, entity) -> entity != null && MekanismItems.HDPE_REINFORCED_ELYTRA.get().canElytraFly(stack, entity) ? 0.0F : 1.0F);
+                  (stack, world, entity) -> MekanismItems.HDPE_REINFORCED_ELYTRA.get().canElytraFly(stack, entity) ? 0.0F : 1.0F);
         });
 
         addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
@@ -385,7 +390,6 @@ public class ClientRegistration {
         ModelLoaderRegistry.registerLoader(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
         ModelLoaderRegistry.registerLoader(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
         MekanismModelCache.INSTANCE.setup();
-        ModelLoader.addSpecialModel(Mekanism.rl("block/liquifier_blade"));
     }
 
     @SubscribeEvent

@@ -122,4 +122,9 @@ public class ItemConfigurationCard extends Item {
         }
         return TextComponentUtil.translate(data.getString(NBTConstants.DATA_NAME));
     }
+
+    public boolean hasData(ItemStack stack) {
+        CompoundNBT data = getData(stack);
+        return data != null && data.contains(NBTConstants.DATA_NAME, NBT.TAG_STRING);
+    }
 }

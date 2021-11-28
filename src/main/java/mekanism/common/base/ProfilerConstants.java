@@ -18,6 +18,7 @@ public class ProfilerConstants {
     public static final String MEKANISM_OUTLINE = "mekOutline";
     public static final String NUTRITIONAL_LIQUIFIER = "nutritionalLiquifier";
     public static final String PERSONAL_CHEST = "personalChest";
+    public static final String PIGMENT_MIXER = "pigmentMixer";
     public static final String QUANTUM_ENTANGLOPORTER = "quantumEntangloporter";
     public static final String RESISTIVE_HEATER = "resistiveHeater";
     public static final String SECURITY_DESK = "securityDesk";

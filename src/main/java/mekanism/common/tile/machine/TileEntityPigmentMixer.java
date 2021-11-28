@@ -218,7 +218,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @Nonnull
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
-        //TODO - 10.1: Remove this if the pigment mixer doesn't end up needing a TER
         return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 

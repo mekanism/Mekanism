@@ -1,0 +1,8 @@
+{
+  "ctm": {
+    "ctm_version": 1,
+    "type": "CTM",
+    "layer": "SOLID",
+    "textures": ["mekanismadditions:block/slick_plastic_block-ctm"]
+  }
+}
