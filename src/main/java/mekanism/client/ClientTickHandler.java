@@ -173,6 +173,9 @@ public class ClientTickHandler {
                 initHoliday = true;
             }
 
+            //Reboot player sounds if needed
+            SoundHandler.restartSounds();
+
             if (minecraft.level.getGameTime() - lastScrollTime > 20) {
                 scrollDelta = 0;
             }

@@ -2,12 +2,12 @@ package mekanism.client.sound;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
 import mekanism.client.sound.PlayerSound.SoundType;
@@ -51,7 +51,7 @@ import net.minecraftforge.fml.common.Mod;
  * All sounds, when initially started can be intercepted on the Forge event bus and wrapped by various muting/manipulation mods. For item sounds, we don't want to them to
  * be manipulated, since the flipping on/off is too prone to weird timing issues. For long-running sounds, we need a way to honor these attempted manipulations, without
  * allowing them to become the permanent state of the sound (which is what happens by default). To accomplish this, we have our own wrapper that intercepts new repeating
- * sounds from Mek and ensures that they periodically poll for any muting/manipulation so that it the object can dynamically adjust to conditions.
+ * sounds from Mek and ensures that they periodically poll for any muting/manipulation so that the object can dynamically adjust to any conditions.
  *
  * @apiNote Only used by client
  */
@@ -61,15 +61,16 @@ public class SoundHandler {
     private SoundHandler() {
     }
 
-    private static final Set<UUID> jetpackSounds = new ObjectOpenHashSet<>();
-    private static final Set<UUID> scubaMaskSounds = new ObjectOpenHashSet<>();
-    private static final Set<UUID> flamethrowerSounds = new ObjectOpenHashSet<>();
-    private static final Set<UUID> gravitationalModulationSounds = new ObjectOpenHashSet<>();
+    private static final Map<UUID, PlayerSound> jetpackSounds = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, PlayerSound> scubaMaskSounds = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, PlayerSound[]> flamethrowerSounds = new Object2ObjectOpenHashMap<>();
+    private static final Map<UUID, PlayerSound> gravitationalModulationSounds = new Object2ObjectOpenHashMap<>();
     public static final Map<RadiationScale, GeigerSound> radiationSoundMap = new EnumMap<>(RadiationScale.class);
 
     private static final Long2ObjectMap<ISound> soundMap = new Long2ObjectOpenHashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;
     private static SoundEngine soundEngine;
+    private static boolean hadPlayerSounds;
 
     public static void clearPlayerSounds() {
         jetpackSounds.clear();
@@ -88,45 +89,90 @@ public class SoundHandler {
     public static void startSound(@Nonnull IWorld world, @Nonnull UUID uuid, @Nonnull SoundType soundType) {
         switch (soundType) {
             case JETPACK:
-                if (!jetpackSounds.contains(uuid)) {
-                    PlayerEntity player = world.getPlayerByUUID(uuid);
-                    if (player != null) {
-                        jetpackSounds.add(uuid);
-                        playSound(new JetpackSound(player));
-                    }
-                }
+                startSound(world, uuid, jetpackSounds, JetpackSound::new);
                 break;
             case SCUBA_MASK:
-                if (!scubaMaskSounds.contains(uuid)) {
-                    PlayerEntity player = world.getPlayerByUUID(uuid);
-                    if (player != null) {
-                        scubaMaskSounds.add(uuid);
-                        playSound(new ScubaMaskSound(player));
-                    }
-                }
+                startSound(world, uuid, scubaMaskSounds, ScubaMaskSound::new);
                 break;
             case FLAMETHROWER:
-                if (!flamethrowerSounds.contains(uuid)) {
-                    PlayerEntity player = world.getPlayerByUUID(uuid);
-                    if (player != null) {
-                        flamethrowerSounds.add(uuid);
-                        //TODO: Evaluate at some point if there is a better way to do this
-                        // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
-                        playSound(new FlamethrowerSound.Active(player));
-                        playSound(new FlamethrowerSound.Idle(player));
-                    }
-                }
+                //TODO: Evaluate at some point if there is a better way to do this
+                // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
+                startSounds(world, uuid, flamethrowerSounds, FlamethrowerSound.Active::new, FlamethrowerSound.Idle::new);
                 break;
             case GRAVITATIONAL_MODULATOR:
-                if (!gravitationalModulationSounds.contains(uuid)) {
-                    PlayerEntity player = world.getPlayerByUUID(uuid);
-                    if (player != null) {
-                        gravitationalModulationSounds.add(uuid);
-                        playSound(new GravitationalModulationSound(player));
-                    }
-                }
+                startSound(world, uuid, gravitationalModulationSounds, GravitationalModulationSound::new);
                 break;
         }
+    }
+
+    private static void startSound(IWorld world, UUID uuid, Map<UUID, PlayerSound> knownSounds, Function<PlayerEntity, PlayerSound> soundCreator) {
+        if (knownSounds.containsKey(uuid)) {
+            if (playerSoundsEnabled()) {
+                //Check if it needs to be restarted
+                restartSounds(knownSounds.get(uuid));
+            }
+        } else {
+            PlayerEntity player = world.getPlayerByUUID(uuid);
+            if (player != null) {
+                PlayerSound sound = soundCreator.apply(player);
+                playSound(sound);
+                knownSounds.put(uuid, sound);
+            }
+        }
+    }
+
+    @SafeVarargs
+    private static void startSounds(IWorld world, UUID uuid, Map<UUID, PlayerSound[]> knownSounds, Function<PlayerEntity, PlayerSound>... soundCreators) {
+        if (knownSounds.containsKey(uuid)) {
+            if (playerSoundsEnabled()) {
+                //Check if it needs to be restarted
+                restartSounds(knownSounds.get(uuid));
+            }
+        } else {
+            PlayerEntity player = world.getPlayerByUUID(uuid);
+            if (player != null) {
+                PlayerSound[] sounds = new PlayerSound[soundCreators.length];
+                for (int i = 0; i < soundCreators.length; i++) {
+                    playSound(sounds[i] = soundCreators[i].apply(player));
+                }
+                knownSounds.put(uuid, sounds);
+            }
+        }
+    }
+
+    public static void restartSounds() {
+        boolean hasPlayerSounds = playerSoundsEnabled();
+        if (hasPlayerSounds != hadPlayerSounds) {
+            hadPlayerSounds = hasPlayerSounds;
+            if (hasPlayerSounds) {
+                //If player sounds were muted and are no longer muted, then we want to try and restart all our sounds
+                jetpackSounds.values().forEach(SoundHandler::restartSounds);
+                scubaMaskSounds.values().forEach(SoundHandler::restartSounds);
+                flamethrowerSounds.values().forEach(SoundHandler::restartSounds);
+                gravitationalModulationSounds.values().forEach(SoundHandler::restartSounds);
+                radiationSoundMap.values().forEach(SoundHandler::restartSounds);
+            }
+        }
+    }
+
+    private static void restartSounds(PlayerSound... sounds) {
+        for (PlayerSound sound : sounds) {
+            if (!sound.isStopped() && soundEngine != null && !soundEngine.instanceToChannel.containsKey(sound)) {
+                //Note: We need to directly check the instanceToChannel, because isActive will give wrong results as it doesn't
+                // get cleared out of the soundDeleteTime map. We also don't restart sounds if they marked themselves as stopped
+                // as the cases we have that is if the player is no longer present or the player died, in which case the sound will
+                // be removed and restarted as needed
+                playSound(sound);
+            }
+        }
+    }
+
+    private static boolean playerSoundsEnabled() {
+        return getVolume(SoundCategory.MASTER) > 0 && getVolume(SoundCategory.PLAYERS) > 0;
+    }
+
+    private static float getVolume(SoundCategory category) {
+        return Minecraft.getInstance().options.getSoundSourceVolume(category);
     }
 
     public static void playSound(SoundEventRegistryObject<?> soundEventRO) {
@@ -218,7 +264,7 @@ public class SoundHandler {
 
         // Ignore any sound event outside this mod namespace
         ResourceLocation soundLoc = event.getSound().getLocation();
-        //If it is mekanism or one of the sub modules let continue
+        //If it is mekanism or one of the sub-modules let continue
         if (!soundLoc.getNamespace().startsWith(Mekanism.MODID)) {
             return;
         }
@@ -269,11 +315,11 @@ public class SoundHandler {
             // Every configured interval, see if we need to adjust muffling
             if (Minecraft.getInstance().level.getGameTime() % checkInterval == 0) {
                 if (!isClientPlayerInRange(this)) {
-                    //If the player is not in range of hearing this sound any more; go ahead and shutdown
+                    //If the player is not in range of hearing this sound anymore; go ahead and shutdown
                     stop();
                     return;
                 }
-                // Run the event bus with the original sound. Note that we must making sure to set the GLOBAL/STATIC
+                // Run the event bus with the original sound. Note that we must make sure to set the GLOBAL/STATIC
                 // flag that ensures we don't wrap already muffled sounds. This is...NOT ideal and makes some
                 // significant (hopefully well-informed) assumptions about locking/ordering of all these calls.
                 IN_MUFFLED_CHECK = true;
