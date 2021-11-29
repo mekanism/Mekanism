@@ -1310,6 +1310,7 @@
   "sound_event.mekanism.tile.machine.logistical_sorter": "Sortierer klickt",
   "sound_event.mekanism.tile.machine.metallurgic_infuser": "Metallischer Mischer summt",
   "sound_event.mekanism.tile.machine.nutritional_liquifier": "Nährstoff verflüssigt",
+  "sound_event.mekanism.tile.machine.painting_machine": "Lackiermaschine sprüht",
   "sound_event.mekanism.tile.machine.pigment_extractor": "Pigmenextraktor extrahiert",
   "sound_event.mekanism.tile.machine.precision_sawmill": "Sägewerk schneidet",
   "sound_event.mekanism.tile.machine.pressurized_reaction_chamber": "Reaktionskammer summt",
