@@ -202,7 +202,7 @@ public class CommonPlayerTickHandler {
     }
 
     private static boolean isJetpackOn(PlayerEntity player, ItemStack chest) {
-        if (MekanismUtils.isPlayingMode(player) && !chest.isEmpty()) {
+        if (!chest.isEmpty() && !player.isSpectator()) {
             JetpackMode mode = getJetpackMode(chest);
             if (mode == JetpackMode.NORMAL) {
                 return Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND);

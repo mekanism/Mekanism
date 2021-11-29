@@ -86,7 +86,7 @@ public class ClientTickHandler {
         if (player != minecraft.player) {
             return Mekanism.playerState.isJetpackOn(player);
         }
-        if (MekanismUtils.isPlayingMode(player)) {
+        if (!player.isSpectator()) {
             ItemStack chest = player.getItemBySlot(EquipmentSlotType.CHEST);
             if (!chest.isEmpty()) {
                 JetpackMode mode = CommonPlayerTickHandler.getJetpackMode(chest);
