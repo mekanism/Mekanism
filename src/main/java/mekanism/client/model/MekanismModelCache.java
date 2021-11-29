@@ -34,19 +34,21 @@ public class MekanismModelCache extends BaseModelCache {
 
     private MekanismModelCache() {
         for (DriveStatus status : DriveStatus.STATUSES) {
-            if (status == DriveStatus.NONE) {
-                continue;
+            if (status != DriveStatus.NONE) {
+                QIO_DRIVES[status.ordinal()] = registerJSON(status.getModel());
             }
-            QIO_DRIVES[status.ordinal()] = registerJSON(status.getModel());
         }
     }
 
     @Override
     public void setup() {
+        Map<ResourceLocation, JSONModelData> customModels = new HashMap<>();
         for (RobitSkin skin : MekanismAPI.robitSkinRegistry()) {
             ResourceLocation customModel = skin.getCustomModel();
             if (customModel != null) {
-                ROBIT_SKINS.put(skin.getRegistryName(), registerJSON(customModel));
+                //If multiple skins make use of the same custom model, have them all point at the same model data object
+                JSONModelData model = customModels.computeIfAbsent(customModel, this::registerJSON);
+                ROBIT_SKINS.put(skin.getRegistryName(), model);
             }
         }
         super.setup();
