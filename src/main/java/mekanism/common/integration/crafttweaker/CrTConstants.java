@@ -86,7 +86,7 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_ENERGY_CONVERSION = CLASS_RECIPE_ITEM_STACK_TO_ENERGY + ".EnergyConversion";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_GAS = "mods." + Mekanism.MODID + ".recipe.ItemStackToGas";
     public static final String CLASS_RECIPE_GAS_CONVERSION = CLASS_RECIPE_ITEM_STACK_TO_GAS + ".GasConversion";
-    public static final String CLASS_RECIPE_OXIDIZING = "mods." + Mekanism.MODID + ".recipe.ItemStackToGas.Oxidizing";
+    public static final String CLASS_RECIPE_OXIDIZING = CLASS_RECIPE_ITEM_STACK_TO_GAS + ".Oxidizing";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_INFUSE_TYPE = "mods." + Mekanism.MODID + ".recipe.ItemStackToInfuseType";
     public static final String CLASS_RECIPE_INFUSION_CONVERSION = CLASS_RECIPE_ITEM_STACK_TO_INFUSE_TYPE + ".InfusionConversion";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_PIGMENT = "mods." + Mekanism.MODID + ".recipe.ItemStackToPigment";

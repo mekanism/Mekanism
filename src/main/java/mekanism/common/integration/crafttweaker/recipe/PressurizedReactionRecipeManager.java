@@ -2,7 +2,7 @@ package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
+import com.blamejared.crafttweaker.impl.helper.ItemStackHelper;
 import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
@@ -103,7 +103,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
                 StringBuilder builder = new StringBuilder();
                 List<ItemStack> itemOutputs = output.getLeft();
                 if (!itemOutputs.isEmpty()) {
-                    builder.append("item: ").append(CrTUtils.describeOutputs(itemOutputs, MCItemStackMutable::new));
+                    builder.append("item: ").append(CrTUtils.describeOutputs(itemOutputs, ItemStackHelper::getCommandString));
                 }
                 GasStack gasOutput = output.getRight();
                 if (!gasOutput.isEmpty()) {

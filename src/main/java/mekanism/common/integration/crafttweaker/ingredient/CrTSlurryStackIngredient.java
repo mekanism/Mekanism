@@ -1,6 +1,8 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.JSONConverter;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -82,5 +84,29 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static SlurryStackIngredient createMulti(SlurryStackIngredient... ingredients) {
         return CrTIngredientHelper.createMulti("SlurryStackIngredients", SlurryStackIngredient::createMulti, ingredients);
+    }
+
+    /**
+     * Converts this {@link SlurryStackIngredient} into JSON ({@link IData}).
+     *
+     * @return {@link SlurryStackIngredient} as JSON.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Caster(implicit = true)
+    public static IData asIData(SlurryStackIngredient _this) {
+        return JSONConverter.convert(_this.serialize());
+    }
+
+    /**
+     * OR's this {@link SlurryStackIngredient} with another {@link SlurryStackIngredient} to create a multi {@link SlurryStackIngredient}
+     *
+     * @param other {@link SlurryStackIngredient} to combine with.
+     *
+     * @return Multi {@link SlurryStackIngredient} that matches both the source {@link SlurryStackIngredient} and the OR'd {@link SlurryStackIngredient}.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
+    public static SlurryStackIngredient or(SlurryStackIngredient _this, SlurryStackIngredient other) {
+        return SlurryStackIngredient.createMulti(_this, other);
     }
 }

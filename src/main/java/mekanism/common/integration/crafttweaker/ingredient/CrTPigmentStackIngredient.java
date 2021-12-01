@@ -1,6 +1,8 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.JSONConverter;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
@@ -82,5 +84,29 @@ public class CrTPigmentStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static PigmentStackIngredient createMulti(PigmentStackIngredient... ingredients) {
         return CrTIngredientHelper.createMulti("PigmentStackIngredients", PigmentStackIngredient::createMulti, ingredients);
+    }
+
+    /**
+     * Converts this {@link PigmentStackIngredient} into JSON ({@link IData}).
+     *
+     * @return {@link PigmentStackIngredient} as JSON.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Caster(implicit = true)
+    public static IData asIData(PigmentStackIngredient _this) {
+        return JSONConverter.convert(_this.serialize());
+    }
+
+    /**
+     * OR's this {@link PigmentStackIngredient} with another {@link PigmentStackIngredient} to create a multi {@link PigmentStackIngredient}
+     *
+     * @param other {@link PigmentStackIngredient} to combine with.
+     *
+     * @return Multi {@link PigmentStackIngredient} that matches both the source {@link PigmentStackIngredient} and the OR'd {@link PigmentStackIngredient}.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
+    public static PigmentStackIngredient or(PigmentStackIngredient _this, PigmentStackIngredient other) {
+        return PigmentStackIngredient.createMulti(_this, other);
     }
 }

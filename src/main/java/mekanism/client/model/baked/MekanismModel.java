@@ -73,7 +73,7 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
                     multimap.put(name, wrapper);
 
                     if (obj.has("faces")) {
-                        JsonObject faces = obj.get("faces").getAsJsonObject();
+                        JsonObject faces = obj.getAsJsonObject("faces");
                         faces.entrySet().forEach(e -> {
                             Direction side = Direction.byName(e.getKey());
                             if (side == null) {

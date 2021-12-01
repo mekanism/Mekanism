@@ -1,6 +1,8 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.JSONConverter;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
@@ -88,5 +90,29 @@ public class CrTFluidStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static FluidStackIngredient createMulti(FluidStackIngredient... ingredients) {
         return CrTIngredientHelper.createMulti("FluidStackIngredients", FluidStackIngredient::createMulti, ingredients);
+    }
+
+    /**
+     * Converts this {@link FluidStackIngredient} into JSON ({@link IData}).
+     *
+     * @return {@link FluidStackIngredient} as JSON.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Caster(implicit = true)
+    public static IData asIData(FluidStackIngredient _this) {
+        return JSONConverter.convert(_this.serialize());
+    }
+
+    /**
+     * OR's this {@link FluidStackIngredient} with another {@link FluidStackIngredient} to create a multi {@link FluidStackIngredient}
+     *
+     * @param other {@link FluidStackIngredient} to combine with.
+     *
+     * @return Multi {@link FluidStackIngredient} that matches both the source {@link FluidStackIngredient} and the OR'd {@link FluidStackIngredient}.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
+    public static FluidStackIngredient or(FluidStackIngredient _this, FluidStackIngredient other) {
+        return FluidStackIngredient.createMulti(_this, other);
     }
 }

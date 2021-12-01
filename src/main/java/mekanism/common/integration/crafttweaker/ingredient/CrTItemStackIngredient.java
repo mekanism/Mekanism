@@ -1,6 +1,8 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.data.IData;
+import com.blamejared.crafttweaker.api.data.JSONConverter;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
@@ -189,5 +191,29 @@ public class CrTItemStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static ItemStackIngredient createMulti(ItemStackIngredient... ingredients) {
         return CrTIngredientHelper.createMulti("ItemStackIngredients", ItemStackIngredient::createMulti, ingredients);
+    }
+
+    /**
+     * Converts this {@link ItemStackIngredient} into JSON ({@link IData}).
+     *
+     * @return {@link ItemStackIngredient} as JSON.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Caster(implicit = true)
+    public static IData asIData(ItemStackIngredient _this) {
+        return JSONConverter.convert(_this.serialize());
+    }
+
+    /**
+     * OR's this {@link ItemStackIngredient} with another {@link ItemStackIngredient} to create a multi {@link ItemStackIngredient}
+     *
+     * @param other {@link ItemStackIngredient} to combine with.
+     *
+     * @return Multi {@link ItemStackIngredient} that matches both the source {@link ItemStackIngredient} and the OR'd {@link ItemStackIngredient}.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
+    public static ItemStackIngredient or(ItemStackIngredient _this, ItemStackIngredient other) {
+        return ItemStackIngredient.createMulti(_this, other);
     }
 }

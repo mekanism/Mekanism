@@ -30,11 +30,11 @@ import mods.mekanism.api.ingredient.FluidStackIngredient;
 
 <recipetype:mekanism:rotary>.addRecipe("decondensentrate_sulfur_dioxide", FluidStackIngredient.from(<tag:fluids:forge:sulfur_dioxide>, 1), <gas:mekanism:sulfur_dioxide>);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
-// <recipetype:mekanism:rotary>.addRecipe("decondensentrate_sulfur_dioxide", <tag:fluids:forge:sulfur_dioxide>, <gas:mekanism:sulfur_dioxide>);
+// <recipetype:mekanism:rotary>.addRecipe("decondensentrate_sulfur_dioxide", <tag:fluids:forge:sulfur_dioxide> * 1, <gas:mekanism:sulfur_dioxide>);
 
 <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", FluidStackIngredient.from(<tag:fluids:forge:sulfur_trioxide>, 1), GasStackIngredient.from(<gas:mekanism:sulfur_trioxide>), <gas:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluids:forge:sulfur_trioxide>, GasStackIngredient.from(<gas:mekanism:sulfur_trioxide>), <gas:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
+// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluids:forge:sulfur_trioxide> * 1, GasStackIngredient.from(<gas:mekanism:sulfur_trioxide>), <gas:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
 // <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", FluidStackIngredient.from(<tag:fluids:forge:sulfur_trioxide>, 1), <gas:mekanism:sulfur_trioxide>, <gas:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
-// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluids:forge:sulfur_trioxide>, <gas:mekanism:sulfur_trioxide>, <gas:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
+// <recipetype:mekanism:rotary>.addRecipe("rotary_sulfur_trioxide", <tag:fluids:forge:sulfur_trioxide> * 1, <gas:mekanism:sulfur_trioxide>, <gas:mekanism:sulfur_trioxide>, <fluid:mekanism:sulfur_trioxide>);
 

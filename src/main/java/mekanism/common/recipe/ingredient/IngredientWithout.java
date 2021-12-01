@@ -1,21 +1,19 @@
 package mekanism.common.recipe.ingredient;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntComparators;
-import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mcp.MethodsReturnNonnullByDefault;
+import mekanism.api.JsonConstants;
 import mekanism.common.Mekanism;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeItemHelper;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
@@ -39,15 +37,15 @@ public class IngredientWithout extends Ingredient {
         return new IngredientWithout(Ingredient.of(base), Ingredient.of(without));
     }
 
-    private final Ingredient base;
-    private final Ingredient without;
-    private ItemStack[] filteredMatchingStacks;
-    private IntList packedMatchingStacks;
+    private final ItemListWithout itemListWithout;
 
-    public IngredientWithout(Ingredient base, Ingredient without) {
-        super(Stream.empty());
-        this.base = base;
-        this.without = without;
+    private IngredientWithout(Ingredient base, Ingredient without) {
+        this(new ItemListWithout(base, without));
+    }
+
+    private IngredientWithout(ItemListWithout itemListWithout) {
+        super(Stream.of(itemListWithout));
+        this.itemListWithout = itemListWithout;
     }
 
     @Override
@@ -55,17 +53,7 @@ public class IngredientWithout extends Ingredient {
         if (stack == null || stack.isEmpty()) {
             return false;
         }
-        return base.test(stack) && !without.test(stack);
-    }
-
-    @Override
-    public ItemStack[] getItems() {
-        if (this.filteredMatchingStacks == null) {
-            this.filteredMatchingStacks = Arrays.stream(base.getItems())
-                  .filter(stack -> !without.test(stack))
-                  .toArray(ItemStack[]::new);
-        }
-        return filteredMatchingStacks;
+        return itemListWithout.base.test(stack) && !itemListWithout.without.test(stack);
     }
 
     @Override
@@ -75,41 +63,39 @@ public class IngredientWithout extends Ingredient {
 
     @Override
     public boolean isSimple() {
-        return base.isSimple() && without.isSimple();
-    }
-
-    @Override
-    protected void invalidate() {
-        super.invalidate();
-        this.filteredMatchingStacks = null;
-        this.packedMatchingStacks = null;
-    }
-
-    @Override
-    public IntList getStackingIds() {
-        if (this.packedMatchingStacks == null) {
-            ItemStack[] matchingStacks = getItems();
-            this.packedMatchingStacks = new IntArrayList(matchingStacks.length);
-            for (ItemStack stack : matchingStacks) {
-                this.packedMatchingStacks.add(RecipeItemHelper.getStackingIndex(stack));
-            }
-            this.packedMatchingStacks.sort(IntComparators.NATURAL_COMPARATOR);
-        }
-        return packedMatchingStacks;
-    }
-
-    @Override
-    public JsonElement toJson() {
-        JsonObject json = new JsonObject();
-        json.addProperty("type", ID.toString());
-        json.add("base", base.toJson());
-        json.add("without", without.toJson());
-        return json;
+        return itemListWithout.base.isSimple() && itemListWithout.without.isSimple();
     }
 
     @Override
     public IIngredientSerializer<IngredientWithout> getSerializer() {
         return Serializer.INSTANCE;
+    }
+
+    private static class ItemListWithout implements IItemList {
+
+        private final Ingredient base;
+        private final Ingredient without;
+
+        public ItemListWithout(Ingredient base, Ingredient without) {
+            this.base = base;
+            this.without = without;
+        }
+
+        @Override
+        public Collection<ItemStack> getItems() {
+            return Arrays.stream(base.getItems())
+                  .filter(stack -> !without.test(stack))
+                  .collect(Collectors.toList());
+        }
+
+        @Override
+        public JsonObject serialize() {
+            JsonObject json = new JsonObject();
+            json.addProperty(JsonConstants.TYPE, ID.toString());
+            json.add(JsonConstants.BASE, base.toJson());
+            json.add(JsonConstants.WITHOUT, without.toJson());
+            return json;
+        }
     }
 
     public static class Serializer implements IIngredientSerializer<IngredientWithout> {
@@ -121,8 +107,9 @@ public class IngredientWithout extends Ingredient {
 
         @Override
         public IngredientWithout parse(@Nonnull JsonObject json) {
-            if (json.has("base") && json.has("without")) {
-                return new IngredientWithout(Ingredient.fromJson(json.getAsJsonObject("base")), Ingredient.fromJson(json.getAsJsonObject("without")));
+            if (json.has(JsonConstants.BASE) && json.has(JsonConstants.WITHOUT)) {
+                return new IngredientWithout(Ingredient.fromJson(json.getAsJsonObject(JsonConstants.BASE)),
+                      Ingredient.fromJson(json.getAsJsonObject(JsonConstants.WITHOUT)));
             }
             throw new JsonParseException("A without ingredient must have both a bse ingredient, and a negation ingredient.");
         }
@@ -136,8 +123,8 @@ public class IngredientWithout extends Ingredient {
 
         @Override
         public void write(@Nonnull PacketBuffer buffer, IngredientWithout ingredient) {
-            CraftingHelper.write(buffer, ingredient.base);
-            CraftingHelper.write(buffer, ingredient.without);
+            CraftingHelper.write(buffer, ingredient.itemListWithout.base);
+            CraftingHelper.write(buffer, ingredient.itemListWithout.without);
         }
     }
 }

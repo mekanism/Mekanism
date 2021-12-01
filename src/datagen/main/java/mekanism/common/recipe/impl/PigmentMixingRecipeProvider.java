@@ -18,8 +18,6 @@ class PigmentMixingRecipeProvider implements ISubRecipeProvider {
         addMix(consumer, EnumColor.DARK_BLUE, 1, EnumColor.RED, 1, EnumColor.PURPLE, basePath);
         //blue + green -> 2 cyan
         addMix(consumer, EnumColor.DARK_BLUE, 1, EnumColor.DARK_GREEN, 1, EnumColor.DARK_AQUA, basePath);
-        //black + 2 white -> 3 light gray
-        addMix(consumer, EnumColor.BLACK, 1, EnumColor.WHITE, 2, EnumColor.GRAY, basePath);
         //gray + white -> 2 light gray
         addMix(consumer, EnumColor.DARK_GRAY, 1, EnumColor.WHITE, 1, EnumColor.GRAY, basePath);
         //black + white -> 2 gray

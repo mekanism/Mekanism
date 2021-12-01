@@ -16,9 +16,9 @@ import mods.mekanism.api.ingredient.FluidStackIngredient;
 
 <recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", FluidStackIngredient.from(<tag:fluids:forge:sulfuric_acid>, 1), <gas:mekanism:water_vapor>, <gas:mekanism:sulfur_trioxide>, FloatingLong.create(1.5000));
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", <tag:fluids:forge:sulfuric_acid>, <gas:mekanism:water_vapor>, <gas:mekanism:sulfur_trioxide>, FloatingLong.create(1.5000));
+// <recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", <tag:fluids:forge:sulfuric_acid> * 1, <gas:mekanism:water_vapor>, <gas:mekanism:sulfur_trioxide>, FloatingLong.create(1.5000));
 // <recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", FluidStackIngredient.from(<tag:fluids:forge:sulfuric_acid>, 1), <gas:mekanism:water_vapor>, <gas:mekanism:sulfur_trioxide>, 1.5);
-// <recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", <tag:fluids:forge:sulfuric_acid>, <gas:mekanism:water_vapor>, <gas:mekanism:sulfur_trioxide>, 1.5);
+// <recipetype:mekanism:separating>.addRecipe("separator/sulfuric_acid", <tag:fluids:forge:sulfuric_acid> * 1, <gas:mekanism:water_vapor>, <gas:mekanism:sulfur_trioxide>, 1.5);
 
 
 //Removes the Separating Recipe for separating Brine into Sodium and Chlorine.

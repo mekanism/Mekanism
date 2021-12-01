@@ -31,7 +31,7 @@ public class TransmitterLoader implements IModelLoader<TransmitterModel> {
         OBJModel model = OBJLoader.INSTANCE.read(deserializationContext, modelContents);
         OBJModel glass = null;
         if (modelContents.has(JsonConstants.GLASS)) {
-            glass = (OBJModel) ModelLoaderRegistry.deserializeGeometry(deserializationContext, modelContents.get(JsonConstants.GLASS).getAsJsonObject());
+            glass = (OBJModel) ModelLoaderRegistry.deserializeGeometry(deserializationContext, modelContents.getAsJsonObject(JsonConstants.GLASS));
         }
         return new TransmitterModel(model, glass);
     }

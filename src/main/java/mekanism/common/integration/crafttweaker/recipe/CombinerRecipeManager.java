@@ -2,7 +2,7 @@ package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
+import com.blamejared.crafttweaker.impl.helper.ItemStackHelper;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -39,7 +39,7 @@ public class CombinerRecipeManager extends MekanismRecipeManager<CombinerRecipe>
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), MCItemStackMutable::new);
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), ItemStackHelper::getCommandString);
             }
         };
     }

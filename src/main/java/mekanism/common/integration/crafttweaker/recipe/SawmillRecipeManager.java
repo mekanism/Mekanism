@@ -2,7 +2,7 @@ package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
+import com.blamejared.crafttweaker.impl.helper.ItemStackHelper;
 import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
 import java.util.List;
 import mekanism.api.recipes.SawmillRecipe;
@@ -34,6 +34,10 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, IItemStack mainOutput) {
+        //TODO - 10.1: If we have to remove this method, but ideally CrT will improve the implicit cast matching for params that don't need
+        // to be cast so that it knows this method and the weighted item stack one are not ambiguous. Once that is figured out we may want
+        // to make it so that the other version is a hard fail if passed with 100% chance given it is likely that is how the base sawmill
+        // recipe will be handled in 1.18
         addRecipe(name, input, getAndValidateNotEmpty(mainOutput), ItemStack.EMPTY, 0);
     }
 
@@ -115,7 +119,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
                 StringBuilder builder = new StringBuilder();
                 List<ItemStack> mainOutputs = recipe.getMainOutputDefinition();
                 if (!mainOutputs.isEmpty()) {
-                    builder.append("main: ").append(CrTUtils.describeOutputs(mainOutputs, MCItemStackMutable::new));
+                    builder.append("main: ").append(CrTUtils.describeOutputs(mainOutputs, ItemStackHelper::getCommandString));
                 }
                 if (recipe.getSecondaryChance() > 0) {
                     if (!mainOutputs.isEmpty()) {
@@ -128,7 +132,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
                               .append(TextUtils.getPercent(recipe.getSecondaryChance()))
                               .append(": ");
                     }
-                    builder.append(CrTUtils.describeOutputs(recipe.getSecondaryOutputDefinition(), MCItemStackMutable::new));
+                    builder.append(CrTUtils.describeOutputs(recipe.getSecondaryOutputDefinition(), ItemStackHelper::getCommandString));
                 }
                 return builder.toString();
             }

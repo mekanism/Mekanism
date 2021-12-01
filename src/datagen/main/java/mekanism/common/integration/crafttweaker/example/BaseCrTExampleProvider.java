@@ -2,15 +2,15 @@ package mekanism.common.integration.crafttweaker.example;
 
 import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
+import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.impl.fluid.MCFluidStack;
+import com.blamejared.crafttweaker.impl.helper.ItemStackHelper;
 import com.blamejared.crafttweaker.impl.item.MCItemStack;
 import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
 import com.blamejared.crafttweaker.impl.tag.MCTag;
 import com.blamejared.crafttweaker.impl.tag.manager.TagManagerFluid;
-import com.blamejared.crafttweaker.impl.tag.manager.TagManagerItem;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.BufferedReader;
@@ -31,7 +31,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.Chemical;
@@ -61,6 +60,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTI
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
+import mekanism.common.integration.crafttweaker.recipe.handler.MekanismRecipeHandler;
 import mekanism.common.integration.crafttweaker.tag.CrTChemicalTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
@@ -76,7 +76,6 @@ import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.crafting.CompoundIngredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -109,7 +108,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         addPrimitiveInfo(Boolean.TYPE, Boolean.class, "bool");
         addNameLookupOverride(Character.class, "char");
         addSupportedConversion(Character.TYPE, Character.class, (imports, c) -> "'" + c + "'");
-        addSupportedConversion(IItemStack.class, ItemStack.class, (imports, stack) -> new MCItemStack(stack).getCommandString());
+        addSupportedConversion(IItemStack.class, ItemStack.class, (imports, stack) -> ItemStackHelper.getCommandString(stack));
         addSupportedConversion(IFluidStack.class, FluidStack.class, (imports, stack) -> new MCFluidStack(stack).getCommandString());
         addSupportedConversion(MCWeightedItemStack.class, WeightedItemStack.class, (imports, stack) -> new MCWeightedItemStack(new MCItemStack(stack.stack), stack.chance).getCommandString());
         addSupportedConversion(FloatingLong.class, FloatingLong.class, (imports, fl) -> {
@@ -276,89 +275,22 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         return "CraftTweaker Examples: " + modid;
     }
 
+    private String getTagWithExplicitAmount(MCTag<?> tag, int amount) {
+        //Explicitly include the amount rather than doing tag.withAmount(amount).getCommandString() as we want to make the values
+        // that need an amount specified to be able to be implicit, have them
+        return tag.getCommandString() + " * " + amount;
+    }
+
     private void addItemStackIngredientSupport() {
         addSupportedConversion(ItemStackIngredient.class, ItemStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
                   if (ingredient instanceof ItemStackIngredient.Single) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      JsonObject serializedIngredient = serialized.get(JsonConstants.INGREDIENT).getAsJsonObject();
-                      Ingredient vanillaIngredient = ((ItemStackIngredient.Single) ingredient).getInputRaw();
-                      if (vanillaIngredient.isVanilla()) {
-                          if (!serializedIngredient.isJsonArray()) {
-                              int amount = JSONUtils.getAsInt(serialized, JsonConstants.AMOUNT, 1);
-                              if (serializedIngredient.has(JsonConstants.ITEM)) {
-                                  Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(serializedIngredient, JsonConstants.ITEM)));
-                                  return new MCItemStack(new ItemStack(item, amount)).getCommandString();
-                              } else if (serializedIngredient.has(JsonConstants.TAG)) {
-                                  MCTag<Item> tag = TagManagerItem.INSTANCE.getTag(serializedIngredient.get(JsonConstants.TAG).getAsString());
-                                  if (amount > 1) {
-                                      return tag.withAmount(amount).getCommandString();
-                                  }
-                                  return tag.getCommandString();
-                              }
-                          }
-                      } else if (vanillaIngredient instanceof NBTIngredient) {
-                          ItemStack stack = CraftingHelper.getItemStack(serializedIngredient, true);
-                          stack.setCount(JSONUtils.getAsInt(serialized, JsonConstants.AMOUNT, 1));
-                          return new MCItemStack(stack).getCommandString();
-                      }
+                      return MekanismRecipeHandler.basicImplicitIngredient(((ItemStackIngredient.Single) ingredient).getInputRaw(),
+                            JSONUtils.getAsInt(serialized, JsonConstants.AMOUNT, 1), serialized.get(JsonConstants.INGREDIENT));
                   }
                   return null;
               });
-    }
-
-    private String getVanillaIngredientRepresentation(JsonObject serializedIngredient) {
-        if (serializedIngredient.has(JsonConstants.ITEM)) {
-            return new MCItemStack(new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(serializedIngredient, JsonConstants.ITEM))))).getCommandString();
-        } else if (serializedIngredient.has(JsonConstants.TAG)) {
-            return TagManagerItem.INSTANCE.getTag(serializedIngredient.get(JsonConstants.TAG).getAsString()).getCommandString();
-        }
-        return null;
-    }
-
-    @Nullable
-    private String getIngredientRepresentation(Ingredient ingredient, JsonObject serializedIngredient) {
-        if (ingredient.isVanilla()) {
-            if (serializedIngredient.isJsonArray()) {
-                JsonArray array = serializedIngredient.getAsJsonArray();
-                int size = array.size();
-                if (size <= 0) {
-                    return null;
-                }
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < size; i++) {
-                    String intermediaryRepresentation = getVanillaIngredientRepresentation(array.get(i).getAsJsonObject());
-                    if (intermediaryRepresentation == null) {
-                        return null;
-                    }
-                    if (i != 0) {
-                        builder.append(" | ");
-                    }
-                    builder.append(intermediaryRepresentation);
-                }
-                return builder.toString();
-            }
-            return getVanillaIngredientRepresentation(serializedIngredient);
-        } else if (ingredient instanceof NBTIngredient) {
-            //Special handling for forge's NBT Ingredient
-            return new MCItemStack(CraftingHelper.getItemStack(serializedIngredient, true)).getCommandString();
-        } else if (ingredient instanceof CompoundIngredient) {
-            //Special handling for forge's compound ingredient to map all children
-            CompoundIngredient compoundIngredient = (CompoundIngredient) ingredient;
-            StringBuilder builder = new StringBuilder();
-            for (Ingredient child : compoundIngredient.getChildren()) {
-                String intermediaryRepresentation = getIngredientRepresentation(child, child.toJson().getAsJsonObject());
-                if (intermediaryRepresentation == null) {
-                    return null;
-                }
-                builder.append(intermediaryRepresentation)
-                      .append(" | ");
-            }
-            //Remove trailing or and spaces
-            builder.setLength(builder.length() - 3);
-            return builder.toString();
-        }//Else just fallback to no supported handling currently
-        return null;
     }
 
     private String getIngredientRepresentation(CrTImportsComponent imports, ItemStackIngredient ingredient) {
@@ -366,7 +298,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //While it is easier to compare types of some stuff using the inner ingredient, some of the things
             // are easier to get the information of out of the serialized ingredient
-            JsonObject serializedIngredient = serialized.get(JsonConstants.INGREDIENT).getAsJsonObject();
+            JsonObject serializedIngredient = serialized.getAsJsonObject(JsonConstants.INGREDIENT);
             Ingredient vanillaIngredient = ((ItemStackIngredient.Single) ingredient).getInputRaw();
             int amount = JSONUtils.getAsInt(serialized, JsonConstants.AMOUNT, 1);
             String representation = null;
@@ -374,25 +306,23 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
                 //Special case handling for when we would want to use a different constructor
                 if (vanillaIngredient.isVanilla() && !serializedIngredient.isJsonArray() && serializedIngredient.has(JsonConstants.ITEM)) {
                     Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(serializedIngredient, JsonConstants.ITEM)));
-                    representation = new MCItemStack(new ItemStack(item, amount)).getCommandString();
+                    representation = ItemStackHelper.getCommandString(new ItemStack(item, amount));
                     amount = 1;
                 } else if (vanillaIngredient instanceof NBTIngredient) {
                     ItemStack stack = CraftingHelper.getItemStack(serializedIngredient, true);
                     stack.setCount(amount);
-                    representation = new MCItemStack(stack).getCommandString();
+                    representation = ItemStackHelper.getCommandString(stack);
                     amount = 1;
                 }
             }
             if (representation == null) {
-                representation = getIngredientRepresentation(vanillaIngredient, serializedIngredient);
+                representation = IIngredient.fromIngredient(vanillaIngredient).getCommandString();
             }
-            if (representation != null) {
-                String path = imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT);
-                if (amount == 1) {
-                    return path + ".from(" + representation + ")";
-                }
-                return path + ".from(" + representation + ", " + amount + ")";
+            String path = imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT);
+            if (amount == 1) {
+                return path + ".from(" + representation + ")";
             }
+            return path + ".from(" + representation + ", " + amount + ")";
         } else if (ingredient instanceof ItemStackIngredient.Multi) {
             ItemStackIngredient.Multi multiIngredient = (ItemStackIngredient.Multi) ingredient;
             StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT) + ".createMulti(");
@@ -421,8 +351,8 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
                       return new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
                   } else if (ingredient instanceof FluidStackIngredient.Tagged) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      return TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString())
-                            .withAmount(serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt()).getCommandString();
+                      return getTagWithExplicitAmount(TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString()),
+                            serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt());
                   }
                   return null;
               });
@@ -472,7 +402,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
                       JsonObject serialized = (JsonObject) ingredient.serialize();
                       long amount = serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsLong();
                       if (amount > 0 && amount <= Integer.MAX_VALUE) {
-                          return tagManager.getTag(serialized.get(JsonConstants.TAG).getAsString()).withAmount((int) amount).getCommandString();
+                          return getTagWithExplicitAmount(tagManager.getTag(serialized.get(JsonConstants.TAG).getAsString()), (int) amount);
                       }
                   }
                   return null;
