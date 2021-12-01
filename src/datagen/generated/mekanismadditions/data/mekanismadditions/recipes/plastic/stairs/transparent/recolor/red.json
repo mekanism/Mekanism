@@ -20,13 +20,7 @@
       }
     },
     "D": {
-      "type": "mekanism:without",
-      "base": {
-        "tag": "forge:stairs/plastic/transparent"
-      },
-      "without": {
-        "item": "mekanismadditions:red_plastic_transparent_stairs"
-      }
+      "tag": "forge:dyes/red"
     }
   }
 }

@@ -20,13 +20,7 @@
       }
     },
     "D": {
-      "type": "mekanism:without",
-      "base": {
-        "tag": "forge:slabs/plastic/transparent"
-      },
-      "without": {
-        "item": "mekanismadditions:red_plastic_transparent_slab"
-      }
+      "tag": "forge:dyes/red"
     }
   }
 }

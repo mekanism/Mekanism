@@ -211,8 +211,8 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         if (dye != null) {
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
                   .pattern(PLASTIC_TRANSPARENT)
-                  .key(Pattern.CONSTANT, IngredientWithout.create(blockType, result))
-                  .key(Pattern.DYE, recolorInput)
+                  .key(Pattern.CONSTANT, recolorInput)
+                  .key(Pattern.DYE, dye.getTag())
                   .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
