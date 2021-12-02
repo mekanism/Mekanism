@@ -305,6 +305,7 @@
   "configuration.mekanism.no_eject": "방출 불가",
   "configuration.mekanism.no_eject.tooltip": "자동 배출은 지원되지 않습니다. 수동 배출은 여전히 가능할 수도 있습니다.",
   "configuration.mekanism.side": "측면 설정",
+  "configuration.mekanism.side.clear": "면 설정 초기화 (모든 면을 입출력 없음으로 바꿈)",
   "configuration.mekanism.slots": "슬롯",
   "configuration.mekanism.strict_input": "정밀 투입",
   "configuration.mekanism.strict_input.enabled": "정밀 투입 (%s)",
