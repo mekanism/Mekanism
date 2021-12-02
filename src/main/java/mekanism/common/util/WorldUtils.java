@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -498,6 +499,27 @@ public class WorldUtils {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Calls BOTH neighbour changed functions because nobody can decide on which one to implement, assuming that the neighboring positions are loaded.
+     *
+     * @param world     world the change exists in
+     * @param fromPos   pos of our block that updated
+     * @param neighbors Sides to notify the neighbors on.
+     */
+    public static void notifyNeighborsOfChange(@Nullable World world, BlockPos fromPos, Set<Direction> neighbors) {
+        if (!neighbors.isEmpty()) {
+            getBlockState(world, fromPos).ifPresent(sourceState -> {
+                for (Direction neighbor : neighbors) {
+                    BlockPos pos = fromPos.relative(neighbor);
+                    getBlockState(world, pos).ifPresent(state -> {
+                        state.onNeighborChange(world, pos, fromPos);
+                        state.neighborChanged(world, pos, sourceState.getBlock(), fromPos, false);
+                    });
+                }
+            });
         }
     }
 

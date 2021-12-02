@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -77,6 +78,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     public void sideChanged(TransmissionType transmissionType, RelativeSide side) {
         Direction direction = side.getDirection(tile.getDirection());
+        sideChangedBasic(transmissionType, direction);
+        tile.sendUpdatePacket();
+        //Notify the neighbor on that side our state changed
+        WorldUtils.notifyNeighborOfChange(tile.getLevel(), direction, tile.getBlockPos());
+    }
+
+    private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
             case ENERGY:
                 tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
@@ -103,16 +111,10 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
                 tile.invalidateCapability(Capabilities.HEAT_HANDLER_CAPABILITY, direction);
                 break;
         }
-        tile.sendUpdatePacket();
         tile.markDirty(false);
-        //Notify the neighbor on that side our state changed
-        WorldUtils.notifyNeighborOfChange(tile.getLevel(), direction, tile.getBlockPos());
         //And invalidate any "listeners" we may have that the side changed for a specific transmission type
-        List<Consumer<Direction>> changeListeners = configChangeListeners.get(transmissionType);
-        if (changeListeners != null) {
-            for (Consumer<Direction> listener : changeListeners) {
-                listener.accept(direction);
-            }
+        for (Consumer<Direction> listener : configChangeListeners.getOrDefault(transmissionType, Collections.emptyList())) {
+            listener.accept(direction);
         }
     }
 
@@ -296,15 +298,26 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     public void read(CompoundNBT nbtTags) {
         if (nbtTags.contains(NBTConstants.COMPONENT_CONFIG, NBT.TAG_COMPOUND)) {
             CompoundNBT configNBT = nbtTags.getCompound(NBTConstants.COMPONENT_CONFIG);
+            Set<Direction> directionsToUpdate = EnumSet.noneOf(Direction.class);
             for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
                 TransmissionType type = entry.getKey();
                 ConfigInfo info = entry.getValue();
                 info.setEjecting(configNBT.getBoolean(NBTConstants.EJECT + type.ordinal()));
                 CompoundNBT sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
                 for (RelativeSide side : EnumUtils.SIDES) {
-                    NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(dataType, side));
+                    NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> {
+                        if (info.getDataType(side) != dataType) {
+                            info.setDataType(dataType, side);
+                            if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
+                                Direction direction = side.getDirection(tile.getDirection());
+                                sideChangedBasic(type, direction);
+                                directionsToUpdate.add(direction);
+                            }
+                        }
+                    });
                 }
             }
+            WorldUtils.notifyNeighborsOfChange(tile.getLevel(), tile.getBlockPos(), directionsToUpdate);
         }
     }
 
