@@ -62,6 +62,7 @@
   "fission.mekanismgenerators.coolant_tank": "Nádrž Na Chladivo",
   "fission.mekanismgenerators.damage": "Poškodenie: %s",
   "fission.mekanismgenerators.fission_reactor": "Štiepny Reaktor",
+  "fission.mekanismgenerators.force_disabled": "Reaktor musí dosiahnuť bezpečné úrovne poškodenia a teploty predtým ako môže byť reaktivovaný.",
   "fission.mekanismgenerators.fuel_statistics": "Štatistika Paliva",
   "fission.mekanismgenerators.fuel_tank": "Palivová nádrž",
   "fission.mekanismgenerators.heat_capacity": "Kapacita Tepla: %s J/K",

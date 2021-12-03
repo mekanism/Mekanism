@@ -551,7 +551,6 @@
   "direction.mekanism.west": "Vest",
   "direction.mekanism.west.short": "V",
   "disassembler.mekanism.efficiency": "Eficiență: %s",
-  "disassembler.mekanism.extended_vein": "Minerire Grămadă de minereuri extinsa",
   "disassembler.mekanism.fast": "rapid",
   "disassembler.mekanism.mode_change": "Mod comutat la: %s (%s)",
   "disassembler.mekanism.normal": "normal",

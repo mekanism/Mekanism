@@ -80,6 +80,7 @@
   "fission.mekanismgenerators.coolant_tank": "Réservoir de refroidissement",
   "fission.mekanismgenerators.damage": "Dommages: %s",
   "fission.mekanismgenerators.fission_reactor": "Réacteur à Fission",
+  "fission.mekanismgenerators.force_disabled": "Le réacteur doit atteindre des niveaux de température et de dégâts sûrs avant de pouvoir être réactivé.",
   "fission.mekanismgenerators.fuel_statistics": "Statistiques du carburant",
   "fission.mekanismgenerators.fuel_tank": "Réservoir de carburant",
   "fission.mekanismgenerators.heat_capacity": "Capacité thermique: %s J/K",

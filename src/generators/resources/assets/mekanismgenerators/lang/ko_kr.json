@@ -80,6 +80,7 @@
   "fission.mekanismgenerators.coolant_tank": "냉각재 탱크",
   "fission.mekanismgenerators.damage": "데미지: %s",
   "fission.mekanismgenerators.fission_reactor": "원자로",
+  "fission.mekanismgenerators.force_disabled": "리액터가 재가동되기 전에 안전한 대미지와 온도 레벨에 도달해야 합니다.",
   "fission.mekanismgenerators.fuel_statistics": "연료 상세 정보",
   "fission.mekanismgenerators.fuel_tank": "연료 탱크",
   "fission.mekanismgenerators.heat_capacity": "열 용량: %s J/K",

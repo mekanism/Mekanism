@@ -572,7 +572,6 @@
   "direction.mekanism.west": "Захід",
   "direction.mekanism.west.short": "Зх",
   "disassembler.mekanism.efficiency": "Ефективність: %s",
-  "disassembler.mekanism.extended_vein": "розширений видобуток вени",
   "disassembler.mekanism.fast": "швидко",
   "disassembler.mekanism.mode_change": "Режим переключено на %s (%s)",
   "disassembler.mekanism.normal": "нормальний",

@@ -433,7 +433,6 @@
   "direction.mekanism.up": "Opp",
   "direction.mekanism.west": "Vest",
   "disassembler.mekanism.efficiency": "Effektivitet: %s",
-  "disassembler.mekanism.extended_vein": "utvidet venedriving",
   "disassembler.mekanism.fast": "rask",
   "disassembler.mekanism.mode_change": "Modus endret til: %s (%s)",
   "disassembler.mekanism.normal": "normal",
