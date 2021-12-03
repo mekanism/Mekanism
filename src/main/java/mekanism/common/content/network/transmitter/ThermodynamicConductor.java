@@ -13,9 +13,9 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
+import mekanism.common.capabilities.heat.VariableHeatCapacitor;
 import mekanism.common.content.network.HeatNetwork;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -38,7 +38,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     //Default to negative one, so we know we need to calculate it when needed
     private double clientTemperature = -1;
     private final List<IHeatCapacitor> capacitors;
-    public final BasicHeatCapacitor buffer;
+    public final VariableHeatCapacitor buffer;
 
     public ThermodynamicConductor(IBlockProvider blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.HEAT);
