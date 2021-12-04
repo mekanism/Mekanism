@@ -1318,6 +1318,7 @@
   "sound_event.mekanism.tile.machine.metallurgic_infuser": "Гул металлургического наполнителя",
   "sound_event.mekanism.tile.machine.nutritional_liquifier": "Шум блендера",
   "sound_event.mekanism.tile.machine.pigment_extractor": "Работа экстрактора пигмента",
+  "sound_event.mekanism.tile.machine.pigment_mixer": "Миксеры для пигментов",
   "sound_event.mekanism.tile.machine.precision_sawmill": "Шум лесопилки",
   "sound_event.mekanism.tile.machine.pressurized_reaction_chamber": "Гул герметичной реакционной камеры",
   "sound_event.mekanism.tile.machine.purification_chamber": "Гул очищающего механизма",
