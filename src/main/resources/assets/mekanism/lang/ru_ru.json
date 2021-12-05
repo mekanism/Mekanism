@@ -305,6 +305,7 @@
   "configuration.mekanism.no_eject": "Невозможно извлечь",
   "configuration.mekanism.no_eject.tooltip": "Авто-выброс не поддерживается, ручное извлечение всё ещё возможно.",
   "configuration.mekanism.side": "Настройка сторон",
+  "configuration.mekanism.side.clear": "Очистить настройки всех сторон ",
   "configuration.mekanism.slots": "Слоты",
   "configuration.mekanism.strict_input": "Строгий вход",
   "configuration.mekanism.strict_input.enabled": "Строгий вход (%s)",
