@@ -590,7 +590,7 @@
   "dictionary.mekanism.tags_found.fluid": "Etiqueta(s) de Fluido encontradas:",
   "dictionary.mekanism.tags_found.tile_entity_type": "Etiqueta(s) de Entidad Tile encontradas:",
   "dictionary.mekanism.tile_entity_type": "Tipo de Entidad Tile",
-  "dictionary.mekanism.tile_entity_type.desc": "Mostrar Etiquetas de Entidad Tile",
+  "dictionary.mekanism.tile_entity_type.desc": "Mostrar Etiquetas de Entidad de mosaico",
   "direction.mekanism.down": "Abajo",
   "direction.mekanism.east": "Este",
   "direction.mekanism.east.short": "E",
