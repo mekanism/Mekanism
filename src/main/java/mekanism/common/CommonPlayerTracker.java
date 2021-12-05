@@ -2,6 +2,7 @@ package mekanism.common;
 
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.inventory.container.VanillaGhostStackSyncFix;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
 import mekanism.common.network.to_client.PacketPlayerData;
 import mekanism.common.network.to_client.PacketRadiationData;
@@ -35,8 +36,10 @@ public class CommonPlayerTracker {
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         PlayerEntity player = event.getPlayer();
         if (!player.level.isClientSide) {
-            Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), (ServerPlayerEntity) player);
-            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync((ServerPlayerEntity) player));
+            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+            Mekanism.packetHandler.sendTo(new PacketSecurityUpdate(), serverPlayer);
+            player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync(serverPlayer));
+            player.inventoryMenu.addSlotListener(new VanillaGhostStackSyncFix(serverPlayer));
         }
     }
 

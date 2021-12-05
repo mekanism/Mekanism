@@ -238,7 +238,7 @@ public class CommonPlayerTickHandler {
                 return module.getCustomInstance().getMode();
             }
         }
-        return null;
+        return JetpackMode.DISABLED;
     }
 
     @SubscribeEvent
