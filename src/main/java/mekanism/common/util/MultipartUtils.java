@@ -25,15 +25,20 @@ public final class MultipartUtils {
         float f1 = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
         float f2 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
         float f3 = -MathHelper.cos(-pitch * 0.017453292F);
-        float f4 = MathHelper.sin(-pitch * 0.017453292F);
-        float f5 = f2 * f3;
-        float f6 = f1 * f3;
-        double d3 = 5.0D;
+        float lookY = MathHelper.sin(-pitch * 0.017453292F);
+        float lookX = f2 * f3;
+        float lookZ = f1 * f3;
+        double reach = 5.0D;
         if (entity instanceof PlayerEntity) {
-            d3 = ((PlayerEntity) entity).getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
+            reach = ((PlayerEntity) entity).getAttributeValue(ForgeMod.REACH_DISTANCE.get());
         }
-        Vector3d end = start.add(f5 * d3, f4 * d3, f6 * d3);
+        Vector3d end = start.add(lookX * reach, lookY * reach, lookZ * reach);
         return Pair.of(start, end);
+    }
+
+    public static AdvancedRayTraceResult collisionRayTrace(Entity entity, BlockPos pos, Collection<VoxelShape> boxes) {
+        Pair<Vector3d, Vector3d> vecs = getRayTraceVectors(entity);
+        return collisionRayTrace(pos, vecs.getLeft(), vecs.getRight(), boxes);
     }
 
     public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vector3d start, Vector3d end, Collection<VoxelShape> boxes) {

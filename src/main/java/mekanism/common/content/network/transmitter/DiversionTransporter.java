@@ -96,7 +96,8 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public ActionResultType onConfigure(PlayerEntity player, Direction side) {
+    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+        side = getTransmitterTile().getSideLookingAt(player, side);
         DiversionControl newMode = modes[side.ordinal()].getNext();
         updateMode(side, newMode);
         player.sendMessage(MekanismUtils.logFormat(MekanismLang.TOGGLE_DIVERTER.translate(EnumColor.RED, newMode)), Util.NIL_UUID);

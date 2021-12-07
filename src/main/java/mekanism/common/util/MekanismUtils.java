@@ -400,7 +400,7 @@ public final class MekanismUtils {
     }
 
     public static BlockRayTraceResult rayTrace(PlayerEntity player, FluidMode fluidMode) {
-        return rayTrace(player, player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue(), fluidMode);
+        return rayTrace(player, player.getAttributeValue(ForgeMod.REACH_DISTANCE.get()), fluidMode);
     }
 
     public static BlockRayTraceResult rayTrace(PlayerEntity player, double reach) {

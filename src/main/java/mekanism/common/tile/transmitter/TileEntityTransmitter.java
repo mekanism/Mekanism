@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
@@ -44,12 +45,10 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
-import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class TileEntityTransmitter extends CapabilityTileEntity implements IConfigurable, ITickableTileEntity, IAlloyInteraction {
 
@@ -175,26 +174,35 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return loaded;
     }
 
-    @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
-        if (!isRemote()) {
-            Pair<Vector3d, Vector3d> vecs = MultipartUtils.getRayTraceVectors(player);
-            AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(getBlockPos(), vecs.getLeft(), vecs.getRight(), getCollisionBoxes());
-            if (result == null) {
-                return ActionResultType.PASS;
-            }
-            List<Direction> list = new ArrayList<>();
+    public Direction getSideLookingAt(PlayerEntity player, Direction fallback) {
+        Direction side = getSideLookingAt(player);
+        return side == null ? fallback : side;
+    }
+
+    @Nullable
+    public Direction getSideLookingAt(PlayerEntity player) {
+        AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(player, getBlockPos(), getCollisionBoxes());
+        if (result != null && result.valid()) {
+            List<Direction> list = new ArrayList<>(EnumUtils.DIRECTIONS.length);
             byte connections = getTransmitter().getAllCurrentConnections();
             for (Direction dir : EnumUtils.DIRECTIONS) {
                 if (Transmitter.connectionMapContainsSide(connections, dir)) {
                     list.add(dir);
                 }
             }
-            Direction hitSide;
             int boxIndex = result.hit.subHit + 1;
             if (boxIndex < list.size()) {
-                hitSide = list.get(boxIndex);
-            } else {
+                return list.get(boxIndex);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+        if (!isRemote()) {
+            Direction hitSide = getSideLookingAt(player);
+            if (hitSide == null) {
                 if (transmitter.getConnectionTypeRaw(side) != ConnectionType.NONE && onConfigure(player, side) == ActionResultType.SUCCESS) {
                     //Refresh/notify so that we actually update the block and how it can connect given color or things might have changed
                     getTransmitter().refreshConnections();

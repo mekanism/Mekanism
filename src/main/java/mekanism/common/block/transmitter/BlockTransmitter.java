@@ -36,11 +36,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class BlockTransmitter extends BlockMekanism implements IStateFluidLoggable {
 
@@ -117,8 +115,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             return getCenter();
         }
         //TODO: Try to cache some of this? At the very least the collision boxes
-        Pair<Vector3d, Vector3d> vecs = MultipartUtils.getRayTraceVectors(context.getEntity());
-        AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(pos, vecs.getLeft(), vecs.getRight(), tile.getCollisionBoxes());
+        AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(context.getEntity(), pos, tile.getCollisionBoxes());
         if (result != null && result.valid()) {
             return result.bounds;
         }
