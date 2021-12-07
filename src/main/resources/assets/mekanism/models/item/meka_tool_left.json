@@ -1,0 +1,15 @@
+{
+    "loader": "forge:obj",
+    "model": "mekanism:models/entity/mekatool_left.obj",
+    "flip-v": "true",
+    "display": {
+        "firstperson_lefthand": {
+            "rotation": [ 90, 0, 0 ],
+            "translation": [ -15, -3, 0 ]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [ 90, 0, 0 ],
+            "translation": [ -15.5, -10, -4 ]
+        }
+    }
+}

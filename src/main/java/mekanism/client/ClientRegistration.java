@@ -1,8 +1,11 @@
 package mekanism.client;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Table.Cell;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.text.EnumColor;
@@ -84,6 +87,7 @@ import mekanism.client.particle.LaserParticle;
 import mekanism.client.particle.RadiationParticle;
 import mekanism.client.particle.ScubaBubbleParticle;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderFirstPersonMekaSuitArms;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
@@ -120,6 +124,7 @@ import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.item.block.ItemBlockCardboardBox;
+import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
@@ -149,6 +154,7 @@ import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -164,6 +170,7 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.SeparatePerspectiveModel;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -176,12 +183,17 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ClientRegistration {
 
+    private static final FieldReflectionHelper<SeparatePerspectiveModel.BakedModel, IBakedModel> SEPARATE_PERSPECTIVE_BASE_MODEL =
+          new FieldReflectionHelper<>(SeparatePerspectiveModel.BakedModel.class, "baseModel", () -> null);
+    private static final FieldReflectionHelper<SeparatePerspectiveModel.BakedModel, ImmutableMap<TransformType, IBakedModel>> SEPARATE_PERSPECTIVE_PERSPECTIVES =
+          new FieldReflectionHelper<>(SeparatePerspectiveModel.BakedModel.class, "perspectives", ImmutableMap::of);
     private static final Map<ResourceLocation, CustomModelRegistryObject> customModels = new ConcurrentHashMap<>();
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new ClientTickHandler());
         MinecraftForge.EVENT_BUS.register(new RenderTickHandler());
+        MinecraftForge.EVENT_BUS.register(new RenderFirstPersonMekaSuitArms());
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, SoundHandler::onTilePlaySound);
         if (ModList.get().isLoaded(MekanismHooks.JEI_MOD_ID)) {
             //Note: We check this directly instead of using our value stored in Mekanism hooks
@@ -532,8 +544,20 @@ public class ClientRegistration {
 
     public static void addLitModel(IItemProvider... providers) {
         for (IItemProvider provider : providers) {
-            addCustomModel(provider, (orig, evt) -> new LightedBakedModel(orig));
+            addCustomModel(provider, (orig, evt) -> lightBakedModel(orig));
         }
+    }
+
+    private static IBakedModel lightBakedModel(IBakedModel orig) {
+        if (orig instanceof SeparatePerspectiveModel.BakedModel) {
+            SeparatePerspectiveModel.BakedModel separatePerspectiveModel = (SeparatePerspectiveModel.BakedModel) orig;
+            //Transform inner components of the separate perspective model and then return the original model
+            SEPARATE_PERSPECTIVE_BASE_MODEL.transformValue(separatePerspectiveModel, Objects::nonNull, ClientRegistration::lightBakedModel);
+            SEPARATE_PERSPECTIVE_PERSPECTIVES.transformValue(separatePerspectiveModel, v -> !v.isEmpty(), org -> ImmutableMap.copyOf(Maps.transformValues(org,
+                  ClientRegistration::lightBakedModel)));
+            return orig;
+        }
+        return new LightedBakedModel(orig);
     }
 
     @FunctionalInterface

@@ -24,7 +24,8 @@ public class MekanismModelCache extends BaseModelCache {
 
     public final OBJModelData MEKASUIT = registerOBJ(Mekanism.rl("models/entity/mekasuit.obj"));
     public final ModuleOBJModelData MEKASUIT_MODULES = register(Mekanism.rl("models/entity/mekasuit_modules.obj"), ModuleOBJModelData::new);
-    public final OBJModelData MEKATOOL = registerOBJ(Mekanism.rl("models/entity/mekatool.obj"));
+    public final OBJModelData MEKATOOL_LEFT_HAND = registerOBJ(Mekanism.rl("models/entity/mekatool_left.obj"));
+    public final OBJModelData MEKATOOL_RIGHT_HAND = registerOBJ(Mekanism.rl("models/entity/mekatool_right.obj"));
 
     public final JSONModelData LIQUIFIER_BLADE = registerJSON(Mekanism.rl("block/liquifier_blade"));
     public final JSONModelData PIGMENT_MIXER_SHAFT = registerJSON(Mekanism.rl("block/pigment_mixer_shaft"));

@@ -123,6 +123,32 @@ public class MekaSuitArmor extends CustomArmor {
         MekanismModelCache.INSTANCE.reloadCallback(cache::invalidateAll);
     }
 
+    public void renderArm(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, LivingEntity entity,
+          boolean rightHand) {
+        ModelPos armPos = rightHand ? ModelPos.RIGHT_ARM : ModelPos.LEFT_ARM;
+        ArmorQuads armorQuads = cache.getUnchecked(key(entity));
+        boolean hasOpaqueArm = armorQuads.getOpaqueMap().containsKey(armPos);
+        boolean hasTransparentArm = armorQuads.getTransparentMap().containsKey(armPos);
+        if (hasOpaqueArm || hasTransparentArm) {
+            matrix.pushPose();
+            armPos.translate(this, matrix, entity);
+            MatrixStack.Entry last = matrix.last();
+            if (hasOpaqueArm) {
+                IVertexBuilder builder = ItemRenderer.getFoilBufferDirect(renderer, MekanismRenderType.getMekaSuit(), false, hasEffect);
+                for (BakedQuad quad : armorQuads.getOpaqueMap().get(armPos)) {
+                    builder.addVertexData(last, quad, 1, 1, 1, 1, light, overlayLight);
+                }
+            }
+            if (hasTransparentArm) {
+                IVertexBuilder builder = ItemRenderer.getFoilBufferDirect(renderer, RenderType.entityTranslucent(AtlasTexture.LOCATION_BLOCKS), false, hasEffect);
+                for (BakedQuad quad : armorQuads.getTransparentMap().get(armPos)) {
+                    builder.addVertexData(last, quad, 1, 1, 1, 1, light, overlayLight);
+                }
+            }
+            matrix.popPose();
+        }
+    }
+
     @Override
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
           LivingEntity entity, ItemStack stack) {
@@ -326,6 +352,16 @@ public class MekaSuitArmor extends CustomArmor {
         }
     }
 
+    private static void processMekaTool(OBJModelData mekaToolModel, Set<String> ignored) {
+        for (IModelGeometryPart part : mekaToolModel.getModel().getParts()) {
+            String name = part.name();
+            if (name.contains(OVERRIDDEN_TAG)) {
+                //Note: We just ignore the pieces here as the override will be rendered as part of the item's model
+                ignored.add(processOverrideName(name, "mekatool"));
+            }
+        }
+    }
+
     private ArmorQuads createQuads(Object2BooleanMap<ModuleModelSpec> modules, Set<EquipmentSlotType> wornParts, boolean hasMekaToolLeft, boolean hasMekaToolRight) {
         Map<ModelData, Map<ModelPos, Set<String>>> specialQuadsToRender = new Object2ObjectOpenHashMap<>();
         Map<ModelData, Map<ModelPos, Set<String>>> specialLEDQuadsToRender = new Object2ObjectOpenHashMap<>();
@@ -368,16 +404,12 @@ public class MekaSuitArmor extends CustomArmor {
         }
 
         // handle mekatool overrides
-        if (type == EquipmentSlotType.CHEST && hasMekaToolRight) {
-            //TODO - 10.1: Make use of hasMekaToolLeft and ignore pieces of the left arm's model?
-            // also make sure to then use a reversed model of the meka tool so that it ends up on
-            // the inside of the arm on the left side third person
-            for (IModelGeometryPart part : MekanismModelCache.INSTANCE.MEKATOOL.getModel().getParts()) {
-                String name = part.name();
-                if (name.contains(OVERRIDDEN_TAG)) {
-                    //Note: We just ignore the pieces here as the override will be rendered as part of the item's model
-                    ignored.add(processOverrideName(name, "mekatool"));
-                }
+        if (type == EquipmentSlotType.CHEST) {
+            if (hasMekaToolLeft) {
+                processMekaTool(MekanismModelCache.INSTANCE.MEKATOOL_LEFT_HAND, ignored);
+            }
+            if (hasMekaToolRight) {
+                processMekaTool(MekanismModelCache.INSTANCE.MEKATOOL_RIGHT_HAND, ignored);
             }
         }
 
