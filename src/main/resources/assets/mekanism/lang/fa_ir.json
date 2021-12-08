@@ -1,4 +1,10 @@
 {
+  "assemblicator.mekanism.encode_formula": "تنظیم فرم",
+  "assemblicator.mekanism.fill_empty": "خالی/پر کردن صفحه",
+  "auto.mekanism.eject": "ارسال اتوماتیک",
+  "auto.mekanism.pull": "برداشت اتوماتیک",
+  "auto.mekanism.sort": "مرتب سازی خودکار",
+  "block.mekanism.advanced_bin": "انبار پیشرفته",
   "key.mekanism.description": "Show description",
   "key.mekanism.details": "Show details"
 }
