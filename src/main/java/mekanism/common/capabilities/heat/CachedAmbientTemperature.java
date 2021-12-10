@@ -32,14 +32,15 @@ public class CachedAmbientTemperature implements DoubleSupplier {
         double biomeAmbientTemp = ambientTemperature[index];
         if (biomeAmbientTemp == -1) {
             World world = worldSupplier.get();
-            if (world != null) {
-                BlockPos pos = positionSupplier.get();
-                if (side != null) {
-                    pos = pos.relative(side);
-                }
-                return ambientTemperature[index] = HeatAPI.getAmbientTemp(world, pos);
+            if (world == null) {
+                return HeatAPI.AMBIENT_TEMP;
             }
+            BlockPos pos = positionSupplier.get();
+            if (side != null) {
+                pos = pos.relative(side);
+            }
+            return ambientTemperature[index] = HeatAPI.getAmbientTemp(world, pos);
         }
-        return HeatAPI.AMBIENT_TEMP;
+        return biomeAmbientTemp;
     }
 }
