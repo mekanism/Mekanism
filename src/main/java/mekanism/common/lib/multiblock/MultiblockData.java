@@ -2,6 +2,7 @@ package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -135,9 +136,26 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     protected double calculateAverageAmbientTemperature(World world) {
-        //Take a rough average of the biome temperature between the min and max positions of the multiblock
-        double biomeTemp = (world.getBiome(getMinPos()).getTemperature(getMinPos()) + world.getBiome(getMaxPos()).getTemperature(getMaxPos())) / 2;
-        return HeatAPI.getAmbientTemp(biomeTemp);
+        //Take a rough average of the biome temperature by calculating the average of all the corners of the multiblock
+        BlockPos min = getMinPos();
+        BlockPos max = getMaxPos();
+        return HeatAPI.getAmbientTemp(getBiomeTemp(world,
+              min,
+              new BlockPos(max.getX(), min.getY(), min.getZ()),
+              new BlockPos(min.getX(), min.getY(), max.getZ()),
+              new BlockPos(max.getX(), min.getY(), max.getZ()),
+              new BlockPos(min.getX(), max.getY(), min.getZ()),
+              new BlockPos(max.getX(), max.getY(), min.getZ()),
+              new BlockPos(min.getX(), max.getY(), max.getZ()),
+              max
+        ));
+    }
+
+    private static double getBiomeTemp(World world, BlockPos... positions) {
+        if (positions.length == 0) {
+            throw new IllegalArgumentException("No positions given.");
+        }
+        return Arrays.stream(positions).mapToDouble(pos -> world.getBiome(pos).getTemperature(pos)).sum() / positions.length;
     }
 
     public boolean setShape(IShape shape) {
