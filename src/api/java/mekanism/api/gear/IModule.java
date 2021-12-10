@@ -43,7 +43,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
     boolean isEnabled();
 
     /**
-     * Gets if this module type ({@link #getData()}) handles mode changes and if this module is configured to handle mode changes in the Module Tweaker.
+     * Gets if this module type ({@link #getData()}) can currently handle mode changes and if this module is configured to handle mode changes in the Module Tweaker.
      *
      * @return {@code true} if this module can handle mode changes.
      */

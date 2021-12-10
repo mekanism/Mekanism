@@ -278,7 +278,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Override
     public boolean handlesModeChange() {
-        return data.handlesModeChange() && handleModeChange.get();
+        return data.handlesModeChange() && handleModeChange.get() && (isEnabled() || customModule.canChangeModeWhenDisabled(this));
     }
 
     public void setModeHandlingDisabledForce() {

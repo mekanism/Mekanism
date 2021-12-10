@@ -77,6 +77,11 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
     }
 
     @Override
+    public boolean canChangeModeWhenDisabled(IModule<ModuleMagneticAttractionUnit> module) {
+        return true;
+    }
+
+    @Override
     public void changeMode(IModule<ModuleMagneticAttractionUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
         module.toggleEnabled(player, MekanismLang.MODULE_MAGNETIC_ATTRACTION.translate());
     }

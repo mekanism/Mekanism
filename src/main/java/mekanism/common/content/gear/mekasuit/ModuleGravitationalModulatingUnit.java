@@ -39,6 +39,11 @@ public class ModuleGravitationalModulatingUnit implements ICustomModule<ModuleGr
     }
 
     @Override
+    public boolean canChangeModeWhenDisabled(IModule<ModuleGravitationalModulatingUnit> module) {
+        return true;
+    }
+
+    @Override
     public void changeMode(IModule<ModuleGravitationalModulatingUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
         module.toggleEnabled(player, MekanismLang.MODULE_GRAVITATIONAL_MODULATION.translate());
     }

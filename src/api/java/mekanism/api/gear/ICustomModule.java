@@ -75,6 +75,18 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
     }
 
     /**
+     * Called to check if this module can change modes when disabled or if it should be skipped. This should be overridden for modules where the mode change key toggles
+     * whether the module is active.
+     *
+     * @param module Module instance.
+     *
+     * @return {@code true} if this module can change modes when disabled.
+     */
+    default boolean canChangeModeWhenDisabled(IModule<MODULE> module) {
+        return false;
+    }
+
+    /**
      * Called to change the mode of the module. This will only be called if {@link ModuleData#handlesModeChange()} is {@code true}. {@link
      * IModule#displayModeChange(PlayerEntity, ITextComponent, IHasTextComponent)} is provided to help display the mode change when {@code displayChangeMessage} is {@code
      * true}.

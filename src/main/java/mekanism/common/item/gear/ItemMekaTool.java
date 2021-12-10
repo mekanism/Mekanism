@@ -344,7 +344,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @Nonnull EquipmentSlotType slotType) {
-        return IModeItem.super.supportsSlotType(stack, slotType) && getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.handlesModeChange());
+        return IModeItem.super.supportsSlotType(stack, slotType) && getModules(stack).stream().anyMatch(Module::handlesModeChange);
     }
 
     @Override

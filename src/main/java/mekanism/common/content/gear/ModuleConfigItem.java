@@ -49,14 +49,21 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
         data.set(val);
         // validity checks
         for (Module<?> m : ModuleHelper.INSTANCE.loadAll(module.getContainer())) {
-            // disable other exclusive modules
-            if (name.equals(Module.ENABLED_KEY) && val == Boolean.TRUE && module.getData().isExclusive()) {
-                if (m.getData().isExclusive() && m.getData() != module.getData()) {
-                    m.setDisabledForce(callback != null);
+            boolean checkModeState;
+            if (name.equals(Module.ENABLED_KEY) && val == Boolean.TRUE) {
+                // disable other exclusive modules
+                if (module.getData().isExclusive()) {
+                    if (m.getData().isExclusive() && m.getData() != module.getData()) {
+                        m.setDisabledForce(callback != null);
+                    }
                 }
+                //If enabled state of the module changes, recheck about mode changes
+                checkModeState = true;
+            } else {
+                checkModeState = name.equals(Module.HANDLE_MODE_CHANGE_KEY) && val == Boolean.TRUE;
             }
             // turn off mode change handling for other modules
-            if (name.equals(Module.HANDLE_MODE_CHANGE_KEY) && val == Boolean.TRUE && module.handlesModeChange()) {
+            if (checkModeState && module.handlesModeChange()) {
                 if (m.handlesModeChange() && m.getData() != module.getData()) {
                     m.setModeHandlingDisabledForce();
                 }

@@ -22,7 +22,7 @@ public class PacketModeChange implements IMekanismPacket {
         this(slot, shift, false);
     }
 
-    public PacketModeChange(EquipmentSlotType slot, int shift, boolean displayChangeMessage) {
+    private PacketModeChange(EquipmentSlotType slot, int shift, boolean displayChangeMessage) {
         this.slot = slot;
         this.shift = shift;
         this.displayChangeMessage = displayChangeMessage;

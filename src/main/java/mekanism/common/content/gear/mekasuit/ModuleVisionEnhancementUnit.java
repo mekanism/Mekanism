@@ -30,6 +30,11 @@ public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEn
     }
 
     @Override
+    public boolean canChangeModeWhenDisabled(IModule<ModuleVisionEnhancementUnit> module) {
+        return true;
+    }
+
+    @Override
     public void changeMode(IModule<ModuleVisionEnhancementUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
         module.toggleEnabled(player, MekanismLang.MODULE_VISION_ENHANCEMENT.translate());
     }
