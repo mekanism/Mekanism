@@ -11,14 +11,14 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiConfirmationDialog extends GuiWindow {
 
-    private final ITextComponent title;
+    private final WrappedTextRenderer wrappedTextRenderer;
 
     private GuiConfirmationDialog(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent title, Runnable onConfirm, DialogType type) {
         super(gui, x, y, width, height, WindowType.CONFIRMATION);
-        this.title = title;
+        this.wrappedTextRenderer = new WrappedTextRenderer(this, title);
         active = true;
 
-        addChild(new TranslationButton(gui, relativeX + width / 2 - 102 / 2, relativeY + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, this::close));
+        addChild(new TranslationButton(gui, relativeX + width / 2 - 51, relativeY + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, this::close));
         addChild(new TranslationButton(gui, relativeX + width / 2 + 1, relativeY + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, () -> {
             onConfirm.run();
             close();
@@ -26,13 +26,15 @@ public class GuiConfirmationDialog extends GuiWindow {
     }
 
     public static void show(IGuiWrapper gui, ITextComponent title, Runnable onConfirm, DialogType type) {
-        gui.addWindow(new GuiConfirmationDialog(gui, gui.getWidth() / 2 - 140 / 2, gui.getHeight() / 2 - 64 / 2, 140, 64, title, onConfirm, type));
+        int width = 140;
+        int height = 33 + WrappedTextRenderer.calculateHeightRequired(gui.getFont(), title, width, width - 10);
+        gui.addWindow(new GuiConfirmationDialog(gui, (gui.getWidth() - width) / 2, (gui.getHeight() - height) / 2, width, height, title, onConfirm, type));
     }
 
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        drawWrappedCenteredText(matrix, title, relativeX + (width / 2), relativeY + 10, titleTextColor(), width - 10);
+        wrappedTextRenderer.renderCentered(matrix, relativeX + (width / 2F), relativeY + 6, titleTextColor(), width - 10);
     }
 
     @Override

@@ -6,7 +6,7 @@ import mekanism.client.gui.element.window.filter.GuiModIDFilter;
 import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 
-public class GuiQIOModIDFilter extends GuiModIDFilter<QIOModIDFilter, TileEntityQIOFilterHandler> {
+public class GuiQIOModIDFilter extends GuiModIDFilter<QIOModIDFilter, TileEntityQIOFilterHandler> implements GuiQIOFilterHelper {
 
     public static GuiQIOModIDFilter create(IGuiWrapper gui, TileEntityQIOFilterHandler tile) {
         return new GuiQIOModIDFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);

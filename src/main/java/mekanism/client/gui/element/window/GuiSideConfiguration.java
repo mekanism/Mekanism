@@ -140,6 +140,11 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.CONFIG_TYPE.translate(currentType), 5);
-        drawString(matrix, MekanismLang.SLOTS.translate(), relativeX + 67, relativeY + 96, subheadingTextColor());
+        drawCenteredText(matrix, MekanismLang.SLOTS.translate(), relativeX + 80, relativeY + 96, subheadingTextColor());
+    }
+
+    @Override
+    protected int getTitlePadEnd() {
+        return super.getTitlePadEnd() + 15;
     }
 }

@@ -6,7 +6,7 @@ import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 
-public class GuiQIOTagFilter extends GuiTagFilter<QIOTagFilter, TileEntityQIOFilterHandler> {
+public class GuiQIOTagFilter extends GuiTagFilter<QIOTagFilter, TileEntityQIOFilterHandler> implements GuiQIOFilterHelper {
 
     public static GuiQIOTagFilter create(IGuiWrapper gui, TileEntityQIOFilterHandler tile) {
         return new GuiQIOTagFilter(gui, (gui.getWidth() - 152) / 2, 15, tile, null);

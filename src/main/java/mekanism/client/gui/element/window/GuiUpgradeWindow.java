@@ -1,6 +1,8 @@
 package mekanism.client.gui.element.window;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import java.util.EnumMap;
+import java.util.Map;
 import mekanism.api.Upgrade;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.IGuiWrapper;
@@ -27,6 +29,8 @@ import net.minecraft.util.text.ITextComponent;
 
 public class GuiUpgradeWindow extends GuiWindow {
 
+    private final Map<Upgrade, WrappedTextRenderer> upgradeTypeData = new EnumMap<>(Upgrade.class);
+    private final WrappedTextRenderer noSelection = new WrappedTextRenderer(this, MekanismLang.UPGRADE_NO_SELECTION.translate());
     private final TileEntityMekanism tile;
     private final MekanismButton removeButton;
     private final GuiUpgradeScrollList scrollList;
@@ -74,7 +78,8 @@ public class GuiUpgradeWindow extends GuiWindow {
             Upgrade selectedType = scrollList.getSelection();
             int amount = tile.getComponent().getUpgrades(selectedType);
             int textY = relativeY + 20;
-            int lines = drawWrappedTextWithScale(matrix, MekanismLang.UPGRADE_TYPE.translate(selectedType), relativeX + 74, textY, screenTextColor(), 56, 0.6F);
+            WrappedTextRenderer textRenderer = upgradeTypeData.computeIfAbsent(selectedType, type -> new WrappedTextRenderer(this, MekanismLang.UPGRADE_TYPE.translate(type)));
+            int lines = textRenderer.renderWithScale(matrix, relativeX + 74, textY, screenTextColor(), 56, 0.6F);
             textY += 6 * lines + 2;
             drawTextWithScale(matrix, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), relativeX + 74, textY, screenTextColor(), 0.6F);
             for (ITextComponent component : UpgradeUtils.getInfo(tile, selectedType)) {
@@ -83,7 +88,7 @@ public class GuiUpgradeWindow extends GuiWindow {
                 drawTextWithScale(matrix, component, relativeX + 74, textY, screenTextColor(), 0.6F);
             }
         } else {
-            drawTextWithScale(matrix, MekanismLang.UPGRADE_NO_SELECTION.translate(), relativeX + 74, relativeY + 20, screenTextColor(), 0.8F);
+            noSelection.renderWithScale(matrix, relativeX + 74, relativeY + 20, screenTextColor(), 56, 0.8F);
         }
     }
 }

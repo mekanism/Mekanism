@@ -130,4 +130,15 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
         ItemStack result = filter.getResult();
         return result.isEmpty() ? Collections.emptyList() : Collections.singletonList(result);
     }
+
+    @Nullable
+    @Override
+    public GuiFilterSelect<TileEntityOredictionificator> getFilterSelect(IGuiWrapper gui, TileEntityOredictionificator tileEntityOredictionificator) {
+        return null;
+    }
+
+    @Override
+    public boolean hasFilterSelect() {
+        return false;
+    }
 }

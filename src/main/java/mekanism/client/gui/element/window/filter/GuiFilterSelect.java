@@ -64,7 +64,7 @@ public abstract class GuiFilterSelect<TILE extends TileEntityMekanism & ITileFil
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        drawString(matrix, MekanismLang.CREATE_FILTER_TITLE.translate(), relativeX + 38, relativeY + 6, titleTextColor());
+        drawTitleText(matrix, MekanismLang.CREATE_FILTER_TITLE.translate(), 6);
     }
 
     @FunctionalInterface

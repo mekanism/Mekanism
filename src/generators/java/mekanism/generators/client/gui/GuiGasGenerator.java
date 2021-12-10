@@ -38,7 +38,10 @@ public class GuiGasGenerator extends GuiMekanismTile<TileEntityGasGenerator, Mek
         renderTitleText(matrix);
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         ITextComponent component = GeneratorsLang.GAS_BURN_RATE.translate(tile.getUsed());
-        drawString(matrix, component, imageWidth - 8 - getStringWidth(component), inventoryLabelY, titleTextColor());
+        int left = inventoryLabelX + getStringWidth(inventory.getDisplayName()) + 4;
+        int end = imageWidth - 8;
+        left = Math.max(left, end - getStringWidth(component));
+        drawTextScaledBound(matrix, component, left, inventoryLabelY, titleTextColor(), end - left);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

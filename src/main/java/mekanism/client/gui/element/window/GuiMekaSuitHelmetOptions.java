@@ -45,7 +45,7 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
 
-        drawCenteredTextScaledBound(matrix, MekanismLang.HELMET_OPTIONS.translate(), 120, 6, titleTextColor());
+        drawTitleText(matrix, MekanismLang.HELMET_OPTIONS.translate(), 6);
         drawTextExact(matrix, MekanismLang.HUD_OVERLAY.translate(), relativeX + 7, relativeY + 20, headingTextColor());
 
         drawScaledCenteredText(matrix, MekanismLang.DEFAULT.translate(), relativeX + 21, relativeY + 52, subheadingTextColor(), 0.8F);

@@ -65,8 +65,8 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         }
         init();
         if (!isFocusOverlay()) {
-            if (isNew && getFilterSelect(gui, tile) != null) {
-                //If it is a new filter and we have a filter select screen add a back button instead of a close button
+            if (isNew && hasFilterSelect()) {
+                //If it is a new filter, and we have a filter select screen add a back button instead of a close button
                 addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), this::openFilterSelect));
             } else {
                 super.addCloseButton();
@@ -75,6 +75,15 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         if (filter.hasFilter()) {
             slotDisplay.updateStackList();
         }
+    }
+
+    @Override
+    protected int getTitlePadStart() {
+        if (isNew && hasFilterSelect()) {
+            //Extra padding for back button
+            return super.getTitlePadStart() + 3;
+        }
+        return super.getTitlePadStart();
     }
 
     @Override
@@ -185,7 +194,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        drawTextScaledBound(matrix, (isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), relativeX + 30, relativeY + 6, titleTextColor(), 110);
+        drawTitleText(matrix, (isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), 6);
     }
 
     @Override

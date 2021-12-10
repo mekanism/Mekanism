@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.SpecialColors;
 import net.minecraft.client.gui.FontRenderer;
@@ -52,6 +53,12 @@ public interface IFancyFontRenderer {
 
     default void drawTitleText(MatrixStack matrix, ITextComponent text, float y) {
         drawCenteredTextScaledBound(matrix, text, getXSize() - 8, y, titleTextColor());
+    }
+
+    default void drawScaledCenteredTextScaledBound(MatrixStack matrix, ITextComponent text, float left, float y, int color, float maxX, float textScale) {
+        float width = getStringWidth(text) * textScale;
+        float scale = Math.min(1, maxX / width) * textScale;
+        drawScaledCenteredText(matrix, text, left, y, color, scale);
     }
 
     default void drawScaledCenteredText(MatrixStack matrix, ITextComponent text, float left, float y, int color, float scale) {
@@ -117,30 +124,42 @@ public interface IFancyFontRenderer {
         MekanismRenderer.resetColor();
     }
 
+    /**
+     * @apiNote Consider caching the {@link WrappedTextRenderer} instead of using this method.
+     */
     default int drawWrappedTextWithScale(MatrixStack matrix, ITextComponent text, float x, float y, int color, float maxLength, float scale) {
-        return new WrappedTextRenderer(this).renderWithScale(matrix, text.getString(), x, y, color, maxLength, scale);
+        return new WrappedTextRenderer(this, text).renderWithScale(matrix, x, y, color, maxLength, scale);
     }
 
+    /**
+     * @apiNote Consider caching the {@link WrappedTextRenderer} instead of using this method.
+     */
     default void drawWrappedCenteredText(MatrixStack matrix, ITextComponent text, float x, float y, int color, float maxLength) {
-        new WrappedTextRenderer(this).renderCentered(matrix, text.getString(), x, y, color, maxLength);
+        new WrappedTextRenderer(this, text).renderCentered(matrix, x, y, color, maxLength);
     }
 
     // efficient tool to draw word-by-word wrapped text based on a horizontal bound. looks intimidating but runs in O(n)
     class WrappedTextRenderer {
 
-        private final IFancyFontRenderer font;
         private final List<Pair<ITextComponent, Float>> linesToDraw = new ArrayList<>();
-        private StringBuilder lineBuilder = new StringBuilder(), wordBuilder = new StringBuilder();
-        private float lineLength = 0, wordLength = 0;
-        private final float SPACE_LENGTH;
+        private final IFancyFontRenderer font;
+        private final String text;
+        @Nullable
+        private FontRenderer lastFont;
+        private float lastMaxLength = -1;
+        private float lineLength = 0;
 
-        WrappedTextRenderer(IFancyFontRenderer font) {
-            this.font = font;
-            SPACE_LENGTH = font.getFont().width(" ");
+        public WrappedTextRenderer(IFancyFontRenderer font, ITextComponent text) {
+            this(font, text.getString());
         }
 
-        void renderCentered(MatrixStack matrix, String text, float x, float y, int color, float maxLength) {
-            calculateLines(text, maxLength);
+        public WrappedTextRenderer(IFancyFontRenderer font, String text) {
+            this.font = font;
+            this.text = text;
+        }
+
+        public void renderCentered(MatrixStack matrix, float x, float y, int color, float maxLength) {
+            calculateLines(maxLength);
             float startY = y;
             for (Pair<ITextComponent, Float> p : linesToDraw) {
                 font.drawTextExact(matrix, p.getLeft(), x - p.getRight() / 2, startY, color);
@@ -148,9 +167,9 @@ public interface IFancyFontRenderer {
             }
         }
 
-        int renderWithScale(MatrixStack matrix, String text, float x, float y, int color, float maxLength, float scale) {
+        public int renderWithScale(MatrixStack matrix, float x, float y, int color, float maxLength, float scale) {
             //Divide by scale for calculating actual max length so that when the text is scaled it has the proper total space available
-            calculateLines(text, maxLength / scale);
+            calculateLines(maxLength / scale);
             font.prepTextScale(matrix, m -> {
                 int startY = 0;
                 for (Pair<ITextComponent, Float> p : linesToDraw) {
@@ -161,26 +180,39 @@ public interface IFancyFontRenderer {
             return linesToDraw.size();
         }
 
-        void calculateLines(String text, float maxLength) {
-            for (char c : text.toCharArray()) {
-                if (c == ' ') {
-                    addWord(maxLength);
-                    continue;
+        void calculateLines(float maxLength) {
+            //If something changed since the last time we calculated it
+            FontRenderer font = this.font.getFont();
+            if (font != null && (lastFont != font || lastMaxLength != maxLength)) {
+                lastFont = font;
+                lastMaxLength = maxLength;
+                linesToDraw.clear();
+                StringBuilder lineBuilder = new StringBuilder();
+                StringBuilder wordBuilder = new StringBuilder();
+                int spaceLength = lastFont.width(" ");
+                int wordLength = 0;
+                for (char c : text.toCharArray()) {
+                    if (c == ' ') {
+                        lineBuilder = addWord(lineBuilder, wordBuilder, maxLength, spaceLength, wordLength);
+                        wordBuilder = new StringBuilder();
+                        wordLength = 0;
+                        continue;
+                    }
+                    wordBuilder.append(c);
+                    wordLength += lastFont.width(Character.toString(c));
                 }
-                wordBuilder.append(c);
-                wordLength += font.getFont().width(Character.toString(c));
-            }
-            if (wordBuilder.length() > 0) {
-                addWord(maxLength);
-            }
-            if (lineBuilder.length() > 0) {
-                linesToDraw.add(Pair.of(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
+                if (wordBuilder.length() > 0) {
+                    lineBuilder = addWord(lineBuilder, wordBuilder, maxLength, spaceLength, wordLength);
+                }
+                if (lineBuilder.length() > 0) {
+                    linesToDraw.add(Pair.of(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
+                }
             }
         }
 
-        void addWord(float maxLength) {
+        StringBuilder addWord(StringBuilder lineBuilder, StringBuilder wordBuilder, float maxLength, int spaceLength, int wordLength) {
             // ignore spacing if this is the first word of the line
-            float spacingLength = lineBuilder.length() == 0 ? 0 : SPACE_LENGTH;
+            float spacingLength = lineBuilder.length() == 0 ? 0 : spaceLength;
             if (lineLength + spacingLength + wordLength > maxLength) {
                 linesToDraw.add(Pair.of(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
                 lineBuilder = new StringBuilder(wordBuilder);
@@ -192,8 +224,28 @@ public interface IFancyFontRenderer {
                 lineBuilder.append(wordBuilder);
                 lineLength += spacingLength + wordLength;
             }
-            wordLength = 0;
-            wordBuilder = new StringBuilder();
+            return lineBuilder;
+        }
+
+        public static int calculateHeightRequired(FontRenderer font, ITextComponent text, int width, float maxLength) {
+            return calculateHeightRequired(font, text.getString(), width, maxLength);
+        }
+
+        public static int calculateHeightRequired(FontRenderer font, String text, int width, float maxLength) {
+            //TODO: Come up with a better way of doing this
+            WrappedTextRenderer wrappedTextRenderer = new WrappedTextRenderer(new IFancyFontRenderer() {
+                @Override
+                public int getXSize() {
+                    return width;
+                }
+
+                @Override
+                public FontRenderer getFont() {
+                    return font;
+                }
+            }, text);
+            wrappedTextRenderer.calculateLines(maxLength);
+            return 9 * wrappedTextRenderer.linesToDraw.size();
         }
     }
 }

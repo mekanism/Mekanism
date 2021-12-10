@@ -89,7 +89,12 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
-        drawString(matrix, MekanismLang.INPUT.translate(), relativeX + 38, relativeY + 81, subheadingTextColor());
-        drawString(matrix, MekanismLang.OUTPUT.translate(), relativeX + 104, relativeY + 68, subheadingTextColor());
+        drawCenteredText(matrix, MekanismLang.INPUT.translate(), relativeX + 51, relativeY + 81, subheadingTextColor());
+        drawCenteredText(matrix, MekanismLang.OUTPUT.translate(), relativeX + 121, relativeY + 68, subheadingTextColor());
+    }
+
+    @Override
+    protected int getTitlePadEnd() {
+        return super.getTitlePadEnd() + 15;
     }
 }

@@ -8,8 +8,10 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 public interface GuiFilterHelper<TILE extends TileEntityMekanism & ITileFilterHolder<?>> {
 
     @Nullable
-    default GuiFilterSelect<TILE> getFilterSelect(IGuiWrapper gui, TILE tile) {
-        return null;
+    GuiFilterSelect<TILE> getFilterSelect(IGuiWrapper gui, TILE tile);
+
+    default boolean hasFilterSelect() {
+        return true;
     }
 
     int getRelativeX();

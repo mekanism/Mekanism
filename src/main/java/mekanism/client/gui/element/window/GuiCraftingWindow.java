@@ -11,7 +11,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
-import net.minecraft.util.text.ITextComponent;
 
 public class GuiCraftingWindow extends GuiWindow {
 
@@ -47,13 +46,7 @@ public class GuiCraftingWindow extends GuiWindow {
     @Override
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
-        //Increment index by one so we show: 1, 2, and 3 instead of 0, 1, and 2
-        // Note: We do some of the math here locally instead of using drawTitleText so that we
-        // can shift it slightly further away from the button and make it look slightly better
-        ITextComponent title = MekanismLang.CRAFTING_WINDOW.translate(index + 1);
-        int maxLength = getXSize() - 10;
-        float scale = Math.min(1, maxLength / getStringWidth(title));
-        float left = relativeX + getXSize() / 2F;
-        drawScaledCenteredText(matrix, title, left + 2, relativeY + 6, titleTextColor(), scale);
+        //Increment index by one, so we show: 1, 2, and 3 instead of 0, 1, and 2
+        drawTitleText(matrix, MekanismLang.CRAFTING_WINDOW.translate(index + 1), 6);
     }
 }

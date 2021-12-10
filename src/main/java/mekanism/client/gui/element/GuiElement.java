@@ -388,7 +388,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
         //Only attempt to draw the message if we have a message to draw
         if (!text.getString().isEmpty()) {
             int color = getButtonTextColor(mouseX, mouseY) | MathHelper.ceil(alpha * 255.0F) << 24;
-            drawCenteredTextScaledBound(matrix, text, width - 4, x - getGuiLeft(), y - getGuiTop() + height / 2F - 4, color);
+            drawCenteredTextScaledBound(matrix, text, width - 4, height / 2F - 4, color);
         }
     }
 
@@ -460,9 +460,8 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
     }
 
     @Override
-    public void drawCenteredTextScaledBound(MatrixStack matrix, ITextComponent text, float maxLength, float y, int color) {
-        float scale = Math.min(1, maxLength / getStringWidth(text));
-        drawScaledCenteredText(matrix, text, relativeX + getXSize() / 2F, relativeY + y, color, scale);
+    public void drawCenteredTextScaledBound(MatrixStack matrix, ITextComponent text, float maxLength, float x, float y, int color) {
+        IFancyFontRenderer.super.drawCenteredTextScaledBound(matrix, text, maxLength, relativeX + x, relativeY + y, color);
     }
 
     public enum ButtonBackground {

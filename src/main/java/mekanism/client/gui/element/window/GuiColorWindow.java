@@ -77,7 +77,7 @@ public class GuiColorWindow extends GuiWindow {
     public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
 
-        drawCenteredTextScaledBound(matrix, MekanismLang.COLOR_PICKER.translate(), 120, 6, titleTextColor());
+        drawTitleText(matrix, MekanismLang.COLOR_PICKER.translate(), 6);
         drawTextScaledBound(matrix, MekanismLang.RGB.translate(), relativeX + 7, relativeY + getButtonHeight() - 17.5F, titleTextColor(), 20);
     }
 

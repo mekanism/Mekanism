@@ -121,11 +121,22 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
         super.drawForegroundText(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.MINER_CONFIG.translate(), titleLabelY);
-        drawTextWithScale(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 0.8F);
-        drawTextWithScale(matrix, MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 0.8F);
-        drawTextWithScale(matrix, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 40, screenTextColor(), 0.8F);
-        drawTextWithScale(matrix, MekanismLang.MIN.translate(tile.getMinY()), 14, 65, screenTextColor(), 0.8F);
-        drawTextWithScale(matrix, MekanismLang.MAX.translate(tile.getMaxY()), 14, 90, screenTextColor(), 0.8F);
+        drawScaledTextScaledBound(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 36, 0.8F);
+        drawScaledTextScaledBound(matrix, MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 36, 0.8F);
+        drawScaledTextScaledBound(matrix, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 40, screenTextColor(), 36, 0.8F);
+        drawScaledTextScaledBound(matrix, MekanismLang.MIN.translate(tile.getMinY()), 14, 65, screenTextColor(), 36, 0.8F);
+        drawScaledTextScaledBound(matrix, MekanismLang.MAX.translate(tile.getMaxY()), 14, 90, screenTextColor(), 36, 0.8F);
+    }
+
+    @Override
+    public void drawTitleText(MatrixStack matrix, ITextComponent text, float y) {
+        //Adjust spacing for back button
+        int leftShift = 11;
+        int xSize = getXSize() - leftShift;
+        int maxLength = xSize - 12;
+        float textWidth = getStringWidth(text);
+        float scale = Math.min(1, maxLength / textWidth);
+        drawScaledCenteredText(matrix, text, leftShift + xSize / 2F, y, titleTextColor(), scale);
     }
 
     @Override

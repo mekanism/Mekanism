@@ -17,6 +17,7 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.util.text.ITextComponent;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiWindow extends GuiTexturedElement {
@@ -201,6 +202,36 @@ public class GuiWindow extends GuiTexturedElement {
 
     protected boolean isFocusOverlay() {
         return false;
+    }
+
+    @Override
+    public void drawTitleText(MatrixStack matrix, ITextComponent text, float y) {
+        if (isFocusOverlay()) {
+            super.drawTitleText(matrix, text, y);
+        } else {
+            //Adjust spacing for close button and any other buttons like side config's auto eject
+            int leftShift = getTitlePadStart();
+            int xSize = getXSize() - leftShift - getTitlePadEnd();
+            int maxLength = xSize - 12;
+            float textWidth = getStringWidth(text);
+            float scale = Math.min(1, maxLength / textWidth);
+            float left = relativeX + xSize / 2F;
+            drawScaledCenteredText(matrix, text, left + leftShift, relativeY + y, titleTextColor(), scale);
+        }
+    }
+
+    /**
+     * @apiNote Only used if not a {@link #isFocusOverlay()}
+     */
+    protected int getTitlePadStart() {
+        return 12;
+    }
+
+    /**
+     * @apiNote Only used if not a {@link #isFocusOverlay()}
+     */
+    protected int getTitlePadEnd() {
+        return 0;
     }
 
     public enum InteractionStrategy {
