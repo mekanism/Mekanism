@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.function.DoubleUnaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -777,7 +778,8 @@ public final class MekanismUtils {
     }
 
     public static void veinMineArea(IEnergyContainer energyContainer, World world, BlockPos pos, ServerPlayerEntity player, ItemStack stack, Item usedTool,
-          Collection<BlockPos> found, boolean shears, Function<Float, FloatingLong> destroyEnergyFunction, BlockState sourceState) {
+          Collection<BlockPos> found, boolean shears, Function<Float, FloatingLong> destroyEnergyFunction, DoubleUnaryOperator distanceMultiplier,
+          BlockState sourceState) {
         FloatingLong energyUsed = FloatingLong.ZERO;
         FloatingLong energyAvailable = energyContainer.getEnergy();
         //Subtract from our available energy the amount that we will require to break the target block
@@ -787,7 +789,8 @@ public final class MekanismUtils {
                 continue;
             }
             BlockState targetState = world.getBlockState(foundPos);
-            FloatingLong destroyEnergy = destroyEnergyFunction.apply(targetState.getDestroySpeed(world, foundPos));
+            FloatingLong destroyEnergy = destroyEnergyFunction.apply(targetState.getDestroySpeed(world, foundPos))
+                  .multiply(distanceMultiplier.applyAsDouble(WorldUtils.distanceBetween(pos, foundPos)));
             if (energyUsed.add(destroyEnergy).greaterThan(energyAvailable)) {
                 //If we don't have energy to break the block continue
                 //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
@@ -800,12 +803,12 @@ public final class MekanismUtils {
                 //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
                 continue;
             }
-            //If we have the shears module installed and it is a tripwire, disarm it first
+            //If we have the shears module installed, and it is a tripwire, disarm it first
             if (shears && targetState.is(Blocks.TRIPWIRE) && !targetState.getValue(TripWireBlock.DISARMED)) {
                 targetState = targetState.setValue(TripWireBlock.DISARMED, true);
                 world.setBlock(foundPos, targetState, BlockFlags.NO_RERENDER);
             }
-            //Otherwise break the block
+            //Otherwise, break the block
             Block block = targetState.getBlock();
             //Get the tile now so that we have it for when we try to harvest the block
             TileEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);

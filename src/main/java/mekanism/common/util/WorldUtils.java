@@ -315,9 +315,9 @@ public class WorldUtils {
     }
 
     /**
-     * Gets the distance to a defined Coord4D.
+     * Gets the distance to a defined positions.
      *
-     * @return the distance to the defined Coord4D
+     * @return the distance to the defined positions
      */
     public static double distanceBetween(BlockPos start, BlockPos end) {
         return MathHelper.sqrt(start.distSqr(end));

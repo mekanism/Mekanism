@@ -236,14 +236,15 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
                 IModule<ModuleVeinMiningUnit> veinMiningUnit = getModule(stack, MekanismModules.VEIN_MINING_UNIT);
                 //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
                 if (veinMiningUnit != null && veinMiningUnit.isEnabled() && !(state.getBlock() instanceof BlockBounding)) {
-                    boolean extended = veinMiningUnit.getCustomInstance().isExtended();
+                    boolean isOre = state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE);
                     //If it is extended or should be treated as an ore
-                    if (extended || state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                    if (isOre || veinMiningUnit.getCustomInstance().isExtended()) {
                         //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
                         FloatingLong baseDestroyEnergy = getDestroyEnergy(silk);
-                        Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, extended ? veinMiningUnit.getCustomInstance().getExcavationRange() : -1);
+                        Set<BlockPos> found = ModuleVeinMiningUnit.findPositions(state, pos, world, isOre ? -1 : veinMiningUnit.getCustomInstance().getExcavationRange());
                         MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayerEntity) player, stack, this, found,
-                              isModuleEnabled(stack, MekanismModules.SHEARING_UNIT), hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), state);
+                              isModuleEnabled(stack, MekanismModules.SHEARING_UNIT), hardness -> getDestroyEnergy(baseDestroyEnergy, hardness),
+                              distance -> 0.5 * Math.pow(distance, isOre ? 1.5 : 2), state);
                     }
                 }
             }

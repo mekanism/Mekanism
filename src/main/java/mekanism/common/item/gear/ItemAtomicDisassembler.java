@@ -158,7 +158,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
                 if (!(state.getBlock() instanceof BlockBounding) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
                     List<BlockPos> found = findPositions(state, pos, world);
                     MekanismUtils.veinMineArea(energyContainer, world, pos, (ServerPlayerEntity) player, stack, this, found, false,
-                          hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), state);
+                          hardness -> getDestroyEnergy(baseDestroyEnergy, hardness), distance -> 0.5 * Math.pow(distance, 1.5), state);
                 }
             }
         }
