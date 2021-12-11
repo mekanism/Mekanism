@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
+import mekanism.api.math.MathUtils;
 import mekanism.api.robit.RobitSkin;
 import mekanism.client.RobitSpriteUploader;
 import mekanism.client.gui.GuiUtils;
@@ -46,6 +47,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     private final EntityRobit robit;
     private RobitSkin selectedSkin;
     private float rotation;
+    private int ticks;
 
     public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<List<RobitSkin>> unlockedSkins) {
         super(gui, x, y, INNER_DIMENSIONS + 12, INNER_DIMENSIONS);
@@ -69,6 +71,8 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         List<RobitSkin> skins = getUnlockedSkins();
         if (skins != null) {
+            //Every ten ticks consider the skin to change
+            int index = ticks / 10;
             float oldRot = rotation;
             rotation = MathHelper.wrapDegrees(rotation - 0.5F);
             float rot = MathHelper.rotLerp(partialTicks, oldRot, rotation);
@@ -83,7 +87,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                     } else {
                         renderSlotBackground(matrix, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
                     }
-                    renderRobit(matrix, skins.get(slot), slotX, slotY, rot);
+                    renderRobit(matrix, skins.get(slot), slotX, slotY, rot, index);
                 } else {
                     renderSlotBackground(matrix, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
                 }
@@ -114,6 +118,12 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                 }
             }
         }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        ticks++;
     }
 
     @Override
@@ -153,7 +163,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         return null;
     }
 
-    public void renderRobit(MatrixStack matrix, RobitSkin skin, int x, int y, float rotation) {
+    private void renderRobit(MatrixStack matrix, RobitSkin skin, int x, int y, float rotation, int index) {
         List<ResourceLocation> textures = skin.getTextures();
         if (textures.isEmpty()) {
             Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skin.getRegistryName());
@@ -172,8 +182,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         matrix.scale(SLOT_DIMENSIONS, SLOT_DIMENSIONS, SLOT_DIMENSIONS);
         matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
         MatrixStack.Entry matrixEntry = matrix.last();
-        //Render using the first texture of the skin
-        IModelData modelData = new ModelDataMap.Builder().withInitial(EntityRobit.SKIN_TEXTURE_PROPERTY, textures.get(0)).build();
+        IModelData modelData = new ModelDataMap.Builder().withInitial(EntityRobit.SKIN_TEXTURE_PROPERTY, MathUtils.getByIndexMod(textures, index)).build();
         List<BakedQuad> quads = model.getQuads(null, null, robit.level.random, modelData);
         //TODO: Ideally at some point we will want to be able to have the rotations happen via the matrix stack
         // so that we aren't having to transform the quads directly

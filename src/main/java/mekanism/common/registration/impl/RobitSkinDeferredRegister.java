@@ -15,7 +15,19 @@ public class RobitSkinDeferredRegister extends WrappedDeferredRegister<RobitSkin
     }
 
     public RobitSkinRegistryObject<RobitSkin> register(String name) {
-        return register(name, new ResourceLocation(modid, name), new ResourceLocation(modid, name + "2"));
+        return register(name, 2);
+    }
+
+    public RobitSkinRegistryObject<RobitSkin> register(String name, int variants) {
+        ResourceLocation[] textures = new ResourceLocation[variants];
+        for (int variant = 0; variant < variants; variant++) {
+            if (variant == 0) {
+                textures[variant] = new ResourceLocation(modid, name);
+            } else {
+                textures[variant] = new ResourceLocation(modid, name + (variant + 1));
+            }
+        }
+        return register(name, textures);
     }
 
     public RobitSkinRegistryObject<RobitSkin> register(String name, ResourceLocation... textures) {

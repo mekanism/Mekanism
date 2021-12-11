@@ -423,6 +423,9 @@ public class MekanismLangProvider extends BaseLanguageProvider {
 
     private void addRobitSkins() {
         add(MekanismRobitSkins.BASE, "Default");
+        add(MekanismRobitSkins.LESBIAN, "Lesbian Pride");
+        add(MekanismRobitSkins.PRIDE, "Pride");
+        add(MekanismRobitSkins.TRANS, "Trans Pride");
     }
 
     private void addSubtitles() {
