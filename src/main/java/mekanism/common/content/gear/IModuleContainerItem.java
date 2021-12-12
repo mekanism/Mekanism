@@ -49,12 +49,12 @@ public interface IModuleContainerItem extends IItemHUDProvider {
         }
     }
 
-    default boolean hasModule(ItemStack stack, ModuleData<?> type) {
+    default boolean hasModule(ItemStack stack, IModuleDataProvider<?> type) {
         CompoundNBT modules = ItemDataUtils.getCompound(stack, NBTConstants.MODULES);
         if (modules.contains(type.getRegistryName().toString(), NBT.TAG_COMPOUND)) {
             return true;
         }
-        String legacyName = type.getLegacyName();
+        String legacyName = type.getModuleData().getLegacyName();
         return legacyName != null && modules.contains(legacyName, NBT.TAG_COMPOUND);
     }
 

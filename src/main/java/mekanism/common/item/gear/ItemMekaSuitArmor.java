@@ -91,13 +91,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         super(MEKASUIT_MATERIAL, slot, properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1));
         if (slot == EquipmentSlotType.HEAD) {
             gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
-                  gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
+                  (gas, automationType, stack) -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT), gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
             absorption = 0.15F;
             laserDissipation = 0.15;
             laserRefraction = 0.2;
         } else if (slot == EquipmentSlotType.CHEST) {
             gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, MekanismConfig.gear.mekaSuitJetpackMaxStorage,
-                  gas -> gas == MekanismGases.HYDROGEN.get()));
+                  (gas, automationType, stack) -> hasModule(stack, MekanismModules.JETPACK_UNIT), gas -> gas == MekanismGases.HYDROGEN.get()));
             absorption = 0.4F;
             laserDissipation = 0.3;
             laserRefraction = 0.4;

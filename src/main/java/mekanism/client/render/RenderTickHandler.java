@@ -266,7 +266,7 @@ public class RenderTickHandler {
                             }
                             xRot = -xRot;
                             Pos3D eyeAdjustments;
-                            if (p.isFallFlying()) {
+                            if (p.isFallFlying() && (p != player || !minecraft.options.getCameraType().isFirstPerson())) {
                                 eyeAdjustments = new Pos3D(0, p.getEyeHeight(Pose.STANDING), 0).xRot(xRot).yRot(p.yBodyRot);
                             } else if (p.isVisuallySwimming()) {
                                 eyeAdjustments = new Pos3D(0, p.getEyeHeight(), 0).xRot(xRot).yRot(p.yBodyRot).translate(0, 0.5, 0);
