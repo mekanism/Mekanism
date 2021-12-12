@@ -50,6 +50,7 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
+import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -229,6 +230,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling IMekanismHeatHandler
+    protected final CachedAmbientTemperature ambientTemperature;
     protected final HeatHandlerManager heatHandlerManager;
     //End variables for IMekanismHeatHandler
 
@@ -265,8 +267,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         capabilityHandlerManagers.add(slurryHandlerManager = getInitialSlurryManager());
         capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(getInitialFluidTanks(), this));
         capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(getInitialEnergyContainers(), this));
-        capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(), this));
         capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(getInitialInventory(), this));
+        CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getLevel, this::getBlockPos);
+        capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(getInitialHeatCapacitors(ambientTemperature), this));
+        this.ambientTemperature = canHandleHeat() ? ambientTemperature : null;
         addCapabilityResolvers(capabilityHandlerManagers);
         frequencyComponent = new TileComponentFrequency(this);
         if (supportsUpgrades()) {
@@ -1052,8 +1056,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IInWorldHeatHandler
     @Nullable
-    protected IHeatCapacitorHolder getInitialHeatCapacitors() {
+    protected IHeatCapacitorHolder getInitialHeatCapacitors(CachedAmbientTemperature ambientTemperature) {
         return null;
+    }
+
+    @Override
+    public double getAmbientTemperature(@Nonnull Direction side) {
+        if (canHandleHeat() && ambientTemperature != null) {
+            return ambientTemperature.getTemperature(side);
+        }
+        return ITileHeatHandler.super.getAmbientTemperature(side);
     }
 
     @Nullable

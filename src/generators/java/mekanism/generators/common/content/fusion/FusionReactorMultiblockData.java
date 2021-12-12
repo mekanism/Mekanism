@@ -87,12 +87,13 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getSteam", "getSteamCapacity", "getSteamNeeded", "getSteamFilledPercentage"})
     public IGasTank steamTank;
 
+    private double biomeAmbientTemp;
     @ContainerSync(tags = "heat")
     @SyntheticComputerMethod(getter = "getPlasmaTemperature")
-    private double lastPlasmaTemperature = HeatAPI.AMBIENT_TEMP;
+    private double lastPlasmaTemperature;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getCaseTemperature")
-    private double lastCaseTemperature = HeatAPI.AMBIENT_TEMP;
+    private double lastCaseTemperature;
 
     @ContainerSync(tags = "fuel")
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded", "getDeuteriumFilledPercentage"})
@@ -106,7 +107,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @ContainerSync(tags = {"fuel", "heat"}, getter = "getInjectionRate", setter = "setInjectionRate")
     private int injectionRate = 2;
 
-    public double plasmaTemperature = HeatAPI.AMBIENT_TEMP;
+    public double plasmaTemperature;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum")
     private final ReactorInventorySlot reactorSlot;
@@ -118,6 +119,11 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     public FusionReactorMultiblockData(TileEntityFusionReactorBlock tile) {
         super(tile);
+        //Default biome temp to the ambient temperature at the block we are at
+        biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
+        lastPlasmaTemperature = biomeAmbientTemp;
+        lastCaseTemperature = biomeAmbientTemp;
+        plasmaTemperature = biomeAmbientTemp;
         gasTanks.add(deuteriumTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.DEUTERIUM)));
         gasTanks.add(tritiumTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.TRITIUM)));
         gasTanks.add(fuelTank = MultiblockChemicalTankBuilder.GAS.input(this, tile, () -> MAX_FUEL, gas -> gas.isIn(GeneratorTags.Gases.FUSION_FUEL)));
@@ -125,7 +131,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         fluidTanks.add(waterTank = MultiblockFluidTank.input(this, tile, this::getMaxWater, fluid -> fluid.getFluid().is(FluidTags.WATER)));
         energyContainers.add(energyContainer = BasicEnergyContainer.output(MAX_ENERGY, this));
         heatCapacitors.add(heatCapacitor = MultiblockHeatCapacitor.create(this, tile, caseHeatCapacity,
-              FusionReactorMultiblockData::getInverseConductionCoefficient, () -> inverseInsulation));
+              FusionReactorMultiblockData::getInverseConductionCoefficient, () -> inverseInsulation, () -> biomeAmbientTemp));
         inventorySlots.add(reactorSlot = ReactorInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 80, 39));
     }
 
@@ -138,6 +144,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 heatHandlers.add((ITileHeatHandler) tile);
             }
         }
+        biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         deathZone = new AxisAlignedBB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
               getMaxPos().getX(), getMaxPos().getY(), getMaxPos().getZ());
     }
@@ -275,7 +282,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         heatCapacitor.handleHeat(plasmaCaseHeat);
 
         //Transfer from casing to water if necessary
-        double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
+        double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - biomeAmbientTemp);
         int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
         waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.getFluidAmount(), MathUtils.clampToInt(steamTank.getNeeded())));
         if (waterToVaporize > 0) {
@@ -290,7 +297,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
 
         //Passive energy generation
-        double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - HeatAPI.AMBIENT_TEMP);
+        double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - biomeAmbientTemp);
         heatCapacitor.handleHeat(-caseAirHeat);
         energyContainer.insert(FloatingLong.create(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
     }
@@ -411,7 +418,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return MathUtils.clampToLong(HeatUtils.getSteamEnergyEfficiency() * MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * temperature / HeatUtils.getWaterThermalEnthalpy());
     }
 
-    public static double getInverseConductionCoefficient() {
+    private static double getInverseConductionCoefficient() {
         return 1 / MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
     }
 

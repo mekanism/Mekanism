@@ -25,9 +25,7 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<Evap
         if (!isRemote()) {
             EvaporationMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
-                if (multiblock.isSolarSpot(neighborPos)) {
-                    multiblock.updateSolars(getLevel());
-                }
+                multiblock.updateSolarSpot(getLevel(), neighborPos);
             }
         }
     }

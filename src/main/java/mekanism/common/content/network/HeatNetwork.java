@@ -48,11 +48,15 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
         super.onUpdate();
         double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
         for (ThermodynamicConductor transmitter : transmitters) {
-            // change this when we re-integrate with multipart
             HeatTransfer transfer = transmitter.simulate();
-            transmitter.updateHeatCapacitors(null);
             newHeatTransferred += transfer.getAdjacentTransfer();
             newHeatLost += transfer.getEnvironmentTransfer();
+        }
+        //After we updated the heat values of all the transmitters, we need to update the temperatures
+        // we do this after instead of when iterating initially so that if heat is transferred from one
+        // conductor to one we already updated then we want it to have the proper total temperaturer
+        for (ThermodynamicConductor transmitter : transmitters) {
+            transmitter.updateHeatCapacitors(null);
             newSumTemp += transmitter.getTotalTemperature();
         }
         heatLost = newHeatLost;

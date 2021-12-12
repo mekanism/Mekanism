@@ -45,7 +45,7 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                 }
                 //Divide the temperature by how many positions there are in case there is a difference due to the position in the world
                 // Strictly speaking we should take the height of the position into account for calculating the average as a "weighted"
-                // average, but we don't worry about that as it is highly unlikely the positions will actually have different temperatures
+                // average, but we don't worry about that as it is highly unlikely the positions will actually have different temperatures,
                 // and it would add a bunch of complexity to the calculations to account for it
                 temperature /= positions.size();
                 if (temperature > HeatAPI.AMBIENT_TEMP) {

@@ -93,6 +93,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
     public MultiblockHeatCapacitor<FissionReactorMultiblockData> heatCapacitor;
 
+    private double biomeAmbientTemp;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
     public double lastEnvironmentLoss = 0;
@@ -124,6 +125,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     public FissionReactorMultiblockData(TileEntityFissionReactorCasing tile) {
         super(tile);
+        //Default biome temp to the ambient temperature at the block we are at
+        biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
         fluidCoolantTank = MultiblockFluidTank.create(this, tile, () -> getVolume() * COOLANT_PER_VOLUME,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> isFormed(),
               fluid -> fluid.getFluid().is(FluidTags.WATER) && gasCoolantTank.isEmpty(), null);
@@ -142,13 +145,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
               gas -> gas == MekanismGases.NUCLEAR_WASTE.getChemical(), ChemicalAttributeValidator.ALWAYS_ALLOW, null);
         gasTanks.addAll(Arrays.asList(fuelTank, heatedCoolantTank, wasteTank, gasCoolantTank));
         heatCapacitor = MultiblockHeatCapacitor.create(this, tile, MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get(),
-              () -> INVERSE_CONDUCTION_COEFFICIENT, () -> INVERSE_INSULATION_COEFFICIENT);
+              () -> INVERSE_CONDUCTION_COEFFICIENT, () -> INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp);
         heatCapacitors.add(heatCapacitor);
     }
 
     @Override
     public void onCreated(World world) {
         super.onCreated(world);
+        biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
         hotZone = new AxisAlignedBB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
@@ -189,6 +193,14 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             prevWasteScale = wasteScale;
         }
         return needsPacket;
+    }
+
+    @Override
+    public double simulateEnvironment() {
+        double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (INVERSE_INSULATION_COEFFICIENT + INVERSE_CONDUCTION_COEFFICIENT);
+        double heatToTransfer = (heatCapacitor.getTemperature() - biomeAmbientTemp) / invConduction;
+        heatCapacitor.handleHeat(-heatToTransfer * heatCapacitor.getHeatCapacity());
+        return heatToTransfer;
     }
 
     @Override
@@ -286,7 +298,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             //Reset the partial waste as we just irradiated it and there is not much sense having it exist in limbo
             partialWaste = 0;
             //Reset the heat to the default of the heat capacitor
-            heatCapacitor.setHeat(heatCapacitor.getHeatCapacity() * HeatAPI.AMBIENT_TEMP);
+            heatCapacitor.setHeat(heatCapacitor.getHeatCapacity() * biomeAmbientTemp);
             //Force sync the update to the cache that corresponds to this multiblock
             MultiblockManager<FissionReactorMultiblockData>.CacheWrapper cacheWrapper = MekanismGenerators.fissionReactorManager.inventories.get(inventoryID);
             if (cacheWrapper != null) {

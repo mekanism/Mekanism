@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.Arrays;
 import java.util.UUID;
-import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.gas.GasStack;
@@ -12,7 +11,6 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
@@ -73,6 +71,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     @WrappingComputerMethod(wrapper = ComputerHeatCapacitorWrapper.class, methodNames = "getTemperature")
     public MultiblockHeatCapacitor<BoilerMultiblockData> heatCapacitor;
 
+    private double biomeAmbientTemp;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getEnvironmentalLoss")
     public double lastEnvironmentLoss;
@@ -103,28 +102,29 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     public BoilerMultiblockData(TileEntityBoilerCasing tile) {
         super(tile);
-        superheatedCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getSuperheatedCoolantTankCapacity,
+        //Default biome temp to the ambient temperature at the block we are at
+        biomeAmbientTemp = HeatAPI.getAmbientTemp(tile.getLevel(), tile.getTilePos());
+        superheatedCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> superheatedCoolantCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL, (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(),
               gas -> gas.has(HeatedCoolant.class));
-        waterTank = MultiblockFluidTank.input(this, tile, this::getWaterTankCapacity, fluid -> fluid.getFluid().is(FluidTags.WATER));
+        waterTank = MultiblockFluidTank.input(this, tile, () -> waterTankCapacity, fluid -> fluid.getFluid().is(FluidTags.WATER));
         fluidTanks.add(waterTank);
-        steamTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getSteamTankCapacity,
+        steamTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> steamTankCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas == MekanismGases.STEAM.getChemical());
-        cooledCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, this::getCooledCoolantTankCapacity,
+        cooledCoolantTank = MultiblockChemicalTankBuilder.GAS.create(this, tile, () -> cooledCoolantCapacity,
               (stack, automationType) -> automationType != AutomationType.EXTERNAL || isFormed(), (stack, automationType) -> automationType != AutomationType.EXTERNAL,
               gas -> gas.has(CooledCoolant.class));
         gasTanks.addAll(Arrays.asList(steamTank, superheatedCoolantTank, cooledCoolantTank));
-        heatCapacitor = MultiblockHeatCapacitor.create(this, tile,
-              CASING_HEAT_CAPACITY,
-              () -> CASING_INVERSE_CONDUCTION_COEFFICIENT,
-              () -> CASING_INVERSE_INSULATION_COEFFICIENT);
+        heatCapacitor = MultiblockHeatCapacitor.create(this, tile, CASING_HEAT_CAPACITY, () -> CASING_INVERSE_CONDUCTION_COEFFICIENT,
+              () -> CASING_INVERSE_INSULATION_COEFFICIENT, () -> biomeAmbientTemp);
         heatCapacitors.add(heatCapacitor);
     }
 
     @Override
     public void onCreated(World world) {
         super.onCreated(world);
+        biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(CASING_HEAT_CAPACITY * locations.size(), true);
     }
@@ -139,10 +139,9 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             BoilerMultiblockData.hotMap.put(inventoryID, clientHot);
         }
         // external heat dissipation
-        HeatTransfer transfer = simulate();
+        lastEnvironmentLoss = simulateEnvironment();
         // update temperature
         updateHeatCapacitors(null);
-        lastEnvironmentLoss = transfer.getEnvironmentTransfer();
         // handle coolant heat transfer
         if (!superheatedCoolantTank.isEmpty()) {
             HeatedCoolant coolantType = superheatedCoolantTank.getStack().get(HeatedCoolant.class);
@@ -226,35 +225,17 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         return MekanismUtils.redstoneLevelFromContents(waterTank.getFluidAmount(), waterTank.getCapacity());
     }
 
-    public double getHeatAvailable() {
+    private double getHeatAvailable() {
         double heatAvailable = (heatCapacitor.getTemperature() - HeatUtils.BASE_BOIL_TEMP) * (heatCapacitor.getHeatCapacity() * MekanismConfig.general.boilerWaterConductivity.get());
         return Math.min(heatAvailable, MekanismConfig.general.superheatingHeatTransfer.get() * superheatingElements);
     }
 
-    @Nonnull
     @Override
-    public HeatTransfer simulate() {
+    public double simulateEnvironment() {
         double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (CASING_INVERSE_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT);
-        double heatToTransfer = (heatCapacitor.getTemperature() - HeatAPI.AMBIENT_TEMP) / invConduction;
-
+        double heatToTransfer = (heatCapacitor.getTemperature() - biomeAmbientTemp) / invConduction;
         heatCapacitor.handleHeat(-heatToTransfer * heatCapacitor.getHeatCapacity());
-        return new HeatTransfer(0, heatToTransfer);
-    }
-
-    public int getWaterTankCapacity() {
-        return waterTankCapacity;
-    }
-
-    public long getSteamTankCapacity() {
-        return steamTankCapacity;
-    }
-
-    public long getSuperheatedCoolantTankCapacity() {
-        return superheatedCoolantCapacity;
-    }
-
-    public long getCooledCoolantTankCapacity() {
-        return cooledCoolantCapacity;
+        return heatToTransfer;
     }
 
     public int getWaterVolume() {

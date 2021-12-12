@@ -44,6 +44,10 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
         return new HeatTransfer(simulateAdjacent(), simulateEnvironment());
     }
 
+    default double getAmbientTemperature(Direction side) {
+        return HeatAPI.AMBIENT_TEMP;
+    }
+
     default double simulateEnvironment() {
         double environmentTransfer = 0;
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -51,7 +55,7 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
             //transfer to air otherwise
             double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + getTotalInverseInsulation(side) + getTotalInverseConductionCoefficient(side);
             //transfer heat difference based on environment temperature (ambient)
-            double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
+            double tempToTransfer = (getTotalTemperature(side) - getAmbientTemperature(side)) / invConduction;
             handleHeat(-tempToTransfer * heatCapacity, side);
             environmentTransfer += tempToTransfer;
         }
@@ -62,13 +66,12 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
         double adjacentTransfer = 0;
         for (Direction side : EnumUtils.DIRECTIONS) {
             IHeatHandler sink = getAdjacent(side);
-            //we use the same heat capacity for all further calculations
-            double heatCapacity = getTotalHeatCapacity(side);
             if (sink != null) {
                 double invConduction = sink.getTotalInverseConduction() + getTotalInverseConductionCoefficient(side);
-                double tempToTransfer = (getTotalTemperature(side) - HeatAPI.AMBIENT_TEMP) / invConduction;
-                handleHeat(-tempToTransfer * heatCapacity, side);
-                sink.handleHeat(tempToTransfer * heatCapacity);
+                double tempToTransfer = (getTotalTemperature(side) - sink.getTotalTemperature()) / invConduction;
+                handleHeat(-tempToTransfer * getTotalHeatCapacity(side), side);
+                //Note: Our sinks in mek are "lazy" but they will update the next tick if needed
+                sink.handleHeat(tempToTransfer * sink.getTotalHeatCapacity());
                 if (!(sink instanceof TileEntityTransmitter) || !TransmissionType.HEAT.checkTransmissionType((TileEntityTransmitter) sink)) {
                     adjacentTransfer += tempToTransfer;
                 }

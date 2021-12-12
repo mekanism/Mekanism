@@ -315,7 +315,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         public static final CacheSubstance<IMekanismHeatHandler, IHeatCapacitor> HEAT = new CacheSubstance<IMekanismHeatHandler, IHeatCapacitor>(NBTConstants.HEAT_CAPACITORS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, cache));
+                cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, null, cache));
             }
 
             @Override
