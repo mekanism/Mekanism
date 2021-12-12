@@ -80,6 +80,7 @@
   "fission.mekanismgenerators.coolant_tank": "Kühlmitteltank",
   "fission.mekanismgenerators.damage": "Schaden: %s",
   "fission.mekanismgenerators.fission_reactor": "Fission Reaktor",
+  "fission.mekanismgenerators.force_disabled": "Reaktor muss sicheren Schaden- und Temperaturpegel erreichen, bevor er wieder aktiviert werden kann.",
   "fission.mekanismgenerators.fuel_statistics": "Brennstoffstatistik",
   "fission.mekanismgenerators.fuel_tank": "Treibstofftank",
   "fission.mekanismgenerators.heat_capacity": "Wärmekapazität: %s J/K",
