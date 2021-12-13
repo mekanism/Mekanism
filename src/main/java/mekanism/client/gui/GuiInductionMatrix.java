@@ -4,8 +4,10 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge.IEnergyInfoHandler;
@@ -32,6 +34,8 @@ public class GuiInductionMatrix extends GuiMekanismTile<TileEntityInductionCasin
 
     @Override
     protected void addGuiElements() {
+        //Add the side holder before the slots, as it holds a couple of the slots
+        addButton(GuiSideHolder.create(this, -26, 36, 98, true, true, SpecialColors.TAB_ARMOR_SLOTS));
         addButton(new GuiElementHolder(this, 141, 16, 26, 56));
         super.addGuiElements();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));

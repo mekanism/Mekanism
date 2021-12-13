@@ -185,7 +185,6 @@ public class GeneratorsBlockTypes {
           .with(new AttributeRedstoneEmitter<>(tile -> tile.getStatus() == RedstoneStatus.OUTPUTTING ? 15 : 0))
           .with(Attributes.REDSTONE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
-          .withEmptyContainer(GeneratorsContainerTypes.FISSION_REACTOR_LOGIC_ADAPTER)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
           .withComputerSupport("fissionReactorLogicAdapter")
           .build();
@@ -227,7 +226,6 @@ public class GeneratorsBlockTypes {
           .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
           .with(new AttributeRedstoneEmitter<>(tile -> tile.checkMode() ? 15 : 0))
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
-          .withEmptyContainer(GeneratorsContainerTypes.FUSION_REACTOR_LOGIC_ADAPTER)
           .withComputerSupport("fusionReactorLogicAdapter")
           .build();
     // Laser Focus Matrix

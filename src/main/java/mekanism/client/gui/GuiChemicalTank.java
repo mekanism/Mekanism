@@ -8,6 +8,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.bar.GuiMergedChemicalBar;
 import mekanism.client.gui.element.button.GuiGasMode;
 import mekanism.common.MekanismLang;
@@ -27,6 +28,8 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
 
     @Override
     protected void addGuiElements() {
+        //Add the side holder before the slots, as it holds a couple of the slots
+        addButton(GuiSideHolder.armorHolder(this));
         super.addGuiElements();
         addButton(new GuiMergedChemicalBar<>(this, tile, tile.getChemicalTank(), 42, 16, 116, 10, true));
         addButton(new GuiInnerScreen(this, 42, 37, 118, 28, () -> {

@@ -5,18 +5,18 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
-import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.security.ISecurityItem;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -26,7 +26,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?>> implements IItemSustainedInventory, ISecurityItem, IGuiItem {
 
@@ -50,10 +49,7 @@ public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?
             }
         } else if (SecurityUtils.canAccess(player, stack)) {
             if (!world.isClientSide) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, getContainerProvider(stack, hand), buf -> {
-                    buf.writeEnum(hand);
-                    buf.writeItem(stack);
-                });
+                getContainerType().tryOpenGui((ServerPlayerEntity) player, hand, stack);
             }
         } else {
             if (!world.isClientSide) {
@@ -83,7 +79,7 @@ public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?
     }
 
     @Override
-    public INamedContainerProvider getContainerProvider(ItemStack stack, Hand hand) {
-        return new ContainerProvider(stack.getHoverName(), (i, inv, p) -> new PersonalChestItemContainer(i, inv, hand, stack));
+    public ContainerTypeRegistryObject<PersonalChestItemContainer> getContainerType() {
+        return MekanismContainerTypes.PERSONAL_CHEST_ITEM;
     }
 }

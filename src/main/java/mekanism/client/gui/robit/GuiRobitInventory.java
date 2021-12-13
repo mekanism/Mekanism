@@ -3,13 +3,13 @@ package mekanism.client.gui.robit;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
+import mekanism.common.inventory.container.entity.robit.RobitContainer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiRobitInventory extends GuiRobit<InventoryRobitContainer> {
+public class GuiRobitInventory extends GuiRobit<RobitContainer> {
 
-    public GuiRobitInventory(InventoryRobitContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiRobitInventory(RobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         inventoryLabelY = imageHeight - 93;
         dynamicSlots = true;

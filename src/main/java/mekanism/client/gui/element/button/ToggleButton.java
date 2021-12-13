@@ -14,7 +14,11 @@ public class ToggleButton extends MekanismImageButton {
     private final BooleanSupplier toggled;
 
     public ToggleButton(IGuiWrapper gui, int x, int y, BooleanSupplier toggled, Runnable onPress, IHoverable onHover) {
-        super(gui, x, y, 18, TOGGLE, onPress, onHover);
+        this(gui, x, y, 18, toggled, onPress, onHover);
+    }
+
+    public ToggleButton(IGuiWrapper gui, int x, int y, int size, BooleanSupplier toggled, Runnable onPress, IHoverable onHover) {
+        super(gui, x, y, size, 18, TOGGLE, onPress, onHover);
         this.toggled = toggled;
     }
 

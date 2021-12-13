@@ -5,14 +5,12 @@ import javax.annotation.Nonnull;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.item.block.ItemBlockPersonalChest;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 
 public class PersonalChestItemContainer extends MekanismItemContainer {
@@ -21,10 +19,6 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
 
     public PersonalChestItemContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack) {
         super(MekanismContainerTypes.PERSONAL_CHEST_ITEM, id, inv, hand, stack);
-    }
-
-    public PersonalChestItemContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, buf.readEnum(Hand.class), getStackFromBuffer(buf, ItemBlockPersonalChest.class));
     }
 
     @Override

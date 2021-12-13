@@ -11,15 +11,9 @@ import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 
 public class MekanismTileContainer<TILE extends TileEntityMekanism> extends MekanismContainer {
 
@@ -98,21 +92,5 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     @Nullable
     public VirtualInventoryContainerSlot getUpgradeOutputSlot() {
         return upgradeOutputSlot;
-    }
-
-    @Nonnull
-    public static <TILE extends TileEntity> TILE getTileFromBuf(PacketBuffer buf, Class<TILE> type) {
-        if (buf == null) {
-            throw new IllegalArgumentException("Null packet buffer");
-        }
-        return DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> {
-            BlockPos pos = buf.readBlockPos();
-            TILE tile = WorldUtils.getTileEntity(type, Minecraft.getInstance().level, pos);
-            if (tile == null) {
-                throw new IllegalStateException("Client could not locate tile at " + pos + " for tile container. "
-                                                + "This is likely caused by a mod breaking client side tile lookup");
-            }
-            return tile;
-        });
     }
 }

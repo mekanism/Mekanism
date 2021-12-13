@@ -6,13 +6,14 @@ import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
@@ -22,7 +23,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Rarity;
@@ -34,7 +34,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IGuiItem, IItemSustainedInventory {
 
@@ -61,10 +60,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
             }
         } else if (SecurityUtils.canAccess(player, stack)) {
             if (!world.isClientSide) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, getContainerProvider(stack, hand), buf -> {
-                    buf.writeEnum(hand);
-                    buf.writeItem(stack);
-                });
+                getContainerType().tryOpenGui((ServerPlayerEntity) player, hand, stack);
             }
         } else {
             SecurityUtils.displayNoAccess(player);
@@ -74,8 +70,8 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
     }
 
     @Override
-    public INamedContainerProvider getContainerProvider(ItemStack stack, Hand hand) {
-        return new ContainerProvider(stack.getHoverName(), (i, inv, p) -> new PortableQIODashboardContainer(i, inv, hand, stack));
+    public ContainerTypeRegistryObject<PortableQIODashboardContainer> getContainerType() {
+        return MekanismContainerTypes.PORTABLE_QIO_DASHBOARD;
     }
 
     @Override

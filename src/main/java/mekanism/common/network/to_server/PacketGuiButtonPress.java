@@ -5,27 +5,12 @@ import java.util.function.Function;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
-import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
-import mekanism.common.inventory.container.entity.robit.InventoryRobitContainer;
-import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
-import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
-import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
-import mekanism.common.inventory.container.item.QIOFrequencySelectItemContainer;
-import mekanism.common.inventory.container.tile.DigitalMinerConfigContainer;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
-import mekanism.common.inventory.container.tile.MatrixStatsTabContainer;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.inventory.container.tile.QIOFrequencySelectTileContainer;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
-import mekanism.common.tile.qio.TileEntityQIOComponent;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -162,11 +147,11 @@ public class PacketGuiButtonPress implements IMekanismPacket {
     public enum ClickedItemButton {
         BACK_BUTTON((stack, hand) -> {
             if (stack.getItem() instanceof IGuiItem) {
-                return ((IGuiItem) stack.getItem()).getContainerProvider(stack, hand);
+                return ((IGuiItem) stack.getItem()).getContainerType().getProvider(stack.getHoverName(), hand, stack);
             }
             return null;
         }),
-        QIO_FREQUENCY_SELECT((stack, hand) -> new ContainerProvider(MekanismLang.QIO_FREQUENCY_SELECT, (i, inv, player) -> new QIOFrequencySelectItemContainer(i, inv, hand, stack)));
+        QIO_FREQUENCY_SELECT((stack, hand) -> MekanismContainerTypes.QIO_FREQUENCY_SELECT_ITEM.getProvider(MekanismLang.QIO_FREQUENCY_SELECT, hand, stack));
 
         private final BiFunction<ItemStack, Hand, INamedContainerProvider> providerFromItem;
 
@@ -188,27 +173,22 @@ public class PacketGuiButtonPress implements IMekanismPacket {
             }
             return null;
         }),
-        QIO_FREQUENCY_SELECT((tile, extra) -> new ContainerProvider(MekanismLang.QIO_FREQUENCY_SELECT, (i, inv, player) -> new QIOFrequencySelectTileContainer(i, inv, (TileEntityQIOComponent) tile))),
-        DIGITAL_MINER_CONFIG((tile, extra) -> {
-            if (tile instanceof TileEntityDigitalMiner) {
-                return new ContainerProvider(MekanismLang.MINER_CONFIG, (i, inv, player) -> new DigitalMinerConfigContainer(i, inv, (TileEntityDigitalMiner) tile));
-            }
-            return null;
-        }),
+        QIO_FREQUENCY_SELECT((tile, extra) ->  MekanismContainerTypes.QIO_FREQUENCY_SELECT_TILE.getProvider(MekanismLang.QIO_FREQUENCY_SELECT, tile)),
+        DIGITAL_MINER_CONFIG((tile, extra) -> MekanismContainerTypes.DIGITAL_MINER_CONFIG.getProvider(MekanismLang.MINER_CONFIG, tile)),
 
         TAB_MAIN((tile, extra) -> {
             if (tile instanceof TileEntityInductionCasing) {
-                return new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, (TileEntityInductionCasing) tile));
+                return MekanismContainerTypes.INDUCTION_MATRIX.getProvider(MekanismLang.MATRIX, tile);
             } else if (tile instanceof TileEntityBoilerCasing) {
-                return new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.THERMOELECTRIC_BOILER, i, inv, (TileEntityBoilerCasing) tile));
+                return MekanismContainerTypes.THERMOELECTRIC_BOILER.getProvider(MekanismLang.BOILER, tile);
             }
             return null;
         }),
         TAB_STATS((tile, extra) -> {
             if (tile instanceof TileEntityInductionCasing) {
-                return new ContainerProvider(MekanismLang.MATRIX_STATS, (i, inv, player) -> new MatrixStatsTabContainer(i, inv, (TileEntityInductionCasing) tile));
+                return MekanismContainerTypes.MATRIX_STATS.getProvider(MekanismLang.MATRIX_STATS, tile);
             } else if (tile instanceof TileEntityBoilerCasing) {
-                return new ContainerProvider(MekanismLang.BOILER_STATS, (i, inv, player) -> new EmptyTileContainer<>(MekanismContainerTypes.BOILER_STATS, i, inv, (TileEntityBoilerCasing) tile));
+                return MekanismContainerTypes.BOILER_STATS.getProvider(MekanismLang.BOILER_STATS, tile);
             }
             return null;
         });
@@ -226,36 +206,11 @@ public class PacketGuiButtonPress implements IMekanismPacket {
 
     public enum ClickedEntityButton {
         //Entities
-        ROBIT_CRAFTING(entity -> {
-            if (entity instanceof EntityRobit) {
-                return new ContainerProvider(MekanismLang.ROBIT_CRAFTING, (i, inv, player) -> new CraftingRobitContainer(i, inv, (EntityRobit) entity));
-            }
-            return null;
-        }),
-        ROBIT_INVENTORY(entity -> {
-            if (entity instanceof EntityRobit) {
-                return new ContainerProvider(MekanismLang.ROBIT_INVENTORY, (i, inv, player) -> new InventoryRobitContainer(i, inv, (EntityRobit) entity));
-            }
-            return null;
-        }),
-        ROBIT_MAIN(entity -> {
-            if (entity instanceof EntityRobit) {
-                return new ContainerProvider(MekanismLang.ROBIT, (i, inv, player) -> new MainRobitContainer(i, inv, (EntityRobit) entity));
-            }
-            return null;
-        }),
-        ROBIT_REPAIR(entity -> {
-            if (entity instanceof EntityRobit) {
-                return new ContainerProvider(MekanismLang.ROBIT_REPAIR, (i, inv, player) -> new RepairRobitContainer(i, inv, (EntityRobit) entity));
-            }
-            return null;
-        }),
-        ROBIT_SMELTING(entity -> {
-            if (entity instanceof EntityRobit) {
-                return new ContainerProvider(MekanismLang.ROBIT_SMELTING, (i, inv, player) -> new SmeltingRobitContainer(i, inv, (EntityRobit) entity));
-            }
-            return null;
-        });
+        ROBIT_CRAFTING(entity -> MekanismContainerTypes.CRAFTING_ROBIT.getProvider(MekanismLang.ROBIT_CRAFTING, entity)),
+        ROBIT_INVENTORY(entity -> MekanismContainerTypes.INVENTORY_ROBIT.getProvider(MekanismLang.ROBIT_INVENTORY, entity)),
+        ROBIT_MAIN(entity -> MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, entity)),
+        ROBIT_REPAIR(entity -> MekanismContainerTypes.REPAIR_ROBIT.getProvider(MekanismLang.ROBIT_REPAIR, entity)),
+        ROBIT_SMELTING(entity -> MekanismContainerTypes.SMELTING_ROBIT.getProvider(MekanismLang.ROBIT_SMELTING, entity));
 
         private final Function<Entity, INamedContainerProvider> providerFromEntity;
 

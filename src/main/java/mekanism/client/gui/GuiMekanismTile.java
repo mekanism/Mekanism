@@ -57,8 +57,12 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
             addButton(new GuiRedstoneControlTab(this, tile));
         }
         if (tile.hasSecurity()) {
-            addButton(new GuiSecurityTab(this, tile));
+            addSecurityTab();
         }
+    }
+
+    protected void addSecurityTab() {
+        addButton(new GuiSecurityTab(this, tile));
     }
 
     @Override

@@ -35,12 +35,6 @@ import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.content.blocktype.Machine.FactoryMachine;
 import mekanism.common.content.blocktype.Machine.MachineBuilder;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.inventory.container.tile.ModificationStationContainer;
-import mekanism.common.inventory.container.tile.QIODashboardContainer;
-import mekanism.common.inventory.container.tile.ThermoelectricBoilerContainer;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
@@ -304,7 +298,6 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.FORMULAIC_ASSEMBLICATOR)
           .withEnergyConfig(MekanismConfig.usage.formulaicAssemblicator, MekanismConfig.storage.formulaicAssemblicator)
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY))
-          .withCustomContainerProvider(tile -> (i, inv, player) -> new FormulaicAssemblicatorContainer(i, inv, (TileEntityFormulaicAssemblicator) tile))
           .withComputerSupport("formulaicAssemblicator")
           .build();
     // Electric Pump
@@ -460,7 +453,6 @@ public class MekanismBlockTypes {
           .createBlock(() -> MekanismTileEntityTypes.MODIFICATION_STATION, MekanismLang.DESCRIPTION_MODIFICATION_STATION)
           .withGui(() -> MekanismContainerTypes.MODIFICATION_STATION)
           .withEnergyConfig(MekanismConfig.usage.modificationStation, MekanismConfig.storage.modificationStation)
-          .withCustomContainerProvider(tile -> (i, inv, player) -> new ModificationStationContainer(i, inv, (TileEntityModificationStation) tile))
           .with(Attributes.INVENTORY, new AttributeStateFacing(false), Attributes.REDSTONE, Attributes.SECURITY)
           .withCustomShape(BlockShapes.MODIFICATION_STATION)
           .with(AttributeCustomSelectionBox.JSON)
@@ -537,7 +529,6 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.QIO_DASHBOARD)
           .withCustomShape(BlockShapes.QIO_DASHBOARD)
           .with(new AttributeStateFacing(BlockStateProperties.FACING, FacePlacementType.SELECTED_FACE), Attributes.SECURITY, Attributes.ACTIVE, Attributes.INVENTORY)
-          .withCustomContainerProvider(tile -> (i, inv, player) -> new QIODashboardContainer(i, inv, (TileEntityQIODashboard) tile))
           .withComputerSupport("qioDashboard")
           .build();
     // QIO Importer
@@ -571,30 +562,26 @@ public class MekanismBlockTypes {
     // Dynamic Tank
     public static final BlockTypeTile<TileEntityDynamicTank> DYNAMIC_TANK = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_TANK, MekanismLang.DESCRIPTION_DYNAMIC_TANK)
-          .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
-          .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
+          .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK, MekanismLang.DYNAMIC_TANK)
           .with(Attributes.INVENTORY, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Dynamic Valve
     public static final BlockTypeTile<TileEntityDynamicValve> DYNAMIC_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.DYNAMIC_VALVE, MekanismLang.DESCRIPTION_DYNAMIC_VALVE)
-          .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK)
-          .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.DYNAMIC_TANK, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.DYNAMIC_TANK, i, inv, tile)))
+          .withGui(() -> MekanismContainerTypes.DYNAMIC_TANK, MekanismLang.DYNAMIC_TANK)
           .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .withComputerSupport("dynamicValve")
           .build();
     // Boiler Casing
     public static final BlockTypeTile<TileEntityBoilerCasing> BOILER_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.BOILER_CASING, MekanismLang.DESCRIPTION_BOILER_CASING)
-          .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
-          .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, (TileEntityBoilerCasing) tile)))
+          .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER, MekanismLang.BOILER)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Boiler Valve
     public static final BlockTypeTile<TileEntityBoilerValve> BOILER_VALVE = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.BOILER_VALVE, MekanismLang.DESCRIPTION_BOILER_VALVE)
-          .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER)
-          .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.BOILER, (i, inv, player) -> new ThermoelectricBoilerContainer(i, inv, (TileEntityBoilerCasing) tile)))
+          .withGui(() -> MekanismContainerTypes.THERMOELECTRIC_BOILER, MekanismLang.BOILER)
           .with(Attributes.INVENTORY, Attributes.COMPARATOR, new AttributeStateBoilerValveMode(), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .withComputerSupport("boilerValve")
           .build();
@@ -611,15 +598,13 @@ public class MekanismBlockTypes {
     // Induction Casing
     public static final BlockTypeTile<TileEntityInductionCasing> INDUCTION_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.INDUCTION_CASING, MekanismLang.DESCRIPTION_INDUCTION_CASING)
-          .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
-          .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
+          .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX, MekanismLang.MATRIX)
           .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Induction Port
     public static final BlockTypeTile<TileEntityInductionPort> INDUCTION_PORT = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.INDUCTION_PORT, MekanismLang.DESCRIPTION_INDUCTION_PORT)
-          .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX)
-          .withNamedContainerProvider(tile -> new ContainerProvider(MekanismLang.MATRIX, (i, inv, player) -> new MekanismTileContainer<>(MekanismContainerTypes.INDUCTION_MATRIX, i, inv, tile)))
+          .withGui(() -> MekanismContainerTypes.INDUCTION_MATRIX, MekanismLang.MATRIX)
           .with(Attributes.INVENTORY, Attributes.COMPARATOR, Attributes.ACTIVE, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .withComputerSupport("inductionPort")
           .build();

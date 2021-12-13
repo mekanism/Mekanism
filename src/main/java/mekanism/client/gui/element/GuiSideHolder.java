@@ -2,6 +2,7 @@ package mekanism.client.gui.element;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
@@ -10,6 +11,10 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class GuiSideHolder extends GuiTexturedElement {
+
+    public static GuiSideHolder armorHolder(IGuiWrapper gui) {
+        return create(gui, -26, 62, 98, true, true, SpecialColors.TAB_ARMOR_SLOTS);
+    }
 
     public static GuiSideHolder create(IGuiWrapper gui, int x, int y, int height, boolean left, boolean slotHolder, ColorRegistryObject tabColor) {
         return new GuiSideHolder(gui, x, y, height, left, slotHolder) {

@@ -11,8 +11,7 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.item.SeismicReaderContainer;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
@@ -28,7 +27,6 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemSeismicReader extends ItemEnergized {
 
@@ -67,10 +65,7 @@ public class ItemSeismicReader extends ItemEnergized {
                 }
                 energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);
             }
-            NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getHoverName(), (i, inv, p) -> new SeismicReaderContainer(i, inv, hand, stack)), buf -> {
-                buf.writeEnum(hand);
-                buf.writeItem(stack);
-            });
+            MekanismContainerTypes.SEISMIC_READER.tryOpenGui((ServerPlayerEntity) player, hand, stack);
         }
         return new ActionResult<>(ActionResultType.SUCCESS, stack);
     }

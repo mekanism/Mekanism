@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
 import mekanism.client.gui.element.tab.GuiContainerEditModeTab;
@@ -19,6 +20,8 @@ public class GuiFluidTank extends GuiMekanismTile<TileEntityFluidTank, MekanismT
 
     @Override
     protected void addGuiElements() {
+        //Add the side holder before the slots, as it holds a couple of the slots
+        addButton(GuiSideHolder.armorHolder(this));
         super.addGuiElements();
         addButton(new GuiContainerEditModeTab<>(this, tile));
         addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 48, 18));

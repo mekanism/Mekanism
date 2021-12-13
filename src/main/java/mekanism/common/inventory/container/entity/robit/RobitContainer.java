@@ -10,9 +10,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 
-public abstract class RobitContainer extends MekanismEntityContainer<EntityRobit> {
+public class RobitContainer extends MekanismEntityContainer<EntityRobit> {
 
-    protected RobitContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, EntityRobit robit) {
+    public RobitContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, EntityRobit robit) {
         super(type, id, inv, robit);
         robit.addContainerTrackers(this);
     }

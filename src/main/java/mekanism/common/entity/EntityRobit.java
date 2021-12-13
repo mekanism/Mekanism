@@ -43,9 +43,7 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.entity.ai.RobitAIFollow;
 import mekanism.common.entity.ai.RobitAIPickup;
-import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.inventory.container.entity.robit.MainRobitContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloatingLong;
 import mekanism.common.inventory.container.sync.SyncableInt;
@@ -87,6 +85,7 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -390,8 +389,11 @@ public class EntityRobit extends CreatureEntity implements IRobit, IMekanismInve
                 return ActionResultType.FAIL;
             }
             if (!level.isClientSide) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(MekanismLang.ROBIT, (i, inv, p) -> new MainRobitContainer(i, inv, this)),
-                      buf -> buf.writeVarInt(getId()));
+                INamedContainerProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this);
+                if (provider != null) {
+                    //Validate the provider isn't null, it shouldn't be but just in case
+                    NetworkHooks.openGui((ServerPlayerEntity) player, provider, buf -> buf.writeVarInt(getId()));
+                }
             }
             return ActionResultType.SUCCESS;
         }

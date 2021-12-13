@@ -6,6 +6,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.ModuleTweakerContainer;
 import mekanism.common.network.IMekanismPacket;
+import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -39,7 +40,8 @@ public class PacketOpenGui implements IMekanismPacket {
     }
 
     public enum GuiType {
-        MODULE_TWEAKER(() -> new ContainerProvider(MekanismLang.MODULE_TWEAKER, (i, inv, p) -> new ModuleTweakerContainer(i, inv)), ModuleTweakerContainer::hasTweakableItem);
+        MODULE_TWEAKER(() -> new ContainerProvider(MekanismLang.MODULE_TWEAKER, (id, inv, player) -> MekanismContainerTypes.MODULE_TWEAKER.get().create(id, inv)),
+              ModuleTweakerContainer::hasTweakableItem);
 
         private final Supplier<INamedContainerProvider> containerSupplier;
         private final Predicate<PlayerEntity> shouldOpenForPlayer;

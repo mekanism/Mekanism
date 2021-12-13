@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.GuiElementHolder;
-import mekanism.client.gui.element.button.MekanismImageButton;
+import mekanism.client.gui.element.button.ToggleButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -36,7 +36,7 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     protected void addGuiElements() {
         super.addGuiElements();
         addButton(new GuiElementHolder(this, 16, 31, 130, 90));
-        addButton(new MekanismImageButton(this, 16, 19, 11, 18, getButtonLocation("toggle"),
+        addButton(new ToggleButton(this, 16, 19, 11, tile::isActiveCooled,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_MODE, tile)), getOnHover(GeneratorsLang.REACTOR_LOGIC_TOGGLE_COOLING)));
         scrollBar = addButton(new GuiScrollBar(this, 146, 31, 90, () -> tile.getModes().length, () -> DISPLAY_COUNT));
         for (int i = 0; i < DISPLAY_COUNT; i++) {

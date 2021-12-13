@@ -3,10 +3,9 @@ package mekanism.common.item;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
@@ -23,7 +22,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyItem {
 
@@ -54,10 +52,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
             }
         } else if (SecurityUtils.canAccess(player, stack)) {
             if (!world.isClientSide) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getHoverName(), (i, inv, p) -> new PortableTeleporterContainer(i, inv, hand, stack)), buf -> {
-                    buf.writeEnum(hand);
-                    buf.writeItem(stack);
-                });
+                MekanismContainerTypes.PORTABLE_TELEPORTER.tryOpenGui((ServerPlayerEntity) player, hand, stack);
             }
         } else {
             if (!world.isClientSide) {

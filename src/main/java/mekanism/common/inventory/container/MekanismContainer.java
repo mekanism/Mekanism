@@ -52,10 +52,12 @@ import mekanism.common.network.to_client.container.PacketUpdateContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_server.PacketWindowSelect;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
+import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
@@ -219,6 +221,17 @@ public abstract class MekanismContainer extends Container implements ISecurityCo
         yOffset += 58;
         for (int slotX = 0; slotX < PlayerInventory.getSelectionSize(); slotX++) {
             addSlot(createHotBarSlot(inv, slotX, xOffset + slotX * 18, yOffset));
+        }
+    }
+
+    protected void addArmorSlots(@Nonnull PlayerInventory inv, int x, int y, int offhandOffset) {
+        for (int index = 0; index < inv.armor.size(); index++) {
+            final EquipmentSlotType slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + inv.armor.size() - index - 1];
+            addSlot(new ArmorSlot(inv, 36 + inv.armor.size() - index - 1, x, y, slotType));
+            y += 18;
+        }
+        if (offhandOffset != -1) {
+            addSlot(new OffhandSlot(inv, 40, x, y + offhandOffset));
         }
     }
 

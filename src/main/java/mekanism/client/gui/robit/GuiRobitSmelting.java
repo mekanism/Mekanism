@@ -5,14 +5,14 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.element.progress.GuiProgress;
 import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.entity.robit.SmeltingRobitContainer;
+import mekanism.common.inventory.container.entity.robit.RobitContainer;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiRobitSmelting extends GuiRobit<SmeltingRobitContainer> {
+public class GuiRobitSmelting extends GuiRobit<RobitContainer> {
 
-    public GuiRobitSmelting(SmeltingRobitContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiRobitSmelting(RobitContainer container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         inventoryLabelY += 1;
         dynamicSlots = true;

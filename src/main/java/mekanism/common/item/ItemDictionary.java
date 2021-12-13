@@ -10,8 +10,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.MekanismLang;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.item.DictionaryContainer;
+import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
@@ -38,7 +37,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
 
 public class ItemDictionary extends Item {
 
@@ -102,11 +100,7 @@ public class ItemDictionary extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, new ContainerProvider(stack.getHoverName(), (i, inv, p) -> new DictionaryContainer(i, inv, hand, stack)),
-                      buf -> {
-                          buf.writeEnum(hand);
-                          buf.writeItem(stack);
-                      });
+                MekanismContainerTypes.DICTIONARY.tryOpenGui((ServerPlayerEntity) player, hand, stack);
             }
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
         } else {

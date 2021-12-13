@@ -1,15 +1,10 @@
 package mekanism.generators.common.network.to_server;
 
 import java.util.function.BiFunction;
-import mekanism.common.inventory.container.ContainerProvider;
-import mekanism.common.inventory.container.tile.EmptyTileContainer;
-import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorsLang;
-import mekanism.generators.common.container.FusionReactorFuelTabContainer;
-import mekanism.generators.common.container.FusionReactorHeatTabContainer;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
@@ -72,31 +67,21 @@ public class PacketGeneratorsGuiButtonPress implements IMekanismPacket {
     public enum ClickedGeneratorsTileButton {
         TAB_MAIN((tile, extra) -> {
             if (tile instanceof TileEntityTurbineCasing) {
-                return new ContainerProvider(GeneratorsLang.TURBINE, (i, inv, player) -> new MekanismTileContainer<>(GeneratorsContainerTypes.INDUSTRIAL_TURBINE, i, inv, (TileEntityTurbineCasing) tile));
+                return GeneratorsContainerTypes.INDUSTRIAL_TURBINE.getProvider(GeneratorsLang.TURBINE, tile);
             } else if (tile instanceof TileEntityFissionReactorCasing) {
-                return new ContainerProvider(GeneratorsLang.FISSION_REACTOR, (i, inv, player) -> new MekanismTileContainer<>(GeneratorsContainerTypes.FISSION_REACTOR, i, inv, (TileEntityFissionReactorCasing) tile));
+                return GeneratorsContainerTypes.FISSION_REACTOR.getProvider(GeneratorsLang.FISSION_REACTOR, tile);
             }
             return null;
         }),
-        TAB_HEAT((tile, extra) -> {
-            if (tile instanceof TileEntityFusionReactorController) {
-                return new ContainerProvider(GeneratorsLang.HEAT_TAB, (i, inv, player) -> new FusionReactorHeatTabContainer(i, inv, (TileEntityFusionReactorController) tile));
-            }
-            return null;
-        }),
-        TAB_FUEL((tile, extra) -> {
-            if (tile instanceof TileEntityFusionReactorController) {
-                return new ContainerProvider(GeneratorsLang.FUEL_TAB, (i, inv, player) -> new FusionReactorFuelTabContainer(i, inv, (TileEntityFusionReactorController) tile));
-            }
-            return null;
-        }),
+        TAB_HEAT((tile, extra) -> GeneratorsContainerTypes.FUSION_REACTOR_HEAT.getProvider(GeneratorsLang.HEAT_TAB, tile)),
+        TAB_FUEL((tile, extra) -> GeneratorsContainerTypes.FUSION_REACTOR_FUEL.getProvider(GeneratorsLang.FUEL_TAB, tile)),
         TAB_STATS((tile, extra) -> {
             if (tile instanceof TileEntityTurbineCasing) {
-                return new ContainerProvider(GeneratorsLang.TURBINE_STATS, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.TURBINE_STATS, i, inv, (TileEntityTurbineCasing) tile));
+                return GeneratorsContainerTypes.TURBINE_STATS.getProvider(GeneratorsLang.TURBINE_STATS, tile);
             } else if (tile instanceof TileEntityFusionReactorController) {
-                return new ContainerProvider(GeneratorsLang.STATS_TAB, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.FUSION_REACTOR_STATS, i, inv, (TileEntityFusionReactorController) tile));
+                return GeneratorsContainerTypes.FUSION_REACTOR_STATS.getProvider(GeneratorsLang.STATS_TAB, tile);
             } else if (tile instanceof TileEntityFissionReactorCasing) {
-                return new ContainerProvider(GeneratorsLang.STATS_TAB, (i, inv, player) -> new EmptyTileContainer<>(GeneratorsContainerTypes.FISSION_REACTOR_STATS, i, inv, (TileEntityFissionReactorCasing) tile));
+                return GeneratorsContainerTypes.FISSION_REACTOR_STATS.getProvider(GeneratorsLang.STATS_TAB, tile);
             }
             return null;
         });

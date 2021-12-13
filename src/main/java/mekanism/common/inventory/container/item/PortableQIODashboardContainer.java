@@ -5,7 +5,6 @@ import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.PortableQIODashboardInventory;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.item.ItemPortableQIODashboard;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.SecurityUtils;
@@ -13,7 +12,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 
 public class PortableQIODashboardContainer extends QIOItemViewerContainer {
@@ -28,22 +26,8 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         addSlotsAndOpen();
     }
 
-    private PortableQIODashboardContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack, boolean remote) {
+    public PortableQIODashboardContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack, boolean remote) {
         this(id, inv, hand, stack, remote, new PortableQIODashboardInventory(stack, inv));
-    }
-
-    /**
-     * @apiNote Call from the server
-     */
-    public PortableQIODashboardContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack) {
-        this(id, inv, hand, stack, false);
-    }
-
-    /**
-     * @apiNote Call from the client
-     */
-    public PortableQIODashboardContainer(int id, PlayerInventory inv, PacketBuffer buf) {
-        this(id, inv, buf.readEnum(Hand.class), MekanismItemContainer.getStackFromBuffer(buf, ItemPortableQIODashboard.class), true);
     }
 
     public Hand getHand() {

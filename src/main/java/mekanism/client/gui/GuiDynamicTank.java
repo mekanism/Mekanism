@@ -10,6 +10,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
+import mekanism.client.gui.element.GuiSideHolder;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiMergedTankGauge;
 import mekanism.client.gui.element.slot.GuiSlot;
@@ -34,6 +35,8 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
 
     @Override
     protected void addGuiElements() {
+        //Add the side holder before the slots, as it holds a couple of the slots
+        addButton(GuiSideHolder.armorHolder(this));
         addButton(new GuiElementHolder(this, 141, 16, 26, 56));
         super.addGuiElements();
         addButton(new GuiSlot(SlotType.INNER_HOLDER_SLOT, this, 145, 20));

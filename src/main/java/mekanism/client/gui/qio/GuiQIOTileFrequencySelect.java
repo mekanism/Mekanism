@@ -10,7 +10,7 @@ import mekanism.client.gui.element.custom.GuiFrequencySelector.ITileGuiFrequency
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.inventory.container.tile.QIOFrequencySelectTileContainer;
+import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.to_server.PacketGuiButtonPress;
 import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
@@ -18,10 +18,10 @@ import mekanism.common.tile.qio.TileEntityQIOComponent;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.text.ITextComponent;
 
-public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComponent, QIOFrequencySelectTileContainer> implements IGuiColorFrequencySelector<QIOFrequency>,
-      ITileGuiFrequencySelector<QIOFrequency, TileEntityQIOComponent> {
+public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComponent, EmptyTileContainer<TileEntityQIOComponent>> implements
+      IGuiColorFrequencySelector<QIOFrequency>, ITileGuiFrequencySelector<QIOFrequency, TileEntityQIOComponent> {
 
-    public GuiQIOTileFrequencySelect(QIOFrequencySelectTileContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiQIOTileFrequencySelect(EmptyTileContainer<TileEntityQIOComponent> container, PlayerInventory inv, ITextComponent title) {
         super(container, inv, title);
         imageHeight -= 11;
         titleLabelY = 5;

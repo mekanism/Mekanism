@@ -1,6 +1,5 @@
 package mekanism.common.inventory.container.slot;
 
-import com.mojang.datafixers.util.Pair;
 import javax.annotation.Nonnull;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
@@ -22,6 +21,7 @@ public class ArmorSlot extends InsertableSlot {
     public ArmorSlot(PlayerInventory inventory, int index, int x, int y, EquipmentSlotType slotType) {
         super(inventory, index, x, y);
         this.slotType = slotType;
+        setBackground(PlayerContainer.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[this.slotType.getIndex()]);
     }
 
     @Override
@@ -36,15 +36,7 @@ public class ArmorSlot extends InsertableSlot {
 
     @Override
     public boolean mayPickup(@Nonnull PlayerEntity player) {
-        ItemStack itemstack = getItem();
-        if (!itemstack.isEmpty() && !player.isCreative() && EnchantmentHelper.hasBindingCurse(itemstack)) {
-            return false;
-        }
-        return super.mayPickup(player);
-    }
-
-    @Override
-    public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-        return Pair.of(PlayerContainer.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[slotType.getIndex()]);
+        ItemStack stack = getItem();
+        return (stack.isEmpty() || player.isCreative() || !EnchantmentHelper.hasBindingCurse(stack)) && super.mayPickup(player);
     }
 }
