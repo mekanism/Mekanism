@@ -15,7 +15,7 @@ public interface IRadiationSource {
     Coord4D getPos();
 
     /**
-     * Get the radiation level (in sV/h) of this {@link IRadiationSource}.
+     * Get the radiation level (in Sv/h) of this {@link IRadiationSource}.
      *
      * @return radiation dosage
      */

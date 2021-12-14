@@ -55,21 +55,21 @@ public interface IRadiationManager {
     DamageSource getRadiationDamageSource();
 
     /**
-     * Get the radiation level (in sV/h) at a certain location.
+     * Get the radiation level (in Sv/h) at a certain location.
      *
      * @param coord Location
      *
-     * @return radiation level (in sV).
+     * @return radiation level (in Sv).
      */
     double getRadiationLevel(Coord4D coord);
 
     /**
-     * Get the radiation level (in sV/h) at an entity's location. To get the radiation level of an entity use {@link
+     * Get the radiation level (in Sv/h) at an entity's location. To get the radiation level of an entity use {@link
      * mekanism.api.radiation.capability.IRadiationEntity#getRadiation()}.
      *
      * @param entity - Entity to get the radiation level at.
      *
-     * @return Radiation level (in sV).
+     * @return Radiation level (in Sv).
      */
     double getRadiationLevel(Entity entity);
 

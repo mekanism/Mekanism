@@ -70,7 +70,7 @@ public class CrTIngredientExpansion {
     }
 
     @ZenRegister
-    @TypedExpansion(IItemStack.class)//TODO - 10.1: Either switch all typed expansions to normal expansions or hope CrT fixes TypedExpansions
+    @TypedExpansion(IItemStack.class)
     public static class IItemStackExpansion {
 
         private IItemStackExpansion() {
@@ -85,6 +85,7 @@ public class CrTIngredientExpansion {
         public static ItemStackIngredient asItemStackIngredient(IItemStack _this) {
             //TODO - 10.1: If CrT doesn't improve to make expansions on sub impls able to override expansions on parents, then we will need
             // to add these casts in the IItemStack and IngredientWithAmount expansions and maybe other things as well
+            // https://github.com/ZenCodeLang/ZenCode/pull/61
             return CrTItemStackIngredient.from(_this);
         }
     }

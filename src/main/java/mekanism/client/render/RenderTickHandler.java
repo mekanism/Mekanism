@@ -21,6 +21,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
+import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.lib.Vertex;
@@ -61,12 +62,14 @@ import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.model.BipedModel.ArmPose;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -91,6 +94,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.RenderArmEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -230,6 +234,29 @@ public class RenderTickHandler {
                 minecraft.getTextureManager().bind(AbstractGui.GUI_ICONS_LOCATION);
                 ForgeIngameGui.left_height += 8;
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void renderArm(RenderArmEvent event) {
+        AbstractClientPlayerEntity player = event.getPlayer();
+        ItemStack chestStack = player.getItemBySlot(EquipmentSlotType.CHEST);
+        if (chestStack.getItem() instanceof ItemMekaSuitArmor) {
+            MekaSuitArmor armor = (MekaSuitArmor) ((ItemMekaSuitArmor) chestStack.getItem()).getGearModel();
+            armor.setAllVisible(true);
+            //Note: We just want it to act as empty even if there is a map as it looks a lot better
+            boolean rightHand = event.getArm() == HandSide.RIGHT;
+            if (rightHand) {
+                armor.rightArmPose = ArmPose.EMPTY;
+            } else {
+                armor.leftArmPose = ArmPose.EMPTY;
+            }
+            armor.attackTime = 0.0F;
+            armor.crouching = false;
+            armor.swimAmount = 0.0F;
+            armor.setupAnim(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
+            armor.renderArm(event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, chestStack.hasFoil(), player, rightHand);
+            event.setCanceled(true);
         }
     }
 

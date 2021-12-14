@@ -37,7 +37,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.3'
+    gradleVersion = '7.3.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -648,6 +648,11 @@ task optimizePng {
             }
         }
     }
+}
+
+tasks.withType(GenerateModuleMetadata) {
+    //Disable Gradle 7 module metadata generation as it does not play nicely with FG
+    enabled = false
 }
 
 //properties to put in $HOME/.gradle/gradle.properties

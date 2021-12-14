@@ -38,6 +38,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
         // to be cast so that it knows this method and the weighted item stack one are not ambiguous. Once that is figured out we may want
         // to make it so that the other version is a hard fail if passed with 100% chance given it is likely that is how the base sawmill
         // recipe will be handled in 1.18
+        // https://github.com/ZenCodeLang/ZenCode/pull/60
         addRecipe(name, input, getAndValidateNotEmpty(mainOutput), ItemStack.EMPTY, 0);
     }
 
