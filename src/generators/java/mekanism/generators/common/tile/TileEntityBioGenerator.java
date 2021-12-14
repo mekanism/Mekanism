@@ -31,7 +31,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     private static final int MAX_FLUID = 24_000;
 
-    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBioFuel", "getBioFuelCapacity", "getBioFuelNeeded", "getBioFuelFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBioFuel", "getBioFuelCapacity", "getBioFuelNeeded",
+                                                                                     "getBioFuelFilledPercentage"})
     public BasicFluidTank bioFuelTank;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getFuelItem")
     private FluidFuelInventorySlot fuelSlot;
@@ -57,7 +58,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, stack -> stack.getItem().is(MekanismTags.Items.FUELS_BIO) ? 200 : 0,
-              GeneratorsFluids.BIOETHANOL::getFluidStack, this, 17, 35),
+                    GeneratorsFluids.BIOETHANOL::getFluidStack, this, 17, 35),
               RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), this, 143, 35), RelativeSide.RIGHT);
         return builder.build();

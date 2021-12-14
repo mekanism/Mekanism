@@ -93,8 +93,8 @@ public class RecipeProviderUtil {
     public static void addSandStoneToSandRecipe(Consumer<IFinishedRecipe> consumer, String path, @Nullable ICondition condition, IItemProvider sand, IItemProvider... sandstones) {
         build(consumer, ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Ingredient.of(sandstones)),
-                    new ItemStack(sand, 2)
-              ), path, condition);
+              new ItemStack(sand, 2)
+        ), path, condition);
     }
 
     private static void build(Consumer<IFinishedRecipe> consumer, MekanismRecipeBuilder<?> builder, String path, @Nullable ICondition condition) {

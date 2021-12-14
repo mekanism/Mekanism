@@ -157,12 +157,11 @@ public class MekanismAPI {
     /**
      * Gets the Forge Registry for {@link RobitSkin}.
      *
-     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister< RobitSkin >} instead of {@link
-     * net.minecraftforge.event.RegistryEvent.Register< RobitSkin >} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(Class, String)}
-     * rather than passing the result of this method to the other create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link
-     * net.minecraftforge.event.RegistryEvent.NewRegistry} events have been fired. For convenience the class can be gotten via {@link ModuleData#getClassWithGeneric()} as
-     * to reduce the unchecked cast warnings. This method is marked as {@link Nonnull} just because except for when this is being called super early it is never {@code
-     * null}.
+     * @apiNote If registering via {@link net.minecraftforge.registries.DeferredRegister< RobitSkin >} instead of {@link net.minecraftforge.event.RegistryEvent.Register<
+     * RobitSkin >} make sure to use {@link net.minecraftforge.registries.DeferredRegister#create(Class, String)} rather than passing the result of this method to the
+     * other create method, as this method <strong>CAN</strong> return {@code null} if called before the {@link net.minecraftforge.event.RegistryEvent.NewRegistry} events
+     * have been fired. For convenience the class can be gotten via {@link ModuleData#getClassWithGeneric()} as to reduce the unchecked cast warnings. This method is
+     * marked as {@link Nonnull} just because except for when this is being called super early it is never {@code null}.
      */
     @Nonnull
     public static IForgeRegistry<RobitSkin> robitSkinRegistry() {

@@ -30,6 +30,7 @@ public class ItemStackGasToItemStackCachedRecipe<RECIPE extends ItemStackGasToIt
      */
     public ItemStackGasToItemStackCachedRecipe(RECIPE recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
           ILongInputHandler<@NonNull GasStack> gasInputHandler, LongSupplier gasUsage, IOutputHandler<@NonNull ItemStack> outputHandler) {
-        super(recipe, itemInputHandler, gasInputHandler, (usedSoFar, operatingTicks) -> gasUsage.getAsLong(), increment -> {}, outputHandler);
+        super(recipe, itemInputHandler, gasInputHandler, (usedSoFar, operatingTicks) -> gasUsage.getAsLong(), increment -> {
+        }, outputHandler);
     }
 }

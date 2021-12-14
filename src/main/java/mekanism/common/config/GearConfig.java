@@ -343,7 +343,7 @@ public class GearConfig extends BaseMekanismConfig {
         for (DamageSource type : ItemMekaSuitArmor.getSupportedSources()) {
             mekaSuitDamageRatios.put(type, CachedFloatValue.wrap(this, builder
                   .comment("Percent of damage taken from " + type.getMsgId() + " that can be absorbed by the MekaSuit when there is enough power and a full suit is equipped.")
-                  .defineInRange( type.getMsgId() + "DamageReductionRatio", 1D, 0, 1)));
+                  .defineInRange(type.getMsgId() + "DamageReductionRatio", 1D, 0, 1)));
         }
         builder.pop(2);
 

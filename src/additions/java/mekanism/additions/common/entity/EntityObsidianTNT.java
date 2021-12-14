@@ -31,7 +31,7 @@ public class EntityObsidianTNT extends TNTEntity {
         }
         //From TNTEntity constructor
         tnt.setPos(x, y, z);
-        double d0 = world.random.nextDouble() * (double) ((float)Math.PI * 2F);
+        double d0 = world.random.nextDouble() * (double) ((float) Math.PI * 2F);
         tnt.setDeltaMovement(-Math.sin(d0) * 0.02D, 0.2F, -Math.cos(d0) * 0.02D);
         tnt.xo = x;
         tnt.yo = y;

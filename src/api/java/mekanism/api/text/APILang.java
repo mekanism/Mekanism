@@ -27,7 +27,7 @@ public enum APILang implements ILangEntry {
     UPGRADE_STONE_GENERATOR_DESCRIPTION("upgrade", "stone_generator.description"),
     //Generic
     @Deprecated//TODO - 1.17: Remove this generic lang entry in favor of just having string text components be used
-    GENERIC("generic", "format"),
+          GENERIC("generic", "format"),
     //Directions
     DOWN("direction", "down"),
     UP("direction", "up"),

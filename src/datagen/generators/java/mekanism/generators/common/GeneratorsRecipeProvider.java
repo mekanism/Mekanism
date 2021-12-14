@@ -74,10 +74,10 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         String basePath = "separator/";
         //Heavy water
         ElectrolysisRecipeBuilder.separating(
-              FluidStackIngredient.from(MekanismTags.Fluids.HEAVY_WATER, 2),
-              GeneratorsGases.DEUTERIUM.getStack(2),
-              MekanismGases.OXYGEN.getStack(1)
-        ).energyMultiplier(FloatingLong.createConst(2))
+                    FluidStackIngredient.from(MekanismTags.Fluids.HEAVY_WATER, 2),
+                    GeneratorsGases.DEUTERIUM.getStack(2),
+                    MekanismGases.OXYGEN.getStack(1)
+              ).energyMultiplier(FloatingLong.createConst(2))
               .build(consumer, MekanismGenerators.rl(basePath + "heavy_water"));
     }
 

@@ -40,7 +40,7 @@ public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport,
 
     @Nonnull
     @Override
-    default  <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vector3i offset) {
+    default <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vector3i offset) {
         //And have it get the capability as if it was not offset
         return getCapability(capability, side);
     }

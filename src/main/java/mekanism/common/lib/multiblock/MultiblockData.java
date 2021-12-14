@@ -219,7 +219,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return worldSupplier.get();
     }
 
-    protected boolean shouldCap(CacheSubstance<?, ?>  type) {
+    protected boolean shouldCap(CacheSubstance<?, ?> type) {
         return true;
     }
 

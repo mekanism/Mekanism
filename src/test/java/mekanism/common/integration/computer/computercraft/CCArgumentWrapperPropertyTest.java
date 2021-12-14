@@ -684,9 +684,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists that would be decoded as a byte plus a short")
     void testListByteToShort() {
         qt().forAll(
-              allBytes(),
-              onlyShorts()
-        ).as((b, s) -> fromArray(ShortNBT.valueOf(b), ShortNBT.valueOf(s)))
+                    allBytes(),
+                    onlyShorts()
+              ).as((b, s) -> fromArray(ShortNBT.valueOf(b), ShortNBT.valueOf(s)))
               .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
     }
 
@@ -694,9 +694,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists that would be decoded as a byte plus an int")
     void testListByteToInt() {
         qt().forAll(
-              allBytes(),
-              onlyInts()
-        ).as((b, i) -> fromArray(IntNBT.valueOf(b), IntNBT.valueOf(i)))
+                    allBytes(),
+                    onlyInts()
+              ).as((b, i) -> fromArray(IntNBT.valueOf(b), IntNBT.valueOf(i)))
               .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
     }
 
@@ -731,9 +731,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists that would be decoded as a short plus an int")
     void testListShortToInt() {
         qt().forAll(
-              onlyShorts(),
-              onlyInts()
-        ).as((s, i) -> fromArray(IntNBT.valueOf(s), IntNBT.valueOf(i)))
+                    onlyShorts(),
+                    onlyInts()
+              ).as((s, i) -> fromArray(IntNBT.valueOf(s), IntNBT.valueOf(i)))
               .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
     }
 
@@ -816,9 +816,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists of lists that would create the inner ones as a byte array plus short list")
     void testListByteArrayToShortList() {
         qt().forAll(
-              lists().of(allBytes()).ofSizeBetween(1, 15),
-              lists().of(onlyShorts()).ofSizeBetween(1, 15)
-        ).as((bytes, shorts) -> fromArray(fromBytes(bytes), fromShorts(shorts)))
+                    lists().of(allBytes()).ofSizeBetween(1, 15),
+                    lists().of(onlyShorts()).ofSizeBetween(1, 15)
+              ).as((bytes, shorts) -> fromArray(fromBytes(bytes), fromShorts(shorts)))
               .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
     }
 
@@ -960,9 +960,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists of lists that would create the inner ones as a byte array plus some arbitrary list type (strings)")
     void testListByteArrayToList() {
         qt().forAll(
-              lists().of(allBytes()).ofSizeBetween(1, 15),
-              lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)
-        ).as((bytes, strings) -> fromArray(fromBytes(bytes), fromStrings(strings)))
+                    lists().of(allBytes()).ofSizeBetween(1, 15),
+                    lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)
+              ).as((bytes, strings) -> fromArray(fromBytes(bytes), fromStrings(strings)))
               .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
     }
 
@@ -970,9 +970,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists of lists that would create the inner ones as an int array plus some arbitrary list type (strings)")
     void testListIntArrayToList() {
         qt().forAll(
-              lists().of(onlyInts()).ofSizeBetween(1, 15),
-              lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)
-        ).as((ints, strings) -> fromArray(fromInts(ints), fromStrings(strings)))
+                    lists().of(onlyInts()).ofSizeBetween(1, 15),
+                    lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)
+              ).as((ints, strings) -> fromArray(fromInts(ints), fromStrings(strings)))
               .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
     }
 
@@ -1000,9 +1000,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists of lists that would create the inner ones as a short list plus some arbitrary list type (strings)")
     void testListShortListToList() {
         qt().forAll(
-              lists().of(onlyShorts()).ofSizeBetween(1, 15),
-              lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)
-        ).as((shorts, strings) -> fromArray(fromShorts(shorts), fromStrings(strings)))
+                    lists().of(onlyShorts()).ofSizeBetween(1, 15),
+                    lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15)
+              ).as((shorts, strings) -> fromArray(fromShorts(shorts), fromStrings(strings)))
               .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
     }
 
@@ -1010,9 +1010,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     @DisplayName("Test serializing and deserializing lists of lists that would create the inner ones as some arbitrary list type (strings) and a short list")
     void testListListToList() {
         qt().forAll(
-              lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15),
-              lists().of(onlyShorts()).ofSizeBetween(1, 15)
-        ).as((strings, shorts) -> fromArray(fromStrings(strings), fromShorts(shorts)))
+                    lists().of(strings().ascii().ofLengthBetween(0, 15)).ofSizeBetween(1, 15),
+                    lists().of(onlyShorts()).ofSizeBetween(1, 15)
+              ).as((strings, shorts) -> fromArray(fromStrings(strings), fromShorts(shorts)))
               .check(nbt -> CCArgumentWrapperTestHelper.checkSame(nbt, null, false));
     }
 }

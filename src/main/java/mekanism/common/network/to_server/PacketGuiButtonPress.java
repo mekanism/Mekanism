@@ -173,7 +173,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
             }
             return null;
         }),
-        QIO_FREQUENCY_SELECT((tile, extra) ->  MekanismContainerTypes.QIO_FREQUENCY_SELECT_TILE.getProvider(MekanismLang.QIO_FREQUENCY_SELECT, tile)),
+        QIO_FREQUENCY_SELECT((tile, extra) -> MekanismContainerTypes.QIO_FREQUENCY_SELECT_TILE.getProvider(MekanismLang.QIO_FREQUENCY_SELECT, tile)),
         DIGITAL_MINER_CONFIG((tile, extra) -> MekanismContainerTypes.DIGITAL_MINER_CONFIG.getProvider(MekanismLang.MINER_CONFIG, tile)),
 
         TAB_MAIN((tile, extra) -> {

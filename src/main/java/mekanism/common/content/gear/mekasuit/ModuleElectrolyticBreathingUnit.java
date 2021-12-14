@@ -50,7 +50,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
             double centerX = (bb.minX + bb.maxX) / 2;
             double centerZ = (bb.minZ + bb.maxZ) / 2;
             //For the y range check a range of where the mask's breathing unit is based on where the eyes are
-            return new AxisAlignedBB(centerX,  Math.min(bb.minY + eyeHeight - 0.27, bb.maxY), centerZ, centerX, Math.min(bb.minY + eyeHeight - 0.14, bb.maxY), centerZ);
+            return new AxisAlignedBB(centerX, Math.min(bb.minY + eyeHeight - 0.27, bb.maxY), centerZ, centerX, Math.min(bb.minY + eyeHeight - 0.14, bb.maxY), centerZ);
         });
         if (fluidsIn.entrySet().stream().anyMatch(entry -> entry.getKey().is(FluidTags.WATER) && entry.getValue().getMaxHeight() >= 0.11)) {
             //If the position the bottom of the mask is almost entire in water set the production rate to our max rate

@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
 
     private static final Matrix3f FAKE_NORMALS;
+
     static {
         Vector3f NORMAL = new Vector3f(1, 1, 1);
         NORMAL.normalize();

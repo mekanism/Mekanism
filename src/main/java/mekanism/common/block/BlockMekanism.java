@@ -362,8 +362,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     /**
-     * Like {@link AbstractBlock#getDestroyProgress(BlockState, PlayerEntity, IBlockReader, BlockPos)} except also passes the tile so as to only have to get
-     * it once.
+     * Like {@link AbstractBlock#getDestroyProgress(BlockState, PlayerEntity, IBlockReader, BlockPos)} except also passes the tile so as to only have to get it once.
      */
     protected float getDestroyProgress(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
           @Nullable TileEntity tile) {

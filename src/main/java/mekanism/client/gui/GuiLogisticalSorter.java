@@ -57,7 +57,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
         addButton(new MekanismImageButton(this, 12, 110, 14, getButtonLocation("auto_eject"),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.AUTO_EJECT_BUTTON, tile)),
               getOnHover(MekanismLang.SORTER_AUTO_EJECT_DESCRIPTION)));
-        addButton(new ColorButton(this, 13,  137, 16, 16, () -> tile.color,
+        addButton(new ColorButton(this, 13, 137, 16, 16, () -> tile.color,
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CHANGE_COLOR, tile,
                     hasShiftDown() ? -1 : TransporterUtils.getColorIndex(TransporterUtils.increment(tile.color)))),
               () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CHANGE_COLOR, tile,

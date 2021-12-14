@@ -147,8 +147,8 @@ public class StructureHelper {
     }
 
     /**
-     * Checks if any of the minor planes that have frame and are not purely structural are sticking out past the major plane in the negative cuboid direction (
-     * Bottom, North, West).
+     * Checks if any of the minor planes that have frame and are not purely structural are sticking out past the major plane in the negative cuboid direction ( Bottom,
+     * North, West).
      *
      * @param minorAxisMap Map of minor planes.
      * @param majorKey     Position of major plane.

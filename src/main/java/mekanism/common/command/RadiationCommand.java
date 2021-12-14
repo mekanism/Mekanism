@@ -122,7 +122,7 @@ public class RadiationCommand {
         Coord4D location = new Coord4D(pos.x, pos.y, pos.z, world.dimension());
         double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(location);
         source.sendSuccess(MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location.getPos()), EnumColor.INDIGO,
-              location.dimension.location(), RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
+                    location.dimension.location(), RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
               true);
         return 0;
     }

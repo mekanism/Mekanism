@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper.UnableToFindFie
 
 /**
  * Helper  to make reflecting and grabbing the value of fields in a cached way easier
+ *
  * @param <CLASS> Class the field is in.
  * @param <TYPE>  Type of the field.
  */

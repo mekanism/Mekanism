@@ -2,7 +2,6 @@ package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;

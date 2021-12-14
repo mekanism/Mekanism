@@ -407,7 +407,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                                 if (source.getQIORemaining(qioSource) == 0) {
                                     //If we used all that is available, we need to also free up an item type
                                     availableItemTypes++;
-                                    usedQIO= true;
+                                    usedQIO = true;
                                 }
                             }
                         }

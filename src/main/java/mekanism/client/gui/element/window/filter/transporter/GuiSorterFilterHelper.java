@@ -12,7 +12,6 @@ import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.text.GuiTextField;
-import mekanism.common.util.text.InputValidator;
 import mekanism.client.gui.element.window.filter.GuiFilterHelper;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.common.MekanismLang;
@@ -22,6 +21,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.screen.Screen;
 
 public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisticalSorter>, IFancyFontRenderer {

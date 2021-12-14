@@ -26,7 +26,7 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
 
     public RecipeCacheLookupMonitor(IRecipeLookupHandler<RECIPE> handler, int cacheIndex) {
         this.handler = handler;
-        this.cacheIndex= cacheIndex;
+        this.cacheIndex = cacheIndex;
     }
 
     protected boolean cachedIndexMatches(int cacheIndex) {

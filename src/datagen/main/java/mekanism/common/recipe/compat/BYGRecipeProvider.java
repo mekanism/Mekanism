@@ -451,10 +451,10 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
 
     private void infuseMoss(Consumer<IFinishedRecipe> consumer, IItemProvider input, IItemProvider output, String path) {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              ItemStackIngredient.from(input),
-              InfusionStackIngredient.from(MekanismTags.InfuseTypes.BIO, 10),
-              new ItemStack(output)
-        ).addCondition(modLoaded)
+                    ItemStackIngredient.from(input),
+                    InfusionStackIngredient.from(MekanismTags.InfuseTypes.BIO, 10),
+                    new ItemStack(output)
+              ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(path));
     }
 }

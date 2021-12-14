@@ -41,7 +41,7 @@ public class CrTIngredientExpansion {
     @TypedExpansion(IIngredient.class)
     public static class IIngredientExpansion {
 
-        private IIngredientExpansion(){
+        private IIngredientExpansion() {
         }
 
         /**

@@ -96,10 +96,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private double lastCaseTemperature;
 
     @ContainerSync(tags = "fuel")
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded", "getDeuteriumFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDeuterium", "getDeuteriumCapacity", "getDeuteriumNeeded",
+                                                                                        "getDeuteriumFilledPercentage"})
     public IGasTank deuteriumTank;
     @ContainerSync(tags = "fuel")
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getTritium", "getTritiumCapacity", "getTritiumNeeded", "getTritiumFilledPercentage"})
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getTritium", "getTritiumCapacity", "getTritiumNeeded",
+                                                                                        "getTritiumFilledPercentage"})
     public IGasTank tritiumTank;
     @ContainerSync(tags = "fuel")
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getDTFuel", "getDTFuelCapacity", "getDTFuelNeeded", "getDTFuelFilledPercentage"})

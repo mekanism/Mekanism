@@ -45,7 +45,7 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
         ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
         String chemicalInputKey = getChemicalInputJsonKey();
         JsonElement chemicalInput = JSONUtils.isArrayNode(json, chemicalInputKey) ? JSONUtils.getAsJsonArray(json, chemicalInputKey) :
-                               JSONUtils.getAsJsonObject(json, chemicalInputKey);
+                                    JSONUtils.getAsJsonObject(json, chemicalInputKey);
         INGREDIENT chemicalIngredient = getDeserializer().deserialize(chemicalInput);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {

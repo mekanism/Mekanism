@@ -174,9 +174,9 @@ public class CommonPlayerTickHandler {
                 double d1x = normalizedLook.x * 0.15;
                 double d1y = normalizedLook.y * 0.15;
                 double d1z = normalizedLook.z * 0.15;
-                    player.setDeltaMovement(motion.add(lookAngle.x * d1x + (lookAngle.x * 1.5 - motion.x) * 0.5,
-                          lookAngle.y * d1y + (lookAngle.y * 1.5 - motion.y) * 0.5,
-                          lookAngle.z * d1z + (lookAngle.z * 1.5 - motion.z) * 0.5));
+                player.setDeltaMovement(motion.add(lookAngle.x * d1x + (lookAngle.x * 1.5 - motion.x) * 0.5,
+                      lookAngle.y * d1y + (lookAngle.y * 1.5 - motion.y) * 0.5,
+                      lookAngle.z * d1z + (lookAngle.z * 1.5 - motion.z) * 0.5));
                 return false;
             } else {
                 player.setDeltaMovement(motion.x(), Math.min(motion.y() + 0.15D, 0.5D), motion.z());

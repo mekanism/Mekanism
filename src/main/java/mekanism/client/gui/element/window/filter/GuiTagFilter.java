@@ -7,12 +7,12 @@ import javax.annotation.Nullable;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.common.util.text.InputValidator;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
+import mekanism.common.util.text.InputValidator;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 

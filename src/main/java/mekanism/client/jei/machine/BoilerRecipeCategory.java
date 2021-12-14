@@ -126,7 +126,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
         double temperature = waterAmount * waterToSteamEfficiency / (BoilerMultiblockData.CASING_HEAT_CAPACITY * MekanismConfig.general.boilerWaterConductivity.get()) +
                              HeatUtils.BASE_BOIL_TEMP;
         recipes.add(new BoilerJEIRecipe(null, FluidStackIngredient.from(FluidTags.WATER, waterAmount),
-                      MekanismGases.STEAM.getStack(waterAmount), GasStack.EMPTY, temperature));
+              MekanismGases.STEAM.getStack(waterAmount), GasStack.EMPTY, temperature));
         //Go through all gases and add each coolant
         for (Gas gas : MekanismAPI.gasRegistry()) {
             HeatedCoolant heatedCoolant = gas.get(HeatedCoolant.class);

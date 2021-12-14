@@ -606,7 +606,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                 if (sides == null) {
                     //Lazy init the set so that if there are none we can just use an empty set
                     // instead of having to initialize an enum set
-                    sides =  EnumSet.noneOf(Direction.class);
+                    sides = EnumSet.noneOf(Direction.class);
                 }
                 sides.add(side);
             }
