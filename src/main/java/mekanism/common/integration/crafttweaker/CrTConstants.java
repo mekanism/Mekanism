@@ -113,7 +113,6 @@ public class CrTConstants {
 
     //Expansions, declared below classes we can reference the partial string parts of our other types
     public static final String EXPANSION_TARGET_NSS_RESOLVER = "mods.projecte.NSSResolver";
-    public static final String EXPANSION_TARGET_JEITWEAKER = "mods.jei.JEI";
     public static final String EXPANSION_TARGET_INGREDIENT_LIST = "crafttweaker.api.item.IngredientList";
     public static final String EXPANSION_TARGET_ITEM_TAG = "crafttweaker.api.tag.MCTag<crafttweaker.api.item.MCItemDefinition>";
     public static final String EXPANSION_TARGET_GAS_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_GAS + ">";

@@ -150,7 +150,8 @@ static void extendConfigurations(Configuration base, Configuration... configurat
 
 ext {
     versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range]
+                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
+                         "jeitweaker_version": jeitweaker_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
@@ -425,7 +426,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
-    runtimeOnly fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
+    implementation fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")

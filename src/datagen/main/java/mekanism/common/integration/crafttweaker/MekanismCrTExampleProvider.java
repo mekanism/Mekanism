@@ -76,8 +76,11 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fluids.FluidAttributes;
 
 public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
+
+    private static final String EXPANSION_TARGET_JEITWEAKER = "mods.jei.JEI";
 
     public MekanismCrTExampleProvider(DataGenerator gen, ExistingFileHelper existingFileHelper) {
         super(gen, existingFileHelper, Mekanism.MODID);
@@ -121,15 +124,15 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "3) Hides dark red pigment",
                     "4) Hides clean copper slurry"
               ).blankLine()
-              .comment(imports -> hideSignature(imports, "Gas", ICrTGasStack.class))
-              .comment(imports -> hideSignature(imports, "InfuseType", ICrTInfusionStack.class))
-              .comment(imports -> hideSignature(imports, "Pigment", ICrTPigmentStack.class))
-              .comment(imports -> hideSignature(imports, "Slurry", ICrTSlurryStack.class))
+              .comment(imports -> hideSignature(imports, ICrTGasStack.class))
+              .comment(imports -> hideSignature(imports, ICrTInfusionStack.class))
+              .comment(imports -> hideSignature(imports, ICrTPigmentStack.class))
+              .comment(imports -> hideSignature(imports, ICrTSlurryStack.class))
               .blankLine()
-              .addComponent(imports -> new JEIHidingComponent<>(imports, "Gas", MekanismGases.BRINE, CrTGasStack::new))
-              .addComponent(imports -> new JEIHidingComponent<>(imports, "InfuseType", MekanismInfuseTypes.BIO, CrTInfusionStack::new))
-              .addComponent(imports -> new JEIHidingComponent<>(imports, "Pigment", MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_RED), CrTPigmentStack::new))
-              .addComponent(imports -> new JEIHidingComponent<>(imports, "Slurry", MekanismSlurries.PROCESSED_RESOURCES.get(PrimaryResource.GOLD).getCleanSlurry(), CrTSlurryStack::new))
+              .addComponent(imports -> new JEIHidingComponent<>(imports, MekanismGases.BRINE, CrTGasStack::new))
+              .addComponent(imports -> new JEIHidingComponent<>(imports, MekanismInfuseTypes.BIO, CrTInfusionStack::new))
+              .addComponent(imports -> new JEIHidingComponent<>(imports, MekanismPigments.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_RED), CrTPigmentStack::new))
+              .addComponent(imports -> new JEIHidingComponent<>(imports, MekanismSlurries.PROCESSED_RESOURCES.get(PrimaryResource.GOLD).getCleanSlurry(), CrTSlurryStack::new))
               .blankLine()
               .comment("Adds a description to the passed in chemical. This example adds some basic text to JEI's information tab when looking at Hydrogen.")
               .blankLine()
@@ -138,8 +141,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment(imports -> descriptionSignature(imports, ICrTPigmentStack.class))
               .comment(imports -> descriptionSignature(imports, ICrTSlurryStack.class))
               .blankLine()
-              .addComponent(imports -> () -> imports.addImport(CrTConstants.EXPANSION_TARGET_JEITWEAKER) + ".addInfo(" +
-                                             new CrTGasStack(MekanismGases.HYDROGEN.getStack(1)).getCommandString() +
+              .addComponent(imports -> () -> imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addDescription(" +
+                                             new CrTGasStack(MekanismGases.HYDROGEN.getStack(FluidAttributes.BUCKET_VOLUME)).getCommandString() +
                                              ", \"Hydrogen is a basic gas that is produced in an electrolytic separator\");")
         ;
     }
@@ -502,26 +505,23 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         ;
     }
 
-    private String hideSignature(CrTImportsComponent imports, String type, Class<?> clazz) {
-        return imports.addImport(CrTConstants.EXPANSION_TARGET_JEITWEAKER) + ".hide" + type + "(stack as " + getCrTClassName(clazz) + ")";
+    private String hideSignature(CrTImportsComponent imports, Class<?> clazz) {
+        return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".hideIngredient(stack as " + getCrTClassName(clazz) + ")";
     }
 
     private String descriptionSignature(CrTImportsComponent imports, Class<?> clazz) {
-        return imports.addImport(CrTConstants.EXPANSION_TARGET_JEITWEAKER) + ".addInfo(stack as " + getCrTClassName(clazz) + ", " +
+        return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addDescription(stack as " + getCrTClassName(clazz) + ", " +
                getCrTClassName(MCTextComponent.class) + "...)";
     }
 
     private static class JEIHidingComponent<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ICrTExampleComponent {
 
-        private final String type;
         private final Function<STACK, CommandStringDisplayable> describer;
         private final IChemicalProvider<CHEMICAL> chemicalProvider;
         private final CrTImportsComponent imports;
 
-        public JEIHidingComponent(CrTImportsComponent imports, String type, IChemicalProvider<CHEMICAL> chemicalProvider,
-              Function<STACK, CommandStringDisplayable> describer) {
+        public JEIHidingComponent(CrTImportsComponent imports, IChemicalProvider<CHEMICAL> chemicalProvider, Function<STACK, CommandStringDisplayable> describer) {
             this.imports = imports;
-            this.type = type;
             this.describer = describer;
             this.chemicalProvider = chemicalProvider;
         }
@@ -529,8 +529,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         @Nonnull
         @Override
         public String asString() {
-            return imports.addImport(CrTConstants.EXPANSION_TARGET_JEITWEAKER) + ".hide" + type + '(' +
-                   describer.apply((STACK) chemicalProvider.getStack(1)).getCommandString() + ");";
+            return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".hideIngredient(" +
+                   describer.apply((STACK) chemicalProvider.getStack(FluidAttributes.BUCKET_VOLUME)).getCommandString() + ");";
         }
     }
 

@@ -35,3 +35,9 @@ license="MIT"
     versionRange="${jei_version}"
     ordering="AFTER"
     side="BOTH"
+[[dependencies.mekanism]]
+    modId="jeitweaker"
+    mandatory=false
+    versionRange="${jeitweaker_version}"
+    ordering="AFTER"
+    side="BOTH"
