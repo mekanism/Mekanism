@@ -307,7 +307,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * Sets variables up, called immediately after {@link #setSupportedTypes(Block)} but before any things start being created.
      *
-     * @implNote This method should be used for setting any variables that would normally be set directly, except that gets run to late to set things up properly in our
+     * @implNote This method should be used for setting any variables that would normally be set directly, except that gets run too late to set things up properly in our
      * constructor.
      */
     protected void presetVariables() {
@@ -518,7 +518,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 if (updateDelay > 0) {
                     updateDelay--;
                     if (updateDelay == 0 && getClientActive() != currentActive) {
-                        //If it doesn't match and we are done with the delay period, then update it
+                        //If it doesn't match, and we are done with the delay period, then update it
                         level.setBlockAndUpdate(worldPosition, Attribute.setActive(getBlockState(), currentActive));
                     }
                 }
@@ -527,7 +527,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             updateRadiationScale();
             //TODO - 10.1: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
             if (persists(SubstanceType.HEAT)) {
-                // update heat after server tick as we now have simulate changes
+                // update heat after server tick as we now have simulated changes
                 // we use persists, as only one reference should update
                 updateHeatCapacitors(null);
             }
@@ -1207,7 +1207,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 return;
             }
 
-            // If this machine isn't fully muffled and we don't seem to be playing a sound for it, go ahead and
+            // If this machine isn't fully muffled, and we don't seem to be playing a sound for it, go ahead and
             // play it
             if (!isFullyMuffled() && (activeSound == null || !Minecraft.getInstance().getSoundManager().isActive(activeSound))) {
                 activeSound = SoundHandler.startTileSound(soundEvent, getSoundCategory(), getInitialVolume(), getSoundPos());

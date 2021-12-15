@@ -27,7 +27,7 @@ public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemSust
                 for (int zPos = -1; zPos <= 1; zPos++) {
                     BlockPos pos = placePos.offset(xPos, yPos, zPos);
                     if (!WorldUtils.isValidReplaceableBlock(world, pos)) {
-                        // If it won't fit then fail
+                        // If it doesn't fit then fail
                         return false;
                     }
                 }

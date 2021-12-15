@@ -40,7 +40,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
     }
 
     /**
-     * Make sure to call matrix.pop afterwards
+     * Make sure to call {@link MatrixStack#popPose()} afterwards
      */
     private void performTranslations(TileEntityIndustrialAlarm tile, MatrixStack matrix) {
         matrix.pushPose();

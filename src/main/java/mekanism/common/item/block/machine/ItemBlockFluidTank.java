@@ -161,7 +161,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                     }
                     IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
                     if (fluidTank == null) {
-                        //If something went wrong and we don't have a fluid tank fail
+                        //If something went wrong, and we don't have a fluid tank fail
                         return new ActionResult<>(ActionResultType.FAIL, stack);
                     }
                     if (!player.isShiftKeyDown()) {
@@ -173,7 +173,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         FluidState fluidState = blockState.getFluidState();
                         if (!fluidState.isEmpty() && fluidState.isSource()) {
                             //Just in case someone does weird things and has a fluid state that is empty and a source
-                            // only allow collecting from non empty sources
+                            // only allow collecting from non-empty sources
                             Fluid fluid = fluidState.getType();
                             FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                             Block block = blockState.getBlock();
@@ -186,7 +186,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                 //Actually drain it
                                 fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
                             } else if (block instanceof IBucketPickupHandler && validFluid(fluidTank, fluidStack)) {
-                                //If it can be picked up by a bucket and we actually want to pick it up, do so to update the fluid type we are doing
+                                //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                                 // otherwise we assume the type from the fluid state is correct
                                 fluid = ((IBucketPickupHandler) block).takeLiquid(world, pos, blockState);
                                 //Update the fluid stack in case something somehow changed about the type
@@ -308,7 +308,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                 //If the fluid state in the world isn't empty and is a source try to pick it up otherwise try to dispense the stored fluid
                 if (!fluidState.isEmpty() && fluidState.isSource()) {
                     //Just in case someone does weird things and has a fluid state that is empty and a source
-                    // only allow collecting from non empty sources
+                    // only allow collecting from non-empty sources
                     Fluid fluid = fluidState.getType();
                     FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                     Block block = blockState.getBlock();
@@ -321,7 +321,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         //Actually drain it
                         fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
                     } else if (block instanceof IBucketPickupHandler && validFluid(fluidTank, fluidStack)) {
-                        //If it can be picked up by a bucket and we actually want to pick it up, do so to update the fluid type we are doing
+                        //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                         // otherwise we assume the type from the fluid state is correct
                         fluid = ((IBucketPickupHandler) block).takeLiquid(world, pos, blockState);
                         //Update the fluid stack in case something somehow changed about the type
@@ -355,7 +355,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                 }
                 //If we can't insert or extract it, then eject the stack similar to how vanilla does for buckets
             }
-            //Otherwise eject it as a normal item
+            //Otherwise, eject it as a normal item
             return super.execute(source, stack);
         }
     }

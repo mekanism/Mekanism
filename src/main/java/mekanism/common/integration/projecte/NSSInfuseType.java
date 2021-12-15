@@ -47,7 +47,7 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
         if (infuseType.isEmptyType()) {
             throw new IllegalArgumentException("Can't make NSSInfuseType with an empty infuse type");
         }
-        //This should never be null or it would have crashed on being registered
+        //This should never be null, or it would have crashed on being registered
         return createInfuseType(infuseType.getRegistryName());
     }
 

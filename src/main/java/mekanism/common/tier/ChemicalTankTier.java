@@ -1,6 +1,7 @@
 package mekanism.common.tier;
 
 import java.util.Locale;
+import javax.annotation.Nonnull;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedLongValue;
@@ -30,6 +31,7 @@ public enum ChemicalTankTier implements ITier, IStringSerializable {
         return baseTier;
     }
 
+    @Nonnull
     @Override
     public String getSerializedName() {
         return name().toLowerCase(Locale.ROOT);

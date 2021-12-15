@@ -28,7 +28,7 @@ public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
 
     private ItemStack recipeItem = ItemStack.EMPTY;
-    @Nullable//Note: Shouldn't be null in places it is actually used, but we mark it as nullable so we don't have to initialize it
+    @Nullable//Note: Shouldn't be null in places it is actually used, but we mark it as nullable, so we don't have to initialize it
     private STACK recipeChemical;
 
     /**

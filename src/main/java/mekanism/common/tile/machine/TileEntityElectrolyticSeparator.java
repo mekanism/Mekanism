@@ -94,14 +94,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getRightOutput", "getRightOutputCapacity", "getRightOutputNeeded",
                                                                                         "getRightOutputFilledPercentage"})
     public IGasTank rightTank;
-    /**
-     * The type of gas this block is outputting.
-     */
     @SyntheticComputerMethod(getter = "getLeftOutputDumpingMode")
     public GasMode dumpLeft = GasMode.IDLE;
-    /**
-     * Type type of gas this block is dumping.
-     */
     @SyntheticComputerMethod(getter = "getRightOutputDumpingMode")
     public GasMode dumpRight = GasMode.IDLE;
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;

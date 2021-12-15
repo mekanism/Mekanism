@@ -32,7 +32,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @Override
     public boolean canMergeWith(@Nonnull ItemStack stack) {
-        //Don't allow double clicking to pickup stacks from the output slot
+        //Don't allow double-clicking to pickup stacks from the output slot
         return false;
     }
 
@@ -52,7 +52,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     @Nonnull
     @Override
     public ItemStack remove(int amount) {
-        //Simulate extraction so as to not actually modify the slot
+        //Simulate extraction to not actually modify the slot
         // Note: In theory even though we are "simulating" here instead of actually changing how much is
         // in the slot, this shouldn't be a problem or be a risk of duplication, as there are slots like
         // the MerchantResultSlot which effectively do the same thing. They do it slightly differently

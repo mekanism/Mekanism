@@ -33,7 +33,7 @@ public final class SecurityUtils {
     }
 
     /**
-     * Whether or not a given PlayerEntity is considered an Op.
+     * Whether a given PlayerEntity is considered an Op.
      *
      * @param p - player to check
      *

@@ -99,4 +99,4 @@ All in one jar.
 
 ## Building
 
-Mekanism is built in the same way that the vast majority of other mods are. If you are using an IDE such as Eclipse or IntelliJ IDEA, the normal ways of building/launching it work. If you are just trying to build the jars yourself without an IDE and are new to building mods, this can be done by downloading the sources from github and in the root directory running `gradlew build` or `gradlew.bat build`. The built jars will be output into the `build/libs/` folder.
+Mekanism is built in the same way that the vast majority of other mods are. If you are using an IDE such as Eclipse or IntelliJ IDEA, the normal ways of building/launching it work. If you are just trying to build the jars yourself without an IDE and are new to building mods, this can be done by downloading the sources from GitHub and in the root directory running `gradlew build` or `gradlew.bat build`. The built jars will be output into the `build/libs/` folder.

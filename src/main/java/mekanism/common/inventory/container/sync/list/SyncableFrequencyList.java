@@ -26,7 +26,7 @@ public class SyncableFrequencyList<FREQUENCY extends Frequency> extends Syncable
     @Override
     protected int getValueHashCode() {
         //Reimplementation/copy of AbstractList#hashCode, which is what we would have if we wrapped the
-        // collection into an ArrayList, but we want to avoid creating so many excess objects so we just
+        // collection into an ArrayList, but we want to avoid creating so many excess objects, so we just
         // implement it directly here
         int hashCode = 1;
         for (FREQUENCY frequency : getRaw()) {

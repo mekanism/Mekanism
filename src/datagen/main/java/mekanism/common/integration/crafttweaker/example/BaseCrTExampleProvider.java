@@ -208,7 +208,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
                 //If we have any representations try returning them
                 return representations;
             }
-            //Otherwise try seeing if we have a default type we can fallback to
+            //Otherwise, try seeing if we have a default type we can fall back to
         }
         if (crtClass.isAssignableFrom(actualClass)) {
             if (actual instanceof String) {
@@ -296,7 +296,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
     private String getIngredientRepresentation(CrTImportsComponent imports, ItemStackIngredient ingredient) {
         if (ingredient instanceof ItemStackIngredient.Single) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            //While it is easier to compare types of some stuff using the inner ingredient, some of the things
+            //While it is easier to compare types of some stuff using the inner ingredient, some things
             // are easier to get the information of out of the serialized ingredient
             JsonObject serializedIngredient = serialized.getAsJsonObject(JsonConstants.INGREDIENT);
             Ingredient vanillaIngredient = ((ItemStackIngredient.Single) ingredient).getInputRaw();

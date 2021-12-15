@@ -116,7 +116,7 @@ public class BasicInventorySlot implements IInventorySlot {
     private void setStack(ItemStack stack, boolean validateStack) {
         if (stack.isEmpty()) {
             if (current.isEmpty()) {
-                //If we are already empty just exit, so as to not fire onContentsChanged
+                //If we are already empty just exit, to not fire onContentsChanged
                 return;
             }
             current = ItemStack.EMPTY;
@@ -133,7 +133,7 @@ public class BasicInventorySlot implements IInventorySlot {
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isItemValid(stack) || !canInsert.test(stack, automationType)) {
-            //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
+            //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
             return stack;
         }
         int needed = getLimit(stack) - getCount();
@@ -259,7 +259,7 @@ public class BasicInventorySlot implements IInventorySlot {
             amount = maxStackSize;
         }
         if (getCount() == amount || action.simulate()) {
-            //If our size is not changing or we are only simulating the change, don't do anything
+            //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
         current.setCount(amount);

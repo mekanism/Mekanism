@@ -70,7 +70,7 @@ public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TY
     }
 
     public CrTExampleSnipComponentBuilder<BUILDER_TYPE> modLoadedSnip(String modid) {
-        //Note: We don't make use of all the possible supported modloaded conditions but it doesn't really matter for now as we don't need them
+        //Note: We don't make use of all the possible supported modloaded conditions, but it doesn't really matter for now as we don't need them
         if (ResourceLocation.tryParse(modid + ":test") == null) {
             throw new IllegalArgumentException("Invalid modid: '" + modid + "' found non [a-z0-9_.-] character.");
         }

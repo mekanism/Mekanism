@@ -114,7 +114,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     }
 
     /**
-     * Gets the name of this color with it's color prefix code.
+     * Gets the name of this color with its color prefix code.
      *
      * @return the color's name and color prefix
      */

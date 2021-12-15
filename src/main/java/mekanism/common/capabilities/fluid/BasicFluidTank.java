@@ -147,7 +147,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default this returns {@link Integer#MAX_VALUE} so as to not actually limit the tank's rate. By default this is also ignored for direct setting of the
+     * @implNote By default, this returns {@link Integer#MAX_VALUE} to not actually limit the tank's rate. By default, this is also ignored for direct setting of the
      * stack/stack size
      */
     protected int getRate(@Nullable AutomationType automationType) {
@@ -163,7 +163,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     private void setStack(FluidStack stack, boolean validateStack) {
         if (stack.isEmpty()) {
             if (stored.isEmpty()) {
-                //If we are already empty just exit, so as to not fire onContentsChanged
+                //If we are already empty just exit, to not fire onContentsChanged
                 return;
             }
             stored = FluidStack.EMPTY;
@@ -180,7 +180,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     @Override
     public FluidStack insert(@Nonnull FluidStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isFluidValid(stack) || !canInsert.test(stack, automationType)) {
-            //"Fail quick" if the given stack is empty or we can never insert the fluid or currently are unable to insert it
+            //"Fail quick" if the given stack is empty, or we can never insert the fluid or currently are unable to insert it
             return stack;
         }
         int needed = Math.min(getRate(automationType), getNeeded());
@@ -213,7 +213,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
     @Override
     public FluidStack extract(int amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1 || !canExtract.test(stored, automationType)) {
-            //"Fail quick" if we don't can never extract from this tank, have an fluid stored, or the amount being requested is less than one
+            //"Fail quick" if we don't can never extract from this tank, have a fluid stored, or the amount being requested is less than one
             return FluidStack.EMPTY;
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
@@ -257,7 +257,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
             amount = maxStackSize;
         }
         if (getFluidAmount() == amount || action.simulate()) {
-            //If our size is not changing or we are only simulating the change, don't do anything
+            //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
         stored.setAmount(amount);

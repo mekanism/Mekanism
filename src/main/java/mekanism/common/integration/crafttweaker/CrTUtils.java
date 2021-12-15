@@ -101,7 +101,7 @@ public class CrTUtils {
         } else if (size == 1) {
             return converter.apply(outputs.get(0)).toString();
         }
-        //Note: This isn't the best way to describe multiple outputs but it is probably as close as we can get
+        //Note: This isn't the best way to describe multiple outputs, but it is probably as close as we can get
         StringBuilder description = new StringBuilder();
         for (int i = 0; i < size; i++) {
             if (i > 0) {

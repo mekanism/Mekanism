@@ -31,7 +31,7 @@ public interface ISustainedInventory {
      *
      * @param data - ItemStack parameter if using on item
      *
-     * @return true if there is a non empty inventory stored, false otherwise
+     * @return true if there is a non-empty inventory stored, false otherwise
      */
     default boolean hasInventory(Object... data) {
         ListNBT inventory = getInventory(data);

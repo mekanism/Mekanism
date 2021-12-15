@@ -20,7 +20,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements IFilter<FILTER> {
 
-    //Mark it as abstract so it does not think clone is being implemented by Object
+    //Mark it as abstract, so it does not think clone is being implemented by Object
     @Override
     public abstract FILTER clone();
 

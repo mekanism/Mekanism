@@ -79,7 +79,7 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
             return true;
         }
         initCacheIfNeeded(world);
-        //Note: Even though we know the cache contains input A we need to check both input A and input B
+        //Note: Even though we know the cache contains input A, we need to check both input A and input B
         // This is because we want to ensure that we allow the inputs being in either order, but in our
         // secondary validation we check inputB first as we know the recipe contains inputA as one of the
         // inputs, but we want to make sure that we only mark it as valid if the same input is on both sides

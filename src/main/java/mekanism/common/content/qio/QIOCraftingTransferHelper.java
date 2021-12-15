@@ -34,7 +34,7 @@ public class QIOCraftingTransferHelper {
 
     /**
      * A map of {@link HashedItem}s to the item's sources for stored items in the frequency, the selected crafting grid, and the player's inventory. Any UUID distinct
-     * items get merged into one as the client for checking amounts for JEI filling doesn't have access to the extra data anyways so makes do without it.
+     * items get merged into one as the client for checking amounts for JEI filling doesn't have access to the extra data anyway so makes do without it.
      *
      * @implNote We use raw hashed items as none of this stuff should or will be modified while doing these checks, so we may as well remove some unneeded copies.
      */
@@ -62,7 +62,7 @@ public class QIOCraftingTransferHelper {
                     isValid = false;
                     //Can stop initializing things if we are not valid due to not being able to remove things from the input.
                     // Eventually, we may want to make this be able to special case and allow this to happen for if the items
-                    // would end up in this slot anyways, but for now it doesn't really matter as this should never happen
+                    // would end up in this slot anyway, but for now it doesn't really matter as this should never happen
                     return;
                 }
             }
@@ -295,7 +295,7 @@ public class QIOCraftingTransferHelper {
                 }
                 stackSizes[slot] = remaining;
                 inventory[slot] = stack;
-                //Note: For our slots the max stack size of the slot itself is always 64, but we look it up anyways just in case things change
+                //Note: For our slots the max stack size of the slot itself is always 64, but we look it up anyway just in case things change
                 if (stack.isEmpty()) {
                     slotLimits[slot] = inventorySlot.getMaxStackSize(stack);
                 } else {
@@ -342,7 +342,7 @@ public class QIOCraftingTransferHelper {
                         //Note: Because player inventory slots don't have any restrictions on what can go in them,
                         // we are not bothering to check if we can actually place the stack in it, though if we keep
                         // track of the actual backing slot we could check it if needed, though that would have a chance
-                        // of giving incorrect information anyways if it returns false for mayPlace based oen what was
+                        // of giving incorrect information anyway if it returns false for mayPlace based oen what was
                         // stored and is no longer stored
                         inventory[slot] = stack;
                         slotLimits[slot] = max = Math.min(max, stack.getMaxStackSize());

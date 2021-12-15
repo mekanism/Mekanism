@@ -108,7 +108,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
             if (gasHandlerItem.getTanks() > 0) {
-                //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
                 GasStack storedGas = gasHandlerItem.getChemicalInTank(0);
                 if (!storedGas.isEmpty()) {
                     list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, storedGas.getAmount()));

@@ -60,7 +60,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                 }
                 //Only allow extraction if our item is out of chemical, and doesn't have a valid conversion for it
             }
-            //Always allow extraction if something went horribly wrong and we are not a chemical item AND we can't provide a valid type of chemical
+            //Always allow extraction if something went horribly wrong, and we are not a chemical item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
             STACK conversion = potentialConversionSupplier.apply(stack);
             return conversion.isEmpty() || !chemicalTank.isValid(conversion);
@@ -138,7 +138,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
                     }
                     return false;
                 }
-                //Otherwise if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
+                //Otherwise, if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
                 return handler.insertChemical(chemicalTank.getStack(), Action.SIMULATE).getAmount() < chemicalTank.getStored();
             }
             return false;

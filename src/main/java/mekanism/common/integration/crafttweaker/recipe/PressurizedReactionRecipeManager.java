@@ -40,7 +40,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
      * @param inputGas       {@link GasStackIngredient} representing the gas input of the recipe.
      * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputItem     {@link IItemStack} representing the item output of the recipe.
-     * @param energyRequired Optional value representing how much "extra" energy this recipe requires compared to the base energy requirements of the machine performing
+     * @param energyRequired Optional value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing
      *                       the recipe. Defaults to zero.
      */
     @ZenCodeType.Method
@@ -58,7 +58,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
      * @param inputGas       {@link GasStackIngredient} representing the gas input of the recipe.
      * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputGas      {@link ICrTGasStack} representing the gas output of the recipe.
-     * @param energyRequired Optional value representing how much "extra" energy this recipe requires compared to the base energy requirements of the machine performing
+     * @param energyRequired Optional value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing
      *                       the recipe. Defaults to zero.
      */
     @ZenCodeType.Method
@@ -77,7 +77,7 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
      * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputItem     {@link IItemStack} representing the item output of the recipe.
      * @param outputGas      {@link ICrTGasStack} representing the gas output of the recipe.
-     * @param energyRequired Optional value representing how much "extra" energy this recipe requires compared to the base energy requirements of the machine performing
+     * @param energyRequired Optional value representing how much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing
      *                       the recipe. Defaults to zero.
      */
     @ZenCodeType.Method

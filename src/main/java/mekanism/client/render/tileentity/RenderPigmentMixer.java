@@ -83,7 +83,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     /**
-     * Make sure to call matrix.pop afterwards
+     * Make sure to call {@link MatrixStack#popPose()} afterwards
      */
     private void performTranslations(TileEntityPigmentMixer tile, float partialTick, MatrixStack matrix) {
         matrix.pushPose();

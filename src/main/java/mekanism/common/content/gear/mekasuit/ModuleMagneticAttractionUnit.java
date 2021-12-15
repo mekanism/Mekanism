@@ -42,7 +42,7 @@ public class ModuleMagneticAttractionUnit implements ICustomModule<ModuleMagneti
             boolean free = usage.isZero() || player.isCreative();
             IEnergyContainer energyContainer = free ? null : module.getEnergyContainer();
             if (free || (energyContainer != null && energyContainer.getEnergy().greaterOrEqual(usage))) {
-                //If the energy cost is free or we have enough energy for at least one pull grab all the items that can be picked up.
+                //If the energy cost is free, or we have enough energy for at least one pull grab all the items that can be picked up.
                 //Note: We check distance afterwards so that we aren't having to calculate a bunch of distances when we may run out
                 // of energy, and calculating distance is a bit more expensive than just checking if it can be picked up
                 List<ItemEntity> items = player.level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(size, size, size), item -> !item.hasPickUpDelay());

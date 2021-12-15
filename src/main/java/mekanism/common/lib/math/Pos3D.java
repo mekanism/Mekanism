@@ -16,7 +16,7 @@ import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 
 /**
- * Pos3D - a way of performing operations on objects in a three dimensional environment.
+ * Pos3D - a way of performing operations on objects in a three-dimensional environment.
  *
  * @author aidancbrady
  */
@@ -133,9 +133,9 @@ public class Pos3D extends Vector3d {
     /**
      * Translates this Pos3D by the defined values.
      *
-     * @param x - amount to translate on the x axis
-     * @param y - amount to translate on the y axis
-     * @param z - amount to translate on the z axis
+     * @param x - amount to translate on the x-axis
+     * @param y - amount to translate on the y-axis
+     * @param z - amount to translate on the z-axis
      *
      * @return the translated Pos3D
      */
@@ -286,7 +286,7 @@ public class Pos3D extends Vector3d {
     }
 
     /**
-     * Scales this Pos3D by the defined x, y, an z values.
+     * Scales this Pos3D by the defined x, y, and z values.
      *
      * @param x - x value to scale by
      * @param y - y value to scale by

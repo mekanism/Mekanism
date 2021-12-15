@@ -171,7 +171,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
                 cleanedIngredients.add(ingredient);
             }
         }
-        //There should be more than a single fluid or we would have split out earlier
+        //There should be more than a single fluid, or we would have split out earlier
         return new Multi(cleanedIngredients.toArray(new FluidStackIngredient[0]));
     }
 
@@ -262,7 +262,7 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         @Override
         public FluidStack getMatchingInstance(@Nonnull FluidStack fluidStack) {
             if (test(fluidStack)) {
-                //Our fluid is in the tag so we make a new stack with the given amount
+                //Our fluid is in the tag, so we make a new stack with the given amount
                 return new FluidStack(fluidStack, amount);
             }
             return FluidStack.EMPTY;

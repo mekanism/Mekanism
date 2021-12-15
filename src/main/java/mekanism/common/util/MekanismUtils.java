@@ -239,8 +239,8 @@ public final class MekanismUtils {
         if (difference > 0.01) {
             return (9 * prevScale + targetScale) / 10;
         } else if (!empty && full && difference > 0) {
-            //If we are full but our difference is less than 0.01 but we want to get our scale all the way up to the target
-            // instead of leaving it at a value just under. Note: We also check that are are not empty as we technically may
+            //If we are full but our difference is less than 0.01, but we want to get our scale all the way up to the target
+            // instead of leaving it at a value just under. Note: We also check that we are not empty as we technically may
             // be both empty and full if the current capacity is zero
             return targetScale;
         } else if (!empty && prevScale == 0) {
@@ -273,7 +273,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Gets the operating ticks required for a machine via it's upgrades.
+     * Gets the operating ticks required for a machine via its upgrades.
      *
      * @param tile - tile containing upgrades
      * @param def  - the original, default ticks required
@@ -288,7 +288,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Gets the energy required per tick for a machine via it's upgrades.
+     * Gets the energy required per tick for a machine via its upgrades.
      *
      * @param tile - tile containing upgrades
      * @param def  - the original, default energy required
@@ -320,7 +320,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Gets the maximum energy for a machine via it's upgrades.
+     * Gets the maximum energy for a machine via its upgrades.
      *
      * @param tile - tile containing upgrades
      * @param def  - original, default max energy
@@ -335,7 +335,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Gets the maximum energy for a machine's item form via it's upgrades.
+     * Gets the maximum energy for a machine's item form via its upgrades.
      *
      * @param stack - stack holding energy upgrades
      * @param def   - original, default max energy
@@ -366,7 +366,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Whether or not a certain Mekanism TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity supports redstone.
+     * Whether a certain Mekanism TileEntity can function with redstone logic. Illogical to use unless the defined TileEntity supports redstone.
      *
      * @param tile - TileEntity to check
      *

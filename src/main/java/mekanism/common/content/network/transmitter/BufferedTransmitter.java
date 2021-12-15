@@ -130,8 +130,8 @@ public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBuffe
             if (other instanceof BufferedTransmitter && ((BufferedTransmitter<?, ?, ?, ?>) other).canHaveIncompatibleNetworks() && other.hasTransmitterNetwork()) {
                 NETWORK otherNetwork = (NETWORK) other.getTransmitterNetwork();
                 if (network != otherNetwork && network.isCompatibleWith(otherNetwork)) {
-                    //We have two networks that are now compatible and they are not the same source network
-                    // The most common cause they would be same source network is that they would merge
+                    //We have two networks that are now compatible, and they are not the same source network
+                    // The most common cause that they would be same source network is that they would merge
                     // from the first pipe checking when it attempts to reconnect, and then the second
                     // pipe still is going to be checking the connection.
 

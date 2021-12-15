@@ -123,7 +123,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
         @Override
         public STACK getMatchingInstance(@Nonnull STACK chemicalStack) {
             if (test(chemicalStack)) {
-                //Our chemical is in the tag so we make a new stack with the given amount
+                //Our chemical is in the tag, so we make a new stack with the given amount
                 return getIngredientInfo().createStack(chemicalStack, amount);
             }
             return getIngredientInfo().getEmptyStack();

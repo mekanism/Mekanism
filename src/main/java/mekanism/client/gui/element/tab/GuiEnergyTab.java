@@ -46,7 +46,7 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
     public GuiEnergyTab(IGuiWrapper gui, MachineEnergyContainer<?> energyContainer, BooleanSupplier isActive) {
         this(gui, () -> {
             //Note: This isn't the most accurate using calculation as deactivation doesn't sync instantly
-            // to the client but it is close enough given a lot more things would have to be kept track of otherwise
+            // to the client, but it is close enough given a lot more things would have to be kept track of otherwise
             // which would lead to higher memory usage
             FloatingLong using = isActive.getAsBoolean() ? energyContainer.getEnergyPerTick() : FloatingLong.ZERO;
             return Arrays.asList(MekanismLang.USING.translate(EnergyDisplay.of(using)),

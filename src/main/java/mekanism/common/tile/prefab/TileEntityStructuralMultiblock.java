@@ -82,7 +82,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     private MultiblockData getMultiblockData(Structure structure) {
-        //Like the getMultiblockData(MultiblockManager) method except can assume the structure is indeed in our structures map
+        //Like the getMultiblockData(MultiblockManager) method except can assume the structure is indeed in our structures map,
         // so we can slightly short circuit lookup
         MultiblockData data = structure.getMultiblockData();
         if (data != null && data.isFormed()) {

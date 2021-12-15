@@ -62,9 +62,9 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         addDyeRecipes(consumer, basePath);
         long oneAtATime = PigmentExtractingRecipeProvider.DYE_RATE;
         long eightAtATime = oneAtATime / 8;
-        //Some of the base input tags are effectively duplicates of vanilla, but are done to make sure we don't change
+        //Some base input tags are effectively duplicates of vanilla, but are done to make sure we don't change
         // things that make no sense to be colored, such as some sort of fancy carpets, or a unique type of glass that
-        // is tagged as glass, but shouldn't be able to be converted directly into stained glass
+        // is tagged as glass, but shouldn't be able to be converted directly into stained-glass
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_WOOL, oneAtATime, PigmentExtractingRecipeProvider.WOOL, basePath + "wool/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_CARPETS, eightAtATime, PigmentExtractingRecipeProvider.CARPETS, basePath + "carpet/");
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BEDS, oneAtATime, BEDS, basePath + "bed/");

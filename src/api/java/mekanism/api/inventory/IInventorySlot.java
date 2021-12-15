@@ -67,7 +67,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT>, IContents
      */
     default ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isItemValid(stack)) {
-            //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
+            //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
             return stack;
         }
         int needed = getLimit(stack) - getCount();
@@ -212,7 +212,7 @@ public interface IInventorySlot extends INBTSerializable<CompoundNBT>, IContents
             amount = maxStackSize;
         }
         if (stack.getCount() == amount || action.simulate()) {
-            //If our size is not changing or we are only simulating the change, don't do anything
+            //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
         ItemStack newStack = stack.copy();

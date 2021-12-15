@@ -62,7 +62,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     public void releaseUsing(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entityLiving;
-            //Vanilla diff - Get the energy container, because if something went wrong and we don't have one then we can exit early
+            //Vanilla diff - Get the energy container, because if something went wrong, and we don't have one then we can exit early
             IEnergyContainer energyContainer = null;
             boolean fireState = getFireState(stack);
             if (!player.isCreative()) {

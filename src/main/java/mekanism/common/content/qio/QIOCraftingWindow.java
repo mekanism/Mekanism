@@ -233,7 +233,7 @@ public class QIOCraftingWindow implements IContentsListener {
             if (count > 0 && count < inputSize) {
                 inputSize = count;
                 if (inputSize == 1) {
-                    //Exit early if we find a stack that only has a single item in it anyways
+                    //Exit early if we find a stack that only has a single item in it anyway
                     break;
                 }
             }
@@ -388,7 +388,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     //Otherwise, if the slot is empty, but we don't have an empty remaining stack because of a mod doing odd things
                     // or having some edge case behavior that creates items in a slot, mark that we need to recheck our output.
                     // Technically we maybe would fail to add the item to the slot, but given that is highly unlikely we just
-                    // recheck anyways
+                    // recheck anyway
                     recheckOutput = true;
                 }
                 addRemainingItem(player, frequency, inputSlot, remainder, true);
@@ -814,7 +814,7 @@ public class QIOCraftingWindow implements IContentsListener {
             if (!mapped) {
                 mapped = true;
                 if (lastRecipe == null || lastRecipe.isSpecial()) {
-                    //The recipe should never be null, but we check it anyways. We also check if the recipe is
+                    //The recipe should never be null, but we check it anyway. We also check if the recipe is
                     // special, because if it is then there are no "known" ingredients that we can use to try
                     // and figure out replacements
                     invalid = true;
@@ -855,7 +855,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     // find the offset for it. So if it doesn't support mirroring then it likely won't end up having it
                     // be so that it matches when mirrored, and if it does, the ingredients still should be close enough
                     // for the various spots given this is more of a heuristic than actually having to match no matter what,
-                    // because we will end up testing the recipe with the item we try to use anyways at the end before moving it.
+                    // because we will end up testing the recipe with the item we try to use anyway at the end before moving it.
                     if (mapShapedRecipe(ingredients, columnStart, rowStart, recipeWidth, recipeHeight, true, itemGetter) ||
                         mapShapedRecipe(ingredients, columnStart, rowStart, recipeWidth, recipeHeight, false, itemGetter)) {
                         return;

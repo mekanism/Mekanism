@@ -60,7 +60,7 @@ public abstract class ChemicalChemicalToChemicalRecipe<CHEMICAL extends Chemical
     }
 
     /**
-     * Gets a new output based on the given inputs, the order of these inputs (which one is {@code input1} and which one is {@code input2} does not matter.
+     * Gets a new output based on the given inputs, the order of these inputs which one is {@code input1} and which one is {@code input2} does not matter.
      *
      * @param input1 Specific "left" input.
      * @param input2 Specific "right" input.

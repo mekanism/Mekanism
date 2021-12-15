@@ -33,7 +33,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side) {
         //Note: The capability can technically be null if it is for a mod that is not loaded and another mod
-        // tries to check if we have it, so we just safety check to ensure that it is not so we don't have
+        // tries to check if we have it, so we just safety check to ensure that it is not, so we don't have
         // issues when caching our lazy optionals
         if (capability != null && !itemStack.isEmpty()) {
             if (!capabilitiesInitialized) {
@@ -47,7 +47,7 @@ public class ItemCapabilityWrapper implements ICapabilityProvider {
             //Only provide capabilities if we are not empty
             for (ItemCapability cap : capabilities) {
                 if (cap.capabilityCache.isCapabilityDisabled(capability, null)) {
-                    //Note: Currently no item capabilities have toggleable capabilities, but check anyways to properly support our API
+                    //Note: Currently no item capabilities have toggleable capabilities, but check anyway to properly support our API
                     return LazyOptional.empty();
                 } else if (cap.capabilityCache.canResolve(capability)) {
                     //Make sure that we load any data the cap needs from the stack, as it doesn't have any NBT set when it is initially initialized

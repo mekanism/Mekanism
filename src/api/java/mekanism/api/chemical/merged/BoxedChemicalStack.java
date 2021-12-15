@@ -81,7 +81,7 @@ public class BoxedChemicalStack implements IHasTextComponent {
     }
 
     /**
-     * Gets whether or not this boxed chemical stack is empty.
+     * Gets whether this boxed chemical stack is empty.
      *
      * @return {@code true} if this stack is empty, {@code false} otherwise.
      */

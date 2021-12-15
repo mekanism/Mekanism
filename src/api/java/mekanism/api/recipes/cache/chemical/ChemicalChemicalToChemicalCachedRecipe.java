@@ -27,7 +27,7 @@ public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CH
     private final IInputHandler<@NonNull STACK> leftInputHandler;
     private final IInputHandler<@NonNull STACK> rightInputHandler;
 
-    //Note: These shouldn't be null in places they are actually used, but we mark them as nullable so we don't have to initialize them
+    //Note: These shouldn't be null in places they are actually used, but we mark them as nullable, so we don't have to initialize them
     @Nullable
     private STACK leftRecipeInput;
     @Nullable

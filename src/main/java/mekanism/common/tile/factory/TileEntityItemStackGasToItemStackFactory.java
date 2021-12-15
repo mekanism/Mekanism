@@ -96,7 +96,7 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     public IChemicalTankHolder<Gas, GasStack, IGasTank> getInitialGasTanks() {
         ChemicalTankHelper<Gas, GasStack, IGasTank> builder = ChemicalTankHelper.forSideGasWithConfig(this::getDirection, this::getConfig);
         //If the tank's contents change make sure to call our extended content listener that also marks sorting as being needed
-        // as maybe the valid recipes have changed and we need to sort again and have all recipes know they may need to be rechecked
+        // as maybe the valid recipes have changed, and we need to sort again and have all recipes know they may need to be rechecked
         // if they are not still valid
         builder.addTank(gasTank = ChemicalTankBuilder.GAS.input(TileEntityAdvancedElectricMachine.MAX_GAS * tier.processes, this::containsRecipeB,
               this::onContentsChangedUpdateSortingAndCache));

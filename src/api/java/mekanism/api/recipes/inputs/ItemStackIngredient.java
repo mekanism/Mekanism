@@ -199,7 +199,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
                 cleanedIngredients.add(ingredient);
             }
         }
-        //There should be more than a single item or we would have split out earlier
+        //There should be more than a single item, or we would have split out earlier
         return new Multi(cleanedIngredients.toArray(new ItemStackIngredient[0]));
     }
 

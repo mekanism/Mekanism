@@ -37,7 +37,7 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
             //If we are still the master tick each effect and remove it if it is done
             orbitEffects.removeIf(SPSOrbitEffect::tick);
         } else {
-            //Otherwise if we are no longer master just clear them all directly rather than removing each in a removeIf
+            //Otherwise, if we are no longer master just clear them all directly rather than removing each in a removeIf
             orbitEffects.clear();
         }
     }

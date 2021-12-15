@@ -55,7 +55,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     @Override
     public AcceptorCache<IFluidHandler> getAcceptorCache() {
-        //Cast it here to make things a bit easier, as we know the create is by default of type AcceptorCache
+        //Cast it here to make things a bit easier, as we know createAcceptorCache by default returns an object of type AcceptorCache
         return (AcceptorCache<IFluidHandler>) super.getAcceptorCache();
     }
 
@@ -77,7 +77,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
                     //If we don't have a fluid stored try pulling as much as we are able to
                     received = connectedAcceptor.drain(getAvailablePull(), FluidAction.SIMULATE);
                 } else {
-                    //Otherwise try draining the same type of fluid we have stored requesting up to as much as we are able to pull
+                    //Otherwise, try draining the same type of fluid we have stored requesting up to as much as we are able to pull
                     // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
                     // second tank but just asking to drain a specific amount
                     received = connectedAcceptor.drain(new FluidStack(bufferWithFallback, getAvailablePull()), FluidAction.SIMULATE);

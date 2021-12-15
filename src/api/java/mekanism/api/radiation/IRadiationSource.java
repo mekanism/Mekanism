@@ -22,7 +22,7 @@ public interface IRadiationSource {
     double getMagnitude();
 
     /**
-     * Applies a radiation source (Sv) of the given magnitude too this {@link IRadiationSource}.
+     * Applies a radiation source (Sv) of the given magnitude to this {@link IRadiationSource}.
      *
      * @param magnitude Amount of radiation to apply (Sv).
      */

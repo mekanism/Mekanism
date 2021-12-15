@@ -337,7 +337,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         DoubleNBT nbt = DoubleNBT.valueOf(value);
         Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (value == Math.floor(value) && value >= Long.MIN_VALUE && value <= Long.MAX_VALUE) {
-            //If we are an integer double check the proper type
+            //If we are an integer double-check the proper type
             if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
                 return LongNBT.valueOf((long) value).equals(sanitized);
             } else if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {

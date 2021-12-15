@@ -188,7 +188,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             //Notify the neighbor on that side our state changed and we no longer have a capability
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         } else if (old == ConnectionType.NONE) {
-            //Notify the neighbor on that side our state changed and we now do have a capability
+            //Notify the neighbor on that side our state changed, and we now do have a capability
             WorldUtils.notifyNeighborOfChange(level, side, worldPosition);
         }
     }

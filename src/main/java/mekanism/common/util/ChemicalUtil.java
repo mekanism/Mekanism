@@ -97,7 +97,7 @@ public class ChemicalUtil {
     }
 
     /**
-     * Compares a {@link ChemicalType} with the current type of a merged chemical tank.
+     * Compares a {@link ChemicalType} with the current type of merged chemical tank.
      */
     public static boolean compareTypes(ChemicalType chemicalType, Current current) {
         switch (chemicalType) {
@@ -284,7 +284,7 @@ public class ChemicalUtil {
         Capability<IChemicalHandler<CHEMICAL, STACK>> capability = getCapabilityForChemical(stack);
         ChemicalHandlerTarget<CHEMICAL, STACK, IChemicalHandler<CHEMICAL, STACK>> target = new ChemicalHandlerTarget<>(stack, 6);
         EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
-            //Insert to access side and collect the cap if it is present and we can insert the type of the stack into it
+            //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
             CapabilityUtils.getCapability(acceptor, capability, side.getOpposite()).ifPresent(handler -> {
                 if (canInsert(handler, stack)) {
                     target.addHandler(handler);

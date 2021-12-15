@@ -138,7 +138,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     /**
      * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again if enabled. This separate from the normal {@link
-     * #onContentsChanged()} so as to not cause sorting to happen again just because the energy level of the factory changed.
+     * #onContentsChanged()} to not cause sorting to happen again just because the energy level of the factory changed.
      */
     private void onContentsChangedUpdateSorting() {
         onContentsChanged();
@@ -148,7 +148,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     /**
      * Used for slots/contents pertaining to the inventory checks to mark sorting as being needed again if enabled. This separate from the other {@link
-     * #onContentsChangedUpdateSorting()} so as to not cause recipe lookups to rerun when an output is removed as the raw recipe lookup ignores outputs.
+     * #onContentsChangedUpdateSorting()} to not cause recipe lookups to rerun when an output is removed as the raw recipe lookup ignores outputs.
      */
     protected void onContentsChangedUpdateSortingAndCache() {
         onContentsChangedUpdateSorting();
@@ -181,8 +181,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         addSlots(builder, this::onContentsChangedUpdateSorting);
-        //Add the energy slot after adding the other slots so that it has lowest priority in shift clicking
-        //Note: We can just pass ourself as the listener instead of the listener that updates sorting as well,
+        //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
+        //Note: We can just pass ourselves as the listener instead of the listener that updates sorting as well,
         // as changes to it won't change anything about the sorting of the recipe
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 7, 13));
         return builder.build();
@@ -206,11 +206,11 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
         handleSecondaryFuel();
         if (sortingNeeded && isSorting()) {
-            //If sorting is needed and we have sorting enabled mark
+            //If sorting is needed, and we have sorting enabled mark
             // sorting as no longer needed and sort the inventory
             sortingNeeded = false;
             // Note: If sorting happens, sorting will be marked as needed once more
-            // (due to changes in the inventory), but this is fine and we purposely
+            // (due to changes in the inventory), but this is fine, and we purposely
             // mark sorting being needed as false before instead of after this method
             // call, because while it tries to optimize the layout, if the optimization
             // would make it so that some slots are now empty (because of stacked inputs
@@ -218,7 +218,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             // with other items.
             sortInventory();
         } else if (!sortingNeeded && CommonWorldTickHandler.flushTagAndRecipeCaches) {
-            //Otherwise if sorting isn't currently needed and the recipe cache is invalid
+            //Otherwise, if sorting isn't currently needed and the recipe cache is invalid
             // Mark sorting as being needed again for the next check as recipes may
             // have changed so our current sort may be incorrect
             sortingNeeded = true;
@@ -276,7 +276,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 return cached.getRecipe();
             }
         }
-        //If there is no cached item input or it doesn't match our fallback then it is an out of date cache, so we ignore the fact that we have a cache
+        //If there is no cached item input, or it doesn't match our fallback then it is an out of date cache, so we ignore the fact that we have a cache
         RECIPE foundRecipe = findRecipe(process, fallbackInput, outputSlot, secondaryOutputSlot);
         if (foundRecipe == null) {
             //We could not find any valid recipe for the given item that matches the items in the current output slots
@@ -415,7 +415,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 return true;
             }
         }
-        //And finally check if it is the non factory version (it will be missing sorting data but we can gracefully ignore that)
+        //And finally check if it is the non factory version (it will be missing sorting data, but we can gracefully ignore that)
         return type.getBaseMachine().getTileType() == tileType;
     }
 
@@ -515,8 +515,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                     CachedRecipe<RECIPE> cachedRecipe = getCachedRecipe(processInfo.getProcess());
                     if (isCachedRecipeValid(cachedRecipe, inputStack)) {
                         // And our current process has a cached recipe then set the lazily initialized per slot value
-                        // Note: If something goes wrong and we end up with zero as how much we need as an input
-                        // we just bump the value up to one so as to make sure we properly handle it
+                        // Note: If something goes wrong, and we end up with zero as how much we need as an input
+                        // we just bump the value up to one to make sure we properly handle it
                         recipeProcessInfo.lazyMinPerSlot = () -> Math.max(1, getNeededInput(cachedRecipe.getRecipe(), inputStack));
                     }
                 }
@@ -529,7 +529,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         for (Entry<HashedItem, RecipeProcessInfo> entry : processes.entrySet()) {
             RecipeProcessInfo recipeProcessInfo = entry.getValue();
             if (recipeProcessInfo.lazyMinPerSlot == null) {
-                //If we don't have a lazily initializer for our minPerSlot setup, that means that there is
+                //If we don't have a lazy initializer for our minPerSlot setup, that means that there is
                 // no valid cached recipe for any of the slots of this type currently, so we want to try and
                 // get the recipe we will have for the first slot, once we end up with more items in the stack
                 recipeProcessInfo.lazyMinPerSlot = () -> {
@@ -611,7 +611,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 continue;
             }
             HashedItem item = entry.getKey();
-            //Note: This isn't based on any limits the slot may have (but we currently don't have any reduced ones here so it doesn't matter)
+            //Note: This isn't based on any limits the slot may have (but we currently don't have any reduced ones here, so it doesn't matter)
             int maxStackSize = item.getStack().getMaxStackSize();
             int numberPerSlot = recipeProcessInfo.totalCount / processCount;
             if (numberPerSlot == maxStackSize) {
@@ -676,7 +676,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                     if (sizeForSlot > 0) {
                         //Note: We use setStackUnchecked here, as there is a very small chance that
                         // the stack is not actually valid for the slot because of a reload causing
-                        // recipes to change. If this is the case, then we want to properly not crash
+                        // recipes to change. If this is the case, then we want to properly not crash,
                         // but we would rather not add any extra overhead about revalidating the item
                         // each time as it can get somewhat expensive.
                         inputSlot.setStackUnchecked(item.createStack(sizeForSlot));

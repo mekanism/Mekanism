@@ -186,7 +186,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             //If we are requesting now request the update
             requestsUpdate();
         } else {
-            //Otherwise return that we need to update it
+            //Otherwise, return that we need to update it
             return true;
         }
         return false;
@@ -454,7 +454,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             }
             //If the redstone mode changed properly update the connection to other transmitters/networks
             if (previouslyPowered != redstonePowered) {
-                //Has to be markDirtyTransmitters instead of notify tile change
+                //Has to be markDirtyTransmitters instead of notify tile change,
                 // or it will not properly tell the neighboring connections that
                 // it is no longer valid
                 markDirtyTransmitters();
@@ -475,7 +475,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                 if (possibleTransmitters != currentTransmitterConnections) {
                     //If they don't match get the difference
                     newlyEnabledTransmitters = (byte) (possibleTransmitters ^ currentTransmitterConnections);
-                    //Now remove all bits that already where enabled so we only have the
+                    //Now remove all bits that already where enabled, so we only have the
                     // ones that are newly enabled. There is no need to recheck for a
                     // network merge on two transmitters if one is no longer accessible
                     newlyEnabledTransmitters &= ~currentTransmitterConnections;
@@ -511,7 +511,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             currentTransmitterConnections = setConnectionBit(currentTransmitterConnections, possibleTransmitter, side);
             acceptorCache.currentAcceptorConnections = setConnectionBit(acceptorCache.currentAcceptorConnections, possibleAcceptor, side);
             if (transmitterChanged) {
-                //If this side is now a valid transmitter and it wasn't before recheck the connection
+                //If this side is now a valid transmitter, and it wasn't before recheck the connection
                 recheckConnection(side);
             }
             if (sendDesc) {
@@ -562,11 +562,11 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public void onNeighborBlockChange(Direction side) {
         if (handlesRedstone() && redstoneReactive) {
-            //If our tile can handle redstone and we are redstone reactive we need to recheck all connections
-            // as the power might have changed and we may have to update our own visuals
+            //If our tile can handle redstone, and we are redstone reactive we need to recheck all connections
+            // as the power might have changed, and we may have to update our own visuals
             refreshConnections();
         } else {
-            //Otherwise we can just get away with checking the single side
+            //Otherwise, we can just get away with checking the single side
             refreshConnections(side);
         }
     }

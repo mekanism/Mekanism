@@ -117,7 +117,7 @@ public final class TransporterPathfinder {
             return null;
         }
         if (destinationCount > 1 && outputter.rrTarget != null) {
-            //If we have more than one destination and have a "next" round robin target stored
+            //If we have more than one destination and have a "next" round-robin target stored
             // go through the different destinations and find one that matches
             for (int i = 0; i < destinationCount; i++) {
                 Destination destination = destinations.get(i);
@@ -133,7 +133,7 @@ public final class TransporterPathfinder {
                             // targets get added we still continue in the place we are expecting
                             outputter.rrTarget = SidedBlockPos.get(destinations.get(0));
                         } else {
-                            // Otherwise if we are not the last element mark the next target as
+                            // Otherwise, if we are not the last element mark the next target as
                             // the next destination
                             outputter.rrTarget = SidedBlockPos.get(destinations.get(i + 1));
                         }
@@ -384,7 +384,7 @@ public final class TransporterPathfinder {
                     hasValidDirection = true;
                     break;
                 } else if (isValidDestination(start, startTransmitter, direction, neighbor, chunkMap)) {
-                    //Otherwise if we are neighboring our destination, and we can emit to the location or it is going back
+                    //Otherwise, if we are neighboring our destination, and we can emit to the location, or it is going back
                     // to its home location and can connect to it just exit early and return that this is the best path
                     return true;
                 }
@@ -435,7 +435,7 @@ public final class TransporterPathfinder {
                             openSet.add(neighbor);
                         }
                     } else if (isValidDestination(currentNode, currentNodeTransmitter, direction, neighbor, chunkMap)) {
-                        //Else if the neighbor is the destination and we can send to it
+                        //Else if the neighbor is the destination, and we can send to it
                         return true;
                     }
                 }
@@ -455,10 +455,10 @@ public final class TransporterPathfinder {
                 TileEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
                 if (neighborTile != null && destChecker.isValid(transportStack, direction, neighborTile)) {
                     if (startTransporter.canEmitTo(direction) || (finalNode.equals(transportStack.homeLocation) && startTransporter.canConnect(direction))) {
-                        //If it is and we can emit to it (normal or push mode),
-                        // or it is the home location of the stack (it is returning back due to not having been able to get to its destination)
-                        // and we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),
-                        // then this is the proper path so we mark it as so and return true indicating that we found and marked the ideal path
+                        //If it is, and we can emit to it (normal or push mode),
+                        // or it is the home location of the stack (it is returning due to not having been able to get to its destination) and
+                        // we can connect to it (normal, push, or pull (should always be pull as otherwise canEmitTo would have been true)),
+                        // then this is the proper path, so we mark it as so and return true indicating that we found and marked the ideal path
                         side = direction;
                         results = reconstructPath(navMap, start);
                         finalScore = gScore.getDouble(start) + WorldUtils.distanceBetween(start, finalNode);

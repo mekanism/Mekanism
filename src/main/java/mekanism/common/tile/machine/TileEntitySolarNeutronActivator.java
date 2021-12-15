@@ -170,7 +170,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
         float brightness = WorldUtils.getSunBrightness(world, 1.0F);
         //Production is a function of the peak possible output in this biome and sun's current brightness
         float production = peakProductionRate * brightness;
-        //If the solar neutron activator is in a biome where it can rain and it's raining penalize production by 80%
+        //If the solar neutron activator is in a biome where it can rain, and it's raining penalize production by 80%
         if (needsRainCheck && (world.isRaining() || world.isThundering())) {
             production *= 0.2F;
         }

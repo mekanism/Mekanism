@@ -65,7 +65,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     };
 
     /**
-     * Function to allow for post processing {@link #getOperationsThisTick(int)}. (Defaults to capping the number of operations to one operation per tick)
+     * Function to allow for post-processing {@link #getOperationsThisTick(int)}. (Defaults to capping the number of operations to one operation per tick)
      */
     private IntUnaryOperator postProcessOperations = currentMax -> Math.min(1, currentMax);
 
@@ -175,7 +175,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      * Sets the callback used to post process the number of operations this {@link CachedRecipe} calculated it can perform in {@link #getOperationsThisTick(int)}. The
      * function {@code postProcessOperations} should not return a value higher than it is passed in or various issues may occur.
      *
-     * @param postProcessOperations Function that applies post processing the the result of {@link #getOperationsThisTick(int)}.
+     * @param postProcessOperations Function that applies post-processing to the result of {@link #getOperationsThisTick(int)}.
      *
      * @apiNote If this method is not used, {@code postProcessOperations} for this {@link CachedRecipe} defaults to capping the number of operations at one.
      */
@@ -242,7 +242,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     }
 
     /**
-     * Called to allow recipes to setup any variables they will need this tick to allow them to reduce the number of places they have to recalculate/retrieve a passed in
+     * Called to allow recipes to set up any variables they will need this tick to allow them to reduce the number of places they have to recalculate/retrieve a passed in
      * value.
      */
     protected void setupVariableValues() {

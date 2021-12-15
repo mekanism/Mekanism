@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
 
 /**
- * Interface for helping implementing objects that can handle cached recipes.
+ * Interface for helping implement objects that can handle cached recipes.
  */
 public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
 
@@ -28,7 +28,7 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
                 //If our cache is not valid, or we may have a recipe, check if we do
                 RECIPE recipe = getRecipe(cacheIndex);
                 if (recipe == null) {
-                    //If we don't mark that we don't have no recipe so that we can cache and short circuit following
+                    //If we don't, mark that we have no recipe so that we can cache and short circuit following
                     // recipe lookups until either the cache becomes invalid or we may have a recipe again
                     setHasNoRecipe(cacheIndex);
                 } else {
@@ -81,7 +81,7 @@ public interface ICachedRecipeHolder<RECIPE extends MekanismRecipe> {
     CachedRecipe<RECIPE> getCachedRecipe(int cacheIndex);
 
     /**
-     * Tries to lookup/get the recipe that a given cacheIndex would represent the slots/tanks/etc for.
+     * Tries to lookup/get the recipe that a given cacheIndex would represent the slots/tanks/etc. for.
      *
      * @param cacheIndex The "recipe index" for which cache to interact with.
      *

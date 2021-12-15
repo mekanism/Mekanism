@@ -69,7 +69,7 @@ public class PacketSecurityUpdate implements IMekanismPacket {
             }
         } else {
             List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyType.SECURITY.getManager(null).getFrequencies());
-            //In theory no owner should be null but handle the case anyways just in case
+            //In theory no owner should be null but handle the case anyway just in case
             frequencies.removeIf(frequency -> frequency.getOwner() == null);
             buffer.writeVarInt(frequencies.size());
             for (SecurityFrequency frequency : frequencies) {

@@ -8,7 +8,7 @@ import mekanism.common.integration.computer.ComputerMethodMapper.MethodRestricti
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper;
 
 /**
- * Wraps fields as getters and method's with return types into one or more "synthetic" methods, based on the wrapper class.
+ * Wraps fields as getters and methods with return types into one or more "synthetic" methods, based on the wrapper class.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD})

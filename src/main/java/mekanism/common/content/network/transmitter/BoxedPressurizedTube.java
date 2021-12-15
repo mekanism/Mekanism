@@ -139,7 +139,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
             //If we don't have a chemical stored try pulling as much as we are able to
             received = connectedAcceptor.extractChemical(availablePull, Action.SIMULATE);
         } else {
-            //Otherwise try draining the same type of chemical we have stored requesting up to as much as we are able to pull
+            //Otherwise, try draining the same type of chemical we have stored requesting up to as much as we are able to pull
             // We do this to better support multiple tanks in case the chemical we have stored we could pull out of a block's
             // second tank but just asking to drain a specific amount
             received = connectedAcceptor.extractChemical(ChemicalUtil.copyWithAmount((STACK) bufferWithFallback.getChemicalStack(), availablePull), Action.SIMULATE);

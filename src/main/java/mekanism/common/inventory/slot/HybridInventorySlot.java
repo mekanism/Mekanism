@@ -101,11 +101,11 @@ public class HybridInventorySlot extends MergedChemicalInventorySlot<MergedTank>
                 return pigmentInsertPredicate.test(stack);
             } else if (currentType == CurrentType.SLURRY) {
                 return slurryInsertPredicate.test(stack);
-            }//Else the tank is empty, if the item is a fluid handler and it is an internal check allow it
+            }//Else the tank is empty, if the item is a fluid handler, and it is an internal check allow it
             if (automationType == AutomationType.INTERNAL && FluidUtil.getFluidHandler(stack).isPresent()) {
                 return true;
             }
-            //otherwise only allow it if one of the chemical insert predicates matches
+            //otherwise, only allow it if one of the chemical insert predicates matches
             return gasInsertPredicate.test(stack) || infusionInsertPredicate.test(stack) || pigmentInsertPredicate.test(stack) || slurryInsertPredicate.test(stack);
         }, HybridInventorySlot::hasCapability, listener, x, y);
     }

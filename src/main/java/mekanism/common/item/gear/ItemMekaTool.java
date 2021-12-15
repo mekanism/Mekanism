@@ -162,7 +162,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         if (energyContainer == null) {
             return 0;
         }
-        //Use raw hardness to get a best guess of if it is zero or not
+        //Use raw hardness to get the best guess of if it is zero or not
         FloatingLong energyRequired = getDestroyEnergy(stack, state.destroySpeed, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
         FloatingLong energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
         if (energyAvailable.smallerThan(energyRequired)) {
@@ -180,7 +180,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             FloatingLong energyRequired = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
             FloatingLong extractedEnergy = energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
             if (extractedEnergy.equals(energyRequired) || entityliving instanceof PlayerEntity && ((PlayerEntity) entityliving).isCreative()) {
-                //Only disarm tripwires if we had all the energy we tried to use (or are creative). Otherwise treat it as if we may have failed to disarm it
+                //Only disarm tripwires if we had all the energy we tried to use (or are creative). Otherwise, treat it as if we may have failed to disarm it
                 if (state.is(Blocks.TRIPWIRE) && !state.getValue(TripWireBlock.DISARMED) && isModuleEnabled(stack, MekanismModules.SHEARING_UNIT)) {
                     world.setBlock(pos, state.setValue(TripWireBlock.DISARMED, true), BlockFlags.NO_RERENDER);
                 }

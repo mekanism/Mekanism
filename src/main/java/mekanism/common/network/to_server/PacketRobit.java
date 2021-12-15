@@ -71,13 +71,13 @@ public class PacketRobit implements IMekanismPacket {
                     if (robit.getSkin() == MekanismRobitSkins.BASE.get()) {
                         //If the robit has the base skin currently equipped
                         List<IRobitSkinProvider> skins = EASTER_EGGS.getOrDefault(name.toLowerCase(Locale.ROOT), Collections.emptyList());
-                        // check if there are any skins paired with the name that got set as an easter egg
+                        // check if there are any skins paired with the name that got set as an Easter egg
                         if (!skins.isEmpty()) {
                             // if there are, then pick a random one and set it
                             // Note: We use null for the player instead of the actual player in case we ever
-                            // end up adding any easter egg skins that aren't unlocked by default, so as to
-                            // still be able to equip them. We already validate the player can access the
-                            // robit above before setting the name
+                            // end up adding any Easter egg skins that aren't unlocked by default, to still
+                            // be able to equip them. We already validate the player can access the robit
+                            // above before setting the name
                             robit.setSkin(skins.get(robit.level.random.nextInt(skins.size())), null);
                         }
                     }

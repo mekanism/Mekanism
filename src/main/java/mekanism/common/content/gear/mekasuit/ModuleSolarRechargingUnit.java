@@ -47,7 +47,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
 
                 //Production is a function of the peak possible output in this biome and sun's current brightness
                 FloatingLong production = peakOutput.multiply(brightness);
-                //If the generator is in a biome where it can rain and it's raining penalize production by 80%
+                //If the generator is in a biome where it can rain, and it's raining penalize production by 80%
                 if (needsRainCheck && (player.level.isRaining() || player.level.isThundering())) {
                     production = production.timesEqual(RAIN_MULTIPLIER);
                 }

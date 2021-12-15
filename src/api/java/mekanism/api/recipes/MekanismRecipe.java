@@ -43,7 +43,7 @@ public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {//TO
 
     @Override
     public boolean isSpecial() {
-        //Note: If we make this non dynamic, we can make it show in vanilla's crafting book and also then obey the recipe locking.
+        //Note: If we make this non-dynamic, we can make it show in vanilla's crafting book and also then obey the recipe locking.
         // For now none of that works/makes sense in our concept so don't lock it
         return true;
     }

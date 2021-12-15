@@ -19,7 +19,7 @@ public interface IInsertableSlot {
     ItemStack insertItem(@Nonnull ItemStack stack, Action action);
 
     /**
-     * Used for determining if this slot can merge with the given stack when the stack is double clicked.
+     * Used for determining if this slot can merge with the given stack when the stack is double-clicked.
      */
     default boolean canMergeWith(@Nonnull ItemStack stack) {
         return true;

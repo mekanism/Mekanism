@@ -221,7 +221,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             //If we can replace the block then return so
             return true;
         }
-        //Otherwise just return if it is a liquid container that can support the type of fluid we are offering
+        //Otherwise, just return if it is a liquid container that can support the type of fluid we are offering
         return state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canPlaceLiquid(level, pos, state, fluid);
     }
 

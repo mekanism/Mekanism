@@ -56,7 +56,7 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
     }
 
     /**
-     * Helper to check if a cache contains a given input, or if not if the complex recipe fallback set contains a matching recipe.
+     * Helper to check if a cache contains a given input, or if not, if the complex recipe fallback set contains a matching recipe.
      */
     protected <INPUT, INGREDIENT extends InputIngredient<INPUT>, CACHE extends IInputCache<INPUT, INGREDIENT, RECIPE>> boolean containsInput(
           @Nullable World world, INPUT input, Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache, Set<RECIPE> complexRecipes) {
@@ -69,8 +69,8 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
     }
 
     /**
-     * Helper to check if a cache contains a given input grouping, or if not if the complex recipe fallback set contains a matching recipe. This method is mainly used for
-     * for purposes of implementing insertion predicates so it has the following behaviors. This allows it to short circuit in cases where we already know the input is
+     * Helper to check if a cache contains a given input grouping, or if not, if the complex recipe fallback set contains a matching recipe. This method is mainly used
+     * for purposes of implementing insertion predicates, so it has the following behaviors. This allows it to short circuit in cases where we already know the input is
      * valid (the last case in the below list).
      * <ul>
      * <li>If the first input is empty: This will check if there is a recipe that the second input is valid for.</li>

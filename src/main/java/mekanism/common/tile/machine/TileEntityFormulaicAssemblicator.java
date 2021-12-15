@@ -156,7 +156,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 outputSlots.add(outputSlot);
             }
         }
-        //Add the energy slot after adding the other slots so that it has lowest priority in shift clicking
+        //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
         builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, this, 152, 76));
         return builder.build();
     }
@@ -376,7 +376,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     ret = false;
                 }
             } else {
-                //Update recipeStack as well so we can check if it is empty without having to get it again
+                //Update recipeStack as well, so we can check if it is empty without having to get it again
                 recipeSlot.setStack(recipeStack = tryMoveToInput(recipeStack));
                 markDirty(false);
                 if (!recipeStack.isEmpty()) {
@@ -586,7 +586,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         for (IInventorySlot outputSlot : outputSlots) {
             //Try to insert the item (simulating as needed), and overwrite our local reference to point ot the remainder
             // We can then continue on to the next slot if we did not fit it all and try to insert it.
-            // The logic is relatively simple due to only having one stack we are trying to insert so we don't have to worry
+            // The logic is relatively simple due to only having one stack we are trying to insert, so we don't have to worry
             // about the fact the slot doesn't actually get updated if we simulated, and then is invalid for the next simulation
             stack = outputSlot.insertItem(stack, action, AutomationType.INTERNAL);
             if (stack.isEmpty()) {
@@ -665,7 +665,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         container.track(SyncableBoolean.create(() -> formula != null, hasFormula -> {
             if (hasFormula) {
                 if (formula == null && isRemote()) {
-                    //If we are on the client (which we should be when setting anyways) and we don't have a formula yet
+                    //If we are on the client (which we should be when setting anyway) and we don't have a formula yet
                     // but should, then create an empty formula
                     formula = new RecipeFormula(getLevel(), NonNullList.withSize(9, ItemStack.EMPTY));
                 }
@@ -677,7 +677,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             int index = i;
             container.track(SyncableItemStack.create(() -> formula == null ? ItemStack.EMPTY : formula.input.get(index), stack -> {
                 if (!stack.isEmpty() && formula == null && isRemote()) {
-                    //If we are on the client (which we should be when setting anyways) and we don't have a formula yet
+                    //If we are on the client (which we should be when setting anyway) and we don't have a formula yet
                     // but should, then create an empty formula. Also make sure it isn't just us trying to clear the formula slot
                     formula = new RecipeFormula(getLevel(), NonNullList.withSize(9, ItemStack.EMPTY));
                 }

@@ -18,7 +18,7 @@ public final class VoxelShapeUtils {
     private static final Vector3d fromOrigin = new Vector3d(-0.5, -0.5, -0.5);
 
     /**
-     * Prints out an easy to copy paste string representing the cuboid of a shape
+     * Prints out an easy to copy-paste string representing the cuboid of a shape
      */
     public static void print(double x1, double y1, double z1, double x2, double y2, double z2) {
         Mekanism.logger.info("box({}, {}, {}, {}, {}, {}),", Math.min(x1, x2), Math.min(y1, y2), Math.min(z1, z2),
@@ -26,7 +26,7 @@ public final class VoxelShapeUtils {
     }
 
     /**
-     * Prints out a set of strings that make copy pasting easier, for simplifying a voxel shape
+     * Prints out a set of strings that make copy-pasting easier, for simplifying a voxel shape
      */
     public static void printSimplified(String name, VoxelShape shape) {
         Mekanism.logger.info("Simplified: {}", name);
@@ -60,7 +60,7 @@ public final class VoxelShapeUtils {
     }
 
     /**
-     * Rotates an {@link AxisAlignedBB} to a according to a specific rotation.
+     * Rotates an {@link AxisAlignedBB} according to a specific rotation.
      *
      * @param box      The {@link AxisAlignedBB} to rotate
      * @param rotation The rotation we are performing.
@@ -116,7 +116,7 @@ public final class VoxelShapeUtils {
     }
 
     /**
-     * Rotates a {@link VoxelShape} to a according to a specific rotation.
+     * Rotates a {@link VoxelShape} according to a specific rotation.
      *
      * @param shape    The {@link VoxelShape} to rotate
      * @param rotation The rotation we are performing.
@@ -166,7 +166,7 @@ public final class VoxelShapeUtils {
      *
      * @param shapes The list of {@link VoxelShape}s to include
      *
-     * @return A simplified {@link VoxelShape} including everything that is part of any of the input shapes.
+     * @return A simplified {@link VoxelShape} including everything that is part of the input shapes.
      */
     public static VoxelShape combine(VoxelShape... shapes) {
         return batchCombine(VoxelShapes.empty(), IBooleanFunction.OR, true, shapes);
@@ -177,7 +177,7 @@ public final class VoxelShapeUtils {
      *
      * @param shapes The collection of {@link VoxelShape}s to include
      *
-     * @return A simplified {@link VoxelShape} including everything that is part of any of the input shapes.
+     * @return A simplified {@link VoxelShape} including everything that is part of the input shapes.
      */
     public static VoxelShape combine(Collection<VoxelShape> shapes) {
         return batchCombine(VoxelShapes.empty(), IBooleanFunction.OR, true, shapes);
@@ -188,7 +188,7 @@ public final class VoxelShapeUtils {
      *
      * @param shapes The list of {@link VoxelShape}s to cut out
      *
-     * @return A {@link VoxelShape} including everything that is not part of any of the input shapes.
+     * @return A {@link VoxelShape} including everything that is not part of the input shapes.
      */
     public static VoxelShape exclude(VoxelShape... shapes) {
         return batchCombine(VoxelShapes.block(), IBooleanFunction.ONLY_FIRST, true, shapes);

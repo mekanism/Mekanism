@@ -49,7 +49,7 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     }
 
     /**
-     * Make sure to call matrix.pop afterwards
+     * Make sure to call {@link MatrixStack#popPose()} afterwards
      */
     private float performTranslationsAndGetRate(TileEntitySeismicVibrator tile, float partialTick, MatrixStack matrix) {
         matrix.pushPose();

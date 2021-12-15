@@ -201,7 +201,7 @@ public class MekanismRenderer {
           BooleanSupplier inMultiblock) {
         FaceDisplay faceDisplay;
         if (!valves.isEmpty()) {
-            //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside of them
+            //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them
             // if we aren't in the multiblock though we can just get away with only rendering the front faces
             faceDisplay = inMultiblock.getAsBoolean() ? FaceDisplay.BOTH : FaceDisplay.FRONT;
             for (ValveData valveData : valves) {

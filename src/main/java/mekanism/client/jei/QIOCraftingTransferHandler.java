@@ -76,9 +76,9 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
           boolean doTransfer) {
         if (!(rawRecipe instanceof ICraftingRecipe)) {
             //Ensure that we actually have an IRecipe as if we succeed we will be using the id it provides
-            // to inform the server what recipe is being auto-filled transfer the data to the server
+            // to inform the server what recipe is being autofilled transfer the data to the server
             //Note: Technically we could check this as IRecipe, but we do ICraftingRecipe as it really should be
-            // a crafting recipe, and if it isn't the server won't know how to transfer it anyways
+            // a crafting recipe, and if it isn't the server won't know how to transfer it anyway
             return handlerHelper.createInternalError();
         }
         byte selectedCraftingGrid = container.getSelectedCraftingGrid();

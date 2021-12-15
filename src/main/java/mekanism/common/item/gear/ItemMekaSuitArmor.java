@@ -402,7 +402,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 usageInfo.energyAvailable = usageInfo.energyAvailable.minusEqual(usage);
                 return absorption;
             } else if (!usageInfo.energyAvailable.isZero()) {
-                //Otherwise if we have energy available but not as much as needed to fully absorb it
+                //Otherwise, if we have energy available but not as much as needed to fully absorb it
                 // then we calculate what ratio we are able to block
                 float absorbedPercent = usageInfo.energyAvailable.divide(usage).floatValue();
                 usageInfo.energyUsed = usageInfo.energyUsed.plusEqual(usageInfo.energyAvailable);

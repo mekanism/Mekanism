@@ -159,7 +159,7 @@ public class StorageUtils {
 
     /**
      * Gets the fluid if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a fluid handler
-     * attached to our item but it may have stored data in its tank from when it was a block
+     * attached to our item, but it may have stored data in its tank from when it was a block
      */
     @Nonnull
     public static FluidStack getStoredFluidFromNBT(ItemStack stack) {
@@ -170,7 +170,7 @@ public class StorageUtils {
 
     /**
      * Gets the gas if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a gas handler
-     * attached to our item but it may have stored data in its tank from when it was a block
+     * attached to our item, but it may have stored data in its tank from when it was a block
      */
     @Nonnull
     public static GasStack getStoredGasFromNBT(ItemStack stack) {
@@ -178,8 +178,8 @@ public class StorageUtils {
     }
 
     /**
-     * Gets the infuse type if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a infusion
-     * handler attached to our item but it may have stored data in its tank from when it was a block
+     * Gets the infuse type if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have an infusion
+     * handler attached to our item, but it may have stored data in its tank from when it was a block
      */
     @Nonnull
     public static InfusionStack getStoredInfusionFromNBT(ItemStack stack) {
@@ -188,7 +188,7 @@ public class StorageUtils {
 
     /**
      * Gets the pigment if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a pigment handler
-     * attached to our item but it may have stored data in its tank from when it was a block
+     * attached to our item, but it may have stored data in its tank from when it was a block
      */
     @Nonnull
     public static PigmentStack getStoredPigmentFromNBT(ItemStack stack) {
@@ -197,7 +197,7 @@ public class StorageUtils {
 
     /**
      * Gets the slurry if one is stored from an item's tank going off the basis there is a single tank. This is for cases when we may not actually have a slurry handler
-     * attached to our item but it may have stored data in its tank from when it was a block
+     * attached to our item, but it may have stored data in its tank from when it was a block
      */
     @Nonnull
     public static SlurryStack getStoredSlurryFromNBT(ItemStack stack) {
@@ -212,7 +212,7 @@ public class StorageUtils {
 
     /**
      * Gets the energy if one is stored from an item's container going off the basis there is a single energy container. This is for cases when we may not actually have
-     * an energy handler attached to our item but it may have stored data in its container from when it was a block
+     * an energy handler attached to our item, but it may have stored data in its container from when it was a block
      */
     public static FloatingLong getStoredEnergyFromNBT(ItemStack stack) {
         BasicEnergyContainer container = BasicEnergyContainer.create(FloatingLong.MAX_VALUE, null);

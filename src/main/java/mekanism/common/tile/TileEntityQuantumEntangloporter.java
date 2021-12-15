@@ -105,7 +105,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
         ejectorComponent = new TileComponentEjector(this);
         //Note: All eject types except for items is handled by the frequency
-        //Only allow trying to eject if we have a frequency, because otherwise all our containers and sides will just be empty anyways
+        //Only allow trying to eject if we have a frequency, because otherwise all our containers and sides will just be empty anyway
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM).setCanEject(type -> hasFrequency());
 
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
@@ -206,7 +206,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @Override
     protected boolean shouldDumpRadiation() {
-        //Note: The QE doesn't support radioactive substances but override this method anyways
+        //Note: The QE doesn't support radioactive substances but override this method anyway
         return false;
     }
 

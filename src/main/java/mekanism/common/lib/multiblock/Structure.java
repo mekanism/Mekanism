@@ -124,7 +124,7 @@ public class Structure {
     public void add(Structure s) {
         if (s != this) {
             if (s.getController() != null && s.getController().canBeMaster() && (getController() == null || !getController().canBeMaster())) {
-                //If the controller of the other structure isn't null and it can be a master block override our structure's controller
+                //If the controller of the other structure isn't null, and it can be a master block override our structure's controller
                 // if our structure's controller is only the controller because of lack of a better and more proper one
                 controller = s.getController();
             }
@@ -290,11 +290,11 @@ public class Structure {
             Structure changed;
             // merge into the bigger structure for efficiency
             if (nodeStructure.size() >= adjStructure.size() || (nodeStructure.getManager() != null && adjStructure.getManager() == null)) {
-                //Note: We do >= so that if both have size one (a frame and a structural block), then we can
+                //Note: We do >= so that if both have size of one (a frame and a structural block), then we can
                 // properly add the structural to the frame, instead of trying to add the frame to the structural
-                // we also make sure this doesn't somehow happen in the future anyways, if there is some edge case
+                // we also make sure this doesn't somehow happen in the future anyway, if there is some edge case
                 // that comes up where our node's manager isn't null but the adjacent one is because then we still
-                // need to be merging this direction anyways
+                // need to be merging this direction anyway
                 changed = nodeStructure;
                 changed.add(adjStructure);
             } else {

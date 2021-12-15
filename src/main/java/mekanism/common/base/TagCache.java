@@ -73,7 +73,7 @@ public final class TagCache {
             //If it is one of our blocks, short circuit and just lookup the tile's type directly
             tagsAsString = getTagsAsStrings(((IHasTileEntity<?>) block).getTileType().getTags());
         } else if (block.hasTileEntity(block.defaultBlockState())) {
-            //Otherwise check if the block has a tile entity and if it does, gather all the tile types the block
+            //Otherwise, check if the block has a tile entity and if it does, gather all the tile types the block
             // is valid for as we don't want to risk initializing a tile for another mod as it may have side effects
             // that we don't know about and don't handle properly
             Set<ResourceLocation> tileEntityTags = new HashSet<>();

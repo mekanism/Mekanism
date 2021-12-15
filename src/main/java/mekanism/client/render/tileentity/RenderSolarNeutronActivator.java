@@ -50,7 +50,7 @@ public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<Tile
     }
 
     /**
-     * Make sure to call matrix.pop afterwards
+     * Make sure to call {@link MatrixStack#popPose()} afterwards
      */
     private void performTranslations(TileEntitySolarNeutronActivator tile, MatrixStack matrix) {
         matrix.pushPose();

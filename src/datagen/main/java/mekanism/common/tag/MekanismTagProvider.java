@@ -174,7 +174,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.ISOTOPIC_CENTRIFUGE,
               //Don't allow blocks that may have a radioactive substance in them to be picked up as it
               // will effectively dupe the radiation and also leak out into the atmosphere which is not
-              // what people want, and means that it is likely someone miss clicked.
+              // what people want, and means that it is likely someone miss-clicked.
               MekanismBlocks.RADIOACTIVE_WASTE_BARREL,
               MekanismBlocks.PRESSURIZED_REACTION_CHAMBER,
               MekanismBlocks.BASIC_PRESSURIZED_TUBE,
@@ -196,7 +196,7 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTileEntityTypes.ISOTOPIC_CENTRIFUGE,
               //Don't allow blocks that may have a radioactive substance in them to be picked up as it
               // will effectively dupe the radiation and also leak out into the atmosphere which is not
-              // what people want, and means that it is likely someone miss clicked.
+              // what people want, and means that it is likely someone miss-clicked.
               MekanismTileEntityTypes.RADIOACTIVE_WASTE_BARREL,
               MekanismTileEntityTypes.PRESSURIZED_REACTION_CHAMBER,
               MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE,
@@ -228,7 +228,7 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addAlloys() {
-        //Alloys Tags that go in the forge domain
+        //Alloy Tags that go in the forge domain
         addToTag(MekanismTags.Items.ALLOYS_ADVANCED, MekanismItems.INFUSED_ALLOY);
         addToTag(MekanismTags.Items.ALLOYS_ELITE, MekanismItems.REINFORCED_ALLOY);
         addToTag(MekanismTags.Items.ALLOYS_ULTIMATE, MekanismItems.ATOMIC_ALLOY);

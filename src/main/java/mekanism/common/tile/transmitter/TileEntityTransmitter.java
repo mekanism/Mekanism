@@ -304,7 +304,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
                         }
                         if (!sharesSet) {
                             if (transmitterNetwork instanceof DynamicBufferedNetwork) {
-                                //Ensure we save the shares to the tiles so that they can properly take them and they don't get voided
+                                //Ensure we save the shares to the tiles so that they can properly take them, and they don't get voided
                                 ((DynamicBufferedNetwork) transmitterNetwork).validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter);
                             }
                             sharesSet = true;

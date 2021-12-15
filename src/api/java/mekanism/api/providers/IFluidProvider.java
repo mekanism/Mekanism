@@ -9,7 +9,7 @@ import net.minecraftforge.fluids.FluidStack;
 public interface IFluidProvider extends IBaseProvider {
 
     /**
-     * Gets the fluid this this provider represents.
+     * Gets the fluid this provider represents.
      */
     @Nonnull
     Fluid getFluid();

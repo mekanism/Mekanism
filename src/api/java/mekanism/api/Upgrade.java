@@ -139,7 +139,7 @@ public enum Upgrade implements IHasTranslationKey {
     }
 
     /**
-     * Gets whether or not this upgrade has multiple levels
+     * Gets whether this upgrade has multiple levels
      *
      * @return {@code true} if the upgrade has multiple levels.
      */

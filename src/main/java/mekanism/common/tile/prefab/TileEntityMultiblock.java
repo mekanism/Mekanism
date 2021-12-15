@@ -59,7 +59,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     private boolean prevStructure;
 
     /**
-     * Whether or not this multiblock segment is rendering the structure.
+     * Whether this multiblock segment is rendering the structure.
      */
     private boolean isMaster;
 
@@ -306,7 +306,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     private void doMultiblockSparkle(T multiblock) {
         if (isRemote() && multiblock.renderLocation != null && !prevStructure && unformedTicks >= 5) {
             //If player is within 40 blocks (1,600 = 40^2), show the status message/sparkles
-            //Note: Do not change this from ClientPlayerEntity to PlayerEntity or it will cause class loading issues on the server
+            //Note: Do not change this from ClientPlayerEntity to PlayerEntity, or it will cause class loading issues on the server
             // due to trying to validate if the value is actually a PlayerEntity
             ClientPlayerEntity player = Minecraft.getInstance().player;
             if (worldPosition.distSqr(player.blockPosition()) <= 1_600) {

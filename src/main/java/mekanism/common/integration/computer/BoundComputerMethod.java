@@ -126,7 +126,7 @@ public class BoundComputerMethod {
         int argumentCount = methodType.parameterCount();
         Object result;
         try {
-            //Note: We manually call invoke for a good number of arguments until we fallback to invokeWithArguments, as there is a pretty
+            //Note: We manually call invoke for a good number of arguments until we fall back to invokeWithArguments, as there is a pretty
             // sizable performance difference in the two methods. We also call invoke instead of invokeExact for the zero argument count
             // as it requires knowing the return type by casting which causes us issues as we don't know it at compile time and thus cannot
             // specify the cast to the correct type directly
@@ -164,7 +164,7 @@ public class BoundComputerMethod {
             // - WrongMethodTypeException if the target's type is not identical with the caller's symbolic type descriptor
             // - ClassCastException if the target's type can be adjusted to the caller, but a reference cast fails
             // - Throwable anything thrown by the underlying method propagates unchanged through the method handle call
-            // In theory none of these should actually happen given we do parameter validation, but just in case one does
+            // In theory none of these should actually happen given we do parameter validation, but just in case one does,
             // we wrap the message into an error message that can be displayed by our handler
             // Note: If the throwable is a computer exception we won't have a stacktrace. We don't use it anywhere here,
             // so it shouldn't matter, but it is something to keep in mind if we ever change this catch block, as then

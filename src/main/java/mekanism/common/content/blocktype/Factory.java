@@ -56,7 +56,7 @@ public class Factory<TILE extends TileEntityFactory<?>> extends FactoryMachine<T
             // this is dirty but unfortunately necessary for things to play right
             FactoryBuilder<Factory<TILE>, TILE, ?> builder = new FactoryBuilder<>(new Factory<>((Supplier<TileEntityTypeRegistryObject<TILE>>) tileEntityRegistrar,
                   () -> MekanismContainerTypes.FACTORY, type.getBaseMachine(), tier));
-            //Note, we can't just return the builder here as then it gets all confused about object types so we just
+            //Note, we can't just return the builder here as then it gets all confused about object types, so we just
             // assign the value here, and then return the builder itself as it is the same object
             builder.withComputerSupport(tier, type.getRegistryNameComponentCapitalized() + "Factory");
             return builder;

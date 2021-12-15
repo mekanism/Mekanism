@@ -51,7 +51,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
     }
 
     /**
-     * Make sure to call matrix.pop afterwards
+     * Make sure to call {@link MatrixStack#popPose()} afterwards
      */
     private double performTranslationsAndGetAngle(TileEntityWindGenerator tile, float partialTick, MatrixStack matrix) {
         matrix.pushPose();

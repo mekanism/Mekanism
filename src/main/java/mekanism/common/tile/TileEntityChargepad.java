@@ -53,7 +53,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
     protected void onUpdateServer() {
         super.onUpdateServer();
         boolean active = false;
-        //Use 0.4 for y so as to catch entities that are partially standing on the back pane
+        //Use 0.4 for y to catch entities that are partially standing on the back pane
         List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
               worldPosition.getX() + 1, worldPosition.getY() + 0.4, worldPosition.getZ() + 1), CHARGE_PREDICATE);
         for (LivingEntity entity : entities) {
@@ -99,7 +99,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
         FloatingLong energyToGive = energyContainer.getEnergyPerTick();
         FloatingLong simulatedRemainder = energyHandler.insertEnergy(energyToGive, Action.SIMULATE);
         if (simulatedRemainder.smallerThan(energyToGive)) {
-            //We are able to fit at least some of the energy from our container into the item
+            //We are able to fit at least some energy from our container into the item
             FloatingLong extractedEnergy = energyContainer.extract(energyToGive.subtract(simulatedRemainder), Action.EXECUTE, AutomationType.INTERNAL);
             if (!extractedEnergy.isZero()) {
                 //If we were able to actually extract it from our energy container, then insert it into the item

@@ -144,9 +144,9 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         @Nonnull
         @Override
         public IRecipeSerializer<?> getType() {
-            //Note: This may be null if something is screwed up but this method isn't actually used so it shouldn't matter
+            //Note: This may be null if something is screwed up but this method isn't actually used, so it shouldn't matter
             // and in fact it will probably be null if only the API is included. But again, as we manually just use
-            // the serializer's name this should not effect us
+            // the serializer's name this should not affect us
             return ForgeRegistries.RECIPE_SERIALIZERS.getValue(serializerName);
         }
 

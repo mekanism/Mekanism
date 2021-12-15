@@ -4,7 +4,7 @@ import java.util.Locale;
 import javax.annotation.Nullable;
 
 /**
- * Short lived helper to wrap handling of arguments for different computer types and build up any implicit casts needed
+ * Short-lived helper to wrap handling of arguments for different computer types and build up any implicit casts needed
  */
 public abstract class ComputerArgumentHandler<EXCEPTION extends Exception, RESULT> {
 

@@ -77,7 +77,7 @@ public class FloatingLongTransferUtils {
                     //If we are done extracting break and return the amount extracted
                     break;
                 }
-                //Otherwise keep looking and attempt to extract more from the handler
+                //Otherwise, keep looking and attempt to extract more from the handler
             }
         }
         return extracted;

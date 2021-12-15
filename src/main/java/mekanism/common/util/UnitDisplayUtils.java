@@ -238,7 +238,7 @@ public class UnitDisplayUtils {
         private final String symbol;
 
         /**
-         * Point by which a number is consider to be of this unit
+         * Point by which a number is considered to be of this unit
          */
         private final double value;
 
@@ -292,7 +292,7 @@ public class UnitDisplayUtils {
         private final String symbol;
 
         /**
-         * Point by which a number is consider to be of this unit
+         * Point by which a number is considered to be of this unit
          */
         private final FloatingLong value;
 

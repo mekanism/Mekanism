@@ -74,7 +74,7 @@ public class MekanismButton extends GuiElement {
         }
         if (this.active && this.visible && isHovered()) {
             if (button == 1) {
-                //Right clicked
+                //Right-clicked
                 playDownSound(Minecraft.getInstance().getSoundManager());
                 onRightClick();
                 return true;

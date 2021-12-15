@@ -92,8 +92,8 @@ public class BasicEnergyContainer implements IEnergyContainer {
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default this returns {@link FloatingLong#MAX_VALUE} so as to not actually limit the container's rate. By default this is also ignored for direct
-     * setting of the stack/stack size
+     * @implNote By default, this returns {@link FloatingLong#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
+     * of the stack/stack size
      */
     protected FloatingLong getRate(@Nullable AutomationType automationType) {
         //TODO: Decide if we want to split this into a rate for inserting and a rate for extracting.

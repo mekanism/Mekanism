@@ -56,7 +56,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     /**
-     * Whether or not this ChemicalStack's chemical type is equal to the other defined ChemicalStack.
+     * Whether this ChemicalStack's chemical type is equal to the other defined ChemicalStack.
      *
      * @param stack - ChemicalStack to check
      *
@@ -67,7 +67,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     /**
-     * Whether or not this ChemicalStack's chemical type is equal to the other defined Chemical.
+     * Whether this ChemicalStack's chemical type is equal to the other defined Chemical.
      *
      * @param chemical - Chemical to check
      *
@@ -114,7 +114,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     /**
-     * Gets whether or not this chemical stack is empty.
+     * Gets whether this chemical stack is empty.
      *
      * @return {@code true} if this stack is empty, {@code false} otherwise.
      */

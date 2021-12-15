@@ -56,7 +56,7 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
 
     @Override
     @Deprecated
-    public boolean canSurvive(BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos) {
+    public boolean canSurvive(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos) {
         Direction side = Attribute.get(state, AttributeStateFacing.class).getDirection(state);
         Direction sideOn = side.getOpposite();
         BlockPos offsetPos = pos.relative(sideOn);

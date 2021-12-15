@@ -238,7 +238,7 @@ public class ModelChemicalDissolutionChamber extends MekanismJavaModel {
     public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
         renderToBuffer(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         //Render the glass on a more translucent layer
-        //Note: The glass makes water, ice etc behind it invisible. This is due to an engine limitation
+        //Note: The glass makes water, ice etc. behind it invisible. This is due to an engine limitation
         glass.render(matrix, getVertexBuilder(renderer, GLASS_RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 

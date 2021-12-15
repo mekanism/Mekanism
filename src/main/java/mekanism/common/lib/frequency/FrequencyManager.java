@@ -58,8 +58,8 @@ public class FrequencyManager<FREQ extends Frequency> {
         if (!loaded) {
             loaded = true;
             //Ensure that the frequency types have been initialized so can add their managers
-            // This is needed as it is statically initialized and we need to make sure that it gets initialized
-            // before we try to create or load each frequency or they won't be properly loaded/saved on servers
+            // This is needed as it is statically initialized, and we need to make sure that it gets initialized
+            // before we try to create or load each frequency, or they won't be properly loaded/saved on servers
             // as this happens on servers before the frequency types reliably have a chance to add their managers
             FrequencyType.init();
             managers.forEach(FrequencyManager::createOrLoad);

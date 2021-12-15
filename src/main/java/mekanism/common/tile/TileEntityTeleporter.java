@@ -381,7 +381,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             @Override
             public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                 boolean invulnerable = entity.isInvulnerable();
-                //Make the entity invulnerable so that when we teleport it it doesn't take damage
+                //Make the entity invulnerable so that when we teleport it, it doesn't take damage
                 // we revert this state to the previous state after teleporting
                 entity.setInvulnerable(true);
                 Entity repositionedPassenger = repositionEntity.apply(false);

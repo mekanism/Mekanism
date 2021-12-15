@@ -157,7 +157,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             FREQ selectedFrequency = frequencies.get(scrollList.getSelection());
             FREQ currentFrequency = frequencySelector.getFrequency();
             //Enable the set button if there is not currently a frequency set or the selected frequency
-            // is different than the one that is currently set
+            // is different from the one that is currently set
             setButton.active = currentFrequency == null || !currentFrequency.equals(selectedFrequency);
             //Enable the delete button if the player is the owner of the frequency
             deleteButton.active = Minecraft.getInstance().player != null && selectedFrequency.ownerMatches(Minecraft.getInstance().player.getUUID());

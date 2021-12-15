@@ -43,7 +43,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
                 //If the item has a container, then replace it with the container
                 setStack(current.getContainerItem());
             } else {
-                //Otherwise shrink the size of the stack by one
+                //Otherwise, shrink the size of the stack by one
                 MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);
             }
         }

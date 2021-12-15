@@ -94,7 +94,7 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
         }
         ISlotInfo slotInfo = getSlotInfo(side);
         if (slotInfo == NO_CONFIG) {
-            //If we don't have a config (most likely case is it hasn't been setup yet or we don't support this type of data in our configuration), just return all
+            //If we don't have a config (most likely case is it hasn't been set up yet, or we don't support this type of data in our configuration), just return all
             return slots;
         } else if (slotInfo == null) {
             return Collections.emptyList();
@@ -129,7 +129,7 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
                 }
                 slotInfo = configInfo.getSlotInfo(RelativeSide.fromDirections(direction, side));
                 if (slotInfo != null && !slotInfo.isEnabled()) {
-                    //If we have a slot info but it is not actually enabled, just store it as null to avoid having to recheck if it is enabled later
+                    //If we have a slot info, but it is not actually enabled, just store it as null to avoid having to recheck if it is enabled later
                     slotInfo = null;
                 }
             }

@@ -52,7 +52,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe implemen
     }
 
     /**
-     * Gets the a output based on the given input.
+     * Gets the output based on the given input.
      *
      * @param input Specific input.
      *

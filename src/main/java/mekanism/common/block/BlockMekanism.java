@@ -174,7 +174,7 @@ public abstract class BlockMekanism extends Block {
                                     //If the list is now empty remove it
                                     ItemDataUtils.removeData(drop, NBTConstants.GAS_TANKS);
                                 } else {
-                                    //Otherwise update the list
+                                    //Otherwise, update the list
                                     ItemDataUtils.setList(drop, NBTConstants.GAS_TANKS, newGasTankList);
                                 }
                             }
@@ -344,7 +344,7 @@ public abstract class BlockMekanism extends Block {
     public int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull World world, @Nonnull BlockPos pos) {
         if (hasAnalogOutputSignal(blockState)) {
             TileEntity tile = WorldUtils.getTileEntity(world, pos);
-            //Double check the tile actually has comparator support
+            //Double-check the tile actually has comparator support
             if (tile instanceof IComparatorSupport) {
                 IComparatorSupport comparatorTile = (IComparatorSupport) tile;
                 if (comparatorTile.supportsComparator()) {
@@ -362,7 +362,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     /**
-     * Like {@link AbstractBlock#getDestroyProgress(BlockState, PlayerEntity, IBlockReader, BlockPos)} except also passes the tile so as to only have to get it once.
+     * Like {@link AbstractBlock#getDestroyProgress(BlockState, PlayerEntity, IBlockReader, BlockPos)} except also passes the tile to only have to get it once.
      */
     protected float getDestroyProgress(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
           @Nullable TileEntity tile) {

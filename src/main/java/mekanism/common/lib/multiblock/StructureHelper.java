@@ -119,8 +119,8 @@ public class StructureHelper {
     }
 
     /**
-     * Checks if any of the minor planes that have frame and are not purely structural are sticking out past the major plane in the positive cuboid direction (Top, South,
-     * East).
+     * Checks if any of the minor planes that have frames and are not purely structural are sticking out past the major plane in the positive cuboid direction (Top,
+     * South, East).
      *
      * @param minorAxisMap Map of minor planes.
      * @param majorKey     Position of major plane.
@@ -136,7 +136,7 @@ public class StructureHelper {
                 // then just exit as the other minor planes will be as well
                 break;
             } else if (minorEntry.getValue().hasFrame()) {
-                //Otherwise if it isn't in the bounds and it has a frame, fail out
+                //Otherwise, if it isn't in the bounds, and it has a frame, fail out
                 return true;
             }
             //If we don't have a frame and are out of bounds, see if we have any minor entries that
@@ -147,7 +147,7 @@ public class StructureHelper {
     }
 
     /**
-     * Checks if any of the minor planes that have frame and are not purely structural are sticking out past the major plane in the negative cuboid direction ( Bottom,
+     * Checks if any of the minor planes that have frames and are not purely structural are sticking out past the major plane in the negative cuboid direction (Bottom,
      * North, West).
      *
      * @param minorAxisMap Map of minor planes.
@@ -164,7 +164,7 @@ public class StructureHelper {
                 // then just exit as the other minor planes will be as well
                 break;
             } else if (minorEntry.getValue().hasFrame()) {
-                //Otherwise if it isn't in the bounds and it has a frame, fail out
+                //Otherwise, if it isn't in the bounds, and it has a frame, fail out
                 return true;
             }
             //If we don't have a frame and are out of bounds, see if we have any minor entries that

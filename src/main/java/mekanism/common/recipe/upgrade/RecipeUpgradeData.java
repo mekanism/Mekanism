@@ -66,27 +66,27 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
             }
         }
         if (stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.ENERGY)) {
-            //If we are for a block that handles energy or we have an energy handler capability
+            //If we are for a block that handles energy, or we have an energy handler capability
             supportedTypes.add(RecipeUpgradeType.ENERGY);
         }
         if (FluidUtil.getFluidHandler(stack).isPresent() || tile != null && tile.handles(SubstanceType.FLUID)) {
-            //If we are for a block that handles fluid or we have an fluid handler capability
+            //If we are for a block that handles fluid, or we have a fluid handler capability
             supportedTypes.add(RecipeUpgradeType.FLUID);
         }
         if (stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.GAS)) {
-            //If we are for a block that handles gas or we have an gas handler capability
+            //If we are for a block that handles gas, or we have a gas handler capability
             supportedTypes.add(RecipeUpgradeType.GAS);
         }
         if (stack.getCapability(Capabilities.INFUSION_HANDLER_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.INFUSION)) {
-            //If we are for a block that handles infusion or we have an infusion handler capability
+            //If we are for a block that handles infusion, or we have an infusion handler capability
             supportedTypes.add(RecipeUpgradeType.INFUSION);
         }
         if (stack.getCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.PIGMENT)) {
-            //If we are for a block that handles pigment or we have an pigment handler capability
+            //If we are for a block that handles pigment, or we have a pigment handler capability
             supportedTypes.add(RecipeUpgradeType.PIGMENT);
         }
         if (stack.getCapability(Capabilities.SLURRY_HANDLER_CAPABILITY).isPresent() || tile != null && tile.handles(SubstanceType.SLURRY)) {
-            //If we are for a block that handles slurry or we have an slurry handler capability
+            //If we are for a block that handles slurry, or we have a slurry handler capability
             supportedTypes.add(RecipeUpgradeType.SLURRY);
         }
         if (item instanceof ISustainedInventory || tile != null && tile.persistInventory()) {

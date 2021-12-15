@@ -53,7 +53,7 @@ public class BoxedChemical implements IHasTextComponent {
      */
     @SuppressWarnings("RedundantCast")
     public static BoxedChemical read(PacketBuffer buffer) {
-        //Note: Casts are needed for compiling so it knows how to read it properly
+        //Note: Casts are needed for compiling, so it knows how to read it properly
         ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
         if (chemicalType == ChemicalType.GAS) {
             return new BoxedChemical(chemicalType, (Gas) buffer.readRegistryId());
@@ -99,7 +99,7 @@ public class BoxedChemical implements IHasTextComponent {
     }
 
     /**
-     * Gets whether or not this boxed chemical is empty.
+     * Gets whether this boxed chemical is empty.
      *
      * @return {@code true} if this boxed chemical is empty, {@code false} otherwise.
      */

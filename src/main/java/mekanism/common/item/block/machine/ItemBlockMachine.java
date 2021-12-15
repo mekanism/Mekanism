@@ -87,7 +87,7 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
                 //If our block supports upgrades, make a more dynamically updating cache for our item's max energy
                 maxEnergy = new UpgradeBasedFloatingLongCache(stack, attributeEnergy::getStorage);
             } else {
-                //Otherwise just return that the max is what the base max is
+                //Otherwise, just return that the max is what the base max is
                 maxEnergy = attributeEnergy::getStorage;
             }
             return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(maxEnergy, BasicEnergyContainer.manualOnly, BasicEnergyContainer.alwaysTrue));

@@ -50,7 +50,7 @@ public class BasicCapabilityResolver implements ICapabilityResolver {
     @Override
     public <T> LazyOptional<T> resolve(Capability<T> capability, @Nullable Direction side) {
         if (cachedCapability == null || !cachedCapability.isPresent()) {
-            //If the capability has not been retrieved yet or it is not valid then recreate it
+            //If the capability has not been retrieved yet, or it is not valid then recreate it
             cachedCapability = LazyOptional.of(supplier);
         }
         return cachedCapability.cast();

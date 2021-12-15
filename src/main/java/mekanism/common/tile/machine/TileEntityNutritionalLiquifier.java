@@ -112,7 +112,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this::getDirection, this::getConfig);
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             Item item = stack.getItem();
-            if (item.isEdible()) {//Double check the stack is food
+            if (item.isEdible()) {//Double-check the stack is food
                 Food food = item.getFoodProperties();
                 //And only allow inserting foods that actually would provide paste
                 return food != null && food.getNutrition() > 0;
@@ -237,7 +237,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
                         if (nbt.contains(NBTConstants.TAG, NBT.TAG_COMPOUND)) {
                             stack.setTag(nbt.getCompound(NBTConstants.TAG));
                         }
-                        //Use raw because we have a new stack so we don't need to bother copying it
+                        //Use raw because we have a new stack, so we don't need to bother copying it
                         lastPasteItem = HashedItem.raw(stack);
                     }
                 }

@@ -226,7 +226,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     public List<ISyncableData> getSpecificSyncableData() {
         List<ISyncableData> list = new ArrayList<>();
         list.add(SyncableInt.create(() -> upgradeTicks, value -> upgradeTicks = value));
-        //We want to make sure the client and server have the upgrades in the same order
+        //We want to make sure the client and server have the upgrades in the same order,
         // so we just do it based on their ordinal
         for (Upgrade upgrade : EnumUtils.UPGRADES) {
             if (supports(upgrade)) {

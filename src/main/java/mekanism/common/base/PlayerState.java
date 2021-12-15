@@ -112,7 +112,7 @@ public class PlayerState {
             activeJetpacks.add(uuid);
         }
 
-        // If something changed and we're in a remote world, take appropriate action
+        // If something changed, and we're in a remote world, take appropriate action
         if (changed && world.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
@@ -149,7 +149,7 @@ public class PlayerState {
             activeScubaMasks.add(uuid); // Off -> on
         }
 
-        // If something changed and we're in a remote world, take appropriate action
+        // If something changed, and we're in a remote world, take appropriate action
         if (changed && world.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
@@ -182,7 +182,7 @@ public class PlayerState {
         float additionalHeight = CommonPlayerTickHandler.getStepBoost(player);
         if (additionalHeight == 0) {
             if (stepAssistedPlayers.containsKey(uuid)) {
-                //If we don't have step assist but we previously did, remove it and lower the step height
+                //If we don't have step assist, but we previously did, remove it and lower the step height
                 stepAssistedPlayers.removeFloat(uuid);
                 updateClientServerStepHeight(player, 0.6F);
             }
@@ -216,7 +216,7 @@ public class PlayerState {
             activeGravitationalModulators.add(uuid); // Off -> on
         }
 
-        // If something changed and we're in a remote world, take appropriate action
+        // If something changed, and we're in a remote world, take appropriate action
         if (changed && world.isClientSide()) {
             // If the player is the "local" player, we need to tell the server the state has changed
             if (isLocal) {
@@ -333,7 +333,7 @@ public class PlayerState {
 
         if (world.isClientSide()) {
             boolean startSound;
-            // If something changed and we're in a remote world, take appropriate action
+            // If something changed, and we're in a remote world, take appropriate action
             if (changed) {
                 // If the player is the "local" player, we need to tell the server the state has changed
                 if (isLocal) {
@@ -349,7 +349,7 @@ public class PlayerState {
                 // synced from server to client. This is not that big a deal, though may be something we want
                 // to look into eventually
                 startSound = !isActive && hasFlameThrower;
-                //Note: If they just continue to hold (but not use) a flame thrower it "will" continue having this
+                //Note: If they just continue to hold (but not use) a flamethrower it "will" continue having this
                 // attempt to start the sound. This is not a major deal as the uuid gets checked before attempting
                 // to retrieve the player or actually creating a new sound object.
             }

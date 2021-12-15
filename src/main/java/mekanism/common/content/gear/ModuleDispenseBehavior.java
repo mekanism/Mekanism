@@ -13,7 +13,7 @@ public class ModuleDispenseBehavior extends OptionalDispenseBehavior {
     @Nonnull
     @Override
     protected ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
-        //Note: We don't check if the stack is empty as it is never checked in vanilla's ones and we also
+        //Note: We don't check if the stack is empty as it is never checked in vanilla's ones, and we also
         // don't check if the stack is a module container as we only register this dispense behavior on stacks that are
         setSuccess(true);
         ModuleDispenseResult result = performBuiltin(source, stack);

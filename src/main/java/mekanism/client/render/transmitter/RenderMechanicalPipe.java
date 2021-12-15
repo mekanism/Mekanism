@@ -74,7 +74,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                         connectionContents.add(side.getSerializedName() + connectionType.getSerializedName().toUpperCase(Locale.ROOT));
                     }
                     if (model != null) {
-                        //Render the side if there is no connection on that side, or it is a vertical connection and we are not full
+                        //Render the side if there is no connection on that side, or it is a vertical connection, and we are not full
                         model.setSideRender(side, connectionType == ConnectionType.NONE || (side.getAxis().isVertical() && stage != stages - 1));
                     }
                 }

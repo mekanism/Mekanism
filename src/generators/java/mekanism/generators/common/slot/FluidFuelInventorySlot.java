@@ -44,7 +44,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 }
                 //Only allow extraction if our item is out of fluid, but also verify there is no conversion for it
             }
-            //Always allow extraction if something went horribly wrong and we are not a chemical item AND we can't provide a valid type of chemical
+            //Always allow extraction if something went horribly wrong, and we are not a chemical item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
             return fuelValue.applyAsInt(stack) == 0;
         }, stack -> {
@@ -98,7 +98,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                         //If the item has a container, then replace it with the container
                         setStack(current.getContainerItem());
                     } else {
-                        //Otherwise shrink the size of the stack by one
+                        //Otherwise, shrink the size of the stack by one
                         MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);
                     }
                 }

@@ -71,7 +71,7 @@ public class MovableFilterButton extends FilterButton {
         if (visible) {
             updateButtonVisibility();
         } else {
-            //Ensure the sub components are not marked as visible
+            //Ensure the subcomponents are not marked as visible
             upButton.visible = false;
             downButton.visible = false;
         }

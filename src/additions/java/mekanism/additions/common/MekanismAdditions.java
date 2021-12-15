@@ -44,7 +44,7 @@ public class MekanismAdditions implements IModModule {
     public final Version versionNumber;
 
     /**
-     * The VoiceServer manager for walkie talkies
+     * The VoiceServer manager for walkie-talkies
      */
     public static VoiceServerManager voiceManager;
 
@@ -131,7 +131,7 @@ public class MekanismAdditions implements IModModule {
     }
 
     private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
-        //Note: We listen to both the initial load and the reload, so as to make sure that we fix any accidentally
+        //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
         // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us

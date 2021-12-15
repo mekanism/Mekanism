@@ -181,7 +181,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 if (capability.isPresent()) {
                     IGasHandler gasHandlerItem = capability.get();
                     if (gasHandlerItem.getTanks() > 0) {
-                        //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                        //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
                         return gasHandlerItem.getChemicalInTank(0).getAmount() == gasHandlerItem.getTankCapacity(0);
                     }
                 }
@@ -195,7 +195,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         boolean needsPacket = super.tick(world);
         //Only thermal transfer happens unless we're hot enough to burn.
         if (getPlasmaTemp() >= burnTemperature) {
-            //If we're not burning yet we need a hohlraum to ignite
+            //If we're not burning, yet we need a hohlraum to ignite
             if (!burning && hasHohlraum()) {
                 vaporiseHohlraum();
             }

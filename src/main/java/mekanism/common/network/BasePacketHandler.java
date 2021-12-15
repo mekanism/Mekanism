@@ -152,11 +152,11 @@ public abstract class BasePacketHandler {
 
     public <MSG> void sendToAllTracking(MSG message, World world, BlockPos pos) {
         if (world instanceof ServerWorld) {
-            //If we have a ServerWorld just directly figure out the ChunkPos so as to not require looking up the chunk
+            //If we have a ServerWorld just directly figure out the ChunkPos to not require looking up the chunk
             // This provides a decent performance boost over using the packet distributor
             ((ServerWorld) world).getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
         } else {
-            //Otherwise fallback to entities tracking the chunk if some mod did something odd and our world is not a ServerWorld
+            //Otherwise, fallback to entities tracking the chunk if some mod did something odd and our world is not a ServerWorld
             getChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos.getX() >> 4, pos.getZ() >> 4)), message);
         }
     }
@@ -170,7 +170,7 @@ public abstract class BasePacketHandler {
             if (server != null) {
                 Range3D range = network.getPacketRange();
                 PlayerList playerList = server.getPlayerList();
-                //Ignore height for partial Cubic chunks support as range comparison gets used ignoring player height normally anyways
+                //Ignore height for partial Cubic chunks support as range comparison gets used ignoring player height normally anyway
                 int radius = playerList.getViewDistance() * 16;
                 for (ServerPlayerEntity player : playerList.getPlayers()) {
                     if (range.dimension == player.getLevel().dimension()) {

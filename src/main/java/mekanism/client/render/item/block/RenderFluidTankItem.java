@@ -53,7 +53,7 @@ public class RenderFluidTankItem extends ItemStackTileEntityRenderer {
         //TODO: Eventually move more of this to the model json
         matrix.translate(0.5, -0.4, 0.5);
         matrix.scale(0.9F, 0.8F, 0.9F);
-        //Scale to to size of item
+        //Scale to the size of item
         matrix.scale(1.168F, 1.168F, 1.168F);
         //Shift the fluid slightly so that is visible with the min amount in
         matrix.translate(0, -0.06, 0);

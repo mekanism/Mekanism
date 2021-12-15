@@ -154,7 +154,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
                     if (capability.isPresent()) {
                         IStrictEnergyHandler energyHandlerItem = capability.get();
                         if (energyHandlerItem.getEnergyContainerCount() > 0) {
-                            //Validate something didn't go terribly wrong and we actually do have the container we expect to have
+                            //Validate something didn't go terribly wrong, and we actually do have the container we expect to have
                             energyConfig.fill(energyHandlerItem.getEnergy(0).isZero() ? DataType.INPUT : DataType.OUTPUT);
                         }
                     }

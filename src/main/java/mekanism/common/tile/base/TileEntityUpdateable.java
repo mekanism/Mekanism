@@ -20,7 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
- * Extension of TileEntity that adds various helpers we use across the majority of our Tiles even those that are not an instance of TileEntityMekanism. Additionally we
+ * Extension of TileEntity that adds various helpers we use across the majority of our Tiles even those that are not an instance of TileEntityMekanism. Additionally, we
  * improve the performance of markDirty by not firing neighbor updates unless the markDirtyComparator method is overridden.
  */
 public abstract class TileEntityUpdateable extends TileEntity implements ITileWrapper {

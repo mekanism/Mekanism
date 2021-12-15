@@ -153,7 +153,7 @@ public class GuiSlotScroll extends GuiElement {
         if (count < 10_000) {
             gui().renderItemTooltip(matrix, stack, slotX, slotY);
         } else {
-            //If the slot's displayed count is truncated, make sure we also add the the actual amount to the tooltip
+            //If the slot's displayed count is truncated, make sure we also add the actual amount to the tooltip
             gui().renderItemTooltipWithExtra(matrix, stack, slotX, slotY, Collections.singletonList(MekanismLang.QIO_STORED_COUNT.translateColored(EnumColor.GRAY,
                   EnumColor.INDIGO, TextUtils.format(count))));
         }

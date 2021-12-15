@@ -29,7 +29,7 @@ public class RobitAIPickup extends RobitAIBase {
         if (validateClosest() && navigator.createPath(closest, 0) != null) {
             return true;
         }
-        //Ensure we don't have a closest one set
+        //Ensure we don't have the closest one set
         closest = null;
         //Cached for slight performance
         double closestDistance = -1;

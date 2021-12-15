@@ -43,7 +43,7 @@ public interface IConfigCardAccess {
      * Collects configuration data for this capability into a new {@link CompoundNBT}.
      * <br><br>
      * Mekanism additionally adds two extra pieces of data to this {@link CompoundNBT} afterwards corresponding to the following two constants: {@link
-     * NBTConstants#DATA_NAME} and {@link NBTConstants#DATA_TYPE} so it is recommended to ensure you don't put any data in a matching entry or it will be overwritten.
+     * NBTConstants#DATA_NAME} and {@link NBTConstants#DATA_TYPE} so it is recommended to ensure you don't put any data in a matching entry, or it will be overwritten.
      *
      * @param player - Player who is using the configuration card.
      *
@@ -60,9 +60,9 @@ public interface IConfigCardAccess {
     void setConfigurationData(PlayerEntity player, CompoundNBT data);
 
     /**
-     * This is called after {@link #setConfigurationData(PlayerEntity, CompoundNBT)} to allow for easily doing any post processing such as invalidating capabilities while
+     * This is called after {@link #setConfigurationData(PlayerEntity, CompoundNBT)} to allow for easily doing any post-processing such as invalidating capabilities while
      * ensuring that the proper data can be set first if a hierarchy is used so there may be multiple layers of {@link #setConfigurationData(PlayerEntity, CompoundNBT)}
-     * and ensuring the post processing doesn't happen until afterwards would lead to a bunch of duplicate code.
+     * and ensuring the post-processing doesn't happen until afterwards would lead to a bunch of duplicate code.
      */
     void configurationDataSet();
 }

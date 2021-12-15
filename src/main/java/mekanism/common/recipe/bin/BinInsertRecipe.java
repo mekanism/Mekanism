@@ -102,7 +102,7 @@ public class BinInsertRecipe extends BinRecipe {
         for (ItemStack stack : foundItems) {
             if (ItemStack.matches(stack, slot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL))) {
                 if (hasInserted) {
-                    //If we can't insert anymore into the bin, and we did manage to insert some into it
+                    //If we can't insert any more items into the bin, and we did manage to insert some into it
                     // exit and return our stack
                     break;
                 }

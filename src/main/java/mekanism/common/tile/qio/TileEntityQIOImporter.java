@@ -95,7 +95,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     }
 
     private boolean canFilter(ItemStack stack) {
-        // quickly return true if we don't have any filters installed and we allow for filterless importing
+        // quickly return true if we don't have any filters installed, and we allow for filterless importing
         if (importWithoutFilter && getFilters().isEmpty()) {
             return true;
         }

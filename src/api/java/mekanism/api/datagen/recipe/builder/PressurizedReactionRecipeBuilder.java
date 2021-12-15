@@ -104,7 +104,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     /**
      * Sets the "extra" energy required for this recipe.
      *
-     * @param energyRequired How much "extra" energy this recipe requires compared to the base energy requirements of the machine performing the recipe.
+     * @param energyRequired How much "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      */
     public PressurizedReactionRecipeBuilder energyRequired(FloatingLong energyRequired) {
         this.energyRequired = energyRequired;

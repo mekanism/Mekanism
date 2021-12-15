@@ -52,7 +52,7 @@ public class BoxedChemicalAcceptorCache extends AbstractAcceptorCache<BoxedChemi
         }
         if (dirtyAcceptor) {
             transmitter.markDirtyAcceptor(side);
-            //If the capability is present and we want to add the listener, add a listener to all the types so that once it gets invalidated
+            //If the capability is present, and we want to add the listener, add a listener to all the types so that once it gets invalidated
             // we recheck that side assuming that the world and position is still loaded and our tile has not been removed
             acceptor.addRefreshListeners(getRefreshListener(side));
         }

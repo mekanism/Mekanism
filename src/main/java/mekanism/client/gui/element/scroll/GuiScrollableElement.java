@@ -135,7 +135,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
             scroll = old.scroll;
         }
         //Note: We don't care about dragging as there is no way for the user while continuing to have MC focussed can change the window size
-        // switching into full screen makes MC lose focus briefly anyways so dragging events don't continue to fire so that is not a case
+        // switching into full screen makes MC lose focus briefly anyway so dragging events don't continue to fire so that is not a case
         // that we need to worry about
     }
 }

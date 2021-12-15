@@ -32,7 +32,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
      * @param stack {@link FluidStack} to set this tank's contents to (may be empty).
      *
      * @apiNote Unsafe version of {@link #setStack(FluidStack)}. This method is exposed for implementation and code deduplication reasons only and should
-     * <strong>NOT</strong> be directly called outside of your own {@link IExtendedFluidTank} where you already know the given {@link FluidStack} is valid, or on the
+     * <strong>NOT</strong> be directly called outside your own {@link IExtendedFluidTank} where you already know the given {@link FluidStack} is valid, or on the
      * client side for purposes of receiving sync data and rendering.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
@@ -61,7 +61,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
      */
     default FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isFluidValid(stack)) {
-            //"Fail quick" if the given stack is empty or we can never insert the item or currently are unable to insert it
+            //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
             return stack;
         }
         int needed = getNeeded();
@@ -147,7 +147,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
             amount = maxStackSize;
         }
         if (getFluidAmount() == amount || action.simulate()) {
-            //If our size is not changing or we are only simulating the change, don't do anything
+            //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
         setStack(new FluidStack(getFluid(), amount));

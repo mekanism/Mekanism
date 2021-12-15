@@ -236,7 +236,7 @@ public class OutputHelper {
         }
         //Copy the stack and make it be max size
         FluidStack maxOutput = new FluidStack(toOutput, Integer.MAX_VALUE);
-        //Then simulate filling the fluid tank so we can see how much actually can fit
+        //Then simulate filling the fluid tank, so we can see how much actually can fit
         FluidStack remainder = fluidTank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
         int amountUsed = maxOutput.getAmount() - remainder.getAmount();
         //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about

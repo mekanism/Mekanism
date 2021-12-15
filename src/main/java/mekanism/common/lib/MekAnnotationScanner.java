@@ -250,7 +250,7 @@ public class MekAnnotationScanner {
                     // We don't need to copy it as we only use it for readonly purposes
                     return superCache;
                 }
-                //Otherwise continue going up to the root superclass
+                //Otherwise, continue going up to the root superclass
             }
             return empty;
         }
@@ -272,7 +272,7 @@ public class MekAnnotationScanner {
                         info.addAll(superInfo);
                         break;
                     }
-                    //Otherwise continue building up the cache, collecting all the class names up to the root superclass
+                    //Otherwise, continue building up the cache, collecting all the class names up to the root superclass
                     superInfo = flatMap.get(current);
                     if (superInfo != null) {
                         //If the map has the super class, grab the fields that correspond to it

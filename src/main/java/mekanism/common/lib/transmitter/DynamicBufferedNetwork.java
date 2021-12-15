@@ -157,7 +157,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     public final void validateSaveShares(@Nonnull TRANSMITTER triggerTransmitter) {
         if (world == null) {
             //If the world is null, try falling back to the trigger transmitter's world.
-            // Note: This also in theory could be null so we double check it is not before grabbing the game time
+            // Note: This also in theory could be null, so we double-check it is not before grabbing the game time
             world = triggerTransmitter.getTileWorld();
         }
         if (world != null && world.getGameTime() != lastSaveShareWriteTime) {

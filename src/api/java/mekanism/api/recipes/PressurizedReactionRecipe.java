@@ -51,7 +51,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
      * @param inputSolid     Item input.
      * @param inputFluid     Fluid input.
      * @param inputGas       Gas input.
-     * @param energyRequired Amount of "extra" energy this recipe requires compared to the base energy requirements of the machine performing the recipe.
+     * @param energyRequired Amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      * @param duration       Base duration in ticks that this recipe takes to complete. Must be greater than zero.
      * @param outputItem     Item output.
      * @param outputGas      Gas output.
@@ -105,7 +105,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
     }
 
     /**
-     * Gets the amount of "extra" energy this recipe requires compared to the base energy requirements of the machine performing the recipe.
+     * Gets the amount of "extra" energy this recipe requires, compared to the base energy requirements of the machine performing the recipe.
      */
     public FloatingLong getEnergyRequired() {
         return energyRequired;

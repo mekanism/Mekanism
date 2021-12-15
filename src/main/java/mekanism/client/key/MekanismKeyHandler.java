@@ -28,7 +28,7 @@ public class MekanismKeyHandler {
                   if (IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND, false)) {
                       Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.MAINHAND, player.isShiftKeyDown()));
                   } else if (!IModeItem.isModeItem(player, EquipmentSlotType.MAINHAND) && IModeItem.isModeItem(player, EquipmentSlotType.OFFHAND)) {
-                      //Otherwise try their offhand
+                      //Otherwise, try their offhand
                       Mekanism.packetHandler.sendToServer(new PacketModeChange(EquipmentSlotType.OFFHAND, player.isShiftKeyDown()));
                   }
               }

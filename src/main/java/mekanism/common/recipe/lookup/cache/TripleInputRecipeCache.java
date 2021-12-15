@@ -152,8 +152,8 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
     }
 
     /**
-     * Helper to check if a cache contains a given input grouping, or if not if the complex recipe fallback set contains a matching recipe. This method is mainly used for
-     * for purposes of implementing insertion predicates so it has the following behaviors. This allows it to short circuit in cases where we already know the input is
+     * Helper to check if a cache contains a given input grouping, or if not, if the complex recipe fallback set contains a matching recipe. This method is mainly used
+     * for purposes of implementing insertion predicates, so it has the following behaviors. This allows it to short circuit in cases where we already know the input is
      * valid (the last case in the below list).
      * <ul>
      * <li>If only the first input is empty: This will check if input two and three are contained.</li>

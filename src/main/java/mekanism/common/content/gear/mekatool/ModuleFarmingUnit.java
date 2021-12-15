@@ -62,7 +62,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
               //Fire a generic use event, if we are allowed to use the tool return zero otherwise return -1
               // This is to mirror how onHoeUse returns of 0 if allowed, -1 if not allowed, and 1 if processing happened in the event
               () -> tillAOE(context, ToolType.SHOVEL, SoundEvents.SHOVEL_FLATTEN, MekanismConfig.gear.mekaToolEnergyUsageShovel.get()),
-              //Finally as a hoe
+              //Finally, as a hoe
               () -> tillAOE(context, ToolType.HOE, SoundEvents.HOE_TILL, MekanismConfig.gear.mekaToolEnergyUsageHoe.get())
         );
     }
@@ -95,7 +95,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
     private ActionResultType tillAOE(ItemUseContext context, ToolType toolType, SoundEvent sound, FloatingLong energyUsage) {
         PlayerEntity player = context.getPlayer();
         if (player == null || player.isShiftKeyDown()) {
-            //Skip if we don't have a player or they are sneaking
+            //Skip if we don't have a player, or they are sneaking
             return ActionResultType.PASS;
         }
         Direction sideHit = context.getClickedFace();
@@ -146,7 +146,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
         int radius = (diameter - 1) / 2;
         for (BlockPos newPos : BlockPos.betweenClosed(pos.offset(-radius, 0, -radius), pos.offset(radius, 0, radius))) {
             if (pos.equals(newPos)) {
-                //Skip the source position as it is free and we manually handled it before the loop
+                //Skip the source position as it is free, and we manually handled it before the loop
                 continue;
             } else if (energyUsed.add(energyUsage).greaterThan(energy)) {
                 break;
@@ -179,7 +179,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
     private ActionResultType stripLogsAOE(ItemUseContext context) {
         PlayerEntity player = context.getPlayer();
         if (player == null || player.isShiftKeyDown()) {
-            //Skip if we don't have a player or they are sneaking
+            //Skip if we don't have a player, or they are sneaking
             return ActionResultType.PASS;
         }
         int diameter = farmingRadius.get().getRadius();
@@ -217,7 +217,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
         Vector3d offset = Vector3d.atLowerCornerOf(side.getNormal()).scale(0.44);
         for (BlockPos newPos : getStrippingArea(pos, side, (diameter - 1) / 2)) {
             if (pos.equals(newPos)) {
-                //Skip the source position as it is free and we manually handled it before the loop
+                //Skip the source position as it is free, and we manually handled it before the loop
                 continue;
             } else if (energyUsed.add(energyUsage).greaterThan(energy)) {
                 break;

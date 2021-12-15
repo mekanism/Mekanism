@@ -78,13 +78,13 @@ public class WorldUtils {
     private static IChunk getChunkForPos(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
         if (world == null || !World.isInWorldBounds(pos)) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
-            // Also short circuit to check if the position is out of bounds before bothering to lookup the chunk
+            // Also short circuit to check if the position is out of bounds before bothering to look up the chunk
             return null;
         }
         int chunkX = pos.getX() >> 4;
         int chunkZ = pos.getZ() >> 4;
         long combinedChunk = (((long) chunkX) << 32) | (chunkZ & 0xFFFFFFFFL);
-        //We get the chunk rather than the world so we can cache the chunk improving the overall
+        //We get the chunk rather than the world, so we can cache the chunk improving the overall
         // performance for retrieving a bunch of chunks in the general vicinity
         IChunk chunk = chunkMap.get(combinedChunk);
         if (chunk == null) {
@@ -99,7 +99,7 @@ public class WorldUtils {
 
     /**
      * Gets a blockstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example multiblock structure validation)
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example multiblock structure validation)
      *
      * @param world    world
      * @param chunkMap cached chunk map
@@ -124,7 +124,7 @@ public class WorldUtils {
     @Nonnull
     public static Optional<BlockState> getBlockState(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
-            //If the world is null or its a world reader and the block is not loaded, return empty
+            //If the world is null, or it is a world reader and the block is not loaded, return empty
             return Optional.empty();
         }
         return Optional.of(world.getBlockState(pos));
@@ -132,7 +132,7 @@ public class WorldUtils {
 
     /**
      * Gets a fluidstate if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example multiblock structure validation)
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example multiblock structure validation)
      *
      * @param world    world
      * @param chunkMap cached chunk map
@@ -157,7 +157,7 @@ public class WorldUtils {
     @Nonnull
     public static Optional<FluidState> getFluidState(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
-            //If the world is null or its a world reader and the block is not loaded, return empty
+            //If the world is null, or it is a world reader and the block is not loaded, return empty
             return Optional.empty();
         }
         return Optional.of(world.getFluidState(pos));
@@ -165,7 +165,7 @@ public class WorldUtils {
 
     /**
      * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
      * @param world    world
      * @param chunkMap cached chunk map
@@ -182,7 +182,7 @@ public class WorldUtils {
 
     /**
      * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
      * @param clazz    Class type of the TileEntity we expect to be in the position
      * @param world    world
@@ -199,13 +199,13 @@ public class WorldUtils {
 
     /**
      * Gets a tile entity if the location is loaded by getting the chunk from the passed in cache of chunks rather than directly using the world. We then store our chunk
-     * we found back in the cache so as to more quickly be able to lookup chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
+     * we found back in the cache to more quickly be able to look up chunks if we are doing lots of lookups at once (For example the transporter pathfinding)
      *
      * @param clazz        Class type of the TileEntity we expect to be in the position
      * @param world        world
      * @param chunkMap     cached chunk map
      * @param pos          position
-     * @param logWrongType Whether or not an error should be logged if a tile of a different type is found at the position
+     * @param logWrongType Whether an error should be logged if a tile of a different type is found at the position
      *
      * @return tile entity if found, null if either not found, not loaded, or of the wrong type
      */
@@ -229,7 +229,7 @@ public class WorldUtils {
     @Contract("null, _ -> null")
     public static TileEntity getTileEntity(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
-            //If the world is null or its a world reader and the block is not loaded, return null
+            //If the world is null, or it is a world reader and the block is not loaded, return null
             return null;
         }
         return world.getBlockEntity(pos);
@@ -256,7 +256,7 @@ public class WorldUtils {
      * @param clazz        Class type of the TileEntity we expect to be in the position
      * @param world        world
      * @param pos          position
-     * @param logWrongType Whether or not an error should be logged if a tile of a different type is found at the position
+     * @param logWrongType Whether an error should be logged if a tile of a different type is found at the position
      *
      * @return tile entity if found, null if either not found or not loaded, or of the wrong type
      */
@@ -339,7 +339,7 @@ public class WorldUtils {
     }
 
     /**
-     * Whether or not the provided chunk is being vibrated by a Seismic Vibrator.
+     * Whether the provided chunk is being vibrated by a Seismic Vibrator.
      *
      * @param chunk chunk to check
      *
@@ -352,7 +352,7 @@ public class WorldUtils {
     public static boolean tryPlaceContainedLiquid(@Nullable PlayerEntity player, World world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
         Fluid fluid = fluidStack.getFluid();
         if (!fluid.getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
-            //If there is no fluid or it cannot be placed in the world just
+            //If there is no fluid, or it cannot be placed in the world just
             return false;
         }
         BlockState state = world.getBlockState(pos);
@@ -632,7 +632,7 @@ public class WorldUtils {
     }
 
     /**
-     * Checks to see if the block at the position can see the sky and it is daytime.
+     * Checks to see if the block at the position can see the sky, and it is daytime.
      *
      * @param world World to check in.
      * @param pos   Position to check.

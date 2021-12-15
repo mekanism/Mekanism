@@ -111,7 +111,7 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
             return gasBar.mouseClicked(mouseX, mouseY, button) | infusionBar.mouseClicked(mouseX, mouseY, button) |
                    pigmentBar.mouseClicked(mouseX, mouseY, button) | slurryBar.mouseClicked(mouseX, mouseY, button);
         }
-        //Otherwise just send the click event to the corresponding bar
+        //Otherwise, just send the click event to the corresponding bar
         return currentBar.mouseClicked(mouseX, mouseY, button);
     }
 

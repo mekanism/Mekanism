@@ -21,7 +21,7 @@ public interface IInputCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, R
     boolean contains(INPUT input);
 
     /**
-     * Checks if this {@link IInputCache} knows about the given input, and if it does checks if any of the recipes that match that input type match the given recipe
+     * Checks if this {@link IInputCache} knows about the given input, and if it does, checks if any of the recipes that match that input type match the given recipe
      * predicate.
      *
      * @param input         Input to check.
@@ -33,7 +33,7 @@ public interface IInputCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, R
 
     /**
      * Finds the first recipe for the given input that matches the given match criteria. Note: that no validation is done here about the input matching the recipe's
-     * criteria in regards to required amounts, all that is done regarding the input is that the type is used in the recipe.
+     * criteria in regard to required amounts, all that is done regarding the input is that the type is used in the recipe.
      *
      * @param input         Input to check.
      * @param matchCriteria Predicate to further validate recipes with.

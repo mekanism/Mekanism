@@ -66,7 +66,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         //Find a single disperser contained within this multiblock
         final BlockPos initDisperser = dispersers.iterator().next();
 
-        //Ensure that a full horizontal plane of dispersers exist, surrounding the found disperser
+        //Ensure that a full horizontal plane of dispersers exists, surrounding the found disperser
         BlockPos.Mutable mutablePos = new BlockPos.Mutable();
         for (int x = 1; x < structure.length() - 1; x++) {
             for (int z = 1; z < structure.width() - 1; z++) {

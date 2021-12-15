@@ -41,7 +41,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
     @Override
     public void tickServer(IModule<ModuleElectrolyticBreathingUnit> module, PlayerEntity player) {
         int productionRate = 0;
-        //Check if the mask is under water
+        //Check if the mask is underwater
         //Note: Being in water is checked first to ensure that if it is raining and the player is in water
         // they get the full strength production
         float eyeHeight = player.getEyeHeight();
@@ -53,7 +53,7 @@ public class ModuleElectrolyticBreathingUnit implements ICustomModule<ModuleElec
             return new AxisAlignedBB(centerX, Math.min(bb.minY + eyeHeight - 0.27, bb.maxY), centerZ, centerX, Math.min(bb.minY + eyeHeight - 0.14, bb.maxY), centerZ);
         });
         if (fluidsIn.entrySet().stream().anyMatch(entry -> entry.getKey().is(FluidTags.WATER) && entry.getValue().getMaxHeight() >= 0.11)) {
-            //If the position the bottom of the mask is almost entire in water set the production rate to our max rate
+            //If the position the bottom of the mask is almost entirely in water set the production rate to our max rate
             // if the mask is only partially in water treat it as not being in it enough to actually function
             productionRate = getMaxRate(module);
         } else if (player.isInRain()) {

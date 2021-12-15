@@ -28,7 +28,7 @@ public interface IStateFluidLoggable extends IBucketPickupHandler, ILiquidContai
      * specific different types of fluid, but dynamic fluid stuff cannot be done without a sizeable patch to forge/a change in vanilla so that {@link
      * BlockState#getFluidState()} has position information.
      *
-     * @apiNote If overriding to a different amount of fluids make sure to also override {@link #getFluidLoggedProperty()}
+     * @apiNote If overriding to a different amount of fluids, make sure to also override {@link #getFluidLoggedProperty()}
      */
     @Nonnull
     default Fluid[] getSupportedFluids() {

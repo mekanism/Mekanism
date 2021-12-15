@@ -55,7 +55,7 @@ public class SyncMapper extends BaseAnnotationScanner {
 
     private SyncMapper() {
         //Note: We use unchecked setters here as there is no good way to determine if we are on the server or the client
-        // and when we are on the server the setters should not end up being called anyways. The reason that we need to
+        // and when we are on the server the setters should not end up being called anyway. The reason that we need to
         // used unchecked setters is that if a recipe got removed so there is a substance in a tank that was valid but no
         // longer is valid, we want to ensure that the client is able to properly render it instead of printing an error due
         // to the client thinking that it is invalid

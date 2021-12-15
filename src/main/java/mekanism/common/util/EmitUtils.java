@@ -42,7 +42,7 @@ public class EmitUtils {
         while (splitInfo.amountPerChanged) {
             splitInfo.amountPerChanged = false;
             //splitInfo gets adjusted to account for how much is actually sent,
-            // and if amountPer got changed again and we need to rerun this
+            // and if amountPer got changed again, and we need to rerun this
             availableTargets.shiftNeeded(splitInfo);
         }
 

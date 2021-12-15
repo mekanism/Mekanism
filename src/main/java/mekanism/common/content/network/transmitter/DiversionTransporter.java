@@ -39,7 +39,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         byte current = getAllCurrentConnections();
         refreshConnections();
         if (current != getAllCurrentConnections()) {
-            //Has to be markDirtyTransmitters instead of notify tile change
+            //Has to be markDirtyTransmitters instead of notify tile change,
             // or it will not properly tell the neighboring connections that
             // it is no longer valid
             markDirtyTransmitters();

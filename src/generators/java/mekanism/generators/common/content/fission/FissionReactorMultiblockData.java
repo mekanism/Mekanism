@@ -256,7 +256,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         // consider a meltdown only if we're passed the damage threshold and the temperature is still dangerous
         if (reactorDamage >= MAX_DAMAGE && temp >= MIN_DAMAGE_TEMPERATURE) {
             if (isForceDisabled() && MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get()) {
-                //If we have meltdowns enabled and would have had one before, but they were disabled, just meltdown immediately
+                //If we have meltdowns enabled, and we would have had one before, but they were disabled, just meltdown immediately
                 // if we still meet the requirements for a meltdown
                 setForceDisable(false);
                 RadiationManager.INSTANCE.createMeltdown(world, getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE, inventoryID);

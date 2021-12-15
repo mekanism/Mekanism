@@ -28,6 +28,7 @@ public class LaserParticleData implements IParticleData {
             return new LaserParticleData(direction, distance, energyScale);
         }
 
+        @Nonnull
         @Override
         public LaserParticleData fromNetwork(@Nonnull ParticleType<LaserParticleData> type, PacketBuffer buf) {
             return new LaserParticleData(buf.readEnum(Direction.class), buf.readDouble(), buf.readFloat());

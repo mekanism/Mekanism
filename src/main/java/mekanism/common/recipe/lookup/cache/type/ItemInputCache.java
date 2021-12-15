@@ -25,7 +25,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
 
     private boolean mapIngredient(RECIPE recipe, Ingredient input) {
         if (input.isVanilla() || input.isSimple()) {
-            //Vanilla ingredients and simple ingredients don't actually check anything related to NBT
+            //Vanilla ingredients and simple ingredients don't actually check anything related to NBT,
             // so we can add the items to our base/raw input cache directly
             for (ItemStack item : input.getItems()) {
                 addInputCache(item.getItem(), recipe);
@@ -42,7 +42,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
             //Special handling for forge's NBT Ingredient
             addNbtInputCache(HashedItem.create(input.getItems()[0]), recipe);
         } else {
-            //Else it is a custom ingredient so we don't have a great way of handling it using the normal extraction checks
+            //Else it is a custom ingredient, so we don't have a great way of handling it using the normal extraction checks
             // and instead have to just mark it as complex and test as needed
             return true;
         }

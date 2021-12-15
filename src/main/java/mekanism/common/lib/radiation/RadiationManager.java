@@ -272,7 +272,7 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void tickClient(PlayerEntity player) {
-        // perhaps also play geiger counter sound effect, even when not using item (similar to fallout)
+        // perhaps also play Geiger counter sound effect, even when not using item (similar to fallout)
         if (clientRadiationScale != RadiationScale.NONE && player.level.getRandom().nextInt(2) == 0) {
             int count = player.level.getRandom().nextInt(clientRadiationScale.ordinal() * MekanismConfig.client.radiationParticleCount.get());
             int radius = MekanismConfig.client.radiationParticleRadius.get();

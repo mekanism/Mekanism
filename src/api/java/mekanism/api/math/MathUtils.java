@@ -10,7 +10,8 @@ public class MathUtils {
     private static final long UNSIGNED_MASK = 0x7FFFFFFFFFFFFFFFL;
 
     /**
-     * Clamp a double to int without using Math.min due to double representation issues. Primary use: power systems that use int, where Mek uses doubles internally
+     * Clamp a double to int without using{@link Math#min(double, double)} due to double representation issues. Primary use: power systems that use int, where Mek uses
+     * doubles internally
      *
      * <code>
      * double d = 1e300; // way bigger than longs, so the long should always be what's returned by Math.min System.out.println((long)Math.min(123456781234567812L, d)); //

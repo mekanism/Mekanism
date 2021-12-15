@@ -40,7 +40,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
                 matrix.translate(0, 1, 1);
                 break;
             default:
-                //Otherwise use the helper method for handling different face options because it is one of them
+                //Otherwise, use the helper method for handling different face options because it is one of them
                 MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
                 break;
         }

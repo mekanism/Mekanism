@@ -190,7 +190,7 @@ public class ChemicalUtils {
                         //If we are done draining break and return the amount extracted
                         break;
                     }
-                    //Otherwise keep looking and attempt to drain more from the handler, making sure that it is of
+                    //Otherwise, keep looking and attempt to drain more from the handler, making sure that it is of
                     // the same type as we have found
                 }
             }
@@ -215,7 +215,7 @@ public class ChemicalUtils {
         long toDrain = stack.getAmount();
         for (int tank = 0; tank < tanks; tank++) {
             if (stack.isTypeEqual(inTankGetter.get(tank))) {
-                //If there is chemical in the tank that matches the type we are trying to drain, try to draining from it
+                //If there is chemical in the tank that matches the type we are trying to drain, try to drain from it
                 STACK drained = extractChemical.extract(tank, toDrain, action);
                 if (!drained.isEmpty()) {
                     //If we were able to drain something, set it as the type we have extracted/increase how much we have extracted
@@ -229,7 +229,7 @@ public class ChemicalUtils {
                         //If we are done draining break and return the amount extracted
                         break;
                     }
-                    //Otherwise keep looking and attempt to drain more from the handler
+                    //Otherwise, keep looking and attempt to drain more from the handler
                 }
             }
         }

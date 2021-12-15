@@ -66,7 +66,7 @@ public class SpawnHelper {
         MobSpawnInfoBuilder spawns = event.getSpawns();
         List<MobSpawnInfo.Spawners> monsterSpawns = spawns.getSpawner(EntityClassification.MONSTER);
         if (!monsterSpawns.isEmpty()) {
-            //Fail quick if no monsters can spawn in this biome anyways
+            //Fail quick if no monsters can spawn in this biome anyway
             ResourceLocation biomeName = event.getName();
             getSpawnConfigs().filter(spawnConfig -> spawnConfig.shouldSpawn.get() && !spawnConfig.biomeBlackList.get().contains(biomeName)).forEach(spawnConfig -> {
                 EntityType<?> parent = spawnConfig.parentTypeProvider.getEntityType();
@@ -95,7 +95,7 @@ public class SpawnHelper {
         //Add special spawns to any structures that have mob spawns for the "parent" types of our mobs
         List<MobSpawnInfo.Spawners> monsterSpawns = event.getEntitySpawns(EntityClassification.MONSTER);
         if (!monsterSpawns.isEmpty()) {
-            //Fail quick if no monsters can spawn in this structure anyways
+            //Fail quick if no monsters can spawn in this structure anyway
             ResourceLocation structureName = event.getStructure().getRegistryName();
             getSpawnConfigs().filter(spawnConfig -> spawnConfig.shouldSpawn.get() && !spawnConfig.structureBlackList.get().contains(structureName)).forEach(spawnConfig -> {
                 EntityType<?> parent = spawnConfig.parentTypeProvider.getEntityType();

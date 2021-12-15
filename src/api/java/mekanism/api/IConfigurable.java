@@ -24,7 +24,7 @@ public interface IConfigurable {//TODO - 1.17: Make the capability instance hand
     ActionResultType onSneakRightClick(PlayerEntity player, Direction side);
 
     /**
-     * Called when a player right clicks this block with a Configurator.
+     * Called when a player right-clicks this block with a Configurator.
      *
      * @param player - the player who clicked the block
      * @param side   - the side the block was clicked on

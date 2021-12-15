@@ -293,7 +293,7 @@ public class CommonPlayerTickHandler {
             // for things like fall damage if the entity dies before hitting the ground, and then energy
             // would be depleted regardless if keep inventory is on even if no damage was stopped as the
             // entity can't take damage while dead. While living hurt is not fired, we catch this case
-            // just in case anyways because it is a simple boolean check and there is no guarantee that
+            // just in case anyway because it is a simple boolean check and there is no guarantee that
             // other mods may not be firing the event manually even when the entity is dead
             return;
         }
@@ -385,7 +385,7 @@ public class CommonPlayerTickHandler {
     }
 
     /**
-     * @return null if free runners are not being worn or they don't have an energy container for some reason
+     * @return null if free runners are not being worn, or they don't have an energy container for some reason
      */
     @Nullable
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {

@@ -188,7 +188,7 @@ public class LootTableModifierReloadListener implements IResourceManagerReloadLi
 
         @Override
         public boolean matches(@Nonnull ItemStack stack) {
-            //If original predicate matches or it is a shears tool type and the rest of the predicate matches
+            //If original predicate matches, or it is a shears tool type and the rest of the predicate matches
             return inner.matches(stack) || stack.getToolTypes().contains(ModuleShearingUnit.SHEARS_TOOL_TYPE) && super.matches(stack);
         }
 

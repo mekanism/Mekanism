@@ -58,7 +58,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
                 if (supportedTypes.contains(supportedType)) {
                     RecipeUpgradeData<?> data = RecipeUpgradeData.getUpgradeData(supportedType, stack);
                     if (data != null) {
-                        //If something went wrong and we didn't actually get any data don't add it
+                        //If something went wrong, and we didn't actually get any data don't add it
                         upgradeInfo.computeIfAbsent(supportedType, type -> new ArrayList<>()).add(data);
                     }
                 }

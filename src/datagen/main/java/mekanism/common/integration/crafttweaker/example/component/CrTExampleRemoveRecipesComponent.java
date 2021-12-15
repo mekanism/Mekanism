@@ -20,7 +20,7 @@ public class CrTExampleRemoveRecipesComponent extends CrTBaseExampleRecipeCompon
             if (exampleProvider.recipeExists(recipeName)) {
                 if (recipesToRemove.contains(recipeName)) {
                     //Note: This isn't the most accurate already removing example check as it doesn't check other removing components
-                    // with the same recipe manager, but it should be fine as it is mainly to help try and prevent copy paste errors
+                    // with the same recipe manager, but it should be fine as it is mainly to help try and prevent copy-paste errors
                     throw new IllegalArgumentException("Example removal of recipe '" + recipeName + "' declared multiple times.");
                 }
                 //TODO: Eventually it would be nice if this could validate the recipe type, but it isn't really all that important currently

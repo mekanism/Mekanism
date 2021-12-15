@@ -43,7 +43,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     }
 
     /**
-     * Whether or not this chemical stack is empty.
+     * Whether this chemical stack is empty.
      *
      * @return {@code true} if this stack is empty, {@code false} otherwise.
      */
@@ -69,7 +69,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      *
      * @param amount The amount to set the stack's amount to.
      *
-     * @return A new stack, or this stack, depending if this stack is mutable
+     * @return A new stack, or this stack, depending on if this stack is mutable
      */
     @ZenCodeType.Method
     CRT_STACK setAmount(long amount);
@@ -79,7 +79,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      *
      * @param amount The amount to multiply the stack by.
      *
-     * @return A new stack, or this stack, depending if this stack is mutable
+     * @return A new stack, or this stack, depending on if this stack is mutable
      *
      * @implNote No checks are made to ensure that the long does not overflow.
      */
@@ -93,7 +93,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      *
      * @param amount The amount to grow the stack by.
      *
-     * @return A new stack, or this stack, depending if this stack is mutable
+     * @return A new stack, or this stack, depending on if this stack is mutable
      *
      * @apiNote Negative values are valid and will instead shrink the stack.
      * @implNote No checks are made to ensure that the long does not overflow.
@@ -108,7 +108,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
      *
      * @param amount The amount to shrink the stack by.
      *
-     * @return A new stack, or this stack, depending if this stack is mutable
+     * @return A new stack, or this stack, depending on if this stack is mutable
      *
      * @apiNote Negative values are valid and will instead grow the stack.
      * @implNote No checks are made to ensure that the long does not underflow.
@@ -185,7 +185,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     }
 
     /**
-     * Whether or not this ChemicalStack's chemical type is equal to the other defined ChemicalStack.
+     * Whether this ChemicalStack's chemical type is equal to the other defined ChemicalStack.
      *
      * @param stack - ChemicalStack to check
      *
@@ -216,7 +216,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     /**
      * Casts this chemical stack to a generic {@link IChemicalStackIngredient} for use in recipes that support any chemical type as an input.
      *
-     * @apiNote We declare this as generic so that ZenCode can properly match this to the places where we declare all the sub types as generic.
+     * @apiNote We declare this as generic so that ZenCode can properly match this to the places where we declare all the subtypes as generic.
      */
     @ZenCodeType.Caster(implicit = true)
     IChemicalStackIngredient<?, ?> asChemicalStackIngredient();

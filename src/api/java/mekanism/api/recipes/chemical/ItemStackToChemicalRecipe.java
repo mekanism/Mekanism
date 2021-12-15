@@ -71,7 +71,7 @@ public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMIC
      *
      * @apiNote While Mekanism does not currently make use of the input, it is important to support it and pass the proper value in case any addons define input based
      * outputs where things like NBT may be different
-     * @implNote The passed in input should <strong>NOT</strong> be modified..
+     * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
     public STACK getOutput(ItemStack input) {

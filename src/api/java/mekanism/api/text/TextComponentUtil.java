@@ -180,7 +180,7 @@ public class TextComponentUtil {
         Style cachedStyle = Style.EMPTY;
         for (Object component : components) {
             if (component == null) {
-                //If the component doesn't exist add it anyways, because we may want to be replacing it
+                //If the component doesn't exist add it anyway, because we may want to be replacing it
                 // with a literal null in the formatted text
                 args.add(null);
                 cachedStyle = Style.EMPTY;
@@ -236,7 +236,7 @@ public class TextComponentUtil {
                     current = getString(component.toString());
                 }
             } else if (component instanceof String) {
-                //If we didn't format it and it is a string make sure we clean it up
+                //If we didn't format it, and it is a string make sure we clean it up
                 component = cleanString((String) component);
             }
             if (!cachedStyle.isEmpty()) {
@@ -245,7 +245,7 @@ public class TextComponentUtil {
                 if (current == null) {
                     args.add(component);
                 } else {
-                    //Otherwise we apply the formatting and then add it
+                    //Otherwise, we apply the formatting and then add it
                     args.add(current.setStyle(cachedStyle));
                 }
                 cachedStyle = Style.EMPTY;

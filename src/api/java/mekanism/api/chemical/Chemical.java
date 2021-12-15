@@ -155,7 +155,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
     }
 
     /**
-     * Whether or not this chemical is hidden.
+     * Whether this chemical is hidden.
      *
      * @return if this chemical is hidden
      */
@@ -184,7 +184,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
     }
 
     /**
-     * Gets whether or not this chemical is the empty instance.
+     * Gets whether this chemical is the empty instance.
      *
      * @return {@code true} if this chemical is the empty instance, {@code false} otherwise.
      */

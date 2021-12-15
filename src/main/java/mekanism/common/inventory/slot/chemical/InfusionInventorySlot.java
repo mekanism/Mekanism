@@ -51,7 +51,7 @@ public class InfusionInventorySlot extends ChemicalInventorySlot<InfuseType, Inf
                 //Note: we mark all infusion items as valid and have a more restrictive insert check so that we allow full tanks when they are done being filled
                 return true;
             }
-            //Allow infusion conversion of items that have a infusion that is valid
+            //Allow infusion conversion of items that have an infusion that is valid
             InfusionStack conversion = getPotentialConversion(worldSupplier.get(), stack);
             return !conversion.isEmpty() && infusionTank.isValid(conversion);
         }, listener, x, y);

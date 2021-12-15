@@ -56,7 +56,7 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
     }
 
     /**
-     * Gets the a output based on the given input.
+     * Gets the output based on the given input.
      *
      * @param input Specific input.
      *

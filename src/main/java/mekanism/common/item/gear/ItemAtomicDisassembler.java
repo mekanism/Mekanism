@@ -122,7 +122,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         if (energyContainer == null) {
             return 0;
         }
-        //Use raw hardness to get a best guess of if it is zero or not
+        //Use raw hardness to get the best guess of if it is zero or not
         FloatingLong energyRequired = getDestroyEnergy(stack, state.destroySpeed);
         FloatingLong energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
         if (energyAvailable.smallerThan(energyRequired)) {

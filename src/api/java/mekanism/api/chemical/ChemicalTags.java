@@ -74,7 +74,7 @@ public class ChemicalTags<CHEMICAL extends Chemical<CHEMICAL>> {
     }
 
     /**
-     * Helper to create an chemical tag.
+     * Helper to create a chemical tag.
      *
      * @param name Tag name.
      *

@@ -1,6 +1,7 @@
 package mekanism.common.inventory.slot;
 
 import java.util.function.Predicate;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
@@ -12,6 +13,7 @@ public class FormulaInventorySlot extends BasicInventorySlot {
 
     private static final Predicate<@NonNull ItemStack> validator = stack -> stack.getItem() instanceof ItemCraftingFormula;
 
+    @Nonnull
     public static FormulaInventorySlot at(@Nullable IContentsListener listener, int x, int y) {
         return new FormulaInventorySlot(listener, x, y);
     }

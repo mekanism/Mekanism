@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Assertions;
 
 class CCArgumentWrapperTestHelper {
 
-    //We just pass null as the arguments as we want to test converting to given types
+    //We just pass null as the arguments as we want to test converting to given types,
     // so we can just ignore it even though it shouldn't be null, because we don't
     // call any methods that make use of it
     private static final CCArgumentWrapper DUMMY_WRAPPER = new CCArgumentWrapper(null);
@@ -56,7 +56,7 @@ class CCArgumentWrapperTestHelper {
                 //Get it as a double instead of a number as we will only get it back as a double from CC
                 return addNBTHint(id, ((NumberNBT) nbt).getAsDouble(), includeHints);
             case Constants.NBT.TAG_STRING:
-            case Constants.NBT.TAG_END://Tag End is highly unlikely to ever be used outside of networking but handle it anyways
+            case Constants.NBT.TAG_END://Tag End is highly unlikely to ever be used outside of networking but handle it anyway
                 return addNBTHint(id, nbt.getAsString(), includeHints);
             case Constants.NBT.TAG_BYTE_ARRAY:
             case Constants.NBT.TAG_INT_ARRAY:

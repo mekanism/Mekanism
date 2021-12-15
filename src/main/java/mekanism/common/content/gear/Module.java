@@ -247,8 +247,8 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             enabled.getData().set(false);
             save(null);
             //Manually call state changed as we bypassed the check we injected into set if we are on the server
-            // we use the implementation detail about whether or not there was a callback to determine if it was
-            // on the server or not
+            // we use the implementation detail about whether there was a callback to determine if it was on the
+            // server or not
             if (!hasCallback) {
                 customModule.onEnabledStateChange(this);
             }

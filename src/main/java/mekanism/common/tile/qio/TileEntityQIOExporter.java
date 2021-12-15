@@ -169,7 +169,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
      * type, but not attempt every item in the frequency each operation.
      *
      * Abstracting us away from the item map (using the type/count suppliers) allows us to interface directly with the entries of the QIO's item data map when running a
-     * filterless ejection, rather then recreating the whole map each ejection operation.
+     * filterless ejection, rather than recreating the whole map each ejection operation.
      *
      * Complexity: O(k * s), where 'k' is our max eject attempts constant and 's' is the size of the inventory.
      *

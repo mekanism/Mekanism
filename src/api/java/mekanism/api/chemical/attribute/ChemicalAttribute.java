@@ -4,7 +4,7 @@ import java.util.List;
 import net.minecraft.util.text.ITextComponent;
 
 /**
- * All chemical attributes should inherit from from this class. No specific implementation is required.
+ * All chemical attributes should inherit from this class. No specific implementation is required.
  *
  * @author aidancbrady
  */

@@ -296,7 +296,7 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
 
     @Override
     protected boolean clicked(double mouseX, double mouseY) {
-        //The code for clicked and isMouseOver is the same. Overriding it here lets us override isMouseOver in sub classes
+        //The code for clicked and isMouseOver is the same. Overriding it here lets us override isMouseOver in subclasses
         // and have it propagate to clicking
         return isMouseOver(mouseX, mouseY);
     }

@@ -99,7 +99,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         super.init();
         if (warningTracker != null) {
             //If our warning tracker isn't null (so this isn't the first time we are initializing, such as after resizing)
-            // clear out any tracked warnings so we don't have duplicates being tracked when we add our elements again
+            // clear out any tracked warnings, so we don't have duplicates being tracked when we add our elements again
             warningTracker.clearTrackedWarnings();
         }
         addGuiElements();
@@ -292,7 +292,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         GuiWindow focused = windows.stream().filter(overlay -> overlay.mouseClicked(mouseX, mouseY, button)).findFirst().orElse(null);
         if (focused != null) {
             if (windows.contains(focused)) {
-                //Validate that the focused window is still one of our windows, as if it wasn't focused/on top and
+                //Validate that the focused window is still one of our windows, as if it wasn't focused/on top, and
                 // it is being closed, we don't want to update and mark it as focused, as our defocusing code won't
                 // run as we ran it when we pressed the button
                 setFocused(focused);
@@ -308,7 +308,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
             }
             return true;
         }
-        // otherwise we send it to the current element
+        // otherwise, we send it to the current element
         for (int i = buttons.size() - 1; i >= 0; i--) {
             IGuiEventListener listener = buttons.get(i);
             if (listener.mouseClicked(mouseX, mouseY, button)) {
@@ -562,7 +562,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
                     // fire an "event" for any post all windows being closed
                     lastWindowRemoved();
                 } else {
-                    //Otherwise mark the new window as being focused
+                    //Otherwise, mark the new window as being focused
                     newTop.onFocused();
                 }
                 //Update the listener to being the window that is now selected or null if none are

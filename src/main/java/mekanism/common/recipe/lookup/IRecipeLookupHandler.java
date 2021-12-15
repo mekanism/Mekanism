@@ -44,7 +44,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
     }
 
     /**
-     * Tries to lookup/get the recipe that a given cacheIndex would represent the slots/tanks/etc for.
+     * Tries to lookup/get the recipe that a given cacheIndex would represent the slots/tanks/etc. for.
      *
      * @param cacheIndex The "recipe index" for which cache to interact with.
      *
@@ -75,7 +75,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
 
     /**
      * Helper class that specifies the input cache's type for the recipe type. The reason it isn't defined in the main {@link IRecipeLookupHandler} is it isn't needed and
-     * would just make the class definitions a lot messier with very long generics that can be folded away into the helper interfaces we use anyways ofr actual lookup
+     * would just make the class definitions a lot messier with very long generics that can be folded away into the helper interfaces we use anyway ofr actual lookup
      * purposes.
      */
     interface IRecipeTypedLookupHandler<RECIPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> extends IRecipeLookupHandler<RECIPE> {

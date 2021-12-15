@@ -190,7 +190,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
                 cleanedIngredients.add(ingredient);
             }
         }
-        //There should be more than a single ingredient or we would have split out earlier
+        //There should be more than a single ingredient, or we would have split out earlier
         return multiCreator.apply(cleanedIngredients.toArray(arrayCreator.apply(0)));
     }
 

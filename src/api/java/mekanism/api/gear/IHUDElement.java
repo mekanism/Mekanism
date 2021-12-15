@@ -39,7 +39,7 @@ public interface IHUDElement {
     int getColor();
 
     /**
-     * Enum representing the built in configurable HUD-Colors Mekanism uses.
+     * Enum representing the built-in configurable HUD-Colors Mekanism uses.
      */
     enum HUDColor {
         REGULAR,

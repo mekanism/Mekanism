@@ -370,7 +370,7 @@ public class ClientTickHandler {
         if (chest.getItem() instanceof ItemMekaSuitArmor) {
             entityModel.body.visible = showModel;
             if (!(entity instanceof ArmorStandEntity)) {
-                //Don't adjust arms for armor stands as the model will end up changing them anyways and then we may incorrectly activate them
+                //Don't adjust arms for armor stands as the model will end up changing them anyway and then we may incorrectly activate them
                 entityModel.leftArm.visible = showModel;
                 entityModel.rightArm.visible = showModel;
             }

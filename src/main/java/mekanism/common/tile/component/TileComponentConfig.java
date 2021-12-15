@@ -156,7 +156,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         if (type != null) {
             ConfigInfo info = getConfig(type);
             if (info != null && side != null) {
-                //If we support this config type and we have a side so are not the read only "internal" check
+                //If we support this config type, and we have a side so are not the read only "internal" check
                 ISlotInfo slotInfo = info.getSlotInfo(getSide(side));
                 //Return that it is disabled:
                 // If we don't know how to handle the data type that is on that side config (such as for NONE)

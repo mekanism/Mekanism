@@ -72,7 +72,7 @@ public class PacketDropperUse implements IMekanismPacket {
                 } else {
                     if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
                         //If the dropper is being used to dump the tank and the player is not in creative
-                        // check if the block the tank is in is a tiered block and if it is and it is creative
+                        // check if the block the tank is in is a tiered block and if it is, and it is creative
                         // don't allow clearing the tank
                         Block block = tile.getBlockType();
                         if (Attribute.has(block, AttributeTier.class) && Attribute.get(block, AttributeTier.class).getTier().getBaseTier() == BaseTier.CREATIVE) {
@@ -131,7 +131,7 @@ public class PacketDropperUse implements IMekanismPacket {
                     IChemicalTank<CHEMICAL, STACK> itemTank = ((IMekanismChemicalHandler<CHEMICAL, STACK, ?>) handler).getChemicalTank(0, null);
                     //It is a chemical tank
                     if (itemTank != null) {
-                        //Validate something didn't go terribly wrong and we actually do have the tank we expect to have
+                        //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
                         if (action == DropperAction.FILL_DROPPER) {
                             //Insert chemical into dropper
                             transferBetweenTanks(tank, itemTank, player);

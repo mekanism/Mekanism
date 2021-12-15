@@ -55,7 +55,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
             //If the slot is currently empty, just try simulating the insertion
             return insertItem(stack, Action.SIMULATE).getCount() < stack.getCount();
         }
-        //Otherwise we need to check if we can extract the current item
+        //Otherwise, we need to check if we can extract the current item
         if (slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
             //If we can't, fail
             return false;
@@ -77,7 +77,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public void set(@Nonnull ItemStack stack) {
-        //Note: We have to set the stack in an unchecked manor here, so that if we sync a stack from the server to the client that
+        //Note: We have to set the stack in an unchecked manner here, so that if we sync a stack from the server to the client that
         // the client does not think is valid for the stack, it doesn't cause major issues. Additionally, we do this directly in
         // our putStack method rather than having a separate unchecked method, as if some modder is modifying inventories directly
         // for some reason, and the machine has invalid items in it, it could cause various issues/crashes which are not entirely

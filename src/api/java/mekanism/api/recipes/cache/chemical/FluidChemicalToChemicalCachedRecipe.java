@@ -28,7 +28,7 @@ public class FluidChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMI
     private final IInputHandler<@NonNull STACK> chemicalInputHandler;
 
     private FluidStack recipeFluid = FluidStack.EMPTY;
-    @Nullable//Note: Shouldn't be null in places it is actually used, but we mark it as nullable so we don't have to initialize it
+    @Nullable//Note: Shouldn't be null in places it is actually used, but we mark it as nullable, so we don't have to initialize it
     private STACK recipeChemical;
 
     /**

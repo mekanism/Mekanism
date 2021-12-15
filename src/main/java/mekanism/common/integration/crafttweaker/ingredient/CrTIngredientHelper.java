@@ -20,7 +20,7 @@ public class CrTIngredientHelper {
     }
 
     /**
-     * Validates that the amount is greater than zero and that the tag exists. If it does it gets and returns the tag, otherwise it throws an error.
+     * Validates that the amount is greater than zero and that the tag exists. If it does it get and returns the tag, otherwise it throws an error.
      */
     static <TYPE, CRT_TYPE> ITag<TYPE> assertValidAndGet(MCTag<CRT_TYPE> crtTag, long amount, Function<MCTag<CRT_TYPE>, ITag<TYPE>> getter,
           String ingredientType) {

@@ -55,7 +55,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
             matrix.translate(-miner.getRadius() + 0.01, miner.getMinY() - miner.getBlockPos().getY() + 0.01, -miner.getRadius() + 0.01);
             float diameter = miner.getDiameter() - 0.02F;
             matrix.scale(diameter, miner.getMaxY() - miner.getMinY() - 0.02F, diameter);
-            //If we are inside of the visualization we don't have to render the "front" face, otherwise we need to render both given how the visualization works
+            //If we are inside the visualization we don't have to render the "front" face, otherwise we need to render both given how the visualization works
             // we want to be able to see all faces easily
             FaceDisplay faceDisplay = isInsideBounds(miner.getBlockPos().getX() - miner.getRadius(), miner.getMinY(), miner.getBlockPos().getZ() - miner.getRadius(),
                   miner.getBlockPos().getX() + miner.getRadius(), miner.getMaxY(), miner.getBlockPos().getZ() + miner.getRadius()) ? FaceDisplay.BACK : FaceDisplay.BOTH;

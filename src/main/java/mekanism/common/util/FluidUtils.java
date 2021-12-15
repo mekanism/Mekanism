@@ -55,7 +55,7 @@ public final class FluidUtils {
         FluidStack toSend = stack.copy();
         FluidHandlerTarget target = new FluidHandlerTarget(stack, 6);
         EmitUtils.forEachSide(from.getLevel(), from.getBlockPos(), sides, (acceptor, side) -> {
-            //Insert to access side and collect the cap if it is present and we can insert the type of the stack into it
+            //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
             CapabilityUtils.getCapability(acceptor, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side.getOpposite()).ifPresent(handler -> {
                 if (canFill(handler, toSend)) {
                     target.addHandler(handler);
@@ -82,7 +82,7 @@ public final class FluidUtils {
                 //If we don't have a fluid stored try draining in general
                 fluidInItem = handler.drain(Integer.MAX_VALUE, FluidAction.SIMULATE);
             } else {
-                //Otherwise try draining the same type of fluid we have stored
+                //Otherwise, try draining the same type of fluid we have stored
                 // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
                 // second tank but just asking to drain a specific amount
                 fluidInItem = handler.drain(new FluidStack(fluidTank.getFluid(), Integer.MAX_VALUE), FluidAction.SIMULATE);

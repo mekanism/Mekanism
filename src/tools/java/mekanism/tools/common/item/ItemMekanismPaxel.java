@@ -141,7 +141,7 @@ public class ItemMekanismPaxel extends ToolItem implements IHasRepairType, IAttr
             //We can strip the item as an axe
             world.playSound(player, blockpos, SoundEvents.AXE_STRIP, SoundCategory.BLOCKS, 1.0F, 1.0F);
         } else {
-            //We cannot strip the item that was right clicked, so attempt to use the paxel as a shovel
+            //We cannot strip the item that was right-clicked, so attempt to use the paxel as a shovel
             if (context.getClickedFace() == Direction.DOWN) {
                 return ActionResultType.PASS;
             }

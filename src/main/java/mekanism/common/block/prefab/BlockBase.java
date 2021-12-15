@@ -65,7 +65,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     @Deprecated
     public boolean isPathfindable(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType pathType) {
         //If we have a custom shape which means we are not a full block then mark that movement is not
-        // allowed through this block it is not a full block. Otherwise use the normal handling for if movement is allowed
+        // allowed through this block it is not a full block. Otherwise, use the normal handling for if movement is allowed
         return !type.has(AttributeCustomShape.class) && super.isPathfindable(state, world, pos, pathType);
     }
 

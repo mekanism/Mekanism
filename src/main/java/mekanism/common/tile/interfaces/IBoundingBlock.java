@@ -34,7 +34,7 @@ public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport,
 
     @Override
     default boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vector3i offset) {
-        //By default only allow proxying the config card capability to bounding blocks
+        //By default, only allow proxying the config card capability to bounding blocks
         return capability != Capabilities.CONFIG_CARD_CAPABILITY;
     }
 

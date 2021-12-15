@@ -48,7 +48,7 @@ public abstract class TransitRequest {
                 HashedItem hashed = HashedItem.raw(stack);
                 int toUse = Math.min(stack.getCount(), max - ret.getCount(hashed));
                 if (toUse == 0) {
-                    continue; // continue if we don't need anymore of this item type
+                    continue; // continue if we don't need any more of this item type
                 }
                 ret.addItem(StackUtils.size(stack, toUse), i);
             }

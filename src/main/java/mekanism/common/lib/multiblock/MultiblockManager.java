@@ -148,7 +148,7 @@ public class MultiblockManager<T extends MultiblockData> {
                     locations.add(tile.getTileCoord());
                 }
             } else if (cache != null) {
-                // if the tile doesn't have a cache but we do, update the tile's reference
+                // if the tile doesn't have a cache, but we do, update the tile's reference
                 tile.setCache(cache);
                 locations.add(tile.getTileCoord());
             }

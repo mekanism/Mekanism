@@ -130,7 +130,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     }
                 } else if (expectedType == Float.TYPE || expectedType == Float.class) {
                     if (d >= -Float.MAX_VALUE && d <= Float.MAX_VALUE) {
-                        //Note: MIN_VALUE on float is smallest positive number
+                        //Note: MIN_VALUE on float is the smallest positive number
                         return (float) d;
                     }
                 } else if (expectedType == FloatingLong.class) {
@@ -304,7 +304,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                   (a, b) -> b));
         } else if (result instanceof Collection) {
             //Note: We support any "collection" as it doesn't really matter if it is a set vs a list because
-            // on ComputerCraft's end it will just be converted from a collection to a table and it be iterated
+            // on ComputerCraft's end it will just be converted from a collection to a table, and be iterated
             // so there is no real difference at that point about the type it is
             return ((Collection<?>) result).stream().map(CCArgumentWrapper::wrapReturnType).collect(Collectors.toList());
         } else if (result instanceof Object[]) {
@@ -340,7 +340,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             case Constants.NBT.TAG_ANY_NUMERIC:
                 return ((NumberNBT) nbt).getAsNumber();
             case Constants.NBT.TAG_STRING:
-            case Constants.NBT.TAG_END://Tag End is highly unlikely to ever be used outside of networking but handle it anyways
+            case Constants.NBT.TAG_END://Tag End is highly unlikely to ever be used outside of networking but handle it anyway
                 return nbt.getAsString();
             case Constants.NBT.TAG_BYTE_ARRAY:
             case Constants.NBT.TAG_INT_ARRAY:
@@ -379,7 +379,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             for (ENUM enumConstant : enumConstants) {
                 if (argument.equalsIgnoreCase(enumConstant.name())) {
                     //Note: Strictly speaking enums can have the same name but different casing,
-                    // but as all of the enums we are using are all capital, this should not matter
+                    // but as all the enums we are using are all capital, this should not matter
                     return enumConstant;
                 }
             }
@@ -465,7 +465,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         // but for now this will have to do
         Object type = map.get("type");
         if (type instanceof String) {
-            //Handle filters as arguments, this may not be the best implementation but it will do for now
+            //Handle filters as arguments, this may not be the best implementation, but it will do for now
             FilterType filterType = sanitizeStringToEnum(FilterType.class, (String) type);
             if (filterType != null) {
                 IFilter<?> filter = BaseFilter.fromType(filterType);
@@ -579,7 +579,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     }
                 } else if (expectedType == FloatNBT.class) {
                     if (d >= -Float.MAX_VALUE && d <= Float.MAX_VALUE) {
-                        //Note: MIN_VALUE on float is smallest positive number
+                        //Note: MIN_VALUE on float is the smallest positive number
                         return FloatNBT.valueOf((float) d);
                     }
                 } else if (expectedType == DoubleNBT.class) {
@@ -607,7 +607,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             if (expectedType == StringNBT.class || expectedType == INBT.class) {
                 return StringNBT.valueOf((String) argument);
             } else if (expectedType == EndNBT.class && argument.equals("END")) {
-                //Unlikely to ever be the expected case but handle it anyways as it is easy.
+                //Unlikely to ever be the expected case but handle it anyway as it is easy.
                 return EndNBT.INSTANCE;
             }
         } else if (argument instanceof Map) {
@@ -636,7 +636,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                                 return sanitizeNBT(hinted, value.getClass(), value);
                             }
                         }
-                        //Otherwise if the expected type doesn't match the type we have a hint for fail
+                        //Otherwise, if the expected type doesn't match the type we have a hint for fail
                         return null;
                     }
                 }
@@ -672,7 +672,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     //If the map is not empty and the key is a double parse it as a collection
                     return sanitizeNBTCollection(entries);
                 }
-                // Otherwise if it is empty or the key is not a double handle it as an NBT Compound
+                // Otherwise, if it is empty or the key is not a double handle it as an NBT Compound
                 return sanitizeNBTCompound(entries);
             }
         }
@@ -725,7 +725,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             Object value = entry.getValue();
             INBT nbtValue = sanitizeNBT(INBT.class, value.getClass(), value);
             if (nbtValue == null || nbt.put((String) key, nbtValue) != null) {
-                //If the value is not an NBT value or we already have an entry in our compound for that key: fail
+                //If the value is not an NBT value, or we already have an entry in our compound for that key: fail
                 return null;
             }
         }
@@ -844,21 +844,20 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 if (element instanceof NumberNBT) {
                     searchClass = NumberNBT.class;
                 } else if (elementClass == ListNBT.class) {
+                    //Otherwise, only check ListNBTs. We can get away with this because our generic CollectionNBT/INBT
+                    // handling first tries to get it into an array before a List so we are only here if it isn't a supported array type
                     if (((ListNBT) element).getElementType() == Constants.NBT.TAG_SHORT) {
                         //If the inner type is a short, check collections
                         // Note: It is not possible for it to be an *empty* list here as our base check is for INBT
                         // which would cause us to end up with an empty CompoundNBT instead
                         searchClass = CollectionNBT.class;
-                    } else {
-                        //Otherwise only check ListNBTs. We can get away with this because our generic CollectionNBT/INBT
-                        // handling first tries to get it into an array before a List so we are only here if it isn't a supported array type
+                    } else
                         searchClass = elementClass;
-                    }
                 } else if (element instanceof CollectionNBT) {
                     //Arrays
                     searchClass = CollectionNBT.class;
                 } else if (!(element instanceof CompoundNBT) || !((CompoundNBT) element).isEmpty()) {
-                    //If it is not a CompoundNBT or it is not an empty CompoundNBT mark it as the type we search for
+                    //If it is not a CompoundNBT, or it is not an empty CompoundNBT mark it as the type we search for
                     // otherwise if it is an empty CompoundNBT allow it to search INBT to try and get other things like arrays/lists
                     searchClass = elementClass;
                 }
@@ -879,7 +878,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     if (desiredClass != IntArrayNBT.class && desiredClass != LongArrayNBT.class && (desiredClass != ListNBT.class || searchClass != CollectionNBT.class)) {
                         //If it is not one of them, check if we are expecting an empty compound (which is indistinguishable from an empty array)
                         if (desiredClass == CompoundNBT.class && searchClass == INBT.class) {
-                            // and if we are allow it but transition the target over to byte arrays
+                            // and if we are, allow it but transition the target over to byte arrays
                             desiredClass = ByteArrayNBT.class;
                             searchClass = CollectionNBT.class;
                         } else {
@@ -915,7 +914,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 } else if (elementClass == ListNBT.class) {
                     byte listType = ((ListNBT) element).getElementType();
                     if (desiredClass == ByteArrayNBT.class) {
-                        //If we found a short list and we want byte arrays, switch to a short list
+                        //If we found a short list, and we want byte arrays, switch to a short list
                         // otherwise if we just found a general list we need to transition it all over to a normal list
                         // if we found an empty list (as we are searching for collections), just do nothing as it is compatible with a byte array
                         if (listType != Constants.NBT.TAG_END) {
@@ -939,7 +938,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                             //If we are a short list search for any collection type
                             searchClass = CollectionNBT.class;
                         } else {
-                            // otherwise only search for lists
+                            // otherwise, only search for lists
                             searchClass = ListNBT.class;
                         }
                     } else {
@@ -949,7 +948,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     return false;
                 }
             } else if (elementClass == ListNBT.class) {
-                //If we have only have short lists
+                //If we only have short lists
                 if (searchClass == CollectionNBT.class) {
                     byte listType = ((ListNBT) element).getElementType();
                     // and our current element is not also a list of shorts or an empty list
@@ -959,7 +958,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     }
                 }
             } else if (elementClass == CompoundNBT.class) {
-                //If the they are both CompoundNBTs and our element isn't empty and we have only had empty
+                //If they are both CompoundNBTs and our element isn't empty, and we have only had empty
                 // compounds so far, then mark that we are a CompoundNBT and not just empty/guessing
                 if (!((CompoundNBT) element).isEmpty() && searchClass == INBT.class) {
                     searchClass = elementClass;

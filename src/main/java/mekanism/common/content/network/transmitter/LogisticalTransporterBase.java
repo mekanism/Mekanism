@@ -54,7 +54,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     @Override
     public AcceptorCache<IItemHandler> getAcceptorCache() {
-        //Cast it here to make things a bit easier, as we know the create is by default of type AcceptorCache
+        //Cast it here to make things a bit easier, as we know createAcceptorCache by default returns an object of type AcceptorCache
         return (AcceptorCache<IItemHandler>) super.getAcceptorCache();
     }
 
@@ -438,7 +438,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
         // N.B. We are not marking the chunk as dirty here! I don't believe it's needed, since
         // the next tick will generate the necessary save and if we crash before the next tick,
-        // it's unlikely the data will be save anyways (since chunks aren't saved until the end of
+        // it's unlikely the data will be saved anyway (since chunks aren't saved until the end of
         // a tick).
     }
 }

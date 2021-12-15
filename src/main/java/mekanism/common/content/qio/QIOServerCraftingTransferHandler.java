@@ -80,7 +80,7 @@ public class QIOServerCraftingTransferHandler {
 
     private void tryTransfer(ICraftingRecipe recipe, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
         //Calculate what items are available inside the crafting window and if they can be extracted as we will
-        // need to be able to extract the contents afterwards anyways
+        // need to be able to extract the contents afterwards anyway
         for (byte slot = 0; slot < 9; slot++) {
             CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
             if (!inputSlot.isEmpty()) {
@@ -131,7 +131,7 @@ public class QIOServerCraftingTransferHandler {
             }
             if (singleSources.isEmpty()) {
                 //There should always be at least one (the first source) that didn't get removed, but in case something went wrong,
-                // and it got removed anyways, then we catch it here and fail
+                // and it got removed anyway, then we catch it here and fail
                 Mekanism.logger.warn("Received transfer request from: {}, for: {}, that had no valid sources, this should not be possible.", player, recipeID);
                 return;
             }
