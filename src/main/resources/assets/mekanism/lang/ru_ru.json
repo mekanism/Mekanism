@@ -257,7 +257,7 @@
   "chemical.mekanism.attribute.coolant.heat_capacity": " - Термоэнтальпия: %s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - Скорость горения: %s t",
   "chemical.mekanism.attribute.fuel.energy_density": " - Плотность энергии: %s",
-  "chemical.mekanism.attribute.radiation": " - Радиоактивность: %s sV/h",
+  "chemical.mekanism.attribute.radiation": " - Радиоактивность: %s",
   "color.mekanism.aqua": "Морской",
   "color.mekanism.black": "Черный",
   "color.mekanism.bright_green": "Лаймовый",
