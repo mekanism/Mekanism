@@ -257,7 +257,7 @@
   "chemical.mekanism.attribute.coolant.heat_capacity": " - Enthalpie thermique à: %s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - Temps de Combustion: %s t",
   "chemical.mekanism.attribute.fuel.energy_density": " - Densité Énergétique : %s",
-  "chemical.mekanism.attribute.radiation": " - Radioactivité à: %s sV/h",
+  "chemical.mekanism.attribute.radiation": " - Radioactivité à: %s",
   "color.mekanism.aqua": "bleu-eau",
   "color.mekanism.black": "Noir",
   "color.mekanism.bright_green": "Lime",
