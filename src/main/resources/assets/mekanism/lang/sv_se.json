@@ -254,7 +254,7 @@
   "cardboard_box.mekanism.block_data": "Blockera data: %s",
   "cardboard_box.mekanism.tile": "Platta: %s",
   "chemical.mekanism.attribute.coolant.efficiency": " - kylning Effektivitet %s",
-  "chemical.mekanism.attribute.coolant.heat_capacity": " - Värme Energi: %s J/mB",
+  "chemical.mekanism.attribute.coolant.heat_capacity": " - Värme Energi: %s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - Brinntid: %s t",
   "chemical.mekanism.attribute.fuel.energy_density": " - Energidensitet: %s",
   "chemical.mekanism.attribute.radiation": " - Radioaktivitet: %s",
