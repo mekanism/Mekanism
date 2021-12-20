@@ -47,9 +47,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
  * Used for the server side transfer handling by the {@link mekanism.common.network.to_server.PacketQIOFillCraftingWindow}
  */
 public class QIOServerCraftingTransferHandler {
-    //TODO - 10.1: Before release figure out if we want to move any of these warnings to debugs. Maybe some of the ones that could
-    // happen from the data the client can send due to it having a lack of information (such about shuffle room), or maybe some where
-    // we attempt to continue even though something went wrong
 
     private final QIOCraftingWindow craftingWindow;
     private final ResourceLocation recipeID;
@@ -150,7 +147,8 @@ public class QIOServerCraftingTransferHandler {
         if (!recipe.matches(dummy, player.level)) {
             Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipeID);
         } else if (!hasRoomToShuffle()) {
-            Mekanism.logger.warn("Received transfer request from: {}, but there is not enough room to shuffle items around for the requested recipe: {}.",
+            //Note: Uses debug logging level as there are a couple cases this might not be 100% accurate on the client side
+            Mekanism.logger.debug("Received transfer request from: {}, but there is not enough room to shuffle items around for the requested recipe: {}.",
                   player, recipeID);
         } else {
             transferItems(sources);
@@ -265,7 +263,8 @@ public class QIOServerCraftingTransferHandler {
             recipeToTest.set(targetSlot, slotData.getStack().copy());
         } else if (!ItemHandlerHelper.canItemStacksStack(currentRecipeTarget, slotData.getStack())) {
             //If our stack can't stack with the item we already are going to put in the slot, fail "gracefully"
-            Mekanism.logger.warn("Received transfer request from: {}, for: {}, but found items for target slot: {} cannot stack. "
+            //Note: debug level because this may happen due to not knowing all NBT
+            Mekanism.logger.debug("Received transfer request from: {}, for: {}, but found items for target slot: {} cannot stack. "
                                  + "Attempting to continue by skipping the additional stack.", player, recipeID, targetSlot);
             return 0;
         } else {
