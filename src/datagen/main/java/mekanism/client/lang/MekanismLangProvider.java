@@ -680,6 +680,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.PROCESS_RATE, "Process Rate: %s");
         add(MekanismLang.PROCESS_RATE_MB, "Process Rate: %s mB/t");
         add(MekanismLang.TICKS_REQUIRED, "Ticks Required: %s");
+        add(MekanismLang.DECAY_IMMUNE, "Will not decay inside a Radioactive Waste Barrel");
         //Gui stuff
         add(MekanismLang.WIDTH, "Width");
         add(MekanismLang.HEIGHT, "Height");

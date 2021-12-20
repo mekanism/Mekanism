@@ -16,6 +16,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
@@ -49,7 +50,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     @Override
     protected List<ITextComponent> getTooltip(STACK stack) {
         List<ITextComponent> tooltips = super.getTooltip(stack);
-        tooltips.addAll(ChemicalUtil.getAttributeTooltips(stack.getType()));
+        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack.getType(), Minecraft.getInstance().options.advancedItemTooltips);
         return tooltips;
     }
 

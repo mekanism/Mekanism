@@ -1354,6 +1354,7 @@
   "temperature.mekanism.rankine.short": "\u1D1A",
   "temperature.mekanism.short": "%s :d\u026F\u01DD\u27D8",
   "tooltip.mekanism.bucket_mode": "%s :\u01DDpoW \u0287\u01DD\u029E\u0254n\u15FA",
+  "tooltip.mekanism.decay_immune": "\uA781\u01DD\u0279\u0279\u0250\u15FA \u01DD\u0287s\u0250M \u01DD\u028C\u1D09\u0287\u0254\u0250o\u1D09p\u0250\u1D1A \u0250 \u01DDp\u1D09su\u1D09 \u028E\u0250\u0254\u01DDp \u0287ou \uA781\uA781\u1D09M",
   "tooltip.mekanism.fire_mode": "%s :\u01DDpoW \u01DD\u0279\u1D09\u2132",
   "tooltip.mekanism.flowing": "%s :\u1D77u\u1D09\u028Do\uA781\u2132",
   "tooltip.mekanism.hold_for_description": "\u02D9uo\u1D09\u0287d\u1D09\u0279\u0254s\u01DDp \u0250 \u0279o\u025F %s p\uA781oH",

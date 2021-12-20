@@ -16,6 +16,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.text.ITextComponent;
 
@@ -96,7 +97,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
         } else {
             list.add(MekanismLang.GENERIC_STORED_MB.translate(tank.getType(), TextUtils.format(amount)));
         }
-        list.addAll(ChemicalUtil.getAttributeTooltips(tank.getType()));
+        ChemicalUtil.addChemicalDataToTooltip(list, tank.getType(), Minecraft.getInstance().options.advancedItemTooltips);
         return list;
     }
 

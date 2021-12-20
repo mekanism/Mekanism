@@ -99,15 +99,15 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
         if (chemical.isEmptyType()) {
             return Collections.emptyList();
         }
-        List<ITextComponent> tooltip = new ArrayList<>();
-        tooltip.add(TextComponentUtil.build(chemical));
+        List<ITextComponent> tooltips = new ArrayList<>();
+        tooltips.add(TextComponentUtil.build(chemical));
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-            tooltip.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
+            tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-            tooltip.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
+            tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
         }
-        tooltip.addAll(ChemicalUtil.getAttributeTooltips(stack.getType()));
-        return tooltip;
+        ChemicalUtil.addChemicalDataToTooltip(tooltips, stack.getType(), tooltipFlag.isAdvanced());
+        return tooltips;
     }
 
     @Override

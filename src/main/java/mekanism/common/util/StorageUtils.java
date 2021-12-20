@@ -96,7 +96,7 @@ public class StorageUtils {
                     STACK chemicalInTank = handler.getChemicalInTank(tank);
                     tooltip.add(storedFunction.apply(chemicalInTank));
                     if (showAttributes) {
-                        tooltip.addAll(ChemicalUtil.getAttributeTooltips(chemicalInTank.getType()));
+                        ChemicalUtil.addAttributeTooltips(tooltip, chemicalInTank.getType());
                     }
                 }
             } else if (showMissingCap) {

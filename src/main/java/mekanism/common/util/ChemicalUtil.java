@@ -1,6 +1,5 @@
 package mekanism.common.util;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
@@ -34,14 +33,19 @@ import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.providers.ISlurryProvider;
+import mekanism.api.text.EnumColor;
+import mekanism.api.text.TextComponentUtil;
+import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -248,10 +252,21 @@ public class ChemicalUtil {
         return false;
     }
 
-    public static List<ITextComponent> getAttributeTooltips(Chemical<?> chemical) {
-        List<ITextComponent> list = new ArrayList<>();
-        chemical.getAttributes().forEach(attr -> attr.addTooltipText(list));
-        return list;
+    public static void addAttributeTooltips(List<ITextComponent> tooltips, Chemical<?> chemical) {
+        chemical.getAttributes().forEach(attr -> attr.addTooltipText(tooltips));
+    }
+
+    public static void addChemicalDataToTooltip(List<ITextComponent> tooltips, Chemical<?> chemical, boolean advanced) {
+        if (!chemical.isEmptyType()) {
+            addAttributeTooltips(tooltips, chemical);
+            if (chemical instanceof Gas && ((Gas) chemical).isIn(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST)) {
+                tooltips.add(MekanismLang.DECAY_IMMUNE.translateColored(EnumColor.AQUA));
+            }
+            if (advanced) {
+                //If advanced tooltips are on, display the registry name
+                tooltips.add(TextComponentUtil.build(TextFormatting.DARK_GRAY, chemical.getRegistryName()));
+            }
+        }
     }
 
     public static void emit(IChemicalTank<?, ?> tank, TileEntity from) {

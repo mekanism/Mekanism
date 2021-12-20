@@ -175,6 +175,7 @@ public enum MekanismLang implements ILangEntry {
     FREE_RUNNERS_STORED("tooltip", "stored.free_runners"),
     FLAMETHROWER_STORED("tooltip", "stored.flamethrower"),
     JETPACK_STORED("tooltip", "stored.jetpack"),
+    DECAY_IMMUNE("tooltip", "decay_immune"),
     //Gui stuff
     HEIGHT("gui", "height"),
     WIDTH("gui", "width"),
