@@ -81,7 +81,7 @@ public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMIC
     /**
      * @deprecated Use {@link #getOutputDefinitionNew()}.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public STACK getOutputDefinition() {
         return output;
     }
@@ -92,7 +92,7 @@ public abstract class ItemStackToChemicalRecipe<CHEMICAL extends Chemical<CHEMIC
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
     public List<STACK> getOutputDefinitionNew() {
-        //TODO - 1.17: Rename this to getOutputDefinition
+        //TODO - 1.18: Rename this to getOutputDefinition
         return Collections.singletonList(output);
     }
 

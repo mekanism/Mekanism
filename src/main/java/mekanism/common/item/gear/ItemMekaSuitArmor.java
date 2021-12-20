@@ -413,7 +413,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    //TODO - 1.17: Switch this to a record
+    //TODO - 1.18: Switch this to a record
     private static class FoundArmorDetails {
 
         private final IEnergyContainer energyContainer;

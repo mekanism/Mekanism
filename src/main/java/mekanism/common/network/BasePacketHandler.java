@@ -44,7 +44,7 @@ public abstract class BasePacketHandler {
      * Helper for reading strings to make sure we don't accidentally call {@link PacketBuffer#readUtf()} on the server
      */
     public static String readString(PacketBuffer buffer) {
-        //TODO - 10.1: Evaluate usages and potentially move some things to more strict string length checks
+        //TODO - 1.18: Evaluate usages and potentially move some things to more strict string length checks
         return buffer.readUtf(Short.MAX_VALUE);
     }
 

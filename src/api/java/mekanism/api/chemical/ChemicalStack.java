@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.registries.IRegistryDelegate;
 
-//TODO - 1.17: Make the subclasses of this final
+//TODO - 1.18: Make the subclasses of this final
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> implements IHasTextComponent, IHasTranslationKey {

@@ -402,7 +402,7 @@ public class ClientTickHandler {
         }
     }
 
-    //TODO - 1.17: Convert this to a record
+    //TODO - 1.18: Convert this to a record
     private static class TeleportData {
 
         private final Hand hand;

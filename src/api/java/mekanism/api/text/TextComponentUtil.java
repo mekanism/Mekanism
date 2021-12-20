@@ -26,7 +26,7 @@ public class TextComponentUtil {
     /**
      * @deprecated Use {@link ITextComponent#copy()}.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public static IFormattableTextComponent getFormattableComponent(ITextComponent component) {
         return component.copy();
     }

@@ -23,7 +23,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 public class PacketRobit implements IMekanismPacket {
 
     private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = ImmutableMap.<String, List<IRobitSkinProvider>>builder()
-          .put("sara", Arrays.asList(MekanismRobitSkins.LESBIAN, MekanismRobitSkins.TRANS))//TODO - 1.17: Make this use Lists.of(...)
+          .put("sara", Arrays.asList(MekanismRobitSkins.LESBIAN, MekanismRobitSkins.TRANS))//TODO - 1.18: Make this use Lists.of(...)
           .build();
 
     private final RobitPacketType activeType;

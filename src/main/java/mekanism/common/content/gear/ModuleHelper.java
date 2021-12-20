@@ -47,7 +47,7 @@ public class ModuleHelper implements IModuleHelper {
     private final Map<Item, Set<ModuleData<?>>> supportedModules = new Object2ObjectOpenHashMap<>(5);
     private final Map<ModuleData<?>, Set<Item>> supportedContainers = new Object2ObjectOpenHashMap<>();
 
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public void gatherLegacyModules() {
         for (ModuleData<?> moduleData : MekanismAPI.moduleRegistry()) {
             String legacyName = moduleData.getLegacyName();
@@ -174,7 +174,7 @@ public class ModuleHelper implements IModuleHelper {
     private Set<ModuleData<?>> loadAllTypes(CompoundNBT modulesTag) {
         //We use a set so in case there is a duplicate entry somehow between legacy and non legacy,
         // we only include it once in the returned set. This shouldn't happen, but it is a just in case thing
-        //TODO - 1.17: After removing legacy types we might as well change this to a list
+        //TODO - 1.18: After removing legacy types we might as well change this to a list
         Set<ModuleData<?>> moduleTypes = new HashSet<>();
         for (String name : modulesTag.getAllKeys()) {
             ModuleData<?> moduleType = getModuleTypeFromName(name);
@@ -215,7 +215,7 @@ public class ModuleHelper implements IModuleHelper {
     @Nullable
     private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ModuleData<MODULE> type, ItemStack container, CompoundNBT modulesTag, String key,
           @Nullable Class<? extends ICustomModule<?>> typeFilter) {
-        //TODO - 1.17: When removing the legacy handling from the above method just inline this method
+        //TODO - 1.18: When removing the legacy handling from the above method just inline this method
         Module<MODULE> module = new Module<>(type, container);
         if (typeFilter == null || typeFilter.isInstance(module.getCustomInstance())) {
             module.read(modulesTag.getCompound(key));

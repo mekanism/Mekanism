@@ -143,7 +143,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
         this.ingredients.put(recipe, new IngredientTarget(stacks, itemIngredientGroup));
     }
 
-    //TODO - 1.17: Make this a record
+    //TODO - 1.18: Make this a record
     private static class IngredientTarget {
 
         private final IGuiIngredientGroup<? extends ChemicalStack<?>> ingredientGroup;

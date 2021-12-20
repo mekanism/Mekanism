@@ -614,7 +614,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             Map<?, ?> map = (Map<?, ?>) argument;
             if (map.size() == 2) {
                 //If the size of the map is two, check if it is a hint for the type of NBT
-                //TODO - 10.1: We may want to document the existence of this typeHint system somewhere
+                //TODO: We may want to document the existence of this typeHint system somewhere
                 Object value = map.get(CCArgumentWrapper.TYPE_HINT_VALUE_KEY);
                 Object typeHintRaw = map.get(CCArgumentWrapper.TYPE_HINT_KEY);
                 if (value != null && typeHintRaw instanceof Double) {

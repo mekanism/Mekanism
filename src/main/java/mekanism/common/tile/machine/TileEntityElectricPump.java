@@ -285,7 +285,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
         super.load(state, nbtTags);
         operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
-        if (nbtTags.getBoolean(NBTConstants.SUCKED_LAST_OPERATION)) {//TODO - 1.17: Remove this
+        if (nbtTags.getBoolean(NBTConstants.SUCKED_LAST_OPERATION)) {//TODO - 1.18: Remove this
             //If we need were saved as needing to use power, make sure we use it when loading
             energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
         }

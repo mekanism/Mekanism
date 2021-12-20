@@ -81,7 +81,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "black", modLoaded, BOPBlocks.black_sand, BOPBlocks.black_sandstone,
               BOPBlocks.chiseled_black_sandstone, BOPBlocks.cut_black_sandstone, BOPBlocks.smooth_black_sandstone);
         //Orange Sandstone -> Sand
-        //TODO - 1.17: Change this to just modLoaded
+        //TODO - 1.18: Change this to just modLoaded
         RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "orange", new ModVersionLoadedCondition(modid, "1.16.3-12.0.0.404"),
               BOPBlocks.orange_sand, BOPBlocks.orange_sandstone, BOPBlocks.chiseled_orange_sandstone, BOPBlocks.cut_orange_sandstone, BOPBlocks.smooth_orange_sandstone);
         //White Sandstone -> Sand

@@ -175,7 +175,7 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
         return tankCreator.create(capacity, alwaysTrueBi, internalOnly, alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
     }
 
-    @Deprecated//TODO - 1.17: Remove
+    @Deprecated//TODO - 1.18: Remove
     public TANK ejectOutput(long capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");

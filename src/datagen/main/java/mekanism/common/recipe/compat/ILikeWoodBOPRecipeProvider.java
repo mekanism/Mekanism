@@ -15,7 +15,7 @@ import yamahari.ilikewood.registry.woodtype.IWoodType;
 @ParametersAreNonnullByDefault
 public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
 
-    //TODO - 1.17: Remove having these extra conditions
+    //TODO - 1.18: Remove having these extra conditions
     private final ICondition modLoadedSoulTorchVersion;
 
     public ILikeWoodBOPRecipeProvider() {

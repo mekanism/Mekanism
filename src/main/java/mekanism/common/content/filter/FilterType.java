@@ -14,7 +14,7 @@ public enum FilterType {
     OREDICTIONIFICATOR_ITEM_FILTER,
     QIO_ITEMSTACK_FILTER,
     QIO_TAG_FILTER,
-    //TODO - 1.17: Evaluate moving the QIO modid filter above the tag filter. We can't do that now as it uses the index for saving purposes
+    //TODO - 1.18: Evaluate moving the QIO modid filter above the tag filter. We can't do that now as it uses the index for saving purposes
     QIO_MODID_FILTER;
 
     private static final FilterType[] FILTERS = values();

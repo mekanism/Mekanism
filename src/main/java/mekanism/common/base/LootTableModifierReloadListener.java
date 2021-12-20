@@ -45,7 +45,7 @@ import net.minecraft.util.ResourceLocation;
  * harvest levels to pass to it, and the fact that forge already replaces a bunch of vanilla loot tables to use the shears tag instead of the shears item. Once a solution
  * gets to the point where it seems reasonable enough to do, a forge PR <strong>SHOULD</strong> be made and this reload listener removed.
  */
-public class LootTableModifierReloadListener implements IResourceManagerReloadListener {//TODO - 1.17: Remove this won't be needed anymore
+public class LootTableModifierReloadListener implements IResourceManagerReloadListener {//TODO - 1.18: Remove this won't be needed anymore
 
     //These top three are inaccessible via ATs due to forge patches targeting the lines they are declared on and changing the types
     private static final FieldReflectionHelper<LootPool, List<ILootCondition>> LOOT_POOL_CONDITIONS = new FieldReflectionHelper<>(LootPool.class, "field_186454_b", Collections::emptyList);

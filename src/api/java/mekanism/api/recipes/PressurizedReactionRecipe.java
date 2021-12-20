@@ -129,7 +129,7 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
     public Pair<List<@NonNull ItemStack>, @NonNull GasStack> getOutputDefinition() {
-        //TODO - 1.17: Re-evaluate the fact that this isn't a list of pairs
+        //TODO - 1.18: Re-evaluate the fact that this isn't a list of pairs
         if (outputItem.isEmpty()) {
             return Pair.of(Collections.emptyList(), this.outputGas);
         }

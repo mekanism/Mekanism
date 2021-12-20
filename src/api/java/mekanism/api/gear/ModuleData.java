@@ -73,10 +73,10 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
      * Gets the legacy name for this module. This is mainly used to be able to load legacy modules from before the module system was exposed to the API and modules had a
      * slightly different naming scheme.
      *
-     * @deprecated Will be removed in 1.17
+     * @deprecated Will be removed in 1.18
      */
     @Nullable
-    @Deprecated//TODO - 1.17: Remove
+    @Deprecated//TODO - 1.18: Remove
     public final String getLegacyName() {
         return legacyName;
     }
@@ -235,9 +235,9 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
          *
          * @param legacyName Legacy name of the module.
          *
-         * @deprecated Will be removed in 1.17
+         * @deprecated Will be removed in 1.18
          */
-        @Deprecated//TODO - 1.17: Remove
+        @Deprecated//TODO - 1.18: Remove
         public ModuleDataBuilder<MODULE> legacyName(@Nonnull String legacyName) {
             this.legacyName = Objects.requireNonNull(legacyName, "Legacy name should not be null if specified.");
             return this;

@@ -13,7 +13,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 /**
  * Base class to help implement handling of gas to gas recipes.
  */
-@Deprecated//TODO - 1.17: Remove this
+@Deprecated//TODO - 1.18: Remove this
 @ParametersAreNonnullByDefault
 public class GasToGasCachedRecipe extends ChemicalToChemicalCachedRecipe<Gas, GasStack, GasStackIngredient, GasToGasRecipe> {
 

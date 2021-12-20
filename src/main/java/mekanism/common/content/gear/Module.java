@@ -194,7 +194,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             //If there is no legacy name just try to grab the module
             nbt = modulesTag.getCompound(registryName);
         }
-        //TODO - 1.17: Remove this as we will be able to get rid of the legacy name
+        //TODO - 1.18: Remove this as we will be able to get rid of the legacy name
         //If there is a legacy name start by seeing if we have a compound for the proper name
         else if (modulesTag.contains(registryName, NBT.TAG_COMPOUND)) {
             //If we do, grab it

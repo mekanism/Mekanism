@@ -14,7 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 /**
  * Base class to help implement handling of fluid slurry to slurry recipes.
  */
-@Deprecated//TODO - 1.17: Remove this
+@Deprecated//TODO - 1.18: Remove this
 @ParametersAreNonnullByDefault
 public class FluidSlurryToSlurryCachedRecipe extends FluidChemicalToChemicalCachedRecipe<Slurry, SlurryStack, SlurryStackIngredient, FluidSlurryToSlurryRecipe> {
 

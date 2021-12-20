@@ -185,7 +185,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
         return ModuleDispenseResult.DEFAULT;
     }
 
-    //TODO - 1.17: Switch this to a record
+    //TODO - 1.18: Switch this to a record
     class ModuleDamageAbsorbInfo {
 
         private final FloatSupplier absorptionRatio;

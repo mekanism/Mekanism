@@ -15,7 +15,7 @@ public interface ILaserReceptor {
      * @param energy Energy received.
      * @param side   Side the receptor is hit from (will be removed in 1.17 as what capability instance is returned can be used to have different handling of this)
      */
-    void receiveLaserEnergy(@Nonnull FloatingLong energy, Direction side);//TODO - 1.17: Remove the side from this as the side is used when getting the capability.
+    void receiveLaserEnergy(@Nonnull FloatingLong energy, Direction side);//TODO - 1.18: Remove the side from this as the side is used when getting the capability.
 
     /**
      * Checks if a laser can break this receptor.

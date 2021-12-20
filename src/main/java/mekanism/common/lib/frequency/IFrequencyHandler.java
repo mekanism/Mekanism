@@ -25,7 +25,7 @@ public interface IFrequencyHandler extends ISecurityTile {
         if (freq != null) {
             UUID owner;
             if (frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
-                //TODO - 1.17: Require the compound to actually have an owner uuid stored as well
+                //TODO - 1.18: Require the compound to actually have an owner uuid stored as well
                 // having a fallback to the tile's owner is mostly for properly loading legacy data
                 owner = frequencyCompound.getUUID(NBTConstants.OWNER_UUID);
             } else {

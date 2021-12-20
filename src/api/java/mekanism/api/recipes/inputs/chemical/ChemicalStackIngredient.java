@@ -23,7 +23,7 @@ import net.minecraft.tags.ITag;
  * Base implementation for how Mekanism handle's ChemicalStack Ingredients.
  */
 public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> extends
-      IChemicalStackIngredient<CHEMICAL, STACK> {//TODO - 1.17: Merge this and IChemicalStackIngredient as there isn't much reason to have them be separate
+      IChemicalStackIngredient<CHEMICAL, STACK> {//TODO - 1.18: Merge this and IChemicalStackIngredient as there isn't much reason to have them be separate
 
     abstract class SingleIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ChemicalStackIngredient<CHEMICAL, STACK> {
 

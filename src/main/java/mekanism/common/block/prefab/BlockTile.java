@@ -42,7 +42,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
 
     public BlockTile(TYPE type, UnaryOperator<AbstractBlock.Properties> propertiesModifier) {
         this(type, propertiesModifier.apply(AbstractBlock.Properties.of(Material.METAL).strength(3.5F, 16).requiresCorrectToolForDrops()));
-        //TODO - 10.1: Figure out what the resistance should be (it used to be different in 1.12)
+        //TODO - 1.18: Figure out what the resistance should be (it used to be different in 1.12)
     }
 
     public BlockTile(TYPE type, AbstractBlock.Properties properties) {

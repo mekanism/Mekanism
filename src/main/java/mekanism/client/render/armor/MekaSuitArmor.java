@@ -88,7 +88,7 @@ public class MekaSuitArmor extends CustomArmor {
     public static final MekaSuitArmor PANTS = new MekaSuitArmor(0.5F, EquipmentSlotType.LEGS, EquipmentSlotType.FEET);
     public static final MekaSuitArmor BOOTS = new MekaSuitArmor(0.5F, EquipmentSlotType.FEET, EquipmentSlotType.LEGS);
 
-    //TODO - 1.17: Extend a way for modules to be across multiple caches so that the solar helmet can be moved to mek generators
+    //TODO - 1.18: Extend a way for modules to be across multiple caches so that the solar helmet can be moved to mek generators
     // and that addons can add custom rendering for some of their modules if they want
     private static final Set<ModelData> specialModels = Sets.newHashSet(MekanismModelCache.INSTANCE.MEKASUIT_MODULES);
 

@@ -95,12 +95,12 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     /**
      * Gets the item tag that corresponds to the dye this color corresponds to.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public ITag<Item> getDyeTag() {
         return dyeTag;
     }
 
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public boolean hasDyeName() {
         return dyeColor != null;
     }

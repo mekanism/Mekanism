@@ -58,7 +58,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @param pos   Position (x, y, z)
      * @param world World
      */
-    public Coord4D(BlockPos pos, World world) {//TODO - 1.17: Switch this to taking Vector3i as position
+    public Coord4D(BlockPos pos, World world) {//TODO - 1.18: Switch this to taking Vector3i as position
         this(pos, world.dimension());
     }
 
@@ -68,12 +68,12 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @param pos       Position (x, y, z)
      * @param dimension Dimension ID
      */
-    public Coord4D(BlockPos pos, RegistryKey<World> dimension) {//TODO - 1.17: Switch this to taking Vector3i as position
+    public Coord4D(BlockPos pos, RegistryKey<World> dimension) {//TODO - 1.18: Switch this to taking Vector3i as position
         this(pos.getX(), pos.getY(), pos.getZ(), dimension);
     }
 
     @Deprecated
-    public Coord4D(BlockRayTraceResult mop, World world) {//TODO - 1.17: Remove this
+    public Coord4D(BlockRayTraceResult mop, World world) {//TODO - 1.18: Remove this
         this(mop.getBlockPos(), world);
     }
 
@@ -84,7 +84,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      *
      * @return the Coord4D object from the TileEntity
      */
-    public static Coord4D get(TileEntity tile) {//TODO - 1.17: Move this to a constructor or move the other helper constructors to a get method
+    public static Coord4D get(TileEntity tile) {//TODO - 1.18: Move this to a constructor or move the other helper constructors to a get method
         return new Coord4D(tile.getBlockPos(), tile.getLevel());
     }
 

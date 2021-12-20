@@ -11,7 +11,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import net.minecraft.util.text.ITextComponent;
 
-//TODO - 1.17: Look at TODOs related to warning system
+//TODO - 1.18: Look at TODOs related to warning system
 public class WarningTracker implements IWarningTracker {
 
     private final Map<WarningType, List<BooleanSupplier>> warnings = new EnumMap<>(WarningType.class);

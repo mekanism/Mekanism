@@ -249,7 +249,7 @@ public abstract class BlockMekanism extends Block {
         Item item = stack.getItem();
         setTileData(world, pos, state, placer, stack, tile);
 
-        //TODO - 10.1: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
+        //TODO - 1.18: Re-evaluate the entirety of this method and see what parts potentially should not be getting called at all when on the client side.
         // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
         // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
         if (!world.isClientSide && tile.getFrequencyComponent().hasCustomFrequencies()) {

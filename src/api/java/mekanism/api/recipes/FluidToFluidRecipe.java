@@ -59,7 +59,7 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
     /**
      * @deprecated Use {@link #getOutputDefinition()}.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public FluidStack getOutputRepresentation() {
         return output;
     }

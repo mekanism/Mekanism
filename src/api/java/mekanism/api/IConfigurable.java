@@ -9,7 +9,7 @@ import net.minecraft.util.Direction;
  *
  * @author aidancbrady
  */
-public interface IConfigurable {//TODO - 1.17: Make the capability instance handle what side we interact with these from and remove the side from the methods
+public interface IConfigurable {//TODO - 1.18: Make the capability instance handle what side we interact with these from and remove the side from the methods
 
     /**
      * Called when a player shift-right clicks this block with a Configurator.

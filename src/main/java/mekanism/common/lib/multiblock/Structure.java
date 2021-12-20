@@ -240,7 +240,7 @@ public class Structure {
                         managers.addAll(((IStructuralMultiblock) node).getStructureMap().keySet());
                         managers.addAll(((IStructuralMultiblock) adj).getStructureMap().keySet());
                         // if both are structural, they should merge all manager structures
-                        //TODO - 10.1: Figure out what this should be as having it just be equals seems incorrect.
+                        //TODO - 1.18: Figure out what this should be as having it just be equals seems incorrect.
                         // My guess is it should be the commented code down below but maybe it should be |= instead
                         for (MultiblockManager<?> manager : managers) {
                             didMerge = mergeIfNecessary(node, adj, manager);

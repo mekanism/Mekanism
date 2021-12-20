@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Contract;
 @MethodsReturnNonnullByDefault
 public abstract class RotaryRecipe extends MekanismRecipe {
 
-    //TODO - 1.17: Evaluate making ingredients not able to even be built from empty stacks and just switch these to being null here
+    //TODO - 1.18: Evaluate making ingredients not able to even be built from empty stacks and just switch these to being null here
     private static final GasStackIngredient EMPTY_GAS_INPUT = GasStackIngredient.from(GasStack.EMPTY);
     private static final FluidStackIngredient EMPTY_FLUID_INPUT = FluidStackIngredient.from(FluidStack.EMPTY);
     private final GasStackIngredient gasInput;
@@ -173,7 +173,7 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     /**
      * @deprecated Use {@link #getGasOutputDefinition()}.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public GasStack getGasOutputRepresentation() {
         return gasOutput;
     }
@@ -190,7 +190,7 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     /**
      * @deprecated Use {@link #getFluidOutputDefinition()}.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public FluidStack getFluidOutputRepresentation() {
         return fluidOutput;
     }

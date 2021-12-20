@@ -47,7 +47,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     @Override
     public void read(CompoundNBT nbtTags) {
         requiresReplacement = nbtTags.getBoolean(NBTConstants.REQUIRE_STACK);
-        //TODO - 1.17: Remove this legacy loading branch
+        //TODO - 1.18: Remove this legacy loading branch
         if (nbtTags.contains(NBTConstants.REPLACE_STACK, NBT.TAG_COMPOUND)) {
             replaceTarget = ItemStack.of(nbtTags.getCompound(NBTConstants.REPLACE_STACK)).getItem();
         } else {

@@ -10,7 +10,7 @@ import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-@Deprecated//TODO - 1.17: Remove
+@Deprecated//TODO - 1.18: Remove
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MetallurgicInfuserRecipeBuilder extends ItemStackChemicalToItemStackRecipeBuilder<InfuseType, InfusionStack, InfusionStackIngredient> {

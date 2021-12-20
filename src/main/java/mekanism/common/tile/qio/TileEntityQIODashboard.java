@@ -38,7 +38,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     @Nonnull
     @Override
     protected IInventorySlotHolder getInitialInventory() {
-        //TODO - 10.1: Re-evaluate/make an improved performance ItemHandlerManager that uses this method
+        //TODO - 1.18: Re-evaluate/make an improved performance ItemHandlerManager that uses this method
         // that is for read only slots instead of actually exposing slots to various sides
         InventorySlotHelper builder = InventorySlotHelper.readOnly();
         for (QIOCraftingWindow craftingWindow : craftingWindows) {

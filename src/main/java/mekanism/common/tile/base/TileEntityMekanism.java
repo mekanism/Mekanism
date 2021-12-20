@@ -525,7 +525,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
             onUpdateServer();
             updateRadiationScale();
-            //TODO - 10.1: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
+            //TODO - 1.18: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
             if (persists(SubstanceType.HEAT)) {
                 // update heat after server tick as we now have simulated changes
                 // we use persists, as only one reference should update

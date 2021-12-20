@@ -22,7 +22,7 @@ public interface ILongInputHandler<INPUT> extends IInputHandler<INPUT> {
     void use(INPUT recipeInput, long operations);
 
     @Override
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     default int operationsCanSupport(InputIngredient<INPUT> recipeIngredient, int currentMax, int usageMultiplier) {
         //Wrap to the long implementation
         return operationsCanSupport(recipeIngredient, currentMax, (long) usageMultiplier);
@@ -37,7 +37,7 @@ public interface ILongInputHandler<INPUT> extends IInputHandler<INPUT> {
      *
      * @return The number of operations the input can sustain.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     default int operationsCanSupport(InputIngredient<INPUT> recipeIngredient, int currentMax, long usageMultiplier) {
         return operationsCanSupport(getRecipeInput(recipeIngredient), currentMax, usageMultiplier);
     }

@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import mekanism.common.registries.MekanismTileEntityTypes;
 
-//TODO - 1.17: Remove advanced bounding blocks
+//TODO - 1.18: Remove advanced bounding blocks
 public class TileEntityAdvancedBoundingBlock extends TileEntityBoundingBlock {
 
     public TileEntityAdvancedBoundingBlock() {

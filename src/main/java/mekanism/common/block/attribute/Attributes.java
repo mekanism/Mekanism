@@ -20,7 +20,7 @@ public class Attributes {
     public static final Attribute ACTIVE_FULL_LIGHT = new AttributeStateActive(15);
     public static final Attribute COMPARATOR = new AttributeComparator();
     public static final Attribute INVENTORY = new AttributeInventory();
-    //TODO - 10.1: Re-evaluate this attribute, it seems to be currently unused?
+    //TODO - 1.18: Re-evaluate this attribute, it seems to be currently unused?
     public static final Attribute MULTIBLOCK = new AttributeMultiblock();
     public static final Attribute REDSTONE = new AttributeRedstone();
     public static final Attribute SECURITY = new AttributeSecurity();

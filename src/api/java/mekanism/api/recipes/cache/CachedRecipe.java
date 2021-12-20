@@ -122,7 +122,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
      * @apiNote If this method is not used, this {@link CachedRecipe} defaults to not requiring or using any energy.
      */
     public CachedRecipe<RECIPE> setEnergyRequirements(FloatingLongSupplier perTickEnergy, IEnergyContainer energyContainer) {
-        //TODO - 1.17: Re-evaluate if we want to change this to a system similar to the InputHandler,
+        //TODO - 1.18: Re-evaluate if we want to change this to a system similar to the InputHandler,
         // so that we can simulate extracting energy from our container
         this.perTickEnergy = Objects.requireNonNull(perTickEnergy, "The per tick energy cannot be null.");
         Objects.requireNonNull(energyContainer, "Energy container cannot be null.");
@@ -251,22 +251,22 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     /**
      * @return Gets the current number of operating ticks that have happened so far.
      */
-    //TODO - 1.17: Make this protected
+    //TODO - 1.18: Make this protected
     public int getOperatingTicks() {
         return operatingTicks;
     }
 
-    @Deprecated//TODO - 1.17: Remove this helper
+    @Deprecated//TODO - 1.18: Remove this helper
     protected FloatingLong getStoredElectricity() {
         return storedEnergy.get();
     }
 
-    @Deprecated//TODO - 1.17: Remove this helper
+    @Deprecated//TODO - 1.18: Remove this helper
     protected FloatingLong getEnergyPerTick() {
         return perTickEnergy.get();
     }
 
-    @Deprecated//TODO - 1.17: Remove this helper
+    @Deprecated//TODO - 1.18: Remove this helper
     protected int getTicksRequired() {
         return requiredTicks.getAsInt();
     }
@@ -322,7 +322,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         return Math.min(storedEnergy.get().divideToInt(energyPerTick), currentMax);
     }
 
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public boolean canFunction() {
         return canHolderFunction.getAsBoolean() && postProcessOperations.applyAsInt(getOperationsThisTick(1)) > 0;
     }

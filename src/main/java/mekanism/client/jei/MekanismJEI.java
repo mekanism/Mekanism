@@ -317,7 +317,7 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-        //TODO - 1.17: Re-evaluate how some of the recipes return a list and some return a single element as output representations
+        //TODO - 1.18: Re-evaluate how some of the recipes return a list and some return a single element as output representations
         // Strictly speaking all the output definitions should be based on which set of inputs there is
         CatalystRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CRUSHER);

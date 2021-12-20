@@ -3,7 +3,7 @@ package mekanism.api;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 
-//TODO - 1.17: Move this out of the API
+//TODO - 1.18: Move this out of the API
 public class Range3D {
 
     public final RegistryKey<World> dimension;

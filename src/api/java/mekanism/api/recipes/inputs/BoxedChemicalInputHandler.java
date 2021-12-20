@@ -117,7 +117,7 @@ public class BoxedChemicalInputHandler {
      *
      * @return The number of operations the input can sustain.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public int operationsCanSupport(IChemicalStackIngredient<?, ?> recipeIngredient, int currentMax) {
         return operationsCanSupport(recipeIngredient, currentMax, 1);
     }
@@ -131,7 +131,7 @@ public class BoxedChemicalInputHandler {
      *
      * @return The number of operations the input can sustain.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public int operationsCanSupport(IChemicalStackIngredient<?, ?> recipeIngredient, int currentMax, long usageMultiplier) {
         return operationsCanSupport(getRecipeInput(recipeIngredient), currentMax, usageMultiplier);
     }

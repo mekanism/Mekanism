@@ -76,7 +76,7 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe implements 
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
     public FloatingLong getOutputDefinition() {
-        //TODO - 1.17: Re-evaluate this method not being a list
+        //TODO - 1.18: Re-evaluate this method not being a list
         return output;
     }
 

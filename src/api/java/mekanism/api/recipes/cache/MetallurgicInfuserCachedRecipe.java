@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Base class to help implement handling of item infuse type to item recipes.
  */
-@Deprecated//TODO - 1.17: Remove this
+@Deprecated//TODO - 1.18: Remove this
 @ParametersAreNonnullByDefault
 public class MetallurgicInfuserCachedRecipe extends ItemStackChemicalToItemStackCachedRecipe<InfuseType, InfusionStack, InfusionStackIngredient, MetallurgicInfuserRecipe> {
 

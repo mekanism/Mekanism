@@ -73,7 +73,7 @@ public abstract class TileEntityUpdateable extends TileEntity implements ITileWr
         markDirty(true);
     }
 
-    //TODO - 1.17: Create a version of this that doesn't mark the comparator as dirty if nothing changed that would effect the comparator level?
+    //TODO - 1.18: Create a version of this that doesn't mark the comparator as dirty if nothing changed that would effect the comparator level?
     // Better solution probably would be to have it take an enum for what data got dirty, for purposes of then checking in our mark dirty comparator
     // if the type of data (say items vs energy) even changed for what our comparator level is relating to. That way machines using energy won't
     // cause their entire inventory to be scanned for checking if the comparator redstone level changed when nothing about the machine changed that

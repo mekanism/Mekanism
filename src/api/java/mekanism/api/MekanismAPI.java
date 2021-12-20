@@ -47,7 +47,7 @@ public class MekanismAPI {
     private static ITooltipHelper TOOLTIP_HELPER;
 
     //Note: None of the empty variants support registry replacement
-    //TODO - 1.17: Rename registry names for the empty types to just being mekanism:empty instead of mekanism:empty_type,
+    //TODO - 1.18: Rename registry names for the empty types to just being mekanism:empty instead of mekanism:empty_type,
     // and also potentially define these with ObjectHolder for purposes of fully defining them outside of the API
     /**
      * Empty Gas instance.

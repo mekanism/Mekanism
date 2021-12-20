@@ -574,7 +574,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     protected void markDirtyTransmitters() {
         notifyTileChange();
         if (hasTransmitterNetwork()) {
-            //TODO - 10.1: Can this be done in a way that doesn't require reforming the network if it is still valid and the same
+            //TODO - 1.18: Can this be done in a way that doesn't require reforming the network if it is still valid and the same
             TransmitterNetworkRegistry.invalidateTransmitter(getTransmitter());
         }
     }

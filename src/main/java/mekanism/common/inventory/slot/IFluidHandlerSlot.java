@@ -288,7 +288,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         return false;
     }
 
-    //TODO - 1.17: Make this private as java 16 allows for privates in interface
+    //TODO - 1.18: Make this private as java 16 allows for privates in interface
     default Map<HashedFluid, FluidStack> gatherKnownFluids(IFluidHandlerItem itemFluidHandler, int tanks) {
         Map<HashedFluid, FluidStack> knownFluids = new Object2ObjectOpenHashMap<>();
         for (int tank = 0; tank < tanks; tank++) {

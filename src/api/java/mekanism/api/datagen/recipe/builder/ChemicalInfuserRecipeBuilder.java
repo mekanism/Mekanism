@@ -8,7 +8,7 @@ import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import net.minecraft.util.ResourceLocation;
 
-//TODO - 1.17: Get rid of this class and move the helpers to ChemicalChemicalToChemicalRecipeBuilder
+//TODO - 1.18: Get rid of this class and move the helpers to ChemicalChemicalToChemicalRecipeBuilder
 @Deprecated
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

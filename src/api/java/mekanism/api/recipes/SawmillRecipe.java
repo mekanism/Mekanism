@@ -59,7 +59,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
             if (secondaryChance == 0) {
                 throw new IllegalArgumentException("Secondary output must have a chance greater than zero.");
             } else if (secondaryChance == 1) {
-                //TODO - 1.17: Replace this handling that moves the secondary output to the main output with an exception
+                //TODO - 1.18: Replace this handling that moves the secondary output to the main output with an exception
                 // This will also need to be double checked in the recipe serializer and in the CrT integration
                 this.mainOutput = secondaryOutput.copy();
                 this.secondaryOutput = ItemStack.EMPTY;

@@ -35,7 +35,7 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
     private final ItemStackIngredient itemInput;
     private final INGREDIENT chemicalInput;
     private final ItemStack output;
-    //TODO - 1.17: Just inline this as JsonConstants.CHEMICAL_INPUT
+    //TODO - 1.18: Just inline this as JsonConstants.CHEMICAL_INPUT
     private final String chemicalInputKey;
 
     protected ItemStackChemicalToItemStackRecipeBuilder(ResourceLocation serializerName, ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output,

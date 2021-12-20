@@ -15,7 +15,7 @@ public interface IFluidProvider extends IBaseProvider {
     Fluid getFluid();
 
     //Note: Uses FluidStack in case we want to check NBT or something
-    @Deprecated//TODO - 1.17: Remove this as we don't actually use this
+    @Deprecated//TODO - 1.18: Remove this as we don't actually use this
     default boolean fluidMatches(FluidStack other) {
         return getFluid() == other.getFluid();
     }

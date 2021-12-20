@@ -387,7 +387,7 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
-        try {//TODO - 10.1: Evaluating moving this to our model cache (ObjModelData)
+        try {//TODO - 1.18: Evaluating moving this to our model cache (ObjModelData)
             contentsModel = OBJLoader.INSTANCE.loadModel(new ModelSettings(RenderTransmitterBase.MODEL_LOCATION, true, false, true, true, null));
         } catch (Exception e) {
             throw new RuntimeException(e);

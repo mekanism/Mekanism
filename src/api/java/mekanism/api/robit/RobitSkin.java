@@ -35,7 +35,7 @@ public class RobitSkin extends ForgeRegistryEntry<RobitSkin> implements IRobitSk
         if (textures.length == 0) {
             this.textures = Collections.emptyList();
         } else {
-            //TODO - 1.17: List#of
+            //TODO - 1.18: List#of
             this.textures = ImmutableList.copyOf(textures);
         }
     }

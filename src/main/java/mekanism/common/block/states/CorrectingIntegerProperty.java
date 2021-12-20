@@ -4,7 +4,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import net.minecraft.state.IntegerProperty;
 
-@Deprecated//TODO - 1.17: Remove this
+@Deprecated//TODO - 1.18: Remove this
 public class CorrectingIntegerProperty extends IntegerProperty {
 
     public static CorrectingIntegerProperty create(@Nonnull String name, int min, int max) {

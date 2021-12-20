@@ -32,7 +32,7 @@ public class BlockStateHelper {
     //Cardboard Box storage
     public static final BooleanProperty storageProperty = BooleanProperty.create("storage");
     //Fluid logged.
-    //TODO - 1.17: Remove CorrectingIntegerProperty and rename the property from waterlogged to fluid_logged
+    //TODO - 1.18: Remove CorrectingIntegerProperty and rename the property from waterlogged to fluid_logged
     // We are keeping it as "waterlogged" so that we can properly read old values using the CorrectingIntegerProperty
     public static final IntegerProperty FLUID_LOGGED = CorrectingIntegerProperty.create(BlockStateProperties.WATERLOGGED.getName(), 0, IStateFluidLoggable.VANILLA_FLUIDS.length);
     //public static final IntegerProperty FLUID_LOGGED = IntegerProperty.create("fluid_logged", 0, IStateFluidLoggable.VANILLA_FLUIDS.length);

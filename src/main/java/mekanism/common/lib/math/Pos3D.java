@@ -21,7 +21,7 @@ import net.minecraft.world.World;
  * @author aidancbrady
  */
 public class Pos3D extends Vector3d {
-    //TODO - 10.1: Go through this class, it seems a decent number of these methods are effectively the same as in Vector3D
+    //TODO - 1.18: Go through this class, it seems a decent number of these methods are effectively the same as in Vector3D
     // Though it seems like at least our yRot method is subtly different than the Vector3D yrot method
 
     public Pos3D() {

@@ -10,7 +10,7 @@ import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
-@Deprecated//TODO - 1.17: Remove
+@Deprecated//TODO - 1.18: Remove
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemStackGasToItemStackRecipeBuilder extends ItemStackChemicalToItemStackRecipeBuilder<Gas, GasStack, GasStackIngredient> {

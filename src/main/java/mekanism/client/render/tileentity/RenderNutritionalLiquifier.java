@@ -98,7 +98,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                     int rate = Minecraft.getInstance().options.particles == ParticleStatus.DECREASED ? 12 : 4;
                     if (tile.getLevel().getGameTime() % rate == 0) {
                         pseudoParticles.particles.add(new PseudoParticle(tile.getLevel(), stack));
-                        //TODO - 1.17: Try using this instead of our pseudo particles as maybe it will be able to render properly
+                        //TODO - 1.18: Try using this instead of our pseudo particles as maybe it will be able to render properly
                         // behind translucent glass and our contents in fast
                         /*Vector3d motion = new Vector3d((world.random.nextFloat() - 0.5D) * 0.075D,
                               world.random.nextDouble() * 0.1D,

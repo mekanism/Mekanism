@@ -73,7 +73,7 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
      * @return Representation of the left output, <strong>MUST NOT</strong> be modified.
      */
     public GasStack getLeftGasOutputRepresentation() {
-        //TODO - 1.17: Re-evaluate this method and the other output representation method not being lists.
+        //TODO - 1.18: Re-evaluate this method and the other output representation method not being lists.
         // Strictly speaking it should be a list of pairs of gas stacks
         return leftGasOutput;
     }

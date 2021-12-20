@@ -11,7 +11,7 @@ public interface IItemProvider extends IBaseProvider, net.minecraft.util.IItemPr
      * Gets the item this provider represents.
      */
     @Nonnull
-    Item getItem();//TODO - 1.17: Replace this with just using vanilla's asItem?
+    Item getItem();//TODO - 1.18: Replace this with just using vanilla's asItem?
 
     @Nonnull
     @Override
@@ -37,12 +37,12 @@ public interface IItemProvider extends IBaseProvider, net.minecraft.util.IItemPr
         return new ItemStack(getItem(), size);
     }
 
-    @Deprecated//TODO - 1.17: Remove this as we don't actually use this
+    @Deprecated//TODO - 1.18: Remove this as we don't actually use this
     default boolean itemMatches(ItemStack otherStack) {
         return itemMatches(otherStack.getItem());
     }
 
-    @Deprecated//TODO - 1.17: Remove this as we don't actually use this
+    @Deprecated//TODO - 1.18: Remove this as we don't actually use this
     default boolean itemMatches(Item other) {
         return getItem() == other;
     }

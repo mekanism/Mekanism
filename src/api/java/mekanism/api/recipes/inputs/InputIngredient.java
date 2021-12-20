@@ -10,7 +10,7 @@ import net.minecraft.network.PacketBuffer;
  * Interface describing the base methods common to all inputs of our recipes.
  */
 public interface InputIngredient<TYPE> extends Predicate<TYPE> {
-    //TODO - 1.17: Evaluate moving most of our InputIngredient implementation details (item, fluid, chemicals) out of the API
+    //TODO - 1.18: Evaluate moving most of our InputIngredient implementation details (item, fluid, chemicals) out of the API
     // and then have helpers to create the actual objects, as the API doesn't really have a need to know about the difference
     // between single, tagged, and multi
 
@@ -40,7 +40,7 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      * @return Amount of the given argument that is needed.
      */
     default long getNeededAmount(TYPE type) {
-        //TODO - 1.17: Remove default implementation, we only default this as to not be "breaking" if some
+        //TODO - 1.18: Remove default implementation, we only default this as to not be "breaking" if some
         // addon somehow has custom input ingredients
         return testType(type) ? 1 : 0;
     }

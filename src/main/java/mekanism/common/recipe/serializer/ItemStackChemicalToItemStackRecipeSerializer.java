@@ -32,7 +32,7 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
 
     protected abstract ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> getDeserializer();
 
-    //TODO - 1.17: Inline this and move the other overrides over to just using chemical input as the key
+    //TODO - 1.18: Inline this and move the other overrides over to just using chemical input as the key
     protected String getChemicalInputJsonKey() {
         return JsonConstants.CHEMICAL_INPUT;
     }

@@ -218,7 +218,7 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     public void setSlotType(ContainerSlotType slotType) {
-        //TODO - 10.1: Re-evaluate this method as for the most part we now seem to be handling this in GuiMekanism
+        //TODO - 1.18: Re-evaluate this method as for the most part we now seem to be handling this in GuiMekanism
         // and figuring it out based on the data type; which at the very least means we can probably remove some
         // calls to this. Though there are also some cases where we want to override it where it doesn't now as
         // the fallback sets it to normal basically regardless (see evaporation multiblock and input slots)

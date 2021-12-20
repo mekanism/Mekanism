@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
  * @deprecated Exists to allow loading old data, but is no longer used otherwise as Forge's Chunk Manager does what we need
  */
 @Deprecated
-public class ChunkManager extends WorldSavedData {//TODO - 1.17: Remove this class as it mainly exists to transition the old data over to Forge's Chunk Manager
+public class ChunkManager extends WorldSavedData {//TODO - 1.18: Remove this class as it mainly exists to transition the old data over to Forge's Chunk Manager
 
     private static final String CHUNK_LIST_KEY = "chunks";
     private static final Logger LOGGER = LogManager.getLogger("Mekanism ChunkManager");

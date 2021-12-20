@@ -40,7 +40,7 @@ public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemSt
     /**
      * @deprecated Switch to using {@link ItemStackChemicalToItemStackRecipe#test(ItemStack, ChemicalStack)}
      */
-    @Deprecated//TODO - 1.17: Remove this method
+    @Deprecated//TODO - 1.18: Remove this method
     public boolean test(InfusionStack infusionContainer, ItemStack itemStack) {
         return test(itemStack, infusionContainer);
     }
@@ -48,7 +48,7 @@ public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemSt
     /**
      * @deprecated Switch to using {@link ItemStackChemicalToItemStackRecipe#getOutput(ItemStack, ChemicalStack)}
      */
-    @Deprecated//TODO - 1.17: Remove this method
+    @Deprecated//TODO - 1.18: Remove this method
     @Contract(value = "_, _ -> new", pure = true)
     public ItemStack getOutput(InfusionStack inputInfuse, ItemStack inputItem) {
         return getOutput(inputItem, inputInfuse);
@@ -57,7 +57,7 @@ public abstract class MetallurgicInfuserRecipe extends ItemStackChemicalToItemSt
     /**
      * @deprecated Switch to using {@link ItemStackChemicalToItemStackRecipe#getChemicalInput()}
      */
-    @Deprecated//TODO - 1.17: Remove this method
+    @Deprecated//TODO - 1.18: Remove this method
     public InfusionStackIngredient getInfusionInput() {
         return getChemicalInput();
     }

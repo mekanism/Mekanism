@@ -16,7 +16,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 
-//TODO - 1.17: Heavily re-evaluate this class/make sure nothing has gotten broken
+//TODO - 1.18: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends Container> extends ContainerScreen<T> {
 
     public VirtualSlotContainerScreen(T container, PlayerInventory inv, ITextComponent titleIn) {

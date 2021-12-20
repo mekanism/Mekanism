@@ -12,7 +12,7 @@ public class TagResolverHelper {
     private TagResolverHelper() {
     }
 
-    @Deprecated//TODO - 1.17: Remove this, presuming that the changes to when JEI loads made this no longer necessary
+    @Deprecated//TODO - 1.18: Remove this, presuming that the changes to when JEI loads made this no longer necessary
     public static <TYPE> List<TYPE> getRepresentations(ITag<TYPE> tag) {
         try {
             return tag.getValues();

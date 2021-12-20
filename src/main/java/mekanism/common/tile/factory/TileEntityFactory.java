@@ -362,7 +362,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 progress[i] = savedProgress[i];
             }
         } else {
-            //TODO - 1.17: Remove this way of loading the old data with
+            //TODO - 1.18: Remove this way of loading the old data with
             // Arrays.fill(progress, 0);
             for (int i = 0; i < tier.processes; i++) {
                 progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);

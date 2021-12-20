@@ -93,7 +93,7 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
     public BoxedChemicalStack getOutputDefinition() {
-        //TODO - 1.17: Re-evaluate this method not being a list
+        //TODO - 1.18: Re-evaluate this method not being a list
         return output;
     }
 

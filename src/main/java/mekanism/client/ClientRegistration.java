@@ -421,7 +421,7 @@ public class ClientRegistration {
     }
 
     private static void createRobitTextureAtlas() {
-        //TODO - 1.17: Move registering the sprite uploader to RegisterClientReloadListenersEvent
+        //TODO - 1.18: Move registering the sprite uploader to RegisterClientReloadListenersEvent
         Minecraft minecraft = Minecraft.getInstance();
         RobitSpriteUploader spriteUploader = new RobitSpriteUploader(minecraft.getTextureManager());
         IResourceManager resourceManager = minecraft.getResourceManager();

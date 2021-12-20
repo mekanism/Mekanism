@@ -176,7 +176,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         World world = tile.getLevel();
         if (world != null) {
             if (isFirstTick) {
-                //TODO - 1.17: Remove this if branch - as it is only needed to validate loading old data
+                //TODO - 1.18: Remove this if branch - as it is only needed to validate loading old data
                 isFirstTick = false;
                 if (!canOperate()) {
                     //If we just loaded but are not actually able to operate
@@ -203,7 +203,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
             }
         }
         if (nbtTags.contains(NBTConstants.CHUNK_SET, NBT.TAG_LIST)) {
-            //TODO - 1.17: Remove this if branch, it is mainly used to load old data
+            //TODO - 1.18: Remove this if branch, it is mainly used to load old data
             // so that we can store it a bit more efficiently as a long array
             ListNBT list = nbtTags.getList(NBTConstants.CHUNK_SET, NBT.TAG_LONG);
             for (INBT nbt : list) {

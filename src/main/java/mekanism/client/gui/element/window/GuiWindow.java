@@ -34,7 +34,7 @@ public class GuiWindow extends GuiTexturedElement {
 
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
-    //TODO - 1.17: Switch this method to returning a record instead of a pair
+    //TODO - 1.18: Switch this method to returning a record instead of a pair
     private static Pair<Integer, Integer> calculateOpenPosition(IGuiWrapper gui, SelectedWindowData windowData, int x, int y, int width, int height) {
         Pair<Integer, Integer> lastPosition = windowData.getLastPosition();
         int lastX = lastPosition.getFirst();

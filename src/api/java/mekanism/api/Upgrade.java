@@ -83,7 +83,7 @@ public enum Upgrade implements IHasTranslationKey {
      *
      * @deprecated use {@link #getTag(int)} instead.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public static CompoundNBT getTagFor(Upgrade upgrade, int amount) {
         CompoundNBT compound = new CompoundNBT();
         compound.putInt(NBTConstants.TYPE, upgrade.ordinal());
@@ -143,7 +143,7 @@ public enum Upgrade implements IHasTranslationKey {
      *
      * @return {@code true} if the upgrade has multiple levels.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public boolean canMultiply() {
         return getMax() > 1;
     }

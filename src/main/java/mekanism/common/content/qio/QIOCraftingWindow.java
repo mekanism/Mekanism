@@ -415,7 +415,7 @@ public class QIOCraftingWindow implements IContentsListener {
 
     @Nonnull
     public ItemStack performCraft(@Nonnull PlayerEntity player, @Nonnull ItemStack result, int amountCrafted) {
-        //TODO - 10.1: Given we don't fire a crafting event and even if we did things would likely not work properly,
+        //TODO - 1.18: Given we don't fire a crafting event and even if we did things would likely not work properly,
         // we may want to special case our bin filling and emptying recipes so that they can take directly from the frequency
         // and be a quick way to fill/empty an entire bin at once (also implement the same special handling for shift clicking)
         // Maybe for now an IQIOIntegratedCraftingRecipe or something like that that we can call?
@@ -796,7 +796,7 @@ public class QIOCraftingWindow implements IContentsListener {
                             Mekanism.logger.error("Failed to insert item ({} with NBT: {}) into crafting window: {}.", removed.getItem(), removed.getTag(),
                                   windowIndex);
                         }
-                        //TODO - 10.1: Debate potentially briefly highlighting the slot to make it more evident to the player
+                        //TODO - 1.18: Debate potentially briefly highlighting the slot to make it more evident to the player
                         // that something about the slot changed.
                         return true;
                     }

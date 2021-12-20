@@ -64,7 +64,7 @@ public abstract class ChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICA
     /**
      * @deprecated Use {@link #getOutputDefinition()}.
      */
-    @Deprecated//TODO - 1.17: Remove this
+    @Deprecated//TODO - 1.18: Remove this
     public STACK getOutputRepresentation() {
         return output;
     }

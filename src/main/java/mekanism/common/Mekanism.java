@@ -434,7 +434,7 @@ public class Mekanism {
 
     private void chunkSave(ChunkDataEvent.Save event) {
         if (event.getWorld() != null && !event.getWorld().isClientSide()) {
-            //TODO - 1.17: Make both this and load write to the main tag instead of the level sub tag. For now we are using the level tag
+            //TODO - 1.18: Make both this and load write to the main tag instead of the level sub tag. For now we are using the level tag
             // in both spots to have proper backwards compatibility with earlier mek release versions from 1.16
             CompoundNBT levelTag = event.getData().getCompound(NBTConstants.CHUNK_DATA_LEVEL);
             levelTag.putInt(NBTConstants.WORLD_GEN_VERSION, MekanismConfig.world.userGenVersion.get());

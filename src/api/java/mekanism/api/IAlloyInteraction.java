@@ -21,6 +21,6 @@ public interface IAlloyInteraction {
      * @param stack  - the stack of alloy being right-clicked
      * @param tier   - the tier of the alloy
      */
-    //TODO - 1.17: Remove the hand parameter as it is not needed
+    //TODO - 1.18: Remove the hand parameter as it is not needed
     void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, @Nonnull AlloyTier tier);
 }

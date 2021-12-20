@@ -170,7 +170,7 @@ public class TileComponentFrequency implements ITileComponent {
         if (nbtTags.contains(NBTConstants.COMPONENT_FREQUENCY, NBT.TAG_COMPOUND)) {
             frequencyNBT = nbtTags.getCompound(NBTConstants.COMPONENT_FREQUENCY);
         } else {
-            //TODO - 1.17: Remove this old fallback loading system
+            //TODO - 1.18: Remove this old fallback loading system
             frequencyNBT = nbtTags;
         }
         for (FrequencyType<?> type : supportedFrequencies.keySet()) {
