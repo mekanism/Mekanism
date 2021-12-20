@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeState;
 import net.minecraft.block.AbstractBlock;
@@ -114,6 +115,10 @@ public class BlockStateHelper {
             state = state.setValue(fluidLoggable.getFluidLoggedProperty(), fluidLoggable.getSupportedFluidPropertyIndex(fluidState.getType()));
         }
         return state;
+    }
+
+    public static BlockState copyStateData(BlockState oldState, IBlockProvider newBlockProvider) {
+        return copyStateData(oldState, newBlockProvider.getBlock().defaultBlockState());
     }
 
     public static BlockState copyStateData(BlockState oldState, BlockState newState) {
