@@ -1351,6 +1351,7 @@
   "temperature.mekanism.rankine.short": "R",
   "temperature.mekanism.short": "Темп.: %s",
   "tooltip.mekanism.bucket_mode": "Режим ведра: %s",
+  "tooltip.mekanism.decay_immune": "Не будет распадаться внутри бочки радиоактивных отходов",
   "tooltip.mekanism.fire_mode": "Режим поджога: %s",
   "tooltip.mekanism.flowing": "Подача кислорода: %s",
   "tooltip.mekanism.hold_for_description": "Удерживайте %s для описания.",
