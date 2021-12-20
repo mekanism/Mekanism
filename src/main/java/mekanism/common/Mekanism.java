@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.jadarstudios.developercapes.DevCapes;
-import cpw.mods.fml.relauncher.Side;
 import mekanism.api.Coord4D;
 import mekanism.api.EnumColor;
 import mekanism.api.MekanismAPI;
@@ -149,7 +147,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 				"after:ComputerCraft;after:Galacticraft API;after:MetallurgyCore")
 public class Mekanism
 {
-	public static boolean isThorfusionLoaded;
 	/** Mekanism Packet Pipeline */
 	public static PacketHandler packetHandler = new PacketHandler();
 
@@ -1216,8 +1213,6 @@ public class Mekanism
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event)
 	{
-		isThorfusionLoaded = Loader.isModLoaded("thorfusion");
-
 		File config = event.getSuggestedConfigurationFile();
 		
 		//Set the mod's configuration
@@ -1283,12 +1278,8 @@ public class Mekanism
 	@EventHandler
 	public void init(FMLInitializationEvent event) 
 	{
-		if(!isThorfusionLoaded) {
-			//proxy, tilentity
-			if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
-				DevCapes.getInstance().registerConfig("http://files.thorfusion.xyz.eu-central-1.linodeobjects.com/cape.json");
-			}
-		}
+		Mekanism.proxy.Cape();
+
 		//Register the mod's world generators
 		GameRegistry.registerWorldGenerator(genHandler, 1);
 		

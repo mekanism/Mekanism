@@ -2,6 +2,8 @@ package mekanism.client;
 
 import java.io.File;
 
+import com.jadarstudios.developercapes.DevCapes;
+import cpw.mods.fml.common.Loader;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismConfig.client;
 import mekanism.api.MekanismConfig.general;
@@ -211,6 +213,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends CommonProxy
 {
+	public static boolean isThorfusionLoaded;
 	@Override
 	public void loadConfiguration()
 	{
@@ -592,6 +595,18 @@ public class ClientProxy extends CommonProxy
 	public void preInit()
 	{
 		MekanismRenderer.init();
+		isThorfusionLoaded = Loader.isModLoaded("thorfusion");
+	}
+
+	@Override
+	public void Cape()
+	{
+		if(!isThorfusionLoaded) {
+			//proxy, tilentity
+			if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+				DevCapes.getInstance().registerConfig("http://eu-central-1.linodeobjects.com/files.thorfusion.xyz/capes/scape.json");
+			}
+		}
 	}
 
 	@Override

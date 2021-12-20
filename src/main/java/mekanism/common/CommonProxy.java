@@ -716,4 +716,7 @@ public class CommonProxy implements IGuiProvider
 	{
 		return null;
 	}
+
+	public void Cape() {
+	}
 }
