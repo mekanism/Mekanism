@@ -42,7 +42,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
     }
 
     @Override
-    public void addHUDElements(IModule<ModuleNutritionalInjectionUnit> module, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleNutritionalInjectionUnit> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             ItemStack container = module.getContainer();
             GasStack stored = ((ItemMekaSuitArmor) container.getItem()).getContainedGas(container, MekanismGases.NUTRITIONAL_PASTE.get());

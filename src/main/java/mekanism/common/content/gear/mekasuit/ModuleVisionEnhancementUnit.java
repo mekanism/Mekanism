@@ -25,7 +25,7 @@ public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEn
     }
 
     @Override
-    public void addHUDElements(IModule<ModuleVisionEnhancementUnit> module, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleVisionEnhancementUnit> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
         hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElementEnabled(icon, module.isEnabled()));
     }
 

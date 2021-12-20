@@ -43,7 +43,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
     }
 
     @Override
-    public void addHUDStrings(IModule<ModuleExcavationEscalationUnit> module, Consumer<ITextComponent> hudStringAdder) {
+    public void addHUDStrings(IModule<ModuleExcavationEscalationUnit> module, PlayerEntity player, Consumer<ITextComponent> hudStringAdder) {
         if (module.isEnabled()) {
             hudStringAdder.accept(MekanismLang.DISASSEMBLER_EFFICIENCY.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, excavationMode.get().getEfficiency()));
         }

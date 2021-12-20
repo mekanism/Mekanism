@@ -181,7 +181,7 @@ public class RenderTickHandler {
                     ItemStack stack = minecraft.player.getItemBySlot(slotType);
                     if (stack.getItem() instanceof IItemHUDProvider) {
                         List<ITextComponent> list = new ArrayList<>();
-                        ((IItemHUDProvider) stack.getItem()).addHUDStrings(list, stack, slotType);
+                        ((IItemHUDProvider) stack.getItem()).addHUDStrings(list, minecraft.player, stack, slotType);
                         int size = list.size();
                         if (size > 0) {
                             renderStrings.put(slotType, list);

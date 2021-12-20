@@ -11,6 +11,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 
 @ParametersAreNonnullByDefault
@@ -29,7 +30,7 @@ public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttack
     }
 
     @Override
-    public void addHUDStrings(IModule<ModuleAttackAmplificationUnit> module, Consumer<ITextComponent> hudStringAdder) {
+    public void addHUDStrings(IModule<ModuleAttackAmplificationUnit> module, PlayerEntity player, Consumer<ITextComponent> hudStringAdder) {
         if (module.isEnabled()) {
             hudStringAdder.accept(MekanismLang.MODULE_DAMAGE.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, attackDamage.get().getDamage()));
         }

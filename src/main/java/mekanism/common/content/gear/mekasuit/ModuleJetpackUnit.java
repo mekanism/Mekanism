@@ -30,7 +30,7 @@ public class ModuleJetpackUnit implements ICustomModule<ModuleJetpackUnit> {
     }
 
     @Override
-    public void addHUDElements(IModule<ModuleJetpackUnit> module, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleJetpackUnit> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             ItemStack container = module.getContainer();
             GasStack stored = ((ItemMekaSuitArmor) container.getItem()).getContainedGas(container, MekanismGases.HYDROGEN.get());

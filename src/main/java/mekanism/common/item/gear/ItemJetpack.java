@@ -94,7 +94,7 @@ public class ItemJetpack extends ItemGasArmor implements IItemHUDProvider, IMode
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+    public void addHUDStrings(List<ITextComponent> list, PlayerEntity player, ItemStack stack, EquipmentSlotType slotType) {
         if (slotType == getSlot()) {
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));

@@ -57,9 +57,11 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * Called to collect any HUD strings that should be displayed. This will only be called if {@link ModuleData#rendersHUD()} is {@code true}.
      *
      * @param module         Module instance.
+     * @param player         Player using the Meka-Tool or wearing the MekaSuit. In general this will be the client player, but is passed to make sidedness safer and
+     *                       easier.
      * @param hudStringAdder Accepts and adds HUD strings.
      */
-    default void addHUDStrings(IModule<MODULE> module, Consumer<ITextComponent> hudStringAdder) {
+    default void addHUDStrings(IModule<MODULE> module, PlayerEntity player, Consumer<ITextComponent> hudStringAdder) {
     }
 
     /**
@@ -67,11 +69,13 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * {@code true}.
      *
      * @param module          Module instance.
+     * @param player          Player using the Meka-Tool or wearing the MekaSuit. In general this will be the client player, but is passed to make sidedness safer and
+     *                        easier.
      * @param hudElementAdder Accepts and adds HUD elements.
      *
      * @apiNote See {@link IModuleHelper} for various helpers to create HUD elements.
      */
-    default void addHUDElements(IModule<MODULE> module, Consumer<IHUDElement> hudElementAdder) {
+    default void addHUDElements(IModule<MODULE> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
     }
 
     /**

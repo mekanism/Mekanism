@@ -22,6 +22,7 @@ import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
@@ -81,7 +82,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
     }
 
     @Override
-    public void addHUDStrings(IModule<ModuleVeinMiningUnit> module, Consumer<ITextComponent> hudStringAdder) {
+    public void addHUDStrings(IModule<ModuleVeinMiningUnit> module, PlayerEntity player, Consumer<ITextComponent> hudStringAdder) {
         //Only add hud string for extended vein mining if enabled in config
         if (module.isEnabled() && MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean()) {
             hudStringAdder.accept(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,

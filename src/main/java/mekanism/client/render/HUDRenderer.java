@@ -109,14 +109,14 @@ public class HUDRenderer {
         for (EquipmentSlotType type : EnumUtils.ARMOR_SLOTS) {
             ItemStack stack = getStack(type);
             if (stack.getItem() instanceof ItemMekaSuitArmor) {
-                elements.addAll(((ItemMekaSuitArmor) stack.getItem()).getHUDElements(stack));
+                elements.addAll(((ItemMekaSuitArmor) stack.getItem()).getHUDElements(minecraft.player, stack));
             }
         }
         //Add any elements that might be on modules in the meka tool when it is held
         for (EquipmentSlotType type : EnumUtils.HAND_SLOTS) {
             ItemStack stack = getStack(type);
             if (stack.getItem() instanceof ItemMekaTool) {
-                elements.addAll(((ItemMekaTool) stack.getItem()).getHUDElements(stack));
+                elements.addAll(((ItemMekaTool) stack.getItem()).getHUDElements(minecraft.player, stack));
             }
         }
 

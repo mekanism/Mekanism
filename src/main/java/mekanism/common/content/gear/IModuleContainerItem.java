@@ -20,6 +20,7 @@ import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.util.ItemDataUtils;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -99,19 +100,19 @@ public interface IModuleContainerItem extends IItemHUDProvider {
     }
 
     @Override
-    default void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+    default void addHUDStrings(List<ITextComponent> list, PlayerEntity player, ItemStack stack, EquipmentSlotType slotType) {
         for (Module<?> module : getModules(stack)) {
             if (module.renderHUD()) {
-                module.addHUDStrings(list);
+                module.addHUDStrings(player, list);
             }
         }
     }
 
-    default List<IHUDElement> getHUDElements(ItemStack stack) {
+    default List<IHUDElement> getHUDElements(PlayerEntity player, ItemStack stack) {
         List<IHUDElement> ret = new ArrayList<>();
         for (Module<?> module : getModules(stack)) {
             if (module.renderHUD()) {
-                module.addHUDElements(ret);
+                module.addHUDElements(player, ret);
             }
         }
         return ret;

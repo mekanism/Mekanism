@@ -7,7 +7,6 @@ import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.gear.IModule;
-import mekanism.client.MekanismClient;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -22,14 +21,11 @@ public class ModuleGeigerUnit implements ICustomModule<ModuleGeigerUnit> {
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "geiger_counter.png");
 
     @Override
-    public void addHUDElements(IModule<ModuleGeigerUnit> module, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleGeigerUnit> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            PlayerEntity player = MekanismClient.tryGetClientPlayer();
-            if (player != null) {
-                double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(player);
-                hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElement(icon, UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2),
-                      magnitude < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (magnitude < 0.1 ? HUDColor.WARNING : HUDColor.DANGER)));
-            }
+            double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(player);
+            hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElement(icon, UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2),
+                  magnitude < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (magnitude < 0.1 ? HUDColor.WARNING : HUDColor.DANGER)));
         }
     }
 }

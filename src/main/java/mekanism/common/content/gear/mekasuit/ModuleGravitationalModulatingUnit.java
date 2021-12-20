@@ -34,7 +34,7 @@ public class ModuleGravitationalModulatingUnit implements ICustomModule<ModuleGr
     }
 
     @Override
-    public void addHUDElements(IModule<ModuleGravitationalModulatingUnit> module, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleGravitationalModulatingUnit> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
         hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElementEnabled(icon, module.isEnabled()));
     }
 

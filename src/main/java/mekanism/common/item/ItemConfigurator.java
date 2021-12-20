@@ -202,7 +202,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list, ItemStack stack, EquipmentSlotType slotType) {
+    public void addHUDStrings(List<ITextComponent> list, PlayerEntity player, ItemStack stack, EquipmentSlotType slotType) {
         list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 

@@ -264,12 +264,12 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         return configItems;
     }
 
-    public void addHUDStrings(List<ITextComponent> list) {
-        customModule.addHUDStrings(this, list::add);
+    public void addHUDStrings(PlayerEntity player, List<ITextComponent> list) {
+        customModule.addHUDStrings(this, player, list::add);
     }
 
-    public void addHUDElements(List<IHUDElement> list) {
-        customModule.addHUDElements(this, list::add);
+    public void addHUDElements(PlayerEntity player, List<IHUDElement> list) {
+        customModule.addHUDElements(this, player, list::add);
     }
 
     public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
