@@ -1354,6 +1354,7 @@
   "temperature.mekanism.rankine.short": "R",
   "temperature.mekanism.short": "Temp: %s",
   "tooltip.mekanism.bucket_mode": "Tryb wiadra: %s",
+  "tooltip.mekanism.decay_immune": "Nie rozpada się w beczce na radioaktywne odpady",
   "tooltip.mekanism.fire_mode": "Tryb ognia: %s",
   "tooltip.mekanism.flowing": "Przepływ: %s",
   "tooltip.mekanism.hold_for_description": "Przytrzymaj %s aby zobaczyć opis.",
