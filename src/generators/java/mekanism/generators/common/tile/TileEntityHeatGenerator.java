@@ -172,7 +172,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(Direction side) {
+    public IHeatHandler getAdjacent(@Nonnull Direction side) {
         if (side == Direction.DOWN) {
             TileEntity adj = WorldUtils.getTileEntity(getLevel(), worldPosition.below());
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);

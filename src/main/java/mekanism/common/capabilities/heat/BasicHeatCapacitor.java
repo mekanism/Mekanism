@@ -28,8 +28,8 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     private final double inverseInsulationCoefficient;
 
     // set to ambient * heat capacity by default
-    protected double storedHeat;
-    protected double heatToHandle;
+    private double storedHeat = -1;
+    private double heatToHandle;
 
     public static BasicHeatCapacitor create(double heatCapacity, @Nullable DoubleSupplier ambientTempSupplier, @Nullable IContentsListener listener) {
         return create(heatCapacity, HeatAPI.DEFAULT_INVERSE_CONDUCTION, HeatAPI.DEFAULT_INVERSE_INSULATION, ambientTempSupplier, listener);
@@ -53,9 +53,13 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         this.inverseInsulationCoefficient = inverseInsulationCoefficient;
         this.ambientTempSupplier = ambientTempSupplier;
         this.listener = listener;
+    }
 
-        // update the stored heat based on initial capacity
-        storedHeat = heatCapacity * getAmbientTemperature();
+    private void initStoredHeat() {
+        if (storedHeat == -1) {
+            //If the stored heat hasn't been initialized yet, update the stored heat based on initial capacity
+            storedHeat = heatCapacity * getAmbientTemperature();
+        }
     }
 
     protected double getAmbientTemperature() {
@@ -96,18 +100,19 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     public void update() {
         if (heatToHandle != 0) {
+            initStoredHeat();
             storedHeat += heatToHandle;
             //notify listeners
             onContentsChanged();
+            // reset our handling heat
+            heatToHandle = 0;
         }
-        // reset our handling heat
-        heatToHandle = 0;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         NBTUtils.setDoubleIfPresent(nbt, NBTConstants.STORED, heat -> storedHeat = heat);
-        NBTUtils.setDoubleIfPresent(nbt, NBTConstants.HEAT_CAPACITY, capacity -> heatCapacity = capacity);
+        NBTUtils.setDoubleIfPresent(nbt, NBTConstants.HEAT_CAPACITY, capacity -> setHeatCapacity(capacity, false));
     }
 
     @Override
@@ -120,19 +125,20 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public double getHeat() {
+        initStoredHeat();
         return storedHeat;
     }
 
     @Override
     public void setHeat(double heat) {
-        if (storedHeat != heat) {
+        if (getHeat() != heat) {
             storedHeat = heat;
             onContentsChanged();
         }
     }
 
     public void setHeatCapacity(double newCapacity, boolean updateHeat) {
-        if (updateHeat) {
+        if (updateHeat && storedHeat != -1) {
             setHeat(getHeat() + (newCapacity - getHeatCapacity()) * getAmbientTemperature());
         }
         heatCapacity = newCapacity;

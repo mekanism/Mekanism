@@ -9,12 +9,14 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.tile.base.SubstanceType;
+import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
@@ -23,6 +25,7 @@ import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
@@ -50,14 +53,14 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(Direction side) {
-        IHeatHandler handler = super.getAdjacent(side);
-        if (handler != null) {
-            if (WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side)) instanceof TileEntityFissionReactorPort) {
-                return null;
+    public IHeatHandler getAdjacent(@Nonnull Direction side) {
+        if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
+            TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
+            if (!(adj instanceof TileEntityFissionReactorPort)) {
+                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
             }
         }
-        return handler;
+        return null;
     }
 
     @Nonnull

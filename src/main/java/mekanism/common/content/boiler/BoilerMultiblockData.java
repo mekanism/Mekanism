@@ -233,9 +233,9 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     @Override
     public double simulateEnvironment() {
         double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (CASING_INVERSE_INSULATION_COEFFICIENT + CASING_INVERSE_CONDUCTION_COEFFICIENT);
-        double heatToTransfer = (heatCapacitor.getTemperature() - biomeAmbientTemp) / invConduction;
-        heatCapacitor.handleHeat(-heatToTransfer * heatCapacitor.getHeatCapacity());
-        return heatToTransfer;
+        double tempToTransfer = (heatCapacitor.getTemperature() - biomeAmbientTemp) / invConduction;
+        heatCapacitor.handleHeat(-tempToTransfer * heatCapacitor.getHeatCapacity());
+        return Math.max(tempToTransfer, 0);
     }
 
     public int getWaterVolume() {

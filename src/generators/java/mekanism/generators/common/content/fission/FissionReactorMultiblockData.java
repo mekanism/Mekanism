@@ -198,9 +198,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @Override
     public double simulateEnvironment() {
         double invConduction = HeatAPI.AIR_INVERSE_COEFFICIENT + (INVERSE_INSULATION_COEFFICIENT + INVERSE_CONDUCTION_COEFFICIENT);
-        double heatToTransfer = (heatCapacitor.getTemperature() - biomeAmbientTemp) / invConduction;
-        heatCapacitor.handleHeat(-heatToTransfer * heatCapacitor.getHeatCapacity());
-        return heatToTransfer;
+        double tempToTransfer = (heatCapacitor.getTemperature() - biomeAmbientTemp) / invConduction;
+        heatCapacitor.handleHeat(-tempToTransfer * heatCapacitor.getHeatCapacity());
+        return Math.max(tempToTransfer, 0);
     }
 
     @Override

@@ -78,6 +78,17 @@ public class AcceptorCache<ACCEPTOR> extends AbstractAcceptorCache<ACCEPTOR, Acc
         return LazyOptional.empty();
     }
 
+    @Nullable
+    public TileEntity getConnectedAcceptorTile(Direction side) {
+        if (cachedAcceptors.containsKey(side)) {
+            TileEntity tile = cachedAcceptors.get(side).getTile();
+            if (!tile.isRemoved()) {
+                return tile;
+            }
+        }
+        return null;
+    }
+
     /**
      * @apiNote Only call this from the server side
      */

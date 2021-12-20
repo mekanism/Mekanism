@@ -169,7 +169,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
             }
             heatCapacitor.handleHeat(heatCapacity * incr);
             if (incr < 0) {
-                return -incr / heatCapacity;
+                return -incr;
             }
         }
         return 0;

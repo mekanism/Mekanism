@@ -154,12 +154,25 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(Direction side) {
+    public IHeatHandler getAdjacent(@Nonnull Direction side) {
         if (connectionMapContainsSide(getAllCurrentConnections(), side)) {
             //Note: We use the acceptor cache as the heat network is different and the transmitters count the other transmitters in the
             // network as valid acceptors
             return getAcceptorCache().getConnectedAcceptor(side).resolve().orElse(null);
         }
         return null;
+    }
+
+    @Override
+    public double incrementAdjacentTransfer(double currentAdjacentTransfer, double tempToTransfer, @Nonnull Direction side) {
+        if (tempToTransfer > 0) {
+            //Look up the adjacent tile from the acceptor cache and then do the type checking
+            TileEntity sink = getAcceptorCache().getConnectedAcceptorTile(side);
+            if (sink instanceof TileEntityTransmitter && TransmissionType.HEAT.checkTransmissionType((TileEntityTransmitter) sink)) {
+                //Heat transmitter to heat transmitter, don't count as "adjacent transfer"
+                return currentAdjacentTransfer;
+            }
+        }
+        return ITileHeatHandler.super.incrementAdjacentTransfer(currentAdjacentTransfer, tempToTransfer, side);
     }
 }

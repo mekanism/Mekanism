@@ -111,7 +111,7 @@ public class IngredientWithout extends Ingredient {
                 return new IngredientWithout(Ingredient.fromJson(json.getAsJsonObject(JsonConstants.BASE)),
                       Ingredient.fromJson(json.getAsJsonObject(JsonConstants.WITHOUT)));
             }
-            throw new JsonParseException("A without ingredient must have both a bse ingredient, and a negation ingredient.");
+            throw new JsonParseException("A without ingredient must have both a base ingredient, and a negation ingredient.");
         }
 
         @Override

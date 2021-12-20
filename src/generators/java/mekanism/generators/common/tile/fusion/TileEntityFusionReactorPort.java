@@ -96,12 +96,14 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
 
     @Nullable
     @Override
-    public IHeatHandler getAdjacent(Direction side) {
-        TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
-        if (adj instanceof TileEntityFusionReactorBlock) {
-            return null;
+    public IHeatHandler getAdjacent(@Nonnull Direction side) {
+        if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
+            TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
+            if (!(adj instanceof TileEntityFusionReactorBlock)) {
+                return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
+            }
         }
-        return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
+        return null;
     }
 
     @Override

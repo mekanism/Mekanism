@@ -37,7 +37,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.3.1'
+    gradleVersion = '7.3.2'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -49,8 +49,7 @@ idea {
         inheritOutputDirs = true
         //Exclude directories from being managed
         for (String excludeDirName in ["run", "out", "logs", "gradle"]) {
-            File excludeDir = new File(projectDir, excludeDirName)
-            excludeDirs.add(excludeDir)
+            excludeDirs.add(new File(projectDir, excludeDirName))
         }
     }
 }
@@ -339,10 +338,6 @@ repositories {
         name 'tterrag'
         url 'https://maven.tterrag.com/'
         content {
-            includeGroupByRegex 'com\\.enderio.*'
-            includeGroupByRegex 'com\\.enderzoo.*'
-            includeGroupByRegex 'com\\.tterrag.*'
-            includeGroupByRegex 'tterrag.*'
             includeGroup 'mcjty.theoneprobe'
             includeGroup 'team.chisel.ctm'
         }
@@ -377,10 +372,6 @@ repositories {
                     it.content {
                         excludeGroup 'curse.maven'
                         excludeGroup 'mezz.jei'
-                        excludeGroupByRegex 'com\\.enderio.*'
-                        excludeGroupByRegex 'com\\.enderzoo.*'
-                        excludeGroupByRegex 'com\\.tterrag.*'
-                        excludeGroupByRegex 'tterrag.*'
                         excludeGroup 'mcjty.theoneprobe'
                         excludeGroup 'team.chisel.ctm'
                         excludeGroup 'appeng'
