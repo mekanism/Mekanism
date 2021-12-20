@@ -86,7 +86,7 @@ public class GuiUpgradeScrollList extends GuiScrollList {
         if (mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1) {
             forEachUpgrade((upgrade, multipliedElement) -> {
                 if (mouseY >= relativeY + 1 + multipliedElement && mouseY < relativeY + 1 + multipliedElement + elementHeight) {
-                    gui().displayTooltip(matrix, upgrade.getDescription(), mouseX, mouseY, getGuiWidth());
+                    displayTooltip(matrix, upgrade.getDescription(), mouseX, mouseY, getGuiWidth());
                 }
             });
         }
