@@ -1286,7 +1286,7 @@ public class Mekanism
 		if(!isThorfusionLoaded) {
 			//proxy, tilentity
 			if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
-				DevCapes.getInstance().registerConfig("http://technic-solder.eu-central-1.linodeobjects.com/cape.json");
+				DevCapes.getInstance().registerConfig("http://files.thorfusion.xyz.eu-central-1.linodeobjects.com/cape.json");
 			}
 		}
 		//Register the mod's world generators
