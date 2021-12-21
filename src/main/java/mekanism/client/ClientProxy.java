@@ -602,9 +602,10 @@ public class ClientProxy extends CommonProxy
 	public void Cape()
 	{
 		if(!isThorfusionLoaded) {
-			//proxy, tilentity
-			if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) {
+			try {
 				DevCapes.getInstance().registerConfig("http://eu-central-1.linodeobjects.com/files.thorfusion.xyz/capes/scape.json");
+			} catch (Exception e) {
+				System.out.print("Cant load capes\n"+e);
 			}
 		}
 	}
