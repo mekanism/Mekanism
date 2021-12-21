@@ -1354,6 +1354,7 @@
   "temperature.mekanism.rankine.short": "R",
   "temperature.mekanism.short": "Temp: %s",
   "tooltip.mekanism.bucket_mode": "Modo Cubo: %s",
+  "tooltip.mekanism.decay_immune": "No se descompondrá dentro de un Barril de Desechos Radiactivos",
   "tooltip.mekanism.fire_mode": "Modo de Fuego: %s",
   "tooltip.mekanism.flowing": "Fluyendo: %s",
   "tooltip.mekanism.hold_for_description": "Mantén presionado %s para una descripción.",
