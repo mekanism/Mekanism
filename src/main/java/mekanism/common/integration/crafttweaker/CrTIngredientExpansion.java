@@ -83,9 +83,6 @@ public class CrTIngredientExpansion {
          */
         @ZenCodeType.Caster(implicit = true)
         public static ItemStackIngredient asItemStackIngredient(IItemStack _this) {
-            //TODO - 10.1: If CrT doesn't improve to make expansions on sub impls able to override expansions on parents, then we will need
-            // to add these casts in the IItemStack and IngredientWithAmount expansions and maybe other things as well
-            // https://github.com/ZenCodeLang/ZenCode/pull/61
             return CrTItemStackIngredient.from(_this);
         }
     }

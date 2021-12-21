@@ -34,11 +34,6 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, IItemStack mainOutput) {
-        //TODO - 10.1: If we have to remove this method, but ideally CrT will improve the implicit cast matching for params that don't need
-        // to be cast so that it knows this method and the weighted item stack one are not ambiguous. Once that is figured out we may want
-        // to make it so that the other version is a hard fail if passed with 100% chance given it is likely that is how the base sawmill
-        // recipe will be handled in 1.18
-        // https://github.com/ZenCodeLang/ZenCode/pull/60
         addRecipe(name, input, getAndValidateNotEmpty(mainOutput), ItemStack.EMPTY, 0);
     }
 
@@ -49,7 +44,7 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
      * @param input           {@link ItemStackIngredient} representing the input of the recipe.
      * @param secondaryOutput {@link MCWeightedItemStack} representing the secondary chance based output of the recipe and the chance that it is produced.
      *
-     * @apiNote If the weight is 100%, it is recommended to use {@link #addRecipe(String, ItemStackIngredient, IItemStack)} instead.
+     * @apiNote If the weight is 100%, {@link #addRecipe(String, ItemStackIngredient, IItemStack)} must be used instead.
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, MCWeightedItemStack secondaryOutput) {
@@ -64,11 +59,11 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
      * @param secondaryOutput {@link IItemStack} representing the secondary chance based output of the recipe.
      * @param secondaryChance Chance of the secondary output being produced. This must be a number greater than zero and at most one.
      *
-     * @apiNote If the secondary chance is one (100%), it is recommended to use {@link #addRecipe(String, ItemStackIngredient, IItemStack)} instead.
+     * @apiNote If the secondary chance is one (100%), {@link #addRecipe(String, ItemStackIngredient, IItemStack)} must be used instead.
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, IItemStack secondaryOutput, double secondaryChance) {
-        addRecipe(name, input, ItemStack.EMPTY, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
+        addRecipe(name, input, ItemStack.EMPTY, getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance, false));
     }
 
     /**
@@ -97,16 +92,22 @@ public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
      */
     @ZenCodeType.Method
     public void addRecipe(String name, ItemStackIngredient input, IItemStack mainOutput, IItemStack secondaryOutput, double secondaryChance) {
-        addRecipe(name, input, getAndValidateNotEmpty(mainOutput), getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance));
+        addRecipe(name, input, getAndValidateNotEmpty(mainOutput), getAndValidateNotEmpty(secondaryOutput), getAndValidateSecondaryChance(secondaryChance, true));
     }
 
     private void addRecipe(String name, ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
         addRecipe(new SawmillIRecipe(getAndValidateName(name), input, mainOutput, secondaryOutput, secondaryChance));
     }
 
-    private double getAndValidateSecondaryChance(double secondaryChance) {
-        if (secondaryChance <= 0 || secondaryChance > 1) {
-            throw new IllegalArgumentException("This sawing recipe requires a secondary output chance greater than zero and at most one.");
+    private double getAndValidateSecondaryChance(double secondaryChance, boolean hasMain) {
+        if (hasMain) {
+            if (secondaryChance <= 0 || secondaryChance > 1) {
+                throw new IllegalArgumentException("This sawing recipe requires a secondary output chance greater than zero and at most one.");
+            }
+        } else if (secondaryChance == 1) {
+            throw new IllegalArgumentException("This sawing recipe should use a main output recipe instead of a secondary output chance based recipe.");
+        } else if (secondaryChance <= 0 || secondaryChance >= 1) {
+            throw new IllegalArgumentException("This sawing recipe requires a secondary output chance greater than zero and less than one.");
         }
         return secondaryChance;
     }
