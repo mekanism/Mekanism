@@ -603,7 +603,7 @@ public class ClientProxy extends CommonProxy
 	{
 		if(!isThorfusionLoaded) {
 			try {
-				DevCapes.getInstance().registerConfig("http://eu-central-1.linodeobjects.com/files.thorfusion.xyz/capes/scape.json");
+				DevCapes.getInstance().registerConfig("http://eu-central-1.linodeobjects.com/files.thorfusion.xyz/cape.json");
 			} catch (Exception e) {
 				System.out.print("Cant load capes\n"+e);
 			}
