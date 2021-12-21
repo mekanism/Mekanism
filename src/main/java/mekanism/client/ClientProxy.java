@@ -1,6 +1,8 @@
 package mekanism.client;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import com.jadarstudios.developercapes.DevCapes;
 import cpw.mods.fml.common.Loader;
