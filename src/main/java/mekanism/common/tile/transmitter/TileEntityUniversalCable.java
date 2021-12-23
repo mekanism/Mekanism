@@ -128,7 +128,8 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
 
     @ComputerMethod
     private FloatingLong getCapacity() {
-        return getTransmitter().getCapacityAsFloatingLong();
+        UniversalCable cable = getTransmitter();
+        return cable.hasTransmitterNetwork() ? cable.getTransmitterNetwork().getCapacityAsFloatingLong() : cable.getCapacityAsFloatingLong();
     }
 
     @ComputerMethod
