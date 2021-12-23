@@ -206,7 +206,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
 
     @ComputerMethod
     private long getCapacity() {
-        return getTransmitter().getCapacity();
+        return getTransmitter().getTransmitterNetwork().getCapacity();
     }
 
     @ComputerMethod
