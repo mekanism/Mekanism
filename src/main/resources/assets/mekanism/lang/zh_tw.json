@@ -1354,6 +1354,7 @@
   "temperature.mekanism.rankine.short": "R",
   "temperature.mekanism.short": "溫度: %s",
   "tooltip.mekanism.bucket_mode": "水桶模式: %s",
+  "tooltip.mekanism.decay_immune": "不會在放射性廢料桶內發生衰變",
   "tooltip.mekanism.fire_mode": "火焰模式: %s",
   "tooltip.mekanism.flowing": "供氧: %s",
   "tooltip.mekanism.hold_for_description": "按住 %s 查看描述.",
