@@ -1417,6 +1417,6 @@
   "upgrade.mekanism.speed.description": "提升機器的速度.",
   "upgrade.mekanism.stone_generator": "石頭製造機",
   "upgrade.mekanism.stone_generator.description": "依照需求生產石頭或鵝卵石.",
-  "waste_barrel.mekanism.decay_rate": "衰減速率: %s mB/t",
-  "waste_barrel.mekanism.decay_rate.actual": "實際衰減速率: %s mB / %s 刻"
+  "waste_barrel.mekanism.decay_rate": "衰變速率: %s mB/t",
+  "waste_barrel.mekanism.decay_rate.actual": "實際衰變速率: %s mB / %s 刻"
 }
