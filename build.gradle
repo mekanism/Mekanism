@@ -132,6 +132,7 @@ task toolsJar(type: Jar) {
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/tools/**'
+        exclude 'mcmod.info'
     }
 }
 
@@ -145,6 +146,7 @@ task generatorsJar(type: Jar) {
 
     from zipTree(jar.outputs.getFiles().getSingleFile()).matching {
         include 'mekanism/generators/**'
+        exclude 'mcmod.info'
     }
 }
 
