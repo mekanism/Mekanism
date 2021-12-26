@@ -598,7 +598,7 @@
   "filter.mekanism.tag.key": "Tag: %s",
   "filter.mekanism.tag.no_key": "Ingen tagg",
   "filter.mekanism.tag.same_key": "Samma tagg",
-  "flamethrower.mekanism.combat": "Kampen",
+  "flamethrower.mekanism.combat": "Stridsläge",
   "flamethrower.mekanism.heat": "Värme",
   "flamethrower.mekanism.inferno": "Inferno",
   "flamethrower.mekanism.mode_change": "Flamethrower-läget ändrades till: %s",
