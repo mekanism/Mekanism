@@ -37,7 +37,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.3.2'
+    gradleVersion = '7.3.3'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -610,7 +610,7 @@ tasks.withType(JavaCompile).configureEach({
 
 compileJava {
     options.annotationProcessorPath = configurations.annotationProcessor
-    options.annotationProcessorGeneratedSourcesDirectory = layout.buildDirectory.file("src/datagen/main/resources/").map(r -> r.asFile)
+    options.getGeneratedSourceOutputDirectory().set(file("src/datagen/main/resources/"))
     options.compilerArgs = [
             "-processor", "mekanism.CraftTweakerParamNameMapper"
     ]
