@@ -3,6 +3,8 @@ package mekanism.common.lib.radiation;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,10 +111,11 @@ public class RadiationManager implements IRadiationManager {
     private final Table<Chunk3D, Coord4D, RadiationSource> radiationTable = HashBasedTable.create();
     private final Map<ResourceLocation, List<Meltdown>> meltdowns = new Object2ObjectOpenHashMap<>();
 
-    private final Map<UUID, RadiationScale> playerExposureMap = new Object2ObjectOpenHashMap<>();
+    private final Object2DoubleMap<UUID> playerExposureMap = new Object2DoubleOpenHashMap<>();
 
     // client fields
     private RadiationScale clientRadiationScale = RadiationScale.NONE;
+    private double clientEnvironmentalRadiation = BASELINE;
 
     /**
      * Note: This can and will be null on the client side
@@ -263,8 +266,13 @@ public class RadiationManager implements IRadiationManager {
         return resistance;
     }
 
-    public void setClientScale(RadiationScale scale) {
-        clientRadiationScale = scale;
+    public void setClientEnvironmentalRadiation(double radiation) {
+        clientEnvironmentalRadiation = radiation;
+        clientRadiationScale = RadiationScale.get(clientEnvironmentalRadiation);
+    }
+
+    public double getClientEnvironmentalRadiation() {
+        return clientEnvironmentalRadiation;
     }
 
     public RadiationScale getClientScale() {
@@ -305,10 +313,11 @@ public class RadiationManager implements IRadiationManager {
             }
             radiationCap.ifPresent(IRadiationEntity::decay);
             if (entity instanceof ServerPlayerEntity) {
-                RadiationScale scale = RadiationScale.get(magnitude);
-                if (playerExposureMap.get(entity.getUUID()) != scale) {
-                    playerExposureMap.put(entity.getUUID(), scale);
-                    Mekanism.packetHandler.sendTo(PacketRadiationData.create(scale), (ServerPlayerEntity) entity);
+                double current = playerExposureMap.getOrDefault(entity.getUUID(), BASELINE);
+                //If the last sync radiation value is different in magnitude by over the baseline, sync
+                if (Math.abs(magnitude - current) >= BASELINE) {
+                    playerExposureMap.put(entity.getUUID(), magnitude);
+                    Mekanism.packetHandler.sendTo(PacketRadiationData.createEnvironmental(magnitude), (ServerPlayerEntity) entity);
                 }
             }
         }
@@ -378,6 +387,7 @@ public class RadiationManager implements IRadiationManager {
 
     public void resetClient() {
         clientRadiationScale = RadiationScale.NONE;
+        clientEnvironmentalRadiation = BASELINE;
     }
 
     public void resetPlayer(UUID uuid) {

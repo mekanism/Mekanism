@@ -23,7 +23,7 @@ public class ModuleGeigerUnit implements ICustomModule<ModuleGeigerUnit> {
     @Override
     public void addHUDElements(IModule<ModuleGeigerUnit> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            double magnitude = MekanismAPI.getRadiationManager().getRadiationLevel(player);
+            double magnitude = RadiationManager.INSTANCE.getClientEnvironmentalRadiation();
             hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElement(icon, UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2),
                   magnitude < RadiationManager.MIN_MAGNITUDE ? HUDColor.REGULAR : (magnitude < 0.1 ? HUDColor.WARNING : HUDColor.DANGER)));
         }

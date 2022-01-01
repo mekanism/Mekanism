@@ -32,7 +32,7 @@ public class ModuleExcavationEscalationUnit implements ICustomModule<ModuleExcav
     @Override
     public void changeMode(IModule<ModuleExcavationEscalationUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
         if (module.isEnabled()) {
-            ExcavationMode newMode = excavationMode.get().adjust(shift);
+            ExcavationMode newMode = excavationMode.get().adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 2);
             if (excavationMode.get() != newMode) {
                 excavationMode.set(newMode);
                 if (displayChangeMessage) {

@@ -32,7 +32,7 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
     @Override
     public void changeMode(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
         if (module.isEnabled()) {
-            SprintBoost newMode = sprintBoost.get().adjust(shift);
+            SprintBoost newMode = sprintBoost.get().adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 1);
             if (sprintBoost.get() != newMode) {
                 sprintBoost.set(newMode);
                 if (displayChangeMessage) {

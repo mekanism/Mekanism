@@ -1351,6 +1351,7 @@
   "temperature.mekanism.rankine.short": "R",
   "temperature.mekanism.short": "온도: %s",
   "tooltip.mekanism.bucket_mode": "양동이 모드: %s",
+  "tooltip.mekanism.decay_immune": "방사성 폐기물 통 안에서도 붕괴되지 않습니다.",
   "tooltip.mekanism.fire_mode": "화염 모드: %s",
   "tooltip.mekanism.flowing": "흐름: %s",
   "tooltip.mekanism.hold_for_description": "%s를 길게 누르면 설명이 표시됩니다.",
