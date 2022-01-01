@@ -1354,6 +1354,7 @@
   "temperature.mekanism.rankine.short": "R",
   "temperature.mekanism.short": "溫度: %s",
   "tooltip.mekanism.bucket_mode": "水桶模式: %s",
+  "tooltip.mekanism.decay_immune": "不會在放射性廢料桶內發生衰變",
   "tooltip.mekanism.fire_mode": "火焰模式: %s",
   "tooltip.mekanism.flowing": "供氧: %s",
   "tooltip.mekanism.hold_for_description": "按住 %s 查看描述.",
@@ -1417,6 +1418,6 @@
   "upgrade.mekanism.speed.description": "提升機器的速度.",
   "upgrade.mekanism.stone_generator": "石頭製造機",
   "upgrade.mekanism.stone_generator.description": "依照需求生產石頭或鵝卵石.",
-  "waste_barrel.mekanism.decay_rate": "衰減速率: %s mB/t",
-  "waste_barrel.mekanism.decay_rate.actual": "實際衰減速率: %s mB / %s 刻"
+  "waste_barrel.mekanism.decay_rate": "衰變速率: %s mB/t",
+  "waste_barrel.mekanism.decay_rate.actual": "實際衰變速率: %s mB / %s 刻"
 }
