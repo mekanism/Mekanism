@@ -37,7 +37,7 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 wrapper {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '7.3.2'
+    gradleVersion = '7.3.3'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -148,8 +148,8 @@ static void extendConfigurations(Configuration base, Configuration... configurat
 }
 
 ext {
-    versionProperties = ["version"       : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                         "loader_version": loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
+    versionProperties = ["version"           : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
+                         "loader_version"    : loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
                          "jeitweaker_version": jeitweaker_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
@@ -579,13 +579,38 @@ task allJar(type: Jar, dependsOn: [classes, apiClasses, additionsClasses, defens
     MergeJars.getGeneratedClosures(versionProperties).each { closure -> from("$buildDir/generated", closure) }
 }
 
+clean {
+    //TODO: Try to come up with a slightly better solution to this that deletes more,
+    // for example make it calculate the current hash and only leave that or only do
+    // this if clean build is being ran. We also ideally would have it remove some of
+    // the data from our generated folder, but for now this will do given jenkins runs
+    // a clean build because we need to make sure it doesn't fail
+    def filteredDelete = new HashSet<>()
+    for (def toDelete : getDelete()) {
+        for (def f : file(toDelete).listFiles()) {
+            if (f.getName() != "fg_cache") {
+                if (f.getName() == "generated") {
+                    for (def generated : file(f).listFiles()) {
+                        if (generated.getName() != "data" && generated.getName() != "META-INF") {
+                            filteredDelete.add(generated)
+                        }
+                    }
+                } else {
+                    filteredDelete.add(f)
+                }
+            }
+        }
+    }
+    setDelete(filteredDelete)
+}
+
 tasks.withType(JavaCompile).configureEach({
     it.options.encoding = 'UTF-8'
 })
 
 compileJava {
     options.annotationProcessorPath = configurations.annotationProcessor
-    options.annotationProcessorGeneratedSourcesDirectory = layout.buildDirectory.file("src/datagen/main/resources/").map(r -> r.asFile)
+    options.getGeneratedSourceOutputDirectory().set(file("src/datagen/main/resources/"))
     options.compilerArgs = [
             "-processor", "mekanism.CraftTweakerParamNameMapper"
     ]

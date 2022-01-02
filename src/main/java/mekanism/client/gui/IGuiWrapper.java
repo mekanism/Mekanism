@@ -32,7 +32,7 @@ public interface IGuiWrapper {
     }
 
     default void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis, int maxWidth) {
-        //TODO - 10.1: Re-evaluate some form of this that wraps further along for use in Gui Windows (such as viewing descriptions of supported upgrades)
+        //TODO - 1.18: Re-evaluate some form of this that wraps further along for use in Gui Windows (such as viewing descriptions of supported upgrades)
         net.minecraftforge.fml.client.gui.GuiUtils.drawHoveringText(matrix, components, xAxis, yAxis, getWidth(), getHeight(), maxWidth, getFont());
     }
 

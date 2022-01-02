@@ -83,7 +83,7 @@ public class GuiSupportedUpgrades extends GuiElement {
                 } else {
                     tooltip = Arrays.asList(MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
                 }
-                gui().displayTooltips(matrix, tooltip, mouseX, mouseY, getGuiWidth());
+                displayTooltips(matrix, tooltip, mouseX, mouseY, getGuiWidth());
                 //We can break once we managed to find a tooltip to render
                 break;
             }

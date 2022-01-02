@@ -119,7 +119,7 @@ public class GuiModuleScrollList extends GuiScrollList {
                 IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
                 if (instance != null && mouseY >= relativeY + 1 + multipliedElement && mouseY < relativeY + 1 + multipliedElement + elementHeight) {
                     ITextComponent t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
-                    gui().displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, getGuiWidth());
+                    displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, getGuiWidth());
                 }
             });
         }

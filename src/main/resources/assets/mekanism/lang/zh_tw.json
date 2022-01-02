@@ -254,10 +254,10 @@
   "cardboard_box.mekanism.block_data": "方塊數據: %s",
   "cardboard_box.mekanism.tile": "附加值: %s",
   "chemical.mekanism.attribute.coolant.efficiency": " - 冷卻液效率: %s",
-  "chemical.mekanism.attribute.coolant.heat_capacity": " - 熱焓值: %s J/mB",
+  "chemical.mekanism.attribute.coolant.heat_capacity": " - 熱焓值: %s",
   "chemical.mekanism.attribute.fuel.burn_ticks": " - 燃燒時間: %s 刻",
   "chemical.mekanism.attribute.fuel.energy_density": " - 能量密度: %s",
-  "chemical.mekanism.attribute.radiation": " - 輻射值: %s sV/h",
+  "chemical.mekanism.attribute.radiation": " - 輻射值: %s",
   "color.mekanism.aqua": "水藍色",
   "color.mekanism.black": "黑色",
   "color.mekanism.bright_green": "淺綠色",
@@ -1354,6 +1354,7 @@
   "temperature.mekanism.rankine.short": "R",
   "temperature.mekanism.short": "溫度: %s",
   "tooltip.mekanism.bucket_mode": "水桶模式: %s",
+  "tooltip.mekanism.decay_immune": "不會在放射性廢料桶內發生衰變",
   "tooltip.mekanism.fire_mode": "火焰模式: %s",
   "tooltip.mekanism.flowing": "供氧: %s",
   "tooltip.mekanism.hold_for_description": "按住 %s 查看描述.",
@@ -1417,6 +1418,6 @@
   "upgrade.mekanism.speed.description": "提升機器的速度.",
   "upgrade.mekanism.stone_generator": "石頭製造機",
   "upgrade.mekanism.stone_generator.description": "依照需求生產石頭或鵝卵石.",
-  "waste_barrel.mekanism.decay_rate": "衰減速率: %s mB/t",
-  "waste_barrel.mekanism.decay_rate.actual": "實際衰減速率: %s mB / %s 刻"
+  "waste_barrel.mekanism.decay_rate": "衰變速率: %s mB/t",
+  "waste_barrel.mekanism.decay_rate.actual": "實際衰變速率: %s mB / %s 刻"
 }

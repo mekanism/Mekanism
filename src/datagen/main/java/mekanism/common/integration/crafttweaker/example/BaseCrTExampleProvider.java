@@ -110,7 +110,15 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         addSupportedConversion(Character.TYPE, Character.class, (imports, c) -> "'" + c + "'");
         addSupportedConversion(IItemStack.class, ItemStack.class, (imports, stack) -> ItemStackHelper.getCommandString(stack));
         addSupportedConversion(IFluidStack.class, FluidStack.class, (imports, stack) -> new MCFluidStack(stack).getCommandString());
-        addSupportedConversion(MCWeightedItemStack.class, WeightedItemStack.class, (imports, stack) -> new MCWeightedItemStack(new MCItemStack(stack.stack), stack.chance).getCommandString());
+        addSupportedConversion(MCWeightedItemStack.class, WeightedItemStack.class,
+              (imports, stack) -> new MCWeightedItemStack(new MCItemStack(stack.stack), stack.chance).getCommandString(),
+              (imports, stack) -> {
+                  if (stack.chance == 1) {
+                      return ItemStackHelper.getCommandString(stack.stack);
+                  }
+                  return null;
+              }
+        );
         addSupportedConversion(FloatingLong.class, FloatingLong.class, (imports, fl) -> {
             String path = imports.addImport(CrTConstants.CLASS_FLOATING_LONG);
             if (fl.getDecimal() == 0 && fl.getValue() > Integer.MAX_VALUE) {
@@ -469,6 +477,10 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
 
         private final ItemStack stack;
         private final double chance;
+
+        public WeightedItemStack(IItemProvider item) {
+            this(item, 1);
+        }
 
         public WeightedItemStack(IItemProvider item, double chance) {
             this(new ItemStack(item), chance);

@@ -240,12 +240,20 @@ public abstract class GuiElement extends Widget implements IFancyFontRenderer {
               .forEach(child -> child.renderToolTip(matrix, mouseX, mouseY));
     }
 
+    public void displayTooltip(MatrixStack matrix, ITextComponent component, int xAxis, int yAxis, int maxWidth) {
+        guiObj.displayTooltip(matrix, component, xAxis, yAxis, maxWidth);
+    }
+
     public void displayTooltip(MatrixStack matrix, ITextComponent component, int xAxis, int yAxis) {
         guiObj.displayTooltip(matrix, component, xAxis, yAxis);
     }
 
-    public void displayTooltips(MatrixStack matrix, List<ITextComponent> list, int xAxis, int yAxis) {
-        guiObj.displayTooltips(matrix, list, xAxis, yAxis);
+    public void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis) {
+        guiObj.displayTooltips(matrix, components, xAxis, yAxis);
+    }
+
+    public void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis, int maxWidth) {
+        guiObj.displayTooltips(matrix, components, xAxis, yAxis, maxWidth);
     }
 
     @Override

@@ -128,7 +128,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
 
     @ComputerMethod
     private long getCapacity() {
-        return getTransmitter().getCapacity();
+        MechanicalPipe pipe = getTransmitter();
+        return pipe.hasTransmitterNetwork() ? pipe.getTransmitterNetwork().getCapacity() : pipe.getCapacity();
     }
 
     @ComputerMethod

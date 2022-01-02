@@ -131,7 +131,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         super.renderToolTip(matrix, mouseX, mouseY);
         RobitSkin skin = getSkin(mouseX, mouseY, relativeX, relativeY);
         if (skin != null) {
-            gui().displayTooltip(matrix, MekanismLang.ROBIT_SKIN.translate(skin), mouseX, mouseY);
+            displayTooltip(matrix, MekanismLang.ROBIT_SKIN.translate(skin), mouseX, mouseY);
         }
     }
 

@@ -27,7 +27,7 @@ public class MekanismAPI {
     /**
      * The version of the api classes - may not always match the mod's version
      */
-    public static final String API_VERSION = "10.1.0";
+    public static final String API_VERSION = "10.1.1";
     public static final String MEKANISM_MODID = "mekanism";
     /**
      * Mekanism debug mode

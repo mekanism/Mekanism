@@ -157,9 +157,9 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     CRT_STACK copy();
 
     /**
-     * Retrieves this fluid stack's fluid.
+     * Retrieves this chemical stack's chemical.
      *
-     * @return The fluid.
+     * @return The chemical.
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("type")

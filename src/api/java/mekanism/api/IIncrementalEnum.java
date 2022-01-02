@@ -94,4 +94,26 @@ public interface IIncrementalEnum<TYPE extends Enum<TYPE> & IIncrementalEnum<TYP
     default TYPE adjust(int shift) {
         return shift == 0 ? (TYPE) this : byIndex(ordinal() + shift);
     }
+
+    /**
+     * Gets the "valid" element that is offset by the given shift with the given validity predicate.
+     *
+     * @param shift   Shift to perform, may be negative to indicate going backwards
+     * @param isValid Predicate defining if an element is valid
+     *
+     * @return The "valid" element that is offset by the given shift. If no elements are "valid" returns the current element.
+     */
+    @Nonnull
+    default TYPE adjust(int shift, Predicate<TYPE> isValid) {
+        TYPE result = (TYPE) this;
+        while (shift < 0) {
+            shift++;
+            result = result.getPrevious(isValid);
+        }
+        while (shift > 0) {
+            shift--;
+            result = result.getNext(isValid);
+        }
+        return result;
+    }
 }

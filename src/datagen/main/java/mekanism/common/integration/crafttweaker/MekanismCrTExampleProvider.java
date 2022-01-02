@@ -488,13 +488,15 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "1) Adds a recipe for sawing Melon Slices into Melon Seeds.",
                     "2) Adds a recipe for sawing fifteen Leaves into a 5% chance of Sawdust.",
                     "3) Adds a recipe for sawing five Saplings into a 75% chance of Sawdust.",
-                    "4) Adds a recipe for sawing a Crafting Table into five Oak Planks and a 25% chance of Sawdust.",
-                    "5) Adds a recipe for sawing Books into Paper and Leather."
+                    "4) Adds a recipe for sawing a Shield into four Planks and a 50% chance of four additional Planks.",
+                    "5) Adds a recipe for sawing a Crafting Table into five Oak Planks and a 25% chance of Sawdust.",
+                    "6) Adds a recipe for sawing Books into Paper and Leather."
               ).blankLine()
               .recipe(SawmillRecipeManager.INSTANCE)
-              .addExample("sawing/melon_to_seeds", ItemStackIngredient.from(Items.MELON_SLICE), new ItemStack(Items.MELON_SEEDS))
+              .addExample("sawing/melon_to_seeds", ItemStackIngredient.from(Items.MELON_SLICE), new WeightedItemStack(Items.MELON_SEEDS))
               .addExample("sawing/leaves", ItemStackIngredient.from(ItemTags.LEAVES, 15), new WeightedItemStack(MekanismItems.SAWDUST, 0.5))
-              .addExample("sawing/saplings", ItemStackIngredient.from(ItemTags.SAPLINGS), MekanismItems.SAWDUST.getItemStack(), 0.75)
+              .addExample("sawing/saplings", ItemStackIngredient.from(ItemTags.SAPLINGS, 5), MekanismItems.SAWDUST.getItemStack(), 0.75)
+              .addExample("sawing/shield", ItemStackIngredient.from(Items.SHIELD), new WeightedItemStack(new ItemStack(Items.OAK_PLANKS, 4), 1.5))
               .addExample("sawing/workbench", ItemStackIngredient.from(Blocks.CRAFTING_TABLE), new ItemStack(Items.OAK_PLANKS, 5),
                     new WeightedItemStack(MekanismItems.SAWDUST, 0.25))
               .addExample("sawing/book", ItemStackIngredient.from(Items.BOOK), new ItemStack(Items.PAPER, 3), new ItemStack(Items.LEATHER, 6), 1.0)
