@@ -121,6 +121,11 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
         return super.extractGasCheck(tank, side);
     }
 
+    @Override
+    public boolean isNameable() {
+        return false;
+    }
+
     //Methods relating to IComputerTile
     @ComputerMethod
     private void incrementMode() {

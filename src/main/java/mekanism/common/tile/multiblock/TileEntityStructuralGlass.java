@@ -14,4 +14,9 @@ public class TileEntityStructuralGlass extends TileEntityStructuralMultiblock {
     public boolean canInterface(MultiblockManager<?> manager) {
         return !manager.getNameLower().contains("reactor");
     }
+
+    @Override
+    public boolean isNameable() {
+        return false;
+    }
 }

@@ -80,4 +80,9 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     public int getRedstoneLevel() {
         return getMultiblock().getCurrentRedstoneLevel();
     }
+
+    @Override
+    public boolean isNameable() {
+        return false;
+    }
 }

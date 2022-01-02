@@ -31,13 +31,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.loot.ConstantRange;
-import net.minecraft.loot.ILootConditionConsumer;
-import net.minecraft.loot.IRandomRange;
-import net.minecraft.loot.ItemLootEntry;
-import net.minecraft.loot.LootEntry;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
+import net.minecraft.loot.*;
 import net.minecraft.loot.LootTable.Builder;
 import net.minecraft.loot.conditions.BlockStateProperty;
 import net.minecraft.loot.conditions.ILootCondition;
@@ -45,6 +39,7 @@ import net.minecraft.loot.conditions.ILootCondition.IBuilder;
 import net.minecraft.loot.conditions.MatchTool;
 import net.minecraft.loot.conditions.SurvivesExplosion;
 import net.minecraft.loot.functions.ApplyBonus;
+import net.minecraft.loot.functions.CopyName;
 import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.loot.functions.CopyNbt.Source;
 import net.minecraft.loot.functions.SetCount;
@@ -133,6 +128,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             if (block instanceof IHasTileEntity) {
                 tile = ((IHasTileEntity<?>) block).getTileType().create();
             }
+
             if (tile instanceof IFrequencyHandler && ((IFrequencyHandler) tile).getFrequencyComponent().hasCustomFrequencies()) {
                 nbtBuilder.copy(NBTConstants.COMPONENT_FREQUENCY, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_FREQUENCY);
                 hasData = true;
@@ -167,6 +163,9 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             }
             if (tile instanceof TileEntityMekanism) {
                 TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
+                if (tileEntity.isNameable()) {
+                    hasData = true;
+                }
                 for (SubstanceType type : EnumUtils.SUBSTANCES) {
                     if (tileEntity.handles(type) && !type.getContainers(tileEntity).isEmpty()) {
                         nbtBuilder.copy(type.getContainerTag(), NBTConstants.MEK_DATA + "." + type.getContainerTag());
@@ -195,16 +194,25 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 nbtBuilder.copy(NBTConstants.DATA, NBTConstants.MEK_DATA + "." + NBTConstants.DATA);
                 hasData = true;
             }
+
             if (!hasData) {
                 //To keep the json as clean as possible don't bother even registering a blank accept function if we have no
                 // persistent data that we want to copy. Also log a warning so that we don't have to attempt to check against
                 // that block
                 dropSelf(block);
             } else {
+                StandaloneLootEntry.Builder<?> itemLootTable = ItemLootEntry.lootTableItem(block);
+                if (tile instanceof TileEntityMekanism) {
+                    TileEntityMekanism tileMek = (TileEntityMekanism) tile;
+                    if (tileMek.isNameable()) {
+                        itemLootTable = itemLootTable.apply(CopyName.copyName(CopyName.Source.BLOCK_ENTITY));
+                    }
+                }
+                itemLootTable = itemLootTable.apply(nbtBuilder);
                 add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
-                      .name("main")
-                      .setRolls(ConstantRange.exactly(1))
-                      .add(ItemLootEntry.lootTableItem(block).apply(nbtBuilder))
+                        .name("main")
+                        .setRolls(ConstantRange.exactly(1))
+                        .add(itemLootTable)
                 )));
             }
         }

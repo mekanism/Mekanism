@@ -22,7 +22,9 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ActionResultType;
@@ -33,6 +35,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 
 public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockBase<TYPE> implements IHasTileEntity<TILE> {
 
@@ -128,6 +131,17 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
             return type.get(AttributeRedstoneEmitter.class).getRedstoneLevel(tile);
         }
         return super.getSignal(state, world, pos, side);
+    }
+
+    @Override
+    public void setPlacedBy(@NotNull World world, @NotNull BlockPos pos, @NotNull BlockState state, @org.jetbrains.annotations.Nullable LivingEntity placer, @NotNull ItemStack stack) {
+        super.setPlacedBy(world, pos, state, placer, stack);
+
+        // Check if the stack has a custom name, and if the tile supports naming, name it
+        TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+        if (tile.isNameable() && stack.hasCustomHoverName()) {
+            tile.setCustomName(stack.getHoverName());
+        }
     }
 
     public static class BlockTileModel<TILE extends TileEntityMekanism, BLOCK extends BlockTypeTile<TILE>> extends BlockTile<TILE, BLOCK> implements IStateFluidLoggable {

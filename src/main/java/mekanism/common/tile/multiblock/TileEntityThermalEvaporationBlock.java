@@ -44,4 +44,9 @@ public class TileEntityThermalEvaporationBlock extends TileEntityMultiblock<Evap
     public boolean canBeMaster() {
         return false;
     }
+
+    @Override
+    public boolean isNameable() {
+        return false;
+    }
 }

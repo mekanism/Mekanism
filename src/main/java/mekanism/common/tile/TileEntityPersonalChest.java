@@ -11,10 +11,14 @@ import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.SecurityUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
+import org.jetbrains.annotations.NotNull;
 
 public class TileEntityPersonalChest extends TileEntityMekanism {
 
@@ -83,5 +87,22 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
                 lidAngle = 0.0F;
             }
         }
+    }
+
+    @NotNull
+    @Override
+    public ITextComponent getName() {
+        return super.getName();
+    }
+
+    @NotNull
+    @Override
+    public CompoundNBT save(@NotNull CompoundNBT nbtTags) {
+        return super.save(nbtTags);
+    }
+
+    @Override
+    public void load(@NotNull BlockState state, @NotNull CompoundNBT nbtTags) {
+        super.load(state, nbtTags);
     }
 }

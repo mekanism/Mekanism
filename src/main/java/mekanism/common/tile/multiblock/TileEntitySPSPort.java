@@ -79,6 +79,11 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         return ActionResultType.SUCCESS;
     }
 
+    @Override
+    public boolean isNameable() {
+        return false;
+    }
+
     //Methods relating to IComputerTile
     @ComputerMethod
     private boolean getMode() {

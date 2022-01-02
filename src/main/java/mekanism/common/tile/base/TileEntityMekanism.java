@@ -127,11 +127,7 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.Util;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -142,7 +138,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional, IConfigCardAccess,
       ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
       ITrackableContainer, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile,
-      IComputerTile, ITileRadioactive {
+      IComputerTile, ITileRadioactive, INameable {
 
     /**
      * The players currently using this block.
@@ -169,6 +165,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean hasSound;
     private boolean hasGui;
     private boolean hasChunkloader;
+
+    private ITextComponent name;
 
     //Methods for implementing ITileDirectional
     @Nullable
@@ -432,8 +430,23 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Nonnull
+    @Override
     public ITextComponent getName() {
-        return TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
+        return hasCustomName() ? name : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getCustomName() {
+        return name;
+    }
+
+    public void setCustomName(ITextComponent name) {
+        this.name = name;
+    }
+
+    public boolean isNameable() {
+        return true;
     }
 
     @Override
@@ -635,6 +648,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsComparator()) {
             NBTUtils.setIntIfPresent(nbtTags, NBTConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
         }
+
+        if (nbtTags.contains(NBTConstants.CUSTOM_NAME, 8) && isNameable()) {
+            this.name = ITextComponent.Serializer.fromJson(nbtTags.getString(NBTConstants.CUSTOM_NAME));
+        }
     }
 
     @Nonnull
@@ -663,6 +680,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsComparator()) {
             nbtTags.putInt(NBTConstants.CURRENT_REDSTONE, currentRedstoneLevel);
         }
+
+        if (this.name != null && isNameable()) {
+            nbtTags.putString(NBTConstants.CUSTOM_NAME, ITextComponent.Serializer.toJson(this.name));
+        }
+
         return nbtTags;
     }
 
@@ -753,6 +775,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.addToUpdateTag(updateTag);
         }
         updateTag.putFloat(NBTConstants.RADIATION, radiationScale);
+        // Sync the custom name with clients
+        if (this.name != null && isNameable()) {
+            updateTag.putString(NBTConstants.CUSTOM_NAME, ITextComponent.Serializer.toJson(this.name));
+        }
         return updateTag;
     }
 
@@ -763,6 +789,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.readFromUpdateTag(tag);
         }
         radiationScale = tag.getFloat(NBTConstants.RADIATION);
+        if (tag.contains(NBTConstants.CUSTOM_NAME, 8) && isNameable()) {
+            this.name = ITextComponent.Serializer.fromJson(tag.getString(NBTConstants.CUSTOM_NAME));
+        }
     }
 
     public void onNeighborChange(Block block, BlockPos neighborPos) {

@@ -35,4 +35,9 @@ public class TileEntitySuperheatingElement extends TileEntityInternalMultiblock 
         }
         setActive(newHot);
     }
+
+    @Override
+    public boolean isNameable() {
+        return false;
+    }
 }

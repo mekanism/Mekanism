@@ -63,4 +63,9 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     public int getRedstoneLevel() {
         return getMultiblock().getCurrentRedstoneLevel();
     }
+
+    @Override
+    public boolean isNameable() {
+        return false;
+    }
 }
