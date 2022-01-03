@@ -172,7 +172,6 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             if (tile instanceof TileEntityMekanism) {
                 TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
                 if (tileEntity.isNameable()) {
-                    hasData = true;
                     isNameable = true;
                 }
                 for (SubstanceType type : EnumUtils.SUBSTANCES) {
@@ -204,7 +203,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 hasData = true;
             }
 
-            if (!hasData) {
+            if (!hasData && !isNameable) {
                 //To keep the json as clean as possible don't bother even registering a blank accept function if we have no
                 // persistent data that we want to copy. Also log a warning so that we don't have to attempt to check against
                 // that block
@@ -214,10 +213,13 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 if (isNameable) {
                     itemLootTable.apply(CopyName.copyName(CopyName.Source.BLOCK_ENTITY));
                 }
+                if (hasData) {
+                    itemLootTable.apply(nbtBuilder);
+                }
                 add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
                         .name("main")
                         .setRolls(ConstantRange.exactly(1))
-                        .add(itemLootTable.apply(nbtBuilder))
+                        .add(itemLootTable)
                 )));
             }
         }
