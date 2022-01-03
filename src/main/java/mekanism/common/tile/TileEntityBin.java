@@ -158,11 +158,6 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> binSlot.deserializeNBT(nbt));
     }
 
-    @Override
-    public boolean isNameable() {
-        return false;
-    }
-
     //Methods relating to IComputerTile
     @ComputerMethod
     private int getCapacity() {

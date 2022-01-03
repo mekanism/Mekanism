@@ -37,9 +37,4 @@ public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultib
     public void addStatsTabContainerTrackers(MekanismContainer container) {
         SyncMapper.INSTANCE.setup(container, getMultiblock().getClass(), this::getMultiblock, "stats");
     }
-
-    @Override
-    public boolean isNameable() {
-        return false;
-    }
 }

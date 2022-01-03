@@ -26,7 +26,7 @@ public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer
 
     @Override
     protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismBlocks.PERSONAL_CHEST.getTextComponent(), titleLabelY);
+        drawTitleText(matrix, menu.getChestStack().hasCustomHoverName() ? menu.getChestStack().getHoverName() : MekanismBlocks.PERSONAL_CHEST.getTextComponent(), titleLabelY);
         drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

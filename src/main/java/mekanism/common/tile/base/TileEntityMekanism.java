@@ -73,6 +73,7 @@ import mekanism.common.integration.computer.ComputerMethodMapper;
 import mekanism.common.integration.computer.ComputerMethodMapper.MethodRestriction;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.inventory.GuiComponents;
 import mekanism.common.inventory.container.ITrackableContainer;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableDouble;
@@ -127,7 +128,12 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.Util;
+import net.minecraft.util.INameable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -441,12 +447,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return name;
     }
 
-    public void setCustomName(ITextComponent name) {
+    public void setCustomName(@Nullable ITextComponent name) {
         this.name = name;
     }
 
+    /**
+     * This should return false if naming it would be pointless, in order to save
+     * on NBT data on both the tile entity and the block item.
+     * @return if the tile entity can be named
+     */
     public boolean isNameable() {
-        return true;
+        return hasGui() && !Attribute.get(getBlockType(), AttributeGui.class).hasCustomName();
     }
 
     @Override
@@ -648,7 +659,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsComparator()) {
             NBTUtils.setIntIfPresent(nbtTags, NBTConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
         }
-
         if (nbtTags.contains(NBTConstants.CUSTOM_NAME, 8) && isNameable()) {
             this.name = ITextComponent.Serializer.fromJson(nbtTags.getString(NBTConstants.CUSTOM_NAME));
         }
@@ -775,7 +785,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.addToUpdateTag(updateTag);
         }
         updateTag.putFloat(NBTConstants.RADIATION, radiationScale);
-        // Sync the custom name with clients
+        // Sync the custom name with clients, only if the tile entity is nameable
         if (this.name != null && isNameable()) {
             updateTag.putString(NBTConstants.CUSTOM_NAME, ITextComponent.Serializer.toJson(this.name));
         }

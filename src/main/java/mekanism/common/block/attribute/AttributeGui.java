@@ -23,4 +23,11 @@ public class AttributeGui implements Attribute {
     public <TILE extends TileEntityMekanism> INamedContainerProvider getProvider(TILE tile) {
         return containerRegistrar.get().getProvider(customName == null ? TextComponentUtil.build(tile.getBlockType()) : customName.translate(), tile);
     }
+
+    /**
+     * @return if this GUI has another name other than the default "container."
+     */
+    public boolean hasCustomName() {
+        return customName != null;
+    }
 }

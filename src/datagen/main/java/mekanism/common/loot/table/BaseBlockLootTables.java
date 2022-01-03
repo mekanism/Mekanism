@@ -31,8 +31,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.data.loot.BlockLootTables;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.loot.*;
+import net.minecraft.loot.ConstantRange;
+import net.minecraft.loot.ILootConditionConsumer;
+import net.minecraft.loot.IRandomRange;
+import net.minecraft.loot.ItemLootEntry;
+import net.minecraft.loot.LootEntry;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTable.Builder;
+import net.minecraft.loot.StandaloneLootEntry;
 import net.minecraft.loot.conditions.BlockStateProperty;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.conditions.ILootCondition.IBuilder;
@@ -123,6 +130,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             CopyNbt.Builder nbtBuilder = CopyNbt.copyData(Source.BLOCK_ENTITY);
             boolean hasData = false;
             boolean hasContents = false;
+            boolean isNameable = false;
             @Nullable
             TileEntity tile = null;
             if (block instanceof IHasTileEntity) {
@@ -165,6 +173,7 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
                 if (tileEntity.isNameable()) {
                     hasData = true;
+                    isNameable = true;
                 }
                 for (SubstanceType type : EnumUtils.SUBSTANCES) {
                     if (tileEntity.handles(type) && !type.getContainers(tileEntity).isEmpty()) {
@@ -202,17 +211,13 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
                 dropSelf(block);
             } else {
                 StandaloneLootEntry.Builder<?> itemLootTable = ItemLootEntry.lootTableItem(block);
-                if (tile instanceof TileEntityMekanism) {
-                    TileEntityMekanism tileMek = (TileEntityMekanism) tile;
-                    if (tileMek.isNameable()) {
-                        itemLootTable = itemLootTable.apply(CopyName.copyName(CopyName.Source.BLOCK_ENTITY));
-                    }
+                if (isNameable) {
+                    itemLootTable.apply(CopyName.copyName(CopyName.Source.BLOCK_ENTITY));
                 }
-                itemLootTable = itemLootTable.apply(nbtBuilder);
                 add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
                         .name("main")
                         .setRolls(ConstantRange.exactly(1))
-                        .add(itemLootTable)
+                        .add(itemLootTable.apply(nbtBuilder))
                 )));
             }
         }

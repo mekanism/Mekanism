@@ -46,9 +46,4 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
         }
         return super.persists(type);
     }
-
-    @Override
-    public boolean isNameable() {
-        return false;
-    }
 }

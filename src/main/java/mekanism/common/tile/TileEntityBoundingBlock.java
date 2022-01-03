@@ -6,6 +6,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.security.ISecurityTile;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -21,14 +22,16 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.INameable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 /**
  * Multi-block used by wind turbines, solar panels, and other machines
  */
-public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUpgradeTile, ISecurityTile {
+public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUpgradeTile, ISecurityTile, INameable {
 
     private BlockPos mainPos = BlockPos.ZERO;
 
@@ -179,5 +182,32 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = tag.getInt(NBTConstants.REDSTONE);
         receivedCoords = tag.getBoolean(NBTConstants.RECEIVED_COORDS);
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        return getMainTile() instanceof INameable && getCustomName() != null;
+    }
+
+    @Nonnull
+    @Override
+    public ITextComponent getName() {
+        // Safe check for the custom name being null is done in {@link hasCustomName()} already
+        return hasCustomName() ? getCustomName() : MekanismBlocks.BOUNDING_BLOCK.getTextComponent();
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getCustomName() {
+        TileEntity mainTile = getMainTile();
+        if (mainTile != null) {
+            if (mainTile instanceof INameable) {
+                INameable nameableTile = (INameable) mainTile;
+                return nameableTile.hasCustomName() ? nameableTile.getCustomName() : nameableTile.getName();
+            } else {
+                return mainTile.getBlockState().getBlock().getName();
+            }
+        }
+        return null;
     }
 }

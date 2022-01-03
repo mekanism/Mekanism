@@ -94,9 +94,4 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
         super.handleUpdateTag(state, tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
     }
-
-    @Override
-    public boolean isNameable() {
-        return false;
-    }
 }

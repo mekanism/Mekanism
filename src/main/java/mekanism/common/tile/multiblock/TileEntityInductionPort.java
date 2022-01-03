@@ -64,11 +64,6 @@ public class TileEntityInductionPort extends TileEntityInductionCasing implement
         return getMultiblock().getCurrentRedstoneLevel();
     }
 
-    @Override
-    public boolean isNameable() {
-        return false;
-    }
-
     //Methods relating to IComputerTile
     @ComputerMethod
     private boolean getMode() {

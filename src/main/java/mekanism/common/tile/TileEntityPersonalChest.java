@@ -88,21 +88,4 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
             }
         }
     }
-
-    @NotNull
-    @Override
-    public ITextComponent getName() {
-        return super.getName();
-    }
-
-    @NotNull
-    @Override
-    public CompoundNBT save(@NotNull CompoundNBT nbtTags) {
-        return super.save(nbtTags);
-    }
-
-    @Override
-    public void load(@NotNull BlockState state, @NotNull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-    }
 }

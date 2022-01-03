@@ -8,9 +8,4 @@ public class TileEntitySuperchargedCoil extends TileEntityMekanism {
     public TileEntitySuperchargedCoil() {
         super(MekanismBlocks.SUPERCHARGED_COIL);
     }
-
-    @Override
-    public boolean isNameable() {
-        return false;
-    }
 }

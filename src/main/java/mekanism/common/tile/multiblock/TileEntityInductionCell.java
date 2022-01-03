@@ -38,9 +38,4 @@ public class TileEntityInductionCell extends TileEntityMekanism {
     public MachineEnergyContainer<TileEntityInductionCell> getEnergyContainer() {
         return energyContainer;
     }
-
-    @Override
-    public boolean isNameable() {
-        return false;
-    }
 }

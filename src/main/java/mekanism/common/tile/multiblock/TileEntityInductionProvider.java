@@ -18,9 +18,4 @@ public class TileEntityInductionProvider extends TileEntityMekanism {
         super.presetVariables();
         tier = Attribute.getTier(getBlockType(), InductionProviderTier.class);
     }
-
-    @Override
-    public boolean isNameable() {
-        return false;
-    }
 }
