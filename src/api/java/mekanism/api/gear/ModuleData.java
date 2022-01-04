@@ -30,9 +30,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         return (Class) ModuleData.class;
     }
 
-    @Nullable
-    @Deprecated
-    private final String legacyName;
     private final NonNullSupplier<MODULE> supplier;
     private final IItemProvider itemProvider;
     private final int maxStackSize;
@@ -51,7 +48,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
      * Creates a new module data from the given builder.
      */
     public ModuleData(ModuleDataBuilder<MODULE> builder) {
-        this.legacyName = builder.legacyName;
         this.supplier = builder.supplier;
         this.itemProvider = builder.itemProvider;
         this.rarity = builder.rarity;
@@ -67,18 +63,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
     @Override
     public final ModuleData<MODULE> getModuleData() {
         return this;
-    }
-
-    /**
-     * Gets the legacy name for this module. This is mainly used to be able to load legacy modules from before the module system was exposed to the API and modules had a
-     * slightly different naming scheme.
-     *
-     * @deprecated Will be removed in 1.18
-     */
-    @Nullable
-    @Deprecated//TODO - 1.18: Remove
-    public final String getLegacyName() {
-        return legacyName;
     }
 
     /**
@@ -213,9 +197,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
 
         private final NonNullSupplier<MODULE> supplier;
         private final IItemProvider itemProvider;
-        @Nullable
-        @Deprecated
-        private String legacyName;
         private Rarity rarity = Rarity.COMMON;
         private int maxStackSize = 1;
         private boolean exclusive;
@@ -227,20 +208,6 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         private ModuleDataBuilder(@Nonnull NonNullSupplier<MODULE> supplier, @Nonnull IItemProvider itemProvider) {
             this.supplier = Objects.requireNonNull(supplier, "Supplier cannot be null.");
             this.itemProvider = Objects.requireNonNull(itemProvider, "Item provider cannot be null.");
-        }
-
-        /**
-         * Sets the legacy name for this module. This should probably not ever be used outside of modules built into Mekanism, as it is mainly used to be able to load
-         * legacy modules from before the module system was exposed to the API and modules had a slightly different naming scheme.
-         *
-         * @param legacyName Legacy name of the module.
-         *
-         * @deprecated Will be removed in 1.18
-         */
-        @Deprecated//TODO - 1.18: Remove
-        public ModuleDataBuilder<MODULE> legacyName(@Nonnull String legacyName) {
-            this.legacyName = Objects.requireNonNull(legacyName, "Legacy name should not be null if specified.");
-            return this;
         }
 
         /**

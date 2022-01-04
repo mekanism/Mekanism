@@ -199,11 +199,11 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
         return ModuleDispenseResult.DEFAULT;
     }
 
-    //TODO - 1.18: Switch this to a record
-    class ModuleDamageAbsorbInfo {
-
-        private final FloatSupplier absorptionRatio;
-        private final FloatingLongSupplier energyCost;
+    /**
+     * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.
+     * @param energyCost      Energy cost per point of damage reduced.
+     */
+    record ModuleDamageAbsorbInfo(FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
 
         /**
          * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.
@@ -212,20 +212,6 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
         public ModuleDamageAbsorbInfo(FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
             this.absorptionRatio = Objects.requireNonNull(absorptionRatio, "Absorption ratio supplier cannot be null");
             this.energyCost = Objects.requireNonNull(energyCost, "Energy cost supplier cannot be null");
-        }
-
-        /**
-         * Gets the ratio of damage this module can absorb up to, returns a value between zero and one.
-         */
-        public FloatSupplier getAbsorptionRatio() {
-            return absorptionRatio;
-        }
-
-        /**
-         * Gets the energy cost per point of damage reduced.
-         */
-        public FloatingLongSupplier getEnergyCost() {
-            return energyCost;
         }
     }
 

@@ -13,7 +13,7 @@ import net.minecraftforge.registries.IRegistryDelegate;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class InfusionStack extends ChemicalStack<InfuseType> {
+public final class InfusionStack extends ChemicalStack<InfuseType> {
 
     /**
      * Empty InfusionStack instance.

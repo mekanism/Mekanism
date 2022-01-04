@@ -13,7 +13,7 @@ import net.minecraftforge.registries.IRegistryDelegate;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SlurryStack extends ChemicalStack<Slurry> {
+public final class SlurryStack extends ChemicalStack<Slurry> {
 
     /**
      * Empty SlurryStack instance.

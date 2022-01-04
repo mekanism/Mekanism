@@ -29,9 +29,7 @@ public final class ModuleEnumData<TYPE extends Enum<TYPE> & IHasTextComponent> i
      */
     public ModuleEnumData(Class<TYPE> enumClass, TYPE def) {
         TYPE[] constants = Objects.requireNonNull(enumClass, "Enum Class cannot be null.").getEnumConstants();
-        this.enumConstants = ImmutableList.<TYPE>builder()
-              .addAll(Arrays.asList(constants))
-              .build();
+        this.enumConstants = List.of(constants);
         this.value = Objects.requireNonNull(def, "Default value cannot be null.");
     }
 

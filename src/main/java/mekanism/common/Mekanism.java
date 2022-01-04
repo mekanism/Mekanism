@@ -411,9 +411,6 @@ public class Mekanism {
 
         MinecraftForge.EVENT_BUS.register(RadiationManager.INSTANCE);
 
-        //Check which modules are legacy
-        ModuleHelper.INSTANCE.gatherLegacyModules();
-
         //Initialization notification
         logger.info("Version {} initializing...", versionNumber);
 

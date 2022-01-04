@@ -39,11 +39,7 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @return Amount of the given argument that is needed.
      */
-    default long getNeededAmount(TYPE type) {
-        //TODO - 1.18: Remove default implementation, we only default this as to not be "breaking" if some
-        // addon somehow has custom input ingredients
-        return testType(type) ? 1 : 0;
-    }
+    long getNeededAmount(TYPE type);
 
     /**
      * Primarily for JEI, a list of valid instances of the type

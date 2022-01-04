@@ -20,8 +20,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 
-import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
-
 @ParametersAreNonnullByDefault
 public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothermalGeneratorUnit> {
 

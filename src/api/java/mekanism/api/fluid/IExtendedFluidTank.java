@@ -36,11 +36,7 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
      * client side for purposes of receiving sync data and rendering.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    default void setStackUnchecked(FluidStack stack) {
-        //TODO - 1.18: Remove default implementation. This is mainly here to not be a breaking change on the off-chance anyone actually
-        // has a custom implementation of our extended fluid tank
-        setStack(stack);
-    }
+    void setStackUnchecked(FluidStack stack);
 
     /**
      * <p>

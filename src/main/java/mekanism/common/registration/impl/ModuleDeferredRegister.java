@@ -14,15 +14,6 @@ public class ModuleDeferredRegister extends WrappedDeferredRegister<ModuleData<?
         super(modid, ModuleData.getClassWithGeneric());
     }
 
-    public ModuleRegistryObject<?> registerMarkerLegacy(String name, IItemProvider itemProvider, UnaryOperator<ModuleDataBuilder<?>> builderModifier) {
-        return register(name, builderModifier.apply(ModuleDataBuilder.marker(itemProvider)).legacyName(name));
-    }
-
-    public <MODULE extends ICustomModule<MODULE>> ModuleRegistryObject<MODULE> registerLegacy(String name, NonNullSupplier<MODULE> supplier, IItemProvider itemProvider,
-          UnaryOperator<ModuleDataBuilder<MODULE>> builderModifier) {
-        return register(name, builderModifier.apply(ModuleDataBuilder.custom(supplier, itemProvider)).legacyName(name));
-    }
-
     public ModuleRegistryObject<?> registerMarker(String name, IItemProvider itemProvider, UnaryOperator<ModuleDataBuilder<?>> builderModifier) {
         return register(name, builderModifier.apply(ModuleDataBuilder.marker(itemProvider)));
     }

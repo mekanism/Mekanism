@@ -1,6 +1,5 @@
 package mekanism.common.world;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
@@ -27,6 +26,6 @@ public class ResizableDiskConfig implements FeatureConfiguration {
         this.state = state;
         this.radius = ConfigurableUniformInt.SALT;
         this.halfHeight = saltConfig.halfHeight;
-        this.targets = ImmutableList.of(Blocks.DIRT.defaultBlockState(), Blocks.CLAY.defaultBlockState(), this.state);
+        this.targets = List.of(Blocks.DIRT.defaultBlockState(), Blocks.CLAY.defaultBlockState(), this.state);
     }
 }

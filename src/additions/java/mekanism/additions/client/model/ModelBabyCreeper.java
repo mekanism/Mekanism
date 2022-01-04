@@ -1,6 +1,6 @@
 package mekanism.additions.client.model;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
@@ -50,27 +50,7 @@ public class ModelBabyCreeper extends AgeableListModel<EntityBabyCreeper> {
     private final ModelPart leftFrontLeg;
     private final ModelPart rightFrontLeg;
 
-    public ModelBabyCreeper(ModelPart root) {//TODO - 1.18: Test this
-        /*this.head = new ModelPart(this, 0, 0);
-        this.head.addBox(-4, -8, -4, 8, 8, 8, size);
-        //Only real difference between this model and the vanilla creeper model is the "fix" for the head's rotation point
-        // the other difference is extending ageable model instead
-        this.head.setPos(0, 10, -2);
-        this.body = new ModelPart(this, 16, 16);
-        this.body.addBox(-4, 0, -2, 8, 12, 4, size);
-        this.body.setPos(0, 6, 0);
-        this.leftHindLeg = new ModelPart(this, 0, 16);
-        this.leftHindLeg.addBox(-2, 0, -2, 4, 6, 4, size);
-        this.leftHindLeg.setPos(-2, 18, 4);
-        this.rightHindLeg = new ModelPart(this, 0, 16);
-        this.rightHindLeg.addBox(-2, 0, -2, 4, 6, 4, size);
-        this.rightHindLeg.setPos(2, 18, 4);
-        this.leftFrontLeg = new ModelPart(this, 0, 16);
-        this.leftFrontLeg.addBox(-2, 0, -2, 4, 6, 4, size);
-        this.leftFrontLeg.setPos(-2, 18, -4);
-        this.rightFrontLeg = new ModelPart(this, 0, 16);
-        this.rightFrontLeg.addBox(-2, 0, -2, 4, 6, 4, size);
-        this.rightFrontLeg.setPos(2, 18, -4);*/
+    public ModelBabyCreeper(ModelPart root) {
         this.head = root.getChild("head");
         this.body = root.getChild("body");
         this.leftHindLeg = root.getChild("right_hind_leg");
@@ -82,13 +62,13 @@ public class ModelBabyCreeper extends AgeableListModel<EntityBabyCreeper> {
     @Nonnull
     @Override
     protected Iterable<ModelPart> headParts() {
-        return ImmutableList.of(this.head);
+        return List.of(this.head);
     }
 
     @Nonnull
     @Override
     protected Iterable<ModelPart> bodyParts() {
-        return ImmutableList.of(this.body, this.leftHindLeg, this.rightHindLeg, this.leftFrontLeg, this.rightFrontLeg);
+        return List.of(this.body, this.leftHindLeg, this.rightHindLeg, this.leftFrontLeg, this.rightFrontLeg);
     }
 
     @Override

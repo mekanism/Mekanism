@@ -18,7 +18,7 @@ import net.minecraftforge.registries.IRegistryDelegate;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class GasStack extends ChemicalStack<Gas> {
+public final class GasStack extends ChemicalStack<Gas> {
 
     /**
      * Empty GasStack instance.

@@ -7,16 +7,14 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.LazyOptional;
-
-import net.minecraft.world.item.Item.Properties;
 
 public class ItemAlloy extends Item {
 
@@ -38,7 +36,7 @@ public class ItemAlloy extends Item {
             LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getClickedFace());
             if (capability.isPresent()) {
                 if (!world.isClientSide) {
-                    capability.resolve().get().onAlloyInteraction(player, context.getHand(), context.getItemInHand(), tier);
+                    capability.resolve().get().onAlloyInteraction(player, context.getItemInHand(), tier);
                 }
                 return InteractionResult.SUCCESS;
             }

@@ -1,7 +1,5 @@
 package mekanism.common.network.to_server;
 
-import com.google.common.collect.ImmutableMap;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -16,15 +14,13 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 
 public class PacketRobit implements IMekanismPacket {
 
-    private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = ImmutableMap.<String, List<IRobitSkinProvider>>builder()
-          .put("sara", Arrays.asList(MekanismRobitSkins.LESBIAN, MekanismRobitSkins.TRANS))//TODO - 1.18: Make this use Lists.of(...)
-          .build();
+    private static final Map<String, List<IRobitSkinProvider>> EASTER_EGGS = Map.of("sara", List.of(MekanismRobitSkins.LESBIAN, MekanismRobitSkins.TRANS));
 
     private final RobitPacketType activeType;
     private final int entityId;

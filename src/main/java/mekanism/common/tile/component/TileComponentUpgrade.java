@@ -187,8 +187,6 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
             }
             //Load the inventory
             NBTUtils.setListIfPresent(upgradeNBT, NBTConstants.ITEMS, Tag.TAG_COMPOUND, list -> DataHandlerUtils.readContainers(getSlots(), list));
-            //TODO - 1.18: Remove this, it is the legacy way of loading
-            NBTUtils.setCompoundIfPresent(upgradeNBT, NBTConstants.SLOT, upgradeSlot::deserializeNBT);
         }
     }
 

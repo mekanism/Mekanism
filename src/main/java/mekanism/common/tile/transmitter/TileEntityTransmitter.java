@@ -37,7 +37,6 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -281,7 +280,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public void onAlloyInteraction(Player player, InteractionHand hand, ItemStack stack, @Nonnull AlloyTier tier) {
+    public void onAlloyInteraction(Player player, ItemStack stack, @Nonnull AlloyTier tier) {
         if (getLevel() != null && getTransmitter().hasTransmitterNetwork()) {
             DynamicNetwork<?, ?, ?> transmitterNetwork = getTransmitter().getTransmitterNetwork();
             List<Transmitter<?, ?, ?>> list = new ArrayList<>(transmitterNetwork.getTransmitters());

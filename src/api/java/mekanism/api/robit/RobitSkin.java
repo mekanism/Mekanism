@@ -1,21 +1,20 @@
 package mekanism.api.robit;
 
-import com.google.common.collect.ImmutableList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 @ParametersAreNonnullByDefault
@@ -35,8 +34,7 @@ public class RobitSkin extends ForgeRegistryEntry<RobitSkin> implements IRobitSk
         if (textures.length == 0) {
             this.textures = Collections.emptyList();
         } else {
-            //TODO - 1.18: List#of
-            this.textures = ImmutableList.copyOf(textures);
+            this.textures = List.of(textures);
         }
     }
 

@@ -188,28 +188,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     public void save(@Nullable Runnable callback) {
         CompoundTag modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
         String registryName = data.getRegistryName().toString();
-        CompoundTag nbt;
-        String legacyName = data.getLegacyName();
-        if (legacyName == null) {
-            //If there is no legacy name just try to grab the module
-            nbt = modulesTag.getCompound(registryName);
-        }
-        //TODO - 1.18: Remove this as we will be able to get rid of the legacy name
-        //If there is a legacy name start by seeing if we have a compound for the proper name
-        else if (modulesTag.contains(registryName, Tag.TAG_COMPOUND)) {
-            //If we do, grab it
-            nbt = modulesTag.getCompound(registryName);
-        }
-        //If we don't see if we have the legacy name stored
-        else if (modulesTag.contains(legacyName, Tag.TAG_COMPOUND)) {
-            //If we do grab it and remove it from the data the old legacy version
-            nbt = modulesTag.getCompound(legacyName);
-            modulesTag.remove(legacyName);
-        } else {
-            //If we don't have a legacy name stored just do a new compound
-            nbt = new CompoundTag();
-        }
-
+        CompoundTag nbt = modulesTag.getCompound(registryName);
         nbt.putInt(NBTConstants.AMOUNT, installed);
         for (ModuleConfigItem<?> item : configItems) {
             item.write(nbt);

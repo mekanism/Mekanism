@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import mekanism.api.tier.AlloyTier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionHand;
 
 /**
  * Implement this class in your TileEntity if it can interact with Mekanism alloys.
@@ -17,10 +16,8 @@ public interface IAlloyInteraction {
      * Called when a player right-clicks this block with an alloy.
      *
      * @param player - the player right-clicking the block
-     * @param hand   - the hand this alloy was right-clicked with
      * @param stack  - the stack of alloy being right-clicked
      * @param tier   - the tier of the alloy
      */
-    //TODO - 1.18: Remove the hand parameter as it is not needed
-    void onAlloyInteraction(Player player, InteractionHand hand, ItemStack stack, @Nonnull AlloyTier tier);
+    void onAlloyInteraction(Player player, ItemStack stack, @Nonnull AlloyTier tier);
 }

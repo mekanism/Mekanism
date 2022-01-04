@@ -52,11 +52,7 @@ public interface IModuleContainerItem extends IItemHUDProvider {
 
     default boolean hasModule(ItemStack stack, IModuleDataProvider<?> type) {
         CompoundTag modules = ItemDataUtils.getCompound(stack, NBTConstants.MODULES);
-        if (modules.contains(type.getRegistryName().toString(), Tag.TAG_COMPOUND)) {
-            return true;
-        }
-        String legacyName = type.getModuleData().getLegacyName();
-        return legacyName != null && modules.contains(legacyName, Tag.TAG_COMPOUND);
+        return modules.contains(type.getRegistryName().toString(), Tag.TAG_COMPOUND);
     }
 
     default boolean isModuleEnabled(ItemStack stack, IModuleDataProvider<?> type) {
@@ -73,12 +69,7 @@ public interface IModuleContainerItem extends IItemHUDProvider {
                 module.onRemoved(false);
             } else {
                 CompoundTag modules = ItemDataUtils.getCompound(stack, NBTConstants.MODULES);
-                //Just do the "easy" to check method and remove both the proper entry and the legacy one if there is one
                 modules.remove(type.getRegistryName().toString());
-                String legacyName = type.getLegacyName();
-                if (legacyName != null) {
-                    modules.remove(legacyName);
-                }
                 module.onRemoved(true);
             }
         }

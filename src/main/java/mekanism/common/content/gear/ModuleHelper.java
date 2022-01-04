@@ -43,19 +43,8 @@ public class ModuleHelper implements IModuleHelper {
 
     public static final ModuleHelper INSTANCE = new ModuleHelper();
 
-    private final Map<String, ModuleData<?>> legacyModuleLookup = new Object2ObjectOpenHashMap<>();
     private final Map<Item, Set<ModuleData<?>>> supportedModules = new Object2ObjectOpenHashMap<>(5);
     private final Map<ModuleData<?>, Set<Item>> supportedContainers = new Object2ObjectOpenHashMap<>();
-
-    @Deprecated//TODO - 1.18: Remove this
-    public void gatherLegacyModules() {
-        for (ModuleData<?> moduleData : MekanismAPI.moduleRegistry()) {
-            String legacyName = moduleData.getLegacyName();
-            if (legacyName != null) {
-                legacyModuleLookup.put(legacyName, moduleData);
-            }
-        }
-    }
 
     public void processIMC() {
         Map<ModuleData<?>, ImmutableSet.Builder<Item>> supportedContainersBuilderMap = new Object2ObjectOpenHashMap<>();
@@ -72,18 +61,17 @@ public class ModuleHelper implements IModuleHelper {
     private void mapSupportedModules(String imcMethod, IItemProvider moduleContainer, Map<ModuleData<?>, ImmutableSet.Builder<Item>> supportedContainersBuilderMap) {
         ImmutableSet.Builder<ModuleData<?>> supportedModulesBuilder = ImmutableSet.builder();
         InterModComms.getMessages(Mekanism.MODID, imcMethod::equals).forEach(message -> {
-            Object body = message.getMessageSupplier().get();
-            if (body instanceof IModuleDataProvider) {
-                IModuleDataProvider<?> moduleDataProvider = (IModuleDataProvider<?>) body;
+            Object body = message.messageSupplier().get();
+            if (body instanceof IModuleDataProvider moduleDataProvider) {
                 supportedModulesBuilder.add(moduleDataProvider.getModuleData());
-                logDebugReceivedIMC(imcMethod, message.getSenderModId(), moduleDataProvider);
-            } else if (body instanceof IModuleDataProvider[]) {
-                for (IModuleDataProvider<?> moduleDataProvider : ((IModuleDataProvider<?>[]) body)) {
+                logDebugReceivedIMC(imcMethod, message.senderModId(), moduleDataProvider);
+            } else if (body instanceof IModuleDataProvider<?>[] providers) {
+                for (IModuleDataProvider<?> moduleDataProvider : providers) {
                     supportedModulesBuilder.add(moduleDataProvider.getModuleData());
-                    logDebugReceivedIMC(imcMethod, message.getSenderModId(), moduleDataProvider);
+                    logDebugReceivedIMC(imcMethod, message.senderModId(), moduleDataProvider);
                 }
             } else {
-                Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.getSenderModId());
+                Mekanism.logger.warn("Received IMC message for '{}' from mod '{}' with an invalid body.", imcMethod, message.senderModId());
             }
         });
         Set<ModuleData<?>> supported = supportedModulesBuilder.build();
@@ -187,12 +175,6 @@ public class ModuleHelper implements IModuleHelper {
 
     @Nullable
     private ModuleData<?> getModuleTypeFromName(String name) {
-        //Try looking up by legacy name first as they are all valid resource locations they just would end up in minecraft's domain
-        ModuleData<?> legacy = legacyModuleLookup.get(name);
-        if (legacy != null) {
-            //If we found one return it
-            return legacy;
-        }
         //Otherwise, try getting the registry name and then looking it up in the module registry
         ResourceLocation registryName = ResourceLocation.tryParse(name);
         return registryName == null ? null : MekanismAPI.moduleRegistry().getValue(registryName);
@@ -203,23 +185,11 @@ public class ModuleHelper implements IModuleHelper {
           @Nullable Class<? extends ICustomModule<?>> typeFilter) {
         String registryName = type.getRegistryName().toString();
         if (modulesTag.contains(registryName, Tag.TAG_COMPOUND)) {
-            return load(type, container, modulesTag, registryName, typeFilter);
-        }
-        String legacyName = type.getLegacyName();
-        if (legacyName != null && modulesTag.contains(legacyName, Tag.TAG_COMPOUND)) {
-            return load(type, container, modulesTag, legacyName, typeFilter);
-        }
-        return null;
-    }
-
-    @Nullable
-    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ModuleData<MODULE> type, ItemStack container, CompoundTag modulesTag, String key,
-          @Nullable Class<? extends ICustomModule<?>> typeFilter) {
-        //TODO - 1.18: When removing the legacy handling from the above method just inline this method
-        Module<MODULE> module = new Module<>(type, container);
-        if (typeFilter == null || typeFilter.isInstance(module.getCustomInstance())) {
-            module.read(modulesTag.getCompound(key));
-            return module;
+            Module<MODULE> module = new Module<>(type, container);
+            if (typeFilter == null || typeFilter.isInstance(module.getCustomInstance())) {
+                module.read(modulesTag.getCompound(registryName));
+                return module;
+            }
         }
         return null;
     }

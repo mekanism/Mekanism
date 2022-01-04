@@ -5,10 +5,8 @@ import mekanism.api.NBTConstants;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -47,12 +45,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     @Override
     public void read(CompoundTag nbtTags) {
         requiresReplacement = nbtTags.getBoolean(NBTConstants.REQUIRE_STACK);
-        //TODO - 1.18: Remove this legacy loading branch
-        if (nbtTags.contains(NBTConstants.REPLACE_STACK, Tag.TAG_COMPOUND)) {
-            replaceTarget = ItemStack.of(nbtTags.getCompound(NBTConstants.REPLACE_STACK)).getItem();
-        } else {
-            replaceTarget = NBTUtils.readRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
-        }
+        replaceTarget = NBTUtils.readRegistryEntry(nbtTags, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
     }
 
     @Override

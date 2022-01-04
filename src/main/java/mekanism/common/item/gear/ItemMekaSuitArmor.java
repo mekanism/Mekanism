@@ -311,8 +311,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                         if (module.isEnabled()) {
                             ModuleDamageAbsorbInfo damageAbsorbInfo = getModuleDamageAbsorbInfo(module, source);
                             if (damageAbsorbInfo != null) {
-                                float absorption = damageAbsorbInfo.getAbsorptionRatio().getAsFloat();
-                                ratioAbsorbed += absorbDamage(details.usageInfo, amount, absorption, ratioAbsorbed, damageAbsorbInfo.getEnergyCost());
+                                float absorption = damageAbsorbInfo.absorptionRatio().getAsFloat();
+                                ratioAbsorbed += absorbDamage(details.usageInfo, amount, absorption, ratioAbsorbed, damageAbsorbInfo.energyCost());
                                 if (ratioAbsorbed >= 1) {
                                     //If we have fully absorbed the damage, stop checking/trying to absorb more
                                     break;

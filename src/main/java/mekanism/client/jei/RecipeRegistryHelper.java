@@ -1,6 +1,5 @@
 package mekanism.client.jei;
 
-import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,10 +20,10 @@ import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class RecipeRegistryHelper {
@@ -80,7 +79,7 @@ public class RecipeRegistryHelper {
         ItemStack damaged3 = item.getItemStack();
         damaged3.setDamageValue(damaged3.getMaxDamage() * 2 / 4);
         //Two damaged items combine to undamaged
-        registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged2, Collections.singletonList(damaged2), Collections.singletonList(damaged3))),
+        registry.addRecipes(List.of(factory.createAnvilRecipe(damaged2, Collections.singletonList(damaged2), Collections.singletonList(damaged3))),
               VanillaRecipeCategoryUid.ANVIL);
         ItemStack[] repairStacks = repairMaterials.apply(item.getItem());
         //Damaged item + the repair material
@@ -88,7 +87,7 @@ public class RecipeRegistryHelper {
             //While this is damaged1 it is down here as we don't need to bother creating the reference if we don't have a repair material
             ItemStack damaged1 = item.getItemStack();
             damaged1.setDamageValue(damaged1.getMaxDamage());
-            registry.addRecipes(ImmutableList.of(factory.createAnvilRecipe(damaged1, Arrays.asList(repairStacks), Collections.singletonList(damaged2))),
+            registry.addRecipes(List.of(factory.createAnvilRecipe(damaged1, Arrays.asList(repairStacks), Collections.singletonList(damaged2))),
                   VanillaRecipeCategoryUid.ANVIL);
         }
     }

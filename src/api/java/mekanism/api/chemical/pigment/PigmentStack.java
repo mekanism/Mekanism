@@ -13,7 +13,7 @@ import net.minecraftforge.registries.IRegistryDelegate;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class PigmentStack extends ChemicalStack<Pigment> {
+public final class PigmentStack extends ChemicalStack<Pigment> {
 
     /**
      * Empty PigmentStack instance.

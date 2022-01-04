@@ -1,17 +1,17 @@
 package mekanism.api;
 
-import net.minecraft.world.entity.Entity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.util.Mth;
-import net.minecraft.core.Registry;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * Coord4D - an integer-based way to keep track of and perform operations on blocks in a Minecraft-based environment. This also takes in account the dimension the
@@ -58,7 +58,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @param pos   Position (x, y, z)
      * @param world World
      */
-    public Coord4D(BlockPos pos, Level world) {//TODO - 1.18: Switch this to taking Vector3i as position
+    public Coord4D(Vec3i pos, Level world) {
         this(pos, world.dimension());
     }
 
@@ -68,7 +68,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
      * @param pos       Position (x, y, z)
      * @param dimension Dimension ID
      */
-    public Coord4D(BlockPos pos, ResourceKey<Level> dimension) {//TODO - 1.18: Switch this to taking Vector3i as position
+    public Coord4D(Vec3i pos, ResourceKey<Level> dimension) {
         this(pos.getX(), pos.getY(), pos.getZ(), dimension);
     }
 
