@@ -5,7 +5,7 @@ import mekanism.api.functions.ByteSupplier;
 import mekanism.common.network.to_client.container.property.BytePropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling bytes
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling bytes
  */
 public abstract class SyncableByte implements ISyncableData {
 

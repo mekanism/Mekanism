@@ -10,7 +10,7 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling item stacks
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling item stacks
  */
 public class SyncableItemStack implements ISyncableData {
 

@@ -124,7 +124,6 @@ public abstract class BaseTagProvider implements DataProvider {
                         @Nonnull
                         @Override
                         public Stream<Tag.BuilderEntry> getEntries() {
-                            //TODO - 1.18: Validate this
                             return tagBuilder.getEntries();
                         }
                     }));

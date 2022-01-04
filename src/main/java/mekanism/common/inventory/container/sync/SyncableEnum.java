@@ -8,7 +8,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for making it easier to handle enums
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for making it easier to handle enums
  */
 public class SyncableEnum<ENUM extends Enum<ENUM>> implements ISyncableData {
 

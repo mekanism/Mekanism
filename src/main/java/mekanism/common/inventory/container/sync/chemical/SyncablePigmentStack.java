@@ -15,7 +15,7 @@ import mekanism.common.network.to_client.container.property.chemical.PigmentStac
 import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling pigment stacks
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling pigment stacks
  */
 public class SyncablePigmentStack extends SyncableChemicalStack<Pigment, PigmentStack> implements IEmptyPigmentProvider {
 

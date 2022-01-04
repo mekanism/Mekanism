@@ -60,7 +60,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerSynchronizer;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -116,12 +115,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     @Nonnull
     @Override
     protected Slot addSlot(@Nonnull Slot slot) {
-        //Manually handle the code that is in super.addSlot so that we do not end up adding extra elements to
-        // inventoryItemStacks as we handle the tracking/sync changing via the below track call. This way we are
-        // able to minimize the amount of overhead that we end up with due to keeping track of the stack in SyncableItemStack
-        slot.index = slots.size();
-        slots.add(slot);
-        track(SyncableItemStack.create(slot::getItem, slot::set));
+        super.addSlot(slot);
         if (slot instanceof IHasExtraData) {
             //If the slot has any extra data, allow it to add any trackers it may have
             ((IHasExtraData) slot).addTrackers(inv.player, this::track);
@@ -172,8 +166,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
 
     @Override
     public boolean canTakeItemForPickAll(@Nonnull ItemStack stack, @Nonnull Slot slot) {
-        if (slot instanceof IInsertableSlot) {
-            IInsertableSlot insertableSlot = (IInsertableSlot) slot;
+        if (slot instanceof IInsertableSlot insertableSlot) {
             if (!insertableSlot.canMergeWith(stack)) {
                 return false;
             }
@@ -639,12 +632,10 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
 
     @Override
     public void broadcastChanges() {
-        //Note: We do not call super.detectAndSendChanges() because we intercept and track the
-        // stack changes and int changes ourselves. This allows for us to have more accurate syncing
-        // and also batch various sync packets
-        //TODO - 1.18: Evaluate the fact that we don't actually let any container listeners work
-        // due to only sending to the player. I think this may in fact make it so that it doesn't
-        // handle things like GuiRobitRepair's listener properly
+        super.broadcastChanges();
+        //Note: We don't bother firing data changed listeners as we have no use for them,
+        // and if someone wants to attach one to our containers they can explain what use
+        // they need it for before we add a bunch of extra logic to handle them
         if (inv.player instanceof ServerPlayer player) {
             //Only check tracked data for changes if we actually have any listeners
             List<PropertyData> dirtyData = new ArrayList<>();
@@ -662,9 +653,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     @Override
-    public void setSynchronizer(@Nonnull ContainerSynchronizer synchronizer) {
-        super.setSynchronizer(synchronizer);
-        //TODO - 1.18: Evaluate this
+    public void sendAllDataToRemote() {
+        super.sendAllDataToRemote();
         if (inv.player instanceof ServerPlayer player) {
             //Send all contents to the listener when it first gets added
             List<PropertyData> dirtyData = new ArrayList<>();

@@ -8,10 +8,8 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.network.to_client.container.property.list.FilterListPropertyData;
 import mekanism.common.network.to_client.container.property.list.ListPropertyData;
 
-import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
-
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling filter lists
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling filter lists
  */
 public class SyncableFilterList<FILTER extends IFilter<?>> extends SyncableList<FILTER> {
 

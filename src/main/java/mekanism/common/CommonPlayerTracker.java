@@ -3,7 +3,6 @@ package mekanism.common;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.inventory.container.VanillaGhostStackSyncFix;
 import mekanism.common.lib.radiation.capability.DefaultRadiationEntity;
 import mekanism.common.network.to_client.PacketPlayerData;
 import mekanism.common.network.to_client.PacketRadiationData;
@@ -45,7 +44,6 @@ public class CommonPlayerTracker {
             ServerPlayer serverPlayer = (ServerPlayer) player;
             Mekanism.packetHandler().sendTo(new PacketSecurityUpdate(), serverPlayer);
             player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> PacketRadiationData.sync(serverPlayer));
-            player.inventoryMenu.addSlotListener(new VanillaGhostStackSyncFix(serverPlayer));
             event.getPlayer().sendMessage(ALPHA_WARNING, Util.NIL_UUID);
         }
     }

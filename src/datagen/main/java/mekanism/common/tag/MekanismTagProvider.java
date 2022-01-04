@@ -473,8 +473,6 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addHarvestRequirements() {
-        //TODO - 1.18: add a system that checks that our blocks are added to a harvest tag
-        // and if any are missing that have requiresCorrectToolForDrops, crash the datagen
         addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
               MekanismBlocks.BOUNDING_BLOCK,
               MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE,
@@ -545,10 +543,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         for (BlockRegistryObject<BlockOre, ?> value : MekanismBlocks.ORES.values()) {
             needsStoneToolBuilder.add(value.getBlock());
         }
-        //TODO - 1.18: Things that have materials that defined their correct tool
-
         addToHarvestTag(BlockTags.MINEABLE_WITH_SHOVEL, MekanismBlocks.SALT_BLOCK);
-
         addToTag(BlockTags.NEEDS_STONE_TOOL,
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.TIN),

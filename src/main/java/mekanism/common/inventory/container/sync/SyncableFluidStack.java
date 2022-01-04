@@ -11,7 +11,7 @@ import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
- * Version of {@link net.minecraft.util.IntReferenceHolder} for handling fluid stacks
+ * Version of {@link net.minecraft.world.inventory.DataSlot} for handling fluid stacks
  */
 public class SyncableFluidStack implements ISyncableData {
 
