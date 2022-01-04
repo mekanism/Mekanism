@@ -15,7 +15,7 @@ import net.minecraft.tags.Tag;
 /**
  * Base implementation for how Mekanism handle's InfusionStack Ingredients.
  */
-public interface InfusionStackIngredient extends IChemicalStackIngredient<InfuseType, InfusionStack> {
+public interface InfusionStackIngredient extends ChemicalStackIngredient<InfuseType, InfusionStack> {
 
     /**
      * Creates an Infusion Stack Ingredient that matches a given infusion stack.

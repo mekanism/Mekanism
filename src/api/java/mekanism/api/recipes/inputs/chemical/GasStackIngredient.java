@@ -6,16 +6,13 @@ import javax.annotation.Nullable;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IGasProvider;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredient;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.Tag;
 
 /**
  * Base implementation for how Mekanism handle's GasStack Ingredients.
  */
-public interface GasStackIngredient extends IChemicalStackIngredient<Gas, GasStack> {
+public interface GasStackIngredient extends ChemicalStackIngredient<Gas, GasStack> {
 
     /**
      * Creates a Gas Stack Ingredient that matches a given gas stack.

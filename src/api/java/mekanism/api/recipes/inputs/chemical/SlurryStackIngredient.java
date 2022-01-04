@@ -6,16 +6,13 @@ import javax.annotation.Nullable;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.providers.ISlurryProvider;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredient;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.Tag;
 
 /**
  * Base implementation for how Mekanism handle's SlurryStack Ingredients.
  */
-public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, SlurryStack> {
+public interface SlurryStackIngredient extends ChemicalStackIngredient<Slurry, SlurryStack> {
 
     /**
      * Creates a Slurry Stack Ingredient that matches a given slurry stack.

@@ -7,7 +7,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
 import mekanism.common.recipe.lookup.cache.EitherSideInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
@@ -75,7 +75,7 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
      * Helper interface to make the generics that we have to pass to {@link IEitherSideRecipeLookupHandler} not as messy.
      */
     interface EitherSideChemicalRecipeLookupHandler<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ? extends IChemicalStackIngredient<CHEMICAL, STACK>>> extends
+          RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, ? extends ChemicalStackIngredient<CHEMICAL, STACK>>> extends
           IEitherSideRecipeLookupHandler<STACK, RECIPE, EitherSideChemical<CHEMICAL, STACK, RECIPE>> {
 
         /**

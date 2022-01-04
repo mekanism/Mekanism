@@ -11,17 +11,17 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.common.Mekanism;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<CHEMICAL, STACK, INGREDIENT, RECIPE> factory;
@@ -73,7 +73,7 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
 
     @FunctionalInterface
     public interface IFactory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>> {
+          INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>> {
 
         RECIPE create(ResourceLocation id, ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output);
     }

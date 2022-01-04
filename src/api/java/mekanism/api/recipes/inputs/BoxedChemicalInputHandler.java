@@ -13,8 +13,8 @@ import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.MathUtils;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
@@ -61,7 +61,7 @@ public class BoxedChemicalInputHandler {
      *
      * @return Matching instance. The returned value can be safely modified after.
      */
-    public BoxedChemicalStack getRecipeInput(IChemicalStackIngredient<?, ?> recipeIngredient) {
+    public BoxedChemicalStack getRecipeInput(ChemicalStackIngredient<?, ?> recipeIngredient) {
         BoxedChemicalStack input = getInput();
         if (input.isEmpty()) {
             //All recipes currently require that we have an input. If we don't then return that we failed
@@ -112,7 +112,7 @@ public class BoxedChemicalInputHandler {
     /**
      * Calculates how many operations the input can sustain.
      *
-     * @param recipeInput Recipe input gotten from {@link #getRecipeInput(IChemicalStackIngredient)}.
+     * @param recipeInput Recipe input gotten from {@link #getRecipeInput(ChemicalStackIngredient)}.
      * @param currentMax  The current maximum number of operations that can happen.
      *
      * @return The number of operations the input can sustain.
@@ -124,7 +124,7 @@ public class BoxedChemicalInputHandler {
     /**
      * Calculates how many operations the input can sustain.
      *
-     * @param recipeInput     Recipe input gotten from {@link #getRecipeInput(IChemicalStackIngredient)}.
+     * @param recipeInput     Recipe input gotten from {@link #getRecipeInput(ChemicalStackIngredient)}.
      * @param currentMax      The current maximum number of operations that can happen.
      * @param usageMultiplier Usage multiplier to multiply the recipeInput's amount by per operation.
      *

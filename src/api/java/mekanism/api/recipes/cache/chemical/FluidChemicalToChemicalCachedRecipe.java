@@ -10,7 +10,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -20,7 +20,7 @@ import net.minecraftforge.fluids.FluidStack;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class FluidChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends FluidChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends FluidChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends CachedRecipe<RECIPE> {
 
     private final IOutputHandler<@NonNull STACK> outputHandler;

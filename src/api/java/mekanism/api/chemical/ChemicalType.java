@@ -10,8 +10,8 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
@@ -135,7 +135,7 @@ public enum ChemicalType implements StringRepresentable {
      *
      * @return Chemical Type.
      */
-    public static ChemicalType getTypeFor(IChemicalStackIngredient<?, ?> ingredient) {
+    public static ChemicalType getTypeFor(ChemicalStackIngredient<?, ?> ingredient) {
         if (ingredient instanceof GasStackIngredient) {
             return GAS;
         } else if (ingredient instanceof InfusionStackIngredient) {

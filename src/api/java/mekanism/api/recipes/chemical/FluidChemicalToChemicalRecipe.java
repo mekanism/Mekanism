@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Contract;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class FluidChemicalToChemicalRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NonNull FluidStack, @NonNull STACK> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipe implements BiPredicate<@NonNull FluidStack, @NonNull STACK> {
 
     private final FluidStackIngredient fluidInput;
     private final INGREDIENT chemicalInput;

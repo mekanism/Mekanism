@@ -30,7 +30,6 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
@@ -68,10 +67,10 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     }
 
     @SuppressWarnings("unchecked")
-    protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean chemicalIngredientConflicts(IChemicalStackIngredient<CHEMICAL, STACK> a,
-          IChemicalStackIngredient<?, ?> b) {
+    protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean chemicalIngredientConflicts(ChemicalStackIngredient<CHEMICAL, STACK> a,
+          ChemicalStackIngredient<?, ?> b) {
         //If types of inputs match then check if they conflict
-        return ChemicalType.getTypeFor(a) == ChemicalType.getTypeFor(b) && ingredientConflicts(a, (IChemicalStackIngredient<CHEMICAL, STACK>) b);
+        return ChemicalType.getTypeFor(a) == ChemicalType.getTypeFor(b) && ingredientConflicts(a, (ChemicalStackIngredient<CHEMICAL, STACK>) b);
     }
 
     protected String buildCommandString(IRecipeManager manager, RECIPE recipe, Object... params) {
@@ -236,7 +235,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String convertIngredient(String crtClass,
           CrTChemicalTagManager<CHEMICAL> tagManager, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
-          IChemicalStackIngredient<CHEMICAL, STACK> ingredient) {
+          ChemicalStackIngredient<CHEMICAL, STACK> ingredient) {
         if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
             //Serialize and deserialize to get easy access to the amount
             JsonObject serialized = ingredient.serialize().getAsJsonObject();

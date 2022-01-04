@@ -15,7 +15,7 @@ import net.minecraft.tags.Tag;
 /**
  * Base implementation for how Mekanism handle's PigmentStack Ingredients.
  */
-public interface PigmentStackIngredient extends IChemicalStackIngredient<Pigment, PigmentStack> {
+public interface PigmentStackIngredient extends ChemicalStackIngredient<Pigment, PigmentStack> {
 
     /**
      * Creates a Pigment Stack Ingredient that matches a given pigment stack.

@@ -10,7 +10,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
 
@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ItemStackChemicalToItemStackCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends CachedRecipe<RECIPE> {
 
     private final IOutputHandler<@NonNull ItemStack> outputHandler;

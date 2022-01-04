@@ -38,7 +38,7 @@ import net.minecraft.resources.ResourceLocation;
 @MethodsReturnNonnullByDefault
 @SuppressWarnings("Convert2Diamond")//The types cannot properly be inferred
 public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> {
 
     public static final ChemicalIngredientDeserializer<Gas, GasStack, GasStackIngredient> GAS = new ChemicalIngredientDeserializer<Gas, GasStack, GasStackIngredient>(
           "gas", ChemicalIngredientInfo.GAS, ChemicalTags.GAS, GasStack::readFromPacket, Gas::getFromRegistry, GasStackIngredient::from, GasStackIngredient::from,
@@ -237,7 +237,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
 
     @FunctionalInterface
     public interface TagIngredientCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-          INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> {
+          INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> {
 
         INGREDIENT create(Tag<CHEMICAL> tag, long amount);
     }

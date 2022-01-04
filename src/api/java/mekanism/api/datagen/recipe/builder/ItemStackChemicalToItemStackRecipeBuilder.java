@@ -17,8 +17,8 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -30,7 +30,7 @@ import net.minecraft.world.item.ItemStack;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipeBuilder<ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL, STACK, INGREDIENT>> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipeBuilder<ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL, STACK, INGREDIENT>> {
 
     private final ItemStackIngredient itemInput;
     private final INGREDIENT chemicalInput;

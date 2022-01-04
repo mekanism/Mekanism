@@ -6,13 +6,12 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 
 public class ChemicalInputCache<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends MekanismRecipe>
-      extends BaseInputCache<CHEMICAL, STACK, IChemicalStackIngredient<CHEMICAL, STACK>, RECIPE> {
+      extends BaseInputCache<CHEMICAL, STACK, ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE> {
 
     @Override
-    public boolean mapInputs(RECIPE recipe, IChemicalStackIngredient<CHEMICAL, STACK> inputIngredient) {
+    public boolean mapInputs(RECIPE recipe, ChemicalStackIngredient<CHEMICAL, STACK> inputIngredient) {
         if (inputIngredient instanceof ChemicalStackIngredient.SingleIngredient) {
             CHEMICAL input = ((SingleIngredient<CHEMICAL, STACK>) inputIngredient).getInputRaw();
             addInputCache(input, recipe);

@@ -12,8 +12,8 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
@@ -25,11 +25,6 @@ import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngred
 import mekanism.common.integration.crafttweaker.ingredient.CrTSlurryStackIngredient;
 import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
-
-import mekanism.common.integration.crafttweaker.bracket.IBracketSupport.IGasBracketSupport;
-import mekanism.common.integration.crafttweaker.bracket.IBracketSupport.IInfuseTypeBracketSupport;
-import mekanism.common.integration.crafttweaker.bracket.IBracketSupport.IPigmentBracketSupport;
-import mekanism.common.integration.crafttweaker.bracket.IBracketSupport.ISlurryBracketSupport;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_CHEMICAL_STACK)
@@ -219,19 +214,19 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     }
 
     /**
-     * Casts this chemical stack to a generic {@link IChemicalStackIngredient} for use in recipes that support any chemical type as an input.
+     * Casts this chemical stack to a generic {@link ChemicalStackIngredient} for use in recipes that support any chemical type as an input.
      *
      * @apiNote We declare this as generic so that ZenCode can properly match this to the places where we declare all the subtypes as generic.
      */
     @ZenCodeType.Caster(implicit = true)
-    IChemicalStackIngredient<?, ?> asChemicalStackIngredient();
+    ChemicalStackIngredient<?, ?> asChemicalStackIngredient();
 
     @ZenRegister
     @ZenCodeType.Name(CrTConstants.CLASS_GAS_STACK)
     interface ICrTGasStack extends ICrTChemicalStack<Gas, GasStack, ICrTGasStack>, IGasBracketSupport {
 
         @Override
-        default IChemicalStackIngredient<Gas, GasStack> asChemicalStackIngredient() {
+        default ChemicalStackIngredient<Gas, GasStack> asChemicalStackIngredient() {
             return asGasStackIngredient();
         }
 
@@ -249,7 +244,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     interface ICrTInfusionStack extends ICrTChemicalStack<InfuseType, InfusionStack, ICrTInfusionStack>, IInfuseTypeBracketSupport {
 
         @Override
-        default IChemicalStackIngredient<InfuseType, InfusionStack> asChemicalStackIngredient() {
+        default ChemicalStackIngredient<InfuseType, InfusionStack> asChemicalStackIngredient() {
             return asInfusionStackIngredient();
         }
 
@@ -267,7 +262,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     interface ICrTPigmentStack extends ICrTChemicalStack<Pigment, PigmentStack, ICrTPigmentStack>, IPigmentBracketSupport {
 
         @Override
-        default IChemicalStackIngredient<Pigment, PigmentStack> asChemicalStackIngredient() {
+        default ChemicalStackIngredient<Pigment, PigmentStack> asChemicalStackIngredient() {
             return asPigmentStackIngredient();
         }
 
@@ -285,7 +280,7 @@ public interface ICrTChemicalStack<CHEMICAL extends Chemical<CHEMICAL>, STACK ex
     interface ICrTSlurryStack extends ICrTChemicalStack<Slurry, SlurryStack, ICrTSlurryStack>, ISlurryBracketSupport {
 
         @Override
-        default IChemicalStackIngredient<Slurry, SlurryStack> asChemicalStackIngredient() {
+        default ChemicalStackIngredient<Slurry, SlurryStack> asChemicalStackIngredient() {
             return asSlurryStackIngredient();
         }
 

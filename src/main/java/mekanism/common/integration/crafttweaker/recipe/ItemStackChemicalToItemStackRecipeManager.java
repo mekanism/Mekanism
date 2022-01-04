@@ -16,8 +16,8 @@ import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
@@ -28,14 +28,14 @@ import mekanism.common.recipe.impl.InjectingIRecipe;
 import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
 import mekanism.common.recipe.impl.PaintingIRecipe;
 import mekanism.common.recipe.impl.PurifyingIRecipe;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK)
 public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends MekanismRecipeManager<RECIPE> {
 
     protected ItemStackChemicalToItemStackRecipeManager(MekanismRecipeType<RECIPE, ?> recipeType) {
@@ -62,7 +62,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
      *
      * @param name          Name of the new recipe.
      * @param itemInput     {@link ItemStackIngredient} representing the item input of the recipe.
-     * @param chemicalInput {@link IChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
+     * @param chemicalInput {@link ChemicalStackIngredient} representing the chemical input of the recipe. The type of this chemical depends on the recipe manager it is
      *                      called from.
      * @param output        {@link IItemStack} representing the output of the recipe.
      */

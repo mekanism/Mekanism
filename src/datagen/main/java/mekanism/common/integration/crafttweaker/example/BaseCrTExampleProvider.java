@@ -45,7 +45,6 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
@@ -396,11 +395,11 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addSupportedChemical(Class<STACK> stackClass,
-          Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?>> stackCrTClass, Class<? extends IChemicalStackIngredient<CHEMICAL, STACK>> ingredientClass,
+          Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?>> stackCrTClass, Class<? extends ChemicalStackIngredient<CHEMICAL, STACK>> ingredientClass,
           String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription, CrTChemicalTagManager<CHEMICAL> tagManager,
           ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer) {
         addSupportedConversion(ICrTChemicalStack.class, stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
-        addSupportedConversion(IChemicalStackIngredient.class, ingredientClass, ingredientClass,
+        addSupportedConversion(ChemicalStackIngredient.class, ingredientClass, ingredientClass,
               (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), deserializer, singleDescription, tagManager),
               (imports, ingredient) -> {
                   if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
@@ -418,7 +417,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getIngredientRepresentation(
-          IChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
+          ChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
           Function<STACK, CommandStringDisplayable> singleDescription, CrTChemicalTagManager<CHEMICAL> tagManager) {
         if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();

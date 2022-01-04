@@ -14,8 +14,8 @@ import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
@@ -42,9 +42,9 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.Tag;
 
 public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<ChemicalCrystallizerRecipe> {
 
@@ -89,7 +89,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
 
     @Override
     public void setIngredients(ChemicalCrystallizerRecipe recipe, IIngredients ingredients) {
-        IChemicalStackIngredient<?, ?> input = recipe.getInput();
+        ChemicalStackIngredient<?, ?> input = recipe.getInput();
         if (input instanceof GasStackIngredient) {
             ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(((GasStackIngredient) input).getRepresentations()));
         } else if (input instanceof InfusionStackIngredient) {
@@ -106,7 +106,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     public void setRecipe(IRecipeLayout recipeLayout, ChemicalCrystallizerRecipe recipe, IIngredients ingredients) {
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         initItem(itemStacks, 0, false, output, recipe.getOutputDefinition());
-        IChemicalStackIngredient<?, ?> input = recipe.getInput();
+        ChemicalStackIngredient<?, ?> input = recipe.getInput();
         if (input instanceof GasStackIngredient) {
             initChemical(recipeLayout, recipe, MekanismJEI.TYPE_GAS, (GasStackIngredient) input, null);
         } else if (input instanceof InfusionStackIngredient) {
@@ -137,7 +137,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     }
 
     private <STACK extends ChemicalStack<?>> void initChemical(IRecipeLayout recipeLayout, ChemicalCrystallizerRecipe recipe, IIngredientType<STACK> type,
-          IChemicalStackIngredient<?, STACK> ingredient, @Nullable IGuiItemStackGroup itemIngredientGroup) {
+          ChemicalStackIngredient<?, STACK> ingredient, @Nullable IGuiItemStackGroup itemIngredientGroup) {
         IGuiIngredientGroup<STACK> stacks = recipeLayout.getIngredientsGroup(type);
         initChemical(stacks, 0, true, gauge, ingredient.getRepresentations());
         this.ingredients.put(recipe, new IngredientTarget(stacks, itemIngredientGroup));

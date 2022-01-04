@@ -10,7 +10,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -20,7 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ChemicalChemicalToChemicalRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends CachedRecipe<RECIPE> {
 
     private final IOutputHandler<@NonNull STACK> outputHandler;

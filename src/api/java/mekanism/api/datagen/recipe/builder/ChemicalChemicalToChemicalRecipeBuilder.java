@@ -13,8 +13,8 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
+import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
@@ -23,7 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
-      INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipeBuilder<ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL, STACK, INGREDIENT>> {
+      INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>> extends MekanismRecipeBuilder<ChemicalChemicalToChemicalRecipeBuilder<CHEMICAL, STACK, INGREDIENT>> {
 
     private final ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> outputSerializer;
     private final INGREDIENT leftInput;
