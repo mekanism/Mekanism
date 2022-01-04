@@ -5,7 +5,7 @@
       "tag": "forge:ingots/osmium"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 20,
     "tag": "mekanism:redstone"
   },

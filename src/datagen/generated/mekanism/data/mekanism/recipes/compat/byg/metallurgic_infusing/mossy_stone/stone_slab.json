@@ -11,7 +11,7 @@
       "item": "minecraft:stone_slab"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:bio"
   },

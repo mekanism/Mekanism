@@ -1,6 +1,5 @@
 package mekanism.common.recipe.serializer;
 
-import mekanism.api.JsonConstants;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
@@ -17,10 +16,5 @@ public class MetallurgicInfuserRecipeSerializer<RECIPE extends MetallurgicInfuse
     @Override
     protected ChemicalIngredientDeserializer<InfuseType, InfusionStack, InfusionStackIngredient> getDeserializer() {
         return ChemicalIngredientDeserializer.INFUSION;
-    }
-
-    @Override
-    protected String getChemicalInputJsonKey() {
-        return JsonConstants.INFUSION_INPUT;
     }
 }

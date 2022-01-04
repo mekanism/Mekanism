@@ -5,7 +5,7 @@
       "tag": "forge:netherrack"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:fungi"
   },

@@ -32,20 +32,14 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
 
     protected abstract ChemicalIngredientDeserializer<CHEMICAL, STACK, INGREDIENT> getDeserializer();
 
-    //TODO - 1.18: Inline this and move the other overrides over to just using chemical input as the key
-    protected String getChemicalInputJsonKey() {
-        return JsonConstants.CHEMICAL_INPUT;
-    }
-
     @Nonnull
     @Override
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement itemInput = GsonHelper.isArrayNode(json, JsonConstants.ITEM_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
                                 GsonHelper.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
         ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
-        String chemicalInputKey = getChemicalInputJsonKey();
-        JsonElement chemicalInput = GsonHelper.isArrayNode(json, chemicalInputKey) ? GsonHelper.getAsJsonArray(json, chemicalInputKey) :
-                                    GsonHelper.getAsJsonObject(json, chemicalInputKey);
+        JsonElement chemicalInput = GsonHelper.isArrayNode(json, JsonConstants.CHEMICAL_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.CHEMICAL_INPUT) :
+                                    GsonHelper.getAsJsonObject(json, JsonConstants.CHEMICAL_INPUT);
         INGREDIENT chemicalIngredient = getDeserializer().deserialize(chemicalInput);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {

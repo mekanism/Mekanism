@@ -6,7 +6,7 @@
       "item": "minecraft:netherite_scrap"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 40,
     "tag": "mekanism:gold"
   },

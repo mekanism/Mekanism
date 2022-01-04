@@ -35,16 +35,12 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
     private final ItemStackIngredient itemInput;
     private final INGREDIENT chemicalInput;
     private final ItemStack output;
-    //TODO - 1.18: Just inline this as JsonConstants.CHEMICAL_INPUT
-    private final String chemicalInputKey;
 
-    protected ItemStackChemicalToItemStackRecipeBuilder(ResourceLocation serializerName, ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output,
-          String chemicalInputKey) {
+    protected ItemStackChemicalToItemStackRecipeBuilder(ResourceLocation serializerName, ItemStackIngredient itemInput, INGREDIENT chemicalInput, ItemStack output) {
         super(serializerName);
         this.itemInput = itemInput;
         this.chemicalInput = chemicalInput;
         this.output = output;
-        this.chemicalInputKey = chemicalInputKey;
     }
 
     /**
@@ -59,7 +55,7 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This compressing recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("compressing"), itemInput, gasInput, output, JsonConstants.GAS_INPUT);
+        return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("compressing"), itemInput, gasInput, output);
     }
 
     /**
@@ -74,7 +70,7 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This purifying recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("purifying"), itemInput, gasInput, output, JsonConstants.GAS_INPUT);
+        return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("purifying"), itemInput, gasInput, output);
     }
 
     /**
@@ -89,7 +85,7 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This injecting recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("injecting"), itemInput, gasInput, output, JsonConstants.GAS_INPUT);
+        return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("injecting"), itemInput, gasInput, output);
     }
 
     /**
@@ -104,7 +100,7 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This metallurgic infusing recipe requires a non empty output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("metallurgic_infusing"), itemInput, infusionInput, output, JsonConstants.INFUSION_INPUT);
+        return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("metallurgic_infusing"), itemInput, infusionInput, output);
     }
 
     /**
@@ -119,7 +115,7 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         if (output.isEmpty()) {
             throw new IllegalArgumentException("This painting recipe requires a non empty item output.");
         }
-        return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("painting"), itemInput, pigmentInput, output, JsonConstants.CHEMICAL_INPUT);
+        return new ItemStackChemicalToItemStackRecipeBuilder<>(mekSerializer("painting"), itemInput, pigmentInput, output);
     }
 
     @Override
@@ -145,7 +141,7 @@ public class ItemStackChemicalToItemStackRecipeBuilder<CHEMICAL extends Chemical
         @Override
         public void serializeRecipeData(@Nonnull JsonObject json) {
             json.add(JsonConstants.ITEM_INPUT, itemInput.serialize());
-            json.add(chemicalInputKey, chemicalInput.serialize());
+            json.add(JsonConstants.CHEMICAL_INPUT, chemicalInput.serialize());
             json.add(JsonConstants.OUTPUT, SerializerHelper.serializeItemStack(output));
         }
     }

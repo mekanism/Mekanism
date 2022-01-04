@@ -5,7 +5,7 @@
       "tag": "forge:ingots/brick"
     }
   },
-  "gasInput": {
+  "chemicalInput": {
     "amount": 1,
     "tag": "mekanism:water_vapor"
   },

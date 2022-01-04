@@ -5,7 +5,7 @@
       "item": "minecraft:cobblestone_wall"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 10,
     "tag": "mekanism:bio"
   },

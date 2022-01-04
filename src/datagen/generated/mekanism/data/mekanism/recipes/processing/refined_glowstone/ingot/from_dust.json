@@ -5,7 +5,7 @@
       "tag": "forge:dusts/glowstone"
     }
   },
-  "gasInput": {
+  "chemicalInput": {
     "amount": 1,
     "gas": "mekanism:liquid_osmium"
   },

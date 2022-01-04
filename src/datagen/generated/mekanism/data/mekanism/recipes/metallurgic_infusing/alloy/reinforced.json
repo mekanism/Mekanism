@@ -5,7 +5,7 @@
       "tag": "mekanism:alloys/infused"
     }
   },
-  "infusionInput": {
+  "chemicalInput": {
     "amount": 20,
     "tag": "mekanism:diamond"
   },
