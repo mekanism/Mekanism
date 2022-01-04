@@ -373,6 +373,7 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+    mavenLocal()
 
     whenObjectAdded {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
         if (it instanceof MavenArtifactRepository) {
@@ -404,7 +405,9 @@ test {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    //TODO - 1.18: switch back, this is currently going from maven local so I can test in dev using https://github.com/MinecraftForge/MinecraftForge/pull/8352
+    minecraft "net.minecraftforge:forge:${minecraft_version}-39.0.11-custom_tag_type_fixes"
+    //minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     //TODO - 1.18: Re-enable after CrT updates
     //annotationProcessor project(":annotation-processor")
@@ -436,7 +439,7 @@ dependencies {
     //Mods we have dependencies on but don't bother loading into the dev environment
     //TODO - 1.18: Currently we are getting projecte from flatdir for purposes of compiling
     //compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
-    compileOnly fg.deobf("projecte:projecte:1.0.0")
+    compileOnly fg.deobf("projecte:projecte:1.0.0:api")
     //TODO - 1.18: Support flux networks again when it ports
     //compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
@@ -460,7 +463,7 @@ dependencies {
     datagenmainImplementation fg.deobf("ilikewoodxbyg:ilikewoodxbyg-1.18.1:7.0.0.0")
     //TODO - 1.18: Currently we are getting projecte from flatdir for purposes of compiling
     //datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
-    datagenmainRuntimeOnly fg.deobf("projecte:projecte:1.0.0")
+    datagenmainRuntimeOnly fg.deobf("projecte:projecte:1.0.0:universal")
 }
 
 if (project.hasProperty('UPDATE_MAPPINGS')) {
