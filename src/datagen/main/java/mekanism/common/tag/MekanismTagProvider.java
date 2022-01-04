@@ -1,9 +1,11 @@
 package mekanism.common.tag;
 
 import com.google.common.collect.Table.Cell;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.slurry.Slurry;
+import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockOre;
@@ -49,6 +51,12 @@ public class MekanismTagProvider extends BaseTagProvider {
     public MekanismTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
         super(gen, Mekanism.MODID, existingFileHelper);
     }
+
+    @Override
+    protected List<IBlockProvider> getAllBlocks() {
+        return MekanismBlocks.BLOCKS.getAllBlocks();
+    }
+
 
     @Override
     protected void registerTags() {
@@ -467,35 +475,79 @@ public class MekanismTagProvider extends BaseTagProvider {
     private void addHarvestRequirements() {
         //TODO - 1.18: add a system that checks that our blocks are added to a harvest tag
         // and if any are missing that have requiresCorrectToolForDrops, crash the datagen
-        addToTag(BlockTags.MINEABLE_WITH_PICKAXE,
-              MekanismBlocks.STRUCTURAL_GLASS,
+        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
               MekanismBlocks.BOUNDING_BLOCK,
-              MekanismBlocks.BASIC_ENERGY_CUBE,
-              MekanismBlocks.ADVANCED_ENERGY_CUBE,
-              MekanismBlocks.ELITE_ENERGY_CUBE,
-              MekanismBlocks.ULTIMATE_ENERGY_CUBE,
+              MekanismBlocks.BASIC_ENERGY_CUBE, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE,
               MekanismBlocks.CREATIVE_ENERGY_CUBE,
-              //TODO - 1.18: BlockBase, BlockBasicMultiblock, BlockTile
-
-              MekanismBlocks.BRONZE_BLOCK,
-              MekanismBlocks.REFINED_OBSIDIAN_BLOCK,
-              MekanismBlocks.CHARCOAL_BLOCK,
-              MekanismBlocks.REFINED_GLOWSTONE_BLOCK,
-              MekanismBlocks.STEEL_BLOCK,
-              MekanismBlocks.FLUORITE_BLOCK
+              MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
+              MekanismBlocks.CREATIVE_FLUID_TANK,
+              MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ULTIMATE_CHEMICAL_TANK,
+              MekanismBlocks.CREATIVE_CHEMICAL_TANK,
+              MekanismBlocks.BASIC_BIN, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.ELITE_BIN, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.CREATIVE_BIN,
+              MekanismBlocks.BRONZE_BLOCK, MekanismBlocks.REFINED_OBSIDIAN_BLOCK, MekanismBlocks.CHARCOAL_BLOCK, MekanismBlocks.REFINED_GLOWSTONE_BLOCK,
+              MekanismBlocks.STEEL_BLOCK, MekanismBlocks.FLUORITE_BLOCK,
+              MekanismBlocks.TELEPORTER, MekanismBlocks.TELEPORTER_FRAME,
+              MekanismBlocks.STEEL_CASING,
+              MekanismBlocks.STRUCTURAL_GLASS,
+              MekanismBlocks.DYNAMIC_TANK, MekanismBlocks.DYNAMIC_VALVE,
+              MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, MekanismBlocks.THERMAL_EVAPORATION_VALVE, MekanismBlocks.THERMAL_EVAPORATION_BLOCK,
+              MekanismBlocks.INDUCTION_CASING,
+              MekanismBlocks.INDUCTION_PORT,
+              MekanismBlocks.BASIC_INDUCTION_CELL, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_INDUCTION_CELL,
+              MekanismBlocks.BASIC_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER,
+              MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER,
+              MekanismBlocks.SUPERHEATING_ELEMENT, MekanismBlocks.PRESSURE_DISPERSER, MekanismBlocks.BOILER_CASING, MekanismBlocks.BOILER_VALVE,
+              MekanismBlocks.SECURITY_DESK,
+              MekanismBlocks.RADIOACTIVE_WASTE_BARREL,
+              MekanismBlocks.ENRICHMENT_CHAMBER,
+              MekanismBlocks.OSMIUM_COMPRESSOR,
+              MekanismBlocks.COMBINER,
+              MekanismBlocks.CRUSHER,
+              MekanismBlocks.DIGITAL_MINER,
+              MekanismBlocks.METALLURGIC_INFUSER,
+              MekanismBlocks.PURIFICATION_CHAMBER,
+              MekanismBlocks.ENERGIZED_SMELTER,
+              MekanismBlocks.ELECTRIC_PUMP, MekanismBlocks.FLUIDIC_PLENISHER,
+              MekanismBlocks.PERSONAL_CHEST,
+              MekanismBlocks.CHARGEPAD,
+              MekanismBlocks.LOGISTICAL_SORTER,
+              MekanismBlocks.ROTARY_CONDENSENTRATOR,
+              MekanismBlocks.CHEMICAL_OXIDIZER,
+              MekanismBlocks.CHEMICAL_INFUSER,
+              MekanismBlocks.CHEMICAL_INJECTION_CHAMBER,
+              MekanismBlocks.ELECTROLYTIC_SEPARATOR,
+              MekanismBlocks.PRECISION_SAWMILL,
+              MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER,
+              MekanismBlocks.CHEMICAL_WASHER,
+              MekanismBlocks.CHEMICAL_CRYSTALLIZER,
+              MekanismBlocks.SEISMIC_VIBRATOR,
+              MekanismBlocks.PRESSURIZED_REACTION_CHAMBER,
+              MekanismBlocks.ISOTOPIC_CENTRIFUGE,
+              MekanismBlocks.NUTRITIONAL_LIQUIFIER,
+              MekanismBlocks.LASER, MekanismBlocks.LASER_AMPLIFIER, MekanismBlocks.LASER_TRACTOR_BEAM,
+              MekanismBlocks.QUANTUM_ENTANGLOPORTER,
+              MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR,
+              MekanismBlocks.OREDICTIONIFICATOR,
+              MekanismBlocks.FUELWOOD_HEATER, MekanismBlocks.RESISTIVE_HEATER,
+              MekanismBlocks.FORMULAIC_ASSEMBLICATOR,
+              MekanismBlocks.MODIFICATION_STATION,
+              MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER,
+              MekanismBlocks.PIGMENT_EXTRACTOR, MekanismBlocks.PIGMENT_MIXER, MekanismBlocks.PAINTING_MACHINE,
+              MekanismBlocks.SPS_CASING, MekanismBlocks.SPS_PORT, MekanismBlocks.SUPERCHARGED_COIL,
+              MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER
         );
-        ForgeRegistryTagBuilder<Block> mineableWithPickBuilder = getBlockBuilder(BlockTags.MINEABLE_WITH_PICKAXE);
+        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE, MekanismBlocks.getFactoryBlocks());
+        addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS,
+              MekanismBlocks.ORES
+        );
         ForgeRegistryTagBuilder<Block> needsStoneToolBuilder = getBlockBuilder(BlockTags.NEEDS_STONE_TOOL);
-        for (BlockRegistryObject<?, ?> value : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.values()) {
-            mineableWithPickBuilder.add(value.getBlock());
-        }
         for (BlockRegistryObject<BlockOre, ?> value : MekanismBlocks.ORES.values()) {
-            mineableWithPickBuilder.add(value.getBlock());
             needsStoneToolBuilder.add(value.getBlock());
         }
         //TODO - 1.18: Things that have materials that defined their correct tool
 
-        addToTag(BlockTags.MINEABLE_WITH_SHOVEL, MekanismBlocks.SALT_BLOCK);
+        addToHarvestTag(BlockTags.MINEABLE_WITH_SHOVEL, MekanismBlocks.SALT_BLOCK);
 
         addToTag(BlockTags.NEEDS_STONE_TOOL,
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM),

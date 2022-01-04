@@ -3,7 +3,11 @@ package mekanism.common.tag;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,6 +47,7 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 public abstract class BaseTagProvider implements DataProvider {
 
     private final Map<TagType<?>, Map<Named<?>, Tag.Builder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
+    private final Set<Block> knownHarvestRequirements = new HashSet<>();
     private final ExistingFileHelper existingFileHelper;
     private final DataGenerator gen;
     private final String modid;
@@ -78,10 +83,25 @@ public abstract class BaseTagProvider implements DataProvider {
 
     protected abstract void registerTags();
 
+    protected List<IBlockProvider> getAllBlocks() {
+        return Collections.emptyList();
+    }
+
+    protected void hasHarvestData(Block block) {
+        knownHarvestRequirements.add(block);
+    }
+
     @Override
     public void run(@Nonnull HashCache cache) {
         supportedTagTypes.values().forEach(Map::clear);
         registerTags();
+        for (IBlockProvider blockProvider : getAllBlocks()) {
+            Block block = blockProvider.getBlock();
+            if (block.defaultBlockState().requiresCorrectToolForDrops() && !knownHarvestRequirements.contains(block)) {
+                throw new IllegalStateException("Missing harvest tool type for block '" + block.getRegistryName() +
+                                                "' that requires the correct tool for drops.");
+            }
+        }
         supportedTagTypes.forEach((tagType, tagTypeMap) -> act(cache, tagType, tagTypeMap));
     }
 
@@ -194,6 +214,27 @@ public abstract class BaseTagProvider implements DataProvider {
         ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(tag);
         for (IBlockProvider blockProvider : blockProviders) {
             tagBuilder.add(blockProvider.getBlock());
+        }
+    }
+
+    protected void addToHarvestTag(Named<Block> tag, IBlockProvider... blockProviders) {
+        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(tag);
+        for (IBlockProvider blockProvider : blockProviders) {
+            Block block = blockProvider.getBlock();
+            tagBuilder.add(block);
+            hasHarvestData(block);
+        }
+    }
+
+    @SafeVarargs
+    protected final void addToHarvestTag(Named<Block> blockTag, Map<?, ? extends IBlockProvider>... blockProviders) {
+        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(blockTag);
+        for (Map<?, ? extends IBlockProvider> blockProvider : blockProviders) {
+            for (IBlockProvider value : blockProvider.values()) {
+                Block block = value.getBlock();
+                tagBuilder.add(block);
+                hasHarvestData(block);
+            }
         }
     }
 

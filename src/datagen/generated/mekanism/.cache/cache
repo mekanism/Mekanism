@@ -4300,7 +4300,7 @@ f16bce65a36f0e96e95caf578efa4002ddbed708 data/mekanism/tags/slurries/clean.json
 06648c0f14d02eaee1404796710c7e8fefe69d8d data/minecraft/tags/blocks/beacon_base_blocks.json
 3021ea065eaae019451913aaf66029e28c9fb3ac data/minecraft/tags/blocks/guarded_by_piglins.json
 81061f4771a012d06f3187c368cc0d0ae7412a48 data/minecraft/tags/blocks/hoglin_repellents.json
-e15f4a25d572909a5dfb666f022dc7a74eb31f94 data/minecraft/tags/blocks/mineable/pickaxe.json
+502e119765bc774fee936833d30af6e66b14cead data/minecraft/tags/blocks/mineable/pickaxe.json
 e45159bee05367b983378b50b48685710fc2e7e7 data/minecraft/tags/blocks/mineable/shovel.json
 733930468ee357bf1cfe55505241b8cc349ea908 data/minecraft/tags/blocks/needs_iron_tool.json
 a0f900057c9674df3bd6741b5a117668a5107d80 data/minecraft/tags/blocks/needs_stone_tool.json
