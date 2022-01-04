@@ -24,7 +24,8 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
         super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of(BlockPlastic.PLASTIC, color.getMapColor())
               .strength(5, 6)));
         this.color = color;
-        this.registerDefaultState(defaultBlockState().setValue(getFluidLoggedProperty(), 0));
+        //Uses getDefaultState as starting state to take into account the stuff from super
+        registerDefaultState(BlockStateHelper.getDefaultState(defaultBlockState()));
     }
 
     @Override

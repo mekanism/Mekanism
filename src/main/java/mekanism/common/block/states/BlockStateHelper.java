@@ -8,20 +8,20 @@ import javax.annotation.Nullable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeState;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Contract;
 
 public class BlockStateHelper {
@@ -32,10 +32,7 @@ public class BlockStateHelper {
     //Cardboard Box storage
     public static final BooleanProperty storageProperty = BooleanProperty.create("storage");
     //Fluid logged.
-    //TODO - 1.18: Remove CorrectingIntegerProperty and rename the property from waterlogged to fluid_logged
-    // We are keeping it as "waterlogged" so that we can properly read old values using the CorrectingIntegerProperty
-    public static final IntegerProperty FLUID_LOGGED = CorrectingIntegerProperty.create(BlockStateProperties.WATERLOGGED.getName(), 0, IStateFluidLoggable.VANILLA_FLUIDS.length);
-    //public static final IntegerProperty FLUID_LOGGED = IntegerProperty.create("fluid_logged", 0, IStateFluidLoggable.VANILLA_FLUIDS.length);
+    public static final EnumProperty<FluidLogType> FLUID_LOGGED = EnumProperty.create("fluid_logged", FluidLogType.class);
 
     public static BlockState getDefaultState(@Nonnull BlockState state) {
         Block block = state.getBlock();
@@ -44,9 +41,9 @@ public class BlockStateHelper {
                 state = ((AttributeState) attr).getDefaultState(state);
             }
         }
-        if (block instanceof IStateFluidLoggable) {
+        if (block instanceof IStateFluidLoggable fluidLoggable) {
             //Default the blocks to not being waterlogged, they have code to force waterlogging to true if being placed in water
-            state = state.setValue(((IStateFluidLoggable) block).getFluidLoggedProperty(), 0);
+            state = fluidLoggable.setState(state, Fluids.EMPTY);
         }
         return state;
     }
@@ -109,10 +106,9 @@ public class BlockStateHelper {
                 state = ((AttributeState) attr).getStateForPlacement(block, state, world, pos, player, face);
             }
         }
-        if (block instanceof IStateFluidLoggable) {
-            IStateFluidLoggable fluidLoggable = (IStateFluidLoggable) block;
+        if (block instanceof IStateFluidLoggable fluidLoggable) {
             FluidState fluidState = world.getFluidState(pos);
-            state = state.setValue(fluidLoggable.getFluidLoggedProperty(), fluidLoggable.getSupportedFluidPropertyIndex(fluidState.getType()));
+            state = fluidLoggable.setState(state, fluidState.getType());
         }
         return state;
     }
@@ -132,13 +128,11 @@ public class BlockStateHelper {
         if (oldBlock instanceof IStateStorage && newBlock instanceof IStateStorage) {
             newState = newState.setValue(storageProperty, oldState.getValue(storageProperty));
         }
-        if (oldBlock instanceof IStateFluidLoggable && newBlock instanceof IStateFluidLoggable) {
-            IStateFluidLoggable oldFluidLoggable = (IStateFluidLoggable) oldBlock;
-            IStateFluidLoggable newFluidLoggable = (IStateFluidLoggable) newBlock;
-            if (oldFluidLoggable.getSupportedFluids().length == newFluidLoggable.getSupportedFluids().length) {
-                //Basic check if the number of supported fluids is the same copy it over
-                //TODO: Eventually maybe we want a better check? In theory they should always match but just in case
-                newState = newState.setValue(newFluidLoggable.getFluidLoggedProperty(), oldState.getValue(oldFluidLoggable.getFluidLoggedProperty()));
+        if (newBlock instanceof IStateFluidLoggable newFluidLoggable) {
+            FluidState oldFluidState = oldState.getFluidState();
+            if (!oldFluidState.isEmpty()) {
+                //Try to set the new state to the same as the old one had if the old one was not empty
+                newState = newFluidLoggable.setState(newState, oldFluidState.getType());
             }
         }
         return newState;

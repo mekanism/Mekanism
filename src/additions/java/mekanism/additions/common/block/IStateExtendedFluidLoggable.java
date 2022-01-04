@@ -1,6 +1,7 @@
 package mekanism.additions.common.block;
 
 import javax.annotation.Nonnull;
+import mekanism.common.block.states.IFluidLogType;
 import mekanism.common.block.states.IStateFluidLoggable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +11,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -21,8 +22,7 @@ import net.minecraft.world.level.material.Fluids;
  */
 public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
 
-    Fluid[] VANILLA_EXTENSION = new Fluid[]{Fluids.LAVA};
-    IntegerProperty FLUID_LOGGED_EXTENSION = IntegerProperty.create("fluid_logged_extension", 0, VANILLA_EXTENSION.length);
+    EnumProperty<ExtendedFluidLogType> FLUID_LOGGED = EnumProperty.create("fluid_logged_extension", ExtendedFluidLogType.class);
 
     @Override
     default boolean isValidFluid(@Nonnull Fluid fluid) {
@@ -31,14 +31,8 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
 
     @Nonnull
     @Override
-    default Fluid[] getSupportedFluids() {
-        return VANILLA_EXTENSION;
-    }
-
-    @Nonnull
-    @Override
-    default IntegerProperty getFluidLoggedProperty() {
-        return FLUID_LOGGED_EXTENSION;
+    default EnumProperty<? extends IFluidLogType> getFluidLoggedProperty() {
+        return FLUID_LOGGED;
     }
 
     @Nonnull
@@ -63,7 +57,7 @@ public interface IStateExtendedFluidLoggable extends IStateFluidLoggable {
                 if (fluid == Fluids.WATER) {
                     world.setBlock(pos, state.setValue(BlockStateProperties.WATERLOGGED, true), Block.UPDATE_ALL);
                 } else {
-                    world.setBlock(pos, state.setValue(getFluidLoggedProperty(), getSupportedFluidPropertyIndex(fluid)), Block.UPDATE_ALL);
+                    world.setBlock(pos, setState(state, fluid), Block.UPDATE_ALL);
                 }
                 world.scheduleTick(pos, fluid, fluid.getTickDelay(world));
             }
