@@ -10,7 +10,7 @@ import net.minecraft.world.level.ItemLike;
 public class MekDataShapedRecipeBuilder extends ExtendedShapedRecipeBuilder {
 
     private MekDataShapedRecipeBuilder(ItemLike result, int count) {
-        super(MekanismRecipeSerializers.MEK_DATA.getRecipeSerializer(), result, count);
+        super(MekanismRecipeSerializers.MEK_DATA.get(), result, count);
     }
 
     public static MekDataShapedRecipeBuilder shapedRecipe(ItemLike result) {

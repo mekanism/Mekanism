@@ -27,7 +27,7 @@ public class PigmentExtractingIRecipe extends ItemStackToPigmentRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<ItemStackToPigmentRecipe> getSerializer() {
-        return MekanismRecipeSerializers.PIGMENT_EXTRACTING.getRecipeSerializer();
+        return MekanismRecipeSerializers.PIGMENT_EXTRACTING.get();
     }
 
     @Nonnull

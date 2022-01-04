@@ -27,7 +27,7 @@ public class PurifyingIRecipe extends ItemStackGasToItemStackRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<ItemStackGasToItemStackRecipe> getSerializer() {
-        return MekanismRecipeSerializers.PURIFYING.getRecipeSerializer();
+        return MekanismRecipeSerializers.PURIFYING.get();
     }
 
     @Nonnull

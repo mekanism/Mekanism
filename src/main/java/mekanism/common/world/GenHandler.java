@@ -75,8 +75,8 @@ public class GenHandler {
                       //TODO - 1.18: Deepslate ore variants
                       OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, MekanismBlocks.ORES.get(type).getBlock().defaultBlockState())
                 ));
-                ORES.put(type, getOreFeature(type, targetStates, MekanismFeatures.ORE.getFeature(), false));
-                ORE_RETROGENS.put(type, getOreFeature(type, targetStates, MekanismFeatures.ORE_RETROGEN.getFeature(), true));
+                ORES.put(type, getOreFeature(type, targetStates, MekanismFeatures.ORE.get(), false));
+                ORE_RETROGENS.put(type, getOreFeature(type, targetStates, MekanismFeatures.ORE_RETROGEN.get(), true));
             }
             SALT_FEATURE = getSaltFeature(MekanismConfig.world.salt, PlacementUtils.HEIGHTMAP_TOP_SOLID, false);
             //TODO - 1.18: Test that this vanilla palcement works fine
@@ -139,7 +139,7 @@ public class GenHandler {
 
     @Nonnull
     private static PlacedFeature getSaltFeature(SaltConfig saltConfig, PlacementModifier placement, boolean retroGen) {
-        ConfiguredFeature<?, ?> configuredFeature = new DisableableConfiguredFeature<>(MekanismFeatures.DISK.getFeature(),
+        ConfiguredFeature<?, ?> configuredFeature = new DisableableConfiguredFeature<>(MekanismFeatures.DISK.get(),
               new ResizableDiskConfig(MekanismBlocks.SALT_BLOCK.getBlock().defaultBlockState(), saltConfig), saltConfig.shouldGenerate, retroGen);
         PlacedFeature placedFeature = configuredFeature.placed(List.of(CountPlacement.of(new ConfigurableConstantInt(null, saltConfig.perChunk)),
               InSquarePlacement.spread(), placement, BiomeFilter.biome()));

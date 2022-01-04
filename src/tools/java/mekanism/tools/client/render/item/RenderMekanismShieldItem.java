@@ -40,17 +40,17 @@ public class RenderMekanismShieldItem extends MekanismISTER {
     public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight) {
         Item item = stack.getItem();
         ShieldTextures textures;
-        if (item == ToolsItems.BRONZE_SHIELD.getItem()) {
+        if (item == ToolsItems.BRONZE_SHIELD.asItem()) {
             textures = ShieldTextures.BRONZE;
-        } else if (item == ToolsItems.LAPIS_LAZULI_SHIELD.getItem()) {
+        } else if (item == ToolsItems.LAPIS_LAZULI_SHIELD.asItem()) {
             textures = ShieldTextures.LAPIS_LAZULI;
-        } else if (item == ToolsItems.OSMIUM_SHIELD.getItem()) {
+        } else if (item == ToolsItems.OSMIUM_SHIELD.asItem()) {
             textures = ShieldTextures.OSMIUM;
-        } else if (item == ToolsItems.REFINED_GLOWSTONE_SHIELD.getItem()) {
+        } else if (item == ToolsItems.REFINED_GLOWSTONE_SHIELD.asItem()) {
             textures = ShieldTextures.REFINED_GLOWSTONE;
-        } else if (item == ToolsItems.REFINED_OBSIDIAN_SHIELD.getItem()) {
+        } else if (item == ToolsItems.REFINED_OBSIDIAN_SHIELD.asItem()) {
             textures = ShieldTextures.REFINED_OBSIDIAN;
-        } else if (item == ToolsItems.STEEL_SHIELD.getItem()) {
+        } else if (item == ToolsItems.STEEL_SHIELD.asItem()) {
             textures = ShieldTextures.STEEL;
         } else {
             Mekanism.logger.warn("Unknown item for mekanism shield renderer: {}", item.getRegistryName());

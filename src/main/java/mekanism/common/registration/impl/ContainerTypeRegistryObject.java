@@ -1,6 +1,5 @@
 package mekanism.common.registration.impl;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -8,26 +7,21 @@ import mekanism.common.inventory.container.ContainerProvider;
 import mekanism.common.inventory.container.type.MekanismContainerType;
 import mekanism.common.inventory.container.type.MekanismItemContainerType;
 import mekanism.common.registration.WrappedRegistryObject;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.MenuConstructor;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuConstructor;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkHooks;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu> extends WrappedRegistryObject<MenuType<CONTAINER>> {
 
     public ContainerTypeRegistryObject(RegistryObject<MenuType<CONTAINER>> registryObject) {
         super(registryObject);
-    }
-
-    @Nonnull
-    public MenuType<CONTAINER> getContainerType() {
-        return get();
     }
 
     //Internal use only overwrite the registry object

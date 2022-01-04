@@ -76,7 +76,7 @@ public class ModuleHelper implements IModuleHelper {
         });
         Set<ModuleData<?>> supported = supportedModulesBuilder.build();
         if (!supported.isEmpty()) {
-            Item item = moduleContainer.getItem();
+            Item item = moduleContainer.asItem();
             supportedModules.put(item, supported);
             for (ModuleData<?> data : supported) {
                 supportedContainersBuilderMap.computeIfAbsent(data, d -> ImmutableSet.builder()).add(item);

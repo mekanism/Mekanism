@@ -25,7 +25,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismRecipeSerializers.MEK_DATA.getRecipeSerializer();
+        return MekanismRecipeSerializers.MEK_DATA.get();
     }
 
     @Override

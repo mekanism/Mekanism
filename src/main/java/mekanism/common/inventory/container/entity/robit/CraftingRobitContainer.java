@@ -35,7 +35,7 @@ public class CraftingRobitContainer extends CraftingMenu implements IEntityConta
     @Nonnull
     @Override
     public MenuType<?> getType() {
-        return MekanismContainerTypes.CRAFTING_ROBIT.getContainerType();
+        return MekanismContainerTypes.CRAFTING_ROBIT.get();
     }
 
     @Override

@@ -36,6 +36,6 @@ class TierInstallerRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.CIRCUIT, circuitTag)
               .key(Pattern.INGOT, ingotTag)
               .key(Pattern.ALLOY, alloyTag)
-              .build(consumer, Mekanism.rl(basePath + tierInstaller.getItem().getToTier().getLowerName()));
+              .build(consumer, Mekanism.rl(basePath + tierInstaller.asItem().getToTier().getLowerName()));
     }
 }

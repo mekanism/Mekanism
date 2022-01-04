@@ -27,7 +27,7 @@ public class MetallurgicInfuserIRecipe extends MetallurgicInfuserRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<MetallurgicInfuserRecipe> getSerializer() {
-        return MekanismRecipeSerializers.METALLURGIC_INFUSING.getRecipeSerializer();
+        return MekanismRecipeSerializers.METALLURGIC_INFUSING.get();
     }
 
     @Nonnull

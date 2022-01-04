@@ -241,7 +241,7 @@ public abstract class BaseTagProvider implements DataProvider {
         ForgeRegistryTagBuilder<Item> itemTagBuilder = getItemBuilder(itemTag);
         ForgeRegistryTagBuilder<Block> blockTagBuilder = getBlockBuilder(blockTag);
         for (IBlockProvider blockProvider : blockProviders) {
-            itemTagBuilder.add(blockProvider.getItem());
+            itemTagBuilder.add(blockProvider.asItem());
             blockTagBuilder.add(blockProvider.getBlock());
         }
     }

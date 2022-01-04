@@ -28,7 +28,7 @@ public class FluidSlurryToSlurryIRecipe extends FluidSlurryToSlurryRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<FluidSlurryToSlurryRecipe> getSerializer() {
-        return MekanismRecipeSerializers.WASHING.getRecipeSerializer();
+        return MekanismRecipeSerializers.WASHING.get();
     }
 
     @Nonnull

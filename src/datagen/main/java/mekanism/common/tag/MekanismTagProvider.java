@@ -89,9 +89,9 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(BlockTags.GUARDED_BY_PIGLINS, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, MekanismBlocks.PERSONAL_CHEST);
         addToTag(BlockTags.HOGLIN_REPELLENTS, MekanismBlocks.TELEPORTER, MekanismBlocks.QUANTUM_ENTANGLOPORTER);
         getItemBuilder(ItemTags.PIGLIN_LOVED).add(
-              MekanismBlocks.REFINED_GLOWSTONE_BLOCK.getItem(),
-              MekanismItems.REFINED_GLOWSTONE_INGOT.getItem(),
-              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD).getItem()
+              MekanismBlocks.REFINED_GLOWSTONE_BLOCK.asItem(),
+              MekanismItems.REFINED_GLOWSTONE_INGOT.asItem(),
+              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD).asItem()
         ).add(
               MekanismTags.Items.ENRICHED_GOLD,
               MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, PrimaryResource.GOLD),

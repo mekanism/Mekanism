@@ -27,7 +27,7 @@ public class ChemicalOxidizerIRecipe extends ItemStackToGasRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<ItemStackToGasRecipe> getSerializer() {
-        return MekanismRecipeSerializers.OXIDIZING.getRecipeSerializer();
+        return MekanismRecipeSerializers.OXIDIZING.get();
     }
 
     @Nonnull

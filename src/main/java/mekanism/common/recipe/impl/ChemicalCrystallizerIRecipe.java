@@ -26,7 +26,7 @@ public class ChemicalCrystallizerIRecipe extends ChemicalCrystallizerRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<ChemicalCrystallizerRecipe> getSerializer() {
-        return MekanismRecipeSerializers.CRYSTALLIZING.getRecipeSerializer();
+        return MekanismRecipeSerializers.CRYSTALLIZING.get();
     }
 
     @Nonnull

@@ -28,7 +28,7 @@ public class ChemicalDissolutionIRecipe extends ChemicalDissolutionRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<ChemicalDissolutionRecipe> getSerializer() {
-        return MekanismRecipeSerializers.DISSOLUTION.getRecipeSerializer();
+        return MekanismRecipeSerializers.DISSOLUTION.get();
     }
 
     @Nonnull

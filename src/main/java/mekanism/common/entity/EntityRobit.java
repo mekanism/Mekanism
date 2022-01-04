@@ -612,11 +612,11 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public List<IInventorySlot> getContainerInventorySlots(@Nonnull MenuType<?> containerType) {
         if (!hasInventory()) {
             return Collections.emptyList();
-        } else if (containerType == MekanismContainerTypes.INVENTORY_ROBIT.getContainerType()) {
+        } else if (containerType == MekanismContainerTypes.INVENTORY_ROBIT.get()) {
             return inventoryContainerSlots;
-        } else if (containerType == MekanismContainerTypes.MAIN_ROBIT.getContainerType()) {
+        } else if (containerType == MekanismContainerTypes.MAIN_ROBIT.get()) {
             return mainContainerSlots;
-        } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.getContainerType()) {
+        } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.get()) {
             return smeltingContainerSlots;
         }
         return Collections.emptyList();
@@ -657,9 +657,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public void addContainerTrackers(MekanismContainer container) {
         MenuType<?> containerType = container.getType();
         container.track(SyncableEnum.create(SecurityMode::byIndexStatic, SecurityMode.PUBLIC, this::getSecurityMode, this::setSecurityMode));
-        if (containerType == MekanismContainerTypes.MAIN_ROBIT.getContainerType()) {
+        if (containerType == MekanismContainerTypes.MAIN_ROBIT.get()) {
             container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
-        } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.getContainerType()) {
+        } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.get()) {
             container.track(SyncableInt.create(() -> progress, value -> progress = value));
         }
     }

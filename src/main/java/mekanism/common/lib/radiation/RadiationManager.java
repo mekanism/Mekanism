@@ -287,7 +287,7 @@ public class RadiationManager implements IRadiationManager {
                 double x = player.getX() + player.level.getRandom().nextDouble() * radius * 2 - radius;
                 double y = player.getY() + player.level.getRandom().nextDouble() * radius * 2 - radius;
                 double z = player.getZ() + player.level.getRandom().nextDouble() * radius * 2 - radius;
-                player.level.addParticle(MekanismParticleTypes.RADIATION.getParticleType(), x, y, z, 0, 0, 0);
+                player.level.addParticle(MekanismParticleTypes.RADIATION.get(), x, y, z, 0, 0, 0);
             }
         }
     }

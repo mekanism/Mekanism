@@ -26,7 +26,7 @@ public class CombinerIRecipe extends CombinerRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<CombinerRecipe> getSerializer() {
-        return MekanismRecipeSerializers.COMBINING.getRecipeSerializer();
+        return MekanismRecipeSerializers.COMBINING.get();
     }
 
     @Nonnull

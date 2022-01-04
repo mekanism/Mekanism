@@ -241,7 +241,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     private void pop() {
-        playSound(AdditionsSounds.POP.getSoundEvent(), 1, 1);
+        playSound(AdditionsSounds.POP.get(), 1, 1);
         if (!level.isClientSide) {
             //TODO - 1.18: Cache the vector?
             Vector3f col = new Vector3f(color.getColor(0), color.getColor(1), color.getColor(2));

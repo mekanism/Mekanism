@@ -27,7 +27,7 @@ public class PigmentMixingIRecipe extends PigmentMixingRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<PigmentMixingRecipe> getSerializer() {
-        return MekanismRecipeSerializers.PIGMENT_MIXING.getRecipeSerializer();
+        return MekanismRecipeSerializers.PIGMENT_MIXING.get();
     }
 
     @Nonnull

@@ -11,7 +11,7 @@ import net.minecraft.world.level.ItemLike;
 public class PaxelShapedRecipeBuilder extends ExtendedShapedRecipeBuilder {
 
     private PaxelShapedRecipeBuilder(ItemLike result, int count) {
-        super(ToolsRecipeSerializers.PAXEL.getRecipeSerializer(), result, count);
+        super(ToolsRecipeSerializers.PAXEL.get(), result, count);
     }
 
     public static PaxelShapedRecipeBuilder shapedRecipe(ItemLike result) {

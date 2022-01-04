@@ -35,7 +35,7 @@ public class RepairRobitContainer extends AnvilMenu implements IEntityContainer<
     @Nonnull
     @Override
     public MenuType<?> getType() {
-        return MekanismContainerTypes.REPAIR_ROBIT.getContainerType();
+        return MekanismContainerTypes.REPAIR_ROBIT.get();
     }
 
     @Override

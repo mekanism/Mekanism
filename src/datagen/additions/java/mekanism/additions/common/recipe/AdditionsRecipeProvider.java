@@ -104,7 +104,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     }
 
     private void registerBalloon(Consumer<FinishedRecipe> consumer, ItemRegistryObject<ItemBalloon> result, String basePath) {
-        EnumColor color = result.getItem().getColor();
+        EnumColor color = result.asItem().getColor();
         String colorString = color.getRegistryPrefix();
         IngredientWithout recolorInput = IngredientWithout.create(Items.BALLOONS, result);
         DyeColor dye = color.getDyeColor();

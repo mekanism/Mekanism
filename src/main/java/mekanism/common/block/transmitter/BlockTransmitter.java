@@ -102,7 +102,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     @Override
     @Deprecated
     public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, CollisionContext context) {
-        if (!context.isHoldingItem(MekanismItems.CONFIGURATOR.getItem())) {
+        if (!context.isHoldingItem(MekanismItems.CONFIGURATOR.asItem())) {
             return getRealShape(world, pos);
         }
         //Get the partial selection box if we are holding a configurator

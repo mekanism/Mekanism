@@ -38,7 +38,7 @@ public class RotaryIRecipe extends RotaryRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<RotaryRecipe> getSerializer() {
-        return MekanismRecipeSerializers.ROTARY.getRecipeSerializer();
+        return MekanismRecipeSerializers.ROTARY.get();
     }
 
     @Nonnull

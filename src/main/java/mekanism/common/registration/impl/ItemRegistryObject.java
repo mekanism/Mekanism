@@ -14,7 +14,7 @@ public class ItemRegistryObject<ITEM extends Item> extends WrappedRegistryObject
 
     @Nonnull
     @Override
-    public ITEM getItem() {
+    public ITEM asItem() {
         return get();
     }
 }

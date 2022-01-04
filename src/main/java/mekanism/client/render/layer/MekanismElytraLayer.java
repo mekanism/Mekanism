@@ -21,7 +21,7 @@ public class MekanismElytraLayer<T extends LivingEntity, M extends HumanoidModel
 
     @Override
     public boolean shouldRender(@Nonnull ItemStack stack, @Nonnull T entity) {
-        return stack.getItem() == MekanismItems.HDPE_REINFORCED_ELYTRA.getItem();
+        return stack.getItem() == MekanismItems.HDPE_REINFORCED_ELYTRA.asItem();
     }
 
     @Nonnull

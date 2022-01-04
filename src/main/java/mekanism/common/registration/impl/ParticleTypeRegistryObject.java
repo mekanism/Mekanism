@@ -1,6 +1,5 @@
 package mekanism.common.registration.impl;
 
-import javax.annotation.Nonnull;
 import mekanism.common.registration.WrappedRegistryObject;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -10,10 +9,5 @@ public class ParticleTypeRegistryObject<PARTICLE extends ParticleOptions, TYPE e
 
     public ParticleTypeRegistryObject(RegistryObject<TYPE> registryObject) {
         super(registryObject);
-    }
-
-    @Nonnull
-    public TYPE getParticleType() {
-        return get();
     }
 }

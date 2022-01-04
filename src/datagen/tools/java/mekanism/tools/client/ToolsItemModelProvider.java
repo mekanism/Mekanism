@@ -32,7 +32,7 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
         addShieldModel(ToolsItems.STEEL_SHIELD, Mekanism.rl("block/block_steel"));
         //Armor items are generated textures, all other tools module items are handheld
         for (IItemProvider itemProvider : ToolsItems.ITEMS.getAllItems()) {
-            Item item = itemProvider.getItem();
+            Item item = itemProvider.asItem();
             if (item instanceof ItemMekanismShield) {
                 //Skip shields, we manually handle them above
                 continue;
@@ -54,7 +54,7 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
     }
 
     private boolean isVanilla(IItemProvider itemProvider) {
-        if (itemProvider.getItem() instanceof ItemMekanismPaxel) {
+        if (itemProvider.asItem() instanceof ItemMekanismPaxel) {
             String name = itemProvider.getName();
             return name.startsWith("netherite") || name.startsWith("diamond") || name.startsWith("gold") || name.startsWith("iron") ||
                    name.startsWith("stone") || name.startsWith("wood");

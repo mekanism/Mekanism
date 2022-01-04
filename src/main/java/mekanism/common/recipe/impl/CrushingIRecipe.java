@@ -26,7 +26,7 @@ public class CrushingIRecipe extends ItemStackToItemStackRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<ItemStackToItemStackRecipe> getSerializer() {
-        return MekanismRecipeSerializers.CRUSHING.getRecipeSerializer();
+        return MekanismRecipeSerializers.CRUSHING.get();
     }
 
     @Nonnull

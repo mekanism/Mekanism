@@ -22,7 +22,7 @@ public class SpecialRecipeBuilder implements FinishedRecipe {
     }
 
     public static void build(Consumer<FinishedRecipe> consumer, IRecipeSerializerRegistryObject<?> serializer) {
-        build(consumer, serializer.getRecipeSerializer());
+        build(consumer, serializer.get());
     }
 
     public static void build(Consumer<FinishedRecipe> consumer, RecipeSerializer<?> serializer) {

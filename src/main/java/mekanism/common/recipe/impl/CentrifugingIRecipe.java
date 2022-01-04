@@ -27,7 +27,7 @@ public class CentrifugingIRecipe extends GasToGasRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<GasToGasRecipe> getSerializer() {
-        return MekanismRecipeSerializers.CENTRIFUGING.getRecipeSerializer();
+        return MekanismRecipeSerializers.CENTRIFUGING.get();
     }
 
     @Nonnull

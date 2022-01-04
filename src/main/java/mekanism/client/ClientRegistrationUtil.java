@@ -85,11 +85,11 @@ public class ClientRegistrationUtil {
     }
 
     public static <T extends ParticleOptions> void registerParticleFactory(ParticleTypeRegistryObject<T, ?> particleTypeRO, ParticleEngine.SpriteParticleRegistration<T> factory) {
-        Minecraft.getInstance().particleEngine.register(particleTypeRO.getParticleType(), factory);
+        Minecraft.getInstance().particleEngine.register(particleTypeRO.get(), factory);
     }
 
     public static <C extends AbstractContainerMenu, U extends Screen & MenuAccess < C >> void registerScreen(ContainerTypeRegistryObject < C > type, ScreenConstructor < C, U > factory) {
-        MenuScreens.register(type.getContainerType(), factory);
+        MenuScreens.register(type.get(), factory);
     }
 
     //Helper method to register GuiElectricMachine due to generics not being able to be resolved through registerScreen
@@ -121,12 +121,12 @@ public class ClientRegistrationUtil {
     }
 
     public static void setPropertyOverride(IItemProvider itemProvider, ResourceLocation override, ItemPropertyFunction propertyGetter) {
-        ItemProperties.register(itemProvider.getItem(), override, propertyGetter);
+        ItemProperties.register(itemProvider.asItem(), override, propertyGetter);
     }
 
     public static void registerItemColorHandler(ItemColors colors, ItemColor itemColor, IItemProvider... items) {
         for (IItemProvider itemProvider : items) {
-            colors.register(itemColor, itemProvider.getItem());
+            colors.register(itemColor, itemProvider.asItem());
         }
     }
 
@@ -139,7 +139,7 @@ public class ClientRegistrationUtil {
     public static void registerBlockColorHandler(BlockColors blockColors, ItemColors itemColors, BlockColor blockColor, ItemColor itemColor, IBlockProvider... blocks) {
         for (IBlockProvider blockProvider : blocks) {
             blockColors.register(blockColor, blockProvider.getBlock());
-            itemColors.register(itemColor, blockProvider.getItem());
+            itemColors.register(itemColor, blockProvider.asItem());
         }
     }
 

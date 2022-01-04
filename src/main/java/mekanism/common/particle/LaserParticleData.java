@@ -8,12 +8,10 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.Direction;
-
-import net.minecraft.core.particles.ParticleOptions.Deserializer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class LaserParticleData implements ParticleOptions {
 
@@ -55,7 +53,7 @@ public class LaserParticleData implements ParticleOptions {
     @Nonnull
     @Override
     public ParticleType<?> getType() {
-        return MekanismParticleTypes.LASER.getParticleType();
+        return MekanismParticleTypes.LASER.get();
     }
 
     @Override

@@ -165,7 +165,7 @@ public class BinInsertRecipe extends BinRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismRecipeSerializers.BIN_INSERT.getRecipeSerializer();
+        return MekanismRecipeSerializers.BIN_INSERT.get();
     }
 
     @SubscribeEvent

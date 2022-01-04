@@ -96,7 +96,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     private Map<UUID, SelectedWindowData> selectedWindows;
 
     protected MekanismContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv) {
-        super(type.getContainerType(), id);
+        super(type.get(), id);
         this.inv = inv;
         if (!isRemote()) {
             //Only keep track of uuid based selected grids on the server (we use a size of one as for the most part containers are actually 1:1)

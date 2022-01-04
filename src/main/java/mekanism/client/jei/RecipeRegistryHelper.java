@@ -81,7 +81,7 @@ public class RecipeRegistryHelper {
         //Two damaged items combine to undamaged
         registry.addRecipes(List.of(factory.createAnvilRecipe(damaged2, Collections.singletonList(damaged2), Collections.singletonList(damaged3))),
               VanillaRecipeCategoryUid.ANVIL);
-        ItemStack[] repairStacks = repairMaterials.apply(item.getItem());
+        ItemStack[] repairStacks = repairMaterials.apply(item.asItem());
         //Damaged item + the repair material
         if (repairStacks != null && repairStacks.length > 0) {
             //While this is damaged1 it is down here as we don't need to bother creating the reference if we don't have a repair material

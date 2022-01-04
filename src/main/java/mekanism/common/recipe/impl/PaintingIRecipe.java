@@ -27,7 +27,7 @@ public class PaintingIRecipe extends PaintingRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<PaintingRecipe> getSerializer() {
-        return MekanismRecipeSerializers.PAINTING.getRecipeSerializer();
+        return MekanismRecipeSerializers.PAINTING.get();
     }
 
     @Nonnull

@@ -27,7 +27,7 @@ public class GasConversionIRecipe extends ItemStackToGasRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<ItemStackToGasRecipe> getSerializer() {
-        return MekanismRecipeSerializers.GAS_CONVERSION.getRecipeSerializer();
+        return MekanismRecipeSerializers.GAS_CONVERSION.get();
     }
 
     @Nonnull

@@ -27,7 +27,7 @@ public class EnergyConversionIRecipe extends ItemStackToEnergyRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<ItemStackToEnergyRecipe> getSerializer() {
-        return MekanismRecipeSerializers.ENERGY_CONVERSION.getRecipeSerializer();
+        return MekanismRecipeSerializers.ENERGY_CONVERSION.get();
     }
 
     @Nonnull

@@ -236,7 +236,7 @@ public class RenderTickHandler {
                             Pos3D vec = new Pos3D(0.4, 0.4, 0.4).multiply(p.getViewVector(1)).translate(0, -0.2, 0);
                             Pos3D motion = vec.scale(0.2).translate(p.getDeltaMovement());
                             Pos3D v = new Pos3D(p).translate(0, p.getEyeHeight(), 0).translate(vec);
-                            world.addParticle(MekanismParticleTypes.SCUBA_BUBBLE.getParticleType(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
+                            world.addParticle(MekanismParticleTypes.SCUBA_BUBBLE.get(), v.x, v.y, v.z, motion.x, motion.y + 0.2, motion.z);
                         }
                     }
                     //Traverse players and do animations for idle flame throwers
@@ -264,8 +264,8 @@ public class RenderTickHandler {
                                 Vec3 motion = p.getDeltaMovement();
                                 Vec3 flameMotion = new Vec3(motion.x(), p.isOnGround() ? 0 : motion.y(), motion.z());
                                 Vec3 mergedVec = p.position().add(flameVec);
-                                world.addParticle(MekanismParticleTypes.JETPACK_FLAME.getParticleType(),
-                                      mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x, flameMotion.y, flameMotion.z);
+                                world.addParticle(MekanismParticleTypes.JETPACK_FLAME.get(), mergedVec.x, mergedVec.y, mergedVec.z, flameMotion.x,
+                                      flameMotion.y, flameMotion.z);
                             }
                         }
                     }
@@ -463,8 +463,8 @@ public class RenderTickHandler {
     }
 
     private void renderJetpackSmoke(Level world, Vec3 pos, Vec3 motion) {
-        world.addParticle(MekanismParticleTypes.JETPACK_FLAME.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
-        world.addParticle(MekanismParticleTypes.JETPACK_SMOKE.getParticleType(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+        world.addParticle(MekanismParticleTypes.JETPACK_FLAME.get(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
+        world.addParticle(MekanismParticleTypes.JETPACK_SMOKE.get(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
     }
 
     private Model3D getOverlayModel(Direction side, TransmissionType type) {

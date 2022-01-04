@@ -26,7 +26,7 @@ public class SawmillIRecipe extends SawmillRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<SawmillRecipe> getSerializer() {
-        return MekanismRecipeSerializers.SAWING.getRecipeSerializer();
+        return MekanismRecipeSerializers.SAWING.get();
     }
 
     @Nonnull

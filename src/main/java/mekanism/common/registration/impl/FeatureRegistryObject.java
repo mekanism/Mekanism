@@ -1,6 +1,5 @@
 package mekanism.common.registration.impl;
 
-import javax.annotation.Nonnull;
 import mekanism.common.registration.WrappedRegistryObject;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -10,10 +9,5 @@ public class FeatureRegistryObject<CONFIG extends FeatureConfiguration, FEATURE 
 
     public FeatureRegistryObject(RegistryObject<FEATURE> registryObject) {
         super(registryObject);
-    }
-
-    @Nonnull
-    public FEATURE getFeature() {
-        return get();
     }
 }

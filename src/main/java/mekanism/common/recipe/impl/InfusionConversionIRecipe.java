@@ -27,7 +27,7 @@ public class InfusionConversionIRecipe extends ItemStackToInfuseTypeRecipe {
     @Nonnull
     @Override
     public RecipeSerializer<ItemStackToInfuseTypeRecipe> getSerializer() {
-        return MekanismRecipeSerializers.INFUSION_CONVERSION.getRecipeSerializer();
+        return MekanismRecipeSerializers.INFUSION_CONVERSION.get();
     }
 
     @Nonnull

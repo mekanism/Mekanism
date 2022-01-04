@@ -21,7 +21,7 @@ public class BlockRegistryObject<BLOCK extends Block, ITEM extends Item> extends
 
     @Nonnull
     @Override
-    public ITEM getItem() {
+    public ITEM asItem() {
         return getSecondary();
     }
 }

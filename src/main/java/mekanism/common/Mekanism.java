@@ -432,7 +432,7 @@ public class Mekanism {
 
     private static void registerDispenseBehavior(DispenseItemBehavior behavior, IItemProvider... itemProviders) {
         for (IItemProvider itemProvider : itemProviders) {
-            DispenserBlock.registerBehavior(itemProvider.getItem(), behavior);
+            DispenserBlock.registerBehavior(itemProvider.asItem(), behavior);
         }
     }
 

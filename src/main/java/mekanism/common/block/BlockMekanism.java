@@ -388,7 +388,7 @@ public abstract class BlockMekanism extends Block {
                     double randX = pos.getX() - 0.1 + random.nextDouble() * 1.2;
                     double randY = pos.getY() - 0.1 + random.nextDouble() * 1.2;
                     double randZ = pos.getZ() - 0.1 + random.nextDouble() * 1.2;
-                    world.addParticle(MekanismParticleTypes.RADIATION.getParticleType(), randX, randY, randZ, 0, 0, 0);
+                    world.addParticle(MekanismParticleTypes.RADIATION.get(), randX, randY, randZ, 0, 0, 0);
                 }
             }
         }

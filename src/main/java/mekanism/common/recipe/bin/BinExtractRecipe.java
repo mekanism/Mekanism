@@ -96,6 +96,6 @@ public class BinExtractRecipe extends BinRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return MekanismRecipeSerializers.BIN_EXTRACT.getRecipeSerializer();
+        return MekanismRecipeSerializers.BIN_EXTRACT.get();
     }
 }
