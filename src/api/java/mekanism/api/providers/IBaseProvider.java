@@ -3,8 +3,8 @@ package mekanism.api.providers;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public interface IBaseProvider extends IHasTextComponent, IHasTranslationKey {
 
@@ -23,7 +23,7 @@ public interface IBaseProvider extends IHasTextComponent, IHasTranslationKey {
     }
 
     @Override
-    default ITextComponent getTextComponent() {
+    default Component getTextComponent() {
         return TextComponentUtil.translate(getTranslationKey());
     }
 }

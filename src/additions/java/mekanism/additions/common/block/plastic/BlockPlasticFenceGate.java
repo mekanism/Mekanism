@@ -5,25 +5,24 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FenceGateBlock;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
 
 public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlock, IStateFluidLoggable {
 
     private final EnumColor color;
 
     public BlockPlasticFenceGate(EnumColor color) {
-        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.of(BlockPlastic.PLASTIC, color.getMapColor())
-              .strength(5, 6).harvestTool(ToolType.PICKAXE)));
+        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of(BlockPlastic.PLASTIC, color.getMapColor())
+              .strength(5, 6)));
         this.color = color;
         this.registerDefaultState(defaultBlockState().setValue(getFluidLoggedProperty(), 0));
     }
@@ -34,7 +33,7 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
     }
 
     @Override
-    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
+    public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
@@ -48,14 +47,14 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
     @Nonnull
     @Override
     @Deprecated
-    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
     }
 
     @Override
-    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }

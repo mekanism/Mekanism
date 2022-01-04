@@ -11,14 +11,14 @@ import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.Mekanism;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
+public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RECIPE> {
 
     private final IFactory<RECIPE> factory;
 
@@ -36,8 +36,8 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
         boolean hasFluidToGas = false;
         boolean hasGasToFluid = false;
         if (json.has(JsonConstants.FLUID_INPUT) || json.has(JsonConstants.GAS_OUTPUT)) {
-            JsonElement fluidInput = JSONUtils.isArrayNode(json, JsonConstants.FLUID_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.FLUID_INPUT) :
-                                     JSONUtils.getAsJsonObject(json, JsonConstants.FLUID_INPUT);
+            JsonElement fluidInput = GsonHelper.isArrayNode(json, JsonConstants.FLUID_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.FLUID_INPUT) :
+                                     GsonHelper.getAsJsonObject(json, JsonConstants.FLUID_INPUT);
             fluidInputIngredient = FluidStackIngredient.deserialize(fluidInput);
             gasOutput = SerializerHelper.getGasStack(json, JsonConstants.GAS_OUTPUT);
             hasFluidToGas = true;
@@ -46,8 +46,8 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
             }
         }
         if (json.has(JsonConstants.GAS_INPUT) || json.has(JsonConstants.FLUID_OUTPUT)) {
-            JsonElement gasInput = JSONUtils.isArrayNode(json, JsonConstants.GAS_INPUT) ? JSONUtils.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
-                                   JSONUtils.getAsJsonObject(json, JsonConstants.GAS_INPUT);
+            JsonElement gasInput = GsonHelper.isArrayNode(json, JsonConstants.GAS_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
+                                   GsonHelper.getAsJsonObject(json, JsonConstants.GAS_INPUT);
             gasInputIngredient = GasStackIngredient.deserialize(gasInput);
             fluidOutput = SerializerHelper.getFluidStack(json, JsonConstants.FLUID_OUTPUT);
             hasGasToFluid = true;
@@ -66,7 +66,7 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
     }
 
     @Override
-    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
             FluidStackIngredient fluidInputIngredient = null;
             GasStackIngredient gasInputIngredient = null;
@@ -99,7 +99,7 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
     }
 
     @Override
-    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull RECIPE recipe) {
         if (recipe.hasFluidToGas() || recipe.hasGasToFluid()) {
             try {
                 recipe.write(buffer);

@@ -2,7 +2,7 @@ package mekanism.api.datagen.recipe;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import net.minecraft.advancements.ICriterionInstance;
+import net.minecraft.advancements.CriterionTriggerInstance;
 
 /**
  * Helper class to declare named criteria for repeated use.
@@ -12,9 +12,9 @@ import net.minecraft.advancements.ICriterionInstance;
 public class RecipeCriterion {
 
     public final String name;
-    public final ICriterionInstance criterion;
+    public final CriterionTriggerInstance criterion;
 
-    private RecipeCriterion(String name, ICriterionInstance criterion) {
+    private RecipeCriterion(String name, CriterionTriggerInstance criterion) {
         this.name = name;
         this.criterion = criterion;
     }
@@ -27,7 +27,7 @@ public class RecipeCriterion {
      *
      * @return Recipe Criterion.
      */
-    public static RecipeCriterion of(String name, ICriterionInstance criterion) {
+    public static RecipeCriterion of(String name, CriterionTriggerInstance criterion) {
         return new RecipeCriterion(name, criterion);
     }
 }

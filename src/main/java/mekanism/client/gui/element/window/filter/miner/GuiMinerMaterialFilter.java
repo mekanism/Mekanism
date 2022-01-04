@@ -8,7 +8,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.miner.MinerMaterialFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.StackUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class GuiMinerMaterialFilter extends GuiMaterialFilter<MinerMaterialFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 

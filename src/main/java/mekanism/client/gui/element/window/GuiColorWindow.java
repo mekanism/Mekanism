@@ -1,7 +1,13 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Matrix4f;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
@@ -19,14 +25,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiColorWindow extends GuiWindow {
 
@@ -74,7 +75,7 @@ public class GuiColorWindow extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
 
         drawTitleText(matrix, MekanismLang.COLOR_PICKER.translate(), 6);
@@ -83,7 +84,7 @@ public class GuiColorWindow extends GuiWindow {
 
     private static final int S_TILES = 10, V_TILES = 10;
 
-    private void drawTiledGradient(MatrixStack matrix, int x, int y, int width, int height) {
+    private void drawTiledGradient(PoseStack matrix, int x, int y, int width, int height) {
         int tileWidth = Math.round((float) width / S_TILES);
         int tileHeight = Math.round((float) height / V_TILES);
         for (int i = 0; i < 10; i++) {
@@ -96,24 +97,25 @@ public class GuiColorWindow extends GuiWindow {
         }
     }
 
-    private void drawGradient(MatrixStack matrix, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
+    private void drawGradient(PoseStack matrix, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
+        //TODO - 1.18: Test this
+        //RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        BufferBuilder buffer = Tessellator.getInstance().getBuilder();
+        //RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         Matrix4f matrix4f = matrix.last().pose();
-        buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+        buffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         buffer.vertex(matrix4f, x, y + height, 0).color(bl.rf(), bl.gf(), bl.bf(), bl.af()).endVertex();
         buffer.vertex(matrix4f, x + width, y + height, 0).color(br.rf(), br.gf(), br.bf(), br.af()).endVertex();
         buffer.vertex(matrix4f, x + width, y, 0).color(tr.rf(), tr.gf(), tr.bf(), tr.af()).endVertex();
         buffer.vertex(matrix4f, x, y, 0).color(tl.rf(), tl.gf(), tl.bf(), tl.af()).endVertex();
         buffer.end();
-        WorldVertexBufferUploader.end(buffer);
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        BufferUploader.end(buffer);
+        //RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
+        //RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
     }
 
@@ -150,7 +152,7 @@ public class GuiColorWindow extends GuiWindow {
         return val >= 0 && val <= 255;
     }
 
-    private void drawColorBar(MatrixStack matrix, int x, int y, int width, int height) {
+    private void drawColorBar(PoseStack matrix, int x, int y, int width, int height) {
         for (int i = 0; i < width; i++) {
             GuiUtils.fill(matrix, x + i, y, 1, height, Color.hsv(((float) i / width) * 360F, 1, 1).argb());
         }
@@ -177,14 +179,14 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+        public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
             super.renderToolTip(matrix, mouseX, mouseY);
-            ITextComponent hex = MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, getColor().rgb()));
+            Component hex = MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, getColor().rgb()));
             displayTooltip(matrix, hex, mouseX, mouseY);
         }
 
         @Override
-        public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+        public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
             super.drawBackground(matrix, mouseX, mouseY, partialTicks);
 
             Color c = Color.hsv(hue, saturation, value);
@@ -201,7 +203,7 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
+        public void renderBackgroundOverlay(PoseStack matrix, int mouseX, int mouseY) {
             super.renderBackgroundOverlay(matrix, mouseX, mouseY);
             drawTiledGradient(matrix, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
             int posX = getButtonX() + Math.round(saturation * getButtonWidth()) - 2;
@@ -244,10 +246,11 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
+        public void renderBackgroundOverlay(PoseStack matrix, int mouseX, int mouseY) {
             super.renderBackgroundOverlay(matrix, mouseX, mouseY);
             drawColorBar(matrix, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-            minecraft.textureManager.bind(HUE_PICKER);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, HUE_PICKER);
             int posX = Math.round((hue / 360F) * (getButtonWidth() - 3));
             blit(matrix, getButtonX() - 2 + posX, getButtonY() - 2, 0, 0, 7, 12, 12, 12);
             GuiUtils.fill(matrix, getButtonX() + posX, getButtonY(), 3, 8, Color.hsv(hue, 1, 1).argb());

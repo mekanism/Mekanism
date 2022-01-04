@@ -1,6 +1,6 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.EnumMap;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -10,11 +10,12 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityTeleporter;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.Direction;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.core.Direction;
 
 @ParametersAreNonnullByDefault
 public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTeleporter> {
@@ -27,14 +28,14 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
         rotatedModelCache.clear();
     }
 
-    public RenderTeleporter(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderTeleporter(BlockEntityRendererProvider.Context context) {
+        super(context);
     }
 
     @Override
-    protected void render(TileEntityTeleporter tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
+    protected void render(TileEntityTeleporter tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         if (tile.shouldRender && tile.getLevel() != null) {
-            MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()),
+            MekanismRenderer.renderObject(getOverlayModel(tile.frameDirection(), tile.frameRotated()), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
                   MekanismRenderer.getColorARGB(tile.getColor(), 0.75F), MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
         }
     }

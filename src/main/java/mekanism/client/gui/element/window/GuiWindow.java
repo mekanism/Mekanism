@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import java.util.function.Consumer;
@@ -16,8 +16,9 @@ import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiWindow extends GuiTexturedElement {
@@ -106,7 +107,7 @@ public class GuiWindow extends GuiTexturedElement {
             }
         } else if (!ret && interactionStrategy.allowContainer()) {
             if (gui() instanceof GuiMekanism) {
-                Container c = ((GuiMekanism<?>) gui()).getMenu();
+                AbstractContainerMenu c = ((GuiMekanism<?>) gui()).getMenu();
                 if (!(c instanceof IEmptyContainer)) {
                     // allow interaction with slots
                     if (mouseX >= getGuiLeft() && mouseX < getGuiLeft() + getGuiWidth() && mouseY >= getGuiTop() + getGuiHeight() - 90) {
@@ -139,17 +140,18 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     @Override
-    public void renderBackgroundOverlay(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderBackgroundOverlay(PoseStack matrix, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
             MekanismRenderer.renderColorOverlay(matrix, 0, 0, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight(), OVERLAY_COLOR.rgba());
         } else {
-            RenderSystem.color4f(1, 1, 1, 0.75F);
+            RenderSystem.setShaderColor(1, 1, 1, 0.75F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             GuiUtils.renderBackgroundTexture(matrix, GuiMekanism.SHADOW, 4, 4, getButtonX() - 3, getButtonY() - 3, getButtonWidth() + 6, getButtonHeight() + 6, 256, 256);
             MekanismRenderer.resetColor();
         }
-        minecraft.textureManager.bind(getResource());
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, getResource());
         renderBackgroundTexture(matrix, getResource(), 4, 4);
     }
 
@@ -182,8 +184,8 @@ public class GuiWindow extends GuiTexturedElement {
         }
     }
 
-    public void renderBlur(MatrixStack matrix) {
-        RenderSystem.color4f(1, 1, 1, 0.3F);
+    public void renderBlur(PoseStack matrix) {
+        RenderSystem.setShaderColor(1, 1, 1, 0.3F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         GuiUtils.renderBackgroundTexture(matrix, GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
@@ -205,7 +207,7 @@ public class GuiWindow extends GuiTexturedElement {
     }
 
     @Override
-    public void drawTitleText(MatrixStack matrix, ITextComponent text, float y) {
+    public void drawTitleText(PoseStack matrix, Component text, float y) {
         if (isFocusOverlay()) {
             super.drawTitleText(matrix, text, y);
         } else {

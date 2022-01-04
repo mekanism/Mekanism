@@ -1,277 +1,168 @@
 package mekanism.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModelChemicalDissolutionChamber extends MekanismJavaModel {
 
+    public static final ModelLayerLocation DISSOLUTION_LAYER = new ModelLayerLocation(Mekanism.rl("chemical_dissolution_chamber"), "main");
     private static final ResourceLocation DISSOLUTION_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "chemical_dissolution_chamber.png");
-    private final RenderType RENDER_TYPE = renderType(DISSOLUTION_TEXTURE);
-    private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(DISSOLUTION_TEXTURE);
 
-    private final ModelRenderer support2;
-    private final ModelRenderer vat5;
-    private final ModelRenderer top2;
-    private final ModelRenderer top;
-    private final ModelRenderer base;
-    private final ModelRenderer vat2;
-    private final ModelRenderer vat3;
-    private final ModelRenderer vat6;
-    private final ModelRenderer vat9;
-    private final ModelRenderer vat8;
-    private final ModelRenderer vat7;
-    private final ModelRenderer vat4;
-    private final ModelRenderer backEdge2;
-    private final ModelRenderer back;
-    private final ModelRenderer backEdge1;
-    private final ModelRenderer vents;
-    private final ModelRenderer support1;
-    private final ModelRenderer vat1;
-    private final ModelRenderer nozzle8;
-    private final ModelRenderer nozzle5;
-    private final ModelRenderer nozzle7;
-    private final ModelRenderer nozzle4;
-    private final ModelRenderer nozzle9;
-    private final ModelRenderer nozzle6;
-    private final ModelRenderer nozzle3;
-    private final ModelRenderer nozzle2;
-    private final ModelRenderer nozzle1;
-    private final ModelRenderer glass;
-    private final ModelRenderer portToggle1;
-    private final ModelRenderer portToggle2;
+    private static final ModelPartData SUPPORT_2 = new ModelPartData("support2", CubeListBuilder.create()
+          .texOffs(4, 0)
+          .addBox(0F, 0F, 0F, 1, 2, 1),
+          PartPose.offset(6F, 9F, -7F));
+    private static final ModelPartData VAT_5 = new ModelPartData("vat5", CubeListBuilder.create()
+          .texOffs(0, 23)
+          .addBox(0F, 0F, 0F, 3, 4, 3),
+          PartPose.offset(-1.5F, 13F, -1.5F));
+    private static final ModelPartData TOP_2 = new ModelPartData("top2", CubeListBuilder.create()
+          .texOffs(0, 40)
+          .addBox(0F, 0F, 0F, 16, 1, 15),
+          PartPose.offset(-8F, 11F, -8F));
+    private static final ModelPartData TOP = new ModelPartData("top", CubeListBuilder.create()
+          .texOffs(0, 23)
+          .addBox(0F, 0F, 0F, 16, 1, 16),
+          PartPose.offset(-8F, 8F, -8F));
+    private static final ModelPartData BASE = new ModelPartData("base", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 16, 7, 16),
+          PartPose.offset(-8F, 17F, -8F));
+    private static final ModelPartData VAT_2 = new ModelPartData("vat2", CubeListBuilder.create()
+          .texOffs(0, 23)
+          .addBox(0F, 0F, 0F, 3, 4, 3),
+          PartPose.offset(-5F, 13F, -1.5F));
+    private static final ModelPartData VAT_3 = new ModelPartData("vat3", CubeListBuilder.create()
+          .texOffs(0, 23)
+          .addBox(0F, 0F, 0F, 3, 4, 3),
+          PartPose.offset(-5F, 13F, 2F));
+    private static final ModelPartData VAT_6 = new ModelPartData("vat6", CubeListBuilder.create()
+          .texOffs(0, 23)
+          .addBox(0F, 0F, 0F, 3, 4, 3),
+          PartPose.offset(-1.5F, 13F, 2F));
+    private static final ModelPartData VAT_9 = new ModelPartData("vat9", CubeListBuilder.create()
+          .texOffs(0, 23)
+          .addBox(0F, 0F, 0F, 3, 4, 3),
+          PartPose.offset(2F, 13F, 2F));
+    private static final ModelPartData VAT_8 = new ModelPartData("vat8", CubeListBuilder.create()
+          .texOffs(0, 23)
+          .addBox(0F, 0F, 0F, 3, 4, 3),
+          PartPose.offset(2F, 13F, -1.5F));
+    private static final ModelPartData VAT_7 = new ModelPartData("vat7", CubeListBuilder.create()
+          .texOffs(0, 23)
+          .addBox(0F, 0F, 0F, 3, 4, 3),
+          PartPose.offset(2F, 13F, -5F));
+    private static final ModelPartData VAT_4 = new ModelPartData("vat4", CubeListBuilder.create()
+          .texOffs(0, 23)
+          .addBox(0F, 0F, 0F, 3, 4, 3),
+          PartPose.offset(-1.5F, 13F, -5F));
+    private static final ModelPartData BACK_EDGE_2 = new ModelPartData("backEdge2", CubeListBuilder.create()
+          .texOffs(8, 0)
+          .addBox(0F, 0F, 0F, 1, 8, 1),
+          PartPose.offset(7F, 9F, 7F));
+    private static final ModelPartData BACK = new ModelPartData("back", CubeListBuilder.create()
+          .texOffs(48, 0)
+          .addBox(0F, 0F, 0F, 14, 8, 2),
+          PartPose.offset(-7F, 9F, 6F));
+    private static final ModelPartData BACK_EDGE_1 = new ModelPartData("backEdge1", CubeListBuilder.create()
+          .texOffs(8, 0)
+          .addBox(0F, 0F, 0F, 1, 8, 1),
+          PartPose.offset(-8F, 9F, 7F));
+    private static final ModelPartData VENTS = new ModelPartData("vents", CubeListBuilder.create()
+          .texOffs(70, 0)
+          .addBox(0F, 0F, 0F, 8, 2, 10),
+          PartPose.offset(-4F, 9F, -4F));
+    private static final ModelPartData SUPPORT_1 = new ModelPartData("support1", CubeListBuilder.create()
+          .texOffs(4, 0)
+          .addBox(0F, 0F, 0F, 1, 2, 1),
+          PartPose.offset(-7F, 9F, -7F));
+    private static final ModelPartData VAT_1 = new ModelPartData("vat1", CubeListBuilder.create()
+          .texOffs(0, 23)
+          .addBox(0F, 0F, 0F, 3, 4, 3),
+          PartPose.offset(-5F, 13F, -5F));
+    private static final ModelPartData NOZZLE_8 = new ModelPartData("nozzle8", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(3F, 11.5F, -0.5F));
+    private static final ModelPartData NOZZLE_5 = new ModelPartData("nozzle5", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-0.5F, 11.5F, -0.5F));
+    private static final ModelPartData NOZZLE_7 = new ModelPartData("nozzle7", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(3F, 11.5F, -4F));
+    private static final ModelPartData NOZZLE_4 = new ModelPartData("nozzle4", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-0.5F, 11.5F, -4F));
+    private static final ModelPartData NOZZLE_9 = new ModelPartData("nozzle9", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(3F, 11.5F, 3F));
+    private static final ModelPartData NOZZLE_6 = new ModelPartData("nozzle6", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-0.5F, 11.5F, 3F));
+    private static final ModelPartData NOZZLE_3 = new ModelPartData("nozzle3", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-4F, 11.5F, 3F));
+    private static final ModelPartData NOZZLE_2 = new ModelPartData("nozzle2", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-4F, 11.5F, -0.5F));
+    private static final ModelPartData NOZZLE_1 = new ModelPartData("nozzle1", CubeListBuilder.create()
+          .addBox(0F, 0F, 0F, 1, 1, 1),
+          PartPose.offset(-4F, 11.5F, -4F));
+    private static final ModelPartData GLASS = new ModelPartData("glass", CubeListBuilder.create()
+          .texOffs(64, 14)
+          .addBox(0F, 0F, 0F, 14, 5, 13),
+          PartPose.offset(-7F, 12F, -7F));
+    private static final ModelPartData PORT_TOGGLE_1 = new ModelPartData("portToggle1", CubeListBuilder.create()
+          .texOffs(106, 0)
+          .addBox(0F, 0F, 0F, 1, 10, 10),
+          PartPose.offset(-8.01F, 10.99F, -5F));
+    private static final ModelPartData PORT_TOGGLE_2 = new ModelPartData("portToggle2", CubeListBuilder.create()
+          .texOffs(64, 32)
+          .addBox(0F, 0F, 0F, 1, 8, 8),
+          PartPose.offset(7.01F, 12F, -4F));
 
-    public ModelChemicalDissolutionChamber() {
-        super(RenderType::entitySolid);
-        texWidth = 128;
-        texHeight = 64;
-
-        support2 = new ModelRenderer(this, 4, 0);
-        support2.addBox(0F, 0F, 0F, 1, 2, 1, false);
-        support2.setPos(6F, 9F, -7F);
-        support2.setTexSize(128, 64);
-        support2.mirror = true;
-        setRotation(support2, 0F, 0F, 0F);
-        vat5 = new ModelRenderer(this, 0, 23);
-        vat5.addBox(0F, 0F, 0F, 3, 4, 3, false);
-        vat5.setPos(-1.5F, 13F, -1.5F);
-        vat5.setTexSize(128, 64);
-        vat5.mirror = true;
-        setRotation(vat5, 0F, 0F, 0F);
-        top2 = new ModelRenderer(this, 0, 40);
-        top2.addBox(0F, 0F, 0F, 16, 1, 15, false);
-        top2.setPos(-8F, 11F, -8F);
-        top2.setTexSize(128, 64);
-        top2.mirror = true;
-        setRotation(top2, 0F, 0F, 0F);
-        top = new ModelRenderer(this, 0, 23);
-        top.addBox(0F, 0F, 0F, 16, 1, 16, false);
-        top.setPos(-8F, 8F, -8F);
-        top.setTexSize(128, 64);
-        top.mirror = true;
-        setRotation(top, 0F, 0F, 0F);
-        base = new ModelRenderer(this, 0, 0);
-        base.addBox(0F, 0F, 0F, 16, 7, 16, false);
-        base.setPos(-8F, 17F, -8F);
-        base.setTexSize(128, 64);
-        base.mirror = true;
-        setRotation(base, 0F, 0F, 0F);
-        vat2 = new ModelRenderer(this, 0, 23);
-        vat2.addBox(0F, 0F, 0F, 3, 4, 3, false);
-        vat2.setPos(-5F, 13F, -1.5F);
-        vat2.setTexSize(128, 64);
-        vat2.mirror = true;
-        setRotation(vat2, 0F, 0F, 0F);
-        vat3 = new ModelRenderer(this, 0, 23);
-        vat3.addBox(0F, 0F, 0F, 3, 4, 3, false);
-        vat3.setPos(-5F, 13F, 2F);
-        vat3.setTexSize(128, 64);
-        vat3.mirror = true;
-        setRotation(vat3, 0F, 0F, 0F);
-        vat6 = new ModelRenderer(this, 0, 23);
-        vat6.addBox(0F, 0F, 0F, 3, 4, 3, false);
-        vat6.setPos(-1.5F, 13F, 2F);
-        vat6.setTexSize(128, 64);
-        vat6.mirror = true;
-        setRotation(vat6, 0F, 0F, 0F);
-        vat9 = new ModelRenderer(this, 0, 23);
-        vat9.addBox(0F, 0F, 0F, 3, 4, 3, false);
-        vat9.setPos(2F, 13F, 2F);
-        vat9.setTexSize(128, 64);
-        vat9.mirror = true;
-        setRotation(vat9, 0F, 0F, 0F);
-        vat8 = new ModelRenderer(this, 0, 23);
-        vat8.addBox(0F, 0F, 0F, 3, 4, 3, false);
-        vat8.setPos(2F, 13F, -1.5F);
-        vat8.setTexSize(128, 64);
-        vat8.mirror = true;
-        setRotation(vat8, 0F, 0F, 0F);
-        vat7 = new ModelRenderer(this, 0, 23);
-        vat7.addBox(0F, 0F, 0F, 3, 4, 3, false);
-        vat7.setPos(2F, 13F, -5F);
-        vat7.setTexSize(128, 64);
-        vat7.mirror = true;
-        setRotation(vat7, 0F, 0F, 0F);
-        vat4 = new ModelRenderer(this, 0, 23);
-        vat4.addBox(0F, 0F, 0F, 3, 4, 3, false);
-        vat4.setPos(-1.5F, 13F, -5F);
-        vat4.setTexSize(128, 64);
-        vat4.mirror = true;
-        setRotation(vat4, 0F, 0F, 0F);
-        backEdge2 = new ModelRenderer(this, 8, 0);
-        backEdge2.addBox(0F, 0F, 0F, 1, 8, 1, false);
-        backEdge2.setPos(7F, 9F, 7F);
-        backEdge2.setTexSize(128, 64);
-        backEdge2.mirror = true;
-        setRotation(backEdge2, 0F, 0F, 0F);
-        back = new ModelRenderer(this, 48, 0);
-        back.addBox(0F, 0F, 0F, 14, 8, 2, false);
-        back.setPos(-7F, 9F, 6F);
-        back.setTexSize(128, 64);
-        back.mirror = true;
-        setRotation(back, 0F, 0F, 0F);
-        backEdge1 = new ModelRenderer(this, 8, 0);
-        backEdge1.addBox(0F, 0F, 0F, 1, 8, 1, false);
-        backEdge1.setPos(-8F, 9F, 7F);
-        backEdge1.setTexSize(128, 64);
-        backEdge1.mirror = true;
-        setRotation(backEdge1, 0F, 0F, 0F);
-        vents = new ModelRenderer(this, 70, 0);
-        vents.addBox(0F, 0F, 0F, 8, 2, 10, false);
-        vents.setPos(-4F, 9F, -4F);
-        vents.setTexSize(128, 64);
-        vents.mirror = true;
-        setRotation(vents, 0F, 0F, 0F);
-        support1 = new ModelRenderer(this, 4, 0);
-        support1.addBox(0F, 0F, 0F, 1, 2, 1, false);
-        support1.setPos(-7F, 9F, -7F);
-        support1.setTexSize(128, 64);
-        support1.mirror = true;
-        setRotation(support1, 0F, 0F, 0F);
-        vat1 = new ModelRenderer(this, 0, 23);
-        vat1.addBox(0F, 0F, 0F, 3, 4, 3, false);
-        vat1.setPos(-5F, 13F, -5F);
-        vat1.setTexSize(128, 64);
-        vat1.mirror = true;
-        setRotation(vat1, 0F, 0F, 0F);
-        nozzle8 = new ModelRenderer(this, 0, 0);
-        nozzle8.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        nozzle8.setPos(3F, 11.5F, -0.5F);
-        nozzle8.setTexSize(128, 64);
-        nozzle8.mirror = true;
-        setRotation(nozzle8, 0F, 0F, 0F);
-        nozzle5 = new ModelRenderer(this, 0, 0);
-        nozzle5.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        nozzle5.setPos(-0.5F, 11.5F, -0.5F);
-        nozzle5.setTexSize(128, 64);
-        nozzle5.mirror = true;
-        setRotation(nozzle5, 0F, 0F, 0F);
-        nozzle7 = new ModelRenderer(this, 0, 0);
-        nozzle7.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        nozzle7.setPos(3F, 11.5F, -4F);
-        nozzle7.setTexSize(128, 64);
-        nozzle7.mirror = true;
-        setRotation(nozzle7, 0F, 0F, 0F);
-        nozzle4 = new ModelRenderer(this, 0, 0);
-        nozzle4.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        nozzle4.setPos(-0.5F, 11.5F, -4F);
-        nozzle4.setTexSize(128, 64);
-        nozzle4.mirror = true;
-        setRotation(nozzle4, 0F, 0F, 0F);
-        nozzle9 = new ModelRenderer(this, 0, 0);
-        nozzle9.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        nozzle9.setPos(3F, 11.5F, 3F);
-        nozzle9.setTexSize(128, 64);
-        nozzle9.mirror = true;
-        setRotation(nozzle9, 0F, 0F, 0F);
-        nozzle6 = new ModelRenderer(this, 0, 0);
-        nozzle6.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        nozzle6.setPos(-0.5F, 11.5F, 3F);
-        nozzle6.setTexSize(128, 64);
-        nozzle6.mirror = true;
-        setRotation(nozzle6, 0F, 0F, 0F);
-        nozzle3 = new ModelRenderer(this, 0, 0);
-        nozzle3.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        nozzle3.setPos(-4F, 11.5F, 3F);
-        nozzle3.setTexSize(128, 64);
-        nozzle3.mirror = true;
-        setRotation(nozzle3, 0F, 0F, 0F);
-        nozzle2 = new ModelRenderer(this, 0, 0);
-        nozzle2.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        nozzle2.setPos(-4F, 11.5F, -0.5F);
-        nozzle2.setTexSize(128, 64);
-        nozzle2.mirror = true;
-        setRotation(nozzle2, 0F, 0F, 0F);
-        nozzle1 = new ModelRenderer(this, 0, 0);
-        nozzle1.addBox(0F, 0F, 0F, 1, 1, 1, false);
-        nozzle1.setPos(-4F, 11.5F, -4F);
-        nozzle1.setTexSize(128, 64);
-        nozzle1.mirror = true;
-        setRotation(nozzle1, 0F, 0F, 0F);
-        glass = new ModelRenderer(this, 64, 14);
-        glass.addBox(0F, 0F, 0F, 14, 5, 13, false);
-        glass.setPos(-7F, 12F, -7F);
-        glass.setTexSize(128, 64);
-        glass.mirror = true;
-        setRotation(glass, 0F, 0F, 0F);
-        portToggle1 = new ModelRenderer(this, 106, 0);
-        portToggle1.addBox(0F, 0F, 0F, 1, 10, 10, false);
-        portToggle1.setPos(-8.01F, 10.99F, -5F);
-        portToggle1.setTexSize(128, 64);
-        portToggle1.mirror = true;
-        setRotation(portToggle1, 0F, 0F, 0F);
-        portToggle2 = new ModelRenderer(this, 64, 32);
-        portToggle2.addBox(0F, 0F, 0F, 1, 8, 8, false);
-        portToggle2.setPos(7.01F, 12F, -4F);
-        portToggle2.setTexSize(128, 64);
-        portToggle2.mirror = true;
-        setRotation(portToggle2, 0F, 0F, 0F);
+    public static LayerDefinition createLayerDefinition() {
+        return createLayerDefinition(128, 64, SUPPORT_2, VAT_5, TOP_2, TOP, BASE, VAT_2, VAT_3, VAT_6, VAT_9, VAT_8,
+              VAT_7, VAT_4, BACK_EDGE_2, BACK, BACK_EDGE_1, VENTS, SUPPORT_1, VAT_1, NOZZLE_8, NOZZLE_5, NOZZLE_7, NOZZLE_4, NOZZLE_9, NOZZLE_6,
+              NOZZLE_3, NOZZLE_2, NOZZLE_1, GLASS, PORT_TOGGLE_1, PORT_TOGGLE_2);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
+    private final RenderType RENDER_TYPE = renderType(DISSOLUTION_TEXTURE);
+    private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.standard(DISSOLUTION_TEXTURE);
+    private final List<ModelPart> parts;
+    private final ModelPart glass;
+
+    public ModelChemicalDissolutionChamber(EntityModelSet entityModelSet) {
+        super(RenderType::entitySolid);
+        ModelPart root = entityModelSet.bakeLayer(DISSOLUTION_LAYER);
+        parts = getRenderableParts(root, SUPPORT_2, VAT_5, TOP_2, TOP, BASE, VAT_2, VAT_3, VAT_6, VAT_9, VAT_8, VAT_7, VAT_4, BACK_EDGE_2, BACK,
+              BACK_EDGE_1, VENTS, SUPPORT_1, VAT_1, NOZZLE_8, NOZZLE_5, NOZZLE_7, NOZZLE_4, NOZZLE_9, NOZZLE_6, NOZZLE_3, NOZZLE_2, NOZZLE_1,
+              PORT_TOGGLE_1, PORT_TOGGLE_2);
+        glass = GLASS.getFromRoot(root);
+    }
+
+    public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
+        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         //Render the glass on a more translucent layer
         //Note: The glass makes water, ice etc. behind it invisible. This is due to an engine limitation
-        glass.render(matrix, getVertexBuilder(renderer, GLASS_RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
+        glass.render(matrix, getVertexConsumer(renderer, GLASS_RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        support2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        vat5.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        top2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        top.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        base.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        vat2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        vat3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        vat6.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        vat9.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        vat8.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        vat7.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        vat4.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        backEdge2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        back.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        backEdge1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        vents.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        support1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        vat1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        nozzle8.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        nozzle5.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        nozzle7.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        nozzle4.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        nozzle9.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        nozzle6.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        nozzle3.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        nozzle2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        nozzle1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        portToggle1.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        portToggle2.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 }

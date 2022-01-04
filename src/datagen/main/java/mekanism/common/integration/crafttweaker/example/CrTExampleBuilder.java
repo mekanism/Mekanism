@@ -10,7 +10,7 @@ import mekanism.common.integration.crafttweaker.example.component.CrTExampleRemo
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.example.component.ICrTExampleComponent;
 import mekanism.common.integration.crafttweaker.recipe.MekanismRecipeManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TYPE>> {
 

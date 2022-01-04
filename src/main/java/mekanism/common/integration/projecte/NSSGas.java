@@ -8,10 +8,10 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.providers.IGasProvider;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.Tag;
+import net.minecraft.resources.ResourceLocation;
 
 
 /**
@@ -72,7 +72,7 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
      * Helper method to create an {@link NSSGas} representing a tag from a {@link Tag<Gas>}
      */
     @Nonnull
-    public static NSSGas createTag(@Nonnull ITag<Gas> tag) {
+    public static NSSGas createTag(@Nonnull Tag<Gas> tag) {
         return createTag(ChemicalTags.GAS.lookupTag(tag));
     }
 
@@ -95,7 +95,7 @@ public final class NSSGas extends AbstractNSSTag<Gas> {
 
     @Nonnull
     @Override
-    protected ITagCollection<Gas> getTagCollection() {
+    protected TagCollection<Gas> getTagCollection() {
         return ChemicalTags.GAS.getCollection();
     }
 

@@ -8,10 +8,10 @@ import mekanism.common.block.BlockRadioactiveWasteBarrel;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 public class ItemBlockRadioactiveWasteBarrel extends ItemBlockTooltip<BlockRadioactiveWasteBarrel> {
 
@@ -20,7 +20,7 @@ public class ItemBlockRadioactiveWasteBarrel extends ItemBlockTooltip<BlockRadio
     }
 
     @Override
-    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
+    public void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(MekanismConfig.general.radioactiveWasteBarrelMaxGas.get())));
         int ticks = MekanismConfig.general.radioactiveWasteBarrelProcessTicks.get();
         long decayAmount = MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get();

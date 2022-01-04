@@ -9,8 +9,8 @@ import mekanism.api.providers.ISlurryProvider;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
 
 /**
  * Base implementation for how Mekanism handle's SlurryStack Ingredients.
@@ -42,7 +42,7 @@ public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, 
      * @param tag    Tag to match.
      * @param amount Amount needed.
      */
-    static SlurryStackIngredient from(@Nonnull ITag<Slurry> tag, long amount) {
+    static SlurryStackIngredient from(@Nonnull Tag<Slurry> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -53,7 +53,7 @@ public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, 
      *
      * @return Slurry Stack Ingredient.
      */
-    static SlurryStackIngredient read(PacketBuffer buffer) {
+    static SlurryStackIngredient read(FriendlyByteBuf buffer) {
         return ChemicalIngredientDeserializer.SLURRY.read(buffer);
     }
 
@@ -93,7 +93,7 @@ public interface SlurryStackIngredient extends IChemicalStackIngredient<Slurry, 
 
     class Tagged extends TaggedIngredient<Slurry, SlurryStack> implements SlurryStackIngredient {
 
-        private Tagged(@Nonnull ITag<Slurry> tag, long amount) {
+        private Tagged(@Nonnull Tag<Slurry> tag, long amount) {
             super(tag, amount);
         }
     }

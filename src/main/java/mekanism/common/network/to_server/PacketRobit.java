@@ -16,9 +16,9 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketRobit implements IMekanismPacket {
 
@@ -56,7 +56,7 @@ public class PacketRobit implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player != null) {
             EntityRobit robit = (EntityRobit) player.level.getEntity(entityId);
             if (robit != null && SecurityUtils.canAccess(player, robit)) {
@@ -89,7 +89,7 @@ public class PacketRobit implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(activeType);
         buffer.writeVarInt(entityId);
         if (activeType == RobitPacketType.NAME) {
@@ -99,7 +99,7 @@ public class PacketRobit implements IMekanismPacket {
         }
     }
 
-    public static PacketRobit decode(PacketBuffer buffer) {
+    public static PacketRobit decode(FriendlyByteBuf buffer) {
         RobitPacketType activeType = buffer.readEnum(RobitPacketType.class);
         int entityId = buffer.readVarInt();
         String name = null;

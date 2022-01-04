@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.slot;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -14,7 +15,12 @@ import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.item.ItemStack;
+
+import mekanism.client.gui.element.GuiElement.IClickable;
+import mekanism.client.gui.element.GuiElement.IHoverable;
+import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
 
 public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
@@ -107,37 +113,39 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (!renderAboveSlots) {
             draw(matrix);
         }
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (renderAboveSlots) {
             draw(matrix);
         }
     }
 
-    private void draw(@Nonnull MatrixStack matrix) {
+    private void draw(@Nonnull PoseStack matrix) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         if (warningSupplier != null && warningSupplier.getAsBoolean()) {
-            minecraft.textureManager.bind(slotType.getWarningTexture());
+            RenderSystem.setShaderTexture(0, slotType.getWarningTexture());
         } else {
-            minecraft.textureManager.bind(getResource());
+            RenderSystem.setShaderTexture(0, getResource());
         }
         blit(matrix, x, y, 0, 0, width, height, width, height);
         if (overlaySupplier != null) {
             overlay = overlaySupplier.get();
         }
         if (overlay != null) {
-            minecraft.textureManager.bind(overlay.getTexture());
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, overlay.getTexture());
             blit(matrix, x, y, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }
         drawContents(matrix);
     }
 
-    protected void drawContents(@Nonnull MatrixStack matrix) {
+    protected void drawContents(@Nonnull PoseStack matrix) {
         if (validityCheck != null) {
             ItemStack invalid = validityCheck.get();
             if (!invalid.isEmpty()) {
@@ -156,8 +164,8 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
-        if (renderHover && isHovered()) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
+        if (renderHover && isHoveredOrFocused()) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
             fill(matrix, xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
@@ -172,14 +180,14 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
             matrix.popPose();
             MekanismRenderer.resetColor();
         }
-        if (isHovered()) {
+        if (isHoveredOrFocused()) {
             //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
             renderToolTip(matrix, mouseX - getGuiLeft(), mouseY - getGuiTop());
         }
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (onHover != null) {
             onHover.onHover(this, matrix, mouseX, mouseY);

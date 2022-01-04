@@ -1,11 +1,11 @@
 package mekanism.api.providers;
 
 import javax.annotation.Nonnull;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 
-public interface IItemProvider extends IBaseProvider, net.minecraft.util.IItemProvider {
+public interface IItemProvider extends IBaseProvider, net.minecraft.world.level.ItemLike {
 
     /**
      * Gets the item this provider represents.
@@ -35,16 +35,6 @@ public interface IItemProvider extends IBaseProvider, net.minecraft.util.IItemPr
     @Nonnull
     default ItemStack getItemStack(int size) {
         return new ItemStack(getItem(), size);
-    }
-
-    @Deprecated//TODO - 1.18: Remove this as we don't actually use this
-    default boolean itemMatches(ItemStack otherStack) {
-        return itemMatches(otherStack.getItem());
-    }
-
-    @Deprecated//TODO - 1.18: Remove this as we don't actually use this
-    default boolean itemMatches(Item other) {
-        return getItem() == other;
     }
 
     @Override

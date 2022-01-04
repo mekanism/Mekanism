@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
@@ -17,20 +17,20 @@ import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, EmptyTileContainer<TileEntityInductionCasing>> {
 
-    public GuiMatrixStats(EmptyTileContainer<TileEntityInductionCasing> container, PlayerInventory inv, ITextComponent title) {
+    public GuiMatrixStats(EmptyTileContainer<TileEntityInductionCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
     }
 
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiMatrixTab(this, tile, MatrixTab.MAIN));
-        addButton(new GuiEnergyGauge(new IEnergyInfoHandler() {
+        addRenderableWidget(new GuiMatrixTab(this, tile, MatrixTab.MAIN));
+        addRenderableWidget(new GuiEnergyGauge(new IEnergyInfoHandler() {
             @Override
             public FloatingLong getEnergy() {
                 return tile.getMultiblock().getEnergy();
@@ -41,9 +41,9 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
                 return tile.getMultiblock().getStorageCap();
             }
         }, GaugeType.STANDARD, this, 6, 13));
-        addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
+        addRenderableWidget(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 return MekanismLang.MATRIX_RECEIVING_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastInput()));
             }
 
@@ -53,9 +53,9 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
                 return !multiblock.isFormed() ? 0 : multiblock.getLastInput().divideToLevel(multiblock.getTransferCap());
             }
         }, 30, 13));
-        addButton(new GuiVerticalRateBar(this, new IBarInfoHandler() {
+        addRenderableWidget(new GuiVerticalRateBar(this, new IBarInfoHandler() {
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 return MekanismLang.MATRIX_OUTPUTTING_RATE.translate(EnergyDisplay.of(tile.getMultiblock().getLastOutput()));
             }
 
@@ -68,7 +68,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
                 return multiblock.getLastOutput().divideToLevel(multiblock.getTransferCap());
             }
         }, 38, 13));
-        addButton(new GuiEnergyTab(this, () -> {
+        addRenderableWidget(new GuiEnergyTab(this, () -> {
             MatrixMultiblockData multiblock = tile.getMultiblock();
             return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.getEnergy(), multiblock.getStorageCap())),
                   MekanismLang.MATRIX_INPUT_RATE.translate(EnergyDisplay.of(multiblock.getLastInput())),
@@ -77,7 +77,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, MekanismLang.MATRIX_STATS.translate(), titleLabelY);
         MatrixMultiblockData multiblock = tile.getMultiblock();
         drawString(matrix, MekanismLang.MATRIX_INPUT_AMOUNT.translate(), 53, 26, subheadingTextColor());

@@ -15,21 +15,21 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.block.BannerBlock;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.block.BannerBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.ItemLike;
 
 class PaintingRecipeProvider implements ISubRecipeProvider {
 
-    private static final Map<EnumColor, IItemProvider> BEDS = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, IItemProvider> STAINED_GLASS = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, IItemProvider> STAINED_GLASS_PANES = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, ItemLike> BEDS = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, ItemLike> STAINED_GLASS = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, ItemLike> STAINED_GLASS_PANES = new EnumMap<>(EnumColor.class);
 
     static {
         addTypes(EnumColor.WHITE, Blocks.WHITE_BED, Blocks.WHITE_STAINED_GLASS, Blocks.WHITE_STAINED_GLASS_PANE);
@@ -50,14 +50,14 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         addTypes(EnumColor.BLACK, Blocks.BLACK_BED, Blocks.BLACK_STAINED_GLASS, Blocks.BLACK_STAINED_GLASS_PANE);
     }
 
-    private static void addTypes(EnumColor color, IItemProvider bed, IItemProvider stainedGlass, IItemProvider stainedGlassPane) {
+    private static void addTypes(EnumColor color, ItemLike bed, ItemLike stainedGlass, ItemLike stainedGlassPane) {
         BEDS.put(color, bed);
         STAINED_GLASS.put(color, stainedGlass);
         STAINED_GLASS_PANES.put(color, stainedGlassPane);
     }
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "painting/";
         addDyeRecipes(consumer, basePath);
         long oneAtATime = PigmentExtractingRecipeProvider.DYE_RATE;
@@ -78,7 +78,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         addRecoloringRecipes(consumer, MekanismTags.Items.COLORABLE_BANNERS, oneAtATime, BannerBlock::byColor, basePath + "banner/");
     }
 
-    private static void addDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private static void addDyeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         basePath += "dye/";
         addDyeRecipe(consumer, EnumColor.WHITE, Items.WHITE_DYE, basePath);
         addDyeRecipe(consumer, EnumColor.ORANGE, Items.ORANGE_DYE, basePath);
@@ -98,7 +98,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         addDyeRecipe(consumer, EnumColor.BLACK, Items.BLACK_DYE, basePath);
     }
 
-    private static void addDyeRecipe(Consumer<IFinishedRecipe> consumer, EnumColor color, IItemProvider dye, String basePath) {
+    private static void addDyeRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, ItemLike dye, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               ItemStackIngredient.from(MekanismItems.DYE_BASE),
               PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
@@ -106,7 +106,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 
-    private static void addRecoloringRecipes(Consumer<IFinishedRecipe> consumer, ITag<Item> input, long rate, Function<DyeColor, IItemProvider> output, String basePath) {
+    private static void addRecoloringRecipes(Consumer<FinishedRecipe> consumer, Tag<Item> input, long rate, Function<DyeColor, ItemLike> output, String basePath) {
         for (EnumColor color : EnumUtils.COLORS) {
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
@@ -115,13 +115,13 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private static void addRecoloringRecipes(Consumer<IFinishedRecipe> consumer, ITag<Item> input, long rate, Map<EnumColor, IItemProvider> outputs, String basePath) {
-        for (Map.Entry<EnumColor, IItemProvider> entry : outputs.entrySet()) {
+    private static void addRecoloringRecipes(Consumer<FinishedRecipe> consumer, Tag<Item> input, long rate, Map<EnumColor, ItemLike> outputs, String basePath) {
+        for (Map.Entry<EnumColor, ItemLike> entry : outputs.entrySet()) {
             addRecoloringRecipe(consumer, entry.getKey(), input, entry.getValue(), rate, basePath);
         }
     }
 
-    private static void addRecoloringRecipe(Consumer<IFinishedRecipe> consumer, EnumColor color, ITag<Item> input, IItemProvider result, long rate, String basePath) {
+    private static void addRecoloringRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, Tag<Item> input, ItemLike result, long rate, String basePath) {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               ItemStackIngredient.from(IngredientWithout.create(input, result)),
               PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), rate),

@@ -8,7 +8,7 @@ import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.inputs.BoxedChemicalInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Base class to help implement handling of crystallizing recipes.

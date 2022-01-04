@@ -35,8 +35,10 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
@@ -53,8 +55,8 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityPrecisionSawmill() {
-        super(MekanismBlocks.PRECISION_SAWMILL, 200);
+    public TileEntityPrecisionSawmill(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.PRECISION_SAWMILL, pos, state, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(Collections.singletonList(inputSlot), Arrays.asList(outputSlot, secondaryOutputSlot), energySlot, false);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
@@ -128,7 +130,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     }
 
     @Override
-    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+    public boolean isConfigurationDataCompatible(BlockEntityType<?> tileType) {
         //Allow exact match or factories of the same type (as we will just ignore the extra data)
         return super.isConfigurationDataCompatible(tileType) || MekanismUtils.isSameTypeFactory(getBlockType(), tileType);
     }

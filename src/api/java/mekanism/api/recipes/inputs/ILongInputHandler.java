@@ -22,27 +22,6 @@ public interface ILongInputHandler<INPUT> extends IInputHandler<INPUT> {
     void use(INPUT recipeInput, long operations);
 
     @Override
-    @Deprecated//TODO - 1.18: Remove this
-    default int operationsCanSupport(InputIngredient<INPUT> recipeIngredient, int currentMax, int usageMultiplier) {
-        //Wrap to the long implementation
-        return operationsCanSupport(recipeIngredient, currentMax, (long) usageMultiplier);
-    }
-
-    /**
-     * Calculates how many operations the input can sustain.
-     *
-     * @param recipeIngredient Recipe ingredient.
-     * @param currentMax       The current maximum number of operations that can happen.
-     * @param usageMultiplier  Usage multiplier to multiply the recipeIngredient's amount by per operation.
-     *
-     * @return The number of operations the input can sustain.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    default int operationsCanSupport(InputIngredient<INPUT> recipeIngredient, int currentMax, long usageMultiplier) {
-        return operationsCanSupport(getRecipeInput(recipeIngredient), currentMax, usageMultiplier);
-    }
-
-    @Override
     default int operationsCanSupport(INPUT recipeInput, int currentMax, int usageMultiplier) {
         //Wrap to the long implementation
         return operationsCanSupport(recipeInput, currentMax, (long) usageMultiplier);

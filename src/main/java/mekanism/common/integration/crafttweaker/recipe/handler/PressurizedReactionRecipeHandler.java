@@ -6,8 +6,8 @@ import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import org.apache.commons.lang3.tuple.Pair;
 
 @IRecipeHandler.For(PressurizedReactionRecipe.class)
@@ -26,7 +26,7 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
     }
 
     @Override
-    public <U extends IRecipe<?>> boolean doesConflict(IRecipeManager manager, PressurizedReactionRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, PressurizedReactionRecipe recipe, U other) {
         //Only support if the other is a reaction recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
         if (other instanceof PressurizedReactionRecipe) {

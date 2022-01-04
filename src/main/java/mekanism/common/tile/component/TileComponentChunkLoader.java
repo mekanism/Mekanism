@@ -17,17 +17,16 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.LongNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.common.world.ForgeChunkManager.LoadingValidationCallback;
 import net.minecraftforge.common.world.ForgeChunkManager.TicketHelper;
@@ -43,7 +42,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     private final T tile;
     private final LongSet chunkSet = new LongOpenHashSet();
     @Nullable
-    private ServerWorld prevWorld;
+    private ServerLevel prevWorld;
     @Nullable
     private BlockPos prevPos;
     private boolean hasRegistered;
@@ -59,7 +58,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         return MekanismConfig.general.allowChunkloading.get() && tile.supportsUpgrades() && tile.getComponent().isUpgradeInstalled(Upgrade.ANCHOR);
     }
 
-    private void releaseChunkTickets(@Nonnull ServerWorld world, @Nonnull BlockPos pos) {
+    private void releaseChunkTickets(@Nonnull ServerLevel world, @Nonnull BlockPos pos) {
         int tickets = chunkSet.size();
         LOGGER.debug("Attempting to remove {} chunk tickets. Pos: {} World: {}", tickets, pos, world.dimension().location());
         if (tickets > 0) {
@@ -73,7 +72,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         prevWorld = null;
     }
 
-    private void registerChunkTickets(@Nonnull ServerWorld world) {
+    private void registerChunkTickets(@Nonnull ServerLevel world) {
         prevPos = tile.getBlockPos();
         prevWorld = world;
         Set<ChunkPos> chunks = tile.getChunkSet();
@@ -94,7 +93,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
      */
     public void refreshChunkTickets() {
         if (!tile.isRemote()) {
-            refreshChunkTickets((ServerWorld) Objects.requireNonNull(tile.getLevel()), tile.getBlockPos(), true);
+            refreshChunkTickets((ServerLevel) Objects.requireNonNull(tile.getLevel()), tile.getBlockPos(), true);
         }
     }
 
@@ -103,7 +102,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
      *
      * @apiNote Only call server side
      */
-    private void refreshChunkTickets(@Nonnull ServerWorld world, @Nonnull BlockPos pos, boolean ticketsChanged) {
+    private void refreshChunkTickets(@Nonnull ServerLevel world, @Nonnull BlockPos pos, boolean ticketsChanged) {
         boolean canOperate = canOperate();
         if (hasRegistered && prevWorld != null && prevPos != null) {
             //Note: If we have already registered the previous world and previous position
@@ -173,7 +172,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     public void tickServer() {
-        World world = tile.getLevel();
+        Level world = tile.getLevel();
         if (world != null) {
             if (isFirstTick) {
                 //TODO - 1.18: Remove this if branch - as it is only needed to validate loading old data
@@ -181,16 +180,16 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                 if (!canOperate()) {
                     //If we just loaded but are not actually able to operate
                     // release any tickets we have assigned to us that we loaded with
-                    releaseChunkTickets((ServerWorld) world, tile.getBlockPos());
+                    releaseChunkTickets((ServerLevel) world, tile.getBlockPos());
                 }
             }
             //Update tickets if the position changed, or we are no longer able to operate
-            refreshChunkTickets((ServerWorld) world, tile.getBlockPos(), false);
+            refreshChunkTickets((ServerLevel) world, tile.getBlockPos(), false);
         }
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(CompoundTag nbtTags) {
         if (!chunkSet.isEmpty()) {
             //If we currently have any chunks loaded, remove their tickets and clear them
             if (tile.hasLevel() && !tile.isRemote() && hasRegistered && prevWorld != null && prevPos != null) {
@@ -202,12 +201,12 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                 chunkSet.clear();
             }
         }
-        if (nbtTags.contains(NBTConstants.CHUNK_SET, NBT.TAG_LIST)) {
+        if (nbtTags.contains(NBTConstants.CHUNK_SET, Tag.TAG_LIST)) {
             //TODO - 1.18: Remove this if branch, it is mainly used to load old data
             // so that we can store it a bit more efficiently as a long array
-            ListNBT list = nbtTags.getList(NBTConstants.CHUNK_SET, NBT.TAG_LONG);
-            for (INBT nbt : list) {
-                chunkSet.add(((LongNBT) nbt).getAsLong());
+            ListTag list = nbtTags.getList(NBTConstants.CHUNK_SET, Tag.TAG_LONG);
+            for (Tag nbt : list) {
+                chunkSet.add(((LongTag) nbt).getAsLong());
             }
         } else {
             for (long chunk : nbtTags.getLongArray(NBTConstants.CHUNK_SET)) {
@@ -217,7 +216,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
+    public void write(CompoundTag nbtTags) {
         nbtTags.putLongArray(NBTConstants.CHUNK_SET, chunkSet.toLongArray());
     }
 
@@ -257,7 +256,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         }
 
         @Override
-        public void validateTickets(@Nonnull ServerWorld world, @Nonnull TicketHelper ticketHelper) {
+        public void validateTickets(@Nonnull ServerLevel world, @Nonnull TicketHelper ticketHelper) {
             ResourceLocation worldName = world.dimension().location();
             LOGGER.debug("Validating tickets for: {}. Blocks: {}, Entities: {}", worldName, ticketHelper.getBlockTickets().size(),
                   ticketHelper.getEntityTickets().size());
@@ -272,7 +271,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                     //We expect this always be the case but just in case it is empty don't bother looking up the tile
                     //Note: This does not use WorldUtils#getTileEntity as we want to force the chunk to load if it isn't loaded yet
                     // so that we can properly validate it
-                    TileEntity tile = world.getBlockEntity(pos);
+                    BlockEntity tile = world.getBlockEntity(pos);
                     if (tile instanceof IChunkLoader) {
                         TileComponentChunkLoader<?> chunkLoader = ((IChunkLoader) tile).getChunkLoader();
                         if (chunkLoader.canOperate()) {

@@ -29,8 +29,10 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.upgrade.MachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityElectricMachine extends TileEntityProgressMachine<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
@@ -45,8 +47,8 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
-        super(blockProvider, ticksRequired);
+    public TileEntityElectricMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state, int ticksRequired) {
+        super(blockProvider, pos, state, ticksRequired);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
@@ -112,7 +114,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
     }
 
     @Override
-    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+    public boolean isConfigurationDataCompatible(BlockEntityType<?> tileType) {
         //Allow exact match or factories of the same type (as we will just ignore the extra data)
         return super.isConfigurationDataCompatible(tileType) || MekanismUtils.isSameTypeFactory(getBlockType(), tileType);
     }

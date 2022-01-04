@@ -79,31 +79,31 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.Region;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.PathNavigationRegion;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.common.util.Constants.WorldEvents;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -145,8 +145,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityDigitalMiner() {
-        super(MekanismBlocks.DIGITAL_MINER);
+    public TileEntityDigitalMiner(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.DIGITAL_MINER, pos, state);
         radius = 10;
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
         //Return some capabilities as disabled, and handle them with offset capabilities instead
@@ -183,7 +183,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     private void closeInvalidScreens() {
         if (getActive() && !playersUsing.isEmpty()) {
-            for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
+            for (Player player : new ObjectOpenHashSet<>(playersUsing)) {
                 if (player.containerMenu instanceof DigitalMinerConfigContainer) {
                     player.closeContainer();
                 }
@@ -236,8 +236,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
         if (doEject && delayTicks == 0) {
             Direction oppositeDirection = getOppositeDirection();
-            TileEntity ejectInv = WorldUtils.getTileEntity(level, getBlockPos().above().relative(oppositeDirection, 2));
-            TileEntity ejectTile = WorldUtils.getTileEntity(getLevel(), getBlockPos().above().relative(oppositeDirection));
+            BlockEntity ejectInv = WorldUtils.getTileEntity(level, getBlockPos().above().relative(oppositeDirection, 2));
+            BlockEntity ejectTile = WorldUtils.getTileEntity(getLevel(), getBlockPos().above().relative(oppositeDirection));
             if (ejectInv != null && ejectTile != null) {
                 TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectTile, oppositeDirection, mainSlots);
                 if (!ejectMap.isEmpty()) {
@@ -437,7 +437,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 Optional<BlockState> blockState = WorldUtils.getBlockState(level, pos);
                 if (blockState.isPresent()) {
                     BlockState state = blockState.get();
-                    if (!state.isAir(level, pos) && !state.is(MekanismTags.Blocks.MINER_BLACKLIST)) {
+                    if (!state.isAir() && !state.is(MekanismTags.Blocks.MINER_BLACKLIST)) {
                         //Make sure the block is loaded and is not air, and is not in the blacklist of blocks the miner can break
                         // then check if the block matches one of our filters
                         MinerFilter<?> matchingFilter = null;
@@ -455,7 +455,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                             if (canInsert(drops) && setReplace(pos, matchingFilter)) {
                                 add(drops);
                                 missingStack = ItemStack.EMPTY;
-                                level.levelEvent(WorldEvents.BREAK_BLOCK_EFFECTS, pos, Block.getId(state));
+                                level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
                                 //Remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
                                 cachedToMine--;
                                 chunkToMine.clear(index);
@@ -515,7 +515,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             missingStack = new ItemStack(replaceTarget);
             return false;
         }
-        BlockState newState = MekFakePlayer.withFakePlayer((ServerWorld) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), fakePlayer ->
+        BlockState newState = MekFakePlayer.withFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), fakePlayer ->
               StackUtils.getStateForPlacement(stack, pos, fakePlayer)
         );
         if (newState == null || !newState.canSurvive(level, pos)) {
@@ -527,7 +527,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     private boolean canMine(BlockState state, BlockPos pos) {
-        return MekFakePlayer.withFakePlayer((ServerWorld) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), dummy -> {
+        return MekFakePlayer.withFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), dummy -> {
             dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
             BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, pos, state, dummy);
             return !MinecraftForge.EVENT_BUS.post(event);
@@ -554,7 +554,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         //And finally source from the inventory on top if auto pull is enabled
         if (doPull) {
-            TileEntity pullInv = getPullInv();
+            BlockEntity pullInv = getPullInv();
             if (pullInv != null && InventoryUtils.isItemHandler(pullInv, Direction.DOWN)) {
                 TransitRequest request = TransitRequest.definedItem(pullInv, Direction.DOWN, 1, Finder.item(replaceTarget));
                 if (!request.isEmpty()) {
@@ -634,7 +634,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return true;
     }
 
-    private TileEntity getPullInv() {
+    private BlockEntity getPullInv() {
         return WorldUtils.getTileEntity(getLevel(), getBlockPos().above(2));
     }
 
@@ -659,7 +659,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         }
         if (searcher.state == State.IDLE) {
             BlockPos startingPos = getStartingPos();
-            searcher.setChunkCache(new Region(getLevel(), startingPos, startingPos.offset(getDiameter(), getMaxY() - getMinY() + 1, getDiameter())));
+            searcher.setChunkCache(new PathNavigationRegion(getLevel(), startingPos, startingPos.offset(getDiameter(), getMaxY() - getMinY() + 1, getDiameter())));
             searcher.start();
         }
         running = true;
@@ -714,12 +714,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        running = nbtTags.getBoolean(NBTConstants.RUNNING);
-        delay = nbtTags.getInt(NBTConstants.DELAY);
-        numPowering = nbtTags.getInt(NBTConstants.NUM_POWERING);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.STATE, State::byIndexStatic, s -> searcher.state = s);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        running = nbt.getBoolean(NBTConstants.RUNNING);
+        delay = nbt.getInt(NBTConstants.DELAY);
+        numPowering = nbt.getInt(NBTConstants.NUM_POWERING);
+        NBTUtils.setEnumIfPresent(nbt, NBTConstants.STATE, State::byIndexStatic, s -> searcher.state = s);
         //Update energy per tick in case any of the values changed. It would be slightly cleaner to also validate the fact
         // the values changed, but it would make the code a decent bit messier, as we couldn't use NBTUtils, and it is a
         // rather quick check to update the energy per tick, and in most cases at least one of the settings will not be at
@@ -727,10 +727,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         energyContainer.updateMinerEnergyPerTick();
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         if (searcher.state == State.SEARCHING) {
             reset();
         }
@@ -738,7 +737,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         nbtTags.putInt(NBTConstants.DELAY, delay);
         nbtTags.putInt(NBTConstants.NUM_POWERING, numPowering);
         nbtTags.putInt(NBTConstants.STATE, searcher.state.ordinal());
-        return nbtTags;
     }
 
     public int getTotalSize() {
@@ -766,7 +764,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Nonnull
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         if (clientRendering) {
             //TODO: Improve on this to use the max that we actually need to do the rendering
             return INFINITE_EXTENT_AABB;
@@ -784,7 +782,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                     for (int z = -1; z <= 1; z++) {
                         if (x != 0 || y != 0 || z != 0) {
                             BlockPos boundingPos = pos.offset(x, y, z);
-                            WorldUtils.makeAdvancedBoundingBlock(level, boundingPos, pos);
+                            WorldUtils.makeBoundingBlock(level, boundingPos, pos);
                             level.updateNeighborsAt(boundingPos, getBlockType());
                         }
                     }
@@ -821,19 +819,19 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public int getBoundingComparatorSignal(Vector3i offset) {
+    public int getBoundingComparatorSignal(Vec3i offset) {
         //Return the comparator signal if it is one of the horizontal ports
         Direction facing = getDirection();
         Direction back = facing.getOpposite();
-        if (offset.equals(new Vector3i(back.getStepX(), 1, back.getStepZ()))) {
+        if (offset.equals(new Vec3i(back.getStepX(), 1, back.getStepZ()))) {
             return getCurrentRedstoneLevel();
         }
         Direction left = MekanismUtils.getLeft(facing);
-        if (offset.equals(new Vector3i(left.getStepX(), 0, left.getStepZ()))) {
+        if (offset.equals(new Vec3i(left.getStepX(), 0, left.getStepZ()))) {
             return getCurrentRedstoneLevel();
         }
         Direction right = left.getOpposite();
-        if (offset.equals(new Vector3i(right.getStepX(), 0, right.getStepZ()))) {
+        if (offset.equals(new Vec3i(right.getStepX(), 0, right.getStepZ()))) {
             return getCurrentRedstoneLevel();
         }
         return 0;
@@ -845,13 +843,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         Direction facing = getDirection();
         Direction left = MekanismUtils.getLeft(facing);
         //Proxy the comparator updates to the various ports we expose comparators to
-        level.updateNeighbourForOutputSignal(worldPosition.relative(left), MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock());
-        level.updateNeighbourForOutputSignal(worldPosition.relative(left.getOpposite()), MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock());
-        level.updateNeighbourForOutputSignal(worldPosition.relative(facing.getOpposite()).above(), MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock());
+        level.updateNeighbourForOutputSignal(worldPosition.relative(left), MekanismBlocks.BOUNDING_BLOCK.getBlock());
+        level.updateNeighbourForOutputSignal(worldPosition.relative(left.getOpposite()), MekanismBlocks.BOUNDING_BLOCK.getBlock());
+        level.updateNeighbourForOutputSignal(worldPosition.relative(facing.getOpposite()).above(), MekanismBlocks.BOUNDING_BLOCK.getBlock());
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
         data.putInt(NBTConstants.RADIUS, getRadius());
         data.putInt(NBTConstants.MIN, getMinY());
@@ -863,9 +861,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         data.putString(NBTConstants.REPLACE_STACK, inverseReplaceTarget.getRegistryName().toString());
         data.putBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
         if (!filters.isEmpty()) {
-            ListNBT filterTags = new ListNBT();
+            ListTag filterTags = new ListTag();
             for (MinerFilter<?> filter : filters) {
-                filterTags.add(filter.write(new CompoundNBT()));
+                filterTags.add(filter.write(new CompoundTag()));
             }
             data.put(NBTConstants.FILTERS, filterTags);
         }
@@ -885,7 +883,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
         setRadius(Math.min(data.getInt(NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         NBTUtils.setIntIfPresent(data, NBTConstants.MIN, this::setMinY);
@@ -897,8 +895,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         inverseReplaceTarget = NBTUtils.readRegistryEntry(data, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
         inverseRequiresReplacement = data.getBoolean(NBTConstants.INVERSE_REQUIRES_REPLACE);
         filters.clear();
-        if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
-            ListNBT tagList = data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND);
+        if (data.contains(NBTConstants.FILTERS, Tag.TAG_LIST)) {
+            ListTag tagList = data.getList(NBTConstants.FILTERS, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof MinerFilter) {
@@ -920,9 +918,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         ItemDataUtils.setString(itemStack, NBTConstants.REPLACE_STACK, inverseReplaceTarget.getRegistryName().toString());
         ItemDataUtils.setBoolean(itemStack, NBTConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
         if (!filters.isEmpty()) {
-            ListNBT filterTags = new ListNBT();
+            ListTag filterTags = new ListTag();
             for (MinerFilter<?> filter : filters) {
-                filterTags.add(filter.write(new CompoundNBT()));
+                filterTags.add(filter.write(new CompoundTag()));
             }
             ItemDataUtils.setList(itemStack, NBTConstants.FILTERS, filterTags);
         }
@@ -930,35 +928,35 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.RADIUS, NBT.TAG_INT)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.RADIUS, Tag.TAG_INT)) {
             setRadius(Math.min(ItemDataUtils.getInt(itemStack, NBTConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.MIN, NBT.TAG_INT)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.MIN, Tag.TAG_INT)) {
             setMinY(ItemDataUtils.getInt(itemStack, NBTConstants.MIN));
         }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.MAX, NBT.TAG_INT)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.MAX, Tag.TAG_INT)) {
             setMaxY(ItemDataUtils.getInt(itemStack, NBTConstants.MAX));
         }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.EJECT, NBT.TAG_BYTE)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.EJECT, Tag.TAG_BYTE)) {
             doEject = ItemDataUtils.getBoolean(itemStack, NBTConstants.EJECT);
         }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.PULL, NBT.TAG_BYTE)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.PULL, Tag.TAG_BYTE)) {
             doPull = ItemDataUtils.getBoolean(itemStack, NBTConstants.PULL);
         }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.SILK_TOUCH, NBT.TAG_BYTE)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.SILK_TOUCH, Tag.TAG_BYTE)) {
             setSilkTouch(ItemDataUtils.getBoolean(itemStack, NBTConstants.SILK_TOUCH));
         }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.INVERSE, NBT.TAG_BYTE)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.INVERSE, Tag.TAG_BYTE)) {
             inverse = ItemDataUtils.getBoolean(itemStack, NBTConstants.INVERSE);
         }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.REPLACE_STACK, NBT.TAG_STRING)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.REPLACE_STACK, Tag.TAG_STRING)) {
             inverseReplaceTarget = ItemDataUtils.getRegistryEntry(itemStack, NBTConstants.REPLACE_STACK, ForgeRegistries.ITEMS, Items.AIR);
         }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.INVERSE_REQUIRES_REPLACE, NBT.TAG_BYTE)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.INVERSE_REQUIRES_REPLACE, Tag.TAG_BYTE)) {
             inverseRequiresReplacement = ItemDataUtils.getBoolean(itemStack, NBTConstants.INVERSE_REQUIRES_REPLACE);
         }
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, NBT.TAG_LIST)) {
-            ListNBT tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, Tag.TAG_LIST)) {
+            ListTag tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
                 if (filter instanceof MinerFilter) {
@@ -993,13 +991,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Nonnull
     @Override
-    public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vector3i offset) {
+    public <T> LazyOptional<T> getOffsetCapabilityIfEnabled(@Nonnull Capability<T> capability, Direction side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             //Get item handler cap directly from here as we disable it entirely for the main block as we only have it enabled from ports
             return itemHandlerManager.resolve(capability, side);
@@ -1013,7 +1011,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vector3i offset) {
+    public boolean isOffsetCapabilityDisabled(@Nonnull Capability<?> capability, Direction side, @Nonnull Vec3i offset) {
         if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return notItemPort(side, offset);
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
@@ -1028,31 +1026,31 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         return false;
     }
 
-    private boolean notItemPort(Direction side, Vector3i offset) {
-        if (offset.equals(new Vector3i(0, 1, 0))) {
+    private boolean notItemPort(Direction side, Vec3i offset) {
+        if (offset.equals(new Vec3i(0, 1, 0))) {
             //If input then disable if wrong face of input
             return side != Direction.UP;
         }
         Direction back = getOppositeDirection();
-        if (offset.equals(new Vector3i(back.getStepX(), 1, back.getStepZ()))) {
+        if (offset.equals(new Vec3i(back.getStepX(), 1, back.getStepZ()))) {
             //If output then disable if wrong face of output
             return side != back;
         }
         return true;
     }
 
-    private boolean notEnergyPort(Direction side, Vector3i offset) {
-        if (offset.equals(Vector3i.ZERO)) {
+    private boolean notEnergyPort(Direction side, Vec3i offset) {
+        if (offset.equals(Vec3i.ZERO)) {
             //Disable if it is the bottom port but wrong side of it
             return side != Direction.DOWN;
         }
         Direction left = getLeftSide();
-        if (offset.equals(new Vector3i(left.getStepX(), 0, left.getStepZ()))) {
+        if (offset.equals(new Vec3i(left.getStepX(), 0, left.getStepZ()))) {
             //Disable if left power port but wrong side of the port
             return side != left;
         }
         Direction right = left.getOpposite();
-        if (offset.equals(new Vector3i(right.getStepX(), 0, right.getStepZ()))) {
+        if (offset.equals(new Vec3i(right.getStepX(), 0, right.getStepZ()))) {
             //Disable if right power port but wrong side of the port
             return side != right;
         }
@@ -1157,8 +1155,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.putInt(NBTConstants.RADIUS, getRadius());
         updateTag.putInt(NBTConstants.MIN, getMinY());
         updateTag.putInt(NBTConstants.MAX, getMaxY());
@@ -1166,29 +1164,29 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setIntIfPresent(tag, NBTConstants.RADIUS, this::setRadius);//the client is allowed to use whatever server sends
         NBTUtils.setIntIfPresent(tag, NBTConstants.MIN, this::setMinY);
         NBTUtils.setIntIfPresent(tag, NBTConstants.MAX, this::setMaxY);
     }
 
     private List<ItemStack> getDrops(BlockState state, BlockPos pos) {
-        if (state.isAir(getWorldNN(), pos)) {
+        if (state.isAir()) {
             return Collections.emptyList();
         }
         ItemStack stack = MekanismItems.ATOMIC_DISASSEMBLER.getItemStack();
         if (getSilkTouch()) {
             stack.enchant(Enchantments.SILK_TOUCH, 1);
         }
-        return MekFakePlayer.withFakePlayer((ServerWorld) getWorldNN(), this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), fakePlayer -> {
+        return MekFakePlayer.withFakePlayer((ServerLevel) getWorldNN(), this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ(), fakePlayer -> {
             fakePlayer.setEmulatingUUID(getOwnerUUID());
-            LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld) getWorldNN())
+            LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerLevel) getWorldNN())
                   .withRandom(getWorldNN().random)
-                  .withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(pos))
-                  .withParameter(LootParameters.TOOL, stack)
-                  .withOptionalParameter(LootParameters.THIS_ENTITY, fakePlayer)
-                  .withOptionalParameter(LootParameters.BLOCK_ENTITY, WorldUtils.getTileEntity(getWorldNN(), pos));
+                  .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+                  .withParameter(LootContextParams.TOOL, stack)
+                  .withOptionalParameter(LootContextParams.THIS_ENTITY, fakePlayer)
+                  .withOptionalParameter(LootContextParams.BLOCK_ENTITY, WorldUtils.getTileEntity(getWorldNN(), pos));
             return state.getDrops(lootContextBuilder);
         });
     }

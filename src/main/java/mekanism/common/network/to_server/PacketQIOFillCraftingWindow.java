@@ -11,12 +11,12 @@ import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularHashedItemS
 import mekanism.common.content.qio.QIOServerCraftingTransferHandler;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketQIOFillCraftingWindow implements IMekanismPacket {
 
@@ -34,18 +34,18 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ServerPlayerEntity player = context.getSender();
+        ServerPlayer player = context.getSender();
         if (player != null && player.containerMenu instanceof QIOItemViewerContainer) {
             QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
             byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUUID());
             if (selectedCraftingGrid == -1) {
                 Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
             } else {
-                Optional<? extends IRecipe<?>> optionalRecipe = player.level.getRecipeManager().byKey(recipeID);
+                Optional<? extends Recipe<?>> optionalRecipe = player.level.getRecipeManager().byKey(recipeID);
                 if (optionalRecipe.isPresent()) {
-                    IRecipe<?> recipe = optionalRecipe.get();
-                    if (recipe instanceof ICraftingRecipe) {
-                        QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, player, recipeID, (ICraftingRecipe) recipe, sources);
+                    Recipe<?> recipe = optionalRecipe.get();
+                    if (recipe instanceof CraftingRecipe) {
+                        QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, player, recipeID, (CraftingRecipe) recipe, sources);
                     } else {
                         Mekanism.logger.warn("Received transfer request from: {}, but the type ({}) of the specified recipe was not a crafting recipe.",
                               player, recipe.getClass());
@@ -58,7 +58,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeResourceLocation(recipeID);
         buffer.writeBoolean(maxTransfer);
         //Cast to byte as this should always be at most 9
@@ -97,7 +97,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
         }
     }
 
-    public static PacketQIOFillCraftingWindow decode(PacketBuffer buffer) {
+    public static PacketQIOFillCraftingWindow decode(FriendlyByteBuf buffer) {
         ResourceLocation recipeID = buffer.readResourceLocation();
         boolean maxTransfer = buffer.readBoolean();
         byte slotCount = buffer.readByte();

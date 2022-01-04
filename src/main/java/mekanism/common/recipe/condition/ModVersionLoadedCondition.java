@@ -2,8 +2,8 @@ package mekanism.common.recipe.condition;
 
 import com.google.gson.JsonObject;
 import mekanism.common.Mekanism;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
 import net.minecraftforge.fml.ModList;
@@ -52,7 +52,7 @@ public class ModVersionLoadedCondition implements ICondition {
 
         @Override
         public ModVersionLoadedCondition read(JsonObject json) {
-            return new ModVersionLoadedCondition(JSONUtils.getAsString(json, "modid"), JSONUtils.getAsString(json, "minVersion"));
+            return new ModVersionLoadedCondition(GsonHelper.getAsString(json, "modid"), GsonHelper.getAsString(json, "minVersion"));
         }
 
         @Override

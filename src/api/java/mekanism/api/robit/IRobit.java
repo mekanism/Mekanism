@@ -2,9 +2,9 @@ package mekanism.api.robit;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.providers.IRobitSkinProvider;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 /**
  * Basic interface that Robit's implement to provide basic access to some methods by allowing mods to instance check the entity against this interface.
@@ -31,5 +31,5 @@ public interface IRobit {//TODO: When we expose the security system to the API m
      *
      * @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
      */
-    boolean setSkin(IRobitSkinProvider skinProvider, @Nullable PlayerEntity player);
+    boolean setSkin(IRobitSkinProvider skinProvider, @Nullable Player player);
 }

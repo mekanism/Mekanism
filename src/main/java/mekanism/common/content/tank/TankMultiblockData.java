@@ -29,8 +29,8 @@ import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
@@ -76,7 +76,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public boolean tick(World world) {
+    public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
         CurrentType type = mergedTank.getCurrentType();
         if (type == CurrentType.EMPTY) {
@@ -98,7 +98,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public void readUpdateTag(CompoundNBT tag) {
+    public void readUpdateTag(CompoundTag tag) {
         super.readUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
         mergedTank.readFromUpdateTag(tag);
@@ -106,7 +106,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public void writeUpdateTag(CompoundNBT tag) {
+    public void writeUpdateTag(CompoundTag tag) {
         super.writeUpdateTag(tag);
         tag.putFloat(NBTConstants.SCALE, prevScale);
         mergedTank.addToUpdateTag(tag);

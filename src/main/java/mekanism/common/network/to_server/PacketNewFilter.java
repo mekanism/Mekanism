@@ -12,11 +12,11 @@ import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketNewFilter implements IMekanismPacket {
 
@@ -30,9 +30,9 @@ public class PacketNewFilter implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player != null) {
-            TileEntity tile = WorldUtils.getTileEntity(player.level, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(player.level, pos);
             if (tile != null) {
                 if (filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
                     ((TileEntityLogisticalSorter) tile).getFilters().add((SorterFilter<?>) filter);
@@ -49,12 +49,12 @@ public class PacketNewFilter implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         filter.write(buffer);
     }
 
-    public static PacketNewFilter decode(PacketBuffer buffer) {
+    public static PacketNewFilter decode(FriendlyByteBuf buffer) {
         return new PacketNewFilter(buffer.readBlockPos(), BaseFilter.readFromPacket(buffer));
     }
 }

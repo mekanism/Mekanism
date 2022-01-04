@@ -4,16 +4,16 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.gear.config.ModuleConfigItemCreator;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IModuleDataProvider;
 import mekanism.api.text.IHasTranslationKey;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.Util;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.Util;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -275,8 +275,8 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         }
 
         /**
-         * Marks this module type as being able to handle mode changes. In addition to using this method {@link ICustomModule#changeMode(IModule, PlayerEntity, ItemStack,
-         * int, boolean)} should be implemented.
+         * Marks this module type as being able to handle mode changes. In addition to using this method {@link ICustomModule#changeMode(IModule, Player, ItemStack, int,
+         * boolean)} should be implemented.
          */
         public ModuleDataBuilder<MODULE> handlesModeChange() {
             handlesModeChange = true;
@@ -284,8 +284,8 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> extends ForgeRegis
         }
 
         /**
-         * Marks this module type as having HUD elements to render. In addition to using this method {@link ICustomModule#addHUDElements(IModule, Consumer)} or {@link
-         * ICustomModule#addHUDStrings(IModule, Consumer)} should be implemented.
+         * Marks this module type as having HUD elements to render. In addition to using this method {@link ICustomModule#addHUDElements(IModule, Player, Consumer)} or
+         * {@link ICustomModule#addHUDStrings(IModule, Player, Consumer)} should be implemented.
          */
         public ModuleDataBuilder<MODULE> rendersHUD() {
             rendersHUD = true;

@@ -8,7 +8,7 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.EnergyConversionIRecipe;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister

@@ -32,9 +32,10 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
 
@@ -47,8 +48,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityResistiveHeater() {
-        super(MekanismBlocks.RESISTIVE_HEATER);
+    public TileEntityResistiveHeater(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.RESISTIVE_HEATER, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
@@ -118,14 +119,14 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = super.getConfigurationData(player);
+    public CompoundTag getConfigurationData(Player player) {
+        CompoundTag data = super.getConfigurationData(player);
         data.putString(NBTConstants.ENERGY_USAGE, energyContainer.getEnergyPerTick().toString());
         return data;
     }
 
     @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+    public void setConfigurationData(Player player, CompoundTag data) {
         super.setConfigurationData(player, data);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.ENERGY_USAGE, energyContainer::updateEnergyUsage);
     }
@@ -138,15 +139,15 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.putFloat(NBTConstants.SOUND_SCALE, soundScale);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SOUND_SCALE, value -> soundScale = value);
     }
 

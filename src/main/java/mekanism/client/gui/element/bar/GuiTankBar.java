@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.bar;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -17,16 +17,16 @@ import mekanism.common.network.to_server.PacketDropperUse;
 import mekanism.common.network.to_server.PacketDropperUse.DropperAction;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> implements IJEIIngredientHelper {
 
     public GuiTankBar(IGuiWrapper gui, TankInfoProvider<STACK> infoProvider, int x, int y, int width, int height, boolean horizontal) {
-        super(AtlasTexture.LOCATION_BLOCKS, gui, infoProvider, x, y, width, height, horizontal);
+        super(TextureAtlas.LOCATION_BLOCKS, gui, infoProvider, x, y, width, height, horizontal);
     }
 
     protected abstract boolean isEmpty(STACK stack);
@@ -35,7 +35,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     protected abstract TankType getType(STACK stack);
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         STACK stored = getHandler().getStack();
         if (isEmpty(stored)) {
             super.renderToolTip(matrix, mouseX, mouseY);
@@ -44,9 +44,9 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
         }
     }
 
-    protected List<ITextComponent> getTooltip(STACK stack) {
-        List<ITextComponent> tooltips = new ArrayList<>();
-        ITextComponent tooltip = getHandler().getTooltip();
+    protected List<Component> getTooltip(STACK stack) {
+        List<Component> tooltips = new ArrayList<>();
+        Component tooltip = getHandler().getTooltip();
         if (tooltip != null) {
             tooltips.add(tooltip);
         }
@@ -58,7 +58,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     protected abstract TextureAtlasSprite getIcon(STACK stack);
 
     @Override
-    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         STACK stored = getHandler().getStack();
         if (!isEmpty(stored)) {
             int displayInt = (int) (handlerLevel * ((horizontal ? width : height) - 2));
@@ -78,7 +78,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY)) {
-            ItemStack stack = Minecraft.getInstance().player.inventory.getCarried();
+            ItemStack stack = Minecraft.getInstance().player.containerMenu.getCarried();
             if (gui() instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TankType tankType = getType(getHandler().getStack());
                 if (tankType != null) {
@@ -90,7 +90,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
                         } else {
                             action = DropperAction.DRAIN_DROPPER;
                         }
-                        Mekanism.packetHandler.sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) gui()).getTileEntity().getBlockPos(), action, tankType, index));
+                        Mekanism.packetHandler().sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) gui()).getTileEntity().getBlockPos(), action, tankType, index));
                     }
                     return true;
                 }

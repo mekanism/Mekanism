@@ -11,7 +11,7 @@ import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -58,7 +58,7 @@ public class CrTPigmentStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static PigmentStackIngredient from(MCTag<Pigment> pigmentTag, long amount) {
-        ITag<Pigment> tag = CrTIngredientHelper.assertValidAndGet(pigmentTag, amount, CrTPigmentTagManager.INSTANCE::getInternal, "PigmentStackIngredients");
+        Tag<Pigment> tag = CrTIngredientHelper.assertValidAndGet(pigmentTag, amount, CrTPigmentTagManager.INSTANCE::getInternal, "PigmentStackIngredients");
         return PigmentStackIngredient.from(tag, amount);
     }
 

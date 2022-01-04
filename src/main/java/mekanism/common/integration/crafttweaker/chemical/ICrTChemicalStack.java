@@ -23,8 +23,13 @@ import mekanism.common.integration.crafttweaker.ingredient.CrTGasStackIngredient
 import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTSlurryStackIngredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
+
+import mekanism.common.integration.crafttweaker.bracket.IBracketSupport.IGasBracketSupport;
+import mekanism.common.integration.crafttweaker.bracket.IBracketSupport.IInfuseTypeBracketSupport;
+import mekanism.common.integration.crafttweaker.bracket.IBracketSupport.IPigmentBracketSupport;
+import mekanism.common.integration.crafttweaker.bracket.IBracketSupport.ISlurryBracketSupport;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_CHEMICAL_STACK)

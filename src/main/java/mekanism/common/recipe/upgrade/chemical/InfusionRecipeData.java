@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.infuse.IInfusionHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler.IMekanismInfusionHandler;
@@ -15,15 +15,15 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class InfusionRecipeData extends ChemicalRecipeData<InfuseType, InfusionStack, IInfusionTank, IInfusionHandler> {
 
-    public InfusionRecipeData(ListNBT tanks) {
+    public InfusionRecipeData(ListTag tanks) {
         super(tanks);
     }
 

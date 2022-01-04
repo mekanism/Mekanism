@@ -1,7 +1,7 @@
 package mekanism.generators.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -17,11 +17,12 @@ import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.core.BlockPos;
 
 @ParametersAreNonnullByDefault
 public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityFissionReactorCasing> {
@@ -35,18 +36,18 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
         glowModel = null;
     }
 
-    public RenderFissionReactor(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderFissionReactor(BlockEntityRendererProvider.Context context) {
+        super(context);
     }
 
     @Override
-    protected void render(TileEntityFissionReactorCasing tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
-          IProfiler profiler) {
+    protected void render(TileEntityFissionReactorCasing tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
+          ProfilerFiller profiler) {
         if (tile.isMaster()) {
             FissionReactorMultiblockData multiblock = tile.getMultiblock();
             if (multiblock.isFormed() && multiblock.renderLocation != null) {
                 BlockPos pos = tile.getBlockPos();
-                IVertexBuilder buffer = renderer.getBuffer(Atlases.translucentCullBlockSheet());
+                VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
                 if (multiblock.isBurning()) {
                     //TODO: Convert the glow model and stuff to being part of the baked model and using model data
                     // as I am fairly sure that should give a decent boost to performance

@@ -6,7 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.lib.security.SecurityMode;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

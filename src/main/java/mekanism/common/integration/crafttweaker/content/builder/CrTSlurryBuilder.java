@@ -7,8 +7,8 @@ import mekanism.api.chemical.slurry.SlurryBuilder;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.integration.crafttweaker.content.attribute.ICrTChemicalAttribute.ICrTSlurryAttribute;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister

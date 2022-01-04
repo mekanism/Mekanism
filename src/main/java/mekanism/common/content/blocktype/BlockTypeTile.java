@@ -16,8 +16,7 @@ import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 
 public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
 
@@ -28,8 +27,8 @@ public class BlockTypeTile<TILE extends TileEntityMekanism> extends BlockType {
         this.tileEntityRegistrar = tileEntityRegistrar;
     }
 
-    public TileEntityType<TILE> getTileType() {
-        return tileEntityRegistrar.get().getTileEntityType();
+    public TileEntityTypeRegistryObject<TILE> getTileType() {
+        return tileEntityRegistrar.get();
     }
 
     public static class BlockTileBuilder<BLOCK extends BlockTypeTile<TILE>, TILE extends TileEntityMekanism, T extends BlockTileBuilder<BLOCK, TILE, T>>

@@ -1,5 +1,6 @@
 package mekanism.additions.common.entity;
 
+import com.mojang.math.Vector3f;
 import java.util.Optional;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -11,40 +12,40 @@ import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntitySize;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkHooks;
 
 public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData {
 
-    private static final DataParameter<Byte> IS_LATCHED = EntityDataManager.defineId(EntityBalloon.class, DataSerializers.BYTE);
-    private static final DataParameter<Integer> LATCHED_X = EntityDataManager.defineId(EntityBalloon.class, DataSerializers.INT);
-    private static final DataParameter<Integer> LATCHED_Y = EntityDataManager.defineId(EntityBalloon.class, DataSerializers.INT);
-    private static final DataParameter<Integer> LATCHED_Z = EntityDataManager.defineId(EntityBalloon.class, DataSerializers.INT);
-    private static final DataParameter<Integer> LATCHED_ID = EntityDataManager.defineId(EntityBalloon.class, DataSerializers.INT);
+    private static final EntityDataAccessor<Byte> IS_LATCHED = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Integer> LATCHED_X = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> LATCHED_Y = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> LATCHED_Z = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> LATCHED_ID = SynchedEntityData.defineId(EntityBalloon.class, EntityDataSerializers.INT);
     private static final double OFFSET = -0.275;
 
     private EnumColor color = EnumColor.DARK_BLUE;
@@ -54,7 +55,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     private boolean hasCachedEntity;
     private UUID cachedEntityUUID;
 
-    public EntityBalloon(EntityType<EntityBalloon> type, World world) {
+    public EntityBalloon(EntityType<EntityBalloon> type, Level world) {
         super(type, world);
 
         noCulling = true;
@@ -70,7 +71,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Nullable
-    public static EntityBalloon create(World world, double x, double y, double z, EnumColor c) {
+    public static EntityBalloon create(Level world, double x, double y, double z, EnumColor c) {
         EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(world);
         if (balloon == null) {
             return null;
@@ -104,7 +105,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Nullable
-    public static EntityBalloon create(World world, BlockPos pos, EnumColor c) {
+    public static EntityBalloon create(Level world, BlockPos pos, EnumColor c) {
         EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(world);
         if (balloon == null) {
             return null;
@@ -152,8 +153,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
             }
         } else {
             if (hasCachedEntity) {
-                if (level instanceof ServerWorld) {
-                    Entity entity = ((ServerWorld) level).getEntity(cachedEntityUUID);
+                if (level instanceof ServerLevel) {
+                    Entity entity = ((ServerLevel) level).getEntity(cachedEntityUUID);
                     if (entity instanceof LivingEntity) {
                         latchedEntity = (LivingEntity) entity;
                     }
@@ -181,19 +182,20 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         if (!level.isClientSide) {
             if (latched != null) {
                 Optional<BlockState> blockState = WorldUtils.getBlockState(level, latched);
-                if (blockState.isPresent() && blockState.get().isAir(level, latched)) {
+                if (blockState.isPresent() && blockState.get().isAir()) {
                     latched = null;
                     entityData.set(IS_LATCHED, (byte) 0);
                 }
             }
-            if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive() || !level.getChunkSource().isEntityTickingChunk(latchedEntity))) {
+            //TODO - 1.18: There doesn't seem to be a clear way to see if an entity is ticking
+            if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive())) {// || !level.getChunkSource().isEntityTickingChunk(latchedEntity))) {
                 latchedEntity = null;
                 entityData.set(IS_LATCHED, (byte) 0);
             }
         }
 
         if (!isLatched()) {
-            Vector3d motion = getDeltaMovement();
+            Vec3 motion = getDeltaMovement();
             setDeltaMovement(motion.x(), Math.min(motion.y() * 1.02F, 0.2F), motion.z());
 
             move(MoverType.SELF, getDeltaMovement());
@@ -205,14 +207,14 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
                 motion = motion.multiply(0.7, 0, 0.7);
             }
             if (motion.y() == 0) {
-                motion = new Vector3d(motion.x(), 0.04, motion.z());
+                motion = new Vec3(motion.x(), 0.04, motion.z());
             }
             setDeltaMovement(motion);
         } else if (latched != null) {
             setDeltaMovement(0, 0, 0);
         } else if (latchedEntity != null && latchedEntity.getHealth() > 0) {
             int floor = getFloor(latchedEntity);
-            Vector3d motion = latchedEntity.getDeltaMovement();
+            Vec3 motion = latchedEntity.getDeltaMovement();
             if (latchedEntity.getY() - (floor + 1) < -0.1) {
                 latchedEntity.setDeltaMovement(motion.x(), Math.max(0.04, motion.y() * 1.015), motion.z());
             } else if (latchedEntity.getY() - (floor + 1) > 0.1) {
@@ -232,7 +234,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         BlockPos pos = new BlockPos(entity.position());
         for (BlockPos posi = pos; posi.getY() > 0; posi = posi.below()) {
             if (posi.getY() < level.getMaxBuildHeight() && !level.isEmptyBlock(posi)) {
-                return posi.getY() + 1 + (entity instanceof PlayerEntity ? 1 : 0);
+                return posi.getY() + 1 + (entity instanceof Player ? 1 : 0);
             }
         }
         return -1;
@@ -241,13 +243,15 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     private void pop() {
         playSound(AdditionsSounds.POP.getSoundEvent(), 1, 1);
         if (!level.isClientSide) {
-            RedstoneParticleData redstoneParticleData = new RedstoneParticleData(color.getColor(0), color.getColor(1), color.getColor(2), 1.0F);
+            //TODO - 1.18: Cache the vector?
+            Vector3f col = new Vector3f(color.getColor(0), color.getColor(1), color.getColor(2));
+            DustParticleOptions redstoneParticleData = new DustParticleOptions(col, 1.0F);
             for (int i = 0; i < 10; i++) {
-                ((ServerWorld) level).sendParticles(redstoneParticleData, getX() + 0.6 * random.nextFloat() - 0.3, getY() + 0.6 * random.nextFloat() - 0.3,
+                ((ServerLevel) level).sendParticles(redstoneParticleData, getX() + 0.6 * random.nextFloat() - 0.3, getY() + 0.6 * random.nextFloat() - 0.3,
                       getZ() + 0.6 * random.nextFloat() - 0.3, 1, 0, 0, 0, 0);
             }
         }
-        remove();
+        discard();
     }
 
     @Override
@@ -260,9 +264,11 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         return isAlive();
     }
 
+    @Nonnull
     @Override
-    protected boolean isMovementNoisy() {
-        return false;
+    protected MovementEmission getMovementEmission() {
+        //TODO - 1.18: Re-evaluate
+        return MovementEmission.NONE;
     }
 
     @Override
@@ -270,7 +276,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected void readAdditionalSaveData(@Nonnull CompoundNBT nbtTags) {
+    protected void readAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, color -> this.color = color);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.LATCHED, pos -> latched = pos);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> {
@@ -280,10 +286,10 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    protected void addAdditionalSaveData(@Nonnull CompoundNBT nbtTags) {
+    protected void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
         nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
         if (latched != null) {
-            nbtTags.put(NBTConstants.LATCHED, NBTUtil.writeBlockPos(latched));
+            nbtTags.put(NBTConstants.LATCHED, NbtUtils.writeBlockPos(latched));
         }
         if (latchedEntity != null) {
             nbtTags.putUUID(NBTConstants.OWNER_UUID, latchedEntity.getUUID());
@@ -298,12 +304,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     @Nonnull
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer data) {
+    public void writeSpawnData(FriendlyByteBuf data) {
         data.writeDouble(getX());
         data.writeDouble(getY());
         data.writeDouble(getZ());
@@ -321,7 +327,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public void readSpawnData(PacketBuffer data) {
+    public void readSpawnData(FriendlyByteBuf data) {
         setPos(data.readDouble(), data.readDouble(), data.readDouble());
         color = data.readEnum(EnumColor.class);
         byte type = data.readByte();
@@ -335,9 +341,10 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void remove(@Nonnull RemovalReason reason) {
+        super.remove(reason);
         if (latchedEntity != null) {
+            //TODO - 1.18: Re-evaluate this
             latchedEntity.hasImpulse = false;
         }
     }
@@ -378,29 +385,33 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
 
     //Adjust various bounding boxes/eye height so that the balloon gets interacted with properly
     @Override
-    protected float getEyeHeight(@Nonnull Pose pose, @Nonnull EntitySize size) {
+    protected float getEyeHeight(@Nonnull Pose pose, @Nonnull EntityDimensions size) {
         return (float) (size.height - OFFSET);
     }
 
     @Nonnull
     @Override
-    protected AxisAlignedBB getBoundingBoxForPose(@Nonnull Pose pose) {
-        return getBoundingBox(getDimensions(pose), getX(), getY(), getZ());
-    }
-
-    @Override
-    public void setPos(double x, double y, double z) {
-        setPosRaw(x, y, z);
-        if (isAddedToWorld() && !this.level.isClientSide && level instanceof ServerWorld) {
-            ((ServerWorld) this.level).updateChunkPos(this); // Forge - Process chunk registration after moving.
-        }
-        setBoundingBox(getBoundingBox(getDimensions(Pose.STANDING), x, y, z));
-    }
-
-    private AxisAlignedBB getBoundingBox(EntitySize size, double x, double y, double z) {
+    protected AABB getBoundingBoxForPose(@Nonnull Pose pose) {
+        EntityDimensions size = getDimensions(pose);
+        double x = getX();
+        double y = getY();
+        double z = getZ();
         float f = size.width / 2F;
         double posY = y - OFFSET;
-        return new AxisAlignedBB(new Vector3d(x - f, posY, z - f), new Vector3d(x + f, posY + size.height, z + f));
+        return new AABB(new Vec3(x - f, posY, z - f), new Vec3(x + f, posY + size.height, z + f));
+    }
+
+    /*@Override
+    public void setPos(double x, double y, double z) {
+        //TODO - 1.18: Try to call super and override makeBoundingBox instead?
+        setPosRaw(x, y, z);
+        setBoundingBox(getBoundingBoxForPose(Pose.STANDING));
+    }*/
+
+    @Nonnull
+    @Override
+    protected AABB makeBoundingBox() {
+        return getBoundingBoxForPose(Pose.STANDING);
     }
 
     @Override
@@ -408,18 +419,15 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         //NO-OP don't allow size to change
     }
 
-    @Override
+    /*@Override//TODO - 1.18: Re-evaluate all the bounding block stuff
     public void setLocationFromBoundingbox() {
-        AxisAlignedBB axisalignedbb = getBoundingBox();
+        AABB axisalignedbb = getBoundingBox();
         //Offset the y value upwards to match where it actually should be relative to the bounding box
         setPosRaw((axisalignedbb.minX + axisalignedbb.maxX) / 2D, axisalignedbb.minY + OFFSET, (axisalignedbb.minZ + axisalignedbb.maxZ) / 2D);
-        if (isAddedToWorld() && !this.level.isClientSide && level instanceof ServerWorld) {
-            ((ServerWorld) this.level).updateChunkPos(this); // Forge - Process chunk registration after moving.
-        }
-    }
+    }*/
 
     @Override
-    public ItemStack getPickedResult(RayTraceResult target) {
+    public ItemStack getPickedResult(HitResult target) {
         return AdditionsItems.BALLOONS.get(color).getItemStack();
     }
 }

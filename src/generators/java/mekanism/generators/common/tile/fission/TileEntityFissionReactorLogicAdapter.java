@@ -17,20 +17,21 @@ import mekanism.generators.common.base.IReactorLogicMode;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReactorCasing implements IReactorLogic<FissionReactorLogic> {
 
     public FissionReactorLogic logicType = FissionReactorLogic.DISABLED;
     private RedstoneStatus prevStatus = RedstoneStatus.IDLE;
 
-    public TileEntityFissionReactorLogicAdapter() {
-        super(GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER);
+    public TileEntityFissionReactorLogicAdapter(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER, pos, state);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         boolean needsPacket = super.onUpdateServer(multiblock);
         RedstoneStatus status = getStatus();
         if (status != prevStatus) {
-            World world = getLevel();
+            Level world = getLevel();
             if (world != null) {
                 world.updateNeighborsAt(getBlockPos(), getBlockType());
             }
@@ -105,17 +106,15 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.LOGIC_TYPE, FissionReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        NBTUtils.setEnumIfPresent(nbt, NBTConstants.LOGIC_TYPE, FissionReactorLogic::byIndexStatic, logicType -> this.logicType = logicType);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.LOGIC_TYPE, logicType.ordinal());
-        return nbtTags;
     }
 
     @Override
@@ -163,7 +162,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
         }
 
         @Override
-        public ITextComponent getDescription() {
+        public Component getDescription() {
             return description.translate();
         }
 

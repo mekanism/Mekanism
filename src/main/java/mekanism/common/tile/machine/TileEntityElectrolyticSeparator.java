@@ -65,8 +65,10 @@ import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -113,8 +115,8 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityElectrolyticSeparator() {
-        super(MekanismBlocks.ELECTROLYTIC_SEPARATOR);
+    public TileEntityElectrolyticSeparator(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.ELECTROLYTIC_SEPARATOR, pos, state);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -305,14 +307,14 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
         NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_LEFT, GasMode::byIndexStatic, mode -> dumpLeft = mode);
         NBTUtils.setEnumIfPresent(data, NBTConstants.DUMP_RIGHT, GasMode::byIndexStatic, mode -> dumpRight = mode);
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
         data.putInt(NBTConstants.DUMP_LEFT, dumpLeft.ordinal());
         data.putInt(NBTConstants.DUMP_RIGHT, dumpRight.ordinal());

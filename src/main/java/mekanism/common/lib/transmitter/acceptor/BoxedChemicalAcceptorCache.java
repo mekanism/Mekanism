@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.chemical.infuse.IInfusionHandler;
@@ -17,8 +17,8 @@ import mekanism.common.content.network.transmitter.BoxedPressurizedTube;
 import mekanism.common.lib.transmitter.acceptor.BoxedChemicalAcceptorCache.BoxedChemicalAcceptorInfo;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.CapabilityUtils;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.util.LazyOptional;
 
 //TODO - V11: Improve this so it only invalidates the types needed instead of doing all chemical types at once
@@ -31,7 +31,7 @@ public class BoxedChemicalAcceptorCache extends AbstractAcceptorCache<BoxedChemi
         super(transmitter, transmitterTile);
     }
 
-    private void updateCachedAcceptorAndListen(Direction side, TileEntity acceptorTile, BoxedChemicalHandler acceptor) {
+    private void updateCachedAcceptorAndListen(Direction side, BlockEntity acceptorTile, BoxedChemicalHandler acceptor) {
         boolean dirtyAcceptor = false;
         if (cachedAcceptors.containsKey(side)) {
             BoxedChemicalAcceptorInfo acceptorInfo = cachedAcceptors.get(side);
@@ -58,7 +58,7 @@ public class BoxedChemicalAcceptorCache extends AbstractAcceptorCache<BoxedChemi
         }
     }
 
-    public boolean isChemicalAcceptorAndListen(@Nullable TileEntity tile, Direction side) {
+    public boolean isChemicalAcceptorAndListen(@Nullable BlockEntity tile, Direction side) {
         //TODO: Improve this to make it easier to add more chemical types
         Direction opposite = side.getOpposite();
         LazyOptional<IGasHandler> gasAcceptor = CapabilityUtils.getCapability(tile, Capabilities.GAS_HANDLER_CAPABILITY, opposite);
@@ -122,7 +122,7 @@ public class BoxedChemicalAcceptorCache extends AbstractAcceptorCache<BoxedChemi
         @Nullable
         private LazyOptional<BoxedChemicalHandler> asLazy;
 
-        private BoxedChemicalAcceptorInfo(TileEntity tile, BoxedChemicalHandler boxedHandler) {
+        private BoxedChemicalAcceptorInfo(BlockEntity tile, BoxedChemicalHandler boxedHandler) {
             super(tile);
             this.boxedHandler = boxedHandler;
         }

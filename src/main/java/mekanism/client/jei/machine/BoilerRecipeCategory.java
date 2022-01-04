@@ -1,6 +1,6 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,7 +39,7 @@ import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
 
@@ -82,7 +82,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
     }
 
     @Override
-    public void draw(BoilerJEIRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(BoilerJEIRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         //Update what the current recipe is so that we have the proper values for temperature and the like
         this.recipe = recipe;
         super.draw(recipe, matrixStack, mouseX, mouseY);

@@ -13,8 +13,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
 
 @ParametersAreNonnullByDefault
 public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
@@ -22,7 +22,7 @@ public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "dosimeter.png");
 
     @Override
-    public void addHUDElements(IModule<ModuleDosimeterUnit> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleDosimeterUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             player.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(capability -> {
                 double radiation = capability.getRadiation();

@@ -2,7 +2,7 @@ package mekanism.common.inventory.slot;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;

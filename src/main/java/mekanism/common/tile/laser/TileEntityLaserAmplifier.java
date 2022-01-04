@@ -23,7 +23,9 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
 
@@ -35,8 +37,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     private boolean emittingRedstone;
     private RedstoneOutput outputMode = RedstoneOutput.OFF;
 
-    public TileEntityLaserAmplifier() {
-        super(MekanismBlocks.LASER_AMPLIFIER);
+    public TileEntityLaserAmplifier(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.LASER_AMPLIFIER, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
@@ -120,7 +122,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MIN, value -> minThreshold = value);
         NBTUtils.setFloatingLongIfPresent(data, NBTConstants.MAX, value -> maxThreshold = value);
@@ -129,7 +131,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
         data.putString(NBTConstants.MIN, minThreshold.toString());
         data.putString(NBTConstants.MAX, maxThreshold.toString());

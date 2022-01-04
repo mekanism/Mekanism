@@ -2,13 +2,13 @@ package mekanism.api.chemical.infuse;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IInfuseTypeProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 @ParametersAreNonnullByDefault
@@ -56,7 +56,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
      *
      * @return InfusionStack stored in the tag compound
      */
-    public static InfusionStack readFromNBT(@Nullable CompoundNBT nbtTags) {
+    public static InfusionStack readFromNBT(@Nullable CompoundTag nbtTags) {
         if (nbtTags == null || nbtTags.isEmpty()) {
             return EMPTY;
         }
@@ -71,7 +71,7 @@ public class InfusionStack extends ChemicalStack<InfuseType> {
         return new InfusionStack(type, amount);
     }
 
-    public static InfusionStack readFromPacket(PacketBuffer buf) {
+    public static InfusionStack readFromPacket(FriendlyByteBuf buf) {
         InfuseType infuseType = buf.readRegistryId();
         long amount = buf.readVarLong();
         if (infuseType.isEmptyType()) {

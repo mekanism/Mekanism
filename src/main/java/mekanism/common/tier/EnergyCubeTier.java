@@ -2,16 +2,16 @@ package mekanism.common.tier;
 
 import java.util.Locale;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedFloatingLongValue;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public enum EnergyCubeTier implements ITier, IStringSerializable {
+public enum EnergyCubeTier implements ITier, StringRepresentable {
     BASIC(BaseTier.BASIC, FloatingLong.createConst(4_000_000), FloatingLong.createConst(4_000)),
     ADVANCED(BaseTier.ADVANCED, FloatingLong.createConst(16_000_000), FloatingLong.createConst(16_000)),
     ELITE(BaseTier.ELITE, FloatingLong.createConst(64_000_000), FloatingLong.createConst(64_000)),

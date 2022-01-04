@@ -10,17 +10,17 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 
 class NucleosynthesizingRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "nucleosynthesizing/";
         NucleosynthesizingRecipeBuilder.nucleosynthesizing(
               ItemStackIngredient.from(Items.SKELETON_SKULL),

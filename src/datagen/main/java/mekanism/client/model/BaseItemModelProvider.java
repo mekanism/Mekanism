@@ -7,9 +7,9 @@ import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
@@ -28,7 +28,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
     }
 
     public boolean textureExists(ResourceLocation texture) {
-        return existingFileHelper.exists(texture, ResourcePackType.CLIENT_RESOURCES, ".png", "textures");
+        return existingFileHelper.exists(texture, PackType.CLIENT_RESOURCES, ".png", "textures");
     }
 
     protected ResourceLocation itemTexture(IItemProvider itemProvider) {

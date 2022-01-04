@@ -12,7 +12,7 @@ import mekanism.common.capabilities.chemical.dynamic.IPigmentTracker;
 import mekanism.common.capabilities.chemical.dynamic.ISlurryTracker;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> extends GuiGauge<Void>
       implements IJEIIngredientHelper {
@@ -25,7 +25,7 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
     private final GuiPigmentGauge pigmentGauge;
     private final GuiSlurryGauge slurryGauge;
 
-    private ITextComponent label;
+    private Component label;
 
     public GuiMergedChemicalTankGauge(Supplier<MergedChemicalTank> mergedTankSupplier, Supplier<HANDLER> handlerSupplier, GaugeType type, IGuiWrapper gui, int x, int y) {
         this(mergedTankSupplier, handlerSupplier, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
@@ -42,7 +42,7 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
         slurryGauge = addPositionOnlyChild(new GuiSlurryGauge(() -> this.mergedTankSupplier.get().getSlurryTank(), () -> this.handlerSupplier.get().getSlurryTanks(null), type, gui, x, y, width, height));
     }
 
-    public GuiMergedChemicalTankGauge<HANDLER> setLabel(ITextComponent label) {
+    public GuiMergedChemicalTankGauge<HANDLER> setLabel(Component label) {
         this.label = label;
         return this;
     }
@@ -97,12 +97,12 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
     }
 
     @Override
-    public List<ITextComponent> getTooltipText() {
+    public List<Component> getTooltipText() {
         return getCurrentGauge().getTooltipText();
     }
 
     @Override
-    public ITextComponent getLabel() {
+    public Component getLabel() {
         return label;
     }
 

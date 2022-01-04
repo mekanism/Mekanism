@@ -8,11 +8,11 @@ import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -25,15 +25,15 @@ public final class FluidUtils {
     private FluidUtils() {
     }
 
-    public static void emit(IExtendedFluidTank tank, TileEntity from) {
+    public static void emit(IExtendedFluidTank tank, BlockEntity from) {
         emit(EnumSet.allOf(Direction.class), tank, from);
     }
 
-    public static void emit(Set<Direction> outputSides, IExtendedFluidTank tank, TileEntity from) {
+    public static void emit(Set<Direction> outputSides, IExtendedFluidTank tank, BlockEntity from) {
         emit(outputSides, tank, from, tank.getCapacity());
     }
 
-    public static void emit(Set<Direction> outputSides, IExtendedFluidTank tank, TileEntity from, int maxOutput) {
+    public static void emit(Set<Direction> outputSides, IExtendedFluidTank tank, BlockEntity from, int maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0) {
             tank.extract(emit(outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
         }
@@ -48,7 +48,7 @@ public final class FluidUtils {
      *
      * @return the amount of fluid emitted
      */
-    public static int emit(Set<Direction> sides, @Nonnull FluidStack stack, TileEntity from) {
+    public static int emit(Set<Direction> sides, @Nonnull FluidStack stack, BlockEntity from) {
         if (stack.isEmpty() || sides.isEmpty()) {
             return 0;
         }
@@ -72,7 +72,7 @@ public final class FluidUtils {
         return handler.fill(stack, FluidAction.SIMULATE) > 0;
     }
 
-    public static boolean handleTankInteraction(PlayerEntity player, Hand hand, ItemStack itemStack, IExtendedFluidTank fluidTank) {
+    public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IExtendedFluidTank fluidTank) {
         ItemStack copyStack = StackUtils.size(itemStack, 1);
         Optional<IFluidHandlerItem> fluidHandlerItem = FluidUtil.getFluidHandler(copyStack).resolve();
         if (fluidHandlerItem.isPresent()) {
@@ -94,7 +94,7 @@ public final class FluidUtils {
                     if (filled > 0) {
                         if (itemStack.getCount() == 1) {
                             player.setItemInHand(hand, container);
-                        } else if (itemStack.getCount() > 1 && player.inventory.add(container)) {
+                        } else if (itemStack.getCount() > 1 && player.getInventory().add(container)) {
                             itemStack.shrink(1);
                         } else {
                             player.drop(container, false, true);
@@ -119,7 +119,7 @@ public final class FluidUtils {
                             if (itemStack.getCount() == 1) {
                                 player.setItemInHand(hand, container);
                                 filled = true;
-                            } else if (player.inventory.add(container)) {
+                            } else if (player.getInventory().add(container)) {
                                 itemStack.shrink(1);
                                 filled = true;
                             }

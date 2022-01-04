@@ -4,7 +4,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
@@ -17,7 +17,7 @@ public class TransmitterLoader implements IModelLoader<TransmitterModel> {
     }
 
     @Override
-    public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
+    public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
         //I believe given each cache is in the individual models when the manager reloads it allows GC to clear
         // the individual caches due to the models themselves no longer being referenced.
         // If this ends up not being the case then we will need to clear the caches from here

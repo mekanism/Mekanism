@@ -8,15 +8,17 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionReactorMultiblockData> {
 
-    public TileEntityFusionReactorBlock() {
-        this(GeneratorsBlocks.FUSION_REACTOR_FRAME);
+    public TileEntityFusionReactorBlock(BlockPos pos, BlockState state) {
+        this(GeneratorsBlocks.FUSION_REACTOR_FRAME, pos, state);
     }
 
-    public TileEntityFusionReactorBlock(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityFusionReactorBlock(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Override

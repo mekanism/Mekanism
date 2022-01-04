@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -29,18 +29,18 @@ import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.StackUtils;
-import net.minecraft.block.Block;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpawnEggItem;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpawnEggItem;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -63,7 +63,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         if (target instanceof ItemStack) {
             gui().renderItem(matrix, (ItemStack) target, x, y);
         } else if (target instanceof FluidStack) {
@@ -80,7 +80,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (target instanceof ItemStack) {
             gui().renderItemTooltip(matrix, (ItemStack) target, mouseX, mouseY);
@@ -94,7 +94,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
         if (Screen.hasShiftDown()) {
             setTargetSlot(null, false);
         } else {
-            ItemStack stack = minecraft.player.inventory.getCarried();
+            ItemStack stack = minecraft.player.containerMenu.getCarried();
             if (!stack.isEmpty()) {
                 setTargetSlot(stack, false);
             }
@@ -122,7 +122,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 if (item instanceof BlockItem) {
                     Block block = ((BlockItem) item).getBlock();
                     tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(block.getTags()));
-                    if (block instanceof IHasTileEntity || block.hasTileEntity(block.defaultBlockState())) {
+                    if (block instanceof IHasTileEntity || block.defaultBlockState().hasBlockEntity()) {
                         tags.put(DictionaryTagType.TILE_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
                     }
                 }

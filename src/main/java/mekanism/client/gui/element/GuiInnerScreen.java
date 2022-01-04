@@ -1,6 +1,6 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -9,16 +9,16 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea<GuiInnerScreen> {
 
     public static final ResourceLocation SCREEN = MekanismUtils.getResource(ResourceType.GUI, "inner_screen.png");
     public static int SCREEN_SIZE = 32;
 
-    private Supplier<List<ITextComponent>> renderStrings;
-    private Supplier<List<ITextComponent>> tooltipStrings;
+    private Supplier<List<Component>> renderStrings;
+    private Supplier<List<Component>> tooltipStrings;
 
     private ResourceLocation[] recipeCategories;
     private boolean centerY;
@@ -30,13 +30,13 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
         super(SCREEN, gui, x, y, width, height, SCREEN_SIZE, SCREEN_SIZE);
     }
 
-    public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<List<ITextComponent>> renderStrings) {
+    public GuiInnerScreen(IGuiWrapper gui, int x, int y, int width, int height, Supplier<List<Component>> renderStrings) {
         this(gui, x, y, width, height);
         this.renderStrings = renderStrings;
         defaultFormat();
     }
 
-    public GuiInnerScreen tooltip(Supplier<List<ITextComponent>> tooltipStrings) {
+    public GuiInnerScreen tooltip(Supplier<List<Component>> tooltipStrings) {
         this.tooltipStrings = tooltipStrings;
         active = true;
         return this;
@@ -72,17 +72,17 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         if (renderStrings != null) {
-            List<ITextComponent> list = renderStrings.get();
+            List<Component> list = renderStrings.get();
             float startY = relativeY + padding;
             if (centerY) {
                 int listSize = list.size();
                 int totalHeight = listSize * 8 + spacing * (listSize - 1);
                 startY = relativeY + (getHeight() - totalHeight) / 2F;
             }
-            for (ITextComponent text : renderStrings.get()) {
+            for (Component text : renderStrings.get()) {
                 drawText(matrix, text, relativeX + padding, startY);
                 startY += 8 + spacing;
             }
@@ -90,17 +90,17 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (tooltipStrings != null) {
-            List<ITextComponent> list = tooltipStrings.get();
+            List<Component> list = tooltipStrings.get();
             if (list != null && !list.isEmpty()) {
                 displayTooltips(matrix, list, mouseX, mouseY);
             }
         }
     }
 
-    private void drawText(MatrixStack matrix, ITextComponent text, float x, float y) {
+    private void drawText(PoseStack matrix, Component text, float x, float y) {
         drawScaledTextScaledBound(matrix, text, x, y, screenTextColor(), getWidth() - padding * 2, textScale);
     }
 

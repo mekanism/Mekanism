@@ -25,7 +25,7 @@ import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.registration.impl.ModuleDeferredRegister;
 import mekanism.common.registration.impl.ModuleRegistryObject;
-import net.minecraft.item.Rarity;
+import net.minecraft.world.item.Rarity;
 
 //Note: We need to declare our item providers like we do so that they don't end up being null due to us referencing these objects from the items
 @SuppressWarnings({"Convert2MethodRef", "FunctionalExpressionCanBeFolded"})

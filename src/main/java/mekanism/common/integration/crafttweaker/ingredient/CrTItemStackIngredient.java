@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.tags.Tag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -78,7 +78,7 @@ public class CrTItemStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ItemStackIngredient from(MCTag<Item> itemTag, int amount) {
-        ITag<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
+        Tag<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
         return ItemStackIngredient.from(tag, amount);
     }
 

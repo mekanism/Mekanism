@@ -4,7 +4,6 @@ import mekanism.client.lang.MekanismLangProvider;
 import mekanism.client.model.MekanismItemModelProvider;
 import mekanism.client.sound.MekanismSoundProvider;
 import mekanism.client.state.MekanismBlockStateProvider;
-import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
 import mekanism.common.integration.projecte.MekanismCustomConversions;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
@@ -14,7 +13,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 
 @EventBusSubscriber(modid = Mekanism.MODID, bus = Bus.MOD)
 public class MekanismDataGenerator {
@@ -41,7 +40,8 @@ public class MekanismDataGenerator {
             gen.addProvider(new MekanismLootProvider(gen));
             gen.addProvider(new MekanismRecipeProvider(gen, existingFileHelper));
             gen.addProvider(new MekanismCustomConversions(gen));
-            gen.addProvider(new MekanismCrTExampleProvider(gen, existingFileHelper));
+            //TODO - 1.18: CraftTweaker
+            //gen.addProvider(new MekanismCrTExampleProvider(gen, existingFileHelper));
         }
     }
 }

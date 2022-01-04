@@ -8,7 +8,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class ChemicalInfuserRecipeSerializer<RECIPE extends ChemicalInfuserRecipe> extends
       ChemicalChemicalToChemicalRecipeSerializer<Gas, GasStack, GasStackIngredient, RECIPE> {
@@ -28,7 +28,7 @@ public class ChemicalInfuserRecipeSerializer<RECIPE extends ChemicalInfuserRecip
     }
 
     @Override
-    protected GasStack fromBuffer(@Nonnull PacketBuffer buffer) {
+    protected GasStack fromBuffer(@Nonnull FriendlyByteBuf buffer) {
         return GasStack.readFromPacket(buffer);
     }
 }

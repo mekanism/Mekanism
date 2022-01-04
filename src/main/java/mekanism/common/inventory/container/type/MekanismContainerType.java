@@ -7,35 +7,35 @@ import mekanism.common.inventory.container.type.MekanismContainerType.IMekanismC
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.IContainerProvider;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuConstructor;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.IContainerFactory;
+import net.minecraftforge.network.IContainerFactory;
 
-public class MekanismContainerType<T, CONTAINER extends Container> extends BaseMekanismContainerType<T, CONTAINER, IMekanismContainerFactory<T, CONTAINER>> {
+public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> extends BaseMekanismContainerType<T, CONTAINER, IMekanismContainerFactory<T, CONTAINER>> {
 
-    public static <TILE extends TileEntityMekanism, CONTAINER extends Container> MekanismContainerType<TILE, CONTAINER> tile(Class<TILE> type,
+    public static <TILE extends TileEntityMekanism, CONTAINER extends AbstractContainerMenu> MekanismContainerType<TILE, CONTAINER> tile(Class<TILE> type,
           IMekanismContainerFactory<TILE, CONTAINER> constructor) {
         return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getTileFromBuf(buf, type)));
     }
 
-    public static <TILE extends TileEntityMekanism, CONTAINER extends Container> MekanismContainerType<TILE, CONTAINER> tile(Class<TILE> type,
+    public static <TILE extends TileEntityMekanism, CONTAINER extends AbstractContainerMenu> MekanismContainerType<TILE, CONTAINER> tile(Class<TILE> type,
           IMekanismSidedContainerFactory<TILE, CONTAINER> constructor) {
         return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getTileFromBuf(buf, type), true));
     }
 
-    public static <ENTITY extends Entity, CONTAINER extends Container & IEntityContainer<ENTITY>> MekanismContainerType<ENTITY, CONTAINER> entity(Class<ENTITY> type,
+    public static <ENTITY extends Entity, CONTAINER extends AbstractContainerMenu & IEntityContainer<ENTITY>> MekanismContainerType<ENTITY, CONTAINER> entity(Class<ENTITY> type,
           IMekanismContainerFactory<ENTITY, CONTAINER> constructor) {
         return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getEntityFromBuf(buf, type)));
     }
 
-    public static <ENTITY extends Entity, CONTAINER extends Container & IEntityContainer<ENTITY>> MekanismContainerType<ENTITY, CONTAINER> entity(Class<ENTITY> type,
+    public static <ENTITY extends Entity, CONTAINER extends AbstractContainerMenu & IEntityContainer<ENTITY>> MekanismContainerType<ENTITY, CONTAINER> entity(Class<ENTITY> type,
           IMekanismSidedContainerFactory<ENTITY, CONTAINER> constructor) {
         return new MekanismContainerType<>(type, constructor, (id, inv, buf) -> constructor.create(id, inv, getEntityFromBuf(buf, type), true));
     }
@@ -45,7 +45,7 @@ public class MekanismContainerType<T, CONTAINER extends Container> extends BaseM
     }
 
     @Nullable
-    public CONTAINER create(int id, PlayerInventory inv, Object data) {
+    public CONTAINER create(int id, Inventory inv, Object data) {
         if (type.isInstance(data)) {
             return mekanismConstructor.create(id, inv, type.cast(data));
         }
@@ -53,7 +53,7 @@ public class MekanismContainerType<T, CONTAINER extends Container> extends BaseM
     }
 
     @Nullable
-    public IContainerProvider create(Object data) {
+    public MenuConstructor create(Object data) {
         if (type.isInstance(data)) {
             T d = type.cast(data);
             return (id, inv, player) -> mekanismConstructor.create(id, inv, d);
@@ -62,7 +62,7 @@ public class MekanismContainerType<T, CONTAINER extends Container> extends BaseM
     }
 
     @Nonnull
-    private static <TILE extends TileEntity> TILE getTileFromBuf(PacketBuffer buf, Class<TILE> type) {
+    private static <TILE extends BlockEntity> TILE getTileFromBuf(FriendlyByteBuf buf, Class<TILE> type) {
         if (buf == null) {
             throw new IllegalArgumentException("Null packet buffer");
         }
@@ -78,7 +78,7 @@ public class MekanismContainerType<T, CONTAINER extends Container> extends BaseM
     }
 
     @Nonnull
-    private static <ENTITY extends Entity> ENTITY getEntityFromBuf(PacketBuffer buf, Class<ENTITY> type) {
+    private static <ENTITY extends Entity> ENTITY getEntityFromBuf(FriendlyByteBuf buf, Class<ENTITY> type) {
         if (buf == null) {
             throw new IllegalArgumentException("Null packet buffer");
         }
@@ -97,19 +97,19 @@ public class MekanismContainerType<T, CONTAINER extends Container> extends BaseM
     }
 
     @FunctionalInterface
-    public interface IMekanismContainerFactory<T, CONTAINER extends Container> {
+    public interface IMekanismContainerFactory<T, CONTAINER extends AbstractContainerMenu> {
 
-        CONTAINER create(int id, PlayerInventory inv, T data);
+        CONTAINER create(int id, Inventory inv, T data);
     }
 
     @FunctionalInterface
-    public interface IMekanismSidedContainerFactory<T, CONTAINER extends Container> extends IMekanismContainerFactory<T, CONTAINER> {
+    public interface IMekanismSidedContainerFactory<T, CONTAINER extends AbstractContainerMenu> extends IMekanismContainerFactory<T, CONTAINER> {
 
 
-        CONTAINER create(int id, PlayerInventory inv, T data, boolean remote);
+        CONTAINER create(int id, Inventory inv, T data, boolean remote);
 
         @Override
-        default CONTAINER create(int id, PlayerInventory inv, T data) {
+        default CONTAINER create(int id, Inventory inv, T data) {
             return create(id, inv, data, false);
         }
     }

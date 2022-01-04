@@ -9,14 +9,16 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.tier.InductionCellTier;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityInductionCell extends TileEntityMekanism {
 
     private MachineEnergyContainer<TileEntityInductionCell> energyContainer;
     public InductionCellTier tier;
 
-    public TileEntityInductionCell(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityInductionCell(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         //Never externally expose the energy capability
         addDisabledCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities());
     }

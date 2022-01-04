@@ -2,7 +2,7 @@ package mekanism.api.providers;
 
 import javax.annotation.Nonnull;
 import mekanism.api.robit.RobitSkin;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public interface IRobitSkinProvider extends IBaseProvider {
 

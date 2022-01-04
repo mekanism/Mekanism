@@ -14,9 +14,9 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.player.Player;
 
 public class TileComponentFrequency implements ITileComponent {
 
@@ -165,16 +165,16 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        CompoundNBT frequencyNBT;
-        if (nbtTags.contains(NBTConstants.COMPONENT_FREQUENCY, NBT.TAG_COMPOUND)) {
+    public void read(CompoundTag nbtTags) {
+        CompoundTag frequencyNBT;
+        if (nbtTags.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
             frequencyNBT = nbtTags.getCompound(NBTConstants.COMPONENT_FREQUENCY);
         } else {
             //TODO - 1.18: Remove this old fallback loading system
             frequencyNBT = nbtTags;
         }
         for (FrequencyType<?> type : supportedFrequencies.keySet()) {
-            if (frequencyNBT.contains(type.getName(), NBT.TAG_COMPOUND)) {
+            if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
                 Frequency frequency = type.create(frequencyNBT.getCompound(type.getName()));
                 frequency.setValid(false);
                 heldFrequencies.put(type, frequency);
@@ -183,12 +183,12 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
-        CompoundNBT frequencyNBT = new CompoundNBT();
+    public void write(CompoundTag nbtTags) {
+        CompoundTag frequencyNBT = new CompoundTag();
         for (Frequency frequency : heldFrequencies.values()) {
             if (frequency != null) {
                 //TODO: Can this be transitioned over to frequency.serializeIdentityWithOwner()
-                CompoundNBT frequencyTag = new CompoundNBT();
+                CompoundTag frequencyTag = new CompoundTag();
                 frequency.writeComponentData(frequencyTag);
                 frequencyNBT.put(frequency.getType().getName(), frequencyTag);
             }
@@ -196,14 +196,14 @@ public class TileComponentFrequency implements ITileComponent {
         nbtTags.put(NBTConstants.COMPONENT_FREQUENCY, frequencyNBT);
     }
 
-    public void readConfiguredFrequencies(PlayerEntity player, CompoundNBT data) {
-        if (hasCustomFrequencies() && data.contains(NBTConstants.COMPONENT_FREQUENCY, NBT.TAG_COMPOUND)) {
-            CompoundNBT frequencyNBT = data.getCompound(NBTConstants.COMPONENT_FREQUENCY);
+    public void readConfiguredFrequencies(Player player, CompoundTag data) {
+        if (hasCustomFrequencies() && data.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
+            CompoundTag frequencyNBT = data.getCompound(NBTConstants.COMPONENT_FREQUENCY);
             for (FrequencyType<?> type : supportedFrequencies.keySet()) {
                 if (type != FrequencyType.SECURITY) {
                     //Don't allow transferring security data via config cards
-                    if (frequencyNBT.contains(type.getName(), NBT.TAG_COMPOUND)) {
-                        CompoundNBT frequencyData = frequencyNBT.getCompound(type.getName());
+                    if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
+                        CompoundTag frequencyData = frequencyNBT.getCompound(type.getName());
                         if (frequencyData.hasUUID(NBTConstants.OWNER_UUID)) {
                             FrequencyIdentity identity = FrequencyIdentity.load(type, frequencyData);
                             if (identity != null) {
@@ -223,8 +223,8 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    public void writeConfiguredFrequencies(CompoundNBT data) {
-        CompoundNBT frequencyNBT = new CompoundNBT();
+    public void writeConfiguredFrequencies(CompoundTag data) {
+        CompoundTag frequencyNBT = new CompoundTag();
         for (Frequency frequency : heldFrequencies.values()) {
             if (frequency != null && frequency.getType() != FrequencyType.SECURITY) {
                 //Don't allow transferring security data via config cards

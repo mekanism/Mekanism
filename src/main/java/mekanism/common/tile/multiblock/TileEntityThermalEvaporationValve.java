@@ -8,13 +8,15 @@ import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporationBlock {
 
-    public TileEntityThermalEvaporationValve() {
-        super(MekanismBlocks.THERMAL_EVAPORATION_VALVE);
+    public TileEntityThermalEvaporationValve(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.THERMAL_EVAPORATION_VALVE, pos, state);
     }
 
     @Nonnull

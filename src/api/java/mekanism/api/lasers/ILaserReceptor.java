@@ -2,7 +2,7 @@ package mekanism.api.lasers;
 
 import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 /**
  * Expose this as a capability on your TileEntity to handle what happens when a laser hits it.

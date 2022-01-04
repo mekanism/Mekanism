@@ -7,11 +7,13 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.FluidUtils;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityTurbineVent extends TileEntityTurbineCasing {
 
-    public TileEntityTurbineVent() {
-        super(GeneratorsBlocks.TURBINE_VENT);
+    public TileEntityTurbineVent(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.TURBINE_VENT, pos, state);
     }
 
     @Nonnull

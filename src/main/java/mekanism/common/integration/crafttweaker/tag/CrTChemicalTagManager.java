@@ -16,9 +16,9 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.SetTag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -33,10 +33,10 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>>
 
     @Override
     public void addElements(MCTag<CHEMICAL> to, List<CHEMICAL> toAdd) {
-        ITag<CHEMICAL> internal = getInternal(to);
+        Tag<CHEMICAL> internal = getInternal(to);
         List<CHEMICAL> itemsFromDefinitions = getChemicals(toAdd);
         if (internal == null) {
-            Tag<CHEMICAL> tagFromContents = Tag.create(Sets.newHashSet(itemsFromDefinitions));
+            SetTag<CHEMICAL> tagFromContents = SetTag.create(Sets.newHashSet(itemsFromDefinitions));
             CraftTweakerAPI.apply(new ActionTagCreate<>(getTagCollection(), tagFromContents, to));
         } else {
             CraftTweakerAPI.apply(new ActionTagAdd<>(internal, itemsFromDefinitions, to));
@@ -45,7 +45,7 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>>
 
     @Override
     public void removeElements(MCTag<CHEMICAL> from, List<CHEMICAL> toRemove) {
-        ITag<CHEMICAL> internal = getInternal(from);
+        Tag<CHEMICAL> internal = getInternal(from);
         List<CHEMICAL> chemicals = getChemicals(toRemove);
         CraftTweakerAPI.apply(new ActionTagRemove<>(internal, chemicals, from));
     }
@@ -56,7 +56,7 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>>
 
     @Override
     public List<CHEMICAL> getElementsInTag(MCTag<CHEMICAL> theTag) {
-        ITag<CHEMICAL> internal = getInternal(theTag);
+        Tag<CHEMICAL> internal = getInternal(theTag);
         if (internal == null) {
             return Collections.emptyList();
         }
@@ -64,13 +64,13 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>>
     }
 
     @Override
-    public ITagCollection<CHEMICAL> getTagCollection() {
+    public TagCollection<CHEMICAL> getTagCollection() {
         return chemicalTags.getCollection();
     }
 
     @Nullable
     @Override
-    public ITag<CHEMICAL> getInternal(MCTag<CHEMICAL> theTag) {
+    public Tag<CHEMICAL> getInternal(MCTag<CHEMICAL> theTag) {
         return getTagCollection().getTag(theTag.getIdInternal());
     }
 }

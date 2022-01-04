@@ -4,9 +4,9 @@ import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.to_client.PacketPlayerData;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketGearStateUpdate implements IMekanismPacket {
 
@@ -33,22 +33,22 @@ public class PacketGearStateUpdate implements IMekanismPacket {
             Mekanism.playerState.setGravitationalModulationState(uuid, state, false);
         }
         //If we got this packet on the server, inform all clients tracking the changed player
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player != null) {
             //Note: We just resend all the data for the updated player as the packet size is about the same
             // and this allows us to separate the packet into a server to client and client to server packet
-            Mekanism.packetHandler.sendToAllTracking(new PacketPlayerData(uuid), player);
+            Mekanism.packetHandler().sendToAllTracking(new PacketPlayerData(uuid), player);
         }
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(gearType);
         buffer.writeUUID(uuid);
         buffer.writeBoolean(state);
     }
 
-    public static PacketGearStateUpdate decode(PacketBuffer buffer) {
+    public static PacketGearStateUpdate decode(FriendlyByteBuf buffer) {
         return new PacketGearStateUpdate(buffer.readEnum(GearType.class), buffer.readUUID(), buffer.readBoolean());
     }
 

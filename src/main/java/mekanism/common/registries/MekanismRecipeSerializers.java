@@ -76,7 +76,7 @@ import mekanism.common.recipe.serializer.WrappedShapedRecipeSerializer;
 import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import mekanism.common.registration.impl.IRecipeSerializerDeferredRegister;
 import mekanism.common.registration.impl.IRecipeSerializerRegistryObject;
-import net.minecraft.item.crafting.SpecialRecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 
 public class MekanismRecipeSerializers {
 
@@ -134,6 +134,6 @@ public class MekanismRecipeSerializers {
     public static final IRecipeSerializerRegistryObject<SawmillRecipe> SAWING = RECIPE_SERIALIZERS.register("sawing", () -> new SawmillRecipeSerializer<>(SawmillIRecipe::new));
 
     public static final IRecipeSerializerRegistryObject<MekanismShapedRecipe> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", () -> new WrappedShapedRecipeSerializer<>(MekanismShapedRecipe::new));
-    public static final IRecipeSerializerRegistryObject<BinInsertRecipe> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new SpecialRecipeSerializer<>(BinInsertRecipe::new));
-    public static final IRecipeSerializerRegistryObject<BinExtractRecipe> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new SpecialRecipeSerializer<>(BinExtractRecipe::new));
+    public static final IRecipeSerializerRegistryObject<BinInsertRecipe> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new SimpleRecipeSerializer<>(BinInsertRecipe::new));
+    public static final IRecipeSerializerRegistryObject<BinExtractRecipe> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new SimpleRecipeSerializer<>(BinExtractRecipe::new));
 }

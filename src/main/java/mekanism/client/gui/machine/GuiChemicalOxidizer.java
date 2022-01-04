@@ -1,6 +1,6 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
@@ -11,12 +11,12 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public class GuiChemicalOxidizer extends GuiConfigurableTile<TileEntityChemicalOxidizer, MekanismTileContainer<TileEntityChemicalOxidizer>> {
 
-    public GuiChemicalOxidizer(MekanismTileContainer<TileEntityChemicalOxidizer> container, PlayerInventory inv, ITextComponent title) {
+    public GuiChemicalOxidizer(MekanismTileContainer<TileEntityChemicalOxidizer> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
     }
@@ -24,16 +24,16 @@ public class GuiChemicalOxidizer extends GuiConfigurableTile<TileEntityChemicalO
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
-        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
-        addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 131, 13));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 64, 40).jeiCategory(tile));
+        addRenderableWidget(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
+        addRenderableWidget(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.STANDARD, this, 131, 13));
+        addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 64, 40).jeiCategory(tile));
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

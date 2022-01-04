@@ -15,25 +15,23 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Contract;
 
@@ -44,22 +42,21 @@ public class ItemConfigurationCard extends Item {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack stack, World world, List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, Level world, List<Component> tooltip, @Nonnull TooltipFlag flag) {
         tooltip.add(MekanismLang.CONFIG_CARD_HAS_DATA.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getConfigCardName(getData(stack))));
     }
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
         if (player == null) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
-        TileEntity tile = WorldUtils.getTileEntity(world, pos);
+        BlockEntity tile = WorldUtils.getTileEntity(world, pos);
         Optional<IConfigCardAccess> configCardSupport = CapabilityUtils.getCapability(tile, Capabilities.CONFIG_CARD_CAPABILITY, side).resolve();
         if (configCardSupport.isPresent()) {
             if (SecurityUtils.canAccess(player, tile)) {
@@ -68,7 +65,7 @@ public class ItemConfigurationCard extends Item {
                     if (!world.isClientSide) {
                         IConfigCardAccess configCardAccess = configCardSupport.get();
                         String translationKey = configCardAccess.getConfigCardName();
-                        CompoundNBT data = configCardAccess.getConfigurationData(player);
+                        CompoundTag data = configCardAccess.getConfigurationData(player);
                         data.putString(NBTConstants.DATA_NAME, translationKey);
                         data.putString(NBTConstants.DATA_TYPE, configCardAccess.getConfigurationDataType().getRegistryName().toString());
                         ItemDataUtils.setCompound(stack, NBTConstants.DATA, data);
@@ -76,10 +73,10 @@ public class ItemConfigurationCard extends Item {
                               Util.NIL_UUID);
                     }
                 } else {
-                    CompoundNBT data = getData(stack);
-                    TileEntityType<?> storedType = getStoredTileType(data);
+                    CompoundTag data = getData(stack);
+                    BlockEntityType<?> storedType = getStoredTileType(data);
                     if (storedType == null) {
-                        return ActionResultType.PASS;
+                        return InteractionResult.PASS;
                     }
                     if (!world.isClientSide) {
                         IConfigCardAccess configCardAccess = configCardSupport.get();
@@ -93,38 +90,38 @@ public class ItemConfigurationCard extends Item {
                         }
                     }
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             } else {
                 SecurityUtils.displayNoAccess(player);
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
-    private CompoundNBT getData(ItemStack stack) {
-        CompoundNBT data = ItemDataUtils.getCompound(stack, NBTConstants.DATA);
+    private CompoundTag getData(ItemStack stack) {
+        CompoundTag data = ItemDataUtils.getCompound(stack, NBTConstants.DATA);
         return data.isEmpty() ? null : data;
     }
 
     @Nullable
     @Contract("null -> null")
-    private TileEntityType<?> getStoredTileType(@Nullable CompoundNBT data) {
-        if (data == null || !data.contains(NBTConstants.DATA_TYPE, NBT.TAG_STRING)) {
+    private BlockEntityType<?> getStoredTileType(@Nullable CompoundTag data) {
+        if (data == null || !data.contains(NBTConstants.DATA_TYPE, Tag.TAG_STRING)) {
             return null;
         }
         ResourceLocation tileRegistryName = ResourceLocation.tryParse(data.getString(NBTConstants.DATA_TYPE));
-        return tileRegistryName == null ? null : ForgeRegistries.TILE_ENTITIES.getValue(tileRegistryName);
+        return tileRegistryName == null ? null : ForgeRegistries.BLOCK_ENTITIES.getValue(tileRegistryName);
     }
 
-    private ITextComponent getConfigCardName(@Nullable CompoundNBT data) {
-        if (data == null || !data.contains(NBTConstants.DATA_NAME, NBT.TAG_STRING)) {
+    private Component getConfigCardName(@Nullable CompoundTag data) {
+        if (data == null || !data.contains(NBTConstants.DATA_NAME, Tag.TAG_STRING)) {
             return MekanismLang.NONE.translate();
         }
         return TextComponentUtil.translate(data.getString(NBTConstants.DATA_NAME));
     }
 
     public boolean hasData(ItemStack stack) {
-        CompoundNBT data = getData(stack);
-        return data != null && data.contains(NBTConstants.DATA_NAME, NBT.TAG_STRING);
+        CompoundTag data = getData(stack);
+        return data != null && data.contains(NBTConstants.DATA_NAME, Tag.TAG_STRING);
     }
 }

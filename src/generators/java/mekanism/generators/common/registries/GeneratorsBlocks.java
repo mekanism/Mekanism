@@ -40,7 +40,7 @@ import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 public class GeneratorsBlocks {
 

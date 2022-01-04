@@ -4,11 +4,11 @@ import mekanism.common.network.BasePacketHandler;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiButtonPress;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class GeneratorsPacketHandler extends BasePacketHandler {
 
-    private static final SimpleChannel netHandler = createChannel(MekanismGenerators.rl(MekanismGenerators.MODID));
+    private final SimpleChannel netHandler = createChannel(MekanismGenerators.rl(MekanismGenerators.MODID), MekanismGenerators.instance.versionNumber);
 
     @Override
     protected SimpleChannel getChannel() {

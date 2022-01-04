@@ -1,0 +1,19 @@
+{
+  "values": [
+    "mekanism:copper_ore",
+    "mekanism:tin_ore",
+    "mekanism:osmium_ore",
+    "mekanism:uranium_ore",
+    "mekanism:fluorite_ore",
+    "mekanism:lead_ore",
+    "mekanism:block_osmium",
+    "mekanism:block_tin",
+    "mekanism:block_copper",
+    "mekanism:block_lead",
+    "mekanism:block_uranium",
+    "mekanism:block_fluorite",
+    "mekanism:block_bronze",
+    "mekanism:block_steel",
+    "mekanism:block_refined_glowstone"
+  ]
+}

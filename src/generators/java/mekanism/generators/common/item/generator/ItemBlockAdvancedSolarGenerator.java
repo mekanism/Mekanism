@@ -4,10 +4,10 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class ItemBlockAdvancedSolarGenerator extends ItemBlockMachine {
 
@@ -16,8 +16,8 @@ public class ItemBlockAdvancedSolarGenerator extends ItemBlockMachine {
     }
 
     @Override
-    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        World world = context.getLevel();
+    public boolean placeBlock(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         if (!WorldUtils.isValidReplaceableBlock(world, pos.above())) {
             return false;

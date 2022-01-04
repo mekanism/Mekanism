@@ -7,9 +7,9 @@ import mekanism.api.NBTConstants;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.IOwnerItem;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 
 public interface IFrequencyItem extends IOwnerItem {
 
@@ -28,13 +28,13 @@ public interface IFrequencyItem extends IOwnerItem {
     }
 
     default boolean hasFrequency(ItemStack stack) {
-        return ItemDataUtils.hasData(stack, NBTConstants.FREQUENCY, NBT.TAG_COMPOUND);
+        return ItemDataUtils.hasData(stack, NBTConstants.FREQUENCY, Tag.TAG_COMPOUND);
     }
 
     @Nullable
     default Frequency getFrequency(ItemStack stack) {
         if (hasFrequency(stack)) {
-            CompoundNBT frequencyCompound = ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY);
+            CompoundTag frequencyCompound = ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY);
             FrequencyIdentity identity = FrequencyIdentity.load(getFrequencyType(), frequencyCompound);
             if (identity != null) {
                 UUID owner;

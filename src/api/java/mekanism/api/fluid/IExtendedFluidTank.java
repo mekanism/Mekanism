@@ -1,12 +1,12 @@
 package mekanism.api.fluid;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.inventory.AutomationType;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -14,7 +14,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<CompoundNBT>, IContentsListener {
+public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<CompoundTag>, IContentsListener {
 
     /**
      * Overrides the stack in this {@link IExtendedFluidTank}.
@@ -237,10 +237,10 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     }
 
     @Override
-    default CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    default CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.STORED, getFluid().writeToNBT(new CompoundNBT()));
+            nbt.put(NBTConstants.STORED, getFluid().writeToNBT(new CompoundTag()));
         }
         return nbt;
     }

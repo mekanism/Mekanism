@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import mekanism.api.annotations.NonNull;
 import mekanism.common.config.IMekanismConfig;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 

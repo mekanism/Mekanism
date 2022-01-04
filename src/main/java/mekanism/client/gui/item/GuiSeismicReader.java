@@ -1,6 +1,6 @@
 package mekanism.client.gui.item;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
@@ -18,12 +18,12 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
@@ -33,7 +33,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     private MekanismButton downButton;
     private GuiScrollBar scrollBar;
 
-    public GuiSeismicReader(SeismicReaderContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiSeismicReader(SeismicReaderContainer container, Inventory inv, Component title) {
         super(container, inv, title);
         imageWidth = 147;
         imageHeight = 182;
@@ -47,26 +47,26 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiInnerScreen(this, 7, 11, 63, 49));
-        addButton(new GuiInnerScreen(this, 74, 11, 51, 159));
-        scrollBar = addButton(new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));
-        addButton(new GuiArrowSelection(this, 76, 81, () -> {
+        addRenderableWidget(new GuiInnerScreen(this, 7, 11, 63, 49));
+        addRenderableWidget(new GuiInnerScreen(this, 74, 11, 51, 159));
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 126, 25, 131, blockList::size, () -> 1));
+        addRenderableWidget(new GuiArrowSelection(this, 76, 81, () -> {
             int currentLayer = scrollBar.getCurrentSelection();
             if (currentLayer >= 0) {
                 return blockList.get(blockList.size() - 1 - currentLayer).getBlock().getName();
             }
             return null;
         }));
-        upButton = addButton(new MekanismImageButton(this, 126, 11, 14,
+        upButton = addRenderableWidget(new MekanismImageButton(this, 126, 11, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "up.png"), () -> scrollBar.adjustScroll(1)));
-        downButton = addButton(new MekanismImageButton(this, 126, 156, 14,
+        downButton = addRenderableWidget(new MekanismImageButton(this, 126, 156, 14,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "down.png"), () -> scrollBar.adjustScroll(-1)));
         updateEnabledButtons();
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void containerTick() {
+        super.containerTick();
         updateEnabledButtons();
     }
 
@@ -77,7 +77,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         int currentLayer = blockList.size() - scrollBar.getCurrentSelection() - 1;
         //Render the layer text scaled, so that it does not start overlapping past 100
         drawTextScaledBound(matrix, TextComponentUtil.build(currentLayer), 111, 87, screenTextColor(), 13);
@@ -111,7 +111,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         // Get the name from the stack and render it
         if (currentLayer >= 0) {
             Block block = blockList.get(currentLayer).getBlock();
-            ITextComponent displayName = block.getName();
+            Component displayName = block.getName();
             drawTextScaledBound(matrix, displayName, 10, 16, screenTextColor(), 57);
             frequency = frequencies.computeIntIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
         }

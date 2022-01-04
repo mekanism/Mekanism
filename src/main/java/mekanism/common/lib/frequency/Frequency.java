@@ -8,9 +8,9 @@ import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public abstract class Frequency {
 
@@ -44,10 +44,10 @@ public abstract class Frequency {
     public void onRemove() {
     }
 
-    public void onDeactivate(TileEntity tile) {
+    public void onDeactivate(BlockEntity tile) {
     }
 
-    public void update(TileEntity tile) {
+    public void update(BlockEntity tile) {
     }
 
     public FrequencyType<?> getType() {
@@ -98,7 +98,7 @@ public abstract class Frequency {
         return clientOwner;
     }
 
-    public void writeComponentData(CompoundNBT nbtTags) {
+    public void writeComponentData(CompoundTag nbtTags) {
         nbtTags.putString(NBTConstants.NAME, name);
         if (ownerUUID != null) {
             nbtTags.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
@@ -106,17 +106,17 @@ public abstract class Frequency {
         nbtTags.putBoolean(NBTConstants.PUBLIC_FREQUENCY, publicFreq);
     }
 
-    public void write(CompoundNBT nbtTags) {
+    public void write(CompoundTag nbtTags) {
         writeComponentData(nbtTags);
     }
 
-    protected void read(CompoundNBT nbtTags) {
+    protected void read(CompoundTag nbtTags) {
         name = nbtTags.getString(NBTConstants.NAME);
         NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.OWNER_UUID, uuid -> ownerUUID = uuid);
         publicFreq = nbtTags.getBoolean(NBTConstants.PUBLIC_FREQUENCY);
     }
 
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         getType().write(buffer);
         buffer.writeUtf(name);
         if (ownerUUID == null) {
@@ -129,7 +129,7 @@ public abstract class Frequency {
         buffer.writeBoolean(publicFreq);
     }
 
-    protected void read(PacketBuffer dataStream) {
+    protected void read(FriendlyByteBuf dataStream) {
         name = BasePacketHandler.readString(dataStream);
         if (dataStream.readBoolean()) {
             ownerUUID = dataStream.readUUID();
@@ -177,22 +177,22 @@ public abstract class Frequency {
         return getIdentity().equals(other.getIdentity());
     }
 
-    public CompoundNBT serializeIdentity() {
+    public CompoundTag serializeIdentity() {
         return frequencyType.getIdentitySerializer().serialize(getIdentity());
     }
 
     /**
      * Like {@link #serializeIdentity()} except ensures the owner information is added if need be.
      */
-    public CompoundNBT serializeIdentityWithOwner() {
-        CompoundNBT serializedIdentity = serializeIdentity();
+    public CompoundTag serializeIdentityWithOwner() {
+        CompoundTag serializedIdentity = serializeIdentity();
         if (!serializedIdentity.hasUUID(NBTConstants.OWNER_UUID) && ownerUUID != null) {
             serializedIdentity.putUUID(NBTConstants.OWNER_UUID, ownerUUID);
         }
         return serializedIdentity;
     }
 
-    public static <FREQ extends Frequency> FREQ readFromPacket(PacketBuffer dataStream) {
+    public static <FREQ extends Frequency> FREQ readFromPacket(FriendlyByteBuf dataStream) {
         return (FREQ) FrequencyType.load(dataStream).create(dataStream);
     }
 
@@ -214,7 +214,7 @@ public abstract class Frequency {
             return publicFreq;
         }
 
-        public static FrequencyIdentity load(FrequencyType<?> type, CompoundNBT tag) {
+        public static FrequencyIdentity load(FrequencyType<?> type, CompoundTag tag) {
             return type.getIdentitySerializer().load(tag);
         }
 

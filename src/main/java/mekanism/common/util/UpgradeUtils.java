@@ -8,9 +8,9 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.network.chat.Component;
 
 public class UpgradeUtils {
 
@@ -41,8 +41,8 @@ public class UpgradeUtils {
         return ItemStack.EMPTY;
     }
 
-    public static List<ITextComponent> getInfo(TileEntity tile, Upgrade upgrade) {
-        List<ITextComponent> ret = new ArrayList<>();
+    public static List<Component> getInfo(BlockEntity tile, Upgrade upgrade) {
+        List<Component> ret = new ArrayList<>();
         if (tile instanceof IUpgradeTile) {
             if (tile instanceof IUpgradeInfoHandler) {
                 return ((IUpgradeInfoHandler) tile).getInfo(upgrade);
@@ -53,8 +53,8 @@ public class UpgradeUtils {
         return ret;
     }
 
-    public static List<ITextComponent> getMultScaledInfo(IUpgradeTile tile, Upgrade upgrade) {
-        List<ITextComponent> ret = new ArrayList<>();
+    public static List<Component> getMultScaledInfo(IUpgradeTile tile, Upgrade upgrade) {
+        List<Component> ret = new ArrayList<>();
         if (tile.supportsUpgrades() && upgrade.getMax() > 1) {
             double effect = Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(), (float) tile.getComponent().getUpgrades(upgrade) / (float) upgrade.getMax());
             ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.round(effect * 100) / 100F));
@@ -62,8 +62,8 @@ public class UpgradeUtils {
         return ret;
     }
 
-    public static List<ITextComponent> getExpScaledInfo(IUpgradeTile tile, Upgrade upgrade) {
-        List<ITextComponent> ret = new ArrayList<>();
+    public static List<Component> getExpScaledInfo(IUpgradeTile tile, Upgrade upgrade) {
+        List<Component> ret = new ArrayList<>();
         if (tile.supportsUpgrades() && upgrade.getMax() > 1) {
             ret.add(MekanismLang.UPGRADES_EFFECT.translate(Math.pow(2, (float) tile.getComponent().getUpgrades(upgrade))));
         }

@@ -7,7 +7,7 @@ import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidElement extends LookingAtElement {
@@ -36,7 +36,7 @@ public class FluidElement extends LookingAtElement {
     }
 
     @Override
-    public ITextComponent getText() {
+    public Component getText() {
         int amount = stored.getAmount();
         if (amount == Integer.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(stored, MekanismLang.INFINITE);

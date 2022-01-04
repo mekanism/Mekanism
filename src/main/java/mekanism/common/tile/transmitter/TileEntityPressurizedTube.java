@@ -41,9 +41,10 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
 
@@ -52,8 +53,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     private final PigmentHandlerManager pigmentHandlerManager;
     private final SlurryHandlerManager slurryHandlerManager;
 
-    public TileEntityPressurizedTube(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityPressurizedTube(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         InteractPredicate canExtract = getExtractPredicate();
         InteractPredicate canInsert = getInsertPredicate();
         addCapabilityResolver(gasHandlerManager = new GasHandlerManager(getHolder(BoxedPressurizedTube::getGasTanks),
@@ -80,11 +81,9 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     }
 
     @Override
-    public void tick() {
-        if (!isRemote()) {
-            getTransmitter().pullFromAcceptors();
-        }
-        super.tick();
+    protected void onUpdateServer() {
+        getTransmitter().pullFromAcceptors();
+        super.onUpdateServer();
     }
 
     @Override
@@ -110,12 +109,12 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
+    public CompoundTag getUpdateTag() {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
-        CompoundNBT updateTag = super.getUpdateTag();
+        CompoundTag updateTag = super.getUpdateTag();
         if (getTransmitter().hasTransmitterNetwork()) {
             BoxedChemicalNetwork network = getTransmitter().getTransmitterNetwork();
-            updateTag.put(NBTConstants.BOXED_CHEMICAL, network.lastChemical.write(new CompoundNBT()));
+            updateTag.put(NBTConstants.BOXED_CHEMICAL, network.lastChemical.write(new CompoundTag()));
             updateTag.putFloat(NBTConstants.SCALE, network.currentScale);
         }
         return updateTag;

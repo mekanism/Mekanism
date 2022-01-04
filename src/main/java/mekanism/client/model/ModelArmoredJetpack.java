@@ -1,100 +1,91 @@
 package mekanism.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModelArmoredJetpack extends ModelJetpack {
 
+    public static final ModelLayerLocation ARMORED_JETPACK_LAYER = new ModelLayerLocation(Mekanism.rl("armored_jetpack"), "main");
     private static final ResourceLocation JETPACK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png");
-    private static final RenderType WING_RENDER_TYPE = MekanismRenderType.mekStandard(JETPACK_TEXTURE);
 
-    private final ModelRenderer chestplate;
-    private final ModelRenderer leftGuardTop;
-    private final ModelRenderer rightGuardTop;
-    private final ModelRenderer middlePlate;
-    private final ModelRenderer rightGuardBot;
-    private final ModelRenderer leftGuardBot;
-    private final ModelRenderer rightLight;
-    private final ModelRenderer leftLight;
+    private static final ModelPartData THRUSTER_LEFT = thrusterLeft(-1.9F);
+    private static final ModelPartData THRUSTER_RIGHT = thrusterRight(-1.9F);
+    private static final ModelPartData FUEL_TUBE_RIGHT = fuelTubeRight(-1.9F);
+    private static final ModelPartData FUEL_TUBE_LEFT = fuelTubeLeft(-1.9F);
 
-    public ModelArmoredJetpack() {
-        super(JETPACK_TEXTURE, WING_RENDER_TYPE, -1.9F);
-        chestplate = new ModelRenderer(this, 104, 22);
-        chestplate.addBox(-4F, 1.333333F, -3F, 8, 4, 3, false);
-        chestplate.setPos(0F, 0F, 0F);
-        chestplate.setTexSize(128, 64);
-        chestplate.mirror = true;
-        setRotation(chestplate, -0.3665191F, 0F, 0F);
-        leftGuardTop = new ModelRenderer(this, 87, 31);
-        leftGuardTop.addBox(0.95F, 3F, -5F, 3, 4, 2, false);
-        leftGuardTop.setPos(0F, 0F, 0F);
-        leftGuardTop.setTexSize(128, 64);
-        leftGuardTop.mirror = true;
-        setRotation(leftGuardTop, 0.2094395F, 0F, 0F);
-        leftGuardTop.mirror = false;
-        rightGuardTop = new ModelRenderer(this, 87, 31);
-        rightGuardTop.addBox(-3.95F, 3F, -5F, 3, 4, 2, false);
-        rightGuardTop.setPos(0F, 0F, 0F);
-        rightGuardTop.setTexSize(128, 64);
-        rightGuardTop.mirror = true;
-        setRotation(rightGuardTop, 0.2094395F, 0F, 0F);
-        middlePlate = new ModelRenderer(this, 93, 20);
-        middlePlate.addBox(-1.5F, 3F, -6.2F, 3, 5, 3, false);
-        middlePlate.setPos(0F, 0F, 0F);
-        middlePlate.setTexSize(128, 64);
-        middlePlate.mirror = true;
-        setRotation(middlePlate, 0.2094395F, 0F, 0F);
-        middlePlate.mirror = false;
-        rightGuardBot = new ModelRenderer(this, 84, 30);
-        rightGuardBot.addBox(-3.5F, 5.5F, -6.5F, 2, 2, 2, false);
-        rightGuardBot.setPos(0F, 0F, 0F);
-        rightGuardBot.setTexSize(128, 64);
-        rightGuardBot.mirror = true;
-        setRotation(rightGuardBot, 0.4712389F, 0F, 0F);
-        rightGuardBot.mirror = false;
-        leftGuardBot = new ModelRenderer(this, 84, 30);
-        leftGuardBot.addBox(1.5F, 5.5F, -6.5F, 2, 2, 2, false);
-        leftGuardBot.setPos(0F, 0F, 0F);
-        leftGuardBot.setTexSize(128, 64);
-        leftGuardBot.mirror = true;
-        setRotation(leftGuardBot, 0.4712389F, 0F, 0F);
-        rightLight = new ModelRenderer(this, 81, 0);
-        rightLight.addBox(-3F, 4F, -4.5F, 1, 3, 1, false);
-        rightLight.setPos(0F, 0F, 0F);
-        rightLight.setTexSize(128, 64);
-        rightLight.mirror = true;
-        setRotation(rightLight, 0F, 0F, 0F);
-        leftLight = new ModelRenderer(this, 81, 0);
-        leftLight.addBox(2F, 4F, -4.5F, 1, 3, 1, false);
-        leftLight.setPos(0F, 0F, 0F);
-        leftLight.setTexSize(128, 64);
-        leftLight.mirror = true;
-        setRotation(leftLight, 0F, 0F, 0F);
+    private static final ModelPartData CHESTPLATE = new ModelPartData("chestplate", CubeListBuilder.create()
+          .texOffs(104, 22)
+          .addBox(-4, 1.333333F, -3, 8, 4, 3),
+          PartPose.rotation(-0.3665191F, 0, 0));
+    private static final ModelPartData LEFT_GUARD_TOP = new ModelPartData("leftGuardTop", CubeListBuilder.create()
+          .texOffs(87, 31)
+          .addBox(0.95F, 3, -5, 3, 4, 2),
+          PartPose.rotation(0.2094395F, 0, 0));
+    private static final ModelPartData RIGHT_GUARD_TOP = new ModelPartData("rightGuardTop", CubeListBuilder.create()
+          .texOffs(87, 31)
+          .addBox(-3.95F, 3, -5, 3, 4, 2),
+          PartPose.rotation(0.2094395F, 0, 0));
+    private static final ModelPartData MIDDLE_PLATE = new ModelPartData("middlePlate", CubeListBuilder.create()
+          .texOffs(93, 20)
+          .addBox(-1.5F, 3, -6.2F, 3, 5, 3),
+          PartPose.rotation(0.2094395F, 0, 0));
+    private static final ModelPartData RIGHT_GUARD_BOT = new ModelPartData("rightGuardBot", CubeListBuilder.create()
+          .texOffs(84, 30)
+          .addBox(-3.5F, 5.5F, -6.5F, 2, 2, 2),
+          PartPose.rotation(0.4712389F, 0, 0));
+    private static final ModelPartData LEFT_GUARD_BOT = new ModelPartData("leftGuardBot", CubeListBuilder.create()
+          .texOffs(84, 30)
+          .addBox(1.5F, 5.5F, -6.5F, 2, 2, 2),
+          PartPose.rotation(0.4712389F, 0, 0));
+    private static final ModelPartData RIGHT_LIGHT = new ModelPartData("rightLight", CubeListBuilder.create()
+          .texOffs(81, 0)
+          .addBox(-3, 4, -4.5F, 1, 3, 1));
+    private static final ModelPartData LEFT_LIGHT = new ModelPartData("leftLight", CubeListBuilder.create()
+          .texOffs(81, 0)
+          .addBox(2, 4, -4.5F, 1, 3, 1));
+
+    public static LayerDefinition createLayerDefinition() {
+        return createLayerDefinition(128, 64, PACK_TOP, PACK_BOTTOM, THRUSTER_LEFT, THRUSTER_RIGHT,
+              FUEL_TUBE_RIGHT,  FUEL_TUBE_LEFT, PACK_MID, PACK_CORE, WING_SUPPORT_L, WING_SUPPORT_R, PACK_TOP_REAR,
+              EXTENDO_SUPPORT_L, EXTENDO_SUPPORT_R, WING_BLADE_L, WING_BLADE_R, PACK_DOODAD_2, PACK_DOODAD_3,
+              BOTTOM_THRUSTER, LIGHT_1, LIGHT_2, LIGHT_3, CHESTPLATE, LEFT_GUARD_TOP, RIGHT_GUARD_TOP, MIDDLE_PLATE,
+              RIGHT_GUARD_BOT, LEFT_GUARD_BOT, RIGHT_LIGHT, LEFT_LIGHT);
+    }
+
+    private final List<ModelPart> armoredParts;
+    private final List<ModelPart> armoredLights;
+
+    public ModelArmoredJetpack(EntityModelSet entityModelSet) {
+        this(entityModelSet.bakeLayer(ARMORED_JETPACK_LAYER));
+    }
+
+    private ModelArmoredJetpack(ModelPart root) {
+        super(root, JETPACK_TEXTURE);
+        //TODO - 1.18: replace the thrusters and fuel tubes in super (it is by name so probably doesn't matter as they have the same name but still)
+        armoredParts = getRenderableParts(root, CHESTPLATE, LEFT_GUARD_TOP, RIGHT_GUARD_TOP, MIDDLE_PLATE, RIGHT_GUARD_BOT, LEFT_GUARD_BOT);
+        armoredLights = getRenderableParts(root, RIGHT_LIGHT, LEFT_LIGHT);
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        super.renderToBuffer(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        matrix.pushPose();
-        matrix.translate(0, 0, -0.0625);
-        chestplate.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        leftGuardTop.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        rightGuardTop.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        middlePlate.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        rightGuardBot.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        leftGuardBot.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        //Stuff below here uses full bright for the lighting
-        light = MekanismRenderer.FULL_LIGHT;
-        rightLight.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        leftLight.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        matrix.popPose();
+    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        super.renderToBuffer(poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+        poseStack.pushPose();
+        poseStack.translate(0, 0, -0.0625);
+        renderPartsToBuffer(armoredParts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+        renderPartsToBuffer(armoredLights, poseStack, vertexConsumer, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
+        poseStack.popPose();
     }
 }

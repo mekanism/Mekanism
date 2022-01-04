@@ -20,25 +20,27 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 public class TileEntityChargepad extends TileEntityMekanism {
 
-    private static final Predicate<LivingEntity> CHARGE_PREDICATE = entity -> !entity.isSpectator() && (entity instanceof PlayerEntity || entity instanceof EntityRobit);
+    private static final Predicate<LivingEntity> CHARGE_PREDICATE = entity -> !entity.isSpectator() && (entity instanceof Player || entity instanceof EntityRobit);
 
     private MachineEnergyContainer<TileEntityChargepad> energyContainer;
 
-    public TileEntityChargepad() {
-        super(MekanismBlocks.CHARGEPAD);
+    public TileEntityChargepad(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.CHARGEPAD, pos, state);
     }
 
     @Nonnull
@@ -54,7 +56,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
         super.onUpdateServer();
         boolean active = false;
         //Use 0.4 for y to catch entities that are partially standing on the back pane
-        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, new AxisAlignedBB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
+        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, new AABB(worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(),
               worldPosition.getX() + 1, worldPosition.getY() + 0.4, worldPosition.getZ() + 1), CHARGE_PREDICATE);
         for (LivingEntity entity : entities) {
             active = !energyContainer.isEmpty();
@@ -63,7 +65,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
                 break;
             } else if (entity instanceof EntityRobit) {
                 provideEnergy((EntityRobit) entity);
-            } else if (entity instanceof PlayerEntity) {
+            } else if (entity instanceof Player) {
                 Optional<IItemHandler> itemHandlerCap = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve();
                 if (!chargeHandler(itemHandlerCap) && Mekanism.hooks.CuriosLoaded) {
                     //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
@@ -114,7 +116,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
     protected void onUpdateClient() {
         super.onUpdateClient();
         if (getActive()) {
-            level.addParticle(RedstoneParticleData.REDSTONE, getBlockPos().getX() + level.random.nextDouble(), getBlockPos().getY() + 0.15,
+            level.addParticle(DustParticleOptions.REDSTONE, getBlockPos().getX() + level.random.nextDouble(), getBlockPos().getY() + 0.15,
                   getBlockPos().getZ() + level.random.nextDouble(), 0, 0, 0);
         }
     }
@@ -134,7 +136,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
                 sound = SoundEvents.STONE_PRESSURE_PLATE_CLICK_OFF;
                 pitch = 0.7F;
             }
-            level.playSound(null, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.1, getBlockPos().getZ() + 0.5, sound, SoundCategory.BLOCKS, 0.3F, pitch);
+            level.playSound(null, getBlockPos().getX() + 0.5, getBlockPos().getY() + 0.1, getBlockPos().getZ() + 0.5, sound, SoundSource.BLOCKS, 0.3F, pitch);
         }
     }
 }

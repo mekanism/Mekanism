@@ -3,9 +3,9 @@ package mekanism.common.registration.impl;
 import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.registration.WrappedRegistryObject;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.Util;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.Util;
+import net.minecraftforge.registries.RegistryObject;
 
 public class SoundEventRegistryObject<SOUND extends SoundEvent> extends WrappedRegistryObject<SOUND> implements ILangEntry {
 

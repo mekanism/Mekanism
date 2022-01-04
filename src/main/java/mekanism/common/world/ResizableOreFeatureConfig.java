@@ -2,34 +2,24 @@ package mekanism.common.world;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import java.util.List;
 import java.util.function.IntSupplier;
+import mekanism.api.functions.FloatSupplier;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.config.WorldConfig.OreConfig;
 import mekanism.common.resource.OreType;
-import net.minecraft.block.BlockState;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.template.RuleTest;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 
-public class ResizableOreFeatureConfig implements IFeatureConfig {
+public record ResizableOreFeatureConfig(List<TargetBlockState> targetStates, OreType oreType, IntSupplier size,
+                                        FloatSupplier discardChanceOnAirExposure) implements FeatureConfiguration {
 
     public static final Codec<ResizableOreFeatureConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-          RuleTest.CODEC.fieldOf("target").forGetter(config -> config.target),
+          Codec.list(OreConfiguration.TargetBlockState.CODEC).fieldOf("targets").forGetter(config -> config.targetStates),
           OreType.CODEC.fieldOf("oreType").forGetter(config -> config.oreType)
-    ).apply(builder, ResizableOreFeatureConfig::create));
-
-    private static ResizableOreFeatureConfig create(RuleTest target, OreType oreType) {
-        return new ResizableOreFeatureConfig(target, oreType, MekanismConfig.world.ores.get(oreType).maxVeinSize);
-    }
-
-    public final BlockState state;
-    public final RuleTest target;
-    public final OreType oreType;
-    public final IntSupplier size;
-
-    public ResizableOreFeatureConfig(RuleTest target, OreType oreType, IntSupplier size) {
-        this.target = target;
-        this.oreType = oreType;
-        this.size = size;
-        this.state = MekanismBlocks.ORES.get(oreType).getBlock().defaultBlockState();
-    }
+    ).apply(builder, (targetStates, oreType) -> {
+        OreConfig oreConfig = MekanismConfig.world.ores.get(oreType);
+        return new ResizableOreFeatureConfig(targetStates, oreType, oreConfig.maxVeinSize, oreConfig.discardChanceOnAirExposure);
+    }));
 }

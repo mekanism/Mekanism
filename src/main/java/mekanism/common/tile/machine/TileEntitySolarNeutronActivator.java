@@ -41,10 +41,12 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.RainType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biome.Precipitation;
 
 public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<GasToGasRecipe> implements IBoundingBlock, ChemicalRecipeLookupHandler<Gas, GasStack, GasToGasRecipe> {
 
@@ -70,8 +72,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private GasInventorySlot outputSlot;
 
-    public TileEntitySolarNeutronActivator() {
-        super(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR);
+    public TileEntitySolarNeutronActivator(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR, pos, state);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS);
         configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot, RelativeSide.FRONT);
         configComponent.setupIOConfig(TransmissionType.GAS, inputTank, outputTank, RelativeSide.FRONT, false, true).setEjecting(true);
@@ -110,12 +112,12 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     }
 
     private void recheckSettings() {
-        World world = getLevel();
+        Level world = getLevel();
         if (world == null) {
             return;
         }
         Biome b = world.getBiomeManager().getBiome(getBlockPos());
-        needsRainCheck = b.getPrecipitation() != RainType.NONE;
+        needsRainCheck = b.getPrecipitation() != Precipitation.NONE;
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
         // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
@@ -161,7 +163,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
     }
 
     private float recalculateProductionRate() {
-        World world = getLevel();
+        Level world = getLevel();
         if (world == null || !canFunction()) {
             return 0;
         }
@@ -211,8 +213,8 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Gas
 
     @Nonnull
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 2, 1));
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
 import java.util.function.ObjIntConsumer;
 import javax.annotation.Nonnull;
@@ -15,7 +16,8 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiUpgradeScrollList extends GuiScrollList {
 
@@ -74,14 +76,14 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         forEachUpgrade((upgrade, multipliedElement) -> drawTextScaledBound(matrix, TextComponentUtil.build(upgrade), relativeX + 13, relativeY + 3 + multipliedElement,
               titleTextColor(), 44));
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1) {
             forEachUpgrade((upgrade, multipliedElement) -> {
@@ -93,12 +95,13 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderElements(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderElements(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Draw elements
         if (hasSelection() && component.getUpgrades(getSelection()) == 0) {
             clearSelection();
         }
-        minecraft.textureManager.bind(UPGRADE_SELECTION);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, UPGRADE_SELECTION);
         forEachUpgrade((upgrade, multipliedElement) -> {
             int shiftedY = y + 1 + multipliedElement;
             int j = 1;

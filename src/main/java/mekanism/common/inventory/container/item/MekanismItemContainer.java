@@ -4,16 +4,16 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 
 public abstract class MekanismItemContainer extends MekanismContainer {
 
-    protected final Hand hand;
+    protected final InteractionHand hand;
     protected final ItemStack stack;
 
-    protected MekanismItemContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, Hand hand, ItemStack stack) {
+    protected MekanismItemContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, InteractionHand hand, ItemStack stack) {
         super(type, id, inv);
         this.hand = hand;
         this.stack = stack;

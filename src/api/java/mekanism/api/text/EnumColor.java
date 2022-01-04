@@ -4,13 +4,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.math.MathUtils;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.tags.Tag;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.Tags;
 
 /**
@@ -46,20 +46,20 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     public final String code;
 
     private int[] rgbCode;
-    private Color color;
+    private TextColor color;
     private final APILang langEntry;
     private final String englishName;
     private final String registryPrefix;
     @Nullable
     private final DyeColor dyeColor;
     private final MaterialColor mapColor;
-    private final ITag<Item> dyeTag;
+    private final Tag<Item> dyeTag;
 
     EnumColor(String s, APILang langEntry, String englishName, String registryPrefix, int[] rgbCode, DyeColor dyeColor) {
         this(s, langEntry, englishName, registryPrefix, rgbCode, dyeColor.getMaterialColor(), dyeColor.getTag(), dyeColor);
     }
 
-    EnumColor(String code, APILang langEntry, String englishName, String registryPrefix, int[] rgbCode, MaterialColor mapColor, ITag<Item> dyeTag,
+    EnumColor(String code, APILang langEntry, String englishName, String registryPrefix, int[] rgbCode, MaterialColor mapColor, Tag<Item> dyeTag,
           @Nullable DyeColor dyeColor) {
         this.code = code;
         this.langEntry = langEntry;
@@ -93,19 +93,6 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     }
 
     /**
-     * Gets the item tag that corresponds to the dye this color corresponds to.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public ITag<Item> getDyeTag() {
-        return dyeTag;
-    }
-
-    @Deprecated//TODO - 1.18: Remove this
-    public boolean hasDyeName() {
-        return dyeColor != null;
-    }
-
-    /**
      * Gets the corresponding dye color or {@code null} if there isn't one.
      */
     @Nullable
@@ -118,7 +105,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      *
      * @return the color's name and color prefix
      */
-    public ITextComponent getColoredName() {
+    public Component getColoredName() {
         return TextComponentUtil.build(this, getName());
     }
 
@@ -127,7 +114,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      *
      * @return the color's name
      */
-    public IFormattableTextComponent getName() {
+    public MutableComponent getName() {
         return langEntry.translate();
     }
 
@@ -152,7 +139,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
     /**
      * Gets the corresponding text color for this color.
      */
-    public Color getColor() {
+    public TextColor getColor() {
         return color;
     }
 
@@ -185,7 +172,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor> {
      */
     public void setColorFromAtlas(int[] color) {
         rgbCode = color;
-        this.color = Color.fromRgb(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
+        this.color = TextColor.fromRgb(rgbCode[0] << 16 | rgbCode[1] << 8 | rgbCode[2]);
     }
 
     /**

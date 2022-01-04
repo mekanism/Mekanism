@@ -8,10 +8,10 @@ import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.resources.ResourceLocation;
 
 public class ElectrolysisIRecipe extends ElectrolysisRecipe {
 
@@ -21,13 +21,13 @@ public class ElectrolysisIRecipe extends ElectrolysisRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<ElectrolysisRecipe> getType() {
+    public RecipeType<ElectrolysisRecipe> getType() {
         return MekanismRecipeType.SEPARATING;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ElectrolysisRecipe> getSerializer() {
+    public RecipeSerializer<ElectrolysisRecipe> getSerializer() {
         return MekanismRecipeSerializers.SEPARATING.getRecipeSerializer();
     }
 

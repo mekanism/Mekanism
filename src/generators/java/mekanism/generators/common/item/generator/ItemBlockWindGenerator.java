@@ -1,24 +1,31 @@
 package mekanism.generators.common.item.generator;
 
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.client.render.item.GeneratorsISTERProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.IItemRenderProperties;
 
 public class ItemBlockWindGenerator extends ItemBlockMachine {
 
     public ItemBlockWindGenerator(BlockTile<?, ?> block) {
-        super(block, GeneratorsISTERProvider::wind);
+        super(block);
     }
 
     @Override
-    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        World world = context.getLevel();
+    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+        consumer.accept(GeneratorsISTERProvider.wind());
+    }
+
+    @Override
+    public boolean placeBlock(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         for (int yPos = 1; yPos < 5; yPos++) {
             BlockPos toCheck = pos.above(yPos);

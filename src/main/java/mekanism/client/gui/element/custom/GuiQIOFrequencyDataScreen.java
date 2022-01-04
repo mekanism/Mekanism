@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
@@ -10,7 +10,7 @@ import mekanism.client.gui.element.bar.GuiDigitalBar;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
 
@@ -28,7 +28,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
             }
 
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 QIOFrequency freq = frequencySupplier.get();
                 return freq == null ? null : MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                       TextUtils.format(freq.getTotalItemCount()), TextUtils.format(freq.getTotalItemCountCapacity()));
@@ -42,7 +42,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
             }
 
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 QIOFrequency freq = frequencySupplier.get();
                 return freq == null ? null : MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                       TextUtils.format(freq.getTotalItemTypes(true)), TextUtils.format(freq.getTotalItemTypeCapacity()));
@@ -51,7 +51,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         QIOFrequency freq = frequencySupplier.get();
         if (freq != null) {

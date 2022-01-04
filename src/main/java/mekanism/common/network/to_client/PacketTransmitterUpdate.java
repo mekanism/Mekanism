@@ -12,9 +12,9 @@ import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketTransmitterUpdate implements IMekanismPacket {
 
@@ -66,7 +66,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(packetType);
         buffer.writeUUID(networkID);
         buffer.writeFloat(scale);
@@ -78,7 +78,7 @@ public class PacketTransmitterUpdate implements IMekanismPacket {
         }
     }
 
-    public static PacketTransmitterUpdate decode(PacketBuffer buffer) {
+    public static PacketTransmitterUpdate decode(FriendlyByteBuf buffer) {
         PacketTransmitterUpdate packet = new PacketTransmitterUpdate(buffer.readEnum(PacketType.class), buffer.readUUID(), buffer.readFloat());
         if (packet.packetType == PacketType.FLUID) {
             packet.fluidStack = FluidStack.readFromPacket(buffer);

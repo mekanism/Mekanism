@@ -5,54 +5,52 @@ import java.util.function.Function;
 import mekanism.api.Range3D;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.lib.Version;
 import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public abstract class BasePacketHandler {
 
-    protected static SimpleChannel createChannel(ResourceLocation name) {
+    protected static SimpleChannel createChannel(ResourceLocation name, Version version) {
+        String protocolVersion = version.toString();
         return NetworkRegistry.ChannelBuilder.named(name)
-              .clientAcceptedVersions(getProtocolVersion()::equals)
-              .serverAcceptedVersions(getProtocolVersion()::equals)
-              .networkProtocolVersion(BasePacketHandler::getProtocolVersion)
+              .clientAcceptedVersions(protocolVersion::equals)
+              .serverAcceptedVersions(protocolVersion::equals)
+              .networkProtocolVersion(() -> protocolVersion)
               .simpleChannel();
     }
 
-    private static String getProtocolVersion() {
-        return Mekanism.instance == null ? "999.999.999" : Mekanism.instance.versionNumber.toString();
-    }
-
     /**
-     * Helper for reading strings to make sure we don't accidentally call {@link PacketBuffer#readUtf()} on the server
+     * Helper for reading strings to make sure we don't accidentally call {@link FriendlyByteBuf#readUtf()} on the server
      */
-    public static String readString(PacketBuffer buffer) {
+    public static String readString(FriendlyByteBuf buffer) {
         //TODO - 1.18: Evaluate usages and potentially move some things to more strict string length checks
         return buffer.readUtf(Short.MAX_VALUE);
     }
 
-    public static Vector3d readVector3d(PacketBuffer buffer) {
-        return new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+    public static Vec3 readVector3d(FriendlyByteBuf buffer) {
+        return new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     }
 
-    public static void writeVector3d(PacketBuffer buffer, Vector3d vector) {
+    public static void writeVector3d(FriendlyByteBuf buffer, Vec3 vector) {
         buffer.writeDouble(vector.x());
         buffer.writeDouble(vector.y());
         buffer.writeDouble(vector.z());
@@ -71,15 +69,15 @@ public abstract class BasePacketHandler {
 
     public abstract void initialize();
 
-    protected <MSG extends IMekanismPacket> void registerClientToServer(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+    protected <MSG extends IMekanismPacket> void registerClientToServer(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder) {
         registerMessage(type, decoder, NetworkDirection.PLAY_TO_SERVER);
     }
 
-    protected <MSG extends IMekanismPacket> void registerServerToClient(Class<MSG> type, Function<PacketBuffer, MSG> decoder) {
+    protected <MSG extends IMekanismPacket> void registerServerToClient(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder) {
         registerMessage(type, decoder, NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    private <MSG extends IMekanismPacket> void registerMessage(Class<MSG> type, Function<PacketBuffer, MSG> decoder, NetworkDirection networkDirection) {
+    private <MSG extends IMekanismPacket> void registerMessage(Class<MSG> type, Function<FriendlyByteBuf, MSG> decoder, NetworkDirection networkDirection) {
         getChannel().registerMessage(index++, type, IMekanismPacket::encode, decoder, IMekanismPacket::handle, Optional.of(networkDirection));
     }
 
@@ -89,7 +87,7 @@ public abstract class BasePacketHandler {
      * @param message - the message to send
      * @param player  - the player to send it to
      */
-    public <MSG> void sendTo(MSG message, ServerPlayerEntity player) {
+    public <MSG> void sendTo(MSG message, ServerPlayer player) {
         //Validate it is not a fake player, even though none of our code should call this with a fake player
         if (!(player instanceof FakePlayer)) {
             getChannel().sendTo(message, player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT);
@@ -125,7 +123,7 @@ public abstract class BasePacketHandler {
      * @param message   - the message to send
      * @param dimension - the dimension to target
      */
-    public <MSG> void sendToDimension(MSG message, RegistryKey<World> dimension) {
+    public <MSG> void sendToDimension(MSG message, ResourceKey<Level> dimension) {
         getChannel().send(PacketDistributor.DIMENSION.with(() -> dimension), message);
     }
 
@@ -146,15 +144,15 @@ public abstract class BasePacketHandler {
         getChannel().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
     }
 
-    public <MSG> void sendToAllTracking(MSG message, TileEntity tile) {
+    public <MSG> void sendToAllTracking(MSG message, BlockEntity tile) {
         sendToAllTracking(message, tile.getLevel(), tile.getBlockPos());
     }
 
-    public <MSG> void sendToAllTracking(MSG message, World world, BlockPos pos) {
-        if (world instanceof ServerWorld) {
+    public <MSG> void sendToAllTracking(MSG message, Level world, BlockPos pos) {
+        if (world instanceof ServerLevel) {
             //If we have a ServerWorld just directly figure out the ChunkPos to not require looking up the chunk
             // This provides a decent performance boost over using the packet distributor
-            ((ServerWorld) world).getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
+            ((ServerLevel) world).getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
         } else {
             //Otherwise, fallback to entities tracking the chunk if some mod did something odd and our world is not a ServerWorld
             getChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos.getX() >> 4, pos.getZ() >> 4)), message);
@@ -172,7 +170,7 @@ public abstract class BasePacketHandler {
                 PlayerList playerList = server.getPlayerList();
                 //Ignore height for partial Cubic chunks support as range comparison gets used ignoring player height normally anyway
                 int radius = playerList.getViewDistance() * 16;
-                for (ServerPlayerEntity player : playerList.getPlayers()) {
+                for (ServerPlayer player : playerList.getPlayers()) {
                     if (range.dimension == player.getLevel().dimension()) {
                         BlockPos playerPosition = player.blockPosition();
                         int playerX = playerPosition.getX();

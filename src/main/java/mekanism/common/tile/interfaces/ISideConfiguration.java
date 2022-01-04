@@ -13,7 +13,7 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 /**
  * Implement this if your TileEntity is capable of being modified by a Configurator in it's 'modify' mode.

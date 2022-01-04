@@ -9,17 +9,17 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 
 public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator implements IBoundingBlock, IEvaporationSolar {
 
     private final SolarCheck[] solarChecks = new SolarCheck[8];
 
-    public TileEntityAdvancedSolarGenerator() {
-        super(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, MekanismGeneratorsConfig.generators.advancedSolarGeneration.get().multiply(2));
+    public TileEntityAdvancedSolarGenerator(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.advancedSolarGeneration.get().multiply(2));
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.EVAPORATION_SOLAR_CAPABILITY, this));
     }
 
@@ -128,10 +128,10 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
         private final int recheckFrequency;
         private long lastCheckedSun;
 
-        public AdvancedSolarCheck(World world, BlockPos pos) {
+        public AdvancedSolarCheck(Level world, BlockPos pos) {
             super(world, pos);
             //Recheck between every 10-30 ticks, to not end up checking each position each tick
-            recheckFrequency = MathHelper.nextInt(world.random, 10, 30);
+            recheckFrequency = Mth.nextInt(world.random, 10, 30);
         }
 
         @Override

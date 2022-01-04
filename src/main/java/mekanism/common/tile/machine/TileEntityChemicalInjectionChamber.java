@@ -8,11 +8,13 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityChemicalInjectionChamber extends TileEntityAdvancedElectricMachine {
 
-    public TileEntityChemicalInjectionChamber() {
-        super(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, BASE_TICKS_REQUIRED);
+    public TileEntityChemicalInjectionChamber(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, pos, state, BASE_TICKS_REQUIRED);
     }
 
     @Nonnull

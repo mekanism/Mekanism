@@ -31,11 +31,11 @@ import mekanism.common.registries.MekanismPigments;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
 public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
@@ -62,7 +62,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY));
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "plastic/";
         registerPlasticBlocks(consumer, basePath);
         registerPlasticGlow(consumer, basePath);
@@ -72,14 +72,14 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         registerPlasticTransparent(consumer, basePath);
     }
 
-    private void registerPlasticBlocks(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void registerPlasticBlocks(Consumer<FinishedRecipe> consumer, String basePath) {
         basePath += "block/";
         for (BlockRegistryObject<BlockPlastic, ItemBlockColoredName> blockRO : AdditionsBlocks.PLASTIC_BLOCKS.values()) {
             registerPlasticBlock(consumer, blockRO, basePath);
         }
     }
 
-    private void registerPlasticBlock(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
+    private void registerPlasticBlock(Consumer<FinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
         EnumColor color = result.getBlock().getColor();
         DyeColor dye = color.getDyeColor();
         if (dye != null) {
@@ -92,14 +92,14 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_PLASTIC, color, basePath);
     }
 
-    private void registerPlasticTransparent(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void registerPlasticTransparent(Consumer<FinishedRecipe> consumer, String basePath) {
         basePath += "transparent/";
         for (BlockRegistryObject<BlockPlasticTransparent, ItemBlockColoredName> blockRO : AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS.values()) {
             registerPlasticTransparent(consumer, blockRO, basePath);
         }
     }
 
-    private void registerPlasticTransparent(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
+    private void registerPlasticTransparent(Consumer<FinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
         EnumColor color = result.getBlock().getColor();
         DyeColor dye = color.getDyeColor();
         if (dye != null) {
@@ -112,14 +112,14 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         registerTransparentRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_TRANSPARENT, color, basePath);
     }
 
-    private void registerPlasticGlow(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void registerPlasticGlow(Consumer<FinishedRecipe> consumer, String basePath) {
         basePath += "glow/";
         for (Map.Entry<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockColoredName>> entry : AdditionsBlocks.PLASTIC_GLOW_BLOCKS.entrySet()) {
             registerPlasticGlow(consumer, entry.getValue(), AdditionsBlocks.PLASTIC_BLOCKS.get(entry.getKey()), basePath);
         }
     }
 
-    private void registerPlasticGlow(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+    private void registerPlasticGlow(Consumer<FinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
         EnumColor color = result.getBlock().getColor();
         ExtendedShapelessRecipeBuilder.shapelessRecipe(result, 3)
               .addIngredient(plastic, 3)
@@ -128,14 +128,14 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_GLOW, color, basePath);
     }
 
-    private void registerReinforcedPlastic(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void registerReinforcedPlastic(Consumer<FinishedRecipe> consumer, String basePath) {
         basePath += "reinforced/";
         for (Map.Entry<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockColoredName>> entry : AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS.entrySet()) {
             registerReinforcedPlastic(consumer, entry.getValue(), AdditionsBlocks.PLASTIC_BLOCKS.get(entry.getKey()), basePath);
         }
     }
 
-    private void registerReinforcedPlastic(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+    private void registerReinforcedPlastic(Consumer<FinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
         EnumColor color = result.getBlock().getColor();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(REINFORCED_PLASTIC)
@@ -145,14 +145,14 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_REINFORCED, color, basePath);
     }
 
-    private void registerPlasticRoads(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void registerPlasticRoads(Consumer<FinishedRecipe> consumer, String basePath) {
         basePath += "road/";
         for (Map.Entry<EnumColor, BlockRegistryObject<BlockPlasticRoad, ItemBlockColoredName>> entry : AdditionsBlocks.PLASTIC_ROADS.entrySet()) {
             registerPlasticRoad(consumer, entry.getValue(), AdditionsBlocks.SLICK_PLASTIC_BLOCKS.get(entry.getKey()), basePath);
         }
     }
 
-    private void registerPlasticRoad(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider slickPlastic, String basePath) {
+    private void registerPlasticRoad(Consumer<FinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider slickPlastic, String basePath) {
         EnumColor color = result.getBlock().getColor();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
               .pattern(PLASTIC_ROAD)
@@ -162,14 +162,14 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_ROAD, color, basePath);
     }
 
-    private void registerSlickPlastic(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void registerSlickPlastic(Consumer<FinishedRecipe> consumer, String basePath) {
         basePath += "slick/";
         for (Map.Entry<EnumColor, BlockRegistryObject<BlockPlastic, ItemBlockColoredName>> entry : AdditionsBlocks.SLICK_PLASTIC_BLOCKS.entrySet()) {
             registerSlickPlastic(consumer, entry.getValue(), AdditionsBlocks.PLASTIC_BLOCKS.get(entry.getKey()), basePath);
         }
     }
 
-    private void registerSlickPlastic(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
+    private void registerSlickPlastic(Consumer<FinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, IItemProvider plastic, String basePath) {
         EnumColor color = result.getBlock().getColor();
         String colorString = color.getRegistryPrefix();
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
@@ -186,7 +186,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, color, basePath);
     }
 
-    public static void registerRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, ITag<Item> blockType, EnumColor color, String basePath) {
+    public static void registerRecolor(Consumer<FinishedRecipe> consumer, IItemProvider result, Tag<Item> blockType, EnumColor color, String basePath) {
         IngredientWithout recolorInput = IngredientWithout.create(blockType, result);
         String colorString = color.getRegistryPrefix();
         DyeColor dye = color.getDyeColor();
@@ -204,7 +204,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "recolor/painting/" + colorString));
     }
 
-    public static void registerTransparentRecolor(Consumer<IFinishedRecipe> consumer, IItemProvider result, ITag<Item> blockType, EnumColor color, String basePath) {
+    public static void registerTransparentRecolor(Consumer<FinishedRecipe> consumer, IItemProvider result, Tag<Item> blockType, EnumColor color, String basePath) {
         IngredientWithout recolorInput = IngredientWithout.create(blockType, result);
         String colorString = color.getRegistryPrefix();
         DyeColor dye = color.getDyeColor();

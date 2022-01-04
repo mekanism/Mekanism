@@ -6,18 +6,18 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.InventoryPersonalChest;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.registries.MekanismContainerTypes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 
 public class PersonalChestItemContainer extends MekanismItemContainer {
 
     private InventoryPersonalChest itemInventory;
 
-    public PersonalChestItemContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack) {
+    public PersonalChestItemContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack) {
         super(MekanismContainerTypes.PERSONAL_CHEST_ITEM, id, inv, hand, stack);
     }
 
@@ -41,7 +41,7 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
         }
     }
 
-    public Hand getHand() {
+    public InteractionHand getHand() {
         return hand;
     }
 
@@ -51,12 +51,12 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
     }
 
     @Override
-    protected HotBarSlot createHotBarSlot(@Nonnull PlayerInventory inv, int index, int x, int y) {
+    protected HotBarSlot createHotBarSlot(@Nonnull Inventory inv, int index, int x, int y) {
         // special handling to prevent removing the personal chest from the player's inventory slot
-        if (index == inv.selected && hand == Hand.MAIN_HAND) {
+        if (index == inv.selected && hand == InteractionHand.MAIN_HAND) {
             return new HotBarSlot(inv, index, x, y) {
                 @Override
-                public boolean mayPickup(@Nonnull PlayerEntity player) {
+                public boolean mayPickup(@Nonnull Player player) {
                     return false;
                 }
             };
@@ -64,20 +64,19 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
         return super.createHotBarSlot(inv, index, x, y);
     }
 
-    @Nonnull
     @Override
-    public ItemStack clicked(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull PlayerEntity player) {
+    public void clicked(int slotId, int dragType, @Nonnull ClickType clickType, @Nonnull Player player) {
         if (clickType == ClickType.SWAP) {
-            if (hand == Hand.OFF_HAND && dragType == 40) {
+            if (hand == InteractionHand.OFF_HAND && dragType == 40) {
                 //Block pressing f to swap it when it is in the offhand
-                return ItemStack.EMPTY;
-            } else if (hand == Hand.MAIN_HAND && dragType >= 0 && dragType < PlayerInventory.getSelectionSize()) {
+                return;
+            } else if (hand == InteractionHand.MAIN_HAND && dragType >= 0 && dragType < Inventory.getSelectionSize()) {
                 //Block taking out of the selected slot (we don't validate we have a hotbar slot as we always should for this container)
                 if (!hotBarSlots.get(dragType).mayPickup(player)) {
-                    return ItemStack.EMPTY;
+                    return;
                 }
             }
         }
-        return super.clicked(slotId, dragType, clickType, player);
+        super.clicked(slotId, dragType, clickType, player);
     }
 }

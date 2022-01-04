@@ -2,17 +2,17 @@ package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ItemStackToGasRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismBlocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.resources.ResourceLocation;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -32,13 +32,13 @@ public class NutritionalLiquifierIRecipe extends ItemStackToGasRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<ItemStackToGasRecipe> getType() {
+    public RecipeType<ItemStackToGasRecipe> getType() {
         return null;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ItemStackToGasRecipe> getSerializer() {
+    public RecipeSerializer<ItemStackToGasRecipe> getSerializer() {
         return null;
     }
 

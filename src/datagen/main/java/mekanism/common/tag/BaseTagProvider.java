@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,27 +22,27 @@ import mekanism.api.providers.ISlurryProvider;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.EntityType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.potion.Potion;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-public abstract class BaseTagProvider implements IDataProvider {
+public abstract class BaseTagProvider implements DataProvider {
 
-    private final Map<TagType<?>, Map<INamedTag<?>, ITag.Builder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<TagType<?>, Map<Named<?>, Tag.Builder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
     private final ExistingFileHelper existingFileHelper;
     private final DataGenerator gen;
     private final String modid;
@@ -58,7 +57,8 @@ public abstract class BaseTagProvider implements IDataProvider {
         addTagType(TagType.FLUID);
         addTagType(TagType.ENCHANTMENT);
         addTagType(TagType.POTION);
-        addTagType(TagType.TILE_ENTITY_TYPE);
+        addTagType(TagType.MOB_EFFECTS);
+        addTagType(TagType.BLOCK_ENTITY_TYPE);
         addTagType(TagType.GAS);
         addTagType(TagType.INFUSE_TYPE);
         addTagType(TagType.PIGMENT);
@@ -79,22 +79,22 @@ public abstract class BaseTagProvider implements IDataProvider {
     protected abstract void registerTags();
 
     @Override
-    public void run(@Nonnull DirectoryCache cache) {
+    public void run(@Nonnull HashCache cache) {
         supportedTagTypes.values().forEach(Map::clear);
         registerTags();
         supportedTagTypes.forEach((tagType, tagTypeMap) -> act(cache, tagType, tagTypeMap));
     }
 
-    private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull DirectoryCache cache, TagType<TYPE> tagType, Map<INamedTag<?>, ITag.Builder> tagTypeMap) {
+    private <TYPE extends IForgeRegistryEntry<TYPE>> void act(@Nonnull HashCache cache, TagType<TYPE> tagType, Map<Named<?>, Tag.Builder> tagTypeMap) {
         if (!tagTypeMap.isEmpty()) {
             //Create a dummy forge registry tags provider and pass all our collected data through to it
-            new ForgeRegistryTagsProvider<TYPE>(gen, tagType.getRegistry(), modid, existingFileHelper) {
+            new ForgeRegistryTagsProvider<>(gen, tagType.getRegistry(), modid, existingFileHelper) {
                 @Override
                 protected void addTags() {
                     //Add each tag builder to the wrapped provider's builder, but wrap the builder so that we
                     // make sure to first cleanup and remove excess/unused json components
                     // Note: We only override the methods used by the TagsProvider rather than proxying everything back to the original tag builder
-                    tagTypeMap.forEach((tag, tagBuilder) -> builders.put(tag.getName(), new ITag.Builder() {
+                    tagTypeMap.forEach((tag, tagBuilder) -> builders.put(tag.getName(), new Tag.Builder() {
                         @Nonnull
                         @Override
                         public JsonObject serializeToJson() {
@@ -103,9 +103,9 @@ public abstract class BaseTagProvider implements IDataProvider {
 
                         @Nonnull
                         @Override
-                        public <T> Stream<ITag.Proxy> getUnresolvedEntries(@Nonnull Function<ResourceLocation, ITag<T>> resourceTagFunction,
-                              @Nonnull Function<ResourceLocation, T> resourceElementFunction) {
-                            return tagBuilder.getUnresolvedEntries(resourceTagFunction, resourceElementFunction);
+                        public Stream<Tag.BuilderEntry> getEntries() {
+                            //TODO - 1.18: Validate this
+                            return tagBuilder.getEntries();
                         }
                     }));
                 }
@@ -131,69 +131,73 @@ public abstract class BaseTagProvider implements IDataProvider {
     }
 
     //Protected to allow for extensions to add retrieve their own supported types if they have any
-    protected <TYPE extends IForgeRegistryEntry<TYPE>> ForgeRegistryTagBuilder<TYPE> getBuilder(TagType<TYPE> tagType, INamedTag<TYPE> tag) {
-        return new ForgeRegistryTagBuilder<>(supportedTagTypes.get(tagType).computeIfAbsent(tag, ignored -> ITag.Builder.tag()), modid);
+    protected <TYPE extends IForgeRegistryEntry<TYPE>> ForgeRegistryTagBuilder<TYPE> getBuilder(TagType<TYPE> tagType, Named<TYPE> tag) {
+        return new ForgeRegistryTagBuilder<>(supportedTagTypes.get(tagType).computeIfAbsent(tag, ignored -> Tag.Builder.tag()), modid);
     }
 
-    protected ForgeRegistryTagBuilder<Item> getItemBuilder(INamedTag<Item> tag) {
+    protected ForgeRegistryTagBuilder<Item> getItemBuilder(Named<Item> tag) {
         return getBuilder(TagType.ITEM, tag);
     }
 
-    protected ForgeRegistryTagBuilder<Block> getBlockBuilder(INamedTag<Block> tag) {
+    protected ForgeRegistryTagBuilder<Block> getBlockBuilder(Named<Block> tag) {
         return getBuilder(TagType.BLOCK, tag);
     }
 
-    protected ForgeRegistryTagBuilder<EntityType<?>> getEntityTypeBuilder(INamedTag<EntityType<?>> tag) {
+    protected ForgeRegistryTagBuilder<EntityType<?>> getEntityTypeBuilder(Named<EntityType<?>> tag) {
         return getBuilder(TagType.ENTITY_TYPE, tag);
     }
 
-    protected ForgeRegistryTagBuilder<Fluid> getFluidBuilder(INamedTag<Fluid> tag) {
+    protected ForgeRegistryTagBuilder<Fluid> getFluidBuilder(Named<Fluid> tag) {
         return getBuilder(TagType.FLUID, tag);
     }
 
-    protected ForgeRegistryTagBuilder<Enchantment> getEnchantmentBuilder(INamedTag<Enchantment> tag) {
+    protected ForgeRegistryTagBuilder<Enchantment> getEnchantmentBuilder(Named<Enchantment> tag) {
         return getBuilder(TagType.ENCHANTMENT, tag);
     }
 
-    protected ForgeRegistryTagBuilder<Potion> getPotionBuilder(INamedTag<Potion> tag) {
+    protected ForgeRegistryTagBuilder<Potion> getPotionBuilder(Named<Potion> tag) {
         return getBuilder(TagType.POTION, tag);
     }
 
-    protected ForgeRegistryTagBuilder<TileEntityType<?>> getTileEntityTypeBuilder(INamedTag<TileEntityType<?>> tag) {
-        return getBuilder(TagType.TILE_ENTITY_TYPE, tag);
+    protected ForgeRegistryTagBuilder<MobEffect> getMobEffectBuilder(Named<MobEffect> tag) {
+        return getBuilder(TagType.MOB_EFFECTS, tag);
     }
 
-    protected ForgeRegistryTagBuilder<Gas> getGasBuilder(INamedTag<Gas> tag) {
+    protected ForgeRegistryTagBuilder<BlockEntityType<?>> getTileEntityTypeBuilder(Named<BlockEntityType<?>> tag) {
+        return getBuilder(TagType.BLOCK_ENTITY_TYPE, tag);
+    }
+
+    protected ForgeRegistryTagBuilder<Gas> getGasBuilder(Named<Gas> tag) {
         return getBuilder(TagType.GAS, tag);
     }
 
-    protected ForgeRegistryTagBuilder<InfuseType> getInfuseTypeBuilder(INamedTag<InfuseType> tag) {
+    protected ForgeRegistryTagBuilder<InfuseType> getInfuseTypeBuilder(Named<InfuseType> tag) {
         return getBuilder(TagType.INFUSE_TYPE, tag);
     }
 
-    protected ForgeRegistryTagBuilder<Pigment> getPigmentBuilder(INamedTag<Pigment> tag) {
+    protected ForgeRegistryTagBuilder<Pigment> getPigmentBuilder(Named<Pigment> tag) {
         return getBuilder(TagType.PIGMENT, tag);
     }
 
-    protected ForgeRegistryTagBuilder<Slurry> getSlurryBuilder(INamedTag<Slurry> tag) {
+    protected ForgeRegistryTagBuilder<Slurry> getSlurryBuilder(Named<Slurry> tag) {
         return getBuilder(TagType.SLURRY, tag);
     }
 
-    protected void addToTag(INamedTag<Item> tag, IItemProvider... itemProviders) {
+    protected void addToTag(Named<Item> tag, ItemLike... itemProviders) {
         ForgeRegistryTagBuilder<Item> tagBuilder = getItemBuilder(tag);
-        for (IItemProvider itemProvider : itemProviders) {
+        for (ItemLike itemProvider : itemProviders) {
             tagBuilder.add(itemProvider.asItem());
         }
     }
 
-    protected void addToTag(INamedTag<Block> tag, IBlockProvider... blockProviders) {
+    protected void addToTag(Named<Block> tag, IBlockProvider... blockProviders) {
         ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(tag);
         for (IBlockProvider blockProvider : blockProviders) {
             tagBuilder.add(blockProvider.getBlock());
         }
     }
 
-    protected void addToTags(INamedTag<Item> itemTag, INamedTag<Block> blockTag, IBlockProvider... blockProviders) {
+    protected void addToTags(Named<Item> itemTag, Named<Block> blockTag, IBlockProvider... blockProviders) {
         ForgeRegistryTagBuilder<Item> itemTagBuilder = getItemBuilder(itemTag);
         ForgeRegistryTagBuilder<Block> blockTagBuilder = getBlockBuilder(blockTag);
         for (IBlockProvider blockProvider : blockProviders) {
@@ -202,40 +206,40 @@ public abstract class BaseTagProvider implements IDataProvider {
         }
     }
 
-    protected void addToTag(INamedTag<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {
+    protected void addToTag(Named<EntityType<?>> tag, IEntityTypeProvider... entityTypeProviders) {
         ForgeRegistryTagBuilder<EntityType<?>> tagBuilder = getEntityTypeBuilder(tag);
         for (IEntityTypeProvider entityTypeProvider : entityTypeProviders) {
             tagBuilder.add(entityTypeProvider.getEntityType());
         }
     }
 
-    protected void addToTag(INamedTag<Fluid> tag, FluidRegistryObject<?, ?, ?, ?>... fluidRegistryObjects) {
+    protected void addToTag(Named<Fluid> tag, FluidRegistryObject<?, ?, ?, ?>... fluidRegistryObjects) {
         ForgeRegistryTagBuilder<Fluid> tagBuilder = getFluidBuilder(tag);
         for (FluidRegistryObject<?, ?, ?, ?> fluidRO : fluidRegistryObjects) {
             tagBuilder.add(fluidRO.getStillFluid(), fluidRO.getFlowingFluid());
         }
     }
 
-    protected void addToTag(INamedTag<TileEntityType<?>> tag, TileEntityTypeRegistryObject<?>... tileEntityTypeRegistryObjects) {
-        ForgeRegistryTagBuilder<TileEntityType<?>> tagBuilder = getTileEntityTypeBuilder(tag);
+    protected void addToTag(Named<BlockEntityType<?>> tag, TileEntityTypeRegistryObject<?>... tileEntityTypeRegistryObjects) {
+        ForgeRegistryTagBuilder<BlockEntityType<?>> tagBuilder = getTileEntityTypeBuilder(tag);
         for (TileEntityTypeRegistryObject<?> tileEntityTypeRO : tileEntityTypeRegistryObjects) {
             tagBuilder.add(tileEntityTypeRO.get());
         }
     }
 
-    protected void addToTag(INamedTag<Gas> tag, IGasProvider... gasProviders) {
+    protected void addToTag(Named<Gas> tag, IGasProvider... gasProviders) {
         addToTag(getGasBuilder(tag), gasProviders);
     }
 
-    protected void addToTag(INamedTag<InfuseType> tag, IInfuseTypeProvider... infuseTypeProviders) {
+    protected void addToTag(Named<InfuseType> tag, IInfuseTypeProvider... infuseTypeProviders) {
         addToTag(getInfuseTypeBuilder(tag), infuseTypeProviders);
     }
 
-    protected void addToTag(INamedTag<Pigment> tag, IPigmentProvider... pigmentProviders) {
+    protected void addToTag(Named<Pigment> tag, IPigmentProvider... pigmentProviders) {
         addToTag(getPigmentBuilder(tag), pigmentProviders);
     }
 
-    protected void addToTag(INamedTag<Slurry> tag, ISlurryProvider... slurryProviders) {
+    protected void addToTag(Named<Slurry> tag, ISlurryProvider... slurryProviders) {
         addToTag(getSlurryBuilder(tag), slurryProviders);
     }
 

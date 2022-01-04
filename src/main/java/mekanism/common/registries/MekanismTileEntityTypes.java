@@ -4,10 +4,10 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import mekanism.common.Mekanism;
 import mekanism.common.content.blocktype.FactoryType;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tier.FactoryTier;
-import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.TileEntityCardboardBox;
@@ -93,8 +93,10 @@ import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplier;
 
 public class MekanismTileEntityTypes {
 
@@ -107,25 +109,24 @@ public class MekanismTileEntityTypes {
 
     static {
         for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-            FACTORIES.put(tier, FactoryType.COMBINING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.COMBINING), () -> new TileEntityCombiningFactory(MekanismBlocks.getFactory(tier, FactoryType.COMBINING))));
-            FACTORIES.put(tier, FactoryType.COMPRESSING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.COMPRESSING), () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.COMPRESSING))));
-            FACTORIES.put(tier, FactoryType.CRUSHING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.CRUSHING), () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.CRUSHING))));
-            FACTORIES.put(tier, FactoryType.ENRICHING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.ENRICHING), () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.ENRICHING))));
-            FACTORIES.put(tier, FactoryType.INFUSING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.INFUSING), () -> new TileEntityMetallurgicInfuserFactory(MekanismBlocks.getFactory(tier, FactoryType.INFUSING))));
-            FACTORIES.put(tier, FactoryType.INJECTING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.INJECTING), () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.INJECTING))));
-            FACTORIES.put(tier, FactoryType.PURIFYING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.PURIFYING), () -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.PURIFYING))));
-            FACTORIES.put(tier, FactoryType.SAWING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.SAWING), () -> new TileEntitySawingFactory(MekanismBlocks.getFactory(tier, FactoryType.SAWING))));
-            FACTORIES.put(tier, FactoryType.SMELTING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.SMELTING), () -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.SMELTING))));
+            FACTORIES.put(tier, FactoryType.COMBINING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.COMBINING), (pos, state) -> new TileEntityCombiningFactory(MekanismBlocks.getFactory(tier, FactoryType.COMBINING), pos, state)));
+            FACTORIES.put(tier, FactoryType.COMPRESSING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.COMPRESSING), (pos, state) -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.COMPRESSING), pos, state)));
+            FACTORIES.put(tier, FactoryType.CRUSHING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.CRUSHING), (pos, state) -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.CRUSHING), pos, state)));
+            FACTORIES.put(tier, FactoryType.ENRICHING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.ENRICHING), (pos, state) -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.ENRICHING), pos, state)));
+            FACTORIES.put(tier, FactoryType.INFUSING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.INFUSING), (pos, state) -> new TileEntityMetallurgicInfuserFactory(MekanismBlocks.getFactory(tier, FactoryType.INFUSING), pos, state)));
+            FACTORIES.put(tier, FactoryType.INJECTING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.INJECTING), (pos, state) -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.INJECTING), pos, state)));
+            FACTORIES.put(tier, FactoryType.PURIFYING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.PURIFYING), (pos, state) -> new TileEntityItemStackGasToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.PURIFYING), pos, state)));
+            FACTORIES.put(tier, FactoryType.SAWING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.SAWING), (pos, state) -> new TileEntitySawingFactory(MekanismBlocks.getFactory(tier, FactoryType.SAWING), pos, state)));
+            FACTORIES.put(tier, FactoryType.SMELTING, TILE_ENTITY_TYPES.register(MekanismBlocks.getFactory(tier, FactoryType.SMELTING), (pos, state) -> new TileEntityItemStackToItemStackFactory(MekanismBlocks.getFactory(tier, FactoryType.SMELTING), pos, state)));
         }
     }
 
-    public static final TileEntityTypeRegistryObject<TileEntityBoundingBlock> BOUNDING_BLOCK = TILE_ENTITY_TYPES.register(MekanismBlocks.BOUNDING_BLOCK, TileEntityBoundingBlock::new);
-    public static final TileEntityTypeRegistryObject<TileEntityBoundingBlock> ADVANCED_BOUNDING_BLOCK = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, TileEntityAdvancedBoundingBlock::new);
+    public static final TileEntityTypeRegistryObject<TileEntityBoundingBlock> BOUNDING_BLOCK = TILE_ENTITY_TYPES.builder(MekanismBlocks.BOUNDING_BLOCK, TileEntityBoundingBlock::new).build();
 
     //Regular Tiles
     public static final TileEntityTypeRegistryObject<TileEntityBoilerCasing> BOILER_CASING = TILE_ENTITY_TYPES.register(MekanismBlocks.BOILER_CASING, TileEntityBoilerCasing::new);
     public static final TileEntityTypeRegistryObject<TileEntityBoilerValve> BOILER_VALVE = TILE_ENTITY_TYPES.register(MekanismBlocks.BOILER_VALVE, TileEntityBoilerValve::new);
-    public static final TileEntityTypeRegistryObject<TileEntityCardboardBox> CARDBOARD_BOX = TILE_ENTITY_TYPES.register(MekanismBlocks.CARDBOARD_BOX, TileEntityCardboardBox::new);
+    public static final TileEntityTypeRegistryObject<TileEntityCardboardBox> CARDBOARD_BOX = TILE_ENTITY_TYPES.builder(MekanismBlocks.CARDBOARD_BOX, TileEntityCardboardBox::new).build();
     public static final TileEntityTypeRegistryObject<TileEntityChargepad> CHARGEPAD = TILE_ENTITY_TYPES.register(MekanismBlocks.CHARGEPAD, TileEntityChargepad::new);
     public static final TileEntityTypeRegistryObject<TileEntityChemicalCrystallizer> CHEMICAL_CRYSTALLIZER = TILE_ENTITY_TYPES.register(MekanismBlocks.CHEMICAL_CRYSTALLIZER, TileEntityChemicalCrystallizer::new);
     public static final TileEntityTypeRegistryObject<TileEntityChemicalDissolutionChamber> CHEMICAL_DISSOLUTION_CHAMBER = TILE_ENTITY_TYPES.register(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, TileEntityChemicalDissolutionChamber::new);
@@ -191,69 +192,69 @@ public class MekanismTileEntityTypes {
     public static final TileEntityTypeRegistryObject<TileEntityQIORedstoneAdapter> QIO_REDSTONE_ADAPTER = TILE_ENTITY_TYPES.register(MekanismBlocks.QIO_REDSTONE_ADAPTER, TileEntityQIORedstoneAdapter::new);
 
     //Transmitters
-    public static final TileEntityTypeRegistryObject<TileEntityDiversionTransporter> DIVERSION_TRANSPORTER = TILE_ENTITY_TYPES.register(MekanismBlocks.DIVERSION_TRANSPORTER, TileEntityDiversionTransporter::new);
-    public static final TileEntityTypeRegistryObject<TileEntityRestrictiveTransporter> RESTRICTIVE_TRANSPORTER = TILE_ENTITY_TYPES.register(MekanismBlocks.RESTRICTIVE_TRANSPORTER, TileEntityRestrictiveTransporter::new);
+    public static final TileEntityTypeRegistryObject<TileEntityDiversionTransporter> DIVERSION_TRANSPORTER = TILE_ENTITY_TYPES.builder(MekanismBlocks.DIVERSION_TRANSPORTER, TileEntityDiversionTransporter::new).clientTicker(TileEntityLogisticalTransporterBase::tickClient).serverTicker(TileEntityTransmitter::tickServer).build();
+    public static final TileEntityTypeRegistryObject<TileEntityRestrictiveTransporter> RESTRICTIVE_TRANSPORTER = TILE_ENTITY_TYPES.builder(MekanismBlocks.RESTRICTIVE_TRANSPORTER, TileEntityRestrictiveTransporter::new).clientTicker(TileEntityLogisticalTransporterBase::tickClient).serverTicker(TileEntityTransmitter::tickServer).build();
     //Logistic Transporters
-    public static final TileEntityTypeRegistryObject<TileEntityLogisticalTransporterBase> BASIC_LOGISTICAL_TRANSPORTER = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, () -> new TileEntityLogisticalTransporter(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER));
-    public static final TileEntityTypeRegistryObject<TileEntityLogisticalTransporterBase> ADVANCED_LOGISTICAL_TRANSPORTER = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, () -> new TileEntityLogisticalTransporter(MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER));
-    public static final TileEntityTypeRegistryObject<TileEntityLogisticalTransporterBase> ELITE_LOGISTICAL_TRANSPORTER = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, () -> new TileEntityLogisticalTransporter(MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER));
-    public static final TileEntityTypeRegistryObject<TileEntityLogisticalTransporterBase> ULTIMATE_LOGISTICAL_TRANSPORTER = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER, () -> new TileEntityLogisticalTransporter(MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER));
+    public static final TileEntityTypeRegistryObject<TileEntityLogisticalTransporter> BASIC_LOGISTICAL_TRANSPORTER = TILE_ENTITY_TYPES.builder(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, (pos, state) -> new TileEntityLogisticalTransporter(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, pos, state)).clientTicker(TileEntityLogisticalTransporterBase::tickClient).serverTicker(TileEntityTransmitter::tickServer).build();
+    public static final TileEntityTypeRegistryObject<TileEntityLogisticalTransporter> ADVANCED_LOGISTICAL_TRANSPORTER = TILE_ENTITY_TYPES.builder(MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, (pos, state) -> new TileEntityLogisticalTransporter(MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, pos, state)).clientTicker(TileEntityLogisticalTransporterBase::tickClient).serverTicker(TileEntityTransmitter::tickServer).build();
+    public static final TileEntityTypeRegistryObject<TileEntityLogisticalTransporter> ELITE_LOGISTICAL_TRANSPORTER = TILE_ENTITY_TYPES.builder(MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, (pos, state) -> new TileEntityLogisticalTransporter(MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, pos, state)).clientTicker(TileEntityLogisticalTransporterBase::tickClient).serverTicker(TileEntityTransmitter::tickServer).build();
+    public static final TileEntityTypeRegistryObject<TileEntityLogisticalTransporter> ULTIMATE_LOGISTICAL_TRANSPORTER = TILE_ENTITY_TYPES.builder(MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER, (pos, state) -> new TileEntityLogisticalTransporter(MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER, pos, state)).clientTicker(TileEntityLogisticalTransporterBase::tickClient).serverTicker(TileEntityTransmitter::tickServer).build();
     //Mechanical Pipes
-    public static final TileEntityTypeRegistryObject<TileEntityMechanicalPipe> BASIC_MECHANICAL_PIPE = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_MECHANICAL_PIPE, () -> new TileEntityMechanicalPipe(MekanismBlocks.BASIC_MECHANICAL_PIPE));
-    public static final TileEntityTypeRegistryObject<TileEntityMechanicalPipe> ADVANCED_MECHANICAL_PIPE = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_MECHANICAL_PIPE, () -> new TileEntityMechanicalPipe(MekanismBlocks.ADVANCED_MECHANICAL_PIPE));
-    public static final TileEntityTypeRegistryObject<TileEntityMechanicalPipe> ELITE_MECHANICAL_PIPE = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_MECHANICAL_PIPE, () -> new TileEntityMechanicalPipe(MekanismBlocks.ELITE_MECHANICAL_PIPE));
-    public static final TileEntityTypeRegistryObject<TileEntityMechanicalPipe> ULTIMATE_MECHANICAL_PIPE = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_MECHANICAL_PIPE, () -> new TileEntityMechanicalPipe(MekanismBlocks.ULTIMATE_MECHANICAL_PIPE));
+    public static final TileEntityTypeRegistryObject<TileEntityMechanicalPipe> BASIC_MECHANICAL_PIPE = registerTransmitter(MekanismBlocks.BASIC_MECHANICAL_PIPE, (pos, state) -> new TileEntityMechanicalPipe(MekanismBlocks.BASIC_MECHANICAL_PIPE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityMechanicalPipe> ADVANCED_MECHANICAL_PIPE = registerTransmitter(MekanismBlocks.ADVANCED_MECHANICAL_PIPE, (pos, state) -> new TileEntityMechanicalPipe(MekanismBlocks.ADVANCED_MECHANICAL_PIPE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityMechanicalPipe> ELITE_MECHANICAL_PIPE = registerTransmitter(MekanismBlocks.ELITE_MECHANICAL_PIPE, (pos, state) -> new TileEntityMechanicalPipe(MekanismBlocks.ELITE_MECHANICAL_PIPE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityMechanicalPipe> ULTIMATE_MECHANICAL_PIPE = registerTransmitter(MekanismBlocks.ULTIMATE_MECHANICAL_PIPE, (pos, state) -> new TileEntityMechanicalPipe(MekanismBlocks.ULTIMATE_MECHANICAL_PIPE, pos, state));
     //Pressurized Tubes
-    public static final TileEntityTypeRegistryObject<TileEntityPressurizedTube> BASIC_PRESSURIZED_TUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_PRESSURIZED_TUBE, () -> new TileEntityPressurizedTube(MekanismBlocks.BASIC_PRESSURIZED_TUBE));
-    public static final TileEntityTypeRegistryObject<TileEntityPressurizedTube> ADVANCED_PRESSURIZED_TUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_PRESSURIZED_TUBE, () -> new TileEntityPressurizedTube(MekanismBlocks.ADVANCED_PRESSURIZED_TUBE));
-    public static final TileEntityTypeRegistryObject<TileEntityPressurizedTube> ELITE_PRESSURIZED_TUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_PRESSURIZED_TUBE, () -> new TileEntityPressurizedTube(MekanismBlocks.ELITE_PRESSURIZED_TUBE));
-    public static final TileEntityTypeRegistryObject<TileEntityPressurizedTube> ULTIMATE_PRESSURIZED_TUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE, () -> new TileEntityPressurizedTube(MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE));
+    public static final TileEntityTypeRegistryObject<TileEntityPressurizedTube> BASIC_PRESSURIZED_TUBE = registerTransmitter(MekanismBlocks.BASIC_PRESSURIZED_TUBE, (pos, state) -> new TileEntityPressurizedTube(MekanismBlocks.BASIC_PRESSURIZED_TUBE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityPressurizedTube> ADVANCED_PRESSURIZED_TUBE = registerTransmitter(MekanismBlocks.ADVANCED_PRESSURIZED_TUBE, (pos, state) -> new TileEntityPressurizedTube(MekanismBlocks.ADVANCED_PRESSURIZED_TUBE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityPressurizedTube> ELITE_PRESSURIZED_TUBE = registerTransmitter(MekanismBlocks.ELITE_PRESSURIZED_TUBE, (pos, state) -> new TileEntityPressurizedTube(MekanismBlocks.ELITE_PRESSURIZED_TUBE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityPressurizedTube> ULTIMATE_PRESSURIZED_TUBE = registerTransmitter(MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE, (pos, state) -> new TileEntityPressurizedTube(MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE, pos, state));
     //Thermodynamic Conductors
-    public static final TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> BASIC_THERMODYNAMIC_CONDUCTOR = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, () -> new TileEntityThermodynamicConductor(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR));
-    public static final TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> ADVANCED_THERMODYNAMIC_CONDUCTOR = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR, () -> new TileEntityThermodynamicConductor(MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR));
-    public static final TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> ELITE_THERMODYNAMIC_CONDUCTOR = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR, () -> new TileEntityThermodynamicConductor(MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR));
-    public static final TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> ULTIMATE_THERMODYNAMIC_CONDUCTOR = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR, () -> new TileEntityThermodynamicConductor(MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR));
+    public static final TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> BASIC_THERMODYNAMIC_CONDUCTOR = registerTransmitter(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, (pos, state) -> new TileEntityThermodynamicConductor(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> ADVANCED_THERMODYNAMIC_CONDUCTOR = registerTransmitter(MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR, (pos, state) -> new TileEntityThermodynamicConductor(MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> ELITE_THERMODYNAMIC_CONDUCTOR = registerTransmitter(MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR, (pos, state) -> new TileEntityThermodynamicConductor(MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityThermodynamicConductor> ULTIMATE_THERMODYNAMIC_CONDUCTOR = registerTransmitter(MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR, (pos, state) -> new TileEntityThermodynamicConductor(MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR, pos, state));
     //Universal Cables
-    public static final TileEntityTypeRegistryObject<TileEntityUniversalCable> BASIC_UNIVERSAL_CABLE = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_UNIVERSAL_CABLE, () -> new TileEntityUniversalCable(MekanismBlocks.BASIC_UNIVERSAL_CABLE));
-    public static final TileEntityTypeRegistryObject<TileEntityUniversalCable> ADVANCED_UNIVERSAL_CABLE = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_UNIVERSAL_CABLE, () -> new TileEntityUniversalCable(MekanismBlocks.ADVANCED_UNIVERSAL_CABLE));
-    public static final TileEntityTypeRegistryObject<TileEntityUniversalCable> ELITE_UNIVERSAL_CABLE = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_UNIVERSAL_CABLE, () -> new TileEntityUniversalCable(MekanismBlocks.ELITE_UNIVERSAL_CABLE));
-    public static final TileEntityTypeRegistryObject<TileEntityUniversalCable> ULTIMATE_UNIVERSAL_CABLE = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, () -> new TileEntityUniversalCable(MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE));
+    public static final TileEntityTypeRegistryObject<TileEntityUniversalCable> BASIC_UNIVERSAL_CABLE = registerTransmitter(MekanismBlocks.BASIC_UNIVERSAL_CABLE, (pos, state) -> new TileEntityUniversalCable(MekanismBlocks.BASIC_UNIVERSAL_CABLE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityUniversalCable> ADVANCED_UNIVERSAL_CABLE = registerTransmitter(MekanismBlocks.ADVANCED_UNIVERSAL_CABLE, (pos, state) -> new TileEntityUniversalCable(MekanismBlocks.ADVANCED_UNIVERSAL_CABLE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityUniversalCable> ELITE_UNIVERSAL_CABLE = registerTransmitter(MekanismBlocks.ELITE_UNIVERSAL_CABLE, (pos, state) -> new TileEntityUniversalCable(MekanismBlocks.ELITE_UNIVERSAL_CABLE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityUniversalCable> ULTIMATE_UNIVERSAL_CABLE = registerTransmitter(MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, (pos, state) -> new TileEntityUniversalCable(MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, pos, state));
 
     //Tiered Tiles
     //Energy Cubes
-    public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> BASIC_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_ENERGY_CUBE, () -> new TileEntityEnergyCube(MekanismBlocks.BASIC_ENERGY_CUBE));
-    public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> ADVANCED_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_ENERGY_CUBE, () -> new TileEntityEnergyCube(MekanismBlocks.ADVANCED_ENERGY_CUBE));
-    public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> ELITE_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_ENERGY_CUBE, () -> new TileEntityEnergyCube(MekanismBlocks.ELITE_ENERGY_CUBE));
-    public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> ULTIMATE_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_ENERGY_CUBE, () -> new TileEntityEnergyCube(MekanismBlocks.ULTIMATE_ENERGY_CUBE));
-    public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> CREATIVE_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_ENERGY_CUBE, () -> new TileEntityEnergyCube(MekanismBlocks.CREATIVE_ENERGY_CUBE));
+    public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> BASIC_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_ENERGY_CUBE, (pos, state) -> new TileEntityEnergyCube(MekanismBlocks.BASIC_ENERGY_CUBE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> ADVANCED_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_ENERGY_CUBE, (pos, state) -> new TileEntityEnergyCube(MekanismBlocks.ADVANCED_ENERGY_CUBE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> ELITE_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_ENERGY_CUBE, (pos, state) -> new TileEntityEnergyCube(MekanismBlocks.ELITE_ENERGY_CUBE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> ULTIMATE_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_ENERGY_CUBE, (pos, state) -> new TileEntityEnergyCube(MekanismBlocks.ULTIMATE_ENERGY_CUBE, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityEnergyCube> CREATIVE_ENERGY_CUBE = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_ENERGY_CUBE, (pos, state) -> new TileEntityEnergyCube(MekanismBlocks.CREATIVE_ENERGY_CUBE, pos, state));
     //Chemical Tanks
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> BASIC_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_CHEMICAL_TANK, () -> new TileEntityChemicalTank(MekanismBlocks.BASIC_CHEMICAL_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> ADVANCED_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_CHEMICAL_TANK, () -> new TileEntityChemicalTank(MekanismBlocks.ADVANCED_CHEMICAL_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> ELITE_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_CHEMICAL_TANK, () -> new TileEntityChemicalTank(MekanismBlocks.ELITE_CHEMICAL_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> ULTIMATE_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_CHEMICAL_TANK, () -> new TileEntityChemicalTank(MekanismBlocks.ULTIMATE_CHEMICAL_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> CREATIVE_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_CHEMICAL_TANK, () -> new TileEntityChemicalTank(MekanismBlocks.CREATIVE_CHEMICAL_TANK));
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> BASIC_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_CHEMICAL_TANK, (pos, state) -> new TileEntityChemicalTank(MekanismBlocks.BASIC_CHEMICAL_TANK, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> ADVANCED_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_CHEMICAL_TANK, (pos, state) -> new TileEntityChemicalTank(MekanismBlocks.ADVANCED_CHEMICAL_TANK, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> ELITE_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_CHEMICAL_TANK, (pos, state) -> new TileEntityChemicalTank(MekanismBlocks.ELITE_CHEMICAL_TANK, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> ULTIMATE_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_CHEMICAL_TANK, (pos, state) -> new TileEntityChemicalTank(MekanismBlocks.ULTIMATE_CHEMICAL_TANK, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityChemicalTank> CREATIVE_CHEMICAL_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_CHEMICAL_TANK, (pos, state) -> new TileEntityChemicalTank(MekanismBlocks.CREATIVE_CHEMICAL_TANK, pos, state));
     //Fluid Tanks
-    public static final TileEntityTypeRegistryObject<TileEntityFluidTank> BASIC_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_FLUID_TANK, () -> new TileEntityFluidTank(MekanismBlocks.BASIC_FLUID_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityFluidTank> ADVANCED_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_FLUID_TANK, () -> new TileEntityFluidTank(MekanismBlocks.ADVANCED_FLUID_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityFluidTank> ELITE_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_FLUID_TANK, () -> new TileEntityFluidTank(MekanismBlocks.ELITE_FLUID_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityFluidTank> ULTIMATE_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_FLUID_TANK, () -> new TileEntityFluidTank(MekanismBlocks.ULTIMATE_FLUID_TANK));
-    public static final TileEntityTypeRegistryObject<TileEntityFluidTank> CREATIVE_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_FLUID_TANK, () -> new TileEntityFluidTank(MekanismBlocks.CREATIVE_FLUID_TANK));
+    public static final TileEntityTypeRegistryObject<TileEntityFluidTank> BASIC_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_FLUID_TANK, (pos, state) -> new TileEntityFluidTank(MekanismBlocks.BASIC_FLUID_TANK, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityFluidTank> ADVANCED_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_FLUID_TANK, (pos, state) -> new TileEntityFluidTank(MekanismBlocks.ADVANCED_FLUID_TANK, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityFluidTank> ELITE_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_FLUID_TANK, (pos, state) -> new TileEntityFluidTank(MekanismBlocks.ELITE_FLUID_TANK, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityFluidTank> ULTIMATE_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_FLUID_TANK, (pos, state) -> new TileEntityFluidTank(MekanismBlocks.ULTIMATE_FLUID_TANK, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityFluidTank> CREATIVE_FLUID_TANK = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_FLUID_TANK, (pos, state) -> new TileEntityFluidTank(MekanismBlocks.CREATIVE_FLUID_TANK, pos, state));
     //Bins
-    public static final TileEntityTypeRegistryObject<TileEntityBin> BASIC_BIN = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_BIN, () -> new TileEntityBin(MekanismBlocks.BASIC_BIN));
-    public static final TileEntityTypeRegistryObject<TileEntityBin> ADVANCED_BIN = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_BIN, () -> new TileEntityBin(MekanismBlocks.ADVANCED_BIN));
-    public static final TileEntityTypeRegistryObject<TileEntityBin> ELITE_BIN = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_BIN, () -> new TileEntityBin(MekanismBlocks.ELITE_BIN));
-    public static final TileEntityTypeRegistryObject<TileEntityBin> ULTIMATE_BIN = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_BIN, () -> new TileEntityBin(MekanismBlocks.ULTIMATE_BIN));
-    public static final TileEntityTypeRegistryObject<TileEntityBin> CREATIVE_BIN = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_BIN, () -> new TileEntityBin(MekanismBlocks.CREATIVE_BIN));
+    public static final TileEntityTypeRegistryObject<TileEntityBin> BASIC_BIN = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_BIN, (pos, state) -> new TileEntityBin(MekanismBlocks.BASIC_BIN, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityBin> ADVANCED_BIN = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_BIN, (pos, state) -> new TileEntityBin(MekanismBlocks.ADVANCED_BIN, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityBin> ELITE_BIN = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_BIN, (pos, state) -> new TileEntityBin(MekanismBlocks.ELITE_BIN, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityBin> ULTIMATE_BIN = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_BIN, (pos, state) -> new TileEntityBin(MekanismBlocks.ULTIMATE_BIN, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityBin> CREATIVE_BIN = TILE_ENTITY_TYPES.register(MekanismBlocks.CREATIVE_BIN, (pos, state) -> new TileEntityBin(MekanismBlocks.CREATIVE_BIN, pos, state));
     //Induction Cells
-    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> BASIC_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_INDUCTION_CELL, () -> new TileEntityInductionCell(MekanismBlocks.BASIC_INDUCTION_CELL));
-    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ADVANCED_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_INDUCTION_CELL, () -> new TileEntityInductionCell(MekanismBlocks.ADVANCED_INDUCTION_CELL));
-    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ELITE_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_INDUCTION_CELL, () -> new TileEntityInductionCell(MekanismBlocks.ELITE_INDUCTION_CELL));
-    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ULTIMATE_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_INDUCTION_CELL, () -> new TileEntityInductionCell(MekanismBlocks.ULTIMATE_INDUCTION_CELL));
+    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> BASIC_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.BASIC_INDUCTION_CELL, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ADVANCED_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.ADVANCED_INDUCTION_CELL, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ELITE_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.ELITE_INDUCTION_CELL, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityInductionCell> ULTIMATE_INDUCTION_CELL = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_INDUCTION_CELL, (pos, state) -> new TileEntityInductionCell(MekanismBlocks.ULTIMATE_INDUCTION_CELL, pos, state));
     //Induction Providers
-    public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> BASIC_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_INDUCTION_PROVIDER, () -> new TileEntityInductionProvider(MekanismBlocks.BASIC_INDUCTION_PROVIDER));
-    public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> ADVANCED_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, () -> new TileEntityInductionProvider(MekanismBlocks.ADVANCED_INDUCTION_PROVIDER));
-    public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> ELITE_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_INDUCTION_PROVIDER, () -> new TileEntityInductionProvider(MekanismBlocks.ELITE_INDUCTION_PROVIDER));
-    public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> ULTIMATE_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, () -> new TileEntityInductionProvider(MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER));
+    public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> BASIC_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.BASIC_INDUCTION_PROVIDER, (pos, state) -> new TileEntityInductionProvider(MekanismBlocks.BASIC_INDUCTION_PROVIDER, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> ADVANCED_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, (pos, state) -> new TileEntityInductionProvider(MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> ELITE_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.ELITE_INDUCTION_PROVIDER, (pos, state) -> new TileEntityInductionProvider(MekanismBlocks.ELITE_INDUCTION_PROVIDER, pos, state));
+    public static final TileEntityTypeRegistryObject<TileEntityInductionProvider> ULTIMATE_INDUCTION_PROVIDER = TILE_ENTITY_TYPES.register(MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, (pos, state) -> new TileEntityInductionProvider(MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, pos, state));
 
     public static TileEntityTypeRegistryObject<? extends TileEntityFactory<?>> getFactoryTile(FactoryTier tier, FactoryType type) {
         return FACTORIES.get(tier, type);
@@ -262,5 +263,11 @@ public class MekanismTileEntityTypes {
     @SuppressWarnings("unchecked")
     public static TileEntityTypeRegistryObject<? extends TileEntityFactory<?>>[] getFactoryTiles() {
         return FACTORIES.values().toArray(new TileEntityTypeRegistryObject[0]);
+    }
+
+    private static <BE extends TileEntityTransmitter> TileEntityTypeRegistryObject<BE> registerTransmitter(BlockRegistryObject<?, ?> block,
+          BlockEntitySupplier<? extends BE> factory) {
+        //Note: There is no data fixer type as forge does not currently have a way exposing data fixers to mods yet
+        return TILE_ENTITY_TYPES.<BE>builder(block, factory).serverTicker(TileEntityTransmitter::tickServer).build();
     }
 }

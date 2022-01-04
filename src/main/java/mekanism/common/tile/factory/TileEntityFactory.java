@@ -58,13 +58,14 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntArrayNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends TileEntityConfigurableMachine implements IRecipeLookupHandler<RECIPE> {
 
@@ -104,8 +105,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     protected EnergyInventorySlot energySlot;
 
-    protected TileEntityFactory(IBlockProvider blockProvider) {
-        super(blockProvider);
+    protected TileEntityFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         type = Attribute.get(blockProvider, AttributeFactoryType.class).getFactoryType();
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
         inputSlots = new ArrayList<>();
@@ -351,41 +352,33 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        if (nbtTags.contains(NBTConstants.PROGRESS, NBT.TAG_INT_ARRAY)) {
-            int[] savedProgress = nbtTags.getIntArray(NBTConstants.PROGRESS);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        if (nbt.contains(NBTConstants.PROGRESS, Tag.TAG_INT_ARRAY)) {
+            int[] savedProgress = nbt.getIntArray(NBTConstants.PROGRESS);
             if (tier.processes != savedProgress.length) {
                 Arrays.fill(progress, 0);
             }
             for (int i = 0; i < tier.processes && i < savedProgress.length; i++) {
                 progress[i] = savedProgress[i];
             }
-        } else {
-            //TODO - 1.18: Remove this way of loading the old data with
-            // Arrays.fill(progress, 0);
-            for (int i = 0; i < tier.processes; i++) {
-                progress[i] = nbtTags.getInt(NBTConstants.PROGRESS + i);
-            }
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
-        nbtTags.put(NBTConstants.PROGRESS, new IntArrayNBT(Arrays.copyOf(progress, progress.length)));
-        return nbtTags;
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
+        nbtTags.put(NBTConstants.PROGRESS, new IntArrayTag(Arrays.copyOf(progress, progress.length)));
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
         data.putBoolean(NBTConstants.SORTING, isSorting());
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
         NBTUtils.setBooleanIfPresent(data, NBTConstants.SORTING, value -> sorting = value);
     }
@@ -399,12 +392,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     }
 
     @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 
     @Override
-    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+    public boolean isConfigurationDataCompatible(BlockEntityType<?> tileType) {
         if (super.isConfigurationDataCompatible(tileType)) {
             //Check exact match first
             return true;
@@ -416,7 +409,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
         }
         //And finally check if it is the non factory version (it will be missing sorting data, but we can gracefully ignore that)
-        return type.getBaseMachine().getTileType() == tileType;
+        return type.getBaseMachine().getTileType().get() == tileType;
     }
 
     public boolean hasSecondaryResourceBar() {

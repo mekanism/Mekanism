@@ -14,17 +14,17 @@ import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.FakePlayer;
 
 public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?>> implements IItemSustainedInventory, ISecurityItem, IGuiItem {
@@ -34,14 +34,14 @@ public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?
     }
 
     @Override
-    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
+    public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         SecurityUtils.addSecurityTooltip(stack, tooltip);
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
     }
 
     @Nonnull
     @Override
-    public ActionResult<ItemStack> use(@Nonnull World world, PlayerEntity player, @Nonnull Hand hand) {
+    public InteractionResultHolder<ItemStack> use(@Nonnull Level world, Player player, @Nonnull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (getOwnerUUID(stack) == null) {
             if (!world.isClientSide) {
@@ -49,31 +49,31 @@ public class ItemBlockPersonalChest extends ItemBlockTooltip<BlockTileModel<?, ?
             }
         } else if (SecurityUtils.canAccess(player, stack)) {
             if (!world.isClientSide) {
-                getContainerType().tryOpenGui((ServerPlayerEntity) player, hand, stack);
+                getContainerType().tryOpenGui((ServerPlayer) player, hand, stack);
             }
         } else {
             if (!world.isClientSide) {
                 SecurityUtils.displayNoAccess(player);
             }
-            return new ActionResult<>(ActionResultType.FAIL, stack);
+            return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
         }
-        return new ActionResult<>(ActionResultType.SUCCESS, stack);
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
     }
 
     @Nonnull
     @Override
-    public ActionResultType useOn(@Nonnull ItemUseContext context) {
+    public InteractionResult useOn(@Nonnull UseOnContext context) {
         //Like super.onItemUse, except we validate the player is not null, and pass the onItemRightClick regardless of if
         // we are food or not (as we know the personal chest is never food). This allows us to open the personal chest's
         // GUI if we didn't interact with a block that caused something to happen like opening a GUI.
-        ActionResultType result = place(new BlockItemUseContext(context));
-        PlayerEntity player = context.getPlayer();
+        InteractionResult result = place(new BlockPlaceContext(context));
+        Player player = context.getPlayer();
         return result.consumesAction() || player == null ? result : use(context.getLevel(), player, context.getHand()).getResult();
     }
 
     @Override
-    protected boolean canPlace(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        PlayerEntity player = context.getPlayer();
+    protected boolean canPlace(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
+        Player player = context.getPlayer();
         //Only allow placing if there is no player, it is a fake player, or the player is sneaking
         return (player == null || player instanceof FakePlayer || player.isShiftKeyDown()) && super.canPlace(context, state);
     }

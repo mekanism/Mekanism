@@ -60,6 +60,11 @@ sourceSets {
         resources.srcDirs = []
     }
     main {
+        java {
+            //TODO - 1.18: Remove this when CraftTweaker updates, but it is easier to exclude it like this
+            // than to comment out every file
+            exclude "mekanism/common/integration/crafttweaker/**"
+        }
         resources {
             include '**/**'
             // copy everything else, but blender and bbmodel files.
@@ -114,6 +119,10 @@ def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, S
     if (baseSourceSet == null) {
         //Base source set has resources that we put files that our annotation processor generates for consumption by our datagen
         datagenSourceSet.resources.srcDirs = ['src/datagen/' + name + '/resources']
+        //TODO - 1.18: Remove when CrT updates
+        datagenSourceSet.java {
+            exclude "mekanism/common/integration/crafttweaker/**"
+        }
     } else {
         //Data gen sourceSets outside of the main one have no resources
         datagenSourceSet.resources.srcDirs = []
@@ -149,8 +158,7 @@ static void extendConfigurations(Configuration base, Configuration... configurat
 
 ext {
     versionProperties = ["version"           : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                         "loader_version"    : loader_version_range, "crafttweaker_version": crafttweaker_version_range, "jei_version": jei_version_range,
-                         "jeitweaker_version": jeitweaker_version_range]
+                         "loader_version"    : loader_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
@@ -195,14 +203,13 @@ def createReplaceResourcesTask(String output, SourceSet sourceSet) {
 group = "mekanism"
 version = "${minecraft_version}-${mod_version}." + (System.env.BUILD_NUMBER ?: "homebaked")
 archivesBaseName = "Mekanism"
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
     mappings channel: "${mappings_channel}", version: "${mappings_version}"
 
     accessTransformers.from(file('src/main/resources/META-INF/accesstransformer.cfg'),
-            file('src/additions/resources/META-INF/accesstransformer.cfg'),
-            file('src/tools/resources/META-INF/accesstransformer.cfg'))
+            file('src/additions/resources/META-INF/accesstransformer.cfg'))
 
     runs {
         client {
@@ -363,6 +370,9 @@ repositories {
             includeGroup 'appeng'
         }
     }
+    flatDir {
+        dirs 'libs'
+    }
 
     whenObjectAdded {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
         if (it instanceof MavenArtifactRepository) {
@@ -396,7 +406,8 @@ test {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    annotationProcessor project(":annotation-processor")
+    //TODO - 1.18: Re-enable after CrT updates
+    //annotationProcessor project(":annotation-processor")
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
@@ -408,21 +419,27 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
-    runtimeOnly fg.deobf("team.chisel.ctm:CTM:MC1.16.1-${ctm_version}")
+    runtimeOnly fg.deobf("team.chisel.ctm:CTM:1.18-${ctm_version}")
 
-    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
-    runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
+    //TODO - 1.18: Switch back to the proper maven once TOP is on it again
+    implementation fg.deobf("curse.maven:the-one-probe-245211:${top_id}")
+    //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}:api")
+    //runtimeOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:${top_version}")
 
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
-    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
-    implementation fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
+    //TODO - 1.18: Support CrT again when it ports
+    //implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
+    //implementation fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
-    compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
-    compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    //TODO - 1.18: Currently we are getting projecte from flatdir for purposes of compiling
+    //compileOnly fg.deobf("curse.maven:projecte-api-226410:${projecte_api_id}")
+    compileOnly fg.deobf("projecte:projecte:1.0.0")
+    //TODO - 1.18: Support flux networks again when it ports
+    //compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
     compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
     testRuntimeOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
@@ -435,9 +452,15 @@ dependencies {
     datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenmainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
     datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
-    datagenmainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
-    datagenmainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
-    datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
+    //TODO - 1.18: Replace after the module is defined properly in the meta-inf of i-like-wood and ilikewoodxbiomesoplenty
+    datagenmainImplementation fg.deobf("ilikewoodxbiomesoplenty:ilikewoodxbiomesoplenty-1.18.1:7.1.0")
+    //datagenmainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
+    //TODO - 1.18: Figure these out
+    //datagenmainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
+    datagenmainImplementation fg.deobf("ilikewoodxbyg:ilikewoodxbyg-1.18.1:7.0.0.0")
+    //TODO - 1.18: Currently we are getting projecte from flatdir for purposes of compiling
+    //datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
+    datagenmainRuntimeOnly fg.deobf("projecte:projecte:1.0.0")
 }
 
 if (project.hasProperty('UPDATE_MAPPINGS')) {
@@ -495,7 +518,8 @@ def getManifestAttributes(String title) {
             "Implementation-Title"    : title,
             "Implementation-Version"  : "${project.mod_version}",
             "Implementation-Vendor"   : "Mekanism",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "Automatic-Module-Name": title.toLowerCase(Locale.ROOT)
     ]
 }
 
@@ -606,15 +630,17 @@ clean {
 
 tasks.withType(JavaCompile).configureEach({
     it.options.encoding = 'UTF-8'
+    it.options.compilerArgs << "-Xmaxerrs" << "100000"
 })
 
-compileJava {
+//TODO - 1.18: Uncomment when CraftTweaker updates
+/*compileJava {
     options.annotationProcessorPath = configurations.annotationProcessor
     options.getGeneratedSourceOutputDirectory().set(file("src/datagen/main/resources/"))
     options.compilerArgs = [
             "-processor", "mekanism.CraftTweakerParamNameMapper"
     ]
-}
+}*/
 
 artifacts {
     archives apiJar
@@ -809,17 +835,16 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "applied-energistics-2"
                     optionalDependency "biomes-o-plenty"
                     optionalDependency "cc-tweaked"
-                    optionalDependency "crafttweaker"
+                    //optionalDependency "crafttweaker"
                     optionalDependency "ctm"
                     optionalDependency "curios"
-                    optionalDependency "flux-networks"
-                    optionalDependency "hwyla"
+                    //optionalDependency "flux-networks"
                     optionalDependency "i-like-wood"
                     optionalDependency "i-like-wood-biomes-o-plenty-plugin"
-                    optionalDependency "i-like-wood-oh-the-biomes-youll-go-plugin"
+                    //optionalDependency "i-like-wood-oh-the-biomes-youll-go-plugin"
                     optionalDependency "jade"
                     optionalDependency "jei"
-                    optionalDependency "jeitweaker"
+                    //optionalDependency "jeitweaker"
                     optionalDependency "oh-the-biomes-youll-go"
                     optionalDependency "perviaminvenire"
                     optionalDependency "projecte"

@@ -7,14 +7,16 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class ItemAlloy extends Item {
 
@@ -27,21 +29,21 @@ public class ItemAlloy extends Item {
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
         if (player != null && MekanismConfig.general.transmitterAlloyUpgrade.get()) {
-            World world = context.getLevel();
+            Level world = context.getLevel();
             BlockPos pos = context.getClickedPos();
-            TileEntity tile = WorldUtils.getTileEntity(world, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             LazyOptional<IAlloyInteraction> capability = CapabilityUtils.getCapability(tile, Capabilities.ALLOY_INTERACTION_CAPABILITY, context.getClickedFace());
             if (capability.isPresent()) {
                 if (!world.isClientSide) {
                     capability.resolve().get().onAlloyInteraction(player, context.getHand(), context.getItemInHand(), tier);
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     public AlloyTier getTier() {

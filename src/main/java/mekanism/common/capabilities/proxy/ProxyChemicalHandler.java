@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -31,7 +31,7 @@ import mekanism.api.chemical.slurry.ISlurryHandler.ISidedSlurryHandler;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.holder.IHolder;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

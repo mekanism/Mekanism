@@ -7,10 +7,10 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.resources.ResourceLocation;
 
 public class GasConversionIRecipe extends ItemStackToGasRecipe {
 
@@ -20,13 +20,13 @@ public class GasConversionIRecipe extends ItemStackToGasRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<ItemStackToGasRecipe> getType() {
+    public RecipeType<ItemStackToGasRecipe> getType() {
         return MekanismRecipeType.GAS_CONVERSION;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<ItemStackToGasRecipe> getSerializer() {
+    public RecipeSerializer<ItemStackToGasRecipe> getSerializer() {
         return MekanismRecipeSerializers.GAS_CONVERSION.getRecipeSerializer();
     }
 

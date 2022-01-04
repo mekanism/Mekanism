@@ -20,13 +20,13 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 @ParametersAreNonnullByDefault
 public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit> {
@@ -49,7 +49,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
         return excavationRange.get().getRange();
     }
 
-    public static Set<BlockPos> findPositions(BlockState state, BlockPos location, World world, int maxRange) {
+    public static Set<BlockPos> findPositions(BlockState state, BlockPos location, Level world, int maxRange) {
         Set<BlockPos> found = new LinkedHashSet<>();
         Set<BlockPos> openSet = new LinkedHashSet<>();
         openSet.add(location);
@@ -71,8 +71,8 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
                         if (openSet.add(pos.immutable())) {
                             //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
                             // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
-                            Mekanism.packetHandler.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
-                                  Vector3d.atCenterOf(blockPos), Vector3d.atCenterOf(pos), 10), world, blockPos);
+                            Mekanism.packetHandler().sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, pos),
+                                  Vec3.atCenterOf(blockPos), Vec3.atCenterOf(pos), 10), world, blockPos);
                         }
                     }
                 }
@@ -82,7 +82,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
     }
 
     @Override
-    public void addHUDStrings(IModule<ModuleVeinMiningUnit> module, PlayerEntity player, Consumer<ITextComponent> hudStringAdder) {
+    public void addHUDStrings(IModule<ModuleVeinMiningUnit> module, Player player, Consumer<Component> hudStringAdder) {
         //Only add hud string for extended vein mining if enabled in config
         if (module.isEnabled() && MekanismConfig.gear.mekaToolExtendedMining.getAsBoolean()) {
             hudStringAdder.accept(MekanismLang.MODULE_EXTENDED_ENABLED.translateColored(EnumColor.DARK_GRAY,
@@ -99,7 +99,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
         EXTREME(8);
 
         private final int range;
-        private final ITextComponent label;
+        private final Component label;
 
         ExcavationRange(int range) {
             this.range = range;
@@ -107,7 +107,7 @@ public class ModuleVeinMiningUnit implements ICustomModule<ModuleVeinMiningUnit>
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             return label;
         }
 

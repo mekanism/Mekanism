@@ -16,17 +16,17 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 
 public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
 
-    public TileEntityLaserTractorBeam() {
-        super(MekanismBlocks.LASER_TRACTOR_BEAM);
+    public TileEntityLaserTractorBeam(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.LASER_TRACTOR_BEAM, pos, state);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
 
     @Override
     protected void handleBreakBlock(BlockState state, BlockPos hitPos) {
-        List<ItemStack> drops = Block.getDrops(state, (ServerWorld) level, hitPos, WorldUtils.getTileEntity(level, hitPos));
+        List<ItemStack> drops = Block.getDrops(state, (ServerLevel) level, hitPos, WorldUtils.getTileEntity(level, hitPos));
         if (!drops.isEmpty()) {
             List<IInventorySlot> inventorySlots = getInventorySlots(null);
             for (ItemStack drop : drops) {
@@ -81,7 +81,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
         }
         if (stack.isEmpty()) {
             //If we have finished grabbing it all then remove the entity
-            entity.remove();
+            entity.discard();
         }
         return true;
     }

@@ -7,7 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComponent {
     PUBLIC(MekanismLang.PUBLIC, EnumColor.BRIGHT_GREEN),
@@ -25,7 +25,7 @@ public enum SecurityMode implements IIncrementalEnum<SecurityMode>, IHasTextComp
     }
 
     @Override
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         return langEntry.translateColored(color);
     }
 

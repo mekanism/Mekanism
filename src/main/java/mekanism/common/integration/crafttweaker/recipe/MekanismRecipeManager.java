@@ -16,9 +16,9 @@ import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.MekanismRecipeType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -39,7 +39,7 @@ public abstract class MekanismRecipeManager<RECIPE extends MekanismRecipe> imple
     }
 
     @Override
-    public IRecipeType<RECIPE> getRecipeType() {
+    public RecipeType<RECIPE> getRecipeType() {
         return recipeType;
     }
 

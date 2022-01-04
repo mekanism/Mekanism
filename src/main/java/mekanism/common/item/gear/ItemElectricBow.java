@@ -19,29 +19,27 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArrowItem;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.Util;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.ForgeEventFactory;
 
@@ -52,16 +50,15 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         StorageUtils.addStoredEnergy(stack, tooltip, true);
         tooltip.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack))));
     }
 
     @Override
-    public void releaseUsing(@Nonnull ItemStack stack, @Nonnull World world, @Nonnull LivingEntity entityLiving, int timeLeft) {
-        if (entityLiving instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) entityLiving;
+    public void releaseUsing(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull LivingEntity entityLiving, int timeLeft) {
+        if (entityLiving instanceof Player) {
+            Player player = (Player) entityLiving;
             //Vanilla diff - Get the energy container, because if something went wrong, and we don't have one then we can exit early
             IEnergyContainer energyContainer = null;
             boolean fireState = getFireState(stack);
@@ -89,9 +86,9 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                 boolean noConsume = player.isCreative() || (ammo.getItem() instanceof ArrowItem && ((ArrowItem) ammo.getItem()).isInfinite(ammo, stack, player));
                 if (!world.isClientSide) {
                     ArrowItem arrowitem = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
-                    AbstractArrowEntity arrowEntity = arrowitem.createArrow(world, ammo, player);
+                    AbstractArrow arrowEntity = arrowitem.createArrow(world, ammo, player);
                     arrowEntity = customArrow(arrowEntity);
-                    arrowEntity.shootFromRotation(player, player.xRot, player.yRot, 0, 3 * velocity, 1);
+                    arrowEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 3 * velocity, 1);
                     if (velocity == 1) {
                         arrowEntity.setCritArrow(true);
                     }
@@ -112,16 +109,16 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                         energyContainer.extract(fireState ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get(), Action.EXECUTE, AutomationType.MANUAL);
                     }
                     if (noConsume || player.isCreative() && (ammo.getItem() == Items.SPECTRAL_ARROW || ammo.getItem() == Items.TIPPED_ARROW)) {
-                        arrowEntity.pickup = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+                        arrowEntity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
                     }
                     world.addFreshEntity(arrowEntity);
                 }
-                world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundCategory.PLAYERS, 1,
-                      1.0F / (random.nextFloat() * 0.4F + 1.2F) + velocity * 0.5F);
+                world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ARROW_SHOOT, SoundSource.PLAYERS, 1,
+                      1.0F / (world.random.nextFloat() * 0.4F + 1.2F) + velocity * 0.5F);
                 if (!noConsume && !player.isCreative()) {
                     ammo.shrink(1);
                     if (ammo.isEmpty()) {
-                        player.inventory.removeItem(ammo);
+                        player.getInventory().removeItem(ammo);
                     }
                 }
                 player.awardStat(Stats.ITEM_USED.get(this));
@@ -138,27 +135,27 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list, PlayerEntity player, ItemStack stack, EquipmentSlotType slotType) {
+    public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         list.add(MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack))));
     }
 
     @Override
-    public boolean showDurabilityBar(ItemStack stack) {
+    public boolean isBarVisible(@Nonnull ItemStack stack) {
         return true;
     }
 
     @Override
-    public double getDurabilityForDisplay(ItemStack stack) {
-        return StorageUtils.getEnergyDurabilityForDisplay(stack);
+    public int getBarWidth(@Nonnull ItemStack stack) {
+        return StorageUtils.getEnergyBarWidth(stack);
     }
 
     @Override
-    public int getRGBDurabilityForDisplay(ItemStack stack) {
+    public int getBarColor(@Nonnull ItemStack stack) {
         return MekanismConfig.client.energyColor.get();
     }
 
     @Override
-    public void fillItemCategory(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items) {
+    public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items) {
         super.fillItemCategory(group, items);
         if (allowdedIn(group)) {
             items.add(StorageUtils.getFilledEnergyVariant(new ItemStack(this), MekanismConfig.gear.electricBowMaxEnergy.get()));
@@ -166,7 +163,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         //Note: We interact with this capability using "manual" as the automation type, to ensure we can properly bypass the energy limit for extracting
         // Internal is used by the "null" side, which is what will get used for most items
         return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(MekanismConfig.gear.electricBowChargeRate, MekanismConfig.gear.electricBowMaxEnergy,
@@ -174,7 +171,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
     }
 
     @Override
-    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
             boolean newState = !getFireState(stack);
@@ -187,7 +184,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
 
     @Nonnull
     @Override
-    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+    public Component getScrollTextComponent(@Nonnull ItemStack stack) {
         return MekanismLang.FIRE_MODE.translateColored(EnumColor.PINK, OnOff.of(getFireState(stack), true));
     }
 

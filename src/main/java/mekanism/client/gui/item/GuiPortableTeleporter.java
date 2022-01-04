@@ -1,6 +1,6 @@
 package mekanism.client.gui.item;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.client.ClientTickHandler;
@@ -19,15 +19,15 @@ import mekanism.common.inventory.container.item.PortableTeleporterContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContainer> implements IItemGuiFrequencySelector<TeleporterFrequency, PortableTeleporterContainer>,
       IGuiColorFrequencySelector<TeleporterFrequency> {
 
     private MekanismButton teleportButton;
 
-    public GuiPortableTeleporter(PortableTeleporterContainer container, PlayerInventory inv, ITextComponent title) {
+    public GuiPortableTeleporter(PortableTeleporterContainer container, Inventory inv, Component title) {
         super(container, inv, title);
         imageHeight = 172;
         titleLabelY = 4;
@@ -36,10 +36,10 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiTeleporterStatus(this, () -> getFrequency() != null, menu::getStatus));
-        addButton(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
+        addRenderableWidget(new GuiTeleporterStatus(this, () -> getFrequency() != null, menu::getStatus));
+        addRenderableWidget(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 IEnergyContainer container = StorageUtils.getEnergyContainer(menu.getStack(), 0);
                 return container == null ? EnergyDisplay.ZERO.getTextComponent() : EnergyDisplay.of(container).getTextComponent();
             }
@@ -50,7 +50,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                 return container == null ? 0 : container.getEnergy().divideToLevel(container.getMaxEnergy());
             }
         }, 158, 26));
-        teleportButton = addButton(new TranslationButton(this, 42, 147, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
+        teleportButton = addRenderableWidget(new TranslationButton(this, 42, 147, 92, 20, MekanismLang.BUTTON_TELEPORT, () -> {
             TeleporterFrequency frequency = getFrequency();
             if (frequency != null && menu.getStatus() == 1) {
                 //This should always be true if the teleport button is active, but validate it just in case
@@ -63,7 +63,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         }));
         //Teleporter button starts as deactivated until we have a frequency get synced
         teleportButton.active = false;
-        addButton(new GuiFrequencySelector<>(this, 14));
+        addRenderableWidget(new GuiFrequencySelector<>(this, 14));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, menu.getStack().getHoverName(), titleLabelY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

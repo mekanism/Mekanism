@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import mekanism.api.functions.ByteSupplier;
@@ -10,8 +11,11 @@ import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+
+import mekanism.client.gui.element.GuiElement.ButtonBackground;
 
 public class GuiTeleporterStatus extends GuiTexturedElement {
 
@@ -55,19 +59,20 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bind(getResource());
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         displayTooltip(matrix, getStatusDisplay(), mouseX, mouseY);
     }
 
-    private ITextComponent getStatusDisplay() {
+    private Component getStatusDisplay() {
         if (hasFrequency.getAsBoolean()) {
             switch (statusSupplier.getAsByte()) {
                 case 1:

@@ -45,14 +45,15 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<ItemStackToGasRecipe> {
@@ -76,8 +77,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     private HashedItem lastPasteItem;
     private float lastPasteScale;
 
-    public TileEntityNutritionalLiquifier() {
-        super(MekanismBlocks.NUTRITIONAL_LIQUIFIER, 100);
+    public TileEntityNutritionalLiquifier(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.NUTRITIONAL_LIQUIFIER, pos, state, 100);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupOutputConfig(TransmissionType.GAS, gasTank, RelativeSide.RIGHT);
@@ -113,7 +114,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         builder.addSlot(inputSlot = InputInventorySlot.at(stack -> {
             Item item = stack.getItem();
             if (item.isEdible()) {//Double-check the stack is food
-                Food food = item.getFoodProperties();
+                FoodProperties food = item.getFoodProperties();
                 //And only allow inserting foods that actually would provide paste
                 return food != null && food.getNutrition() > 0;
             }
@@ -168,7 +169,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
         if (stack.isEmpty() || !stack.getItem().isEdible()) {
             return null;
         }
-        Food food = stack.getItem().getFoodProperties();
+        FoodProperties food = stack.getItem().getFoodProperties();
         if (food == null || food.getNutrition() == 0) {
             //If the food provides no healing don't allow consuming it as it won't provide any paste
             return null;
@@ -206,13 +207,13 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.GAS_STORED, gasTank.serializeNBT());
-        CompoundNBT item = new CompoundNBT();
+        CompoundTag item = new CompoundTag();
         if (lastPasteItem != null) {
             item.putString(NBTConstants.ID, lastPasteItem.getStack().getItem().getRegistryName().toString());
-            CompoundNBT tag = lastPasteItem.getStack().getTag();
+            CompoundTag tag = lastPasteItem.getStack().getTag();
             if (tag != null) {
                 item.put(NBTConstants.TAG, tag.copy());
             }
@@ -222,19 +223,19 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.GAS_STORED, nbt -> gasTank.deserializeNBT(nbt));
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.ITEM, nbt -> {
             if (nbt.isEmpty()) {
                 lastPasteItem = null;
-            } else if (nbt.contains(NBTConstants.ID, NBT.TAG_STRING)) {
+            } else if (nbt.contains(NBTConstants.ID, Tag.TAG_STRING)) {
                 ResourceLocation id = ResourceLocation.tryParse(nbt.getString(NBTConstants.ID));
                 if (id != null) {
                     Item item = ForgeRegistries.ITEMS.getValue(id);
                     if (item != null && item != Items.AIR) {
                         ItemStack stack = new ItemStack(item);
-                        if (nbt.contains(NBTConstants.TAG, NBT.TAG_COMPOUND)) {
+                        if (nbt.contains(NBTConstants.TAG, Tag.TAG_COMPOUND)) {
                             stack.setTag(nbt.getCompound(NBTConstants.TAG));
                         }
                         //Use raw because we have a new stack, so we don't need to bother copying it

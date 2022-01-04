@@ -3,7 +3,8 @@
   "pools": [
     {
       "name": "main",
-      "rolls": 1,
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:alternatives",
@@ -32,7 +33,8 @@
               "functions": [
                 {
                   "function": "minecraft:set_count",
-                  "count": 4
+                  "count": 4.0,
+                  "add": false
                 },
                 {
                   "function": "minecraft:explosion_decay"

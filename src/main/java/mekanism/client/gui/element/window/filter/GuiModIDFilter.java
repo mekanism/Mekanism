@@ -16,8 +16,8 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -34,8 +34,8 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     }
 
     @Override
-    protected List<ITextComponent> getScreenText() {
-        List<ITextComponent> list = super.getScreenText();
+    protected List<Component> getScreenText() {
+        List<Component> list = super.getScreenText();
         list.add(MekanismLang.MODID_FILTER_ID.translate(filter.getModID()));
         return list;
     }

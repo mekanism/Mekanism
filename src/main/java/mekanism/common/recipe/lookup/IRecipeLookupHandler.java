@@ -7,9 +7,9 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
-import net.minecraft.entity.Entity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.Level;
 
 public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends IContentsListener {
 
@@ -17,9 +17,9 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      * @return The world for this {@link IRecipeLookupHandler}.
      */
     @Nullable
-    default World getHandlerWorld() {
-        if (this instanceof TileEntity) {
-            return ((TileEntity) this).getLevel();
+    default Level getHandlerWorld() {
+        if (this instanceof BlockEntity) {
+            return ((BlockEntity) this).getLevel();
         } else if (this instanceof Entity) {
             return ((Entity) this).level;
         }

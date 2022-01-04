@@ -32,20 +32,20 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
 class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "processing/";
         for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
             addDynamicOreProcessingIngotRecipes(consumer, basePath + resource.getRegistrySuffix() + "/", resource);
@@ -82,14 +82,14 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         addUraniumRecipes(consumer, basePath + "uranium/");
     }
 
-    private void addDynamicOreProcessingIngotRecipes(Consumer<IFinishedRecipe> consumer, String basePath, PrimaryResource resource) {
-        net.minecraft.util.IItemProvider ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
-        ITag<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
-        net.minecraft.util.IItemProvider nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
-        ITag<Item> nuggetTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
-        net.minecraft.util.IItemProvider block = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource);
-        ITag<Item> blockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource);
-        net.minecraft.util.IItemProvider ore = MekanismBlocks.ORES.get(OreType.get(resource));
+    private void addDynamicOreProcessingIngotRecipes(Consumer<FinishedRecipe> consumer, String basePath, PrimaryResource resource) {
+        net.minecraft.world.level.ItemLike ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
+        Tag<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
+        net.minecraft.world.level.ItemLike nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
+        Tag<Item> nuggetTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
+        net.minecraft.world.level.ItemLike block = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource);
+        Tag<Item> blockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource);
+        net.minecraft.world.level.ItemLike ore = MekanismBlocks.ORES.get(OreType.get(resource));
         float dustExperience = 0.3F;
 
         if (resource == PrimaryResource.IRON) {
@@ -117,11 +117,11 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         IItemProvider clump = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
         IItemProvider crystal = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
         IItemProvider shard = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
-        ITag<Item> dustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
-        ITag<Item> dirtyDustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource);
-        ITag<Item> clumpTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
-        ITag<Item> shardTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
-        ITag<Item> crystalTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
+        Tag<Item> dustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
+        Tag<Item> dirtyDustTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DIRTY_DUST, resource);
+        Tag<Item> clumpTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CLUMP, resource);
+        Tag<Item> shardTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.SHARD, resource);
+        Tag<Item> crystalTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.CRYSTAL, resource);
 
         SlurryRegistryObject<?, ?> slurry = MekanismSlurries.PROCESSED_RESOURCES.get(resource);
 
@@ -216,7 +216,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
     }
 
-    private void addCoalOreProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCoalOreProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //from dust
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL),
@@ -240,8 +240,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
     }
 
-    private void addOreProcessingGemRecipes(Consumer<IFinishedRecipe> consumer, String basePath, net.minecraft.util.IItemProvider ore, ITag<Item> oreTag,
-          IItemProvider dust, ITag<Item> dustTag, net.minecraft.util.IItemProvider gem, ITag<Item> gemTag, int fromOre, int toOre, ITag<Item> combineType) {
+    private void addOreProcessingGemRecipes(Consumer<FinishedRecipe> consumer, String basePath, net.minecraft.world.level.ItemLike ore, Tag<Item> oreTag,
+          IItemProvider dust, Tag<Item> dustTag, net.minecraft.world.level.ItemLike gem, Tag<Item> gemTag, int fromOre, int toOre, Tag<Item> combineType) {
         //from dust
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(dustTag),
@@ -265,7 +265,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
     }
 
-    private void addNetheriteProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addNetheriteProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Ancient Debris to Dirty Netherite Scrap
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Tags.Items.ORES_NETHERITE_SCRAP),
@@ -304,7 +304,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "dust_to_ancient_debris"));
     }
 
-    private void addBronzeProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addBronzeProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Dust
         //from infusing
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
@@ -338,7 +338,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
     }
 
-    private void addRedstoneProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addRedstoneProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //from ore
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(Tags.Items.ORES_REDSTONE),
@@ -352,7 +352,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
     }
 
-    private void addRefinedGlowstoneProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addRefinedGlowstoneProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Ingot
         //from block
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.REFINED_GLOWSTONE_INGOT, 9)
@@ -376,7 +376,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
     }
 
-    private void addRefinedObsidianProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addRefinedObsidianProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Dust
         //from ingot
         ItemStackToItemStackRecipeBuilder.crushing(
@@ -407,7 +407,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
     }
 
-    private void addSteelProcessingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addSteelProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Ingot
         //from block
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.STEEL_INGOT, 9)
@@ -434,7 +434,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
     }
 
-    private void addFluoriteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addFluoriteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addOreProcessingGemRecipes(consumer, basePath, MekanismBlocks.ORES.get(OreType.FLUORITE), MekanismTags.Items.ORES.get(OreType.FLUORITE),
               MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 14,
               Tags.Items.COBBLESTONE);
@@ -444,7 +444,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "from_block"));
     }
 
-    private void addUraniumRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addUraniumRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //yellow cake
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)),

@@ -41,13 +41,13 @@ import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 public class FissionReactorMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -116,7 +116,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     private boolean forceDisable;
 
-    private AxisAlignedBB hotZone;
+    private AABB hotZone;
 
     public float prevCoolantScale;
     private float prevFuelScale;
@@ -150,17 +150,17 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public void onCreated(World world) {
+    public void onCreated(Level world) {
         super.onCreated(world);
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
         heatCapacitor.setHeatCapacity(MekanismGeneratorsConfig.generators.fissionCasingHeatCapacity.get() * locations.size(), true);
-        hotZone = new AxisAlignedBB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
+        hotZone = new AABB(getMinPos().getX() + 1, getMinPos().getY() + 1, getMinPos().getZ() + 1,
               getMaxPos().getX(), getMaxPos().getY(), getMaxPos().getZ());
     }
 
     @Override
-    public boolean tick(World world) {
+    public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
         // burn reactor fuel, create energy
         if (isActive()) {
@@ -204,7 +204,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public void readUpdateTag(CompoundNBT tag) {
+    public void readUpdateTag(CompoundTag tag) {
         super.readUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevCoolantScale = scale);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE_ALT, scale -> prevFuelScale = scale);
@@ -217,8 +217,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         NBTUtils.setGasStackIfPresent(tag, NBTConstants.GAS_STORED_ALT_2, value -> wasteTank.setStack(value));
         readValves(tag);
         assemblies.clear();
-        if (tag.contains(NBTConstants.ASSEMBLIES, NBT.TAG_LIST)) {
-            ListNBT list = tag.getList(NBTConstants.ASSEMBLIES, NBT.TAG_COMPOUND);
+        if (tag.contains(NBTConstants.ASSEMBLIES, Tag.TAG_LIST)) {
+            ListTag list = tag.getList(NBTConstants.ASSEMBLIES, Tag.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
                 assemblies.add(FormedAssembly.read(list.getCompound(i)));
             }
@@ -226,24 +226,24 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public void writeUpdateTag(CompoundNBT tag) {
+    public void writeUpdateTag(CompoundTag tag) {
         super.writeUpdateTag(tag);
         tag.putFloat(NBTConstants.SCALE, prevCoolantScale);
         tag.putFloat(NBTConstants.SCALE_ALT, prevFuelScale);
         tag.putFloat(NBTConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         tag.putFloat(NBTConstants.SCALE_ALT_3, prevWasteScale);
         tag.putInt(NBTConstants.VOLUME, getVolume());
-        tag.put(NBTConstants.FLUID_STORED, fluidCoolantTank.getFluid().writeToNBT(new CompoundNBT()));
-        tag.put(NBTConstants.GAS_STORED, fuelTank.getStack().write(new CompoundNBT()));
-        tag.put(NBTConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().write(new CompoundNBT()));
-        tag.put(NBTConstants.GAS_STORED_ALT_2, wasteTank.getStack().write(new CompoundNBT()));
+        tag.put(NBTConstants.FLUID_STORED, fluidCoolantTank.getFluid().writeToNBT(new CompoundTag()));
+        tag.put(NBTConstants.GAS_STORED, fuelTank.getStack().write(new CompoundTag()));
+        tag.put(NBTConstants.GAS_STORED_ALT, heatedCoolantTank.getStack().write(new CompoundTag()));
+        tag.put(NBTConstants.GAS_STORED_ALT_2, wasteTank.getStack().write(new CompoundTag()));
         writeValves(tag);
-        ListNBT list = new ListNBT();
+        ListTag list = new ListTag();
         assemblies.forEach(assembly -> list.add(assembly.write()));
         tag.put(NBTConstants.ASSEMBLIES, list);
     }
 
-    private void handleDamage(World world) {
+    private void handleDamage(Level world) {
         double lastDamage = reactorDamage;
         double temp = heatCapacitor.getTemperature();
         if (temp > MIN_DAMAGE_TEMPERATURE) {
@@ -277,7 +277,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
-    public void meltdownHappened(World world) {
+    public void meltdownHappened(Level world) {
         if (isFormed()) {
             IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
             //Calculate radiation level and clear any tanks that had radioactive substances and are contributing to the
@@ -370,7 +370,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         lastBoilRate = coolantHeated;
     }
 
-    private void burnFuel(World world) {
+    private void burnFuel(Level world) {
         double lastPartialWaste = partialWaste;
         double lastBurnRemaining = burnRemaining;
         double storedFuel = fuelTank.getStored() + burnRemaining;
@@ -399,7 +399,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         }
     }
 
-    private void radiateEntities(World world) {
+    private void radiateEntities(Level world) {
         IRadiationManager radiationManager = MekanismAPI.getRadiationManager();
         if (radiationManager.isRadiationEnabled() && isBurning() && world.getRandom().nextInt() % 20 == 0) {
             List<LivingEntity> entitiesToRadiate = getWorld().getEntitiesOfClass(LivingEntity.class, hotZone);

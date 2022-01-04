@@ -8,15 +8,17 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityTurbineCasing extends TileEntityMultiblock<TurbineMultiblockData> implements IHasGasMode {
 
-    public TileEntityTurbineCasing() {
-        this(GeneratorsBlocks.TURBINE_CASING);
+    public TileEntityTurbineCasing(BlockPos pos, BlockState state) {
+        this(GeneratorsBlocks.TURBINE_CASING, pos, state);
     }
 
-    public TileEntityTurbineCasing(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityTurbineCasing(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Override

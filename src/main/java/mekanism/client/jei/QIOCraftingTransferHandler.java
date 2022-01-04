@@ -47,13 +47,13 @@ import mezz.jei.api.ingredients.subtypes.UidContext;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 
-public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements IRecipeTransferHandler<CONTAINER> {
+public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer> implements IRecipeTransferHandler<CONTAINER, CraftingRecipe> {
 
     private final IRecipeTransferHandlerHelper handlerHelper;
     private final Class<CONTAINER> containerClass;
@@ -70,17 +70,15 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
         return containerClass;
     }
 
+    @Override
+    public Class<CraftingRecipe> getRecipeClass() {
+        return CraftingRecipe.class;
+    }
+
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(CONTAINER container, Object rawRecipe, IRecipeLayout recipeLayout, PlayerEntity player, boolean maxTransfer,
+    public IRecipeTransferError transferRecipe(CONTAINER container, CraftingRecipe recipe, IRecipeLayout recipeLayout, Player player, boolean maxTransfer,
           boolean doTransfer) {
-        if (!(rawRecipe instanceof ICraftingRecipe)) {
-            //Ensure that we actually have an IRecipe as if we succeed we will be using the id it provides
-            // to inform the server what recipe is being autofilled transfer the data to the server
-            //Note: Technically we could check this as IRecipe, but we do ICraftingRecipe as it really should be
-            // a crafting recipe, and if it isn't the server won't know how to transfer it anyway
-            return handlerHelper.createInternalError();
-        }
         byte selectedCraftingGrid = container.getSelectedCraftingGrid();
         if (selectedCraftingGrid == -1) {
             //Note: While the java docs recommend logging a message to the console when returning an internal error,
@@ -88,12 +86,11 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             // as there are no crafting grids being shown
             return handlerHelper.createInternalError();
         }
-        ICraftingRecipe recipe = (ICraftingRecipe) rawRecipe;
         QIOCraftingWindow craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
         //Note: This variable is only used for when doTransfer is false
         byte nonEmptyCraftingSlots = 0;
         if (!doTransfer) {
-            CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
+            CraftingContainer dummy = MekanismUtils.getDummyCraftingInv();
             for (int slot = 0; slot < 9; slot++) {
                 CraftingWindowInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
                 if (!inputSlot.isEmpty()) {
@@ -331,7 +328,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 // things may not fully be accurate on the client side with the stacks that JEI lets us know match the recipe, as
                 // they may require extra NBT that is server side only.
                 //TODO: If the sources are all from the crafting window and are already in the correct spots, there is no need to send this packet
-                Mekanism.packetHandler.sendToServer(new PacketQIOFillCraftingWindow(recipe.getId(), maxTransfer, sources));
+                Mekanism.packetHandler().sendToServer(new PacketQIOFillCraftingWindow(recipe.getId(), maxTransfer, sources));
             }
         }
         return null;

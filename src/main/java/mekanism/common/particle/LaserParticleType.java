@@ -2,7 +2,7 @@ package mekanism.common.particle;
 
 import com.mojang.serialization.Codec;
 import javax.annotation.Nonnull;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleType;
 
 public class LaserParticleType extends ParticleType<LaserParticleData> {
 

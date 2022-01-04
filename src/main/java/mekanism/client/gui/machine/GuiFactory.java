@@ -1,6 +1,6 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiDumpButton;
@@ -18,12 +18,12 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackGasToItemStackFactory;
 import mekanism.common.tile.factory.TileEntityMetallurgicInfuserFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, MekanismTileContainer<TileEntityFactory<?>>> {
 
-    public GuiFactory(MekanismTileContainer<TileEntityFactory<?>> container, PlayerInventory inv, ITextComponent title) {
+    public GuiFactory(MekanismTileContainer<TileEntityFactory<?>> container, Inventory inv, Component title) {
         super(container, inv, title);
         if (tile.hasSecondaryResourceBar()) {
             imageHeight += 11;
@@ -45,20 +45,20 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiSortingTab(this, tile));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), imageWidth - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
-        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getLastUsage));
+        addRenderableWidget(new GuiSortingTab(this, tile));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), imageWidth - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getLastUsage));
         if (tile.hasSecondaryResourceBar()) {
             if (tile instanceof TileEntityMetallurgicInfuserFactory) {
                 TileEntityMetallurgicInfuserFactory factory = (TileEntityMetallurgicInfuserFactory) this.tile;
-                addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getInfusionTank(), tile.getInfusionTanks(null)), 7, 76,
+                addRenderableWidget(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getInfusionTank(), tile.getInfusionTanks(null)), 7, 76,
                       tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
-                addButton(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
+                addRenderableWidget(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             } else if (tile instanceof TileEntityItemStackGasToItemStackFactory) {
                 TileEntityItemStackGasToItemStackFactory factory = (TileEntityItemStackGasToItemStackFactory) this.tile;
-                addButton(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getGasTank(), tile.getGasTanks(null)), 7, 76,
+                addRenderableWidget(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getGasTank(), tile.getGasTanks(null)), 7, 76,
                       tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
-                addButton(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
+                addRenderableWidget(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
             }
         }
 
@@ -72,30 +72,30 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
 
     private void addProgress(GuiProgress progressBar) {
         if (tile.getFactoryType() == FactoryType.SMELTING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.ENERGIZED_SMELTER.getRegistryName()));
+            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.ENERGIZED_SMELTER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.ENRICHING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.ENRICHMENT_CHAMBER.getRegistryName()));
+            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.ENRICHMENT_CHAMBER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.CRUSHING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.CRUSHER.getRegistryName()));
+            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.CRUSHER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.COMPRESSING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.OSMIUM_COMPRESSOR.getRegistryName()));
+            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.OSMIUM_COMPRESSOR.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.COMBINING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.COMBINER.getRegistryName()));
+            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.COMBINER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.PURIFYING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.PURIFICATION_CHAMBER.getRegistryName()));
+            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.PURIFICATION_CHAMBER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.INJECTING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getRegistryName()));
+            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.INFUSING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.METALLURGIC_INFUSER.getRegistryName()));
+            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.METALLURGIC_INFUSER.getRegistryName()));
         } else if (tile.getFactoryType() == FactoryType.SAWING) {
-            addButton(progressBar.jeiCategories(MekanismBlocks.PRECISION_SAWMILL.getRegistryName()));
+            addRenderableWidget(progressBar.jeiCategories(MekanismBlocks.PRECISION_SAWMILL.getRegistryName()));
         }
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

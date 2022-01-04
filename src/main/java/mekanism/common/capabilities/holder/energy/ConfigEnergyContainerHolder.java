@@ -10,7 +10,7 @@ import mekanism.common.capabilities.holder.ConfigHolder;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.slot.EnergySlotInfo;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class ConfigEnergyContainerHolder extends ConfigHolder<IEnergyContainer> implements IEnergyContainerHolder {
 

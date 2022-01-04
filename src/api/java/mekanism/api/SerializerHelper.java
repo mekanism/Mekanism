@@ -8,7 +8,7 @@ import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.GasStack;
@@ -18,14 +18,14 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -103,7 +103,7 @@ public class SerializerHelper {
      */
     public static ItemStack getItemStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, key));
+        return ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, key));
     }
 
     /**
@@ -116,7 +116,7 @@ public class SerializerHelper {
      */
     public static FluidStack getFluidStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return deserializeFluid(JSONUtils.getAsJsonObject(json, key));
+        return deserializeFluid(GsonHelper.getAsJsonObject(json, key));
     }
 
     /**
@@ -129,7 +129,7 @@ public class SerializerHelper {
      */
     public static ChemicalStack<?> getBoxedChemicalStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        JsonObject jsonObject = JSONUtils.getAsJsonObject(json, key);
+        JsonObject jsonObject = GsonHelper.getAsJsonObject(json, key);
         ChemicalType chemicalType = getChemicalType(jsonObject);
         if (chemicalType == ChemicalType.GAS) {
             return deserializeGas(jsonObject);
@@ -154,7 +154,7 @@ public class SerializerHelper {
      */
     public static GasStack getGasStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return deserializeGas(JSONUtils.getAsJsonObject(json, key));
+        return deserializeGas(GsonHelper.getAsJsonObject(json, key));
     }
 
     /**
@@ -167,7 +167,7 @@ public class SerializerHelper {
      */
     public static InfusionStack getInfusionStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return deserializeInfuseType(JSONUtils.getAsJsonObject(json, key));
+        return deserializeInfuseType(GsonHelper.getAsJsonObject(json, key));
     }
 
     /**
@@ -180,7 +180,7 @@ public class SerializerHelper {
      */
     public static PigmentStack getPigmentStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return deserializePigment(JSONUtils.getAsJsonObject(json, key));
+        return deserializePigment(GsonHelper.getAsJsonObject(json, key));
     }
 
     /**
@@ -193,7 +193,7 @@ public class SerializerHelper {
      */
     public static SlurryStack getSlurryStack(@Nonnull JsonObject json, @Nonnull String key) {
         validateKey(json, key);
-        return deserializeSlurry(JSONUtils.getAsJsonObject(json, key));
+        return deserializeSlurry(GsonHelper.getAsJsonObject(json, key));
     }
 
     /**
@@ -208,26 +208,26 @@ public class SerializerHelper {
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
         JsonElement count = json.get(JsonConstants.AMOUNT);
-        if (!JSONUtils.isNumberValue(count)) {
+        if (!GsonHelper.isNumberValue(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
         int amount = count.getAsJsonPrimitive().getAsInt();
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(json, JsonConstants.FLUID));
+        ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(json, JsonConstants.FLUID));
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourceLocation);
         if (fluid == null || fluid == Fluids.EMPTY) {
             throw new JsonSyntaxException("Invalid fluid type '" + resourceLocation + "'");
         }
-        CompoundNBT nbt = null;
+        CompoundTag nbt = null;
         if (json.has(JsonConstants.NBT)) {
             JsonElement jsonNBT = json.get(JsonConstants.NBT);
             try {
                 if (jsonNBT.isJsonObject()) {
-                    nbt = JsonToNBT.parseTag(GSON.toJson(jsonNBT));
+                    nbt = TagParser.parseTag(GSON.toJson(jsonNBT));
                 } else {
-                    nbt = JsonToNBT.parseTag(JSONUtils.convertToString(jsonNBT, JsonConstants.NBT));
+                    nbt = TagParser.parseTag(GsonHelper.convertToString(jsonNBT, JsonConstants.NBT));
                 }
             } catch (CommandSyntaxException e) {
                 throw new JsonSyntaxException("Invalid NBT entry for fluid '" + resourceLocation + "'");

@@ -5,10 +5,10 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.resources.ResourceLocation;
 
-public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends IGuiEventListener {
+public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends GuiEventListener {
 
     /**
      * @return null if not an active recipe area, otherwise the category

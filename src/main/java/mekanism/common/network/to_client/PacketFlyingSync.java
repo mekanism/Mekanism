@@ -2,9 +2,9 @@ package mekanism.common.network.to_client;
 
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketFlyingSync implements IMekanismPacket {
 
@@ -18,20 +18,20 @@ public class PacketFlyingSync implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player != null) {
-            player.abilities.mayfly = allowFlying;
-            player.abilities.flying = isFlying;
+            player.getAbilities().mayfly = allowFlying;
+            player.getAbilities().flying = isFlying;
         }
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBoolean(allowFlying);
         buffer.writeBoolean(isFlying);
     }
 
-    public static PacketFlyingSync decode(PacketBuffer buffer) {
+    public static PacketFlyingSync decode(FriendlyByteBuf buffer) {
         return new PacketFlyingSync(buffer.readBoolean(), buffer.readBoolean());
     }
 }

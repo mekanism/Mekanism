@@ -4,13 +4,15 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityInductionProvider extends TileEntityMekanism {
 
     public InductionProviderTier tier;
 
-    public TileEntityInductionProvider(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityInductionProvider(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Override

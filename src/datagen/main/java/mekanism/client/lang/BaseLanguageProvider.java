@@ -11,12 +11,12 @@ import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.registration.impl.FluidRegistryObject;
-import net.minecraft.block.Block;
-import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.item.BucketItem;
-import net.minecraft.util.Util;
+import net.minecraft.data.HashCache;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.Util;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
@@ -56,7 +56,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         add(moduleData.getDescriptionTranslationKey(), description);
     }
 
-    protected void addFluid(FluidRegistryObject<Source, Flowing, FlowingFluidBlock, BucketItem> fluidRO, String name) {
+    protected void addFluid(FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> fluidRO, String name) {
         add(fluidRO.getStillFluid().getAttributes().getTranslationKey(), name);
         add(fluidRO.getFlowingFluid().getAttributes().getTranslationKey(), "Flowing " + name);
         add(fluidRO.getBlock(), name);
@@ -75,7 +75,7 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     @Override
-    public void run(@Nonnull DirectoryCache cache) throws IOException {
+    public void run(@Nonnull HashCache cache) throws IOException {
         super.run(cache);
         if (altProviders.length > 0) {
             for (ConvertibleLanguageProvider provider : altProviders) {

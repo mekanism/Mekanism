@@ -3,8 +3,8 @@ package mekanism.api.providers;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public interface IChemicalProvider<CHEMICAL extends Chemical<CHEMICAL>> extends IBaseProvider {
 
@@ -28,7 +28,7 @@ public interface IChemicalProvider<CHEMICAL extends Chemical<CHEMICAL>> extends 
     }
 
     @Override
-    default ITextComponent getTextComponent() {
+    default Component getTextComponent() {
         return getChemical().getTextComponent();
     }
 

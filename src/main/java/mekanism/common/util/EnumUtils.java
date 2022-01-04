@@ -24,8 +24,8 @@ import mekanism.common.tier.TubeTier;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.UnitDisplayUtils.FloatingLongMeasurementUnit;
 import mekanism.common.util.UnitDisplayUtils.MeasurementUnit;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.core.Direction;
 
 public class EnumUtils {
 
@@ -35,13 +35,13 @@ public class EnumUtils {
     /**
      * Cached collection of armor slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
      */
-    public static final EquipmentSlotType[] ARMOR_SLOTS = new EquipmentSlotType[]{EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS,
-                                                                                  EquipmentSlotType.FEET};
+    public static final EquipmentSlot[] ARMOR_SLOTS = new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS,
+                                                                                  EquipmentSlot.FEET};
 
     /**
      * Cached collection of hand slot positions from EquipmentSlotType. DO NOT MODIFY THIS LIST.
      */
-    public static final EquipmentSlotType[] HAND_SLOTS = new EquipmentSlotType[]{EquipmentSlotType.MAINHAND, EquipmentSlotType.OFFHAND};
+    public static final EquipmentSlot[] HAND_SLOTS = new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND};
 
     /**
      * Cached value of {@link Direction#values()}. DO NOT MODIFY THIS LIST.
@@ -168,7 +168,7 @@ public class EnumUtils {
     /**
      * Cached value of {@link EquipmentSlotType#values()}. DO NOT MODIFY THIS LIST.
      */
-    public static final EquipmentSlotType[] EQUIPMENT_SLOT_TYPES = EquipmentSlotType.values();
+    public static final EquipmentSlot[] EQUIPMENT_SLOT_TYPES = EquipmentSlot.values();
 
     /**
      * Cached value of {@link ChemicalType#values()}. DO NOT MODIFY THIS LIST.

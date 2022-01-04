@@ -17,18 +17,19 @@ import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.ForgeRegistries;
 
 //TODO: Try to come up with a better name for this class given it also handles things like materials, and modids
@@ -47,16 +48,13 @@ public final class TagCache {
     private static final Object2BooleanMap<String> modIDBlacklistedElements = new Object2BooleanOpenHashMap<>();
     private static final Object2BooleanMap<Material> materialBlacklistedElements = new Object2BooleanOpenHashMap<>();
 
-    public static void resetVanillaTagCaches() {
+    public static void resetTagCaches() {
         blockTagStacks.clear();
         itemTagStacks.clear();
         //These maps have the boolean value be based on a tag
         blockTagBlacklistedElements.clear();
         modIDBlacklistedElements.clear();
         materialBlacklistedElements.clear();
-    }
-
-    public static void resetCustomTagCaches() {
         tileEntityTypeTagCache.clear();
     }
 
@@ -71,20 +69,23 @@ public final class TagCache {
         List<String> tagsAsString;
         if (block instanceof IHasTileEntity) {
             //If it is one of our blocks, short circuit and just lookup the tile's type directly
-            tagsAsString = getTagsAsStrings(((IHasTileEntity<?>) block).getTileType().getTags());
-        } else if (block.hasTileEntity(block.defaultBlockState())) {
-            //Otherwise, check if the block has a tile entity and if it does, gather all the tile types the block
-            // is valid for as we don't want to risk initializing a tile for another mod as it may have side effects
-            // that we don't know about and don't handle properly
-            Set<ResourceLocation> tileEntityTags = new HashSet<>();
-            for (TileEntityType<?> tileEntityType : ForgeRegistries.TILE_ENTITIES) {
-                if (tileEntityType.isValid(block)) {
-                    tileEntityTags.addAll(tileEntityType.getTags());
-                }
-            }
-            tagsAsString = getTagsAsStrings(tileEntityTags);
+            tagsAsString = getTagsAsStrings(((IHasTileEntity<?>) block).getTileType().get().getTags());
         } else {
-            tagsAsString = Collections.emptyList();
+            BlockState state = block.defaultBlockState();
+            if (state.hasBlockEntity()) {
+                //Otherwise, check if the block has a tile entity and if it does, gather all the tile types the block
+                // is valid for as we don't want to risk initializing a tile for another mod as it may have side effects
+                // that we don't know about and don't handle properly
+                Set<ResourceLocation> tileEntityTags = new HashSet<>();
+                for (BlockEntityType<?> tileEntityType : ForgeRegistries.BLOCK_ENTITIES) {
+                    if (tileEntityType.isValid(state)) {
+                        tileEntityTags.addAll(tileEntityType.getTags());
+                    }
+                }
+                tagsAsString = getTagsAsStrings(tileEntityTags);
+            } else {
+                tagsAsString = Collections.emptyList();
+            }
         }
         tileEntityTypeTagCache.put(block, tagsAsString);
         return tagsAsString;
@@ -109,13 +110,13 @@ public final class TagCache {
         return getTagStacks(blockTagStacks, BlockTags.getAllTags(), oreName);
     }
 
-    private static <TYPE extends IItemProvider> List<ItemStack> getTagStacks(Map<String, List<ItemStack>> cache, ITagCollection<TYPE> tagCollection,
+    private static <TYPE extends ItemLike > List < ItemStack > getTagStacks(Map < String, List < ItemStack >> cache, TagCollection < TYPE > tagCollection,
           @Nonnull String oreName) {
         if (cache.containsKey(oreName)) {
             return cache.get(oreName);
         }
         Set<TYPE> items = new HashSet<>();
-        for (Map.Entry<ResourceLocation, ITag<TYPE>> entry : tagCollection.getAllTags().entrySet()) {
+        for (Map.Entry<ResourceLocation, Tag<TYPE>> entry : tagCollection.getAllTags().entrySet()) {
             if (WildcardMatcher.matches(oreName, entry.getKey().toString())) {
                 items.addAll(entry.getValue().getValues());
             }
@@ -181,7 +182,7 @@ public final class TagCache {
             return blockTagBlacklistedElements.getBoolean(tag);
         }
         boolean hasBlacklisted = false;
-        for (Map.Entry<ResourceLocation, ITag<Block>> entry : BlockTags.getAllTags().getAllTags().entrySet()) {
+        for (Map.Entry<ResourceLocation, Tag<Block>> entry : BlockTags.getAllTags().getAllTags().entrySet()) {
             if (WildcardMatcher.matches(tag, entry.getKey().toString()) && entry.getValue().getValues().stream().anyMatch(MekanismTags.Blocks.MINER_BLACKLIST::contains)) {
                 hasBlacklisted = true;
                 break;

@@ -9,8 +9,8 @@ import mekanism.api.providers.IInfuseTypeProvider;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
 
 /**
  * Base implementation for how Mekanism handle's InfusionStack Ingredients.
@@ -42,7 +42,7 @@ public interface InfusionStackIngredient extends IChemicalStackIngredient<Infuse
      * @param tag    Tag to match.
      * @param amount Amount needed.
      */
-    static InfusionStackIngredient from(@Nonnull ITag<InfuseType> tag, long amount) {
+    static InfusionStackIngredient from(@Nonnull Tag<InfuseType> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -53,7 +53,7 @@ public interface InfusionStackIngredient extends IChemicalStackIngredient<Infuse
      *
      * @return Infusion Stack Ingredient.
      */
-    static InfusionStackIngredient read(PacketBuffer buffer) {
+    static InfusionStackIngredient read(FriendlyByteBuf buffer) {
         return ChemicalIngredientDeserializer.INFUSION.read(buffer);
     }
 
@@ -93,7 +93,7 @@ public interface InfusionStackIngredient extends IChemicalStackIngredient<Infuse
 
     class Tagged extends TaggedIngredient<InfuseType, InfusionStack> implements InfusionStackIngredient {
 
-        private Tagged(@Nonnull ITag<InfuseType> tag, long amount) {
+        private Tagged(@Nonnull Tag<InfuseType> tag, long amount) {
             super(tag, amount);
         }
     }

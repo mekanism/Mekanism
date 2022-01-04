@@ -5,8 +5,8 @@ import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 public class FissionReactorCache extends MultiblockCache<FissionReactorMultiblockData> {
 
@@ -64,7 +64,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     }
 
     @Override
-    public void load(CompoundNBT nbtTags) {
+    public void load(CompoundTag nbtTags) {
         super.load(nbtTags);
         reactorDamage = nbtTags.getDouble(NBTConstants.REACTOR_DAMAGE);
         NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.INJECTION_RATE, value -> rateLimit = value);
@@ -75,7 +75,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     }
 
     @Override
-    public void save(CompoundNBT nbtTags) {
+    public void save(CompoundTag nbtTags) {
         super.save(nbtTags);
         nbtTags.putDouble(NBTConstants.REACTOR_DAMAGE, reactorDamage);
         nbtTags.putDouble(NBTConstants.INJECTION_RATE, getRateLimit());

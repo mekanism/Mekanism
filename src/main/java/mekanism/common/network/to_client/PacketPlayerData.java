@@ -3,8 +3,8 @@ package mekanism.common.network.to_client;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketPlayerData implements IMekanismPacket {
 
@@ -39,7 +39,7 @@ public class PacketPlayerData implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeUUID(uuid);
         buffer.writeBoolean(activeFlamethrower);
         buffer.writeBoolean(activeJetpack);
@@ -47,7 +47,7 @@ public class PacketPlayerData implements IMekanismPacket {
         buffer.writeBoolean(activeModulator);
     }
 
-    public static PacketPlayerData decode(PacketBuffer buffer) {
+    public static PacketPlayerData decode(FriendlyByteBuf buffer) {
         return new PacketPlayerData(buffer.readUUID(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean());
     }
 }

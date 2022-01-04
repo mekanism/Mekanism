@@ -20,11 +20,11 @@ import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.network.to_client.PacketSecurityUpdate;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 
 public final class SecurityUtils {
@@ -39,15 +39,15 @@ public final class SecurityUtils {
      *
      * @return if the player has operator privileges
      */
-    public static boolean isOp(PlayerEntity p) {
-        if (p instanceof ServerPlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity) p;
+    public static boolean isOp(Player p) {
+        if (p instanceof ServerPlayer) {
+            ServerPlayer player = (ServerPlayer) p;
             return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().isOp(player.getGameProfile());
         }
         return false;
     }
 
-    public static boolean canAccess(PlayerEntity player, Object object) {
+    public static boolean canAccess(Player player, Object object) {
         ISecurityObject security;
         if (object instanceof ItemStack) {
             ItemStack stack = (ItemStack) object;
@@ -70,7 +70,7 @@ public final class SecurityUtils {
         return !security.hasSecurity() || canAccess(security.getSecurityMode(), player, security.getOwnerUUID());
     }
 
-    private static boolean canAccess(SecurityMode mode, PlayerEntity player, UUID owner) {
+    private static boolean canAccess(SecurityMode mode, Player player, UUID owner) {
         if (!MekanismConfig.general.allowProtection.get() || isOp(player)) {
             //If protection is disabled or the player is an op and bypass restrictions are enabled, access is always granted
             return true;
@@ -98,7 +98,7 @@ public final class SecurityUtils {
         return uuid == null ? null : FrequencyType.SECURITY.getManager(null).getFrequency(uuid);
     }
 
-    public static void displayNoAccess(PlayerEntity player) {
+    public static void displayNoAccess(Player player) {
         player.sendMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_ACCESS), Util.NIL_UUID);
     }
 
@@ -137,10 +137,10 @@ public final class SecurityUtils {
         return data != null && data.override;
     }
 
-    public static void claimItem(PlayerEntity player, ItemStack stack) {
+    public static void claimItem(Player player, ItemStack stack) {
         if (stack.getItem() instanceof IOwnerItem) {
             ((IOwnerItem) stack.getItem()).setOwnerUUID(stack, player.getUUID());
-            Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
+            Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
             player.sendMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN), Util.NIL_UUID);
         }
     }
@@ -148,7 +148,7 @@ public final class SecurityUtils {
     /**
      * Only call this on the client
      */
-    public static void addSecurityTooltip(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip) {
+    public static void addSecurityTooltip(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip) {
         if (stack.getItem() instanceof IOwnerItem) {
             tooltip.add(OwnerDisplay.of(MekanismClient.tryGetClientPlayer(), ((IOwnerItem) stack.getItem()).getOwnerUUID(stack)).getTextComponent());
         }

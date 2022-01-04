@@ -17,20 +17,20 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadTransformation;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.BlockModel;
-import net.minecraft.client.renderer.model.BlockPart;
-import net.minecraft.client.renderer.model.BlockPartFace;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.client.renderer.model.IUnbakedModel;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.texture.MissingTextureSprite;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.BlockElement;
+import net.minecraft.client.renderer.block.model.BlockElementFace;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.Direction;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.core.Direction;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
@@ -53,7 +53,7 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
         }
 
         @Override
-        public void onResourceManagerReload(@Nonnull IResourceManager resourceManager) {
+        public void onResourceManagerReload(@Nonnull ResourceManager resourceManager) {
         }
 
         @Nonnull
@@ -65,9 +65,9 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
         protected static Multimap<String, BlockPartWrapper> readElements(@Nonnull JsonDeserializationContext ctx, @Nonnull JsonObject modelContents) {
             Multimap<String, BlockPartWrapper> multimap = HashMultimap.create();
             if (modelContents.has("elements")) {
-                for (JsonElement element : JSONUtils.getAsJsonArray(modelContents, "elements")) {
+                for (JsonElement element : GsonHelper.getAsJsonArray(modelContents, "elements")) {
                     JsonObject obj = element.getAsJsonObject();
-                    BlockPart part = ctx.deserialize(element, BlockPart.class);
+                    BlockElement part = ctx.deserialize(element, BlockElement.class);
                     String name = obj.has("name") ? obj.get("name").getAsString() : "undefined";
                     BlockPartWrapper wrapper = new BlockPartWrapper(name, part);
                     multimap.put(name, wrapper);
@@ -95,16 +95,16 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
     public static class BlockPartWrapper implements IModelGeometryPart {
 
         private final String name;
-        private final BlockPart blockPart;
+        private final BlockElement blockPart;
 
-        private final Object2IntMap<BlockPartFace> litFaceMap = new Object2IntOpenHashMap<>();
+        private final Object2IntMap<BlockElementFace> litFaceMap = new Object2IntOpenHashMap<>();
 
-        public BlockPartWrapper(String name, BlockPart blockPart) {
+        public BlockPartWrapper(String name, BlockElement blockPart) {
             this.name = name;
             this.blockPart = blockPart;
         }
 
-        public BlockPart getPart() {
+        public BlockElement getPart() {
             return blockPart;
         }
 
@@ -118,10 +118,10 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
         }
 
         @Override
-        public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform,
+        public void addQuads(IModelConfiguration owner, IModelBuilder<?> modelBuilder, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
               ResourceLocation modelLocation) {
             for (Direction direction : blockPart.faces.keySet()) {
-                BlockPartFace face = blockPart.faces.get(direction);
+                BlockElementFace face = blockPart.faces.get(direction);
                 TextureAtlasSprite sprite = spriteGetter.apply(owner.resolveTexture(face.texture));
                 BakedQuad quad = BlockModel.makeBakedQuad(blockPart, face, sprite, direction, modelTransform, modelLocation);
                 if (litFaceMap.containsKey(face)) {
@@ -136,11 +136,11 @@ public class MekanismModel implements IMultipartModelGeometry<MekanismModel> {
         }
 
         @Override
-        public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
-            Set<RenderMaterial> textures = Sets.newHashSet();
-            for (BlockPartFace face : blockPart.faces.values()) {
-                RenderMaterial texture = owner.resolveTexture(face.texture);
-                if (Objects.equals(texture.texture(), MissingTextureSprite.getLocation())) {
+        public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
+            Set<Material> textures = Sets.newHashSet();
+            for (BlockElementFace face : blockPart.faces.values()) {
+                Material texture = owner.resolveTexture(face.texture);
+                if (Objects.equals(texture.texture(), MissingTextureAtlasSprite.getLocation())) {
                     missingTextureErrors.add(Pair.of(face.texture, owner.getModelName()));
                 }
                 textures.add(texture);

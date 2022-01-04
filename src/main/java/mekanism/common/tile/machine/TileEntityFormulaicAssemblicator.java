@@ -48,14 +48,15 @@ import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
@@ -64,7 +65,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private static final int BASE_TICKS_REQUIRED = 40;
 
-    private final CraftingInventory dummyInv = MekanismUtils.getDummyCraftingInv();
+    private final CraftingContainer dummyInv = MekanismUtils.getDummyCraftingInv();
 
     private int ticksRequired = BASE_TICKS_REQUIRED;
     private int operatingTicks;
@@ -78,7 +79,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     public RecipeFormula formula;
     @Nullable
-    private ICraftingRecipe cachedRecipe = null;
+    private CraftingRecipe cachedRecipe = null;
     @SyntheticComputerMethod(getter = "getExcessRemainingItems")
     private NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
@@ -94,8 +95,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityFormulaicAssemblicator() {
-        super(MekanismBlocks.FORMULAIC_ASSEMBLICATOR);
+    public TileEntityFormulaicAssemblicator(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.FORMULAIC_ASSEMBLICATOR, pos, state);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlots, outputSlots, energySlot, false);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
@@ -281,7 +282,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 }
                 lastRemainingItems = EMPTY_LIST;
                 if (cachedRecipe == null || !cachedRecipe.matches(dummyInv, level)) {
-                    cachedRecipe = level.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, dummyInv, level).orElse(null);
+                    cachedRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, dummyInv, level).orElse(null);
                 }
                 if (cachedRecipe == null) {
                     lastOutputStack = ItemStack.EMPTY;
@@ -613,23 +614,21 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        autoMode = nbtTags.getBoolean(NBTConstants.AUTO);
-        operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
-        pulseOperations = nbtTags.getInt(NBTConstants.PULSE);
-        stockControl = nbtTags.getBoolean(NBTConstants.STOCK_CONTROL);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        autoMode = nbt.getBoolean(NBTConstants.AUTO);
+        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
+        pulseOperations = nbt.getInt(NBTConstants.PULSE);
+        stockControl = nbt.getBoolean(NBTConstants.STOCK_CONTROL);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putBoolean(NBTConstants.AUTO, autoMode);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         nbtTags.putInt(NBTConstants.PULSE, pulseOperations);
         nbtTags.putBoolean(NBTConstants.STOCK_CONTROL, stockControl);
-        return nbtTags;
     }
 
     @Override
@@ -646,7 +645,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

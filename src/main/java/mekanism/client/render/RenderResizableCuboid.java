@@ -1,17 +1,17 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.Arrays;
 import javax.annotation.Nullable;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.MekanismRenderer.Model3D.SpriteInfo;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 
 /**
  * Adapted from Mantle's FluidRenderer and Tinker's SmelteryTankRenderer
@@ -32,7 +32,7 @@ public class RenderResizableCuboid {
     private RenderResizableCuboid() {
     }
 
-    public static void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay, FaceDisplay faceDisplay,
+    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay, FaceDisplay faceDisplay,
           boolean fakeDisableDiffuse) {
         Arrays.fill(combinedARGB, argb);
         renderCube(cube, matrix, buffer, combinedARGB, light, overlay, faceDisplay, fakeDisableDiffuse);
@@ -41,15 +41,15 @@ public class RenderResizableCuboid {
     /**
      * @implNote Based off of Tinker's
      */
-    public static void renderCube(Model3D cube, MatrixStack matrix, IVertexBuilder buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay,
+    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay,
           boolean fakeDisableDiffuse) {
         //TODO: Further attempt to fix z-fighting at larger distances if we make it not render the sides when it is in a solid block
         // that may improve performance some, but definitely would reduce/remove the majority of remaining z-fighting that is going on
         //Shift it so that the min values are all greater than or equal to zero as the various drawing code
         // has some issues when it comes to handling negative numbers
-        float xShift = MathHelper.floor(cube.minX);
-        float yShift = MathHelper.floor(cube.minY);
-        float zShift = MathHelper.floor(cube.minZ);
+        float xShift = Mth.floor(cube.minX);
+        float yShift = Mth.floor(cube.minY);
+        float zShift = Mth.floor(cube.minZ);
         matrix.pushPose();
         matrix.translate(xShift, yShift, zShift);
         float minX = cube.minX - xShift;
@@ -64,7 +64,7 @@ public class RenderResizableCuboid {
         float[] xBounds = getBlockBounds(xDelta, minX, maxX);
         float[] yBounds = getBlockBounds(yDelta, minY, maxY);
         float[] zBounds = getBlockBounds(zDelta, minZ, maxZ);
-        MatrixStack.Entry lastMatrix = matrix.last();
+        PoseStack.Pose lastMatrix = matrix.last();
         Matrix4f matrix4f = lastMatrix.pose();
         Matrix3f normalMatrix = lastMatrix.normal();
         Vector3f normal = fakeDisableDiffuse ? NORMAL : Vector3f.YP;
@@ -132,7 +132,7 @@ public class RenderResizableCuboid {
     /**
      * @implNote From Mantle with some adjustments
      */
-    private static void putTexturedQuad(IVertexBuilder buffer, Matrix4f matrix, Matrix3f normalMatrix, @Nullable SpriteInfo spriteInfo, Vector3f from, Vector3f to,
+    private static void putTexturedQuad(VertexConsumer buffer, Matrix4f matrix, Matrix3f normalMatrix, @Nullable SpriteInfo spriteInfo, Vector3f from, Vector3f to,
           Direction face, int[] colors, int light, int overlay, FaceDisplay faceDisplay, Vector3f normal) {
         if (spriteInfo == null) {
             return;
@@ -248,7 +248,7 @@ public class RenderResizableCuboid {
         }
     }
 
-    private static void drawFace(IVertexBuilder buffer, Matrix4f matrix, Matrix3f normalMatrix, float red, float green, float blue, float alpha, float minU, float maxU,
+    private static void drawFace(VertexConsumer buffer, Matrix4f matrix, Matrix3f normalMatrix, float red, float green, float blue, float alpha, float minU, float maxU,
           float minV, float maxV, int light, int overlay, FaceDisplay faceDisplay, Vector3f normal,
           float x1, float y1, float z1,
           float x2, float y2, float z2,

@@ -8,20 +8,20 @@ import javax.annotation.Nullable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeState;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
 import org.jetbrains.annotations.Contract;
 
 public class BlockStateHelper {
@@ -51,7 +51,7 @@ public class BlockStateHelper {
         return state;
     }
 
-    public static void fillBlockStateContainer(Block block, StateContainer.Builder<Block, BlockState> builder) {
+    public static void fillBlockStateContainer(Block block, StateDefinition.Builder<Block, BlockState> builder) {
         List<Property<?>> properties = new ArrayList<>();
         for (Attribute attr : Attribute.getAll(block)) {
             if (attr instanceof AttributeState) {
@@ -73,7 +73,7 @@ public class BlockStateHelper {
      * Helper to "hack" in and modify the light value precalculator for states to be able to use as a base level the value already set, but also modify it based on which
      * fluid a block may be fluid logged with and then use that light level instead if it is higher.
      */
-    public static AbstractBlock.Properties applyLightLevelAdjustments(AbstractBlock.Properties properties) {
+    public static BlockBehaviour.Properties applyLightLevelAdjustments(BlockBehaviour.Properties properties) {
         return applyLightLevelAdjustments(properties, state -> {
             Block block = state.getBlock();
             if (block instanceof IStateFluidLoggable) {
@@ -87,7 +87,7 @@ public class BlockStateHelper {
      * Helper to "hack" in and modify the light value precalculator for states to be able to use as a base level the value already set, but also modify it based on
      * another function to allow for compounding the light values and then using that light level instead if it is higher.
      */
-    public static AbstractBlock.Properties applyLightLevelAdjustments(AbstractBlock.Properties properties, ToIntFunction<BlockState> toApply) {
+    public static BlockBehaviour.Properties applyLightLevelAdjustments(BlockBehaviour.Properties properties, ToIntFunction<BlockState> toApply) {
         //Cache what the current light level function is
         ToIntFunction<BlockState> existingLightLevelFunction = properties.lightEmission;
         //And override the one in the properties in a way that we can modify if we have state information that should adjust it
@@ -95,12 +95,12 @@ public class BlockStateHelper {
     }
 
     @Contract("_, null, _ -> null")
-    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, BlockItemUseContext context) {
+    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, BlockPlaceContext context) {
         return getStateForPlacement(block, state, context.getLevel(), context.getClickedPos(), context.getPlayer(), context.getClickedFace());
     }
 
     @Contract("_, null, _, _, _, _ -> null")
-    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nullable PlayerEntity player, @Nonnull Direction face) {
+    public static BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nullable Player player, @Nonnull Direction face) {
         if (state == null) {
             return null;
         }

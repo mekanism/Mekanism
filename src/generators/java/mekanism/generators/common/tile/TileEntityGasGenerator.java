@@ -31,6 +31,8 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.GasInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
@@ -53,8 +55,8 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityGasGenerator() {
-        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, MekanismConfig.general.FROM_H2.get().multiply(2));
+    public TileEntityGasGenerator(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.GAS_BURNING_GENERATOR, pos, state, MekanismConfig.general.FROM_H2.get().multiply(2));
     }
 
     @Nonnull

@@ -23,21 +23,3 @@ license="MIT"
     mandatory=true
     versionRange="${forge_version}"
     side="BOTH"
-[[dependencies.mekanism]]
-    modId="crafttweaker"
-    mandatory=false
-    versionRange="${crafttweaker_version}"
-    ordering="AFTER"
-    side="BOTH"
-[[dependencies.mekanism]]
-    modId="jei"
-    mandatory=false
-    versionRange="${jei_version}"
-    ordering="AFTER"
-    side="BOTH"
-[[dependencies.mekanism]]
-    modId="jeitweaker"
-    mandatory=false
-    versionRange="${jeitweaker_version}"
-    ordering="AFTER"
-    side="BOTH"

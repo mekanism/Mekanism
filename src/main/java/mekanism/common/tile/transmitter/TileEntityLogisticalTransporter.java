@@ -8,12 +8,13 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.network.transmitter.LogisticalTransporter;
 import mekanism.common.registries.MekanismBlocks;
-import net.minecraft.block.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityLogisticalTransporter extends TileEntityLogisticalTransporterBase {
 
-    public TileEntityLogisticalTransporter(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityLogisticalTransporter(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Override

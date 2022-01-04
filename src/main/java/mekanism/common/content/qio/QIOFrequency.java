@@ -37,12 +37,12 @@ import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.to_client.PacketQIOItemViewerGuiSync;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency {
 
@@ -72,7 +72,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
     private final Set<String> failedWildcardModIDs = new HashSet<>();
 
     private final Set<UUIDAwareHashedItem> updatedItems = new HashSet<>();
-    private final Set<ServerPlayerEntity> playersViewingItems = new HashSet<>();
+    private final Set<ServerPlayer> playersViewingItems = new HashSet<>();
 
     /** If we need to send a packet to viewing clients with changed item data. */
     private boolean needsUpdate;
@@ -320,16 +320,16 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
         return added;
     }
 
-    public void openItemViewer(ServerPlayerEntity player) {
+    public void openItemViewer(ServerPlayer player) {
         playersViewingItems.add(player);
         Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>();
         for (QIOItemTypeData data : itemDataMap.values()) {
             map.put(new UUIDAwareHashedItem(data.itemType, getUUIDForType(data.itemType)), data.count);
         }
-        Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.batch(map, totalCountCapacity, totalTypeCapacity), player);
+        Mekanism.packetHandler().sendTo(PacketQIOItemViewerGuiSync.batch(map, totalCountCapacity, totalTypeCapacity), player);
     }
 
-    public void closeItemViewer(ServerPlayerEntity player) {
+    public void closeItemViewer(ServerPlayer player) {
         playersViewingItems.remove(player);
     }
 
@@ -394,7 +394,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
             });
             // flush players that somehow didn't send a container close packet
             playersViewingItems.removeIf(player -> !(player.containerMenu instanceof QIOItemViewerContainer));
-            playersViewingItems.forEach(player -> Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity), player));
+            playersViewingItems.forEach(player -> Mekanism.packetHandler().sendTo(PacketQIOItemViewerGuiSync.update(map, totalCountCapacity, totalTypeCapacity), player));
             updatedItems.clear();
             needsUpdate = false;
         }
@@ -416,7 +416,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
     }
 
     @Override
-    public void onDeactivate(TileEntity tile) {
+    public void onDeactivate(BlockEntity tile) {
         super.onDeactivate(tile);
 
         if (tile instanceof IQIODriveHolder) {
@@ -430,7 +430,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
     }
 
     @Override
-    public void update(TileEntity tile) {
+    public void update(BlockEntity tile) {
         super.update(tile);
         if (tile instanceof IQIODriveHolder) {
             IQIODriveHolder holder = (IQIODriveHolder) tile;
@@ -447,7 +447,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
         Set<QIODriveKey> keys = new HashSet<>(driveMap.keySet());
         keys.forEach(key -> removeDrive(key, false));
         driveMap.clear();
-        playersViewingItems.forEach(player -> Mekanism.packetHandler.sendTo(PacketQIOItemViewerGuiSync.kill(), player));
+        playersViewingItems.forEach(player -> Mekanism.packetHandler().sendTo(PacketQIOItemViewerGuiSync.kill(), player));
     }
 
     @Override
@@ -462,7 +462,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
     }
 
     @Override
-    public void write(PacketBuffer buf) {
+    public void write(FriendlyByteBuf buf) {
         super.write(buf);
         buf.writeVarLong(totalCount);
         buf.writeVarLong(totalCountCapacity);
@@ -472,7 +472,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
     }
 
     @Override
-    public void read(PacketBuffer buf) {
+    public void read(FriendlyByteBuf buf) {
         super.read(buf);
         totalCount = buf.readVarLong();
         totalCountCapacity = buf.readVarLong();
@@ -482,13 +482,13 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
+    public void write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
     }
 
     @Override
-    protected void read(CompoundNBT nbtTags) {
+    protected void read(CompoundTag nbtTags) {
         super.read(nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, this::setColor);
     }

@@ -17,7 +17,7 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGas
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.PressurizedReactionIRecipe;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.openzen.zencode.java.ZenCodeType;
 

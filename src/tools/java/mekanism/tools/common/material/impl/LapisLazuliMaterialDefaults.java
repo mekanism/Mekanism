@@ -2,10 +2,10 @@ package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.tools.common.material.BaseMekanismMaterial;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.common.Tags;
 
 public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
@@ -56,7 +56,7 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
         switch (slotType) {
             case FEET:
                 return 130;
@@ -71,7 +71,7 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
+    public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
         switch (slotType) {
             case FEET:
                 return 1;

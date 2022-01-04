@@ -6,16 +6,17 @@ import mekanism.api.NBTConstants;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
 
 //TODO - V11: Evaluate making neighbor updates to this (and other "non internal" internal multiblocks like induction cells) cause the multiblock to unform
 public class TileEntityInternalMultiblock extends TileEntityMekanism {
 
     protected UUID multiblockUUID;
 
-    public TileEntityInternalMultiblock(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityInternalMultiblock(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     public void setMultiblock(UUID id) {
@@ -28,8 +29,8 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism {
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         if (multiblockUUID != null) {
             updateTag.putUUID(NBTConstants.INVENTORY_ID, multiblockUUID);
         }
@@ -37,8 +38,8 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism {
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setUUIDIfPresentElse(tag, NBTConstants.INVENTORY_ID, this::setMultiblock, () -> multiblockUUID = null);
     }
 }

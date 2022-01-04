@@ -28,13 +28,13 @@ import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraftforge.network.NetworkEvent;
 
 /**
  * Used for informing the server that an action happened in a GUI
@@ -66,11 +66,11 @@ public class PacketGuiInteract implements IMekanismPacket {
         this.extra = extra;
     }
 
-    public PacketGuiInteract(GuiInteraction interaction, TileEntity tile) {
+    public PacketGuiInteract(GuiInteraction interaction, BlockEntity tile) {
         this(interaction, tile.getBlockPos());
     }
 
-    public PacketGuiInteract(GuiInteraction interaction, TileEntity tile, int extra) {
+    public PacketGuiInteract(GuiInteraction interaction, BlockEntity tile, int extra) {
         this(interaction, tile.getBlockPos(), extra);
     }
 
@@ -85,7 +85,7 @@ public class PacketGuiInteract implements IMekanismPacket {
         this.extra = extra;
     }
 
-    public PacketGuiInteract(GuiInteractionItem interaction, TileEntity tile, ItemStack stack) {
+    public PacketGuiInteract(GuiInteractionItem interaction, BlockEntity tile, ItemStack stack) {
         this(interaction, tile.getBlockPos(), stack);
     }
 
@@ -98,7 +98,7 @@ public class PacketGuiInteract implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player != null) {
             if (interactionType == Type.ENTITY) {
                 Entity entity = player.level.getEntity(entityID);
@@ -119,7 +119,7 @@ public class PacketGuiInteract implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(interactionType);
         if (interactionType == Type.ENTITY) {
             buffer.writeEnum(entityInteraction);
@@ -136,7 +136,7 @@ public class PacketGuiInteract implements IMekanismPacket {
         }
     }
 
-    public static PacketGuiInteract decode(PacketBuffer buffer) {
+    public static PacketGuiInteract decode(FriendlyByteBuf buffer) {
         Type type = buffer.readEnum(Type.class);
         if (type == Type.ENTITY) {
             return new PacketGuiInteract(buffer.readEnum(GuiInteractionEntity.class), buffer.readVarInt(), buffer.readVarInt());
@@ -161,13 +161,13 @@ public class PacketGuiInteract implements IMekanismPacket {
             }
         });
 
-        private final TriConsumer<TileEntityMekanism, PlayerEntity, ItemStack> consumerForTile;
+        private final TriConsumer<TileEntityMekanism, Player, ItemStack> consumerForTile;
 
-        GuiInteractionItem(TriConsumer<TileEntityMekanism, PlayerEntity, ItemStack> consumerForTile) {
+        GuiInteractionItem(TriConsumer<TileEntityMekanism, Player, ItemStack> consumerForTile) {
             this.consumerForTile = consumerForTile;
         }
 
-        public void consume(TileEntityMekanism tile, PlayerEntity player, ItemStack stack) {
+        public void consume(TileEntityMekanism tile, Player player, ItemStack stack) {
             consumerForTile.accept(tile, player, stack);
         }
     }
@@ -386,13 +386,13 @@ public class PacketGuiInteract implements IMekanismPacket {
 
         ;
 
-        private final TriConsumer<TileEntityMekanism, PlayerEntity, Integer> consumerForTile;
+        private final TriConsumer<TileEntityMekanism, Player, Integer> consumerForTile;
 
-        GuiInteraction(TriConsumer<TileEntityMekanism, PlayerEntity, Integer> consumerForTile) {
+        GuiInteraction(TriConsumer<TileEntityMekanism, Player, Integer> consumerForTile) {
             this.consumerForTile = consumerForTile;
         }
 
-        public void consume(TileEntityMekanism tile, PlayerEntity player, int extra) {
+        public void consume(TileEntityMekanism tile, Player player, int extra) {
             consumerForTile.accept(tile, player, extra);
         }
     }
@@ -422,13 +422,13 @@ public class PacketGuiInteract implements IMekanismPacket {
         }),
         ;
 
-        private final TriConsumer<Entity, PlayerEntity, Integer> consumerForEntity;
+        private final TriConsumer<Entity, Player, Integer> consumerForEntity;
 
-        GuiInteractionEntity(TriConsumer<Entity, PlayerEntity, Integer> consumerForEntity) {
+        GuiInteractionEntity(TriConsumer<Entity, Player, Integer> consumerForEntity) {
             this.consumerForEntity = consumerForEntity;
         }
 
-        public void consume(Entity entity, PlayerEntity player, int extra) {
+        public void consume(Entity entity, Player player, int extra) {
             consumerForEntity.accept(entity, player, extra);
         }
     }

@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.holder.IHolder;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public interface IInventorySlotHolder extends IHolder {
 

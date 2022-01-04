@@ -19,9 +19,10 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
 
@@ -34,8 +35,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityWindGenerator() {
-        super(GeneratorsBlocks.WIND_GENERATOR, MekanismGeneratorsConfig.generators.windGenerationMax.get().multiply(2));
+    public TileEntityWindGenerator(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.WIND_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.windGenerationMax.get().multiply(2));
     }
 
     @Nonnull
@@ -151,8 +152,8 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
     }
 
     @Override
-    public SoundCategory getSoundCategory() {
-        return SoundCategory.WEATHER;
+    public SoundSource getSoundCategory() {
+        return SoundSource.WEATHER;
     }
 
     @Override
@@ -169,9 +170,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
 
     @Nonnull
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         //Note: we just extend it to the max size it could be ignoring what direction it is actually facing
-        return new AxisAlignedBB(worldPosition.offset(-2, 0, -2), worldPosition.offset(3, 7, 3));
+        return new AABB(worldPosition.offset(-2, 0, -2), worldPosition.offset(3, 7, 3));
     }
 
     //Methods relating to IComputerTile

@@ -3,7 +3,7 @@ package mekanism.api.chemical.merged;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -13,9 +13,9 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.text.IHasTextComponent;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 
 /**
  *
@@ -52,7 +52,7 @@ public class BoxedChemical implements IHasTextComponent {
      * @return Boxed Chemical.
      */
     @SuppressWarnings("RedundantCast")
-    public static BoxedChemical read(PacketBuffer buffer) {
+    public static BoxedChemical read(FriendlyByteBuf buffer) {
         //Note: Casts are needed for compiling, so it knows how to read it properly
         ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
         if (chemicalType == ChemicalType.GAS) {
@@ -75,7 +75,7 @@ public class BoxedChemical implements IHasTextComponent {
      *
      * @return Boxed Chemical.
      */
-    public static BoxedChemical read(@Nullable CompoundNBT nbt) {
+    public static BoxedChemical read(@Nullable CompoundTag nbt) {
         ChemicalType chemicalType = ChemicalType.fromNBT(nbt);
         Chemical<?> chemical = null;
         if (chemicalType == ChemicalType.GAS) {
@@ -121,7 +121,7 @@ public class BoxedChemical implements IHasTextComponent {
      *
      * @return tag compound with this BoxedChemical's data
      */
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundTag write(CompoundTag nbt) {
         chemicalType.write(nbt);
         chemical.write(nbt);
         return nbt;
@@ -132,7 +132,7 @@ public class BoxedChemical implements IHasTextComponent {
      *
      * @param buffer - Buffer to write to.
      */
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(chemicalType);
         if (chemicalType == ChemicalType.GAS) {
             buffer.writeRegistryId((Gas) chemical);
@@ -155,7 +155,7 @@ public class BoxedChemical implements IHasTextComponent {
     }
 
     @Override
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         return chemical.getTextComponent();
     }
 

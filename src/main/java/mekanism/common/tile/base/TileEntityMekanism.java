@@ -115,39 +115,38 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
-public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITickableTileEntity, ITileDirectional, IConfigCardAccess,
-      ITileActive, ITileSound, ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport,
-      ITrackableContainer, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile,
-      IComputerTile, ITileRadioactive {
+public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
+      ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer,
+      IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile, IComputerTile, ITileRadioactive {
 
     /**
      * The players currently using this block.
      */
-    public final Set<PlayerEntity> playersUsing = new ObjectOpenHashSet<>();
+    public final Set<Player> playersUsing = new ObjectOpenHashSet<>();
 
     /**
      * A timer used to send packets to clients.
@@ -251,12 +250,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     /**
      * Only used on the client
      */
-    private ISound activeSound;
+    private SoundInstance activeSound;
     private int playSoundCooldown = 0;
     //End variables ITileSound
 
-    public TileEntityMekanism(IBlockProvider blockProvider) {
-        super(((IHasTileEntity<? extends TileEntity>) blockProvider.getBlock()).getTileType());
+    public TileEntityMekanism(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(((IHasTileEntity<? extends BlockEntity>) blockProvider.getBlock()).getTileType(), pos, state);
         this.blockProvider = blockProvider;
         Block block = this.blockProvider.getBlock();
         setSupportedTypes(block);
@@ -432,7 +431,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Nonnull
-    public ITextComponent getName() {
+    public Component getName() {
         return TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
     }
 
@@ -448,7 +447,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         level.updateNeighbourForOutputSignal(worldPosition, getBlockType());
     }
 
-    public WrenchResult tryWrench(BlockState state, PlayerEntity player, Hand hand, BlockRayTraceResult rayTrace) {
+    public WrenchResult tryWrench(BlockState state, Player player, InteractionHand hand, BlockHitResult rayTrace) {
         ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack)) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
@@ -468,91 +467,95 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return WrenchResult.PASS;
     }
 
-    public ActionResultType openGui(PlayerEntity player) {
+    public InteractionResult openGui(Player player) {
         //Everything that calls this has isRemote being false but add the check just in case anyways
         if (hasGui() && !isRemote() && !player.isShiftKeyDown()) {
             if (hasSecurity() && !SecurityUtils.canAccess(player, this)) {
                 SecurityUtils.displayNoAccess(player);
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             }
             //Pass on this activation if the player is rotating with a configurator
             ItemStack stack = player.getMainHandItem();
             if (isDirectional() && !stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
                 ItemConfigurator configurator = (ItemConfigurator) stack.getItem();
                 if (configurator.getMode(stack) == ItemConfigurator.ConfiguratorMode.ROTATE) {
-                    return ActionResultType.PASS;
+                    return InteractionResult.PASS;
                 }
             }
             //Pass on this activation if the player is using a configuration card (and this tile supports the capability)
             if (getCapability(Capabilities.CONFIG_CARD_CAPABILITY, null).isPresent()) {
                 if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurationCard) {
-                    return ActionResultType.PASS;
+                    return InteractionResult.PASS;
                 }
             }
 
-            NetworkHooks.openGui((ServerPlayerEntity) player, Attribute.get(getBlockType(), AttributeGui.class).getProvider(this), worldPosition);
-            return ActionResultType.SUCCESS;
+            NetworkHooks.openGui((ServerPlayer) player, Attribute.get(getBlockType(), AttributeGui.class).getProvider(this), worldPosition);
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
-    @Override
-    public void tick() {
-        if (isRemote()) {
-            if (hasSound()) {
-                updateSound();
-            }
-            onUpdateClient();
-        } else {
-            frequencyComponent.tickServer();
-            if (supportsUpgrades()) {
-                upgradeComponent.tickServer();
-            }
-            if (hasSecurity()) {
-                securityComponent.tickServer();
-            }
-            if (hasChunkloader) {
-                ((IChunkLoader) this).getChunkLoader().tickServer();
-            }
-            if (isActivatable()) {
-                if (updateDelay > 0) {
-                    updateDelay--;
-                    if (updateDelay == 0 && getClientActive() != currentActive) {
-                        //If it doesn't match, and we are done with the delay period, then update it
-                        level.setBlockAndUpdate(worldPosition, Attribute.setActive(getBlockState(), currentActive));
-                    }
-                }
-            }
-            onUpdateServer();
-            updateRadiationScale();
-            //TODO - 1.18: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
-            if (persists(SubstanceType.HEAT)) {
-                // update heat after server tick as we now have simulated changes
-                // we use persists, as only one reference should update
-                updateHeatCapacitors(null);
-            }
-            lastEnergyReceived = FloatingLong.ZERO;
-            //Only update the comparator state if we support comparators and need to update comparators
-            if (supportsComparator() && updateComparators && !getBlockState().isAir(level, worldPosition)) {
-                int newRedstoneLevel = getRedstoneLevel();
-                if (newRedstoneLevel != currentRedstoneLevel) {
-                    currentRedstoneLevel = newRedstoneLevel;
-                    notifyComparatorChange();
-                }
-                updateComparators = false;
-            }
+    //TODO - 1.18: Optimize what gets ticks registered to it
+    public static void tickClient(Level level, BlockPos pos, BlockState state, TileEntityMekanism tile) {
+        if (tile.hasSound()) {
+            tile.updateSound();
         }
-        ticker++;
-        if (supportsRedstone()) {
-            redstoneLastTick = redstone;
+        tile.onUpdateClient();
+        tile.ticker++;
+        if (tile.supportsRedstone()) {
+            tile.redstoneLastTick = tile.redstone;
         }
     }
 
-    public void open(PlayerEntity player) {
+    public static void tickServer(Level level, BlockPos pos, BlockState state, TileEntityMekanism tile) {
+        tile.frequencyComponent.tickServer();
+        if (tile.supportsUpgrades()) {
+            tile.upgradeComponent.tickServer();
+        }
+        if (tile.hasSecurity()) {
+            tile.securityComponent.tickServer();
+        }
+        if (tile.hasChunkloader) {
+            ((IChunkLoader) tile).getChunkLoader().tickServer();
+        }
+        if (tile.isActivatable()) {
+            if (tile.updateDelay > 0) {
+                tile.updateDelay--;
+                if (tile.updateDelay == 0 && tile.getClientActive() != tile.currentActive) {
+                    //If it doesn't match, and we are done with the delay period, then update it
+                    level.setBlockAndUpdate(pos, Attribute.setActive(state, tile.currentActive));
+                }
+            }
+        }
+        tile.onUpdateServer();
+        tile.updateRadiationScale();
+        //TODO - 1.18: More generic "needs update" flag that we set that then means we don't end up sending an update packet more than once per tick
+        if (tile.persists(SubstanceType.HEAT)) {
+            // update heat after server tick as we now have simulated changes
+            // we use persists, as only one reference should update
+            tile.updateHeatCapacitors(null);
+        }
+        tile.lastEnergyReceived = FloatingLong.ZERO;
+        //Only update the comparator state if we support comparators and need to update comparators
+        if (tile.supportsComparator() && tile.updateComparators && !state.isAir()) {
+            int newRedstoneLevel = tile.getRedstoneLevel();
+            if (newRedstoneLevel != tile.currentRedstoneLevel) {
+                tile.currentRedstoneLevel = newRedstoneLevel;
+                tile.notifyComparatorChange();
+            }
+            tile.updateComparators = false;
+        }
+        tile.ticker++;
+        if (tile.supportsRedstone()) {
+            tile.redstoneLastTick = tile.redstone;
+        }
+    }
+
+    public void open(Player player) {
         playersUsing.add(player);
     }
 
-    public void close(PlayerEntity player) {
+    public void close(Player player) {
         playersUsing.remove(player);
     }
 
@@ -596,51 +599,52 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    protected void updateBlockState(@Nonnull BlockState newState) {
-        super.updateBlockState(newState);
+    @Deprecated
+    public void setBlockState(@Nonnull BlockState newState) {
+        super.setBlockState(newState);
         if (isDirectional()) {
             //Clear the cached direction so that we can lazily get it when we need it again
             cachedDirection = null;
         }
     }
 
-    @Override
+    //TODO - 1.18: Validate the setBlockState change covers this
+    /*@Override
     public void clearCache() {
         super.clearCache();
         if (isDirectional()) {
             cachedDirection = null;
         }
-    }
+    }*/
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.REDSTONE, value -> redstone = value);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        NBTUtils.setBooleanIfPresent(nbt, NBTConstants.REDSTONE, value -> redstone = value);
         for (ITileComponent component : components) {
-            component.read(nbtTags);
+            component.read(nbt);
         }
-        loadGeneralPersistentData(nbtTags);
+        loadGeneralPersistentData(nbt);
         if (hasInventory() && persistInventory()) {
-            DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags.getList(NBTConstants.ITEMS, NBT.TAG_COMPOUND));
+            DataHandlerUtils.readContainers(getInventorySlots(null), nbt.getList(NBTConstants.ITEMS, Tag.TAG_COMPOUND));
         }
         for (SubstanceType type : EnumUtils.SUBSTANCES) {
             if (type.canHandle(this) && persists(type)) {
-                type.read(this, nbtTags);
+                type.read(this, nbt);
             }
         }
         if (isActivatable()) {
-            NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.ACTIVE_STATE, value -> currentActive = value);
-            NBTUtils.setIntIfPresent(nbtTags, NBTConstants.UPDATE_DELAY, value -> updateDelay = value);
+            NBTUtils.setBooleanIfPresent(nbt, NBTConstants.ACTIVE_STATE, value -> currentActive = value);
+            NBTUtils.setIntIfPresent(nbt, NBTConstants.UPDATE_DELAY, value -> updateDelay = value);
         }
         if (supportsComparator()) {
-            NBTUtils.setIntIfPresent(nbtTags, NBTConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
+            NBTUtils.setIntIfPresent(nbt, NBTConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putBoolean(NBTConstants.REDSTONE, redstone);
         for (ITileComponent component : components) {
             component.write(nbtTags);
@@ -663,16 +667,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsComparator()) {
             nbtTags.putInt(NBTConstants.CURRENT_REDSTONE, currentRedstoneLevel);
         }
-        return nbtTags;
     }
 
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         if (supportsRedstone()) {
             data.putInt(NBTConstants.CONTROL_TYPE, controlType.ordinal());
         }
     }
 
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         if (supportsRedstone()) {
             NBTUtils.setEnumIfPresent(data, NBTConstants.CONTROL_TYPE, RedstoneControl::byIndexStatic, type -> controlType = type);
         }
@@ -747,8 +750,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         for (ITileComponent component : components) {
             component.addToUpdateTag(updateTag);
         }
@@ -757,8 +760,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         for (ITileComponent component : components) {
             component.readFromUpdateTag(tag);
         }
@@ -804,7 +807,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             cachedDirection = Attribute.getFacing(state);
             if (cachedDirection != null) {
                 return cachedDirection;
-            } else if (!getType().isValid(state.getBlock())) {
+            } else if (!getType().isValid(state)) {
                 //This is probably always true if we couldn't get the direction it is facing
                 // but double check just in case before logging
                 Mekanism.logger.warn("Error invalid block for tile {} at {} in {}. Unable to get direction, falling back to north, "
@@ -933,15 +936,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void setInventory(ListNBT nbtTags, Object... data) {
+    public void setInventory(ListTag nbtTags, Object... data) {
         if (nbtTags != null && !nbtTags.isEmpty() && persistInventory()) {
             DataHandlerUtils.readContainers(getInventorySlots(null), nbtTags);
         }
     }
 
     @Override
-    public ListNBT getInventory(Object... data) {
-        return persistInventory() ? DataHandlerUtils.writeContainers(getInventorySlots(null)) : new ListNBT();
+    public ListTag getInventory(Object... data) {
+        return persistInventory() ? DataHandlerUtils.writeContainers(getInventorySlots(null)) : new ListTag();
     }
 
     /**
@@ -1072,7 +1075,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public IHeatHandler getAdjacent(@Nonnull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
+            BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
         }
         return null;
@@ -1092,21 +1095,21 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public CompoundNBT getConfigurationData(PlayerEntity player) {
-        CompoundNBT data = new CompoundNBT();
+    public CompoundTag getConfigurationData(Player player) {
+        CompoundTag data = new CompoundTag();
         addGeneralPersistentData(data);
         getFrequencyComponent().writeConfiguredFrequencies(data);
         return data;
     }
 
     @Override
-    public void setConfigurationData(PlayerEntity player, CompoundNBT data) {
+    public void setConfigurationData(Player player, CompoundTag data) {
         loadGeneralPersistentData(data);
         getFrequencyComponent().readConfiguredFrequencies(player, data);
     }
 
     @Override
-    public TileEntityType<?> getConfigurationDataType() {
+    public BlockEntityType<?> getConfigurationDataType() {
         return getType();
     }
 
@@ -1134,7 +1137,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 //and there are players using this tile
                 if (!playersUsing.isEmpty()) {
                     //then double check that all the players are actually supposed to be able to access the GUI
-                    for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
+                    for (Player player : new ObjectOpenHashSet<>(playersUsing)) {
                         if (!SecurityUtils.canAccess(player, this)) {
                             //and if they can't then boot them out
                             player.closeContainer();

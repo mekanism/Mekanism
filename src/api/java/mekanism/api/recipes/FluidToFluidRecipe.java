@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -57,14 +57,6 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
     }
 
     /**
-     * @deprecated Use {@link #getOutputDefinition()}.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public FluidStack getOutputRepresentation() {
-        return output;
-    }
-
-    /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
@@ -90,7 +82,7 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe implements Predi
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         output.writeToPacket(buffer);
     }

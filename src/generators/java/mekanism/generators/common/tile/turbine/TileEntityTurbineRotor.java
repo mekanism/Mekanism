@@ -8,11 +8,11 @@ import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
 
 public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
@@ -28,8 +28,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     public float rotationLower;
     public float rotationUpper;
 
-    public TileEntityTurbineRotor() {
-        super(GeneratorsBlocks.TURBINE_ROTOR);
+    public TileEntityTurbineRotor(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.TURBINE_ROTOR, pos, state);
     }
 
     @Override
@@ -143,30 +143,28 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        blades = nbtTags.getInt(NBTConstants.BLADES);
-        position = nbtTags.getInt(NBTConstants.POSITION);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        blades = nbt.getInt(NBTConstants.BLADES);
+        position = nbt.getInt(NBTConstants.POSITION);
         updateRadius();
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.BLADES, getHousedBlades());
         nbtTags.putInt(NBTConstants.POSITION, getPosition());
-        return nbtTags;
     }
 
     @Nonnull
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         if (blades == 0 || radius == -1) {
             //If there are no blades default to the collision box of the rotor
             return super.getRenderBoundingBox();
         }
-        return new AxisAlignedBB(worldPosition.offset(-radius, 0, -radius), worldPosition.offset(1 + radius, 1, 1 + radius));
+        return new AABB(worldPosition.offset(-radius, 0, -radius), worldPosition.offset(1 + radius, 1, 1 + radius));
     }
 
     @Override
@@ -181,16 +179,16 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.putInt(NBTConstants.BLADES, blades);
         updateTag.putInt(NBTConstants.POSITION, position);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         int prevBlades = blades;
         int prevPosition = position;
         NBTUtils.setIntIfPresent(tag, NBTConstants.BLADES, value -> blades = value);

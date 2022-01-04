@@ -4,10 +4,10 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -19,19 +19,19 @@ public final class ItemDataUtils {
     }
 
     @Nonnull
-    public static CompoundNBT getDataMap(ItemStack stack) {
+    public static CompoundTag getDataMap(ItemStack stack) {
         initStack(stack);
         return stack.getTag().getCompound(NBTConstants.MEK_DATA);
     }
 
     @Nullable
-    public static CompoundNBT getDataMapIfPresent(ItemStack stack) {
+    public static CompoundTag getDataMapIfPresent(ItemStack stack) {
         return hasDataTag(stack) ? getDataMap(stack) : null;
     }
 
     @Nonnull
-    public static CompoundNBT getDataMapIfPresentNN(ItemStack stack) {
-        return hasDataTag(stack) ? getDataMap(stack) : new CompoundNBT();
+    public static CompoundTag getDataMapIfPresentNN(ItemStack stack) {
+        return hasDataTag(stack) ? getDataMap(stack) : new CompoundTag();
     }
 
     public static boolean hasData(ItemStack stack, String key, int type) {
@@ -44,7 +44,7 @@ public final class ItemDataUtils {
 
     public static void removeData(ItemStack stack, String key) {
         if (hasDataTag(stack)) {
-            CompoundNBT dataMap = getDataMap(stack);
+            CompoundTag dataMap = getDataMap(stack);
             dataMap.remove(key);
             if (dataMap.isEmpty()) {
                 //If our data map no longer has any elements after removing a piece of stored data
@@ -78,8 +78,8 @@ public final class ItemDataUtils {
         return hasDataTag(stack) ? getDataMap(stack).getString(key) : "";
     }
 
-    public static CompoundNBT getCompound(ItemStack stack, String key) {
-        return hasDataTag(stack) ? getDataMap(stack).getCompound(key) : new CompoundNBT();
+    public static CompoundTag getCompound(ItemStack stack, String key) {
+        return hasDataTag(stack) ? getDataMap(stack).getCompound(key) : new CompoundTag();
     }
 
     @Nullable
@@ -87,8 +87,8 @@ public final class ItemDataUtils {
         return hasDataTag(stack) ? getDataMap(stack).getUUID(key) : null;
     }
 
-    public static ListNBT getList(ItemStack stack, String key) {
-        return hasDataTag(stack) ? getDataMap(stack).getList(key, NBT.TAG_COMPOUND) : new ListNBT();
+    public static ListTag getList(ItemStack stack, String key) {
+        return hasDataTag(stack) ? getDataMap(stack).getList(key, Tag.TAG_COMPOUND) : new ListTag();
     }
 
     public static void setInt(ItemStack stack, String key, int i) {
@@ -116,7 +116,7 @@ public final class ItemDataUtils {
         getDataMap(stack).putString(key, s);
     }
 
-    public static void setCompound(ItemStack stack, String key, CompoundNBT tag) {
+    public static void setCompound(ItemStack stack, String key, CompoundTag tag) {
         initStack(stack);
         getDataMap(stack).put(key, tag);
     }
@@ -126,19 +126,19 @@ public final class ItemDataUtils {
         getDataMap(stack).putUUID(key, uuid);
     }
 
-    public static void setList(ItemStack stack, String key, ListNBT tag) {
+    public static void setList(ItemStack stack, String key, ListTag tag) {
         initStack(stack);
         getDataMap(stack).put(key, tag);
     }
 
     private static boolean hasDataTag(ItemStack stack) {
-        return stack.getTag() != null && stack.getTag().contains(NBTConstants.MEK_DATA, NBT.TAG_COMPOUND);
+        return stack.getTag() != null && stack.getTag().contains(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND);
     }
 
     private static void initStack(ItemStack stack) {
-        CompoundNBT tag = stack.getOrCreateTag();
-        if (!tag.contains(NBTConstants.MEK_DATA, NBT.TAG_COMPOUND)) {
-            tag.put(NBTConstants.MEK_DATA, new CompoundNBT());
+        CompoundTag tag = stack.getOrCreateTag();
+        if (!tag.contains(NBTConstants.MEK_DATA, Tag.TAG_COMPOUND)) {
+            tag.put(NBTConstants.MEK_DATA, new CompoundTag());
         }
     }
 }

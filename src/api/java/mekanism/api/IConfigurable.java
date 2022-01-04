@@ -1,8 +1,8 @@
 package mekanism.api;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
 
 /**
  * Expose this as a capability on your TileEntity to allow if your block to be modified by a Configurator.
@@ -21,7 +21,7 @@ public interface IConfigurable {//TODO - 1.18: Make the capability instance hand
      *
      * @apiNote Only called from the server
      */
-    ActionResultType onSneakRightClick(PlayerEntity player, Direction side);
+    InteractionResult onSneakRightClick(Player player, Direction side);
 
     /**
      * Called when a player right-clicks this block with a Configurator.
@@ -33,5 +33,5 @@ public interface IConfigurable {//TODO - 1.18: Make the capability instance hand
      *
      * @apiNote Only called from the server
      */
-    ActionResultType onRightClick(PlayerEntity player, Direction side);
+    InteractionResult onRightClick(Player player, Direction side);
 }

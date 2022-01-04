@@ -14,12 +14,12 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
 public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> {
 
-    private ITextComponent label;
+    private Component label;
 
     public GuiFluidGauge(ITankInfoHandler<IExtendedFluidTank> handler, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
         super(type, gui, x, y, sizeX, sizeY, handler, TankType.FLUID_TANK);
@@ -47,7 +47,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         }, type, gui, x, y, sizeX, sizeY);
     }
 
-    public GuiFluidGauge setLabel(ITextComponent label) {
+    public GuiFluidGauge setLabel(Component label) {
         this.label = label;
         return this;
     }
@@ -89,12 +89,12 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     }
 
     @Override
-    public ITextComponent getLabel() {
+    public Component getLabel() {
         return label;
     }
 
     @Override
-    public List<ITextComponent> getTooltipText() {
+    public List<Component> getTooltipText() {
         if (dummy) {
             return Collections.singletonList(TextComponentUtil.build(dummyType));
         }

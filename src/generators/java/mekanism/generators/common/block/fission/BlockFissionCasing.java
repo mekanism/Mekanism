@@ -7,10 +7,10 @@ import mekanism.common.lib.radiation.Meltdown.MeltdownExplosion;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 
 public class BlockFissionCasing<TILE extends TileEntityFissionReactorCasing> extends BlockBasicMultiblock<TILE> {
 
@@ -19,7 +19,7 @@ public class BlockFissionCasing<TILE extends TileEntityFissionReactorCasing> ext
     }
 
     @Override
-    public void onBlockExploded(BlockState state, World world, BlockPos pos, Explosion explosion) {
+    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
         if (!world.isClientSide && explosion instanceof MeltdownExplosion) {
             TileEntityFissionReactorCasing tile = WorldUtils.getTileEntity(TileEntityFissionReactorCasing.class, world, pos);
             if (tile != null) {

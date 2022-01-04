@@ -19,10 +19,11 @@ import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -36,8 +37,8 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     private byte[] driveStatus = new byte[DRIVE_SLOTS];
     private int prevDriveHash = -1;
 
-    public TileEntityQIODriveArray() {
-        super(MekanismBlocks.QIO_DRIVE_ARRAY);
+    public TileEntityQIODriveArray(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.QIO_DRIVE_ARRAY, pos, state);
     }
 
     @Nonnull
@@ -92,16 +93,14 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         driveStatus[slot] = (byte) status.ordinal();
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT tag) {
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
         QIOFrequency freq = getFrequency(FrequencyType.QIO);
         if (freq != null) {
             // save all item data before we save
             freq.saveAll();
         }
-        super.save(tag);
-        return tag;
+        super.saveAdditional(nbtTags);
     }
 
     @Nonnull
@@ -112,15 +111,15 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.putByteArray(NBTConstants.DRIVES, driveStatus);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         driveStatus = tag.getByteArray(NBTConstants.DRIVES);
         requestModelDataUpdate();
         WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());

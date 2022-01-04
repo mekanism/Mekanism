@@ -5,7 +5,6 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
@@ -18,9 +17,10 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 @FieldsAreNonnullByDefault
@@ -304,10 +304,10 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
-            nbt.put(NBTConstants.ITEM, current.save(new CompoundNBT()));
+            nbt.put(NBTConstants.ITEM, current.save(new CompoundTag()));
             if (getCount() > current.getMaxStackSize()) {
                 nbt.putInt(NBTConstants.SIZE_OVERRIDE, getCount());
             }
@@ -316,9 +316,9 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         ItemStack stack = ItemStack.EMPTY;
-        if (nbt.contains(NBTConstants.ITEM, NBT.TAG_COMPOUND)) {
+        if (nbt.contains(NBTConstants.ITEM, Tag.TAG_COMPOUND)) {
             stack = ItemStack.of(nbt.getCompound(NBTConstants.ITEM));
             NBTUtils.setIntIfPresent(nbt, NBTConstants.SIZE_OVERRIDE, stack::setCount);
         }

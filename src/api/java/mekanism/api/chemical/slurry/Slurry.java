@@ -2,18 +2,18 @@ package mekanism.api.chemical.slurry;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.providers.ISlurryProvider;
-import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
+import net.minecraft.world.item.Item;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.Util;
 
 /**
  * Represents a slurry chemical subtype
@@ -23,14 +23,14 @@ import net.minecraft.util.Util;
 public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
 
     @Nullable
-    private final ITag<Item> oreTag;
+    private final Tag<Item> oreTag;
 
     public Slurry(SlurryBuilder builder) {
         super(builder, ChemicalTags.SLURRY);
         this.oreTag = builder.getOreTag();
     }
 
-    public static Slurry readFromNBT(@Nullable CompoundNBT nbtTags) {
+    public static Slurry readFromNBT(@Nullable CompoundTag nbtTags) {
         return ChemicalUtils.readChemicalFromNBT(nbtTags, MekanismAPI.EMPTY_SLURRY, NBTConstants.SLURRY_NAME, Slurry::getFromRegistry);
     }
 
@@ -44,7 +44,7 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         nbtTags.putString(NBTConstants.SLURRY_NAME, getRegistryName().toString());
         return nbtTags;
     }
@@ -65,7 +65,7 @@ public class Slurry extends Chemical<Slurry> implements ISlurryProvider {
      * @return The tag for the item the slurry goes with. May be null.
      */
     @Nullable
-    public ITag<Item> getOreTag() {
+    public Tag<Item> getOreTag() {
         return oreTag;
     }
 }

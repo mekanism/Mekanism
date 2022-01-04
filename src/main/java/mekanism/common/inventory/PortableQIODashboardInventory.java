@@ -10,20 +10,20 @@ import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.IFrequencyItem;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class PortableQIODashboardInventory extends ItemStackMekanismInventory implements IQIOCraftingWindowHolder {
 
     @Nullable
-    private final World world;
+    private final Level world;
     /**
      * @apiNote This is only not final for purposes of being able to assign and use it in getInitialInventory.
      */
     private QIOCraftingWindow[] craftingWindows;
 
-    public PortableQIODashboardInventory(ItemStack stack, @Nonnull PlayerInventory inv) {
+    public PortableQIODashboardInventory(ItemStack stack, @Nonnull Inventory inv) {
         super(stack);
         this.world = inv.player.getCommandSenderWorld();
         for (QIOCraftingWindow craftingWindow : craftingWindows) {
@@ -49,7 +49,7 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
 
     @Nullable
     @Override
-    public World getHolderWorld() {
+    public Level getHolderWorld() {
         return world;
     }
 

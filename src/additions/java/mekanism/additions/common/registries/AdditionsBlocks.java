@@ -23,9 +23,9 @@ import mekanism.common.item.block.ItemBlockColoredName;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.BlockItem;
 
 public class AdditionsBlocks {
 
@@ -80,17 +80,17 @@ public class AdditionsBlocks {
     }
 
     private static BlockRegistryObject<BlockPlastic, ItemBlockColoredName> registerPlastic(EnumColor color, String blockTypeSuffix,
-          UnaryOperator<AbstractBlock.Properties> propertyModifier) {
+          UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
         return registerColoredBlock(c -> new BlockPlastic(c, propertyModifier), blockTypeSuffix, color);
     }
 
     private static BlockRegistryObject<BlockPlasticSlab, ItemBlockColoredName> registerPlasticSlab(EnumColor color, String blockTypeSuffix,
-          UnaryOperator<AbstractBlock.Properties> propertyModifier) {
+          UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
         return registerColoredBlock(c -> new BlockPlasticSlab(c, propertyModifier), blockTypeSuffix, color);
     }
 
     private static BlockRegistryObject<BlockPlasticStairs, ItemBlockColoredName> registerPlasticStairs(IBlockProvider baseBlock, EnumColor color, String blockTypeSuffix,
-          UnaryOperator<AbstractBlock.Properties> propertyModifier) {
+          UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
         return registerColoredBlock(c -> new BlockPlasticStairs(baseBlock, c, propertyModifier), blockTypeSuffix, color);
     }
 

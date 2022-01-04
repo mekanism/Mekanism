@@ -32,11 +32,12 @@ import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.registries.GeneratorsModules;
 import mekanism.generators.common.registries.GeneratorsSounds;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -55,7 +56,7 @@ public class MekanismGenerators implements IModModule {
     /**
      * Mekanism Generators Packet Pipeline
      */
-    public static final GeneratorsPacketHandler packetHandler = new GeneratorsPacketHandler();
+    private final GeneratorsPacketHandler packetHandler;
 
     public static final MultiblockManager<TurbineMultiblockData> turbineManager = new MultiblockManager<>("industrialTurbine", TurbineCache::new, TurbineValidator::new);
     public static final MultiblockManager<FissionReactorMultiblockData> fissionReactorManager = new MultiblockManager<>("fissionReactor", FissionReactorCache::new, FissionReactorValidator::new);
@@ -79,6 +80,11 @@ public class MekanismGenerators implements IModModule {
         GeneratorsModules.MODULES.register(modEventBus);
         //Set our version number to match the mods.toml file, which matches the one in our build.gradle
         versionNumber = new Version(ModLoadingContext.get().getActiveContainer());
+        packetHandler = new GeneratorsPacketHandler();
+    }
+
+    public static GeneratorsPacketHandler packetHandler() {
+        return instance.packetHandler;
     }
 
     public static ResourceLocation rl(String path) {
@@ -127,7 +133,7 @@ public class MekanismGenerators implements IModModule {
         TurbineMultiblockData.clientRotationMap.clear();
     }
 
-    private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
+    private void onConfigLoad(ModConfigEvent configEvent) {
         //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
         // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();

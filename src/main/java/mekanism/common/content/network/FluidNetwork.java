@@ -22,12 +22,14 @@ import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import mekanism.common.lib.transmitter.DynamicBufferedNetwork.TransferEvent;
 
 public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler {
 
@@ -201,12 +203,12 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     @Override
-    public ITextComponent getNeededInfo() {
+    public Component getNeededInfo() {
         return MekanismLang.FLUID_NETWORK_NEEDED.translate(fluidTank.getNeeded() / 1_000F);
     }
 
     @Override
-    public ITextComponent getStoredInfo() {
+    public Component getStoredInfo() {
         if (fluidTank.isEmpty()) {
             return MekanismLang.NONE.translate();
         }
@@ -214,7 +216,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     @Override
-    public ITextComponent getFlowInfo() {
+    public Component getFlowInfo() {
         return MekanismLang.NETWORK_MB_PER_TICK.translate(prevTransferAmount);
     }
 
@@ -224,7 +226,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     @Override
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.FLUID_NETWORK, transmittersSize(), getAcceptorCount());
     }
 

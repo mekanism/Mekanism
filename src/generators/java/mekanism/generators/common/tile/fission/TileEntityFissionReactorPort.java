@@ -24,17 +24,19 @@ import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.Util;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing implements IConfigurable {
 
-    public TileEntityFissionReactorPort() {
-        super(GeneratorsBlocks.FISSION_REACTOR_PORT);
+    public TileEntityFissionReactorPort(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.FISSION_REACTOR_PORT, pos, state);
     }
 
     @Override
@@ -55,7 +57,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     @Override
     public IHeatHandler getAdjacent(@Nonnull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
+            BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
             if (!(adj instanceof TileEntityFissionReactorPort)) {
                 return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
             }
@@ -102,13 +104,13 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     }
 
     @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player, Direction side) {
         if (!isRemote()) {
             FissionPortMode mode = getMode().getNext();
             setMode(mode);
             player.sendMessage(MekanismUtils.logFormat(MekanismLang.BOILER_VALVE_MODE_CHANGE.translate(mode)), Util.NIL_UUID);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Nonnull

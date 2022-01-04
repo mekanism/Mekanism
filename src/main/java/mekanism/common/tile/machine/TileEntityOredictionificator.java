@@ -38,12 +38,14 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 //TODO - V11: Make this support other tag types, such as fluids
@@ -63,8 +65,8 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         }
     };
 
-    public TileEntityOredictionificator() {
-        super(MekanismBlocks.OREDICTIONIFICATOR);
+    public TileEntityOredictionificator(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.OREDICTIONIFICATOR, pos, state);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM);
         configComponent.setupIOConfig(TransmissionType.ITEM, inputSlot, outputSlot, RelativeSide.RIGHT);
 
@@ -190,7 +192,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
         if (!filters.isEmpty()) {
             data.put(NBTConstants.FILTERS, writeFilters());
@@ -198,10 +200,10 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
-        if (data.contains(NBTConstants.FILTERS, NBT.TAG_LIST)) {
-            setFilters(data.getList(NBTConstants.FILTERS, NBT.TAG_COMPOUND));
+        if (data.contains(NBTConstants.FILTERS, Tag.TAG_LIST)) {
+            setFilters(data.getList(NBTConstants.FILTERS, Tag.TAG_COMPOUND));
         }
     }
 
@@ -214,20 +216,20 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     @Override
     public void readSustainedData(ItemStack itemStack) {
-        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, NBT.TAG_LIST)) {
+        if (ItemDataUtils.hasData(itemStack, NBTConstants.FILTERS, Tag.TAG_LIST)) {
             setFilters(ItemDataUtils.getList(itemStack, NBTConstants.FILTERS));
         }
     }
 
-    private ListNBT writeFilters() {
-        ListNBT filterList = new ListNBT();
+    private ListTag writeFilters() {
+        ListTag filterList = new ListTag();
         for (OredictionificatorFilter<?, ?, ?> filter : filters) {
-            filterList.add(filter.write(new CompoundNBT()));
+            filterList.add(filter.write(new CompoundTag()));
         }
         return filterList;
     }
 
-    private void setFilters(ListNBT filterList) {
+    private void setFilters(ListTag filterList) {
         for (int i = 0; i < filterList.size(); i++) {
             IFilter<?> filter = BaseFilter.readFromNBT(filterList.getCompound(i));
             if (filter instanceof OredictionificatorItemFilter) {

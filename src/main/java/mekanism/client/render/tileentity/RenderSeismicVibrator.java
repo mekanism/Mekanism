@@ -1,29 +1,30 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.model.ModelSeismicVibrator;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntitySeismicVibrator;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 @ParametersAreNonnullByDefault
 public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntitySeismicVibrator> implements IWireFrameRenderer {
 
-    private final ModelSeismicVibrator model = new ModelSeismicVibrator();
+    private final ModelSeismicVibrator model;
 
-    public RenderSeismicVibrator(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderSeismicVibrator(BlockEntityRendererProvider.Context context) {
+        super(context);
+        model = new ModelSeismicVibrator(context.getModelSet());
     }
 
     @Override
-    protected void render(TileEntitySeismicVibrator tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
+    protected void render(TileEntitySeismicVibrator tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         float actualRate = performTranslationsAndGetRate(tile, partialTick, matrix);
         model.render(matrix, renderer, light, overlayLight, actualRate, false);
         matrix.popPose();
@@ -40,7 +41,7 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     }
 
     @Override
-    public void renderWireFrame(TileEntity tile, float partialTick, MatrixStack matrix, IVertexBuilder buffer, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
         if (tile instanceof TileEntitySeismicVibrator) {
             float actualRate = performTranslationsAndGetRate((TileEntitySeismicVibrator) tile, partialTick, matrix);
             model.renderWireFrame(matrix, buffer, actualRate, red, green, blue, alpha);
@@ -51,7 +52,7 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     /**
      * Make sure to call {@link MatrixStack#popPose()} afterwards
      */
-    private float performTranslationsAndGetRate(TileEntitySeismicVibrator tile, float partialTick, MatrixStack matrix) {
+    private float performTranslationsAndGetRate(TileEntitySeismicVibrator tile, float partialTick, PoseStack matrix) {
         matrix.pushPose();
         matrix.translate(0.5, 1.5, 0.5);
         MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);

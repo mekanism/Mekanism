@@ -31,21 +31,21 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public abstract class TileEntityMultiblock<T extends MultiblockData> extends TileEntityMekanism implements IMultiblock<T>, IConfigurable {
 
@@ -77,8 +77,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     // start at 100 to make sure we run the animation
     private long unformedTicks = 100;
 
-    public TileEntityMultiblock(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityMultiblock(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         cacheCoord();
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
@@ -104,7 +104,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!getMultiblock().isFormed()) {
             unformedTicks++;
             if (!playersUsing.isEmpty()) {
-                for (PlayerEntity player : new ObjectOpenHashSet<>(playersUsing)) {
+                for (Player player : new ObjectOpenHashSet<>(playersUsing)) {
                     player.closeContainer();
                 }
             }
@@ -142,7 +142,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 }
             }
         } else {
-            playersUsing.forEach(PlayerEntity::closeContainer);
+            playersUsing.forEach(Player::closeContainer);
             if (cachedID != null) {
                 getManager().updateCache(this, multiblock);
             }
@@ -190,7 +190,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos pos = getBlockPos().relative(side);
             if (!multiblock.isFormed() || (!multiblock.locations.contains(pos) && !multiblock.internalLocations.contains(pos))) {
-                TileEntity tile = WorldUtils.getTileEntity(level, pos);
+                BlockEntity tile = WorldUtils.getTileEntity(level, pos);
                 if (!level.isEmptyBlock(pos) && (tile == null || tile.getClass() != getClass()) && !(tile instanceof IStructuralMultiblock || tile instanceof IMultiblock)) {
                     WorldUtils.notifyNeighborOfChange(level, pos, getBlockPos());
                 }
@@ -209,9 +209,9 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public ActionResultType onActivate(PlayerEntity player, Hand hand, ItemStack stack) {
+    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         if (player.isShiftKeyDown() || !getMultiblock().isFormed()) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
         return openGui(player);
     }
@@ -271,8 +271,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.RENDERING, isMaster());
         T multiblock = getMultiblock();
         updateTag.putBoolean(NBTConstants.HAS_STRUCTURE, multiblock.isFormed());
@@ -283,8 +283,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> isMaster = value);
         T multiblock = getMultiblock();
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HAS_STRUCTURE, multiblock::setFormedForce);
@@ -308,7 +308,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             //If player is within 40 blocks (1,600 = 40^2), show the status message/sparkles
             //Note: Do not change this from ClientPlayerEntity to PlayerEntity, or it will cause class loading issues on the server
             // due to trying to validate if the value is actually a PlayerEntity
-            ClientPlayerEntity player = Minecraft.getInstance().player;
+            LocalPlayer player = Minecraft.getInstance().player;
             if (worldPosition.distSqr(player.blockPosition()) <= 1_600) {
                 if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
                     new SparkleAnimation(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1).run();
@@ -320,23 +320,22 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
         if (!getMultiblock().isFormed()) {
-            NBTUtils.setUUIDIfPresent(nbtTags, NBTConstants.INVENTORY_ID, id -> {
+            NBTUtils.setUUIDIfPresent(nbt, NBTConstants.INVENTORY_ID, id -> {
                 cachedID = id;
-                if (nbtTags.contains(NBTConstants.CACHE, NBT.TAG_COMPOUND)) {
+                if (nbt.contains(NBTConstants.CACHE, Tag.TAG_COMPOUND)) {
                     cachedData = getManager().createCache();
-                    cachedData.load(nbtTags.getCompound(NBTConstants.CACHE));
+                    cachedData.load(nbt.getCompound(NBTConstants.CACHE));
                 }
             });
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         if (cachedID != null) {
             nbtTags.putUUID(NBTConstants.INVENTORY_ID, cachedID);
             if (cachedData != null) {
@@ -345,13 +344,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 if (multiblock.isFormed()) {
                     cachedData.sync(multiblock);
                 }
-                CompoundNBT cacheTags = new CompoundNBT();
+                CompoundTag cacheTags = new CompoundTag();
                 cachedData.save(cacheTags);
                 nbtTags.put(NBTConstants.CACHE, cacheTags);
 
             }
         }
-        return nbtTags;
     }
 
     @Override
@@ -362,14 +360,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @Nonnull
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         if (isMaster()) {
             T multiblock = getMultiblock();
             if (multiblock.isFormed() && multiblock.getBounds() != null) {
                 //TODO: Eventually we may want to look into caching this
                 //Note: We do basically the full dimensions as it still is a lot smaller than always rendering it, and makes sure no matter
                 // how the specific multiblock wants to render, that it is being viewed
-                return new AxisAlignedBB(multiblock.getMinPos(), multiblock.getMaxPos().offset(1, 1, 1));
+                return new AABB(multiblock.getMinPos(), multiblock.getMaxPos().offset(1, 1, 1));
             }
         }
         return super.getRenderBoundingBox();
@@ -409,20 +407,20 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onRightClick(Player player, Direction side) {
         if (!isRemote() && !getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
                 player.sendMessage(result.getResultText(), Util.NIL_UUID);
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
-        return ActionResultType.PASS;
+    public InteractionResult onSneakRightClick(Player player, Direction side) {
+        return InteractionResult.PASS;
     }
 
     //Methods relating to IComputerTile

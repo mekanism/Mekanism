@@ -51,6 +51,8 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurryToSlurryRecipe> implements
@@ -83,8 +85,8 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidSlurr
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityChemicalWasher() {
-        super(MekanismBlocks.CHEMICAL_WASHER);
+    public TileEntityChemicalWasher(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.CHEMICAL_WASHER, pos, state);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.SLURRY, TransmissionType.FLUID, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(Collections.singletonList(fluidSlot), Arrays.asList(slurryOutputSlot, fluidOutputSlot), energySlot, true);
         configComponent.setupIOConfig(TransmissionType.SLURRY, inputTank, outputTank, RelativeSide.RIGHT).setEjecting(true);

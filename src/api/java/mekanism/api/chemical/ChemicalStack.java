@@ -4,15 +4,15 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.registries.IRegistryDelegate;
 
 //TODO - 1.18: Make the subclasses of this final
@@ -238,7 +238,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
     }
 
     @Override
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         //Wrapper to get display name of the chemical type easier
         return getType().getTextComponent();
     }
@@ -276,7 +276,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      *
      * @return tag compound with this ChemicalStack's data
      */
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         getType().write(nbtTags);
         nbtTags.putLong(NBTConstants.AMOUNT, getAmount());
         return nbtTags;
@@ -287,7 +287,7 @@ public abstract class ChemicalStack<CHEMICAL extends Chemical<CHEMICAL>> impleme
      *
      * @param buffer - Buffer to write to.
      */
-    public void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         buffer.writeRegistryId(getType());
         buffer.writeVarLong(getAmount());
     }

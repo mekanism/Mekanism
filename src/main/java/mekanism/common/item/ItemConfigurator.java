@@ -6,7 +6,6 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
@@ -43,24 +42,23 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Rarity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<ConfiguratorMode>, IItemHUDProvider {
 
@@ -69,28 +67,27 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
     @Nonnull
     @Override
-    public ITextComponent getName(@Nonnull ItemStack stack) {
+    public Component getName(@Nonnull ItemStack stack) {
         return TextComponentUtil.build(EnumColor.AQUA, super.getName(stack));
     }
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
-        World world = context.getLevel();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
+        Level world = context.getLevel();
         if (!world.isClientSide && player != null) {
             BlockPos pos = context.getClickedPos();
             Direction side = context.getClickedFace();
             ItemStack stack = context.getItemInHand();
-            TileEntity tile = WorldUtils.getTileEntity(world, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             ConfiguratorMode mode = getMode(stack);
             if (mode.isConfigurating()) { //Configurate
                 TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");
@@ -108,7 +105,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                                 FloatingLong energyPerConfigure = MekanismConfig.gear.configuratorEnergyPerConfigure.get();
                                 if (energyContainer == null || energyContainer.extract(energyPerConfigure, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerConfigure)) {
-                                    return ActionResultType.FAIL;
+                                    return InteractionResult.FAIL;
                                 }
                                 energyContainer.extract(energyPerConfigure, Action.EXECUTE, AutomationType.MANUAL);
                             }
@@ -123,7 +120,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                             SecurityUtils.displayNoAccess(player);
                         }
                     }
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
                 if (SecurityUtils.canAccess(player, tile)) {
                     Optional<IConfigurable> capability = CapabilityUtils.getCapability(tile, Capabilities.CONFIGURABLE_CAPABILITY, side).resolve();
@@ -136,7 +133,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                     }
                 } else {
                     SecurityUtils.displayNoAccess(player);
-                    return ActionResultType.SUCCESS;
+                    return InteractionResult.SUCCESS;
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
                 if (tile instanceof IMekanismInventory) {
@@ -146,7 +143,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                             boolean creative = player.isCreative();
                             IEnergyContainer energyContainer = creative ? null : StorageUtils.getEnergyContainer(stack, 0);
                             if (!creative && energyContainer == null) {
-                                return ActionResultType.FAIL;
+                                return InteractionResult.FAIL;
                             }
                             //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
                             FloatingLong energyPerItemDump = MekanismConfig.gear.configuratorEnergyPerItem.get();
@@ -162,10 +159,10 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                                     inventorySlot.setEmpty();
                                 }
                             }
-                            return ActionResultType.SUCCESS;
+                            return InteractionResult.SUCCESS;
                         } else {
                             SecurityUtils.displayNoAccess(player);
-                            return ActionResultType.FAIL;
+                            return InteractionResult.FAIL;
                         }
                     }
                 }
@@ -184,12 +181,12 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                         SecurityUtils.displayNoAccess(player);
                     }
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             } else if (mode == ConfiguratorMode.WRENCH) { //Wrench
-                return ActionResultType.PASS;
+                return InteractionResult.PASS;
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     public EnumColor getColor(ConfiguratorMode mode) {
@@ -197,17 +194,17 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
     }
 
     @Override
-    public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player) {
+    public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player) {
         return getMode(stack) == ConfiguratorMode.WRENCH;
     }
 
     @Override
-    public void addHUDStrings(List<ITextComponent> list, PlayerEntity player, ItemStack stack, EquipmentSlotType slotType) {
+    public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         list.add(MekanismLang.MODE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
     @Override
-    public void changeMode(@Nonnull PlayerEntity player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(@Nonnull Player player, @Nonnull ItemStack stack, int shift, boolean displayChangeMessage) {
         ConfiguratorMode mode = getMode(stack);
         ConfiguratorMode newMode = mode.adjust(shift);
         if (mode != newMode) {
@@ -220,12 +217,12 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
 
     @Nonnull
     @Override
-    public ITextComponent getScrollTextComponent(@Nonnull ItemStack stack) {
+    public Component getScrollTextComponent(@Nonnull ItemStack stack) {
         return getMode(stack).getTextComponent();
     }
 
     @Override
-    public void setMode(ItemStack stack, PlayerEntity player, ConfiguratorMode mode) {
+    public void setMode(ItemStack stack, Player player, ConfiguratorMode mode) {
         ItemDataUtils.setInt(stack, NBTConstants.STATE, mode.ordinal());
     }
 
@@ -281,7 +278,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             if (transmissionType != null) {
                 return langEntry.translateColored(color, transmissionType);
             }
@@ -332,7 +329,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
         }
 
         @Override
-        public ITextComponent getShortText() {
+        public Component getShortText() {
             return configurating && transmissionType != null ? transmissionType.getLangEntry().translateColored(color) : getTextComponent();
         }
 

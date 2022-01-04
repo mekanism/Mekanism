@@ -13,8 +13,8 @@ import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.network.BasePacketHandler;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Contract;
 
 public class FrequencyType<FREQ extends Frequency> {
@@ -71,7 +71,7 @@ public class FrequencyType<FREQ extends Frequency> {
         return name;
     }
 
-    public FREQ create(CompoundNBT tag) {
+    public FREQ create(CompoundTag tag) {
         FREQ freq = baseCreationFunction.get();
         freq.read(tag);
         return freq;
@@ -81,7 +81,7 @@ public class FrequencyType<FREQ extends Frequency> {
         return creationFunction.apply(key, ownerUUID);
     }
 
-    public FREQ create(PacketBuffer packet) {
+    public FREQ create(FriendlyByteBuf packet) {
         FREQ freq = baseCreationFunction.get();
         freq.read(packet);
         return freq;
@@ -118,15 +118,15 @@ public class FrequencyType<FREQ extends Frequency> {
         return identitySerializer;
     }
 
-    public void write(PacketBuffer buf) {
+    public void write(FriendlyByteBuf buf) {
         buf.writeUtf(name);
     }
 
-    public static <FREQ extends Frequency> FrequencyType<FREQ> load(PacketBuffer buf) {
+    public static <FREQ extends Frequency> FrequencyType<FREQ> load(FriendlyByteBuf buf) {
         return (FrequencyType<FREQ>) registryMap.get(BasePacketHandler.readString(buf));
     }
 
-    public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundNBT tag) {
+    public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundTag tag) {
         return (FrequencyType<FREQ>) registryMap.get(tag.getString(NBTConstants.TYPE));
     }
 

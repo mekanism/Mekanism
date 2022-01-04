@@ -24,6 +24,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -34,8 +35,8 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -47,11 +48,11 @@ public class StorageUtils {
     private StorageUtils() {
     }
 
-    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap) {
+    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap) {
         addStoredEnergy(stack, tooltip, showMissingCap, MekanismLang.STORED_ENERGY);
     }
 
-    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, ILangEntry langEntry) {
+    public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, ILangEntry langEntry) {
         if (Capabilities.STRICT_ENERGY_CAPABILITY != null) {
             //Ensure the capability is not null, as the first call to addInformation happens before capability injection
             Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
@@ -68,11 +69,11 @@ public class StorageUtils {
         }
     }
 
-    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, boolean showAttributes) {
+    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, boolean showAttributes) {
         addStoredGas(stack, tooltip, showMissingCap, showAttributes, MekanismLang.NO_GAS);
     }
 
-    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, boolean showAttributes,
+    public static void addStoredGas(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, boolean showAttributes,
           ILangEntry emptyLangEntry) {
         addStoredChemical(stack, tooltip, showMissingCap, showAttributes, emptyLangEntry, stored -> {
             if (stored.isEmpty()) {
@@ -84,8 +85,8 @@ public class StorageUtils {
     }
 
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
-    void addStoredChemical(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry,
-          Function<STACK, ITextComponent> storedFunction, Capability<HANDLER> capability) {
+    void addStoredChemical(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry,
+          Function<STACK, Component> storedFunction, Capability<HANDLER> capability) {
         if (capability != null) {
             //Ensure the capability is not null, as the first call to addInformation happens before capability injection
             Optional<HANDLER> cap = stack.getCapability(capability).resolve();
@@ -108,7 +109,7 @@ public class StorageUtils {
     /**
      * @implNote Assumes there is only one "tank"
      */
-    public static void addStoredSubstance(@Nonnull ItemStack stack, @Nonnull List<ITextComponent> tooltip, boolean isCreative) {
+    public static void addStoredSubstance(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean isCreative) {
         //Note we ensure the capabilities are not null, as the first call to addInformation happens before capability injection
         if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null || Capabilities.PIGMENT_HANDLER_CAPABILITY == null ||
             Capabilities.SLURRY_HANDLER_CAPABILITY == null || CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null) {
@@ -252,12 +253,12 @@ public class StorageUtils {
         return ratio;
     }
 
-    public static ITextComponent getEnergyPercent(ItemStack stack, boolean colorText) {
+    public static Component getEnergyPercent(ItemStack stack, boolean colorText) {
         return getStoragePercent(getEnergyRatio(stack), colorText);
     }
 
-    public static ITextComponent getStoragePercent(double ratio, boolean colorText) {
-        ITextComponent text = TextUtils.getPercent(ratio);
+    public static Component getStoragePercent(double ratio, boolean colorText) {
+        Component text = TextUtils.getPercent(ratio);
         if (!colorText) {
             return text;
         }
@@ -276,7 +277,11 @@ public class StorageUtils {
         return TextComponentUtil.build(color, text);
     }
 
-    public static double getDurabilityForDisplay(ItemStack stack) {
+    public static int getBarWidth(ItemStack stack) {
+        return MathUtils.clampToInt(Math.round(13.0F - 13.0F * getDurabilityForDisplay(stack)));
+    }
+
+    private static double getDurabilityForDisplay(ItemStack stack) {
         //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
         if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null || Capabilities.PIGMENT_HANDLER_CAPABILITY == null ||
             Capabilities.SLURRY_HANDLER_CAPABILITY == null || CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null) {
@@ -298,7 +303,11 @@ public class StorageUtils {
         return 1 - bestRatio;
     }
 
-    public static double getEnergyDurabilityForDisplay(ItemStack stack) {
+    public static int getEnergyBarWidth(ItemStack stack) {
+        return MathUtils.clampToInt(Math.round(13.0F - 13.0F * getEnergyDurabilityForDisplay(stack)));
+    }
+
+    private static double getEnergyDurabilityForDisplay(ItemStack stack) {
         //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
         if (Capabilities.STRICT_ENERGY_CAPABILITY == null) {
             return 1;

@@ -1,8 +1,8 @@
 package mekanism.client.key;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.KeyMapping;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
@@ -13,7 +13,7 @@ public class MekKeyHandler {
     private MekKeyHandler() {
     }
 
-    public static boolean isKeyPressed(KeyBinding keyBinding) {
+    public static boolean isKeyPressed(KeyMapping keyBinding) {
         if (keyBinding.isDown()) {
             return true;
         }
@@ -25,15 +25,15 @@ public class MekKeyHandler {
         return KeyModifier.isKeyCodeModifier(keyBinding.getKey()) && isKeyDown(keyBinding);
     }
 
-    private static boolean isKeyDown(KeyBinding keyBinding) {
-        InputMappings.Input key = keyBinding.getKey();
+    private static boolean isKeyDown(KeyMapping keyBinding) {
+        InputConstants.Key key = keyBinding.getKey();
         int keyCode = key.getValue();
-        if (keyCode != InputMappings.UNKNOWN.getValue()) {
+        if (keyCode != InputConstants.UNKNOWN.getValue()) {
             long windowHandle = Minecraft.getInstance().getWindow().getWindow();
             try {
-                if (key.getType() == InputMappings.Type.KEYSYM) {
-                    return InputMappings.isKeyDown(windowHandle, keyCode);
-                } else if (key.getType() == InputMappings.Type.MOUSE) {
+                if (key.getType() == InputConstants.Type.KEYSYM) {
+                    return InputConstants.isKeyDown(windowHandle, keyCode);
+                } else if (key.getType() == InputConstants.Type.MOUSE) {
                     return GLFW.glfwGetMouseButton(windowHandle, keyCode) == GLFW.GLFW_PRESS;
                 }
             } catch (Exception ignored) {
@@ -43,7 +43,7 @@ public class MekKeyHandler {
     }
 
     public static boolean isRadialPressed() {
-        KeyBinding keyBinding = MekanismKeyHandler.handModeSwitchKey;
+        KeyMapping keyBinding = MekanismKeyHandler.handModeSwitchKey;
         if (keyBinding.isDown()) {
             return true;
         }

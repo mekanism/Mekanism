@@ -11,7 +11,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.ActivatingIRecipe;
 import mekanism.common.recipe.impl.CentrifugingIRecipe;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister

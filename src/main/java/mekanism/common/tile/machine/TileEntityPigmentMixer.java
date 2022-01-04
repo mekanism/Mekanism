@@ -49,7 +49,9 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixingRecipe> implements IBoundingBlock,
       EitherSideChemicalRecipeLookupHandler<Pigment, PigmentStack, PigmentMixingRecipe> {
@@ -79,8 +81,8 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityPigmentMixer() {
-        super(MekanismBlocks.PIGMENT_MIXER);
+    public TileEntityPigmentMixer(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.PIGMENT_MIXER, pos, state);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.PIGMENT, TransmissionType.ENERGY);
 
         ConfigInfo itemConfig = configComponent.getConfig(TransmissionType.ITEM);
@@ -217,8 +219,8 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
 
     @Nonnull
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 2, 1));
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     public MachineEnergyContainer<TileEntityPigmentMixer> getEnergyContainer() {

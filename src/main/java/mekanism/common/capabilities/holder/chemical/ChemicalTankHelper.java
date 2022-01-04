@@ -23,7 +23,7 @@ import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.Con
 import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigPigmentTankHolder;
 import mekanism.common.capabilities.holder.chemical.ConfigChemicalTankHolder.ConfigSlurryTankHolder;
 import mekanism.common.tile.component.TileComponentConfig;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 

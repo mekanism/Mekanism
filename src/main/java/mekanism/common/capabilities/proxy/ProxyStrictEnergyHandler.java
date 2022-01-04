@@ -2,14 +2,14 @@ package mekanism.common.capabilities.proxy;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.energy.ISidedStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.holder.IHolder;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

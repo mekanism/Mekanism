@@ -1,20 +1,18 @@
 package mekanism.common.item.gear;
 
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
-import mekanism.client.render.armor.CustomArmor;
-import mekanism.client.render.armor.ScubaMaskArmor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemStack.TooltipDisplayFlags;
-import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStack.TooltipPart;
+import net.minecraft.world.item.Rarity;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemScubaMask extends ItemSpecialArmor {
@@ -22,20 +20,18 @@ public class ItemScubaMask extends ItemSpecialArmor {
     private static final ScubaMaskMaterial SCUBA_MASK_MATERIAL = new ScubaMaskMaterial();
 
     public ItemScubaMask(Properties properties) {
-        super(SCUBA_MASK_MATERIAL, EquipmentSlotType.HEAD, properties.rarity(Rarity.RARE).setNoRepair().setISTER(ISTERProvider::scubaMask));
+        super(SCUBA_MASK_MATERIAL, EquipmentSlot.HEAD, properties.rarity(Rarity.RARE).setNoRepair());
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt) {
-        stack.hideTooltipPart(TooltipDisplayFlags.MODIFIERS);
+    public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
+        consumer.accept(ISTERProvider.scubaMask());
+    }
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        stack.hideTooltipPart(TooltipPart.MODIFIERS);
         return super.initCapabilities(stack, nbt);
-    }
-
-    @Nonnull
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public CustomArmor getGearModel() {
-        return ScubaMaskArmor.SCUBA_MASK;
     }
 
     @ParametersAreNonnullByDefault

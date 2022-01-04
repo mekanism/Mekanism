@@ -59,10 +59,10 @@ import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -117,7 +117,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
+    public void write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.put(NBTConstants.ENERGY_STORED, storedEnergy.serializeNBT());
         nbtTags.put(NBTConstants.FLUID_STORED, storedFluid.serializeNBT());
@@ -130,7 +130,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     @Override
-    protected void read(CompoundNBT nbtTags) {
+    protected void read(CompoundTag nbtTags) {
         super.read(nbtTags);
         storedEnergy.deserializeNBT(nbtTags.getCompound(NBTConstants.ENERGY_STORED));
         storedFluid.deserializeNBT(nbtTags.getCompound(NBTConstants.FLUID_STORED));
@@ -143,7 +143,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         storedEnergy.getEnergy().writeToBuffer(buffer);
         buffer.writeFluidStack(storedFluid.getFluid());
@@ -156,7 +156,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     @Override
-    protected void read(PacketBuffer dataStream) {
+    protected void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
         presetVariables();
         storedEnergy.setEnergy(FloatingLong.readFromBuffer(dataStream));
@@ -222,7 +222,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     @Override
-    public void update(TileEntity tile) {
+    public void update(BlockEntity tile) {
         super.update(tile);
         Coord4D coord = Coord4D.get(tile);
         if (tile instanceof TileEntityQuantumEntangloporter) {
@@ -234,7 +234,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     @Override
-    public void onDeactivate(TileEntity tile) {
+    public void onDeactivate(BlockEntity tile) {
         super.onDeactivate(tile);
         activeQEs.remove(Coord4D.get(tile));
     }
@@ -242,7 +242,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     public void handleEject(long gameTime) {
         if (isValid() && !activeQEs.isEmpty() && lastEject != gameTime) {
             lastEject = gameTime;
-            Map<TransmissionType, BiConsumer<TileEntity, Direction>> typesToEject = new EnumMap<>(TransmissionType.class);
+            Map<TransmissionType, BiConsumer<BlockEntity, Direction>> typesToEject = new EnumMap<>(TransmissionType.class);
             //All but heat and item
             List<Runnable> transferHandlers = new ArrayList<>(EnumUtils.TRANSMISSION_TYPES.length - 2);
             int expected = 6 * activeQEs.size();
@@ -256,8 +256,8 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                 //If we have at least one type to eject (we are not entirely empty)
                 // then go through all the QEs and build up the target locations
                 for (TileEntityQuantumEntangloporter qe : activeQEs.values()) {
-                    Map<Direction, TileEntity> adjacentTiles = null;
-                    for (Map.Entry<TransmissionType, BiConsumer<TileEntity, Direction>> entry : typesToEject.entrySet()) {
+                    Map<Direction, BlockEntity> adjacentTiles = null;
+                    for (Map.Entry<TransmissionType, BiConsumer<BlockEntity, Direction>> entry : typesToEject.entrySet()) {
                         ConfigInfo config = qe.getConfig().getConfig(entry.getKey());
                         if (config != null && config.isEjecting()) {
                             Set<Direction> outputSides = config.getAllOutputtingSides();
@@ -267,7 +267,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                                     adjacentTiles = new EnumMap<>(Direction.class);
                                 }
                                 for (Direction side : outputSides) {
-                                    TileEntity tile;
+                                    BlockEntity tile;
                                     if (adjacentTiles.containsKey(side)) {
                                         //Need to use contains because we allow for null values
                                         tile = adjacentTiles.get(side);
@@ -292,7 +292,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
     }
 
-    private void addEnergyTransferHandler(Map<TransmissionType, BiConsumer<TileEntity, Direction>> typesToEject, List<Runnable> transferHandlers, int expected) {
+    private void addEnergyTransferHandler(Map<TransmissionType, BiConsumer<BlockEntity, Direction>> typesToEject, List<Runnable> transferHandlers, int expected) {
         FloatingLong toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!toSend.isZero()) {
             EnergyAcceptorTarget target = new EnergyAcceptorTarget(expected);
@@ -305,7 +305,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
     }
 
-    private void addFluidTransferHandler(Map<TransmissionType, BiConsumer<TileEntity, Direction>> typesToEject, List<Runnable> transferHandlers, int expected) {
+    private void addFluidTransferHandler(Map<TransmissionType, BiConsumer<BlockEntity, Direction>> typesToEject, List<Runnable> transferHandlers, int expected) {
         FluidStack fluidToSend = storedFluid.extract(storedFluid.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!fluidToSend.isEmpty()) {
             FluidHandlerTarget target = new FluidHandlerTarget(fluidToSend, expected);
@@ -324,7 +324,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void addChemicalTransferHandler(TransmissionType chemicalType,
-          IChemicalTank<CHEMICAL, STACK> tank, Map<TransmissionType, BiConsumer<TileEntity, Direction>> typesToEject, List<Runnable> transferHandlers, int expected) {
+          IChemicalTank<CHEMICAL, STACK> tank, Map<TransmissionType, BiConsumer<BlockEntity, Direction>> typesToEject, List<Runnable> transferHandlers, int expected) {
         STACK toSend = tank.extract(tank.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
         if (!toSend.isEmpty()) {
             Capability<IChemicalHandler<CHEMICAL, STACK>> capability = ChemicalUtil.getCapabilityForChemical(toSend);

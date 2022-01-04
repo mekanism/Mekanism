@@ -5,7 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.IQIODriveItem.DriveMetadata;
 import mekanism.common.lib.inventory.HashedItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class QIODriveData {
 

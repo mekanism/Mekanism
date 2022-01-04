@@ -1,6 +1,6 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
 import mekanism.client.gui.element.GuiUpArrow;
@@ -12,12 +12,12 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public class GuiPrecisionSawmill extends GuiConfigurableTile<TileEntityPrecisionSawmill, MekanismTileContainer<TileEntityPrecisionSawmill>> {
 
-    public GuiPrecisionSawmill(MekanismTileContainer<TileEntityPrecisionSawmill> container, PlayerInventory inv, ITextComponent title) {
+    public GuiPrecisionSawmill(MekanismTileContainer<TileEntityPrecisionSawmill> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
     }
@@ -25,18 +25,18 @@ public class GuiPrecisionSawmill extends GuiConfigurableTile<TileEntityPrecision
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiUpArrow(this, 60, 38));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
+        addRenderableWidget(new GuiUpArrow(this, 60, 38));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
         //Note: We just draw the wide slot on top of the normal slots so that it looks a bit better
-        addButton(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 78, 38).jeiCategory(tile));
+        addRenderableWidget(new GuiSlot(SlotType.OUTPUT_WIDE, this, 111, 30));
+        addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.BAR, this, 78, 38).jeiCategory(tile));
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

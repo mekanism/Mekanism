@@ -10,7 +10,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * Basic helper implementation for {@link IInputRecipeCache} that keeps track of the recipe type and if this cache has been initialized yet or not.
@@ -33,7 +33,7 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
     /**
      * Initializes the cache if it hasn't already been initialized.
      */
-    protected void initCacheIfNeeded(@Nullable World world) {
+    protected void initCacheIfNeeded(@Nullable Level world) {
         if (!initialized) {
             initialized = true;
             initCache(recipeType.getRecipes(world));
@@ -59,7 +59,7 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
      * Helper to check if a cache contains a given input, or if not, if the complex recipe fallback set contains a matching recipe.
      */
     protected <INPUT, INGREDIENT extends InputIngredient<INPUT>, CACHE extends IInputCache<INPUT, INGREDIENT, RECIPE>> boolean containsInput(
-          @Nullable World world, INPUT input, Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache, Set<RECIPE> complexRecipes) {
+          @Nullable Level world, INPUT input, Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache, Set<RECIPE> complexRecipes) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return false;
@@ -78,7 +78,7 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe> im
      * </ul>
      */
     protected <INPUT_1, INGREDIENT_1 extends InputIngredient<INPUT_1>, CACHE_1 extends IInputCache<INPUT_1, INGREDIENT_1, RECIPE>, INPUT_2,
-          INGREDIENT_2 extends InputIngredient<INPUT_2>, CACHE_2 extends IInputCache<INPUT_2, INGREDIENT_2, RECIPE>> boolean containsPairing(@Nullable World world,
+          INGREDIENT_2 extends InputIngredient<INPUT_2>, CACHE_2 extends IInputCache<INPUT_2, INGREDIENT_2, RECIPE>> boolean containsPairing(@Nullable Level world,
           INPUT_1 input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1, INPUT_2 input2,
           Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2) {
         if (cache1.isEmpty(input1)) {

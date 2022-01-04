@@ -34,10 +34,10 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Items;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Items;
 import net.minecraft.tags.FluidTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -71,7 +71,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     }
 
     @Override
-    protected void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void addRecipes(Consumer<FinishedRecipe> consumer) {
         addMiscRecipes(consumer);
         addGearModuleRecipes(consumer);
         addLateGameRecipes(consumer);
@@ -123,7 +123,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         );
     }
 
-    private void addMiscRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addMiscRecipes(Consumer<FinishedRecipe> consumer) {
         //Atomic disassembler
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ATOMIC_DISASSEMBLER)
               .pattern(RecipePattern.createPattern(
@@ -1220,7 +1220,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
     }
 
-    private void addGearModuleRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addGearModuleRecipes(Consumer<FinishedRecipe> consumer) {
         //Module Base
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.MODULE_BASE, 2)
               .pattern(RecipePattern.createPattern(
@@ -1461,7 +1461,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
     }
 
-    private void addLateGameRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addLateGameRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "processing/lategame/";
 
         //plutonium

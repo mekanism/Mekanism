@@ -14,9 +14,9 @@ import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.content.transporter.SorterMaterialFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements IFilter<FILTER> {
 
@@ -31,19 +31,19 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     public abstract boolean equals(Object o);
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         nbtTags.putInt(NBTConstants.TYPE, getFilterType().ordinal());
         return nbtTags;
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(getFilterType());
     }
 
     @Nullable
-    public static IFilter<?> readFromNBT(CompoundNBT nbt) {
-        if (nbt.contains(NBTConstants.TYPE, NBT.TAG_INT)) {
+    public static IFilter<?> readFromNBT(CompoundTag nbt) {
+        if (nbt.contains(NBTConstants.TYPE, Tag.TAG_INT)) {
             IFilter<?> filter = fromType(FilterType.byIndexStatic(nbt.getInt(NBTConstants.TYPE)));
             if (filter != null) {
                 filter.read(nbt);
@@ -54,7 +54,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     }
 
     @Nullable
-    public static IFilter<?> readFromPacket(PacketBuffer dataStream) {
+    public static IFilter<?> readFromPacket(FriendlyByteBuf dataStream) {
         IFilter<?> filter = fromType(dataStream.readEnum(FilterType.class));
         if (filter != null) {
             filter.read(dataStream);

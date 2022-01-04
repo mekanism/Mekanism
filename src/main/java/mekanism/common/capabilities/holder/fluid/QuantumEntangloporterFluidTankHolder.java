@@ -8,7 +8,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.holder.QuantumEntangloporterConfigHolder;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class QuantumEntangloporterFluidTankHolder extends QuantumEntangloporterConfigHolder<IExtendedFluidTank> implements IFluidTankHolder {
 

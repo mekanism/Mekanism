@@ -7,7 +7,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Base class to help implement handling of item to item recipes.

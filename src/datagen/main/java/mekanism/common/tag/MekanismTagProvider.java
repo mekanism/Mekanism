@@ -24,26 +24,27 @@ import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.BannerBlock;
-import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.entity.EntityType;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.BannerBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
-    public static final INamedTag<EntityType<?>> PVI_COMPAT = EntityTypeTags.bind("per-viam-invenire:replace_vanilla_navigator");
-    public static final INamedTag<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.bind("create:no_infinite_draining");
+    public static final Named<EntityType<?>> PVI_COMPAT = EntityTypeTags.bind("per-viam-invenire:replace_vanilla_navigator");
+    public static final Named<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.bind("create:no_infinite_draining");
 
     public MekanismTagProvider(DataGenerator gen, @Nullable ExistingFileHelper existingFileHelper) {
         super(gen, Mekanism.MODID, existingFileHelper);
@@ -92,6 +93,7 @@ public class MekanismTagProvider extends BaseTagProvider {
         );
         addEntities();
         getBlockBuilder(MekanismTags.Blocks.MINER_BLACKLIST);
+        addHarvestRequirements();
     }
 
     private void addEntities() {
@@ -165,7 +167,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.Blocks.RELOCATION_NOT_SUPPORTED,
               MekanismBlocks.CARDBOARD_BOX,
               MekanismBlocks.BOUNDING_BLOCK,
-              MekanismBlocks.ADVANCED_BOUNDING_BLOCK,
               MekanismBlocks.SECURITY_DESK,
               MekanismBlocks.DIGITAL_MINER,
               MekanismBlocks.SEISMIC_VIBRATOR,
@@ -187,7 +188,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         TileEntityTypeRegistryObject<?>[] tilesToBlacklist = {
               MekanismTileEntityTypes.CARDBOARD_BOX,
               MekanismTileEntityTypes.BOUNDING_BLOCK,
-              MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK,
               MekanismTileEntityTypes.SECURITY_DESK,
               MekanismTileEntityTypes.DIGITAL_MINER,
               MekanismTileEntityTypes.SEISMIC_VIBRATOR,
@@ -462,5 +462,53 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(MekanismTags.InfuseTypes.TIN, MekanismInfuseTypes.TIN);
         addToTag(MekanismTags.InfuseTypes.FUNGI, MekanismInfuseTypes.FUNGI);
         addToTag(MekanismTags.InfuseTypes.BIO, MekanismInfuseTypes.BIO);
+    }
+
+    private void addHarvestRequirements() {
+        //TODO - 1.18: add a system that checks that our blocks are added to a harvest tag
+        // and if any are missing that have requiresCorrectToolForDrops, crash the datagen
+        addToTag(BlockTags.MINEABLE_WITH_PICKAXE,
+              MekanismBlocks.STRUCTURAL_GLASS,
+              MekanismBlocks.BOUNDING_BLOCK,
+              MekanismBlocks.BASIC_ENERGY_CUBE,
+              MekanismBlocks.ADVANCED_ENERGY_CUBE,
+              MekanismBlocks.ELITE_ENERGY_CUBE,
+              MekanismBlocks.ULTIMATE_ENERGY_CUBE,
+              MekanismBlocks.CREATIVE_ENERGY_CUBE,
+              //TODO - 1.18: BlockBase, BlockBasicMultiblock, BlockTile
+
+              MekanismBlocks.BRONZE_BLOCK,
+              MekanismBlocks.REFINED_OBSIDIAN_BLOCK,
+              MekanismBlocks.CHARCOAL_BLOCK,
+              MekanismBlocks.REFINED_GLOWSTONE_BLOCK,
+              MekanismBlocks.STEEL_BLOCK,
+              MekanismBlocks.FLUORITE_BLOCK
+        );
+        ForgeRegistryTagBuilder<Block> mineableWithPickBuilder = getBlockBuilder(BlockTags.MINEABLE_WITH_PICKAXE);
+        ForgeRegistryTagBuilder<Block> needsStoneToolBuilder = getBlockBuilder(BlockTags.NEEDS_STONE_TOOL);
+        for (BlockRegistryObject<?, ?> value : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.values()) {
+            mineableWithPickBuilder.add(value.getBlock());
+        }
+        for (BlockRegistryObject<BlockOre, ?> value : MekanismBlocks.ORES.values()) {
+            mineableWithPickBuilder.add(value.getBlock());
+            needsStoneToolBuilder.add(value.getBlock());
+        }
+        //TODO - 1.18: Things that have materials that defined their correct tool
+
+        addToTag(BlockTags.MINEABLE_WITH_SHOVEL, MekanismBlocks.SALT_BLOCK);
+
+        addToTag(BlockTags.NEEDS_STONE_TOOL,
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.TIN),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.COPPER),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.URANIUM),
+              MekanismBlocks.FLUORITE_BLOCK,
+              MekanismBlocks.BRONZE_BLOCK,
+              MekanismBlocks.STEEL_BLOCK,
+              MekanismBlocks.REFINED_GLOWSTONE_BLOCK
+        );
+        //TODO - 1.18: This was iron for refined obsidian but should be diamond?
+        addToTag(BlockTags.NEEDS_IRON_TOOL, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
     }
 }

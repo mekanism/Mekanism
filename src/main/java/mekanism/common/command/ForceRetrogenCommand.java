@@ -7,23 +7,23 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.command.arguments.ColumnPosArgument;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.ColumnPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.coordinates.ColumnPosArgument;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.server.level.ColumnPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 public class ForceRetrogenCommand {
 
     private static final SimpleCommandExceptionType RETROGEN_NOT_ENABLED = new SimpleCommandExceptionType(MekanismLang.COMMAND_ERROR_RETROGEN_DISABLED.translate());
     private static final SimpleCommandExceptionType NO_CHUNKS_QUEUED = new SimpleCommandExceptionType(MekanismLang.COMMAND_ERROR_RETROGEN_FAILURE.translate());
 
-    static ArgumentBuilder<CommandSource, ?> register() {
+    static ArgumentBuilder<CommandSourceStack, ?> register() {
         return Commands.literal("retrogen")
               .requires(cs -> cs.hasPermission(2))
               .executes(ctx -> {
@@ -38,7 +38,7 @@ public class ForceRetrogenCommand {
                                 ColumnPosArgument.getColumnPos(ctx, "to")))));
     }
 
-    private static int addChunksToRegen(CommandSource source, ColumnPos start, ColumnPos end) throws CommandSyntaxException {
+    private static int addChunksToRegen(CommandSourceStack source, ColumnPos start, ColumnPos end) throws CommandSyntaxException {
         if (!MekanismConfig.world.enableRegeneration.get()) {
             throw RETROGEN_NOT_ENABLED.create();
         }
@@ -54,8 +54,8 @@ public class ForceRetrogenCommand {
         int chunkXEnd = xEnd >> 4;
         int chunkZStart = zStart >> 4;
         int chunkZEnd = zEnd >> 4;
-        ServerWorld world = source.getLevel();
-        RegistryKey<World> registryKey = world.dimension();
+        ServerLevel world = source.getLevel();
+        ResourceKey<Level> registryKey = world.dimension();
         boolean hasChunks = false;
         for (int chunkX = chunkXStart; chunkX <= chunkXEnd; chunkX++) {
             for (int chunkZ = chunkZStart; chunkZ <= chunkZEnd; chunkZ++) {

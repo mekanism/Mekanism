@@ -10,16 +10,16 @@ import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.interfaces.ITypeBlock;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
 
 public interface Attribute {
 
     interface TileAttribute<TILE extends TileEntityMekanism> extends Attribute {}
 
-    default void adjustProperties(AbstractBlock.Properties props) {
+    default void adjustProperties(BlockBehaviour.Properties props) {
     }
 
     static boolean has(BlockState state, Class<? extends Attribute> type) {

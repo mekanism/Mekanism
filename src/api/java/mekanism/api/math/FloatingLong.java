@@ -7,8 +7,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
 
 /**
  * A class representing a positive number with an internal value defined by an unsigned long, and a floating point number stored in a short
@@ -159,7 +159,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      *
      * @return A mutable {@link FloatingLong}
      */
-    public static FloatingLong readFromBuffer(PacketBuffer buffer) {
+    public static FloatingLong readFromBuffer(FriendlyByteBuf buffer) {
         return new FloatingLong(buffer.readVarLong(), buffer.readShort(), false);
     }
 
@@ -856,7 +856,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      *
      * @param buffer The {@link PacketBuffer} to write to.
      */
-    public void writeToBuffer(PacketBuffer buffer) {
+    public void writeToBuffer(FriendlyByteBuf buffer) {
         buffer.writeVarLong(value);
         buffer.writeShort(decimal);
     }

@@ -1,6 +1,6 @@
 package mekanism.generators.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
@@ -18,24 +18,24 @@ import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionReactorCasing, EmptyTileContainer<TileEntityFissionReactorCasing>> {
 
     private GuiTextField rateLimitField;
 
-    public GuiFissionReactorStats(EmptyTileContainer<TileEntityFissionReactorCasing> container, PlayerInventory inv, ITextComponent title) {
+    public GuiFissionReactorStats(EmptyTileContainer<TileEntityFissionReactorCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
     }
 
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiFissionReactorTab(this, tile, FissionReactorTab.MAIN));
-        addButton(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
+        addRenderableWidget(new GuiFissionReactorTab(this, tile, FissionReactorTab.MAIN));
+        addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 return GeneratorsLang.GAS_BURN_RATE.translate(tile.getMultiblock().lastBurnRate);
             }
 
@@ -45,7 +45,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
                 return Math.min(1, multiblock.lastBurnRate / multiblock.getMaxBurnRate());
             }
         }, 5, 114, imageWidth - 12));
-        rateLimitField = addButton(new GuiTextField(this, 77, 128, 49, 12));
+        rateLimitField = addRenderableWidget(new GuiTextField(this, 77, 128, 49, 12));
         rateLimitField.setEnterHandler(this::setRateLimit);
         rateLimitField.setInputValidator(InputValidator.DECIMAL);
         rateLimitField.setMaxStringLength(4);
@@ -59,7 +59,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
                 if (limit >= 0 && limit <= tile.getMultiblock().getMaxBurnRate()) {
                     // round to two decimals
                     limit = UnitDisplayUtils.roundDecimals(limit);
-                    MekanismGenerators.packetHandler.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.INJECTION_RATE, tile, limit));
+                    MekanismGenerators.packetHandler().sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.INJECTION_RATE, tile, limit));
                     rateLimitField.setText("");
                 }
             } catch (NumberFormatException ignored) {
@@ -68,7 +68,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR_STATS.translate(), titleLabelY);
         FissionReactorMultiblockData multiblock = tile.getMultiblock();
         // heat stats

@@ -5,13 +5,13 @@ import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.inventory.AutomationType;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
 
 @ParametersAreNonnullByDefault
@@ -33,7 +33,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
         if (isEmpty()) {
             return 0;
         }
-        int burnTime = ForgeHooks.getBurnTime(current) / 2;
+        int burnTime = ForgeHooks.getBurnTime(current, null) / 2;
         if (burnTime > 0) {
             if (current.hasContainerItem()) {
                 if (current.getCount() > 1) {

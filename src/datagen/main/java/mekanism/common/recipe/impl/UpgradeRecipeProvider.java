@@ -13,10 +13,10 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.tags.ITag;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
 class UpgradeRecipeProvider implements ISubRecipeProvider {
@@ -27,7 +27,7 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.EMPTY, MekanismRecipeProvider.GLASS_CHAR, Pattern.EMPTY));
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "upgrade/";
         addUpgradeRecipe(consumer, MekanismItems.ANCHOR_UPGRADE, MekanismTags.Items.DUSTS_DIAMOND, basePath);
         addUpgradeRecipe(consumer, MekanismItems.ENERGY_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), basePath);
@@ -47,7 +47,7 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + getSaveName(MekanismItems.STONE_GENERATOR_UPGRADE)));
     }
 
-    private void addUpgradeRecipe(Consumer<IFinishedRecipe> consumer, ItemRegistryObject<ItemUpgrade> upgrade, ITag<Item> dustTag, String basePath) {
+    private void addUpgradeRecipe(Consumer<FinishedRecipe> consumer, ItemRegistryObject<ItemUpgrade> upgrade, Tag<Item> dustTag, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(upgrade)
               .pattern(UPGRADE_PATTERN)
               .key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS)

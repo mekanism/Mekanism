@@ -9,7 +9,7 @@ import mekanism.api.gear.config.ModuleEnumData;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 @ParametersAreNonnullByDefault
 public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydraulicPropulsionUnit> {
@@ -41,7 +41,7 @@ public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydrau
         ULTRA(5);
 
         private final float boost;
-        private final ITextComponent label;
+        private final Component label;
 
         JumpBoost(float boost) {
             this.boost = boost;
@@ -49,7 +49,7 @@ public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydrau
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             return label;
         }
 
@@ -66,7 +66,7 @@ public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydrau
         ULTRA(2);
 
         private final float height;
-        private final ITextComponent label;
+        private final Component label;
 
         StepAssist(float height) {
             this.height = height;
@@ -74,7 +74,7 @@ public class ModuleHydraulicPropulsionUnit implements ICustomModule<ModuleHydrau
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             return label;
         }
 

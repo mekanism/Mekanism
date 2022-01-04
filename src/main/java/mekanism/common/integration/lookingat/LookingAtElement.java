@@ -1,15 +1,15 @@
 package mekanism.common.integration.lookingat;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public abstract class LookingAtElement {
 
@@ -21,13 +21,13 @@ public abstract class LookingAtElement {
         this.textColor = textColor;
     }
 
-    public void render(@Nonnull MatrixStack matrix, int x, int y) {
+    public void render(@Nonnull PoseStack matrix, int x, int y) {
         int width = getWidth();
         int height = getHeight();
-        AbstractGui.fill(matrix, x, y, x + width - 1, y + 1, borderColor);
-        AbstractGui.fill(matrix, x, y, x + 1, y + height - 1, borderColor);
-        AbstractGui.fill(matrix, x + width - 1, y, x + width, y + height - 1, borderColor);
-        AbstractGui.fill(matrix, x, y + height - 1, x + width, y + height, borderColor);
+        GuiComponent.fill(matrix, x, y, x + width - 1, y + 1, borderColor);
+        GuiComponent.fill(matrix, x, y, x + 1, y + height - 1, borderColor);
+        GuiComponent.fill(matrix, x + width - 1, y, x + width, y + height - 1, borderColor);
+        GuiComponent.fill(matrix, x, y + height - 1, x + width, y + height, borderColor);
         TextureAtlasSprite icon = getIcon();
         if (icon != null) {
             int scale = getScaledLevel(width - 2);
@@ -56,13 +56,13 @@ public abstract class LookingAtElement {
     @Nullable
     public abstract TextureAtlasSprite getIcon();
 
-    public abstract ITextComponent getText();
+    public abstract Component getText();
 
     protected boolean applyRenderColor() {
         return false;
     }
 
-    public static void renderScaledText(Minecraft mc, @Nonnull MatrixStack matrix, int x, int y, int color, int maxWidth, ITextComponent component) {
+    public static void renderScaledText(Minecraft mc, @Nonnull PoseStack matrix, int x, int y, int color, int maxWidth, Component component) {
         int length = mc.font.width(component);
         if (length <= maxWidth) {
             mc.font.draw(matrix, component, x, y, color);

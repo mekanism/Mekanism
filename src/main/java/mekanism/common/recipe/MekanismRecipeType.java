@@ -60,22 +60,22 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import net.minecraftforge.registries.IForgeRegistry;
 
-public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> implements IRecipeType<RECIPE_TYPE> {
+public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE extends IInputRecipeCache> implements RecipeType<RECIPE_TYPE> {
 
     private static final List<MekanismRecipeType<?, ?>> types = new ArrayList<>();
 
@@ -169,7 +169,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
     }
 
     //TODO: Convert this to using the proper forge registry once we stop needing to directly use the vanilla registry as a work around
-    public static void registerRecipeTypes(IForgeRegistry<IRecipeSerializer<?>> registry) {
+    public static void registerRecipeTypes(IForgeRegistry<RecipeSerializer<?>> registry) {
         types.forEach(type -> Registry.register(Registry.RECIPE_TYPE, type.registryName, type));
     }
 
@@ -205,7 +205,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
     }
 
     @Nonnull
-    public List<RECIPE_TYPE> getRecipes(@Nullable World world) {
+    public List<RECIPE_TYPE> getRecipes(@Nullable Level world) {
         if (world == null) {
             //Try to get a fallback world if we are in a context that may not have one
             //If we are on the client get the client's world, if we are on the server get the current server's world
@@ -220,11 +220,11 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
             //TODO: Should we use the byType(RecipeType) that we ATd so that our recipes don't have to always return true for matching?
             List<RECIPE_TYPE> recipes = recipeManager.getRecipesFor(this, IgnoredIInventory.INSTANCE, world);
             if (this == SMELTING) {
-                Map<ResourceLocation, IRecipe<IInventory>> smeltingRecipes = recipeManager.byType(IRecipeType.SMELTING);
+                Map<ResourceLocation, Recipe<Container>> smeltingRecipes = recipeManager.byType(RecipeType.SMELTING);
                 //Copy recipes our recipes to make sure it is mutable
                 recipes = new ArrayList<>(recipes);
-                for (Entry<ResourceLocation, IRecipe<IInventory>> entry : smeltingRecipes.entrySet()) {
-                    IRecipe<IInventory> smeltingRecipe = entry.getValue();
+                for (Entry<ResourceLocation, Recipe<Container>> entry : smeltingRecipes.entrySet()) {
+                    Recipe<Container> smeltingRecipe = entry.getValue();
                     ItemStack recipeOutput = smeltingRecipe.getResultItem();
                     if (!smeltingRecipe.isSpecial() && !recipeOutput.isEmpty()) {
                         //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
@@ -252,7 +252,7 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
         return cachedRecipes;
     }
 
-    public Stream<RECIPE_TYPE> stream(@Nullable World world) {
+    public Stream<RECIPE_TYPE> stream(@Nullable Level world) {
         return getRecipes(world).stream();
     }
 
@@ -260,14 +260,14 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
      * Finds the first recipe that matches the given criteria, or null if no matching recipe is found. Prefer using the find recipe methods in {@link #getInputCache()}.
      */
     @Nullable
-    public RECIPE_TYPE findFirst(@Nullable World world, Predicate<RECIPE_TYPE> matchCriteria) {
+    public RECIPE_TYPE findFirst(@Nullable Level world, Predicate<RECIPE_TYPE> matchCriteria) {
         return stream(world).filter(matchCriteria).findFirst().orElse(null);
     }
 
     /**
      * Checks if this recipe type contains a recipe that matches the given criteria. Prefer using the contains recipe methods in {@link #getInputCache()}.
      */
-    public boolean contains(@Nullable World world, Predicate<RECIPE_TYPE> matchCriteria) {
+    public boolean contains(@Nullable Level world, Predicate<RECIPE_TYPE> matchCriteria) {
         return stream(world).anyMatch(matchCriteria);
     }
 }

@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class BasicHolder<TYPE> implements IHolder {
 

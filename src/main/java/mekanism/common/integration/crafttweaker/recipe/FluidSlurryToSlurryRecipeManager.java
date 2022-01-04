@@ -11,7 +11,7 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlu
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.FluidSlurryToSlurryIRecipe;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister

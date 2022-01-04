@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import mekanism.common.tag.BaseTagProvider;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -28,6 +29,11 @@ public class ToolsTagProvider extends BaseTagProvider {
               ToolsItems.REFINED_GLOWSTONE_LEGGINGS,
               ToolsItems.REFINED_GLOWSTONE_BOOTS,
               ToolsItems.REFINED_GLOWSTONE_SHIELD
+        );
+        getBlockBuilder(ToolsTags.Blocks.MINEABLE_WITH_PAXEL).add(
+              BlockTags.MINEABLE_WITH_AXE,
+              BlockTags.MINEABLE_WITH_PICKAXE,
+              BlockTags.MINEABLE_WITH_SHOVEL
         );
     }
 }

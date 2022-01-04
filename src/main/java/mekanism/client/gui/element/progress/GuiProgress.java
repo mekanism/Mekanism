@@ -1,7 +1,12 @@
 package mekanism.client.gui.element.progress;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Matrix4f;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -11,12 +16,8 @@ import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgres
 import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<GuiProgress> {
 
@@ -57,10 +58,11 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
-            minecraft.textureManager.bind(getResource());
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, getResource());
             blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
             double progress = warning && useFullProgressForWarning ? 1 : getProgress();
@@ -115,7 +117,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         return recipeCategories;
     }
 
-    private void blit(MatrixStack matrixStack, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
+    private void blit(PoseStack matrixStack, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
           boolean warning) {
         if (warning || colorDetails == null) {
             //If we are drawing a warning or don't have any color details just draw it normally
@@ -172,13 +174,12 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         }
         //Prep fill gradient
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.shadeModel(7425);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
-        Tessellator tessellator = Tessellator.getInstance();
+        Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder builder = tessellator.getBuilder();
-        builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX);
+        builder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
 
         if (type.isVertical()) {
             builder.vertex(matrix, x, y2, 0).color(redTo, greenTo, blueTo, alphaTo).uv(minU, maxV).endVertex();
@@ -194,9 +195,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
 
         tessellator.end();
         //Reset blit and fill gradient states
-        RenderSystem.shadeModel(7424);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
         MekanismRenderer.resetColor();
     }
 

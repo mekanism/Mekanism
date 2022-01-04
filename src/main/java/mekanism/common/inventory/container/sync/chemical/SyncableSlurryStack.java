@@ -12,6 +12,8 @@ import mekanism.common.network.to_client.container.property.LongPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.chemical.SlurryStackPropertyData;
 
+import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
+
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling slurry stacks
  */

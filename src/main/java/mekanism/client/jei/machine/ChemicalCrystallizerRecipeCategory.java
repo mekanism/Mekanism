@@ -1,6 +1,6 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -42,9 +42,9 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.Tag;
 
 public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<ChemicalCrystallizerRecipe> {
 
@@ -73,7 +73,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     }
 
     @Override
-    public void draw(ChemicalCrystallizerRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(ChemicalCrystallizerRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our ore info
         oreInfo.currentRecipe = recipe;
         IngredientTarget target = ingredients.get(recipe);
@@ -115,11 +115,11 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
             initChemical(recipeLayout, recipe, MekanismJEI.TYPE_PIGMENT, (PigmentStackIngredient) input, null);
         } else if (input instanceof SlurryStackIngredient) {
             SlurryStackIngredient slurryInput = (SlurryStackIngredient) input;
-            Set<ITag<Item>> tags = new HashSet<>();
+            Set<Tag<Item>> tags = new HashSet<>();
             for (SlurryStack slurryStack : slurryInput.getRepresentations()) {
                 Slurry slurry = slurryStack.getType();
                 if (!slurry.isIn(MekanismTags.Slurries.DIRTY)) {
-                    ITag<Item> oreTag = slurry.getOreTag();
+                    Tag<Item> oreTag = slurry.getOreTag();
                     if (oreTag != null) {
                         tags.add(oreTag);
                     }

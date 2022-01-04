@@ -7,7 +7,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.item.ItemCraftingFormula;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class FormulaInventorySlot extends BasicInventorySlot {
 

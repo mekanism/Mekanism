@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.tab.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -27,7 +27,7 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         displayTooltip(matrix, MekanismLang.CRAFTING_TAB.translate(currentWindows, IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS), mouseX, mouseY);
     }

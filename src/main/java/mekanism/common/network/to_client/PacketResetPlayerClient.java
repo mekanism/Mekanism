@@ -3,8 +3,8 @@ package mekanism.common.network.to_client;
 import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketResetPlayerClient implements IMekanismPacket {
 
@@ -20,11 +20,11 @@ public class PacketResetPlayerClient implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeUUID(uuid);
     }
 
-    public static PacketResetPlayerClient decode(PacketBuffer buffer) {
+    public static PacketResetPlayerClient decode(FriendlyByteBuf buffer) {
         return new PacketResetPlayerClient(buffer.readUUID());
     }
 }

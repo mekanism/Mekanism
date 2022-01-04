@@ -1,6 +1,6 @@
 package mekanism.client.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.drawable.IDrawable;
 
 public class NOOPDrawable implements IDrawable {
@@ -24,7 +24,7 @@ public class NOOPDrawable implements IDrawable {
     }
 
     @Override
-    public void draw(MatrixStack matrix, int xOffset, int yOffset) {
+    public void draw(PoseStack matrix, int xOffset, int yOffset) {
         //NO-OP
     }
 }

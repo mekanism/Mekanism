@@ -3,7 +3,7 @@ package mekanism.common.recipe.lookup.cache.type;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.lib.HashedFluid;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveInputCache<Fluid, HashedFluid, FluidStack, FluidStackIngredient, RECIPE> {

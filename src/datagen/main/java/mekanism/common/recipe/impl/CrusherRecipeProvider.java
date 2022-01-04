@@ -8,19 +8,19 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.registries.MekanismItems;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ComposterBlock;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ComposterBlock;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 
 class CrusherRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "crushing/";
         addCrusherBioFuelRecipes(consumer, basePath + "biofuel/");
         addCrusherStoneRecipes(consumer, basePath + "stone/");
@@ -89,7 +89,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "nether_bricks_to_cracked_nether_bricks"));
     }
 
-    private void addCrusherStoneRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherStoneRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Stone -> Cobblestone
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Blocks.STONE),
@@ -122,7 +122,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_cracked_bricks"));
     }
 
-    private void addCrusherBlackstoneRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherBlackstoneRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Polished Blackstone -> Blackstone
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Blocks.POLISHED_BLACKSTONE),
@@ -160,7 +160,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_cracked_bricks"));
     }
 
-    private void addCrusherQuartzRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherQuartzRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Quartz Block -> Smooth Quartz Block
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Tags.Items.STORAGE_BLOCKS_QUARTZ),
@@ -198,7 +198,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "from_pillar"));
     }
 
-    private void addCrusherGraniteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherGraniteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Polished Granite -> Granite
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Blocks.POLISHED_GRANITE),
@@ -216,7 +216,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slab_from_polished_slab"));
     }
 
-    private void addCrusherDioriteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherDioriteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Polished Diorite -> Diorite
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Blocks.POLISHED_DIORITE),
@@ -234,7 +234,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slab_from_polished_slab"));
     }
 
-    private void addCrusherAndesiteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherAndesiteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Polished Andesite -> Andesite
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Blocks.POLISHED_ANDESITE),
@@ -252,7 +252,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slab_from_polished_slab"));
     }
 
-    private void addCrusherPrismarineRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherPrismarineRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Prismarine -> Prismarine Shards
         ItemStackToItemStackRecipeBuilder.crushing(
               ItemStackIngredient.from(Blocks.PRISMARINE),
@@ -290,9 +290,9 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "shard_from_brick_stairs"));
     }
 
-    private void addCrusherBioFuelRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherBioFuelRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Generate baseline recipes from Composter recipe set
-        for (Entry<IItemProvider> chance : ComposterBlock.COMPOSTABLES.object2FloatEntrySet()) {
+        for (Entry<ItemLike> chance : ComposterBlock.COMPOSTABLES.object2FloatEntrySet()) {
             ItemStackToItemStackRecipeBuilder.crushing(
                   ItemStackIngredient.from(chance.getKey().asItem()),
                   MekanismItems.BIO_FUEL.getItemStack(Math.round(chance.getFloatValue() * 8))

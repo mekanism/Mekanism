@@ -36,11 +36,13 @@ import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -66,8 +68,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityHeatGenerator() {
-        super(GeneratorsBlocks.HEAT_GENERATOR, MekanismGeneratorsConfig.generators.heatGeneration.get().multiply(2));
+    public TileEntityHeatGenerator(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.HEAT_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.heatGeneration.get().multiply(2));
     }
 
     @Nonnull
@@ -85,7 +87,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
         //Divide the burn time by 20 as that is the ratio of how much a bucket of lava would burn for
         // Eventually we may want to grab the 20 dynamically in case some mod is changing the burn time of a lava bucket
-        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> ForgeHooks.getBurnTime(stack) / 20, size -> new FluidStack(Fluids.LAVA, size),
+        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, stack -> ForgeHooks.getBurnTime(stack, null) / 20, size -> new FluidStack(Fluids.LAVA, size),
               this, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), this, 143, 35), RelativeSide.RIGHT);
         return builder.build();
@@ -174,7 +176,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
     @Override
     public IHeatHandler getAdjacent(@Nonnull Direction side) {
         if (side == Direction.DOWN) {
-            TileEntity adj = WorldUtils.getTileEntity(getLevel(), worldPosition.below());
+            BlockEntity adj = WorldUtils.getTileEntity(getLevel(), worldPosition.below());
             return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
         }
         return null;

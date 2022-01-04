@@ -10,7 +10,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 

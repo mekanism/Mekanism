@@ -3,7 +3,7 @@ package mekanism.common.registries;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.SoundEventDeferredRegister;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.sounds.SoundEvent;
 
 public final class MekanismSounds {
 

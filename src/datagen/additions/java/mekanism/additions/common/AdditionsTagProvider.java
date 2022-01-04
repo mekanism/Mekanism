@@ -8,14 +8,15 @@ import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.tag.BaseTagProvider;
+import mekanism.common.tag.ForgeRegistryTagBuilder;
 import mekanism.common.tag.MekanismTagProvider;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.EntityTypeTags;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.Tag.Named;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -36,6 +37,7 @@ public class AdditionsTagProvider extends BaseTagProvider {
         addFenceGates();
         addGlowPanels();
         addPlasticBlocks();
+        addHarvestRequirements();
     }
 
     private void addEntities() {
@@ -100,7 +102,24 @@ public class AdditionsTagProvider extends BaseTagProvider {
               AdditionsTags.Blocks.PLASTIC_BLOCKS_TRANSPARENT);
     }
 
-    private void addToTags(INamedTag<Item> itemTag, INamedTag<Block> blockTag, Map<?, ? extends IBlockProvider> blockProviders) {
+    private void addHarvestRequirements() {
+        addToTag(BlockTags.MINEABLE_WITH_PICKAXE, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_ROADS, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS,
+              AdditionsBlocks.SLICK_PLASTIC_BLOCKS, AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, AdditionsBlocks.PLASTIC_FENCES,
+              AdditionsBlocks.PLASTIC_FENCE_GATES, AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_GLOW_SLABS, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS,
+              AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_GLOW_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS);
+    }
+
+    private void addToTags(Named<Item> itemTag, Named<Block> blockTag, Map<?, ? extends IBlockProvider> blockProviders) {
         addToTags(itemTag, blockTag, blockProviders.values().toArray(new IBlockProvider[0]));
+    }
+
+    @SafeVarargs
+    private void addToTag(Named<Block> blockTag, Map<?, ? extends IBlockProvider>... blockProviders) {
+        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(blockTag);
+        for (Map<?, ? extends IBlockProvider> blockProvider : blockProviders) {
+            for (IBlockProvider value : blockProvider.values()) {
+                tagBuilder.add(value.getBlock());
+            }
+        }
     }
 }

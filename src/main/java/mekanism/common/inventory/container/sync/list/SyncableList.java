@@ -10,6 +10,8 @@ import mekanism.api.annotations.NonNull;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.network.to_client.container.property.list.ListPropertyData;
 
+import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
+
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling lists
  */

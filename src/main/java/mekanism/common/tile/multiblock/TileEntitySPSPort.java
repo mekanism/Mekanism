@@ -18,17 +18,19 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.Util;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntitySPSPort extends TileEntitySPSCasing {
 
     private MachineEnergyContainer<TileEntitySPSPort> energyContainer;
 
-    public TileEntitySPSPort() {
-        super(MekanismBlocks.SPS_PORT);
+    public TileEntitySPSPort(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.SPS_PORT, pos, state);
         delaySupplier = () -> 0;
     }
 
@@ -70,13 +72,13 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     }
 
     @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player, Direction side) {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendMessage(MekanismUtils.logFormat(MekanismLang.SPS_PORT_MODE.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     //Methods relating to IComputerTile

@@ -41,7 +41,9 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemStackToPigmentRecipe> implements ItemRecipeLookupHandler<ItemStackToPigmentRecipe> {
 
@@ -59,8 +61,8 @@ public class TileEntityPigmentExtractor extends TileEntityProgressMachine<ItemSt
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityPigmentExtractor() {
-        super(MekanismBlocks.PIGMENT_EXTRACTOR, 100);
+    public TileEntityPigmentExtractor(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.PIGMENT_EXTRACTOR, pos, state, 100);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.PIGMENT, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupOutputConfig(TransmissionType.PIGMENT, pigmentTank, RelativeSide.RIGHT);

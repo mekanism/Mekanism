@@ -2,16 +2,16 @@ package mekanism.api.chemical.infuse;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.providers.IInfuseTypeProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.Util;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -21,7 +21,7 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
         super(builder, ChemicalTags.INFUSE_TYPE);
     }
 
-    public static InfuseType readFromNBT(@Nullable CompoundNBT nbtTags) {
+    public static InfuseType readFromNBT(@Nullable CompoundTag nbtTags) {
         return ChemicalUtils.readChemicalFromNBT(nbtTags, MekanismAPI.EMPTY_INFUSE_TYPE, NBTConstants.INFUSE_TYPE_NAME, InfuseType::getFromRegistry);
     }
 
@@ -35,7 +35,7 @@ public class InfuseType extends Chemical<InfuseType> implements IInfuseTypeProvi
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         nbtTags.putString(NBTConstants.INFUSE_TYPE_NAME, getRegistryName().toString());
         return nbtTags;
     }

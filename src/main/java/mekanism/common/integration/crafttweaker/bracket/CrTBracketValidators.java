@@ -5,7 +5,7 @@ import com.blamejared.crafttweaker.api.annotations.BracketValidator;
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
 import mekanism.api.MekanismAPI;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.openzen.zencode.java.ZenCodeType;

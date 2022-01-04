@@ -10,12 +10,12 @@ import mekanism.api.NBTConstants;
 import mekanism.common.config.value.CachedOredictionificatorConfigValue;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.SetTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -24,7 +24,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
 
     @Nullable
     private ResourceLocation filterLocation;
-    private ITag<TYPE> filterTag;
+    private Tag<TYPE> filterTag;
     @Nonnull
     private TYPE selectedOutput = getFallbackElement();
     @Nullable
@@ -32,7 +32,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     private boolean isValid;
 
     protected OredictionificatorFilter() {
-        filterTag = Tag.empty();
+        filterTag = SetTag.empty();
     }
 
     protected OredictionificatorFilter(OredictionificatorFilter<TYPE, STACK, FILTER> filter) {
@@ -45,7 +45,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
 
     public void flushCachedTag() {
         //If the filter doesn't exist (because we loaded a tag that is no longer valid), then just set the filter to being empty
-        filterTag = filterLocation == null ? Tag.empty() : getTagCollection().getTagOrEmpty(filterLocation);
+        filterTag = filterLocation == null ? SetTag.empty() : getTagCollection().getTagOrEmpty(filterLocation);
         if (!filterTag.contains(selectedOutput)) {
             List<TYPE> elements = filterTag.getValues();
             setSelectedOutput(elements.isEmpty() ? getFallbackElement() : elements.get(0));
@@ -99,7 +99,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putString(NBTConstants.FILTER, getFilterText());
         if (selectedOutput != getFallbackElement()) {
@@ -109,7 +109,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(CompoundTag nbtTags) {
         NBTUtils.setResourceLocationIfPresentElse(nbtTags, NBTConstants.FILTER, this::setFilter, () -> setFilter(null));
         NBTUtils.setResourceLocationIfPresent(nbtTags, NBTConstants.SELECTED, this::setSelectedOrFallback);
         //Recheck filter validity after reading from nbt
@@ -117,7 +117,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         //Realistically the filter location shouldn't be null except when the filter is first being created
         // but handle it being null just in case
@@ -130,7 +130,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
     }
 
     @Override
-    public void read(PacketBuffer buffer) {
+    public void read(FriendlyByteBuf buffer) {
         setFilter(buffer.readBoolean() ? buffer.readResourceLocation() : null);
         setSelectedOrFallback(buffer.readResourceLocation());
         isValid = buffer.readBoolean();
@@ -213,7 +213,7 @@ public abstract class OredictionificatorFilter<TYPE extends IForgeRegistryEntry<
 
     protected abstract IForgeRegistry<TYPE> getRegistry();
 
-    protected abstract ITagCollection<TYPE> getTagCollection();
+    protected abstract TagCollection<TYPE> getTagCollection();
 
     protected abstract TYPE getFallbackElement();
 

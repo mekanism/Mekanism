@@ -1,6 +1,6 @@
 package mekanism.common.lib.security;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class SecurityData {
 
@@ -15,14 +15,14 @@ public class SecurityData {
         override = frequency.isOverridden();
     }
 
-    public static SecurityData read(PacketBuffer dataStream) {
+    public static SecurityData read(FriendlyByteBuf dataStream) {
         SecurityData data = new SecurityData();
         data.mode = dataStream.readEnum(SecurityMode.class);
         data.override = dataStream.readBoolean();
         return data;
     }
 
-    public void write(PacketBuffer dataStream) {
+    public void write(FriendlyByteBuf dataStream) {
         dataStream.writeEnum(mode);
         dataStream.writeBoolean(override);
     }

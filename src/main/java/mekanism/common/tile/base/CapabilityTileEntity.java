@@ -8,9 +8,11 @@ import javax.annotation.Nullable;
 import mekanism.common.capabilities.CapabilityCache;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.component.TileComponentConfig;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -18,8 +20,8 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
 
     private final CapabilityCache capabilityCache = new CapabilityCache();
 
-    public CapabilityTileEntity(TileEntityType<?> type) {
-        super(type);
+    public CapabilityTileEntity(TileEntityTypeRegistryObject<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     protected final void addCapabilityResolvers(List<ICapabilityHandlerManager<?>> capabilityHandlerManagers) {
@@ -68,7 +70,7 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
     }
 
     @Override
-    protected void invalidateCaps() {
+    public void invalidateCaps() {
         super.invalidateCaps();
         //When the capabilities on our tile get invalidated, make sure to also invalidate all our cached ones
         invalidateCachedCapabilities();

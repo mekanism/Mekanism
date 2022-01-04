@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
@@ -26,11 +27,14 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.TextComponent;
 
 //TODO: This almost seems more like it should be a more generic GuiElement, than a MekanismButton
+import mekanism.client.gui.element.GuiElement.ButtonBackground;
+
 public class FilterButton extends MekanismButton {
 
     private static final ResourceLocation TEXTURE = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "filter_holder.png");
@@ -51,7 +55,7 @@ public class FilterButton extends MekanismButton {
 
     public FilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, Supplier<HashList<? extends IFilter<?>>> filters,
           ObjIntConsumer<IFilter<?>> onPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
-        super(gui, x, y, width, height, StringTextComponent.EMPTY,
+        super(gui, x, y, width, height, TextComponent.EMPTY,
               () -> onPress.accept(getFilter(filters, filterIndex, index), filterIndex.getAsInt() + index), null);
         this.index = index;
         this.filterIndex = filterIndex;
@@ -73,20 +77,21 @@ public class FilterButton extends MekanismButton {
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         setVisibility(getFilter(filters, filterIndex, index) != null);
         super.render(matrix, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bind(TEXTURE);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         blit(matrix, x, y, width, height, 0, isMouseOverCheckWindows(mouseX, mouseY) ? 0 : 29, TEXTURE_WIDTH, 29, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         IFilter<?> filter = getFilter(filters, filterIndex, index);
         if (filter != prevFilter) {
@@ -118,7 +123,7 @@ public class FilterButton extends MekanismButton {
         return width - 22 - 2;
     }
 
-    private void drawFilterType(MatrixStack matrix, int x, int y, ILangEntry langEntry) {
+    private void drawFilterType(PoseStack matrix, int x, int y, ILangEntry langEntry) {
         drawTextScaledBound(matrix, langEntry.translate(), x + 22, y + 2, titleTextColor(), getMaxLength());
     }
 }

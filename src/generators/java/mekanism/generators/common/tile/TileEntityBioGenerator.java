@@ -24,8 +24,9 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
 
@@ -40,8 +41,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     private EnergyInventorySlot energySlot;
     private float lastFluidScale;
 
-    public TileEntityBioGenerator() {
-        super(GeneratorsBlocks.BIO_GENERATOR, MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2));
+    public TileEntityBioGenerator(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.BIO_GENERATOR, pos, state, MekanismGeneratorsConfig.generators.bioGeneration.get().multiply(2));
     }
 
     @Nonnull
@@ -57,7 +58,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     protected IInventorySlotHolder getInitialInventory() {
         InventorySlotHelper builder = InventorySlotHelper.forSide(this::getDirection);
-        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, stack -> stack.getItem().is(MekanismTags.Items.FUELS_BIO) ? 200 : 0,
+        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, stack -> MekanismTags.Items.FUELS_BIO.contains(stack.getItem()) ? 200 : 0,
                     GeneratorsFluids.BIOETHANOL::getFluidStack, this, 17, 35),
               RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), this, 143, 35), RelativeSide.RIGHT);
@@ -86,15 +87,15 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.FLUID_STORED, bioFuelTank.serializeNBT());
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.FLUID_STORED, nbt -> bioFuelTank.deserializeNBT(nbt));
     }
 

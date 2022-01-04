@@ -8,9 +8,9 @@ import java.util.function.Predicate;
 import mekanism.common.lib.Color;
 import mekanism.common.lib.math.Quaternion;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 
 public interface QuadTransformation {
 
@@ -36,7 +36,7 @@ public interface QuadTransformation {
         return new LightTransformation(light, light);
     }
 
-    static QuadTransformation translate(Vector3d translation) {
+    static QuadTransformation translate(Vec3 translation) {
         return new TranslationTransformation(translation);
     }
 
@@ -186,8 +186,8 @@ public interface QuadTransformation {
             });
         }
 
-        private static Vector3d round(Vector3d vec) {
-            return new Vector3d(Math.round(vec.x * EPSILON) / EPSILON, Math.round(vec.y * EPSILON) / EPSILON, Math.round(vec.z * EPSILON) / EPSILON);
+        private static Vec3 round(Vec3 vec) {
+            return new Vec3(Math.round(vec.x * EPSILON) / EPSILON, Math.round(vec.y * EPSILON) / EPSILON, Math.round(vec.z * EPSILON) / EPSILON);
         }
 
         @Override
@@ -203,9 +203,9 @@ public interface QuadTransformation {
 
     class TranslationTransformation implements QuadTransformation {
 
-        private final Vector3d translation;
+        private final Vec3 translation;
 
-        protected TranslationTransformation(Vector3d translation) {
+        protected TranslationTransformation(Vec3 translation) {
             this.translation = translation;
         }
 

@@ -11,9 +11,9 @@ import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class TeleporterFrequency extends Frequency implements IColorableFrequency {
 
@@ -53,13 +53,13 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
     }
 
     @Override
-    public void update(TileEntity tile) {
+    public void update(BlockEntity tile) {
         super.update(tile);
         activeCoords.add(Coord4D.get(tile));
     }
 
     @Override
-    public void onDeactivate(TileEntity tile) {
+    public void onDeactivate(BlockEntity tile) {
         super.onDeactivate(tile);
         activeCoords.remove(Coord4D.get(tile));
     }
@@ -87,25 +87,25 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
     }
 
     @Override
-    protected void read(CompoundNBT nbtTags) {
+    protected void read(CompoundTag nbtTags) {
         super.read(nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, EnumColor::byIndexStatic, this::setColor);
     }
 
     @Override
-    protected void read(PacketBuffer dataStream) {
+    protected void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
         setColor(dataStream.readEnum(EnumColor.class));
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
+    public void write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putInt(NBTConstants.COLOR, color.ordinal());
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeEnum(color);
     }

@@ -7,10 +7,10 @@ import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.resources.ResourceLocation;
 
 public class PigmentMixingIRecipe extends PigmentMixingRecipe {
 
@@ -20,13 +20,13 @@ public class PigmentMixingIRecipe extends PigmentMixingRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<PigmentMixingRecipe> getType() {
+    public RecipeType<PigmentMixingRecipe> getType() {
         return MekanismRecipeType.PIGMENT_MIXING;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<PigmentMixingRecipe> getSerializer() {
+    public RecipeSerializer<PigmentMixingRecipe> getSerializer() {
         return MekanismRecipeSerializers.PIGMENT_MIXING.getRecipeSerializer();
     }
 

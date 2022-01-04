@@ -5,33 +5,33 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.common.registration.impl.IRecipeSerializerRegistryObject;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.resources.ResourceLocation;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class SpecialRecipeBuilder implements IFinishedRecipe {
+public class SpecialRecipeBuilder implements FinishedRecipe {
 
-    private final IRecipeSerializer<?> serializer;
+    private final RecipeSerializer<?> serializer;
 
-    private SpecialRecipeBuilder(IRecipeSerializer<?> serializer) {
+    private SpecialRecipeBuilder(RecipeSerializer<?> serializer) {
         this.serializer = serializer;
     }
 
-    public static void build(Consumer<IFinishedRecipe> consumer, IRecipeSerializerRegistryObject<?> serializer) {
+    public static void build(Consumer<FinishedRecipe> consumer, IRecipeSerializerRegistryObject<?> serializer) {
         build(consumer, serializer.getRecipeSerializer());
     }
 
-    public static void build(Consumer<IFinishedRecipe> consumer, IRecipeSerializer<?> serializer) {
+    public static void build(Consumer<FinishedRecipe> consumer, RecipeSerializer<?> serializer) {
         consumer.accept(new SpecialRecipeBuilder(serializer));
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<?> getType() {
+    public RecipeSerializer<?> getType() {
         return serializer;
     }
 

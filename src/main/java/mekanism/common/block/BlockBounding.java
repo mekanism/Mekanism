@@ -1,59 +1,55 @@
 package mekanism.common.block;
 
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
+import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.client.particle.DiggingParticle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.renderer.chunk.ChunkRenderCache;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.renderer.chunk.RenderChunkRegion;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.client.IBlockRenderProperties;
 
 //TODO: Extend MekanismBlock. Not done yet as checking is needed to ensure how drops happen still happens correctly and things in the super class don't mess this up
 public class BlockBounding extends Block implements IHasTileEntity<TileEntityBoundingBlock>, IStateFluidLoggable {
 
     @Nullable
-    public static BlockPos getMainBlockPos(IBlockReader world, BlockPos thisPos) {
+    public static BlockPos getMainBlockPos(BlockGetter world, BlockPos thisPos) {
         TileEntityBoundingBlock te = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, thisPos);
         if (te != null && te.receivedCoords && !thisPos.equals(te.getMainPos())) {
             return te.getMainPos();
@@ -61,21 +57,21 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return null;
     }
 
-    //Note: This is not a block state so that we can have it easily create the correct TileEntity.
-    // If we end up merging some logic from the TileEntities then this can become a property
-    private final boolean advanced;
-
-    public BlockBounding(boolean advanced) {
+    public BlockBounding() {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
         // Torches cannot be placed on the sides due to vanilla checking the incorrect shape
-        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.of(Material.METAL).strength(3.5F, 4.8F)
+        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of(Material.METAL).strength(3.5F, 4.8F)
               .requiresCorrectToolForDrops().dynamicShape()));
-        this.advanced = advanced;
         registerDefaultState(BlockStateHelper.getDefaultState(stateDefinition.any()));
     }
 
     @Override
-    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+    public void initializeClient(Consumer<IBlockRenderProperties> consumer) {
+        consumer.accept(ISTERProvider.boundingParticles());
+    }
+
+    @Override
+    protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
@@ -90,18 +86,18 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
+    public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
-          @Nonnull BlockRayTraceResult hit) {
+    public InteractionResult use(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
+          @Nonnull BlockHitResult hit) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         }
         BlockState mainState = world.getBlockState(mainPos);
         //TODO: Use proper ray trace result, currently is using the one we got but we probably should make one with correct position information
@@ -110,14 +106,14 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     @Deprecated
-    public void onRemove(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+    public void onRemove(BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
         //Remove the main block if a bounding block gets broken by being directly replaced
         // Note: We only do this if we don't go from bounding block to bounding block
         if (!state.is(newState.getBlock())) {
             BlockPos mainPos = getMainBlockPos(world, pos);
             if (mainPos != null) {
                 BlockState mainState = world.getBlockState(mainPos);
-                if (!mainState.isAir(world, mainPos)) {
+                if (!mainState.isAir()) {
                     //Set the main block to air, which will invalidate the rest of the bounding blocks
                     world.removeBlock(mainPos, false);
                 }
@@ -127,21 +123,21 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     /**
-     * {@inheritDoc} Delegate to main {@link Block#getPickBlock(BlockState, RayTraceResult, IBlockReader, BlockPos, PlayerEntity)}.
+     * {@inheritDoc} Delegate to main {@link Block#getCloneItemStack(BlockState, HitResult, BlockGetter, BlockPos, Player)}.
      */
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlayerEntity player) {
+    public ItemStack getCloneItemStack(@Nonnull BlockState state, HitResult target, @Nonnull BlockGetter world, @Nonnull BlockPos pos, Player player) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return ItemStack.EMPTY;
         }
         BlockState mainState = world.getBlockState(mainPos);
-        return mainState.getBlock().getPickBlock(mainState, target, world, mainPos, player);
+        return mainState.getBlock().getCloneItemStack(mainState, target, world, mainPos, player);
     }
 
     @Override
-    public boolean removedByPlayer(@Nonnull BlockState state, World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, boolean willHarvest,
+    public boolean onDestroyedByPlayer(@Nonnull BlockState state, Level world, @Nonnull BlockPos pos, @Nonnull Player player, boolean willHarvest,
           FluidState fluidState) {
         if (willHarvest) {
             return true;
@@ -149,29 +145,29 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
             BlockState mainState = world.getBlockState(mainPos);
-            if (!mainState.isAir(world, mainPos)) {
+            if (!mainState.isAir()) {
                 //Set the main block to air, which will invalidate the rest of the bounding blocks
-                mainState.removedByPlayer(world, mainPos, player, false, mainState.getFluidState());
+                mainState.onDestroyedByPlayer(world, mainPos, player, false, mainState.getFluidState());
             }
         }
-        return super.removedByPlayer(state, world, pos, player, false, fluidState);
+        return super.onDestroyedByPlayer(state, world, pos, player, false, fluidState);
     }
 
     @Override
-    public void onBlockExploded(BlockState state, World world, BlockPos pos, Explosion explosion) {
+    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
             BlockState mainState = world.getBlockState(mainPos);
-            if (!mainState.isAir(world, mainPos)) {
+            if (!mainState.isAir()) {
                 //Proxy the explosion to the main block which, will set it to air causing it to invalidate the rest of the bounding blocks
-                LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerWorld) world)
+                LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerLevel) world)
                       .withRandom(world.random)
-                      .withParameter(LootParameters.ORIGIN, Vector3d.atCenterOf(mainPos))
-                      .withParameter(LootParameters.TOOL, ItemStack.EMPTY)
-                      .withOptionalParameter(LootParameters.BLOCK_ENTITY, mainState.hasTileEntity() ? WorldUtils.getTileEntity(world, mainPos) : null)
-                      .withOptionalParameter(LootParameters.THIS_ENTITY, explosion.getExploder());
-                if (explosion.blockInteraction == Explosion.Mode.DESTROY) {
-                    lootContextBuilder.withParameter(LootParameters.EXPLOSION_RADIUS, explosion.radius);
+                      .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(mainPos))
+                      .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+                      .withOptionalParameter(LootContextParams.BLOCK_ENTITY, mainState.hasBlockEntity() ? WorldUtils.getTileEntity(world, mainPos) : null)
+                      .withOptionalParameter(LootContextParams.THIS_ENTITY, explosion.getExploder());
+                if (explosion.blockInteraction == Explosion.BlockInteraction.DESTROY) {
+                    lootContextBuilder.withParameter(LootContextParams.EXPLOSION_RADIUS, explosion.radius);
                 }
                 mainState.getDrops(lootContextBuilder).forEach(stack -> Block.popResource(world, mainPos, stack));
                 mainState.onBlockExploded(world, mainPos, explosion);
@@ -181,7 +177,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public void playerDestroy(@Nonnull World world, @Nonnull PlayerEntity player, @Nonnull BlockPos pos, @Nonnull BlockState state, TileEntity te,
+    public void playerDestroy(@Nonnull Level world, @Nonnull Player player, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity te,
           @Nonnull ItemStack stack) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
@@ -195,7 +191,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     @Deprecated
-    public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
+    public void neighborChanged(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
           boolean isMoving) {
         if (!world.isClientSide) {
             TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
@@ -218,7 +214,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     @Deprecated
-    public int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull World world, @Nonnull BlockPos pos) {
+    public int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull Level world, @Nonnull BlockPos pos) {
         if (!world.isClientSide) {
             TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
             if (tile != null) {
@@ -230,7 +226,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     @Deprecated
-    public float getDestroyProgress(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    public float getDestroyProgress(@Nonnull BlockState state, @Nonnull Player player, @Nonnull BlockGetter world, @Nonnull BlockPos pos) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return super.getDestroyProgress(state, player, world, pos);
@@ -239,7 +235,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion) {
+    public float getExplosionResistance(BlockState state, BlockGetter world, BlockPos pos, Explosion explosion) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return super.getExplosionResistance(state, world, pos, explosion);
@@ -250,36 +246,31 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nonnull
     @Override
     @Deprecated
-    public BlockRenderType getRenderShape(@Nonnull BlockState state) {
-        return BlockRenderType.INVISIBLE;
+    public RenderShape getRenderShape(@Nonnull BlockState state) {
+        return RenderShape.INVISIBLE;
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return true;
+    @Deprecated
+    public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+        super.triggerEvent(state, level, pos, id, param);
+        //TODO - 1.18: Should this forward to the main pos?
+        return triggerBlockEntityEvent(state, level, pos, id, param);
     }
 
     @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
-        return getTileType().create();
-    }
-
-    @Override
-    public TileEntityType<TileEntityBoundingBlock> getTileType() {
-        if (advanced) {
-            return MekanismTileEntityTypes.ADVANCED_BOUNDING_BLOCK.getTileEntityType();
-        }
-        return MekanismTileEntityTypes.BOUNDING_BLOCK.getTileEntityType();
+    public TileEntityTypeRegistryObject<TileEntityBoundingBlock> getTileType() {
+        return MekanismTileEntityTypes.BOUNDING_BLOCK;
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             //If we don't have a main pos, then act as if the block is empty so that we can move into it properly
-            return VoxelShapes.empty();
+            return Shapes.empty();
         }
         BlockState mainState;
         try {
@@ -287,16 +278,16 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         } catch (ArrayIndexOutOfBoundsException e) {
             //Note: ChunkRenderCache is client side only, though it does not seem to have any class loading issues on the server
             // due to this exception not being caught in that specific case
-            if (world instanceof ChunkRenderCache) {
+            if (world instanceof RenderChunkRegion) {
                 //Workaround for when the main spot of the miner is out of bounds of the ChunkRenderCache thus causing an
                 // ArrayIndexOutOfBoundException on the client as seen by:
                 // https://github.com/mekanism/Mekanism/issues/5792
                 // https://github.com/mekanism/Mekanism/issues/5844
-                world = ((ChunkRenderCache) world).level;
+                world = ((RenderChunkRegion) world).level;
                 mainState = world.getBlockState(mainPos);
             } else {
                 Mekanism.logger.error("Error getting bounding block shape, for position {}, with main position {}. World of type {}", pos, mainPos, world.getClass().getName());
-                return VoxelShapes.empty();
+                return Shapes.empty();
             }
         }
         VoxelShape shape = mainState.getShape(world, mainPos, context);
@@ -315,7 +306,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nonnull
     @Override
     @Deprecated
-    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world,
+    public BlockState updateShape(@Nonnull BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world,
           @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         updateFluids(state, world, currentPos);
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
@@ -323,46 +314,8 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     @Deprecated
-    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType type) {
+    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
         //Mark that bounding blocks do not allow movement for use by AI pathing
-        return false;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean addHitEffects(BlockState state, World world, RayTraceResult target, ParticleManager manager) {
-        if (target.getType() == Type.BLOCK && target instanceof BlockRayTraceResult) {
-            BlockRayTraceResult blockTarget = (BlockRayTraceResult) target;
-            BlockPos pos = blockTarget.getBlockPos();
-            BlockPos mainPos = getMainBlockPos(world, pos);
-            if (mainPos != null) {
-                BlockState mainState = world.getBlockState(mainPos);
-                if (!mainState.isAir(world, mainPos)) {
-                    //Copy of ParticleManager#addBlockHitEffects except using the block state for the main position
-                    AxisAlignedBB axisalignedbb = state.getShape(world, pos).bounds();
-                    double x = pos.getX() + world.random.nextDouble() * (axisalignedbb.maxX - axisalignedbb.minX - 0.2) + 0.1 + axisalignedbb.minX;
-                    double y = pos.getY() + world.random.nextDouble() * (axisalignedbb.maxY - axisalignedbb.minY - 0.2) + 0.1 + axisalignedbb.minY;
-                    double z = pos.getZ() + world.random.nextDouble() * (axisalignedbb.maxZ - axisalignedbb.minZ - 0.2) + 0.1 + axisalignedbb.minZ;
-                    Direction side = blockTarget.getDirection();
-                    if (side == Direction.DOWN) {
-                        y = pos.getY() + axisalignedbb.minY - 0.1;
-                    } else if (side == Direction.UP) {
-                        y = pos.getY() + axisalignedbb.maxY + 0.1;
-                    } else if (side == Direction.NORTH) {
-                        z = pos.getZ() + axisalignedbb.minZ - 0.1;
-                    } else if (side == Direction.SOUTH) {
-                        z = pos.getZ() + axisalignedbb.maxZ + 0.1;
-                    } else if (side == Direction.WEST) {
-                        x = pos.getX() + axisalignedbb.minX - 0.1;
-                    } else if (side == Direction.EAST) {
-                        x = pos.getX() + axisalignedbb.maxX + 0.1;
-                    }
-                    manager.add(new DiggingParticle((ClientWorld) world, x, y, z, 0, 0, 0, mainState)
-                          .init(mainPos).setPower(0.2F).scale(0.6F));
-                    return true;
-                }
-            }
-        }
         return false;
     }
 }

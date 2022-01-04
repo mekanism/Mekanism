@@ -1,6 +1,6 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
@@ -24,16 +24,16 @@ import mekanism.common.lib.effect.BoltEffect.FadeFunction;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.MultiBufferSource;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
 
 public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEntityAntiprotonicNucleosynthesizer,
       MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer>> {
 
-    private static final Vector3d from = new Vector3d(47, 50, 0), to = new Vector3d(147, 50, 0);
+    private static final Vec3 from = new Vec3(47, 50, 0), to = new Vec3(147, 50, 0);
     private static final BoltRenderInfo boltRenderInfo = new BoltRenderInfo().color(Color.rgbad(0.45F, 0.45F, 0.5F, 1));
 
     private final BoltRenderer bolt = new BoltRenderer();
@@ -44,7 +44,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
           .spawn(SpawnFunction.CONSECUTIVE)
           .fade(FadeFunction.NONE);
 
-    public GuiAntiprotonicNucleosynthesizer(MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer> container, PlayerInventory inv, ITextComponent title) {
+    public GuiAntiprotonicNucleosynthesizer(MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
         imageHeight += 27;
@@ -55,13 +55,13 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiInnerScreen(this, 45, 18, 104, 68).jeiCategory(tile));
-        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
-        addButton(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.SMALL_MED, this, 5, 18));
-        addButton(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.SMALL_MED, this, 172, 18));
-        addButton(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
+        addRenderableWidget(new GuiInnerScreen(this, 45, 18, 104, 68).jeiCategory(tile));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
+        addRenderableWidget(new GuiGasGauge(() -> tile.gasTank, () -> tile.getGasTanks(null), GaugeType.SMALL_MED, this, 5, 18));
+        addRenderableWidget(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.SMALL_MED, this, 172, 18));
+        addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 return MekanismLang.PROGRESS.translate(TextUtils.getPercent(tile.getScaledProgress()));
             }
 
@@ -73,14 +73,14 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         drawString(matrix, tile.getName(), (imageWidth - getStringWidth(tile.getName())) / 2, titleLabelY, titleTextColor());
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 48, 76, screenTextColor(), 100);
         super.drawForegroundText(matrix, mouseX, mouseY);
         matrix.pushPose();
         matrix.translate(0, 0, 100);
-        IRenderTypeBuffer.Impl renderer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource renderer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
         bolt.update(this, boltSupplier.get(), MekanismRenderer.getPartialTick());
         bolt.render(MekanismRenderer.getPartialTick(), matrix, renderer);
         renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);

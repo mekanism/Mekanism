@@ -7,10 +7,10 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketGuiSetEnergy implements IMekanismPacket {
 
@@ -26,7 +26,7 @@ public class PacketGuiSetEnergy implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player != null) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
             if (tile != null) {
@@ -36,13 +36,13 @@ public class PacketGuiSetEnergy implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(interaction);
         buffer.writeBlockPos(tilePosition);
         value.writeToBuffer(buffer);
     }
 
-    public static PacketGuiSetEnergy decode(PacketBuffer buffer) {
+    public static PacketGuiSetEnergy decode(FriendlyByteBuf buffer) {
         return new PacketGuiSetEnergy(buffer.readEnum(GuiEnergyValue.class), buffer.readBlockPos(), FloatingLong.readFromBuffer(buffer));
     }
 

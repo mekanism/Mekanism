@@ -7,7 +7,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class ChemicalElement extends LookingAtElement {
 
@@ -35,7 +35,7 @@ public class ChemicalElement extends LookingAtElement {
     }
 
     @Override
-    public ITextComponent getText() {
+    public Component getText() {
         long amount = stored.getAmount();
         if (amount == Long.MAX_VALUE) {
             return MekanismLang.GENERIC_STORED.translate(stored.getType(), MekanismLang.INFINITE);

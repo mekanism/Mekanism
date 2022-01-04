@@ -48,34 +48,34 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.PortalInfo;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SMoveVehiclePacket;
-import net.minecraft.network.play.server.SSetPassengersPacket;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
+import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.server.ServerChunkProvider;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.entity.PartEntity;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLoader {
 
     public final Set<UUID> didTeleport = new ObjectOpenHashSet<>();
-    private AxisAlignedBB teleportBounds;
+    private AABB teleportBounds;
     public int teleDelay = 0;
     public boolean shouldRender;
     @Nullable
@@ -94,8 +94,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityTeleporter() {
-        super(MekanismBlocks.TELEPORTER);
+    public TileEntityTeleporter(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.TELEPORTER, pos, state);
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
         frequencyComponent.track(FrequencyType.TELEPORTER, true, true, false);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
@@ -118,7 +118,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         return builder.build();
     }
 
-    public static void alignPlayer(ServerPlayerEntity player, BlockPos target, TileEntityTeleporter teleporter) {
+    public static void alignPlayer(ServerPlayer player, BlockPos target, TileEntityTeleporter teleporter) {
         Direction side = null;
         if (teleporter.frameDirection != null && teleporter.frameDirection.getAxis().isHorizontal()) {
             //If the frame is horizontal always face towards the other portion of the frame
@@ -131,7 +131,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 }
             }
         }
-        float yaw = player.yRot;
+        float yaw = player.getYRot();
         if (side != null) {
             switch (side) {
                 case NORTH:
@@ -150,7 +150,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     break;
             }
         }
-        player.connection.teleport(player.getX(), player.getY(), player.getZ(), yaw, player.xRot);
+        player.connection.teleport(player.getX(), player.getY(), player.getZ(), yaw, player.getXRot());
     }
 
     @Override
@@ -256,7 +256,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         } else {
             offsetDirection = frameDirection;
         }
-        Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(teleporterTargetPos, offsetDirection), level, teleporterTargetPos);
+        Mekanism.packetHandler().sendToAllTracking(new PacketPortalFX(teleporterTargetPos, offsetDirection), level, teleporterTargetPos);
     }
 
     /**
@@ -268,7 +268,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             return;
         }
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
-        World teleWorld = currentServer.getLevel(closestCoords.dimension);
+        Level teleWorld = currentServer.getLevel(closestCoords.dimension);
         BlockPos closestPos = closestCoords.getPos();
         TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestPos);
         if (teleporter != null) {
@@ -287,11 +287,11 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     double oldY = entity.getY();
                     double oldZ = entity.getZ();
                     Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporterTargetPos);
-                    if (teleportedEntity instanceof ServerPlayerEntity) {
-                        alignPlayer((ServerPlayerEntity) teleportedEntity, teleporterTargetPos, teleporter);
+                    if (teleportedEntity instanceof ServerPlayer) {
+                        alignPlayer((ServerPlayer) teleportedEntity, teleporterTargetPos, teleporter);
                     }
                     for (Coord4D coords : activeCoords) {
-                        World world = level.dimension() == coords.dimension ? level : currentServer.getLevel(coords.dimension);
+                        Level world = level.dimension() == coords.dimension ? level : currentServer.getLevel(coords.dimension);
                         TileEntityTeleporter tile = WorldUtils.getTileEntity(TileEntityTeleporter.class, world, coords.getPos());
                         if (tile != null) {
                             tile.sendTeleportParticles();
@@ -323,31 +323,31 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Nullable
-    public static Entity teleportEntityTo(Entity entity, World targetWorld, BlockPos target) {
+    public static Entity teleportEntityTo(Entity entity, Level targetWorld, BlockPos target) {
         if (entity.getCommandSenderWorld().dimension() == targetWorld.dimension()) {
             entity.teleportTo(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
             if (!entity.getPassengers().isEmpty()) {
                 //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
-                ((ServerChunkProvider) entity.getCommandSenderWorld().getChunkSource()).broadcast(entity, new SSetPassengersPacket(entity));
+                ((ServerChunkCache) entity.getCommandSenderWorld().getChunkSource()).broadcast(entity, new ClientboundSetPassengersPacket(entity));
                 Entity controller = entity.getControllingPassenger();
-                if (controller != entity && controller instanceof ServerPlayerEntity && !(controller instanceof FakePlayer)) {
-                    ServerPlayerEntity player = (ServerPlayerEntity) controller;
+                if (controller != entity && controller instanceof ServerPlayer && !(controller instanceof FakePlayer)) {
+                    ServerPlayer player = (ServerPlayer) controller;
                     if (player.connection != null) {
                         //Force sync the fact that the vehicle moved to the client that is controlling it
                         // so that it makes sure to use the correct positions when sending move packets
                         // back to the server instead of running into moved wrongly issues
-                        player.connection.send(new SMoveVehiclePacket(entity));
+                        player.connection.send(new ClientboundMoveVehiclePacket(entity));
                     }
                 }
             }
             return entity;
         }
-        Vector3d destination = new Vector3d(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
+        Vec3 destination = new Vec3(target.getX() + 0.5, target.getY(), target.getZ() + 0.5);
         //Note: We grab the passengers here instead of in placeEntity as changeDimension starts by removing any passengers
         List<Entity> passengers = entity.getPassengers();
-        return entity.changeDimension((ServerWorld) targetWorld, new ITeleporter() {
+        return entity.changeDimension((ServerLevel) targetWorld, new ITeleporter() {
             @Override
-            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+            public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                 Entity repositionedEntity = repositionEntity.apply(false);
                 if (repositionedEntity != null) {
                     //Teleport all passengers to the other dimension and then make them start riding the entity again
@@ -359,18 +359,18 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             }
 
             @Override
-            public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
-                return new PortalInfo(destination, entity.getDeltaMovement(), entity.yRot, entity.xRot);
+            public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {
+                return new PortalInfo(destination, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
             }
 
             @Override
-            public boolean playTeleportSound(ServerPlayerEntity player, ServerWorld sourceWorld, ServerWorld destWorld) {
+            public boolean playTeleportSound(ServerPlayer player, ServerLevel sourceWorld, ServerLevel destWorld) {
                 return false;
             }
         });
     }
 
-    private static void teleportPassenger(ServerWorld destWorld, Vector3d destination, Entity repositionedEntity, Entity passenger) {
+    private static void teleportPassenger(ServerLevel destWorld, Vec3 destination, Entity repositionedEntity, Entity passenger) {
         if (!passenger.canChangeDimensions()) {
             //If the passenger can't change dimensions just let it peacefully stay after dismounting rather than trying to teleport it
             return;
@@ -379,7 +379,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         List<Entity> passengers = passenger.getPassengers();
         passenger.changeDimension(destWorld, new ITeleporter() {
             @Override
-            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+            public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
                 boolean invulnerable = entity.isInvulnerable();
                 //Make the entity invulnerable so that when we teleport it, it doesn't take damage
                 // we revert this state to the previous state after teleporting
@@ -399,13 +399,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             }
 
             @Override
-            public PortalInfo getPortalInfo(Entity entity, ServerWorld destWorld, Function<ServerWorld, PortalInfo> defaultPortalInfo) {
+            public PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo) {
                 //This is needed to ensure the passenger starts getting tracked after teleporting
-                return new PortalInfo(destination, entity.getDeltaMovement(), entity.yRot, entity.xRot);
+                return new PortalInfo(destination, entity.getDeltaMovement(), entity.getYRot(), entity.getXRot());
             }
 
             @Override
-            public boolean playTeleportSound(ServerPlayerEntity player, ServerWorld sourceWorld, ServerWorld destWorld) {
+            public boolean playTeleportSound(ServerPlayer player, ServerLevel sourceWorld, ServerLevel destWorld) {
                 return false;
             }
         });
@@ -493,7 +493,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         // Note: We can use an array based map, because we check suck a small area, that if we do go across chunks
         // we will be in at most two in general due to the size of our teleporter. But given we need to check multiple
         // directions we might end up checking two different cross chunk directions which would end up at three
-        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectArrayMap<>(3);
+        Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectArrayMap<>(3);
         return isFramePair(chunkMap, 0, alternatingX, 0, alternatingY, 0, alternatingZ) &&
                isFramePair(chunkMap, xComponent, alternatingX, yComponent, alternatingY, zComponent, alternatingZ) &&
                isFramePair(chunkMap, 2 * xComponent, alternatingX, 2 * yComponent, alternatingY, 2 * zComponent, alternatingZ) &&
@@ -501,12 +501,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                isFrame(chunkMap, 3 * xComponent, 3 * yComponent, 3 * zComponent);
     }
 
-    private boolean isFramePair(Long2ObjectMap<IChunk> chunkMap, int xOffset, int alternatingX, int yOffset, int alternatingY, int zOffset, int alternatingZ) {
+    private boolean isFramePair(Long2ObjectMap<ChunkAccess> chunkMap, int xOffset, int alternatingX, int yOffset, int alternatingY, int zOffset, int alternatingZ) {
         return isFrame(chunkMap, xOffset - alternatingX, yOffset - alternatingY, zOffset - alternatingZ) &&
                isFrame(chunkMap, xOffset + alternatingX, yOffset + alternatingY, zOffset + alternatingZ);
     }
 
-    private boolean isFrame(Long2ObjectMap<IChunk> chunkMap, int xOffset, int yOffset, int zOffset) {
+    private boolean isFrame(Long2ObjectMap<ChunkAccess> chunkMap, int xOffset, int yOffset, int zOffset) {
         Optional<BlockState> state = WorldUtils.getBlockState(level, chunkMap, worldPosition.offset(xOffset, yOffset, zOffset));
         return state.filter(blockState -> blockState.is(MekanismBlocks.TELEPORTER_FRAME.getBlock())).isPresent();
     }
@@ -535,27 +535,27 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @Nonnull
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
+    public AABB getRenderBoundingBox() {
         //Note: If the frame direction is "null" we instead just only mark the teleporter itself.
         Direction frameDirection = getFrameDirection();
-        return frameDirection == null ? new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, 1)) : getTeleporterBoundingBox(frameDirection);
+        return frameDirection == null ? new AABB(worldPosition, worldPosition.offset(1, 1, 1)) : getTeleporterBoundingBox(frameDirection);
     }
 
-    private AxisAlignedBB getTeleporterBoundingBox(@Nonnull Direction frameDirection) {
+    private AABB getTeleporterBoundingBox(@Nonnull Direction frameDirection) {
         //Note: We only include the area inside the frame, we don't bother including the teleporter's block itself
         switch (frameDirection) {
             case UP:
-                return new AxisAlignedBB(worldPosition.above(), worldPosition.offset(1, 3, 1));
+                return new AABB(worldPosition.above(), worldPosition.offset(1, 3, 1));
             case DOWN:
-                return new AxisAlignedBB(worldPosition, worldPosition.offset(1, -2, 1));
+                return new AABB(worldPosition, worldPosition.offset(1, -2, 1));
             case EAST:
-                return new AxisAlignedBB(worldPosition.east(), worldPosition.offset(3, 1, 1));
+                return new AABB(worldPosition.east(), worldPosition.offset(3, 1, 1));
             case WEST:
-                return new AxisAlignedBB(worldPosition, worldPosition.offset(-2, 1, 1));
+                return new AABB(worldPosition, worldPosition.offset(-2, 1, 1));
             case NORTH:
-                return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 1, -2));
+                return new AABB(worldPosition, worldPosition.offset(1, 1, -2));
             case SOUTH:
-                return new AxisAlignedBB(worldPosition.south(), worldPosition.offset(1, 1, 3));
+                return new AABB(worldPosition.south(), worldPosition.offset(1, 1, 3));
         }
         throw new IllegalArgumentException("Invalid frame direction");
     }
@@ -597,8 +597,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.putBoolean(NBTConstants.RENDERING, shouldRender);
         if (color != null) {
             updateTag.putInt(NBTConstants.COLOR, color.ordinal());
@@ -607,10 +607,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.RENDERING, value -> shouldRender = value);
-        if (tag.contains(NBTConstants.COLOR, NBT.TAG_INT)) {
+        if (tag.contains(NBTConstants.COLOR, Tag.TAG_INT)) {
             color = EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR));
         } else {
             color = null;

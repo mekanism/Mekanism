@@ -2,14 +2,14 @@ package mekanism.common.capabilities.heat;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

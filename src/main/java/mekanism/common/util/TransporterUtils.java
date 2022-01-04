@@ -14,11 +14,11 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -39,7 +39,7 @@ public final class TransporterUtils {
         return color == null ? -1 : TransporterUtils.colors.indexOf(color);
     }
 
-    public static boolean isValidAcceptorOnSide(TileEntity tile, Direction side) {
+    public static boolean isValidAcceptorOnSide(BlockEntity tile, Direction side) {
         if (tile instanceof TileEntityTransmitter && TransmissionType.ITEM.checkTransmissionType((TileEntityTransmitter) tile)) {
             return false;
         }
@@ -92,7 +92,7 @@ public final class TransporterUtils {
         }
     }
 
-    public static boolean canInsert(TileEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
+    public static boolean canInsert(BlockEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tile).canSendHome(itemStack);
         }

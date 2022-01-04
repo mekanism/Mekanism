@@ -1,6 +1,6 @@
 package mekanism.client.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,9 +21,9 @@ import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidAttributes;
 
 public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements IIngredientRenderer<STACK> {
@@ -60,12 +60,13 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, int xPosition, int yPosition, @Nullable STACK stack) {
+    public void render(@Nonnull PoseStack matrix, int xPosition, int yPosition, @Nullable STACK stack) {
         if (stack == null || stack.isEmpty()) {
             return;
         }
         RenderSystem.enableBlend();
-        RenderSystem.enableAlphaTest();
+        //TODO - 1.18: Figure this out
+        ///RenderSystem.enableAlphaTest();
         drawChemical(matrix, xPosition, yPosition, stack);
         if (overlay != null) {
             matrix.pushPose();
@@ -73,11 +74,11 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
             overlay.draw(matrix, xPosition, yPosition);
             matrix.popPose();
         }
-        RenderSystem.disableAlphaTest();
+        //RenderSystem.disableAlphaTest();
         RenderSystem.disableBlend();
     }
 
-    private void drawChemical(MatrixStack matrix, int xPosition, int yPosition, @Nonnull STACK stack) {
+    private void drawChemical(PoseStack matrix, int xPosition, int yPosition, @Nonnull STACK stack) {
         int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
         if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
             desiredHeight = MIN_CHEMICAL_HEIGHT;
@@ -94,12 +95,12 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     @Override
-    public List<ITextComponent> getTooltip(@Nonnull STACK stack, ITooltipFlag tooltipFlag) {
+    public List<Component> getTooltip(@Nonnull STACK stack, TooltipFlag tooltipFlag) {
         Chemical<?> chemical = stack.getType();
         if (chemical.isEmptyType()) {
             return Collections.emptyList();
         }
-        List<ITextComponent> tooltips = new ArrayList<>();
+        List<Component> tooltips = new ArrayList<>();
         tooltips.add(TextComponentUtil.build(chemical));
         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
             tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
@@ -111,7 +112,7 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     }
 
     @Override
-    public FontRenderer getFontRenderer(Minecraft minecraft, @Nonnull STACK stack) {
+    public Font getFontRenderer(Minecraft minecraft, @Nonnull STACK stack) {
         return minecraft.font;
     }
 

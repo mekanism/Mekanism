@@ -1,6 +1,6 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -56,7 +56,7 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
     }
 
     @Override
-    public void draw(PaintingRecipe recipe, MatrixStack matrixStack, double mouseX, double mouseY) {
+    public void draw(PaintingRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
         IGuiIngredientGroup<PigmentStack> group = ingredients.get(recipe);
         if (group != null) {

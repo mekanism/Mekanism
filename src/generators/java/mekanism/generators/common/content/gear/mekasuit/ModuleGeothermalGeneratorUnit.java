@@ -14,22 +14,24 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+
+import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 
 @ParametersAreNonnullByDefault
 public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothermalGeneratorUnit> {
 
     @Override
-    public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, PlayerEntity player) {
+    public void tickServer(IModule<ModuleGeothermalGeneratorUnit> module, Player player) {
         IEnergyContainer energyContainer = module.getEnergyContainer();
         if (energyContainer != null && !energyContainer.getNeeded().isZero()) {
             double highestScaledDegrees = 0;
             double legHeight = player.isCrouching() ? 0.6 : 0.7;
-            Map<Fluid, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, bb -> new AxisAlignedBB(bb.minX, bb.minY, bb.minZ, bb.maxX,
+            Map<Fluid, FluidInDetails> fluidsIn = MekanismUtils.getFluidsIn(player, bb -> new AABB(bb.minX, bb.minY, bb.minZ, bb.maxX,
                   Math.min(bb.minY + legHeight, bb.maxY), bb.maxZ));
             for (Map.Entry<Fluid, FluidInDetails> entry : fluidsIn.entrySet()) {
                 FluidInDetails details = entry.getValue();

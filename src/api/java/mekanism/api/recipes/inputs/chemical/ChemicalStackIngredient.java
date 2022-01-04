@@ -16,8 +16,8 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.inputs.TagResolverHelper;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer.IngredientType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
 
 /**
  * Base implementation for how Mekanism handle's ChemicalStack Ingredients.
@@ -78,7 +78,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
         }
 
         @Override
-        public void write(PacketBuffer buffer) {
+        public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.SINGLE);
             chemicalInstance.writeToPacket(buffer);
         }
@@ -96,10 +96,10 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
     abstract class TaggedIngredient<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ChemicalStackIngredient<CHEMICAL, STACK> {
 
         @Nonnull
-        private final ITag<CHEMICAL> tag;
+        private final Tag<CHEMICAL> tag;
         private final long amount;
 
-        public TaggedIngredient(@Nonnull ITag<CHEMICAL> tag, long amount) {
+        public TaggedIngredient(@Nonnull Tag<CHEMICAL> tag, long amount) {
             this.tag = tag;
             this.amount = amount;
         }
@@ -154,7 +154,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
         }
 
         @Override
-        public void write(PacketBuffer buffer) {
+        public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.TAGGED);
             buffer.writeResourceLocation(getIngredientInfo().getTagLocation(tag));
             buffer.writeVarLong(amount);
@@ -249,7 +249,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
         }
 
         @Override
-        public void write(PacketBuffer buffer) {
+        public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             buffer.writeVarInt(ingredients.length);
             for (INGREDIENT ingredient : ingredients) {

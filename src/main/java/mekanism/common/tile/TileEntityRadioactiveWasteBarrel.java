@@ -23,14 +23,15 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Level;
 
 public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism implements IConfigurable {
 
@@ -40,8 +41,8 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     private float prevScale;
     private int processTicks;
 
-    public TileEntityRadioactiveWasteBarrel() {
-        super(MekanismBlocks.RADIOACTIVE_WASTE_BARREL);
+    public TileEntityRadioactiveWasteBarrel(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
     }
 
@@ -88,34 +89,34 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player, Direction side) {
         if (!isRemote()) {
             setActive(!getActive());
-            World world = getLevel();
+            Level world = getLevel();
             if (world != null) {
-                world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.BLOCKS, 0.3F, 1);
+                world.playSound(null, getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 0.3F, 1);
             }
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        return ActionResultType.PASS;
+    public InteractionResult onRightClick(Player player, Direction side) {
+        return InteractionResult.PASS;
     }
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         updateTag.put(NBTConstants.GAS_STORED, gasTank.serializeNBT());
         updateTag.putInt(NBTConstants.PROGRESS, processTicks);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setCompoundIfPresent(tag, NBTConstants.GAS_STORED, nbt -> gasTank.deserializeNBT(nbt));
         NBTUtils.setIntIfPresent(tag, NBTConstants.PROGRESS, val -> processTicks = val);
     }

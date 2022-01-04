@@ -1,18 +1,18 @@
 package mekanism.common.tag;
 
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 //Based off of TagsProvider.Builder but with a few shortcuts for forge registry entries and also a few more helpers and addition of SafeVarargs annotations
 public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
 
-    private final ITag.Builder builder;
+    private final Tag.Builder builder;
     private final String modID;
 
-    public ForgeRegistryTagBuilder(ITag.Builder builder, String modID) {
+    public ForgeRegistryTagBuilder(Tag.Builder builder, String modID) {
         this.builder = builder;
         this.modID = modID;
     }
@@ -30,27 +30,27 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
         return this;
     }
 
-    public ForgeRegistryTagBuilder<TYPE> add(INamedTag<TYPE> tag) {
+    public ForgeRegistryTagBuilder<TYPE> add(Named<TYPE> tag) {
         this.builder.addTag(tag.getName(), modID);
         return this;
     }
 
     @SafeVarargs
-    public final ForgeRegistryTagBuilder<TYPE> add(INamedTag<TYPE>... tags) {
-        for (INamedTag<TYPE> tag : tags) {
+    public final ForgeRegistryTagBuilder<TYPE> add(Named<TYPE>... tags) {
+        for (Named<TYPE> tag : tags) {
             add(tag);
         }
         return this;
     }
 
-    public ForgeRegistryTagBuilder<TYPE> add(ITag.ITagEntry tag) {
+    public ForgeRegistryTagBuilder<TYPE> add(Tag.Entry tag) {
         builder.add(tag, modID);
         return this;
     }
 
     @SafeVarargs
-    public final ForgeRegistryTagBuilder<TYPE> add(RegistryKey<TYPE>... keys) {
-        for (RegistryKey<TYPE> key : keys) {
+    public final ForgeRegistryTagBuilder<TYPE> add(ResourceKey<TYPE>... keys) {
+        for (ResourceKey<TYPE> key : keys) {
             builder.addElement(key.location(), modID);
         }
         return this;
@@ -67,14 +67,14 @@ public class ForgeRegistryTagBuilder<TYPE extends IForgeRegistryEntry<TYPE>> {
 
     public ForgeRegistryTagBuilder<TYPE> addOptional(ResourceLocation... locations) {
         for (ResourceLocation location : locations) {
-            add(new ITag.OptionalItemEntry(location));
+            add(new Tag.OptionalElementEntry(location));
         }
         return this;
     }
 
     public ForgeRegistryTagBuilder<TYPE> addOptionalTag(ResourceLocation... locations) {
         for (ResourceLocation location : locations) {
-            add(new ITag.OptionalTagEntry(location));
+            add(new Tag.OptionalTagEntry(location));
         }
         return this;
     }

@@ -8,11 +8,13 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityPurificationChamber extends TileEntityAdvancedElectricMachine {
 
-    public TileEntityPurificationChamber() {
-        super(MekanismBlocks.PURIFICATION_CHAMBER, BASE_TICKS_REQUIRED);
+    public TileEntityPurificationChamber(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.PURIFICATION_CHAMBER, pos, state, BASE_TICKS_REQUIRED);
     }
 
     @Nonnull

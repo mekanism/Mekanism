@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentBuilder;
 import mekanism.common.registration.WrappedDeferredRegister;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class PigmentDeferredRegister extends WrappedDeferredRegister<Pigment> {
 

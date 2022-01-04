@@ -39,11 +39,11 @@ import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 public class EvaporationMultiblockData extends MultiblockData implements IValveHandler, FluidRecipeLookupHandler<FluidToFluidRecipe> {
@@ -109,7 +109,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public void onCreated(World world) {
+    public void onCreated(Level world) {
         super.onCreated(world);
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);
         // update the heat capacity now that we've read
@@ -118,7 +118,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public boolean tick(World world) {
+    public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
         // external heat dissipation
         lastEnvironmentLoss = simulateEnvironment();
@@ -140,7 +140,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public void readUpdateTag(CompoundNBT tag) {
+    public void readUpdateTag(CompoundTag tag) {
         super.readUpdateTag(tag);
         NBTUtils.setFluidStackIfPresent(tag, NBTConstants.FLUID_STORED, fluid -> inputTank.setStack(fluid));
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevScale = scale);
@@ -148,9 +148,9 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public void writeUpdateTag(CompoundNBT tag) {
+    public void writeUpdateTag(CompoundTag tag) {
         super.writeUpdateTag(tag);
-        tag.put(NBTConstants.FLUID_STORED, inputTank.getFluid().writeToNBT(new CompoundNBT()));
+        tag.put(NBTConstants.FLUID_STORED, inputTank.getFluid().writeToNBT(new CompoundTag()));
         tag.putFloat(NBTConstants.SCALE, prevScale);
         writeValves(tag);
     }
@@ -225,7 +225,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public World getHandlerWorld() {
+    public Level getHandlerWorld() {
         return getWorld();
     }
 
@@ -240,8 +240,8 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         return ret;
     }
 
-    private void updateSolarSpot(World world, BlockPos pos, int i) {
-        TileEntity tile = WorldUtils.getTileEntity(world, pos);
+    private void updateSolarSpot(Level world, BlockPos pos, int i) {
+        BlockEntity tile = WorldUtils.getTileEntity(world, pos);
         if (tile == null || tile.isRemoved()) {
             solars[i] = null;
         } else {
@@ -249,7 +249,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         }
     }
 
-    public void updateSolarSpot(World world, BlockPos pos) {
+    public void updateSolarSpot(Level world, BlockPos pos) {
         BlockPos maxPos = getMaxPos();
         //Validate it is actually one of the spots solar panels can go
         if (pos.getY() == maxPos.getY() && getBounds().isOnCorner(pos)) {
@@ -266,7 +266,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         }
     }
 
-    private void updateSolars(World world) {
+    private void updateSolars(Level world) {
         BlockPos maxPos = getMaxPos();
         updateSolarSpot(world, maxPos, 0);
         updateSolarSpot(world, maxPos.west(3), 1);

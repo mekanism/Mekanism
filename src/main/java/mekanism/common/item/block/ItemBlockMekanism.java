@@ -4,11 +4,11 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.ITier;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
@@ -36,7 +36,7 @@ public class ItemBlockMekanism<BLOCK extends Block> extends BlockItem {
 
     @Nonnull
     @Override
-    public ITextComponent getName(@Nonnull ItemStack stack) {
+    public Component getName(@Nonnull ItemStack stack) {
         EnumColor color = getTextColor(stack);
         if (color == null) {
             return super.getName(stack);

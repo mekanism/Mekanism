@@ -43,8 +43,10 @@ import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<MetallurgicInfuserRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<InfuseType, InfusionStack, MetallurgicInfuserRecipe> {
@@ -68,8 +70,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityMetallurgicInfuser() {
-        super(MekanismBlocks.METALLURGIC_INFUSER, 200);
+    public TileEntityMetallurgicInfuser(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.METALLURGIC_INFUSER, pos, state, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.INFUSION);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, infusionSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.ENERGY, energyContainer);
@@ -155,7 +157,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Meta
     }
 
     @Override
-    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+    public boolean isConfigurationDataCompatible(BlockEntityType<?> tileType) {
         //Allow exact match or factories of the same type (as we will just ignore the extra data)
         return super.isConfigurationDataCompatible(tileType) || MekanismUtils.isSameTypeFactory(getBlockType(), tileType);
     }

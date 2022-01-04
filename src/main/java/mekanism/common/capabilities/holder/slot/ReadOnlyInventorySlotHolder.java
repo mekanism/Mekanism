@@ -6,7 +6,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class ReadOnlyInventorySlotHolder implements IInventorySlotHolder {
 

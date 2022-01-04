@@ -1,6 +1,6 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -16,13 +16,13 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityElectricPump;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
 public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, MekanismTileContainer<TileEntityElectricPump>> {
 
-    public GuiElectricPump(MekanismTileContainer<TileEntityElectricPump> container, PlayerInventory inv, ITextComponent title) {
+    public GuiElectricPump(MekanismTileContainer<TileEntityElectricPump> container, Inventory inv, Component title) {
         super(container, inv, title);
         inventoryLabelY += 2;
         dynamicSlots = true;
@@ -31,8 +31,8 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiInnerScreen(this, 54, 23, 80, 41, () -> {
-            List<ITextComponent> list = new ArrayList<>();
+        addRenderableWidget(new GuiInnerScreen(this, 54, 23, 80, 41, () -> {
+            List<Component> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
             FluidStack fluidStack = tile.fluidTank.getFluid();
             if (fluidStack.isEmpty()) {
@@ -42,16 +42,16 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
             }
             return list;
         }));
-        addButton(new GuiDownArrow(this, 32, 39));
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addButton(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
-        addButton(new GuiEnergyTab(this, tile.getEnergyContainer()));
+        addRenderableWidget(new GuiDownArrow(this, 32, 39));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
+        addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer()));
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

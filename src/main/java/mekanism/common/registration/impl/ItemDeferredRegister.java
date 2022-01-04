@@ -12,10 +12,10 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.WrappedDeferredRegister;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
@@ -46,7 +46,7 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         return register(name, properties -> new Item(properties) {
             @Nonnull
             @Override
-            public ITextComponent getName(@Nonnull ItemStack stack) {
+            public Component getName(@Nonnull ItemStack stack) {
                 return TextComponentUtil.build(color, super.getName(stack));
             }
         });

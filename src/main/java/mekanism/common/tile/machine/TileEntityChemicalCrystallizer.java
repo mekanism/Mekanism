@@ -49,7 +49,9 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<ChemicalCrystallizerRecipe> {
 
@@ -68,8 +70,8 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityChemicalCrystallizer() {
-        super(MekanismBlocks.CHEMICAL_CRYSTALLIZER, 200);
+    public TileEntityChemicalCrystallizer(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.CHEMICAL_CRYSTALLIZER, pos, state, 200);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY,
               TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT, TransmissionType.SLURRY);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);

@@ -1,14 +1,14 @@
 package mekanism.client.gui.element.bar;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
 
@@ -25,7 +25,7 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
     public GuiHorizontalPowerBar(IGuiWrapper gui, IEnergyContainer container, int x, int y, int desiredWidth) {
         this(gui, new IBarInfoHandler() {
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 return EnergyDisplay.of(container).getTextComponent();
             }
 
@@ -46,7 +46,7 @@ public class GuiHorizontalPowerBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         int displayInt = (int) (handlerLevel * texWidth);
         if (displayInt > 0) {
             blit(matrix, x + 1, y + 1, calculateScaled(widthScale, displayInt), texHeight, 0, 0, displayInt, texHeight, texWidth, texHeight);

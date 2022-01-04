@@ -1,7 +1,7 @@
 package mekanism.api.energy;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongTransferUtils;

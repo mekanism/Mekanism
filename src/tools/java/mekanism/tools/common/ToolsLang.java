@@ -1,7 +1,7 @@
 package mekanism.tools.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 
 public enum ToolsLang implements ILangEntry {
     HP("tooltip", "hp");

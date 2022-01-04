@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class InventoryPersonalChest extends ItemStackMekanismInventory {
 

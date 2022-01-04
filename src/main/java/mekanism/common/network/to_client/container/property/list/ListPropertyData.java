@@ -6,7 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.PropertyType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public abstract class ListPropertyData<TYPE> extends PropertyData {
 
@@ -20,7 +20,7 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
         this.values = values;
     }
 
-    public static <TYPE> ListPropertyData<TYPE> readList(short property, PacketBuffer buffer) {
+    public static <TYPE> ListPropertyData<TYPE> readList(short property, FriendlyByteBuf buffer) {
         ListType listType = buffer.readEnum(ListType.class);
         int elements = buffer.readVarInt();
         switch (listType) {
@@ -44,7 +44,7 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
     }
 
     @Override
-    public void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         super.writeToPacket(buffer);
         buffer.writeEnum(listType);
         buffer.writeVarInt(values.size());
@@ -53,5 +53,5 @@ public abstract class ListPropertyData<TYPE> extends PropertyData {
         }
     }
 
-    protected abstract void writeListElement(PacketBuffer buffer, TYPE value);
+    protected abstract void writeListElement(FriendlyByteBuf buffer, TYPE value);
 }

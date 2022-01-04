@@ -31,7 +31,7 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.CapabilityUtils;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -46,7 +46,7 @@ public class LookingAtUtils {
     }
 
     @Nullable
-    private static MultiblockData getMultiblock(@Nonnull TileEntity tile) {
+    private static MultiblockData getMultiblock(@Nonnull BlockEntity tile) {
         if (tile instanceof IMultiblock) {
             return ((IMultiblock<?>) tile).getMultiblock();
         } else if (tile instanceof IStructuralMultiblock) {
@@ -64,7 +64,7 @@ public class LookingAtUtils {
         return null;
     }
 
-    public static void addInfo(LookingAtHelper info, @Nonnull TileEntity tile, boolean displayTanks, boolean displayFluidTanks) {
+    public static void addInfo(LookingAtHelper info, @Nonnull BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {
         MultiblockData structure = getMultiblock(tile);
         Optional<IStrictEnergyHandler> energyCapability = CapabilityUtils.getCapability(tile, Capabilities.STRICT_ENERGY_CAPABILITY, null).resolve();
         if (energyCapability.isPresent()) {
@@ -129,7 +129,7 @@ public class LookingAtUtils {
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>,
-          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(TileEntity tile, @Nullable MultiblockData structure, Capability<HANDLER> capability,
+          HANDLER extends IChemicalHandler<CHEMICAL, STACK>> void addInfo(BlockEntity tile, @Nullable MultiblockData structure, Capability<HANDLER> capability,
           Function<MultiblockData, List<TANK>> multiBlockToTanks, LookingAtHelper info, ILangEntry langEntry, Current matchingCurrent, CurrentType matchingCurrentType) {
         Optional<HANDLER> cap = CapabilityUtils.getCapability(tile, capability, null).resolve();
         if (cap.isPresent()) {

@@ -2,7 +2,7 @@ package mekanism.common.content.network.distribution;
 
 import java.util.Collection;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.distribution.SplitInfo;

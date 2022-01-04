@@ -7,14 +7,16 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock implements ILaserReceptor {
 
-    public TileEntityLaserFocusMatrix() {
-        super(GeneratorsBlocks.LASER_FOCUS_MATRIX);
+    public TileEntityLaserFocusMatrix(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.LASER_FOCUS_MATRIX, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_RECEPTOR_CAPABILITY, this));
     }
 
@@ -27,12 +29,12 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
     }
 
     @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onRightClick(Player player, Direction side) {
         if (!isRemote() && player.isCreative()) {
             FusionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 multiblock.setPlasmaTemp(1_000_000_000);
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
         return super.onRightClick(player, side);

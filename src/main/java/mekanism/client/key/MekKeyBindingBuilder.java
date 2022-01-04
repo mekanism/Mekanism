@@ -5,11 +5,11 @@ import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.MekanismLang;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.client.util.InputMappings;
+import net.minecraft.client.KeyMapping;
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
@@ -21,10 +21,10 @@ public class MekKeyBindingBuilder {
     private String description;
     private IKeyConflictContext keyConflictContext = KeyConflictContext.UNIVERSAL;
     private KeyModifier keyModifier = KeyModifier.NONE;
-    private InputMappings.Input key;
+    private InputConstants.Key key;
     private String category = MekanismLang.MEKANISM.getTranslationKey();
-    private BiConsumer<KeyBinding, Boolean> onKeyDown;
-    private Consumer<KeyBinding> onKeyUp;
+    private BiConsumer<KeyMapping, Boolean> onKeyDown;
+    private Consumer<KeyMapping> onKeyUp;
     private BooleanSupplier toggleable;
     private boolean repeating;
 
@@ -56,15 +56,15 @@ public class MekKeyBindingBuilder {
     }
 
     public MekKeyBindingBuilder keyCode(int keyCode) {
-        return keyCode(InputMappings.Type.KEYSYM, keyCode);
+        return keyCode(InputConstants.Type.KEYSYM, keyCode);
     }
 
-    public MekKeyBindingBuilder keyCode(InputMappings.Type keyType, int keyCode) {
+    public MekKeyBindingBuilder keyCode(InputConstants.Type keyType, int keyCode) {
         Objects.requireNonNull(keyType, "Key type cannot be null.");
         return keyCode(keyType.getOrCreate(keyCode));
     }
 
-    public MekKeyBindingBuilder keyCode(InputMappings.Input key) {
+    public MekKeyBindingBuilder keyCode(InputConstants.Key key) {
         this.key = Objects.requireNonNull(key, "Key cannot be null.");
         return this;
     }
@@ -78,12 +78,12 @@ public class MekKeyBindingBuilder {
         return this;
     }
 
-    public MekKeyBindingBuilder onKeyDown(BiConsumer<KeyBinding, Boolean> onKeyDown) {
+    public MekKeyBindingBuilder onKeyDown(BiConsumer<KeyMapping, Boolean> onKeyDown) {
         this.onKeyDown = Objects.requireNonNull(onKeyDown, "On key down cannot be null when manually specified.");
         return this;
     }
 
-    public MekKeyBindingBuilder onKeyUp(Consumer<KeyBinding> onKeyUp) {
+    public MekKeyBindingBuilder onKeyUp(Consumer<KeyMapping> onKeyUp) {
         this.onKeyUp = Objects.requireNonNull(onKeyUp, "On key up cannot be null when manually specified.");
         return this;
     }
@@ -102,7 +102,7 @@ public class MekKeyBindingBuilder {
         return this;
     }
 
-    public KeyBinding build() {
+    public KeyMapping build() {
         return new MekKeyBinding(
               Objects.requireNonNull(description, "Description has not been set."),
               keyConflictContext,

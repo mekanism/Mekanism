@@ -1,14 +1,14 @@
 package mekanism.common.network;
 
 import java.util.function.Supplier;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public interface IMekanismPacket {
 
     void handle(NetworkEvent.Context context);
 
-    void encode(PacketBuffer buffer);
+    void encode(FriendlyByteBuf buffer);
 
     static <PACKET extends IMekanismPacket> void handle(PACKET message, Supplier<NetworkEvent.Context> ctx) {
         if (message != null) {

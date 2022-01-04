@@ -2,11 +2,11 @@ package mekanism.defense.common.network;
 
 import mekanism.common.network.BasePacketHandler;
 import mekanism.defense.common.MekanismDefense;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.network.simple.SimpleChannel;
 
 public class DefensePacketHandler extends BasePacketHandler {
 
-    private static final SimpleChannel netHandler = createChannel(MekanismDefense.rl(MekanismDefense.MODID));
+    private final SimpleChannel netHandler = createChannel(MekanismDefense.rl(MekanismDefense.MODID), MekanismDefense.instance.versionNumber);
 
     @Override
     protected SimpleChannel getChannel() {

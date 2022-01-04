@@ -40,20 +40,20 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ILiquidContainer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -83,8 +83,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityFluidicPlenisher() {
-        super(MekanismBlocks.FLUIDIC_PLENISHER);
+    public TileEntityFluidicPlenisher(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.FLUIDIC_PLENISHER, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
@@ -198,7 +198,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             return false;
         }
         BlockState state = level.getBlockState(pos);
-        if (state.isAir(level, pos)) {
+        if (state.isAir()) {
             return true;
         }
         FluidState currentFluidState = state.getFluidState();
@@ -214,7 +214,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         FluidStack stack = fluidTank.getFluid();
         if (stack.isEmpty()) {
             //If we are empty, base it off of if it is replaceable in general or if it is a liquid container
-            return WorldUtils.isValidReplaceableBlock(level, pos) || state.getBlock() instanceof ILiquidContainer;
+            return WorldUtils.isValidReplaceableBlock(level, pos) || state.getBlock() instanceof LiquidBlockContainer;
         }
         Fluid fluid = stack.getFluid();
         if (state.canBeReplaced(fluid)) {
@@ -222,47 +222,45 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             return true;
         }
         //Otherwise, just return if it is a liquid container that can support the type of fluid we are offering
-        return state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canPlaceLiquid(level, pos, state, fluid);
+        return state.getBlock() instanceof LiquidBlockContainer && ((LiquidBlockContainer) state.getBlock()).canPlaceLiquid(level, pos, state, fluid);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         nbtTags.putBoolean(NBTConstants.FINISHED, finishedCalc);
         if (!activeNodes.isEmpty()) {
-            ListNBT activeList = new ListNBT();
+            ListTag activeList = new ListTag();
             for (BlockPos wrapper : activeNodes) {
-                activeList.add(NBTUtil.writeBlockPos(wrapper));
+                activeList.add(NbtUtils.writeBlockPos(wrapper));
             }
             nbtTags.put(NBTConstants.ACTIVE_NODES, activeList);
         }
         if (!usedNodes.isEmpty()) {
-            ListNBT usedList = new ListNBT();
+            ListTag usedList = new ListTag();
             for (BlockPos obj : usedNodes) {
-                usedList.add(NBTUtil.writeBlockPos(obj));
+                usedList.add(NbtUtils.writeBlockPos(obj));
             }
             nbtTags.put(NBTConstants.USED_NODES, usedList);
         }
-        return nbtTags;
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
-        finishedCalc = nbtTags.getBoolean(NBTConstants.FINISHED);
-        if (nbtTags.contains(NBTConstants.ACTIVE_NODES, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.ACTIVE_NODES, NBT.TAG_COMPOUND);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
+        finishedCalc = nbt.getBoolean(NBTConstants.FINISHED);
+        if (nbt.contains(NBTConstants.ACTIVE_NODES, Tag.TAG_LIST)) {
+            ListTag tagList = nbt.getList(NBTConstants.ACTIVE_NODES, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
-                activeNodes.add(NBTUtil.readBlockPos(tagList.getCompound(i)));
+                activeNodes.add(NbtUtils.readBlockPos(tagList.getCompound(i)));
             }
         }
-        if (nbtTags.contains(NBTConstants.USED_NODES, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.USED_NODES, NBT.TAG_COMPOUND);
+        if (nbt.contains(NBTConstants.USED_NODES, Tag.TAG_LIST)) {
+            ListTag tagList = nbt.getList(NBTConstants.USED_NODES, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
-                usedNodes.add(NBTUtil.readBlockPos(tagList.getCompound(i)));
+                usedNodes.add(NbtUtils.readBlockPos(tagList.getCompound(i)));
             }
         }
     }
@@ -274,15 +272,15 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player, Direction side) {
         reset();
         player.sendMessage(MekanismUtils.logFormat(MekanismLang.PLENISHER_RESET), Util.NIL_UUID);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        return ActionResultType.PASS;
+    public InteractionResult onRightClick(Player player, Direction side) {
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -294,7 +292,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

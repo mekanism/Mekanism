@@ -23,16 +23,17 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter implements IComputerTile {
 
     private final EnergyHandlerManager energyHandlerManager;
 
-    public TileEntityUniversalCable(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityUniversalCable(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         addCapabilityResolver(energyHandlerManager = new EnergyHandlerManager(direction -> {
             UniversalCable cable = getTransmitter();
             if (direction != null && cable.getConnectionTypeRaw(direction) == ConnectionType.NONE) {
@@ -57,11 +58,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
     }
 
     @Override
-    public void tick() {
-        if (!isRemote()) {
-            getTransmitter().pullFromAcceptors();
-        }
-        super.tick();
+    protected void onUpdateServer() {
+        getTransmitter().pullFromAcceptors();
+        super.onUpdateServer();
     }
 
     @Override
@@ -87,9 +86,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
+    public CompoundTag getUpdateTag() {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
-        CompoundNBT updateTag = super.getUpdateTag();
+        CompoundTag updateTag = super.getUpdateTag();
         if (getTransmitter().hasTransmitterNetwork()) {
             EnergyNetwork network = getTransmitter().getTransmitterNetwork();
             updateTag.putString(NBTConstants.ENERGY_STORED, network.energyContainer.getEnergy().toString());

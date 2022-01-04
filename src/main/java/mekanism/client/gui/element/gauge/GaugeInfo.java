@@ -5,7 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public enum GaugeInfo {
     STANDARD("normal.png", 2, 2, null),

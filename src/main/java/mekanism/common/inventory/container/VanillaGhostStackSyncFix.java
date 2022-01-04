@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.Mekanism;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.CraftingResultSlot;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.server.SSetSlotPacket;
-import net.minecraft.util.NonNullList;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ResultSlot;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.core.NonNullList;
 
 @ParametersAreNonnullByDefault
-public class VanillaGhostStackSyncFix implements IContainerListener {
+public class VanillaGhostStackSyncFix implements ContainerListener {
 
     private final List<ItemStack> lastSlots;
-    private final ServerPlayerEntity player;
+    private final ServerPlayer player;
 
-    public VanillaGhostStackSyncFix(ServerPlayerEntity player) {
+    public VanillaGhostStackSyncFix(ServerPlayer player) {
         this.player = player;
         List<Slot> slots = this.player.inventoryMenu.slots;
         lastSlots = new ArrayList<>(slots.size());
@@ -29,15 +29,12 @@ public class VanillaGhostStackSyncFix implements IContainerListener {
     }
 
     @Override
-    public void refreshContainer(Container container, NonNullList<ItemStack> items) {
-    }
-
-    @Override
-    public void slotChanged(Container container, int slotId, ItemStack stack) {
+    public void slotChanged(AbstractContainerMenu container, int slotId, ItemStack stack) {
+        //TODO - 1.18: Test if we can remove this as maybe the changes/introduction of a state id fixes the issues we had
         //Should always be true but validate it in case
         if (slotId < lastSlots.size()) {
             ItemStack last = lastSlots.get(slotId);
-            if (player.ignoreSlotUpdateHack && !(container.getSlot(slotId) instanceof CraftingResultSlot) && last.hasTag() &&
+            if (container.suppressRemoteUpdates && !(container.getSlot(slotId) instanceof ResultSlot) && last.hasTag() &&
                 last.getItem().getRegistryName().getNamespace().equals(Mekanism.MODID)) {
                 //If the player is set to not sending slot updates to the client due to thinking that nothing changed
                 // but otherwise it would and it is a mekanism item that has NBT, so could be changing similar to how
@@ -51,7 +48,7 @@ public class VanillaGhostStackSyncFix implements IContainerListener {
                 // a ghost item stack and makes the client think it still has a jetpack that it can use.
                 //TODO: Eventually it might be nice to have a marker interface or something on items that could be updating
                 // in the slots due to using resources, but for now the above check will do
-                player.connection.send(new SSetSlotPacket(container.containerId, slotId, stack));
+                player.connection.send(new ClientboundContainerSetSlotPacket(container.containerId, container.incrementStateId(), slotId, stack));
             }
             //Note: We don't need to copy the stack as we are already passed a copy that will be
             // persisted in vanilla's last slot map, so we can just use the same reference. We only
@@ -62,6 +59,6 @@ public class VanillaGhostStackSyncFix implements IContainerListener {
     }
 
     @Override
-    public void setContainerData(Container container, int property, int value) {
+    public void dataChanged(AbstractContainerMenu container, int slotID, int value) {
     }
 }

@@ -12,9 +12,9 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.client.render.armor.MekaSuitArmor.ModuleOBJModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 
 public class MekanismModelCache extends BaseModelCache {
@@ -31,7 +31,7 @@ public class MekanismModelCache extends BaseModelCache {
     public final JSONModelData PIGMENT_MIXER_SHAFT = registerJSON(Mekanism.rl("block/pigment_mixer_shaft"));
     public final JSONModelData[] QIO_DRIVES = new JSONModelData[DriveStatus.STATUSES.length];
     private final Map<ResourceLocation, JSONModelData> ROBIT_SKINS = new HashMap<>();
-    private IBakedModel BASE_ROBIT;
+    private BakedModel BASE_ROBIT;
 
     private MekanismModelCache() {
         for (DriveStatus status : DriveStatus.STATUSES) {
@@ -67,7 +67,7 @@ public class MekanismModelCache extends BaseModelCache {
     }
 
     @Nullable
-    public IBakedModel getRobitSkin(@Nonnull IRobitSkinProvider skin) {
+    public BakedModel getRobitSkin(@Nonnull IRobitSkinProvider skin) {
         JSONModelData data = ROBIT_SKINS.get(skin.getRegistryName());
         return data == null ? BASE_ROBIT : data.getBakedModel();
     }

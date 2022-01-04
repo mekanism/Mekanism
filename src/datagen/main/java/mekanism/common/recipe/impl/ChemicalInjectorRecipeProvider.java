@@ -9,17 +9,17 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 
 class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "injecting/";
         //Brick -> clay ball
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
@@ -49,7 +49,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         addChemicalInjectorCoralRevivalRecipes(consumer, basePath + "coral/");
     }
 
-    private void addChemicalInjectorConcreteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addChemicalInjectorConcreteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.BLACK_CONCRETE_POWDER, Blocks.BLACK_CONCRETE, "black");
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.BLUE_CONCRETE_POWDER, Blocks.BLUE_CONCRETE, "blue");
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.BROWN_CONCRETE_POWDER, Blocks.BROWN_CONCRETE, "brown");
@@ -68,7 +68,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         addChemicalInjectorConcreteRecipe(consumer, basePath, Blocks.YELLOW_CONCRETE_POWDER, Blocks.YELLOW_CONCRETE, "yellow");
     }
 
-    private void addChemicalInjectorConcreteRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider powder, IItemProvider concrete, String name) {
+    private void addChemicalInjectorConcreteRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike powder, ItemLike concrete, String name) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(powder),
               GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
@@ -76,7 +76,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + name));
     }
 
-    private void addChemicalInjectorCoralRevivalRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addChemicalInjectorCoralRevivalRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BRAIN_CORAL_BLOCK, Blocks.BRAIN_CORAL_BLOCK, 5);
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_BUBBLE_CORAL_BLOCK, Blocks.BUBBLE_CORAL_BLOCK, 5);
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Blocks.DEAD_FIRE_CORAL_BLOCK, Blocks.FIRE_CORAL_BLOCK, 5);
@@ -94,7 +94,7 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         addChemicalInjectorCoralRevivalRecipe(consumer, basePath, Items.DEAD_TUBE_CORAL_FAN, Items.TUBE_CORAL_FAN, 3);
     }
 
-    private void addChemicalInjectorCoralRevivalRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider dead, IItemProvider living, int water) {
+    private void addChemicalInjectorCoralRevivalRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike dead, ItemLike living, int water) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
               ItemStackIngredient.from(dead),
               GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, water),

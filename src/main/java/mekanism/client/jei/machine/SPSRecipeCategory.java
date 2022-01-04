@@ -26,7 +26,7 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
 
@@ -37,7 +37,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
         super(helper, MekanismBlocks.SPS_CASING.getRegistryName(), MekanismLang.SPS.translate(), createIcon(helper, MekanismItems.ANTIMATTER_PELLET),
               3, 12, 168, 74);
         addElement(new GuiInnerScreen(this, 26, 13, 122, 60, () -> {
-            List<ITextComponent> list = new ArrayList<>();
+            List<Component> list = new ArrayList<>();
             list.add(MekanismLang.STATUS.translate(MekanismLang.ACTIVE));
             list.add(MekanismLang.SPS_ENERGY_INPUT.translate(EnergyDisplay.of(
                   MekanismConfig.general.spsEnergyPerInput.get().multiply(MekanismConfig.general.spsInputPerAntimatter.get()))));

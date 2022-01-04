@@ -16,15 +16,16 @@ import mekanism.common.content.network.transmitter.ThermodynamicConductor;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
 
 public class TileEntityThermodynamicConductor extends TileEntityTransmitter {
 
     private final HeatHandlerManager heatHandlerManager;
 
-    public TileEntityThermodynamicConductor(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityThermodynamicConductor(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         addCapabilityResolver(heatHandlerManager = new HeatHandlerManager(direction -> {
             ThermodynamicConductor conductor = getTransmitter();
             if (direction != null && conductor.getConnectionTypeRaw(direction) == ConnectionType.NONE) {

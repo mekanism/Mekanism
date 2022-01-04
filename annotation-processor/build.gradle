@@ -4,7 +4,7 @@ plugins {
 
 group 'mekanism.annotation-processor'
 version '1.0'
-java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
     maven {
@@ -17,5 +17,7 @@ repositories {
 }
 
 dependencies {
-    implementation "com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}"
+    //TODO - 1.18: Update when CraftTweaker updates
+    //implementation "com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}"
+    implementation "com.blamejared.crafttweaker:CraftTweaker-1.16.5:${crafttweaker_version}"
 }

@@ -1,12 +1,12 @@
 package mekanism.client.gui.element.slot;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.NonNullSupplier;
 
 public class GuiSequencedSlotDisplay extends GuiElement {
@@ -55,7 +55,7 @@ public class GuiSequencedSlotDisplay extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (!renderStack.isEmpty()) {
             gui().getItemRenderer().blitOffset += zOffset;

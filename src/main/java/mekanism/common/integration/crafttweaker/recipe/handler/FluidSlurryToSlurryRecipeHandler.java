@@ -3,7 +3,7 @@ package mekanism.common.integration.crafttweaker.recipe.handler;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.api.recipes.IRecipeHandler;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 
 @IRecipeHandler.For(FluidSlurryToSlurryRecipe.class)
 public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<FluidSlurryToSlurryRecipe> {
@@ -14,7 +14,7 @@ public class FluidSlurryToSlurryRecipeHandler extends MekanismRecipeHandler<Flui
     }
 
     @Override
-    public <U extends IRecipe<?>> boolean doesConflict(IRecipeManager manager, FluidSlurryToSlurryRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, FluidSlurryToSlurryRecipe recipe, U other) {
         //Only support if the other is a fluid slurry to slurry recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
         if (other instanceof FluidSlurryToSlurryRecipe) {

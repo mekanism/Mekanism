@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Arrays;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -26,12 +26,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 
 public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
@@ -40,7 +40,7 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
     private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
     private static final ResourceLocation PROTECTED = MekanismUtils.getResource(ResourceType.GUI, "protected.png");
 
-    private static ISecurityObject getItemSecurityObject(@Nonnull Hand hand) {
+    private static ISecurityObject getItemSecurityObject(@Nonnull InteractionHand hand) {
         return SecurityUtils.wrapSecurityItem(() -> {
             ItemStack stack = minecraft.player.getItemInHand(hand);
             if (stack.isEmpty() || !(stack.getItem() instanceof ISecurityItem)) {
@@ -52,7 +52,7 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
     }
 
     @Nullable
-    private final Hand currentHand;
+    private final InteractionHand currentHand;
 
     public GuiSecurityTab(IGuiWrapper gui, ISecurityObject securityObject) {
         this(gui, securityObject, 34);
@@ -63,7 +63,7 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
         this.currentHand = null;
     }
 
-    public GuiSecurityTab(IGuiWrapper gui, @Nonnull Hand hand) {
+    public GuiSecurityTab(IGuiWrapper gui, @Nonnull InteractionHand hand) {
         super(PUBLIC, gui, getItemSecurityObject(hand), gui.getWidth(), 34, 26, 18, false);
         currentHand = hand;
     }
@@ -90,10 +90,10 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        ITextComponent securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(dataSource, Dist.CLIENT));
-        ITextComponent ownerComponent = OwnerDisplay.of(minecraft.player, dataSource.getOwnerUUID(), dataSource.getOwnerName()).getTextComponent();
+        Component securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(dataSource, Dist.CLIENT));
+        Component ownerComponent = OwnerDisplay.of(minecraft.player, dataSource.getOwnerUUID(), dataSource.getOwnerName()).getTextComponent();
         if (SecurityUtils.isOverridden(dataSource, Dist.CLIENT)) {
             displayTooltips(matrix, Arrays.asList(securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED)), mouseX, mouseY);
         } else {
@@ -111,11 +111,11 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
             UUID owner = dataSource.getOwnerUUID();
             if (owner != null && minecraft.player.getUUID().equals(owner)) {
                 if (currentHand != null) {
-                    Mekanism.packetHandler.sendToServer(new PacketSecurityMode(currentHand, getSecurity().getNext()));
-                } else if (dataSource instanceof TileEntity) {
-                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_SECURITY_MODE, (TileEntity) dataSource));
+                    Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, getSecurity().getNext()));
+                } else if (dataSource instanceof BlockEntity) {
+                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_SECURITY_MODE, (BlockEntity) dataSource));
                 } else if (dataSource instanceof Entity) {
-                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, (Entity) dataSource));
+                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, (Entity) dataSource));
                 }
             }
         }

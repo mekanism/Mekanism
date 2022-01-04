@@ -7,15 +7,15 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 @ParametersAreNonnullByDefault
@@ -75,7 +75,7 @@ public class RobitSkin extends ForgeRegistryEntry<RobitSkin> implements IRobitSk
      *
      * @return {@code true} if the player has access.
      */
-    public boolean isUnlocked(@Nonnull PlayerEntity player) {
+    public boolean isUnlocked(@Nonnull Player player) {
         //TODO: Have some skins that are potentially locked as patreon rewards?
         return true;
     }
@@ -95,7 +95,7 @@ public class RobitSkin extends ForgeRegistryEntry<RobitSkin> implements IRobitSk
     }
 
     @Override
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         return TextComponentUtil.translate(getTranslationKey());
     }
 }

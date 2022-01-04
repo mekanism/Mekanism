@@ -11,11 +11,11 @@ import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraftforge.network.NetworkEvent;
 
 /**
  * Used for informing the server that an action happened in a GUI
@@ -26,11 +26,11 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
     private final BlockPos tilePosition;
     private final double extra;
 
-    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, TileEntity tile) {
+    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockEntity tile) {
         this(interaction, tile.getBlockPos());
     }
 
-    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, TileEntity tile, double extra) {
+    public PacketGeneratorsGuiInteract(GeneratorsGuiInteraction interaction, BlockEntity tile, double extra) {
         this(interaction, tile.getBlockPos(), extra);
     }
 
@@ -46,7 +46,7 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player != null) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
             if (tile != null) {
@@ -56,13 +56,13 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(interaction);
         buffer.writeBlockPos(tilePosition);
         buffer.writeDouble(extra);
     }
 
-    public static PacketGeneratorsGuiInteract decode(PacketBuffer buffer) {
+    public static PacketGeneratorsGuiInteract decode(FriendlyByteBuf buffer) {
         return new PacketGeneratorsGuiInteract(buffer.readEnum(GeneratorsGuiInteraction.class), buffer.readBlockPos(), buffer.readDouble());
     }
 
@@ -87,13 +87,13 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
             }
         });
 
-        private final TriConsumer<TileEntityMekanism, PlayerEntity, Double> consumerForTile;
+        private final TriConsumer<TileEntityMekanism, Player, Double> consumerForTile;
 
-        GeneratorsGuiInteraction(TriConsumer<TileEntityMekanism, PlayerEntity, Double> consumerForTile) {
+        GeneratorsGuiInteraction(TriConsumer<TileEntityMekanism, Player, Double> consumerForTile) {
             this.consumerForTile = consumerForTile;
         }
 
-        public void consume(TileEntityMekanism tile, PlayerEntity player, double extra) {
+        public void consume(TileEntityMekanism tile, Player player, double extra) {
             consumerForTile.accept(tile, player, extra);
         }
     }

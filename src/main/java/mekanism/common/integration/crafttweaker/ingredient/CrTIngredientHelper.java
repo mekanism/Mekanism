@@ -6,7 +6,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.inputs.InputIngredient;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 
 public class CrTIngredientHelper {
 
@@ -22,7 +22,7 @@ public class CrTIngredientHelper {
     /**
      * Validates that the amount is greater than zero and that the tag exists. If it does it get and returns the tag, otherwise it throws an error.
      */
-    static <TYPE, CRT_TYPE> ITag<TYPE> assertValidAndGet(MCTag<CRT_TYPE> crtTag, long amount, Function<MCTag<CRT_TYPE>, ITag<TYPE>> getter,
+    static <TYPE, CRT_TYPE> Tag<TYPE> assertValidAndGet(MCTag<CRT_TYPE> crtTag, long amount, Function<MCTag<CRT_TYPE>, Tag<TYPE>> getter,
           String ingredientType) {
         assertValidAmount(ingredientType, amount);
         return CrTUtils.validateTagAndGet(crtTag, getter);

@@ -12,7 +12,7 @@ import java.util.function.IntFunction;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -26,10 +26,10 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Internal helper class used to reduce the additional code needed to deserialize different types of chemical stack ingredients
@@ -57,7 +57,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
                 SlurryStackIngredient[]::new);
 
     private final ChemicalTags<CHEMICAL> tags;
-    private final Function<PacketBuffer, STACK> fromPacket;
+    private final Function<FriendlyByteBuf, STACK> fromPacket;
     private final Function<ResourceLocation, CHEMICAL> fromRegistry;
     private final ChemicalIngredientInfo<CHEMICAL, STACK> info;
     private final Function<STACK, INGREDIENT> stackToIngredient;
@@ -66,7 +66,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
     private final Function<INGREDIENT[], INGREDIENT> multiCreator;
     private final String name;
 
-    private ChemicalIngredientDeserializer(String name, ChemicalIngredientInfo<CHEMICAL, STACK> info, ChemicalTags<CHEMICAL> tags, Function<PacketBuffer, STACK> fromPacket,
+    private ChemicalIngredientDeserializer(String name, ChemicalIngredientInfo<CHEMICAL, STACK> info, ChemicalTags<CHEMICAL> tags, Function<FriendlyByteBuf, STACK> fromPacket,
           Function<ResourceLocation, CHEMICAL> fromRegistry, Function<STACK, INGREDIENT> stackToIngredient, TagIngredientCreator<CHEMICAL, STACK, INGREDIENT> tagToIngredient,
           Function<INGREDIENT[], INGREDIENT> multiCreator, IntFunction<INGREDIENT[]> arrayCreator) {
         this.fromPacket = fromPacket;
@@ -94,7 +94,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
      *
      * @return Chemical Stack Ingredient.
      */
-    public final INGREDIENT read(PacketBuffer buffer) {
+    public final INGREDIENT read(FriendlyByteBuf buffer) {
         IngredientType type = buffer.readEnum(IngredientType.class);
         if (type == IngredientType.SINGLE) {
             return stackToIngredient.apply(fromPacket.apply(buffer));
@@ -149,15 +149,15 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
                 throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
             }
             JsonElement count = jsonObject.get(JsonConstants.AMOUNT);
-            if (!JSONUtils.isNumberValue(count)) {
+            if (!GsonHelper.isNumberValue(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
             }
             long amount = count.getAsJsonPrimitive().getAsLong();
             if (amount < 1) {
                 throw new JsonSyntaxException("Expected amount to be greater than zero.");
             }
-            ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(jsonObject, JsonConstants.TAG));
-            ITag<CHEMICAL> tag = tags.getCollection().getTag(resourceLocation);
+            ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, JsonConstants.TAG));
+            Tag<CHEMICAL> tag = tags.getCollection().getTag(resourceLocation);
             if (tag == null) {
                 throw new JsonSyntaxException("Unknown " + name + " tag '" + resourceLocation + "'");
             }
@@ -206,14 +206,14 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
             throw new JsonSyntaxException("Expected to receive a amount that is greater than zero");
         }
         JsonElement count = json.get(JsonConstants.AMOUNT);
-        if (!JSONUtils.isNumberValue(count)) {
+        if (!GsonHelper.isNumberValue(count)) {
             throw new JsonSyntaxException("Expected amount to be a number greater than zero.");
         }
         long amount = count.getAsJsonPrimitive().getAsLong();
         if (amount < 1) {
             throw new JsonSyntaxException("Expected amount to be greater than zero.");
         }
-        ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getAsString(json, info.getSerializationKey()));
+        ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(json, info.getSerializationKey()));
         CHEMICAL chemical = fromRegistry.apply(resourceLocation);
         if (chemical.isEmptyType()) {
             throw new JsonSyntaxException("Invalid " + name + " type '" + resourceLocation + "'");
@@ -239,7 +239,7 @@ public class ChemicalIngredientDeserializer<CHEMICAL extends Chemical<CHEMICAL>,
     public interface TagIngredientCreator<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
           INGREDIENT extends IChemicalStackIngredient<CHEMICAL, STACK>> {
 
-        INGREDIENT create(ITag<CHEMICAL> tag, long amount);
+        INGREDIENT create(Tag<CHEMICAL> tag, long amount);
     }
 
     public enum IngredientType {

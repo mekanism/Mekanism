@@ -2,7 +2,7 @@ package mekanism.common.tile.interfaces;
 
 import javax.annotation.Nonnull;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public interface ITileDirectional {
 

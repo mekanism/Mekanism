@@ -1,11 +1,11 @@
 package mekanism.api.chemical.pigment;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.IChemicalTank;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 
 /**
  * Convenience extension to make working with generics easier.
@@ -20,8 +20,8 @@ public interface IPigmentTank extends IChemicalTank<Pigment, PigmentStack>, IEmp
     }
 
     @Override
-    default void deserializeNBT(CompoundNBT nbt) {
-        if (nbt.contains(NBTConstants.STORED, NBT.TAG_COMPOUND)) {
+    default void deserializeNBT(CompoundTag nbt) {
+        if (nbt.contains(NBTConstants.STORED, Tag.TAG_COMPOUND)) {
             setStackUnchecked(PigmentStack.readFromNBT(nbt.getCompound(NBTConstants.STORED)));
         }
     }

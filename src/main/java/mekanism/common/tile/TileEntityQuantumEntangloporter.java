@@ -69,10 +69,12 @@ import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachine implements IChunkLoader {
 
@@ -81,8 +83,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     private double lastTransferLoss;
     private double lastEnvironmentLoss;
 
-    public TileEntityQuantumEntangloporter() {
-        super(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
+    public TileEntityQuantumEntangloporter(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.QUANTUM_ENTANGLOPORTER, pos, state);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.FLUID, TransmissionType.GAS, TransmissionType.INFUSION,
               TransmissionType.PIGMENT, TransmissionType.SLURRY, TransmissionType.ENERGY, TransmissionType.HEAT);
 
@@ -216,7 +218,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (hasFrequency()) {
             ISlotInfo slotInfo = configComponent.getSlotInfo(TransmissionType.HEAT, side);
             if (slotInfo != null && slotInfo.canInput()) {
-                TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
+                BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
                 return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
             }
         }

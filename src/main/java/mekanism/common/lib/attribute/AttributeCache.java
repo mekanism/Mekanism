@@ -5,8 +5,8 @@ import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
 import mekanism.common.config.value.CachedValue;
 import mekanism.common.config.value.CachedValue.IConfigValueInvalidationListener;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 public class AttributeCache {
 

@@ -14,21 +14,22 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.DefaultDispenseItemBehavior;
-import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(MekanismAdditions.MODID)
@@ -103,7 +104,7 @@ public class MekanismAdditions implements IModModule {
             DispenserBlock.registerBehavior(AdditionsBlocks.OBSIDIAN_TNT, new DefaultDispenseItemBehavior() {
                 @Nonnull
                 @Override
-                protected ItemStack execute(@Nonnull IBlockSource source, @Nonnull ItemStack stack) {
+                protected ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
                     BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
                     BlockObsidianTNT.createAndAddEntity(source.getLevel(), blockpos, null);
                     stack.shrink(1);
@@ -114,7 +115,7 @@ public class MekanismAdditions implements IModModule {
         Mekanism.logger.info("Loaded 'Mekanism: Additions' module.");
     }
 
-    private void serverStarting(FMLServerStartingEvent event) {
+    private void serverStarting(ServerStartingEvent event) {
         if (MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
             if (voiceManager == null) {
                 voiceManager = new VoiceServerManager();
@@ -123,14 +124,14 @@ public class MekanismAdditions implements IModModule {
         }
     }
 
-    private void serverStopping(FMLServerStoppingEvent event) {
+    private void serverStopping(ServerStoppingEvent event) {
         if (voiceManager != null) {
             voiceManager.stop();
             voiceManager = null;
         }
     }
 
-    private void onConfigLoad(ModConfig.ModConfigEvent configEvent) {
+    private void onConfigLoad(ModConfigEvent configEvent) {
         //Note: We listen to both the initial load and the reload, to make sure that we fix any accidentally
         // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();

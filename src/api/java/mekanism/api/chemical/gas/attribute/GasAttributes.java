@@ -11,7 +11,7 @@ import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public class GasAttributes {
 
@@ -47,7 +47,7 @@ public class GasAttributes {
         }
 
         @Override
-        public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
+        public List<Component> addTooltipText(List<Component> list) {
             super.addTooltipText(list);
             ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
             list.add(APILang.CHEMICAL_ATTRIBUTE_RADIATION.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getRadioactivityDisplayShort(getRadioactivity())));
@@ -88,7 +88,7 @@ public class GasAttributes {
         }
 
         @Override
-        public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
+        public List<Component> addTooltipText(List<Component> list) {
             super.addTooltipText(list);
             ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
             list.add(APILang.CHEMICAL_ATTRIBUTE_COOLANT_EFFICIENCY.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getPercent(conductivity)));
@@ -182,7 +182,7 @@ public class GasAttributes {
         }
 
         @Override
-        public List<ITextComponent> addTooltipText(List<ITextComponent> list) {
+        public List<Component> addTooltipText(List<Component> list) {
             super.addTooltipText(list);
             ITooltipHelper tooltipHelper = MekanismAPI.getTooltipHelper();
             list.add(APILang.CHEMICAL_ATTRIBUTE_FUEL_BURN_TICKS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, tooltipHelper.getFormattedNumber(getBurnTicks())));

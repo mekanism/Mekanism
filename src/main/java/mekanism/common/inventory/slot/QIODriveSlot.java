@@ -1,7 +1,7 @@
 package mekanism.common.inventory.slot;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.inventory.AutomationType;
@@ -10,9 +10,9 @@ import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.qio.QIOFrequency;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.Level;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -83,7 +83,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     }
 
     private boolean isRemote() {
-        World world = ((TileEntity) driveHolder).getLevel();
+        Level world = ((BlockEntity) driveHolder).getLevel();
         //Treat world as remote if it is null (hasn't been assigned yet)
         // which may happen when loading the drives from memory
         return world == null || world.isClientSide();

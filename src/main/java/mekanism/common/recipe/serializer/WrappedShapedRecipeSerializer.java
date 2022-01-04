@@ -5,13 +5,13 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.WrappedShapedRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
-public class WrappedShapedRecipeSerializer<RECIPE extends WrappedShapedRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RECIPE> {
+public class WrappedShapedRecipeSerializer<RECIPE extends WrappedShapedRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RECIPE> {
 
     private final Function<ShapedRecipe, RECIPE> wrapper;
 
@@ -22,13 +22,13 @@ public class WrappedShapedRecipeSerializer<RECIPE extends WrappedShapedRecipe> e
     @Nonnull
     @Override
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
-        return wrapper.apply(IRecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json));
+        return wrapper.apply(RecipeSerializer.SHAPED_RECIPE.fromJson(recipeId, json));
     }
 
     @Override
-    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer) {
+    public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            return wrapper.apply(IRecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer));
+            return wrapper.apply(RecipeSerializer.SHAPED_RECIPE.fromNetwork(recipeId, buffer));
         } catch (Exception e) {
             Mekanism.logger.error("Error reading wrapped shaped recipe from packet.", e);
             throw e;
@@ -36,9 +36,9 @@ public class WrappedShapedRecipeSerializer<RECIPE extends WrappedShapedRecipe> e
     }
 
     @Override
-    public void toNetwork(@Nonnull PacketBuffer buffer, @Nonnull RECIPE recipe) {
+    public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull RECIPE recipe) {
         try {
-            IRecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.getInternal());
+            RecipeSerializer.SHAPED_RECIPE.toNetwork(buffer, recipe.getInternal());
         } catch (Exception e) {
             Mekanism.logger.error("Error writing wrapped shaped recipe to packet.", e);
             throw e;

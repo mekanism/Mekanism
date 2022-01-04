@@ -10,15 +10,15 @@ import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioactiveWasteBarrel, BlockTypeTile<TileEntityRadioactiveWasteBarrel>> {
 
@@ -29,17 +29,17 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand hand,
-          @Nonnull BlockRayTraceResult hit) {
+    public InteractionResult use(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand,
+          @Nonnull BlockHitResult hit) {
         if (!player.isShiftKeyDown()) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
         TileEntityRadioactiveWasteBarrel tile = WorldUtils.getTileEntity(TileEntityRadioactiveWasteBarrel.class, world, pos);
         if (tile == null) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         } else if (!world.isClientSide()) {
             GasStack stored = tile.getGas();
-            ITextComponent text;
+            Component text;
             if (stored.isEmpty()) {
                 text = MekanismLang.NO_GAS.translateColored(EnumColor.GRAY);
             } else {
@@ -48,6 +48,6 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
             }
             player.sendMessage(text, Util.NIL_UUID);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 }

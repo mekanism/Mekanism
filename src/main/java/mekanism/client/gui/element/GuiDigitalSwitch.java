@@ -1,6 +1,7 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
@@ -9,9 +10,10 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public class GuiDigitalSwitch extends GuiTexturedElement {
 
@@ -21,10 +23,10 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     private final SwitchType type;
     private final ResourceLocation icon;
     private final BooleanSupplier stateSupplier;
-    private final ITextComponent tooltip;
+    private final Component tooltip;
     private final Runnable onToggle;
 
-    public GuiDigitalSwitch(IGuiWrapper gui, int x, int y, ResourceLocation icon, BooleanSupplier stateSupplier, ITextComponent tooltip,
+    public GuiDigitalSwitch(IGuiWrapper gui, int x, int y, ResourceLocation icon, BooleanSupplier stateSupplier, Component tooltip,
           Runnable onToggle, SwitchType type) {
         super(SWITCH, gui, x, y, type.width, type.height);
         this.type = type;
@@ -35,25 +37,26 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         displayTooltip(matrix, tooltip, mouseX, mouseY);
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bind(getResource());
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, getResource());
         boolean state = stateSupplier.getAsBoolean();
         blit(matrix, x + type.switchX, y + type.switchY, 0, state ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
         blit(matrix, x + type.switchX, y + type.switchY + BUTTON_SIZE_Y + 1, 0, state ? BUTTON_SIZE_Y : 0, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
 
-        minecraft.textureManager.bind(icon);
+        RenderSystem.setShaderTexture(0, icon);
         blit(matrix, x + type.iconX, y + type.iconY, 0, 0, 5, 5, 5, 5);
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawScaledCenteredText(matrix, MekanismLang.ON.translate(), relativeX + type.switchX + 8, relativeY + type.switchY, 0x101010, 0.5F);
         drawScaledCenteredText(matrix, MekanismLang.OFF.translate(), relativeX + type.switchX + 8, relativeY + type.switchY + 9, 0x101010, 0.5F);
@@ -61,7 +64,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
         onToggle.run();
     }
 

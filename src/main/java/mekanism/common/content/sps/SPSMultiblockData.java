@@ -22,16 +22,16 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 
 public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -58,7 +58,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public double lastProcessed;
 
     public boolean couldOperate;
-    private AxisAlignedBB deathZone;
+    private AABB deathZone;
 
     public SPSMultiblockData(TileEntitySPSCasing tile) {
         super(tile);
@@ -71,9 +71,9 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     @Override
-    public void onCreated(World world) {
+    public void onCreated(Level world) {
         super.onCreated(world);
-        deathZone = new AxisAlignedBB(getMinPos().getX() + 2, getMinPos().getY() + 2, getMinPos().getZ() + 2,
+        deathZone = new AABB(getMinPos().getX() + 2, getMinPos().getY() + 2, getMinPos().getZ() + 2,
               getMaxPos().getX() - 1, getMaxPos().getY() - 1, getMaxPos().getZ() - 1);
     }
 
@@ -82,7 +82,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     @Override
-    public boolean tick(World world) {
+    public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
         double processed = 0;
         couldOperate = canOperate();
@@ -126,7 +126,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     @Override
-    public void readUpdateTag(CompoundNBT tag) {
+    public void readUpdateTag(CompoundTag tag) {
         super.readUpdateTag(tag);
         coilData.read(tag);
         lastReceivedEnergy = FloatingLong.parseFloatingLong(tag.getString(NBTConstants.ENERGY_USAGE));
@@ -134,7 +134,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     @Override
-    public void writeUpdateTag(CompoundNBT tag) {
+    public void writeUpdateTag(CompoundTag tag) {
         super.writeUpdateTag(tag);
         coilData.write(tag);
         tag.putString(NBTConstants.ENERGY_USAGE, lastReceivedEnergy.toString());
@@ -161,7 +161,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         return processed;
     }
 
-    private void kill(World world) {
+    private void kill(Level world) {
         if (!lastReceivedEnergy.isZero() && couldOperate && world.getRandom().nextInt() % 20 == 0) {
             List<Entity> entitiesToDie = getWorld().getEntitiesOfClass(Entity.class, deathZone);
             for (Entity entity : entitiesToDie) {
@@ -234,11 +234,11 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             return ret;
         }
 
-        public void write(CompoundNBT tags) {
-            ListNBT list = new ListNBT();
+        public void write(CompoundTag tags) {
+            ListTag list = new ListTag();
             for (CoilData data : coilMap.values()) {
-                CompoundNBT tag = new CompoundNBT();
-                tag.put(NBTConstants.POSITION, NBTUtil.writeBlockPos(data.coilPos));
+                CompoundTag tag = new CompoundTag();
+                tag.put(NBTConstants.POSITION, NbtUtils.writeBlockPos(data.coilPos));
                 tag.putInt(NBTConstants.SIDE, data.side.ordinal());
                 tag.putInt(NBTConstants.LEVEL, data.prevLevel);
                 list.add(tag);
@@ -246,12 +246,12 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             tags.put(NBTConstants.COILS, list);
         }
 
-        public void read(CompoundNBT tags) {
+        public void read(CompoundTag tags) {
             coilMap.clear();
-            ListNBT list = tags.getList(NBTConstants.COILS, NBT.TAG_COMPOUND);
+            ListTag list = tags.getList(NBTConstants.COILS, Tag.TAG_COMPOUND);
             for (int i = 0; i < list.size(); i++) {
-                CompoundNBT tag = list.getCompound(i);
-                BlockPos pos = NBTUtil.readBlockPos(tag.getCompound(NBTConstants.POSITION));
+                CompoundTag tag = list.getCompound(i);
+                BlockPos pos = NbtUtils.readBlockPos(tag.getCompound(NBTConstants.POSITION));
                 Direction side = Direction.from3DDataValue(tag.getInt(NBTConstants.SIDE));
                 CoilData data = new CoilData(pos, side);
                 data.prevLevel = tag.getInt(NBTConstants.LEVEL);

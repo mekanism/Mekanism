@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiColorPickerSlot;
 import mekanism.client.gui.element.GuiScreenSwitch;
@@ -42,7 +42,7 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
 
         drawTitleText(matrix, MekanismLang.HELMET_OPTIONS.translate(), 6);

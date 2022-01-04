@@ -31,12 +31,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TurbineMultiblockData extends MultiblockData {
@@ -101,7 +101,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public boolean tick(World world) {
+    public boolean tick(Level world) {
         boolean needsPacket = super.tick(world);
 
         lastSteamInput = newSteamInput;
@@ -165,7 +165,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void readUpdateTag(CompoundNBT tag) {
+    public void readUpdateTag(CompoundTag tag) {
         super.readUpdateTag(tag);
         NBTUtils.setFloatIfPresent(tag, NBTConstants.SCALE, scale -> prevSteamScale = scale);
         NBTUtils.setIntIfPresent(tag, NBTConstants.VOLUME, this::setVolume);
@@ -177,13 +177,13 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void writeUpdateTag(CompoundNBT tag) {
+    public void writeUpdateTag(CompoundTag tag) {
         super.writeUpdateTag(tag);
         tag.putFloat(NBTConstants.SCALE, prevSteamScale);
         tag.putInt(NBTConstants.VOLUME, getVolume());
         tag.putInt(NBTConstants.LOWER_VOLUME, lowerVolume);
-        tag.put(NBTConstants.GAS_STORED, gasTank.getStack().write(new CompoundNBT()));
-        tag.put(NBTConstants.COMPLEX, NBTUtil.writeBlockPos(complex));
+        tag.put(NBTConstants.GAS_STORED, gasTank.getStack().write(new CompoundTag()));
+        tag.put(NBTConstants.COMPLEX, NbtUtils.writeBlockPos(complex));
         tag.putFloat(NBTConstants.ROTATION, clientRotation);
     }
 

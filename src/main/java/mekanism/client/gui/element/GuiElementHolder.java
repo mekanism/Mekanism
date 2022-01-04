@@ -1,6 +1,6 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.awt.image.BufferedImage;
 import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
@@ -9,8 +9,8 @@ import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.IResource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiElementHolder extends GuiScalableElement {
 
@@ -23,12 +23,12 @@ public class GuiElementHolder extends GuiScalableElement {
     }
 
     @Override
-    public void renderButton(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         renderBackgroundTexture(matrix, getResource(), sideWidth, sideHeight);
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
     }
 
     public static int getBackgroundColor() {
@@ -39,7 +39,7 @@ public class GuiElementHolder extends GuiScalableElement {
         //TODO: Try to do this in a more generic way. We don't directly use our ColorAtlas because we want to automatically
         // get it from the texture
         try {
-            IResource resource = Minecraft.getInstance().getResourceManager().getResource(HOLDER);
+            Resource resource = Minecraft.getInstance().getResourceManager().getResource(HOLDER);
             BufferedImage img = ImageIO.read(resource.getInputStream());
             int rgb = img.getRGB(HOLDER_SIZE + 1, HOLDER_SIZE + 1);
             if (rgb >> 24 == 0) {

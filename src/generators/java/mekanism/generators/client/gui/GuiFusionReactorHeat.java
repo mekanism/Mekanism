@@ -1,6 +1,6 @@
 package mekanism.generators.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -25,27 +25,27 @@ import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.network.chat.Component;
 
 public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
 
     private static final double MAX_LEVEL = 500_000_000;
 
-    public GuiFusionReactorHeat(EmptyTileContainer<TileEntityFusionReactorController> container, PlayerInventory inv, ITextComponent title) {
+    public GuiFusionReactorHeat(EmptyTileContainer<TileEntityFusionReactorController> container, Inventory inv, Component title) {
         super(container, inv, title);
     }
 
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiEnergyTab(this, () -> {
+        addRenderableWidget(new GuiEnergyTab(this, () -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
             return Arrays.asList(MekanismLang.STORING.translate(EnergyDisplay.of(multiblock.energyContainer)),
                   GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(multiblock.getPassiveGeneration(false, true))));
         }));
-        addButton(new GuiNumberGauge(new INumberInfoHandler() {
+        addRenderableWidget(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
                 return MekanismRenderer.getBaseFluidTexture(Fluids.LAVA, FluidType.STILL);
@@ -62,15 +62,15 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
             }
 
             @Override
-            public ITextComponent getText() {
+            public Component getText() {
                 return GeneratorsLang.REACTOR_PLASMA.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 7, 50));
-        addButton(new GuiProgress(() -> {
+        addRenderableWidget(new GuiProgress(() -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
             return multiblock.getLastPlasmaTemp() > multiblock.getLastCaseTemp();
         }, ProgressType.SMALL_RIGHT, this, 29, 76));
-        addButton(new GuiNumberGauge(new INumberInfoHandler() {
+        addRenderableWidget(new GuiNumberGauge(new INumberInfoHandler() {
             @Override
             public TextureAtlasSprite getIcon() {
                 return MekanismRenderer.getBaseFluidTexture(Fluids.LAVA, FluidType.STILL);
@@ -87,24 +87,24 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
             }
 
             @Override
-            public ITextComponent getText() {
+            public Component getText() {
                 return GeneratorsLang.REACTOR_CASE.translate(MekanismUtils.getTemperatureDisplay(getLevel(), TemperatureUnit.KELVIN, true));
             }
         }, GaugeType.STANDARD, this, 61, 50));
-        addButton(new GuiProgress(() -> tile.getMultiblock().getCaseTemp() > 0, ProgressType.SMALL_RIGHT, this, 83, 61));
-        addButton(new GuiProgress(() -> {
+        addRenderableWidget(new GuiProgress(() -> tile.getMultiblock().getCaseTemp() > 0, ProgressType.SMALL_RIGHT, this, 83, 61));
+        addRenderableWidget(new GuiProgress(() -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
             return multiblock.getCaseTemp() > 0 && !multiblock.waterTank.isEmpty() && multiblock.steamTank.getStored() < multiblock.steamTank.getCapacity();
         }, ProgressType.SMALL_RIGHT, this, 83, 91));
-        addButton(new GuiFluidGauge(() -> tile.getMultiblock().waterTank, () -> tile.getFluidTanks(null), GaugeType.SMALL, this, 115, 84));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().steamTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 151, 84));
-        addButton(new GuiEnergyGauge(tile.getMultiblock().energyContainer, GaugeType.SMALL, this, 115, 46));
-        addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
-        addButton(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
+        addRenderableWidget(new GuiFluidGauge(() -> tile.getMultiblock().waterTank, () -> tile.getFluidTanks(null), GaugeType.SMALL, this, 115, 84));
+        addRenderableWidget(new GuiGasGauge(() -> tile.getMultiblock().steamTank, () -> tile.getGasTanks(null), GaugeType.SMALL, this, 151, 84));
+        addRenderableWidget(new GuiEnergyGauge(tile.getMultiblock().energyContainer, GaugeType.SMALL, this, 115, 46));
+        addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.FUEL));
+        addRenderableWidget(new GuiFusionReactorTab(this, tile, FusionReactorTab.STAT));
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, GeneratorsLang.FUSION_REACTOR.translate(), titleLabelY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

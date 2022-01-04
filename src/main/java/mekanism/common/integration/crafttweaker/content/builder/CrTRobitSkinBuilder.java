@@ -8,8 +8,8 @@ import mekanism.api.robit.RobitSkin;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -39,7 +39,7 @@ public class CrTRobitSkinBuilder {
 
     private final ResourceLocation[] textures;
     @Nullable
-    private Predicate<PlayerEntity> unlockedPredicate;
+    private Predicate<Player> unlockedPredicate;
     @Nullable
     private ResourceLocation model;
 
@@ -67,7 +67,7 @@ public class CrTRobitSkinBuilder {
      * @param unlockedPredicate Predicate that takes the player to check.
      */
     @ZenCodeType.Method
-    public CrTRobitSkinBuilder unlockCheck(Predicate<PlayerEntity> unlockedPredicate) {
+    public CrTRobitSkinBuilder unlockCheck(Predicate<Player> unlockedPredicate) {
         this.unlockedPredicate = unlockedPredicate;
         return this;
     }
@@ -93,7 +93,7 @@ public class CrTRobitSkinBuilder {
                 }
 
                 @Override
-                public boolean isUnlocked(@Nonnull PlayerEntity player) {
+                public boolean isUnlocked(@Nonnull Player player) {
                     return unlockedPredicate == null ? super.isUnlocked(player) : unlockedPredicate.test(player);
                 }
             };

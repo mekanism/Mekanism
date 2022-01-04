@@ -1,22 +1,25 @@
 package mekanism.common.recipe.compat;
 
-import corgiaoc.byg.core.BYGBlocks;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.util.IItemProvider;
-import yamahari.ilikewood.plugin.byg.OhTheBiomesYoullGoWoodTypes;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.level.ItemLike;
+import potionstudios.byg.common.block.BYGBlocks;
+//TODO - 1.18: use the actual import
+//import yamahari.ilikewood.plugin.byg.OhTheBiomesYoullGoWoodTypes;
+import yamahari.ilikewood.plugin_byg.OhTheBiomesYoullGoWoodTypes;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
 
 @ParametersAreNonnullByDefault
 public class ILikeWoodBYGRecipeProvider extends CompatRecipeProvider {
 
     public ILikeWoodBYGRecipeProvider() {
-        super(yamahari.ilikewood.plugin.byg.util.Constants.MOD_ID, "byg");
+        //TODO - 1.18: use the actual import
+        super(yamahari.ilikewood.plugin_byg.util.Constants.MOD_ID, "byg");
     }
 
     @Override
-    protected void registerRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addWoodType(consumer, basePath, BYGBlocks.ASPEN_PLANKS, BYGBlocks.ASPEN_LOG, BYGBlocks.ASPEN_FENCE, OhTheBiomesYoullGoWoodTypes.ASPEN);
         addWoodType(consumer, basePath, BYGBlocks.BAOBAB_PLANKS, BYGBlocks.BAOBAB_LOG, BYGBlocks.BAOBAB_FENCE, OhTheBiomesYoullGoWoodTypes.BAOBAB);
         addWoodType(consumer, basePath, BYGBlocks.BLUE_ENCHANTED_PLANKS, BYGBlocks.BLUE_ENCHANTED_LOG, BYGBlocks.BLUE_ENCHANTED_FENCE, OhTheBiomesYoullGoWoodTypes.BLUE_ENCHANTED);
@@ -48,7 +51,7 @@ public class ILikeWoodBYGRecipeProvider extends CompatRecipeProvider {
         addWoodType(consumer, basePath, BYGBlocks.ZELKOVA_PLANKS, BYGBlocks.ZELKOVA_LOG, BYGBlocks.ZELKOVA_FENCE, OhTheBiomesYoullGoWoodTypes.ZELKOVA);
     }
 
-    private void addWoodType(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, IItemProvider log, IItemProvider fences, IWoodType woodType) {
-        ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks, log, fences, woodType, allModsLoaded, allModsLoaded);
+    private void addWoodType(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, ItemLike log, ItemLike fences, IWoodType woodType) {
+        ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks, log, fences, woodType);
     }
 }

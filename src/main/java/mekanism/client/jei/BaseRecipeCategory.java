@@ -1,6 +1,6 @@
 package mekanism.client.jei;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumMap;
 import java.util.List;
@@ -31,11 +31,11 @@ import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
@@ -52,7 +52,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     private final Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();
-    private final ITextComponent component;
+    private final Component component;
     private final IGuiHelper guiHelper;
     private final IDrawable background;
     private final ResourceLocation id;
@@ -68,7 +68,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         this(helper, provider.getRegistryName(), provider.getTextComponent(), createIcon(helper, provider), xOffset, yOffset, width, height);
     }
 
-    protected BaseRecipeCategory(IGuiHelper helper, ResourceLocation id, ITextComponent component, IDrawable icon, int xOffset, int yOffset, int width, int height) {
+    protected BaseRecipeCategory(IGuiHelper helper, ResourceLocation id, Component component, IDrawable icon, int xOffset, int yOffset, int width, int height) {
         this.id = id;
         this.component = component;
         this.guiHelper = helper;
@@ -125,18 +125,12 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
-    @Deprecated
-    public String getTitle() {
-        return getTitleAsTextComponent().getString();
-    }
-
-    @Override
-    public ITextComponent getTitleAsTextComponent() {
+    public Component getTitle() {
         return component;
     }
 
     @Override
-    public void draw(RECIPE recipe, MatrixStack matrix, double mouseX, double mouseY) {
+    public void draw(RECIPE recipe, PoseStack matrix, double mouseX, double mouseY) {
         int x = (int) mouseX;
         int y = (int) mouseY;
         guiElements.forEach(e -> e.render(matrix, x, y, 0));
@@ -161,7 +155,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
-    public FontRenderer getFont() {
+    public Font getFont() {
         return Minecraft.getInstance().font;
     }
 
@@ -188,7 +182,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         }
         return new IBarInfoHandler() {
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 return MekanismLang.PROGRESS.translate(TextUtils.getPercent(getLevel()));
             }
 

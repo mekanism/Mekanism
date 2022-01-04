@@ -29,16 +29,16 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketDropperUse implements IMekanismPacket {
 
@@ -56,11 +56,11 @@ public class PacketDropperUse implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player == null || tankId < 0) {
             return;
         }
-        ItemStack stack = player.inventory.getCarried();
+        ItemStack stack = player.containerMenu.getCarried();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, pos);
             if (tile != null) {
@@ -86,7 +86,7 @@ public class PacketDropperUse implements IMekanismPacket {
     }
 
     private <HANDLER extends IMekanismFluidHandler & IGasTracker & IInfusionTracker & IPigmentTracker & ISlurryTracker> void handleTankType(HANDLER handler,
-          PlayerEntity player, ItemStack stack, Coord4D coord) {
+          Player player, ItemStack stack, Coord4D coord) {
         if (tankType == TankType.FLUID_TANK) {
             IExtendedFluidTank fluidTank = handler.getFluidTank(tankId, null);
             if (fluidTank != null) {
@@ -104,7 +104,7 @@ public class PacketDropperUse implements IMekanismPacket {
     }
 
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> void handleChemicalTanks(
-          PlayerEntity player, ItemStack stack, List<TANK> tanks, Coord4D coord) {
+          Player player, ItemStack stack, List<TANK> tanks, Coord4D coord) {
         //This method is a workaround for Eclipse's compiler showing an error/warning if we try to just assign the tanks
         // to a variable in handleTankType and then have the size check and call to handleChemicalTank happen there
         if (tankId < tanks.size()) {
@@ -112,7 +112,7 @@ public class PacketDropperUse implements IMekanismPacket {
         }
     }
 
-    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(PlayerEntity player, ItemStack stack,
+    private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void handleChemicalTank(Player player, ItemStack stack,
           IChemicalTank<CHEMICAL, STACK> tank, Coord4D coord) {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
@@ -145,7 +145,7 @@ public class PacketDropperUse implements IMekanismPacket {
         }
     }
 
-    private void handleFluidTank(PlayerEntity player, ItemStack stack, IExtendedFluidTank fluidTank) {
+    private void handleFluidTank(Player player, ItemStack stack, IExtendedFluidTank fluidTank) {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             fluidTank.setEmpty();
@@ -170,7 +170,7 @@ public class PacketDropperUse implements IMekanismPacket {
     }
 
     private static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void transferBetweenTanks(IChemicalTank<CHEMICAL, STACK> drainTank,
-          IChemicalTank<CHEMICAL, STACK> fillTank, PlayerEntity player) {
+          IChemicalTank<CHEMICAL, STACK> fillTank, Player player) {
         if (!drainTank.isEmpty() && fillTank.getNeeded() > 0) {
             STACK chemicalInDrainTank = drainTank.getStack();
             STACK simulatedRemainder = fillTank.insert(chemicalInDrainTank, Action.SIMULATE, AutomationType.MANUAL);
@@ -182,13 +182,13 @@ public class PacketDropperUse implements IMekanismPacket {
                 if (!extractedChemical.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
                     MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
-                    ((ServerPlayerEntity) player).refreshContainer(player.containerMenu);
+                    player.containerMenu.sendAllDataToRemote();
                 }
             }
         }
     }
 
-    private static void transferBetweenTanks(IExtendedFluidTank drainTank, IExtendedFluidTank fillTank, PlayerEntity player) {
+    private static void transferBetweenTanks(IExtendedFluidTank drainTank, IExtendedFluidTank fillTank, Player player) {
         if (!drainTank.isEmpty() && fillTank.getNeeded() > 0) {
             FluidStack fluidInDrainTank = drainTank.getFluid();
             FluidStack simulatedRemainder = fillTank.insert(fluidInDrainTank, Action.SIMULATE, AutomationType.MANUAL);
@@ -200,21 +200,21 @@ public class PacketDropperUse implements IMekanismPacket {
                 if (!extractedFluid.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
                     MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedFluid, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
-                    ((ServerPlayerEntity) player).refreshContainer(player.containerMenu);
+                    player.containerMenu.sendAllDataToRemote();
                 }
             }
         }
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         buffer.writeEnum(action);
         buffer.writeEnum(tankType);
         buffer.writeVarInt(tankId);
     }
 
-    public static PacketDropperUse decode(PacketBuffer buffer) {
+    public static PacketDropperUse decode(FriendlyByteBuf buffer) {
         return new PacketDropperUse(buffer.readBlockPos(), buffer.readEnum(DropperAction.class), buffer.readEnum(TankType.class), buffer.readVarInt());
     }
 

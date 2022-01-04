@@ -1,6 +1,6 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiConfigurableTile;
@@ -17,8 +17,8 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredictionificator, MekanismTileContainer<TileEntityOredictionificator>> {
 
@@ -29,7 +29,7 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
 
     private GuiScrollBar scrollBar;
 
-    public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, PlayerInventory inv, ITextComponent title) {
+    public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, Inventory inv, Component title) {
         super(container, inv, title);
         imageHeight += 64;
         inventoryLabelY = imageHeight - 94;
@@ -40,16 +40,16 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     protected void addGuiElements() {
         super.addGuiElements();
         //Filter holder
-        addButton(new GuiElementHolder(this, 9, 17, 144, 68));
+        addRenderableWidget(new GuiElementHolder(this, 9, 17, 144, 68));
         //new filter button border
-        addButton(new GuiElementHolder(this, 9, 85, 144, 22));
-        scrollBar = addButton(new GuiScrollBar(this, 153, 17, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
-        addButton(new GuiProgress(() -> tile.didProcess, ProgressType.LARGE_RIGHT, this, 64, 119));
-        addButton(new TranslationButton(this, 10, 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addRenderableWidget(new GuiElementHolder(this, 9, 85, 144, 22));
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 153, 17, 90, () -> tile.getFilters().size(), () -> FILTER_COUNT));
+        addRenderableWidget(new GuiProgress(() -> tile.didProcess, ProgressType.LARGE_RIGHT, this, 64, 119));
+        addRenderableWidget(new TranslationButton(this, 10, 86, 142, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(GuiOredictionificatorFilter.create(this, tile))));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addButton(new FilterButton(this, 10, 18 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, tile::getFilters, this::onClick,
+            addRenderableWidget(new FilterButton(this, 10, 18 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, tile::getFilters, this::onClick,
                   filter -> {
                       if (filter instanceof OredictionificatorItemFilter) {
                           return Collections.singletonList(((OredictionificatorItemFilter) filter).getResult());
@@ -72,9 +72,9 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

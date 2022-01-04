@@ -1,6 +1,7 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -9,7 +10,8 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 
 public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> extends GuiInnerScreen {
 
@@ -26,16 +28,17 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         TYPE type = typeSupplier.get();
-        minecraft.textureManager.bind(type.getIcon());
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, type.getIcon());
         blit(matrix, x + 3, y + 3, 0, 0, width - 6, height - 6, 6, 6);
     }
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        minecraft.getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
+        minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
         TYPE nextType = MathUtils.getByIndexMod(options, typeSupplier.get().ordinal() + 1);
         typeSetter.accept(nextType);
     }

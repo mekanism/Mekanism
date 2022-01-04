@@ -3,7 +3,7 @@ package mekanism.client.gui.element.slot;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public enum SlotType {
     NORMAL("normal.png", 18, 18),

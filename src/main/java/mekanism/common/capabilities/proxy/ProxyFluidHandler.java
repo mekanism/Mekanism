@@ -2,13 +2,13 @@ package mekanism.common.capabilities.proxy;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.api.fluid.ISidedFluidHandler;
 import mekanism.common.capabilities.holder.IHolder;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 
 @FieldsAreNonnullByDefault

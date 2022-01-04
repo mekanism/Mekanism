@@ -3,11 +3,11 @@ package mekanism.additions.common.block.plastic;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
 
 public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
 
@@ -17,7 +17,7 @@ public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
 
     @Override
     @Deprecated
-    public float getShadeBrightness(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    public float getShadeBrightness(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos) {
         return 0.8F;
     }
 
@@ -28,7 +28,7 @@ public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
     }
 
     @Override
-    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
+    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
         return true;
     }
 
@@ -39,7 +39,7 @@ public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
     }
 
     @Override
-    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader world, BlockPos pos, BlockPos beaconPos) {
+    public float[] getBeaconColorMultiplier(BlockState state, LevelReader world, BlockPos pos, BlockPos beaconPos) {
         return getColor().getRgbCodeFloat();
     }
 }

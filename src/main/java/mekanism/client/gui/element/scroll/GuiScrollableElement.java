@@ -3,7 +3,7 @@ package mekanism.client.gui.element.scroll;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class GuiScrollableElement extends GuiTexturedElement {
 

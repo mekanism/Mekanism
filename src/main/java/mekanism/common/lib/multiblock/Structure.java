@@ -15,12 +15,12 @@ import mekanism.common.lib.math.voxel.BlockPosBuilder;
 import mekanism.common.lib.math.voxel.VoxelPlane;
 import mekanism.common.lib.multiblock.FormationProtocol.FormationResult;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class Structure {
 
@@ -93,7 +93,7 @@ public class Structure {
         return planeMap.computeIfAbsent(axis, k -> new TreeMap<>(Integer::compare));
     }
 
-    public void markForUpdate(World world, boolean invalidate) {
+    public void markForUpdate(Level world, boolean invalidate) {
         updateTimestamp = world.getGameTime();
         didUpdate = false;
         if (invalidate) {
@@ -103,7 +103,7 @@ public class Structure {
         }
     }
 
-    public <TILE extends TileEntity & IMultiblockBase> void tick(TILE tile, boolean tryValidate) {
+    public <TILE extends BlockEntity & IMultiblockBase> void tick(TILE tile, boolean tryValidate) {
         if (!didUpdate && updateTimestamp == tile.getLevel().getGameTime() - 1) {
             didUpdate = true;
             runUpdate(tile);
@@ -113,7 +113,7 @@ public class Structure {
         }
     }
 
-    public <TILE extends TileEntity & IMultiblockBase> FormationResult runUpdate(TILE tile) {
+    public <TILE extends BlockEntity & IMultiblockBase> FormationResult runUpdate(TILE tile) {
         if (getController() != null && multiblockData == null) {
             return getController().createFormationProtocol().doUpdate();
         }
@@ -195,12 +195,12 @@ public class Structure {
         return valid;
     }
 
-    public void invalidate(World world) {
+    public void invalidate(Level world) {
         removeMultiblock(world);
         valid = false;
     }
 
-    public void removeMultiblock(World world) {
+    public void removeMultiblock(Level world) {
         if (multiblockData != null) {
             multiblockData.remove(world);
             multiblockData = null;
@@ -215,7 +215,7 @@ public class Structure {
         return nodes.size();
     }
 
-    private static void validate(IMultiblockBase node, Long2ObjectMap<IChunk> chunkMap) {
+    private static void validate(IMultiblockBase node, Long2ObjectMap<ChunkAccess> chunkMap) {
         if (node instanceof IMultiblock) {
             IMultiblock<?> multiblock = (IMultiblock<?>) node;
             if (!multiblock.getStructure().isValid()) {
@@ -230,7 +230,7 @@ public class Structure {
             if (pos.equals(node.getTilePos())) {
                 return true;
             }
-            TileEntity tile = WorldUtils.getTileEntity(node.getTileWorld(), chunkMap, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(node.getTileWorld(), chunkMap, pos);
             if (tile instanceof IMultiblockBase) {
                 IMultiblockBase adj = (IMultiblockBase) tile;
                 if (isCompatible(node, adj)) {
@@ -327,9 +327,9 @@ public class Structure {
     }
 
     public enum Axis {
-        X(Vector3i::getX),
-        Y(Vector3i::getY),
-        Z(Vector3i::getZ);
+        X(Vec3i::getX),
+        Y(Vec3i::getY),
+        Z(Vec3i::getZ);
 
         private final ToIntFunction<BlockPos> posMapper;
 

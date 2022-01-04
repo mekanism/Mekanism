@@ -9,10 +9,10 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biome.RainType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biome.Precipitation;
 
 @ParametersAreNonnullByDefault
 public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRechargingUnit> {
@@ -20,7 +20,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
     private static final FloatingLong RAIN_MULTIPLIER = FloatingLong.createConst(0.2);
 
     @Override
-    public void tickServer(IModule<ModuleSolarRechargingUnit> module, PlayerEntity player) {
+    public void tickServer(IModule<ModuleSolarRechargingUnit> module, Player player) {
         IEnergyContainer energyContainer = module.getEnergyContainer();
         if (energyContainer != null && !energyContainer.getNeeded().isZero()) {
             //Use the position that is roughly where the solar panel is
@@ -28,7 +28,7 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
             //Based on how TileEntitySolarGenerator and the rest of our solar things do energy calculations
             if (WorldUtils.canSeeSun(player.level, pos)) {
                 Biome b = player.level.getBiomeManager().getBiome(pos);
-                boolean needsRainCheck = b.getPrecipitation() != RainType.NONE;
+                boolean needsRainCheck = b.getPrecipitation() != Precipitation.NONE;
                 // Consider the best temperature to be 0.8; biomes that are higher than that
                 // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
                 // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate

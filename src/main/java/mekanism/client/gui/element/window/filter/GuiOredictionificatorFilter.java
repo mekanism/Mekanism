@@ -15,9 +15,9 @@ import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public class GuiOredictionificatorFilter extends GuiTextFilter<OredictionificatorItemFilter, TileEntityOredictionificator> {
 
@@ -107,8 +107,8 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     }
 
     @Override
-    protected List<ITextComponent> getScreenText() {
-        List<ITextComponent> list = super.getScreenText();
+    protected List<Component> getScreenText() {
+        List<Component> list = super.getScreenText();
         if (filter.hasFilter()) {
             ItemStack renderStack = slotDisplay.getRenderStack();
             if (!renderStack.isEmpty()) {

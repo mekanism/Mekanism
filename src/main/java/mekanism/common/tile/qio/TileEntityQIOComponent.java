@@ -15,16 +15,17 @@ import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder {
 
     private EnumColor lastColor;
 
-    public TileEntityQIOComponent(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityQIOComponent(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         frequencyComponent.track(FrequencyType.QIO, true, true, true);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
@@ -49,8 +50,8 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         if (lastColor != null) {
             updateTag.putInt(NBTConstants.COLOR, lastColor.ordinal());
         }
@@ -58,9 +59,9 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
-        if (tag.contains(NBTConstants.COLOR, NBT.TAG_INT)) {
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        if (tag.contains(NBTConstants.COLOR, Tag.TAG_INT)) {
             lastColor = EnumColor.byIndexStatic(tag.getInt(NBTConstants.COLOR));
         } else {
             lastColor = null;

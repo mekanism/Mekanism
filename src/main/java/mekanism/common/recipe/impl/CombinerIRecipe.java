@@ -6,10 +6,10 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.resources.ResourceLocation;
 
 public class CombinerIRecipe extends CombinerRecipe {
 
@@ -19,13 +19,13 @@ public class CombinerIRecipe extends CombinerRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<CombinerRecipe> getType() {
+    public RecipeType<CombinerRecipe> getType() {
         return MekanismRecipeType.COMBINING;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<CombinerRecipe> getSerializer() {
+    public RecipeSerializer<CombinerRecipe> getSerializer() {
         return MekanismRecipeSerializers.COMBINING.getRecipeSerializer();
     }
 

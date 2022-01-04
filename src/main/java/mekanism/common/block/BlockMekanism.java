@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
@@ -11,6 +12,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
+import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
@@ -37,53 +39,53 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.client.particle.DiggingParticle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.state.StateContainer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.client.IBlockRenderProperties;
 
 /**
  * Special handling for block drops that need TileEntity data
  */
 public abstract class BlockMekanism extends Block {
 
-    protected BlockMekanism(AbstractBlock.Properties properties) {
+    protected BlockMekanism(BlockBehaviour.Properties properties) {
         super(BlockStateHelper.applyLightLevelAdjustments(properties));
         registerDefaultState(BlockStateHelper.getDefaultState(stateDefinition.any()));
+    }
+
+    @Override
+    public void initializeClient(Consumer<IBlockRenderProperties> consumer) {
+        consumer.accept(ISTERProvider.particles());
     }
 
     @Nonnull
     @Override
     @Deprecated
     public PushReaction getPistonPushReaction(@Nonnull BlockState state) {
-        if (hasTileEntity(state)) {
+        if (state.hasBlockEntity()) {
             //Protect against mods like Quark that allow blocks with TEs to be moved
             //TODO: Eventually it would be nice to go through this and maybe even allow some TEs to be moved if they don't strongly
             // care about the world, but for now it is safer to just block them from being moved
@@ -94,7 +96,7 @@ public abstract class BlockMekanism extends Block {
 
     @Nonnull
     @Override
-    public ItemStack getPickBlock(@Nonnull BlockState state, RayTraceResult target, @Nonnull IBlockReader world, @Nonnull BlockPos pos, PlayerEntity player) {
+    public ItemStack getCloneItemStack(@Nonnull BlockState state, HitResult target, @Nonnull BlockGetter world, @Nonnull BlockPos pos, Player player) {
         ItemStack itemStack = new ItemStack(this);
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
@@ -143,14 +145,15 @@ public abstract class BlockMekanism extends Block {
         List<ItemStack> drops = super.getDrops(state, builder);
         //Check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
         if (state.getBlock() instanceof IHasTileEntity) {
-            TileEntity tile = ((IHasTileEntity<?>) state.getBlock()).getTileType().create();
+            //TODO - 1.18: Test this?
+            BlockEntity tile = ((IHasTileEntity<?>) state.getBlock()).newBlockEntity(BlockPos.ZERO, state);
             if (tile instanceof TileEntityMekanism) {
                 TileEntityMekanism mekTile = (TileEntityMekanism) tile;
                 //Skip tiles that have no tanks and skip chemical creative tanks
                 if (!mekTile.getGasTanks(null).isEmpty() && (!(mekTile instanceof TileEntityChemicalTank) ||
                                                              ((TileEntityChemicalTank) mekTile).getTier() != ChemicalTankTier.CREATIVE)) {
                     for (ItemStack drop : drops) {
-                        ListNBT gasTankList = ItemDataUtils.getList(drop, NBTConstants.GAS_TANKS);
+                        ListTag gasTankList = ItemDataUtils.getList(drop, NBTConstants.GAS_TANKS);
                         if (!gasTankList.isEmpty()) {
                             int count = DataHandlerUtils.getMaxId(gasTankList, NBTConstants.TANK);
                             List<IGasTank> tanks = new ArrayList<>(count);
@@ -169,7 +172,7 @@ public abstract class BlockMekanism extends Block {
                             if (hasRadioactive) {
                                 //If the item has any gas tanks stored, check if any have radioactive substances in them
                                 // and if so clear them out
-                                ListNBT newGasTankList = DataHandlerUtils.writeContainers(tanks);
+                                ListTag newGasTankList = DataHandlerUtils.writeContainers(tanks);
                                 if (newGasTankList.isEmpty()) {
                                     //If the list is now empty remove it
                                     ItemDataUtils.removeData(drop, NBTConstants.GAS_TANKS);
@@ -187,27 +190,24 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    public boolean hasTileEntity(BlockState state) {
-        return this instanceof IHasTileEntity;
-    }
-
-    @Override
-    public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world) {
+    @Deprecated
+    public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
+        boolean triggered = super.triggerEvent(state, level, pos, id, param);
         if (this instanceof IHasTileEntity) {
-            return ((IHasTileEntity<?>) this).getTileType().create();
+            return ((IHasTileEntity<?>) this).triggerBlockEntityEvent(state, level, pos, id, param);
         }
-        return null;
+        return triggered;
     }
 
     @Override
-    protected void createBlockStateDefinition(@Nonnull StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(@Nonnull StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         BlockStateHelper.fillBlockStateContainer(this, builder);
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(@Nonnull BlockItemUseContext context) {
+    public BlockState getStateForPlacement(@Nonnull BlockPlaceContext context) {
         return BlockStateHelper.getStateForPlacement(this, super.getStateForPlacement(context), context);
     }
 
@@ -224,7 +224,7 @@ public abstract class BlockMekanism extends Block {
     @Nonnull
     @Override
     @Deprecated
-    public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull IWorld world, @Nonnull BlockPos currentPos,
+    public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world, @Nonnull BlockPos currentPos,
           @Nonnull BlockPos facingPos) {
         if (state.getBlock() instanceof IStateFluidLoggable) {
             ((IStateFluidLoggable) state.getBlock()).updateFluids(state, world, currentPos);
@@ -233,7 +233,7 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
+    public void setPlacedBy(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
@@ -268,7 +268,7 @@ public abstract class BlockMekanism extends Block {
                 tile.getSecurity().setOwnerUUID(placer.getUUID());
                 if (!world.isClientSide) {
                     //If the machine doesn't already have an owner, make sure we portray this
-                    Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(placer.getUUID(), null));
+                    Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(placer.getUUID(), null));
                 }
             }
         }
@@ -290,7 +290,7 @@ public abstract class BlockMekanism extends Block {
         if (tile instanceof ISustainedData && stack.hasTag()) {
             ((ISustainedData) tile).readSustainedData(stack);
         }
-        if (tile.supportsRedstone() && ItemDataUtils.hasData(stack, NBTConstants.CONTROL_TYPE, NBT.TAG_INT)) {
+        if (tile.supportsRedstone() && ItemDataUtils.hasData(stack, NBTConstants.CONTROL_TYPE, Tag.TAG_INT)) {
             tile.setControlType(RedstoneControl.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.CONTROL_TYPE)));
         }
         if (item instanceof ISustainedInventory && tile.persistInventory()) {
@@ -299,11 +299,11 @@ public abstract class BlockMekanism extends Block {
     }
 
     //Method to override for setting some simple tile specific stuff
-    public void setTileData(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
+    public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
     }
 
     @Override
-    public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation rotation) {
+    public BlockState rotate(BlockState state, LevelAccessor world, BlockPos pos, Rotation rotation) {
         return AttributeStateFacing.rotate(state, world, pos, rotation);
     }
 
@@ -323,8 +323,8 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     @Deprecated
-    public void onPlace(BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
-        if (state.hasTileEntity() && oldState.getBlock() != state.getBlock()) {
+    public void onPlace(BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState oldState, boolean isMoving) {
+        if (state.hasBlockEntity() && oldState.getBlock() != state.getBlock()) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
                 tile.onAdded();
@@ -341,9 +341,9 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     @Deprecated
-    public int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull World world, @Nonnull BlockPos pos) {
+    public int getAnalogOutputSignal(@Nonnull BlockState blockState, @Nonnull Level world, @Nonnull BlockPos pos) {
         if (hasAnalogOutputSignal(blockState)) {
-            TileEntity tile = WorldUtils.getTileEntity(world, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             //Double-check the tile actually has comparator support
             if (tile instanceof IComparatorSupport) {
                 IComparatorSupport comparatorTile = (IComparatorSupport) tile;
@@ -357,15 +357,15 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     @Deprecated
-    public float getDestroyProgress(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return getDestroyProgress(state, player, world, pos, hasTileEntity(state) ? WorldUtils.getTileEntity(world, pos) : null);
+    public float getDestroyProgress(@Nonnull BlockState state, @Nonnull Player player, @Nonnull BlockGetter world, @Nonnull BlockPos pos) {
+        return getDestroyProgress(state, player, world, pos, state.hasBlockEntity() ? WorldUtils.getTileEntity(world, pos) : null);
     }
 
     /**
-     * Like {@link AbstractBlock#getDestroyProgress(BlockState, PlayerEntity, IBlockReader, BlockPos)} except also passes the tile to only have to get it once.
+     * Like {@link BlockBehaviour#getDestroyProgress(BlockState, Player, BlockGetter, BlockPos)} except also passes the tile to only have to get it once.
      */
-    protected float getDestroyProgress(@Nonnull BlockState state, @Nonnull PlayerEntity player, @Nonnull IBlockReader world, @Nonnull BlockPos pos,
-          @Nullable TileEntity tile) {
+    protected float getDestroyProgress(@Nonnull BlockState state, @Nonnull Player player, @Nonnull BlockGetter world, @Nonnull BlockPos pos,
+          @Nullable BlockEntity tile) {
         //Call super variant of player relative hardness to get default
         float speed = super.getDestroyProgress(state, player, world, pos);
         if (tile instanceof ITileRadioactive && ((ITileRadioactive) tile).getRadiationScale() > 0) {
@@ -376,9 +376,9 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    public void animateTick(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Random random) {
+    public void animateTick(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Random random) {
         super.animateTick(state, world, pos, random);
-        TileEntity tile = WorldUtils.getTileEntity(world, pos);
+        BlockEntity tile = WorldUtils.getTileEntity(world, pos);
         if (tile instanceof ITileRadioactive) {
             int count = ((ITileRadioactive) tile).getRadiationParticleCount();
             if (count > 0) {
@@ -394,42 +394,10 @@ public abstract class BlockMekanism extends Block {
         }
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean addDestroyEffects(BlockState state, World world, BlockPos pos, ParticleManager manager) {
-        //Copy of ParticleManager#addBlockDestroyEffects, but removes the minimum number of particles each voxel shape produces
-        state.getShape(world, pos).forAllBoxes((minX, minY, minZ, maxX, maxY, maxZ) -> {
-            double xDif = Math.min(1, maxX - minX);
-            double yDif = Math.min(1, maxY - minY);
-            double zDif = Math.min(1, maxZ - minZ);
-            //Don't force the counts to be at least two
-            int xCount = MathHelper.ceil(xDif / 0.25);
-            int yCount = MathHelper.ceil(yDif / 0.25);
-            int zCount = MathHelper.ceil(zDif / 0.25);
-            if (xCount > 0 && yCount > 0 && zCount > 0) {
-                for (int x = 0; x < xCount; x++) {
-                    for (int y = 0; y < yCount; y++) {
-                        for (int z = 0; z < zCount; z++) {
-                            double d4 = (x + 0.5) / xCount;
-                            double d5 = (y + 0.5) / yCount;
-                            double d6 = (z + 0.5) / zCount;
-                            double d7 = d4 * xDif + minX;
-                            double d8 = d5 * yDif + minY;
-                            double d9 = d6 * zDif + minZ;
-                            manager.add(new DiggingParticle((ClientWorld) world, pos.getX() + d7, pos.getY() + d8,
-                                  pos.getZ() + d9, d4 - 0.5, d5 - 0.5, d6 - 0.5, state).init(pos));
-                        }
-                    }
-                }
-            }
-        });
-        return true;
-    }
-
-    protected ActionResultType genericClientActivated(@Nonnull PlayerEntity player, @Nonnull Hand hand) {
+    protected InteractionResult genericClientActivated(@Nonnull Player player, @Nonnull InteractionHand hand) {
         if (Attribute.has(this, AttributeGui.class) || MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 }

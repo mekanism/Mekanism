@@ -25,7 +25,9 @@ import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> implements DoubleItemRecipeLookupHandler<CombinerRecipe> {
 
@@ -34,8 +36,8 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getSecondaryInput")
     private InputInventorySlot extraSlot;
 
-    public TileEntityCombiningFactory(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityCombiningFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         extraInputHandler = InputHelper.getInputHandler(extraSlot);
     }
 

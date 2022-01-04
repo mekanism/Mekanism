@@ -21,50 +21,51 @@ import mekanism.common.util.MultipartUtils;
 import mekanism.common.util.MultipartUtils.AdvancedRayTraceResult;
 import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public abstract class BlockTransmitter extends BlockMekanism implements IStateFluidLoggable {
 
     private static final Map<ConnectionInfo, VoxelShape> cachedShapes = new HashMap<>();
 
     protected BlockTransmitter() {
-        super(AbstractBlock.Properties.of(Material.PISTON).strength(1, 6));
+        super(BlockBehaviour.Properties.of(Material.PISTON).strength(1, 6));
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public ActionResultType use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, PlayerEntity player, @Nonnull Hand hand,
-          @Nonnull BlockRayTraceResult hit) {
+    public InteractionResult use(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, Player player, @Nonnull InteractionHand hand,
+          @Nonnull BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
         if (MekanismUtils.canUseAsWrench(stack) && player.isShiftKeyDown()) {
             if (!world.isClientSide) {
                 WorldUtils.dismantleBlock(state, world, pos);
             }
-            return ActionResultType.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void setPlacedBy(@Nonnull World world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
+    public void setPlacedBy(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
             tile.onAdded();
@@ -73,7 +74,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
 
     @Override
     @Deprecated
-    public void neighborChanged(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
+    public void neighborChanged(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Block neighborBlock, @Nonnull BlockPos neighborPos,
           boolean isMoving) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
@@ -83,7 +84,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     }
 
     @Override
-    public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor) {
+    public void onNeighborChange(BlockState state, LevelReader world, BlockPos pos, BlockPos neighbor) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
             Direction side = Direction.getNearest(neighbor.getX() - pos.getX(), neighbor.getY() - pos.getY(), neighbor.getZ() - pos.getZ());
@@ -93,19 +94,19 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
 
     @Override
     @Deprecated
-    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull PathType type) {
+    public boolean isPathfindable(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull PathComputationType type) {
         return false;
     }
 
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, CollisionContext context) {
         if (!context.isHoldingItem(MekanismItems.CONFIGURATOR.getItem())) {
             return getRealShape(world, pos);
         }
         //Get the partial selection box if we are holding a configurator
-        if (context.getEntity() == null) {
+        if ((!(context instanceof EntityCollisionContext entityContext)) || entityContext.getEntity() == null) {
             //If we don't have an entity get the full VoxelShape
             return getRealShape(world, pos);
         }
@@ -115,7 +116,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             return getCenter();
         }
         //TODO: Try to cache some of this? At the very least the collision boxes
-        AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(context.getEntity(), pos, tile.getCollisionBoxes());
+        AdvancedRayTraceResult result = MultipartUtils.collisionRayTrace(entityContext.getEntity(), pos, tile.getCollisionBoxes());
         if (result != null && result.valid()) {
             return result.bounds;
         }
@@ -126,7 +127,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getOcclusionShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    public VoxelShape getOcclusionShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos) {
         //Override this so that we ALWAYS have the full collision box, even if a configurator is being held
         return getRealShape(world, pos);
     }
@@ -134,7 +135,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
+    public VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         //Override this so that we ALWAYS have the full collision box, even if a configurator is being held
         return getRealShape(world, pos);
     }
@@ -143,7 +144,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
 
     protected abstract VoxelShape getSide(ConnectionType type, Direction side);
 
-    private VoxelShape getRealShape(IBlockReader world, BlockPos pos) {
+    private VoxelShape getRealShape(BlockGetter world, BlockPos pos) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile == null) {
             //If we failed to get the tile, just give the center shape

@@ -3,8 +3,8 @@ package mekanism.generators.common.content.fusion;
 import java.util.List;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockData> {
 
@@ -49,7 +49,7 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     }
 
     @Override
-    public void load(CompoundNBT nbtTags) {
+    public void load(CompoundTag nbtTags) {
         super.load(nbtTags);
         plasmaTemperature = nbtTags.getDouble(NBTConstants.PLASMA_TEMP);
         injectionRate = nbtTags.getInt(NBTConstants.INJECTION_RATE);
@@ -57,7 +57,7 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     }
 
     @Override
-    public void save(CompoundNBT nbtTags) {
+    public void save(CompoundTag nbtTags) {
         super.save(nbtTags);
         nbtTags.putDouble(NBTConstants.PLASMA_TEMP, plasmaTemperature);
         nbtTags.putInt(NBTConstants.INJECTION_RATE, getInjectionRate());

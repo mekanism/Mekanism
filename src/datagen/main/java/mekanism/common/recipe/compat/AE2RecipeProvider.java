@@ -1,135 +1,106 @@
 package mekanism.common.recipe.compat;
 
-import appeng.api.IAppEngApi;
-import appeng.api.definitions.IBlocks;
-import appeng.api.definitions.IItems;
-import appeng.api.definitions.IMaterials;
-import appeng.core.Api;
+import appeng.core.definitions.AEBlocks;
+import appeng.core.definitions.AEItems;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 
+//TODO - 1.18: New content (deepslate ores
 @ParametersAreNonnullByDefault
 public class AE2RecipeProvider extends CompatRecipeProvider {
 
     public AE2RecipeProvider() {
-        super("appliedenergistics2");
+        super("ae2");
     }
 
     @Override
-    protected void registerRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
-        //We cannot use the public API here since data generators do not run the common setup phase,
-        // which would normally expose the API to addons after AE has initialized and registered all of its blocks.
-        IAppEngApi api = Api.instance();
-        if (api == null) {
-            throw new IllegalStateException("AE2 was not initialized");
-        }
-
-        IItems items = api.definitions().items();
-        IMaterials materials = api.definitions().materials();
-        IBlocks blocks = api.definitions().blocks();
-
+    protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Certus Crystal -> Certus Dust
         ItemStackToItemStackRecipeBuilder.crushing(
                     ItemStackIngredient.from(Ingredient.of(
-                          materials.certusQuartzCrystal(),
-                          materials.certusQuartzCrystalCharged()
+                          AEItems.CERTUS_QUARTZ_CRYSTAL,
+                          AEItems.CERTUS_QUARTZ_CRYSTAL_CHARGED
                     )),
-                    materials.certusQuartzDust().stack(1)
+                    AEItems.CERTUS_QUARTZ_DUST.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "certus_crystal_to_dust"));
 
         //Fluix Crystal -> Fluix Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-                    ItemStackIngredient.from(materials.fluixCrystal()),
-                    materials.fluixDust().stack(1)
+                    ItemStackIngredient.from(AEItems.FLUIX_CRYSTAL),
+                    AEItems.FLUIX_DUST.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "fluix_crystal_to_dust"));
 
         //Certus Ore -> Certus Crystal
         ItemStackToItemStackRecipeBuilder.enriching(
-                    ItemStackIngredient.from(blocks.quartzOre()),
-                    materials.certusQuartzCrystal().stack(4)
+                    ItemStackIngredient.from(AEBlocks.QUARTZ_ORE),
+                    AEItems.CERTUS_QUARTZ_CRYSTAL.stack(4)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "certus_ore_to_crystal"));
 
-        //Charged Certus Ore -> Charged Certus Crystal
-        ItemStackToItemStackRecipeBuilder.enriching(
-                    ItemStackIngredient.from(blocks.quartzOreCharged()),
-                    materials.certusQuartzCrystalCharged().stack(4)
-              ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "charged_certus_ore_to_crystal"));
-
-        //Certus Crystal & Certus Dust -> Purified Certus Crystal
+        //TODO - 1.18: Re-evaluate
+        //Certus Dust -> Certus Crystal
         ItemStackToItemStackRecipeBuilder.enriching(
                     ItemStackIngredient.from(Ingredient.of(
-                          materials.certusQuartzCrystal(),
-                          materials.certusQuartzDust()
+                          AEItems.CERTUS_QUARTZ_DUST
                     )),
-                    materials.purifiedCertusQuartzCrystal().stack(1)
+                    AEItems.CERTUS_QUARTZ_CRYSTAL.stack(1)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "certus_crystal_purification"));
+              .build(consumer, Mekanism.rl(basePath + "certus_dust_purification"));
 
-        //Fluix Crystal & Fluix Dust -> Purified Fluix Crystal
+        //TODO - 1.18: Re-evaluate
+        //Fluix Dust -> Fluix Crystal
         ItemStackToItemStackRecipeBuilder.enriching(
-                    ItemStackIngredient.from(Ingredient.of(
-                          materials.fluixCrystal(),
-                          materials.fluixDust()
-                    )),
-                    materials.purifiedFluixCrystal().stack(1)
+                    ItemStackIngredient.from(AEItems.FLUIX_DUST),
+                    AEItems.FLUIX_CRYSTAL.stack(1)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "fluix_crystal_purification"));
+              .build(consumer, Mekanism.rl(basePath + "fluix_dust_purification"));
 
-        //Certus Crystal Seed -> Purified Certus Crystal
+        //Certus Crystal Seed -> Certus Crystal
         ItemStackToItemStackRecipeBuilder.enriching(
-                    ItemStackIngredient.from(items.certusCrystalSeed()),
-                    materials.purifiedCertusQuartzCrystal().stack(1)
+                    ItemStackIngredient.from(AEItems.CERTUS_CRYSTAL_SEED),
+                    AEItems.CERTUS_QUARTZ_CRYSTAL.stack(1)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "certus_seed_to_purified_crystal"));
+              .build(consumer, Mekanism.rl(basePath + "certus_seed_to_crystal"));
 
-        //Nether Crystal Seed -> Purified Nether Crystal
+        //Fluix Crystal Seed -> Fluix Crystal
         ItemStackToItemStackRecipeBuilder.enriching(
-                    ItemStackIngredient.from(items.netherQuartzSeed()),
-                    materials.purifiedNetherQuartzCrystal().stack(1)
+                    ItemStackIngredient.from(AEItems.FLUIX_CRYSTAL_SEED),
+                    AEItems.FLUIX_CRYSTAL.stack(1)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "nether_seed_to_purified_crystal"));
-
-        //Fluix Crystal Seed -> Purified Fluix Crystal
-        ItemStackToItemStackRecipeBuilder.enriching(
-                    ItemStackIngredient.from(items.fluixCrystalSeed()),
-                    materials.purifiedFluixCrystal().stack(1)
-              ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "fluix_seed_to_purified_crystal"));
+              .build(consumer, Mekanism.rl(basePath + "fluix_seed_to_crystal"));
 
         //Sky Stone -> Sky Stone Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-                    ItemStackIngredient.from(blocks.skyStoneBlock()),
-                    materials.skyDust().stack(1)
+                    ItemStackIngredient.from(AEBlocks.SKY_STONE_BLOCK),
+                    AEItems.SKY_DUST.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "sky_stone_to_dust"));
 
         //Smooth Sky Stone -> Sky Stone
         ItemStackToItemStackRecipeBuilder.enriching(
-                    ItemStackIngredient.from(blocks.smoothSkyStoneBlock()),
-                    blocks.skyStoneBlock().stack(1)
+                    ItemStackIngredient.from(AEBlocks.SMOOTH_SKY_STONE_BLOCK),
+                    AEBlocks.SKY_STONE_BLOCK.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "smooth_sky_stone_to_sky_stone"));
 
         //Sky Stone Dust -> Sky Stone
         ItemStackToItemStackRecipeBuilder.enriching(
-                    ItemStackIngredient.from(materials.skyDust()),
-                    blocks.skyStoneBlock().stack(1)
+                    ItemStackIngredient.from(AEItems.SKY_DUST),
+                    AEBlocks.SKY_STONE_BLOCK.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "sky_stone_dust_to_sky_stone"));
         //Ender pearl -> Ender dust
         ItemStackToItemStackRecipeBuilder.crushing(
                     ItemStackIngredient.from(Tags.Items.ENDER_PEARLS),
-                    materials.enderDust().stack(1)
+                    AEItems.ENDER_DUST.stack(1)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "ender_pearl_to_dust"));
     }

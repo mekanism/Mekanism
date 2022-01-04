@@ -44,12 +44,12 @@ import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.fluids.FluidStack;
@@ -61,7 +61,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     protected static final Object SKIP_OPTIONAL_PARAM = new Object();
 
     @Override
-    public abstract <U extends IRecipe<?>> boolean doesConflict(final IRecipeManager manager, final RECIPE recipe, final U other);
+    public abstract <U extends Recipe<?>> boolean doesConflict(final IRecipeManager manager, final RECIPE recipe, final U other);
 
     protected <TYPE, INGREDIENT extends InputIngredient<TYPE>> boolean ingredientConflicts(INGREDIENT a, INGREDIENT b) {
         return a.getRepresentations().stream().anyMatch(b::testType);
@@ -183,7 +183,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         if (ingredient instanceof ItemStackIngredient.Single) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             Ingredient vanillaIngredient = ((ItemStackIngredient.Single) ingredient).getInputRaw();
-            int amount = JSONUtils.getAsInt(serialized, JsonConstants.AMOUNT, 1);
+            int amount = GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1);
             String rep = basicImplicitIngredient(vanillaIngredient, amount, serialized.get(JsonConstants.INGREDIENT));
             if (rep == null) {
                 rep = IIngredient.fromIngredient(vanillaIngredient).getCommandString();

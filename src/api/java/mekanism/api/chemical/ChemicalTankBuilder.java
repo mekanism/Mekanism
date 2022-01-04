@@ -5,7 +5,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -173,14 +173,6 @@ public class ChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK exte
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
         return tankCreator.create(capacity, alwaysTrueBi, internalOnly, alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
-    }
-
-    @Deprecated//TODO - 1.18: Remove
-    public TANK ejectOutput(long capacity, @Nullable IContentsListener listener) {
-        if (capacity < 0) {
-            throw new IllegalArgumentException("Capacity must be at least zero");
-        }
-        return tankCreator.create(capacity, internalOnly, internalOnly, alwaysTrue, ChemicalAttributeValidator.ALWAYS_ALLOW, listener);
     }
 
     /**

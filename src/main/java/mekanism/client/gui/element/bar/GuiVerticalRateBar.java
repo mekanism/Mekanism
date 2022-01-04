@@ -1,11 +1,11 @@
 package mekanism.client.gui.element.bar;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiVerticalRateBar extends GuiBar<IBarInfoHandler> {
 
@@ -18,7 +18,7 @@ public class GuiVerticalRateBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(MatrixStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(PoseStack matrix, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         int displayInt = (int) (handlerLevel * texHeight);
         if (displayInt > 0) {
             //TODO: Should textureX be texWidth + 2

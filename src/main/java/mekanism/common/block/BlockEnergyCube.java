@@ -19,19 +19,19 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.util.VoxelShapeUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 
 /**
  * Block class for handling multiple energy cube block IDs. 0: Basic Energy Cube 1: Advanced Energy Cube 2: Elite Energy Cube 3: Ultimate Energy Cube 4: Creative Energy
@@ -108,17 +108,17 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
             boolean rotateHorizontal = rotated == 2;
             VoxelShape baseFrame = rotateVertical ? frameRotated : rotateHorizontal ? frameRotatedAlt : frame;
             for (int top = 0; top < 2; top++) {
-                VoxelShape withTop = top == 0 ? baseFrame : VoxelShapes.or(baseFrame, rotateVertical ? topRotated : topPanel);
+                VoxelShape withTop = top == 0 ? baseFrame : Shapes.or(baseFrame, rotateVertical ? topRotated : topPanel);
                 for (int bottom = 0; bottom < 2; bottom++) {
-                    VoxelShape withBottom = bottom == 0 ? withTop : VoxelShapes.or(withTop, rotateVertical ? bottomRotated : bottomPanel);
+                    VoxelShape withBottom = bottom == 0 ? withTop : Shapes.or(withTop, rotateVertical ? bottomRotated : bottomPanel);
                     for (int front = 0; front < 2; front++) {
-                        VoxelShape withFront = front == 0 ? withBottom : VoxelShapes.or(withBottom, frontPanel);
+                        VoxelShape withFront = front == 0 ? withBottom : Shapes.or(withBottom, frontPanel);
                         for (int back = 0; back < 2; back++) {
-                            VoxelShape withBack = back == 0 ? withFront : VoxelShapes.or(withFront, backPanel);
+                            VoxelShape withBack = back == 0 ? withFront : Shapes.or(withFront, backPanel);
                             for (int left = 0; left < 2; left++) {
-                                VoxelShape withLeft = left == 0 ? withBack : VoxelShapes.or(withBack, rotateHorizontal ? leftRotated : leftPanel);
+                                VoxelShape withLeft = left == 0 ? withBack : Shapes.or(withBack, rotateHorizontal ? leftRotated : leftPanel);
                                 for (int right = 0; right < 2; right++) {
-                                    VoxelShape withRight = right == 0 ? withLeft : VoxelShapes.or(withLeft, rotateHorizontal ? rightRotated : rightPanel);
+                                    VoxelShape withRight = right == 0 ? withLeft : Shapes.or(withLeft, rotateHorizontal ? rightRotated : rightPanel);
                                     bounds[getIndex(top, bottom, front, back, left, right, rotateVertical, rotateHorizontal)] = withRight;
                                 }
                             }
@@ -140,11 +140,11 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
     public BlockEnergyCube(Machine<TileEntityEnergyCube> type) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the energy cube
         // this may change based on what sides are enabled. Torches cannot be placed on the sides due to vanilla checking the incorrect shape
-        super(type, AbstractBlock.Properties.of(Material.METAL).strength(2, 2.4F).requiresCorrectToolForDrops().dynamicShape());
+        super(type, BlockBehaviour.Properties.of(Material.METAL).strength(2, 2.4F).requiresCorrectToolForDrops().dynamicShape());
     }
 
     @Override
-    public void setTileData(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
+    public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
         if (tile instanceof TileEntityEnergyCube) {
             if (Attribute.getTier(this, EnergyCubeTier.class) == EnergyCubeTier.CREATIVE) {
                 //TODO: Move this to being set in the variant added to the item group
@@ -166,7 +166,7 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
     @Nonnull
     @Override
     @Deprecated
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
         TileEntityEnergyCube energyCube = WorldUtils.getTileEntity(TileEntityEnergyCube.class, world, pos, true);
         int index;
         if (energyCube == null) {

@@ -8,10 +8,10 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.providers.ISlurryProvider;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.Tag;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link Slurry}.
@@ -71,7 +71,7 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
      * Helper method to create an {@link NSSSlurry} representing a tag from a {@link Tag<Slurry>}
      */
     @Nonnull
-    public static NSSSlurry createTag(@Nonnull ITag<Slurry> tag) {
+    public static NSSSlurry createTag(@Nonnull Tag<Slurry> tag) {
         return createTag(ChemicalTags.SLURRY.lookupTag(tag));
     }
 
@@ -94,7 +94,7 @@ public final class NSSSlurry extends AbstractNSSTag<Slurry> {
 
     @Nonnull
     @Override
-    protected ITagCollection<Slurry> getTagCollection() {
+    protected TagCollection<Slurry> getTagCollection() {
         return ChemicalTags.SLURRY.getCollection();
     }
 

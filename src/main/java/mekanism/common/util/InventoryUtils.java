@@ -10,9 +10,9 @@ import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.inventory.TileTransitRequest;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -39,7 +39,7 @@ public final class InventoryUtils {
     }
 
     @Nullable
-    public static IItemHandler assertItemHandler(String desc, TileEntity tile, Direction side) {
+    public static IItemHandler assertItemHandler(String desc, BlockEntity tile, Direction side) {
         Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).resolve();
         if (capability.isPresent()) {
             return capability.get();
@@ -53,11 +53,11 @@ public final class InventoryUtils {
         return null;
     }
 
-    public static boolean isItemHandler(TileEntity tile, Direction side) {
+    public static boolean isItemHandler(BlockEntity tile, Direction side) {
         return CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side).isPresent();
     }
 
-    public static TileTransitRequest getEjectItemMap(TileEntity tile, Direction side, List<IInventorySlot> slots) {
+    public static TileTransitRequest getEjectItemMap(BlockEntity tile, Direction side, List<IInventorySlot> slots) {
         return getEjectItemMap(new TileTransitRequest(tile, side), slots);
     }
 

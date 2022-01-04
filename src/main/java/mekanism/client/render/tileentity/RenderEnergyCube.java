@@ -1,6 +1,7 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.MekanismClient;
 import mekanism.client.model.ModelEnergyCube;
@@ -9,24 +10,25 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 @ParametersAreNonnullByDefault
 public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnergyCube> {
 
     public static final Vector3f coreVec = new Vector3f(0.0F, MekanismUtils.ONE_OVER_ROOT_TWO, MekanismUtils.ONE_OVER_ROOT_TWO);
-    private final ModelEnergyCube model = new ModelEnergyCube();
-    private final ModelEnergyCore core = new ModelEnergyCore();
+    private final ModelEnergyCube model;
+    private final ModelEnergyCore core;
 
-    public RenderEnergyCube(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderEnergyCube(BlockEntityRendererProvider.Context context) {
+        super(context);
+        model = new ModelEnergyCube(context.getModelSet());
+        core = new ModelEnergyCore(context.getModelSet());
     }
 
     @Override
-    protected void render(TileEntityEnergyCube tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
+    protected void render(TileEntityEnergyCube tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
         profiler.push(ProfilerConstants.FRAME);
         matrix.pushPose();
         matrix.translate(0.5, 1.5, 0.5);

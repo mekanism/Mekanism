@@ -2,7 +2,7 @@ package mekanism.common.capabilities.chemical.item;
 
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.common.capabilities.DynamicHandler.InteractPredicate;

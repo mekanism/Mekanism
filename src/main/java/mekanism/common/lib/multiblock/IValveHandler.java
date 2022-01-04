@@ -3,21 +3,21 @@ package mekanism.common.lib.multiblock;
 import java.util.Collection;
 import mekanism.api.NBTConstants;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 
 public interface IValveHandler {
 
-    default void writeValves(CompoundNBT updateTag) {
-        ListNBT valves = new ListNBT();
+    default void writeValves(CompoundTag updateTag) {
+        ListTag valves = new ListTag();
         for (ValveData valveData : getValveData()) {
             if (valveData.activeTicks > 0) {
-                CompoundNBT valveNBT = new CompoundNBT();
-                valveNBT.put(NBTConstants.POSITION, NBTUtil.writeBlockPos(valveData.location));
+                CompoundTag valveNBT = new CompoundTag();
+                valveNBT.put(NBTConstants.POSITION, NbtUtils.writeBlockPos(valveData.location));
                 valveNBT.putInt(NBTConstants.SIDE, valveData.side.ordinal());
                 valves.add(valveNBT);
             }
@@ -25,12 +25,12 @@ public interface IValveHandler {
         updateTag.put(NBTConstants.VALVE, valves);
     }
 
-    default void readValves(CompoundNBT updateTag) {
+    default void readValves(CompoundTag updateTag) {
         getValveData().clear();
-        if (updateTag.contains(NBTConstants.VALVE, NBT.TAG_LIST)) {
-            ListNBT valves = updateTag.getList(NBTConstants.VALVE, NBT.TAG_COMPOUND);
+        if (updateTag.contains(NBTConstants.VALVE, Tag.TAG_LIST)) {
+            ListTag valves = updateTag.getList(NBTConstants.VALVE, Tag.TAG_COMPOUND);
             for (int i = 0; i < valves.size(); i++) {
-                CompoundNBT valveNBT = valves.getCompound(i);
+                CompoundTag valveNBT = valves.getCompound(i);
                 ValveData data = new ValveData();
                 NBTUtils.setBlockPosIfPresent(valveNBT, NBTConstants.POSITION, pos -> data.location = pos);
                 data.side = Direction.from3DDataValue(valveNBT.getInt(NBTConstants.SIDE));

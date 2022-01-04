@@ -15,12 +15,12 @@ import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.IStringSerializable;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.util.StringRepresentable;
 
 //TODO: Make the chemicals know their own chemical type
-public enum ChemicalType implements IStringSerializable {
+public enum ChemicalType implements StringRepresentable {
     GAS("gas", c -> c instanceof Gas),
     INFUSION("infuse_type", c -> c instanceof InfuseType),
     PIGMENT("pigment", c -> c instanceof Pigment),
@@ -66,7 +66,7 @@ public enum ChemicalType implements IStringSerializable {
      *
      * @param nbt Tag to write to.
      */
-    public void write(@Nonnull CompoundNBT nbt) {
+    public void write(@Nonnull CompoundTag nbt) {
         nbt.putString(NBTConstants.CHEMICAL_TYPE, getSerializedName());
     }
 
@@ -90,8 +90,8 @@ public enum ChemicalType implements IStringSerializable {
      * @return Chemical Type.
      */
     @Nullable
-    public static ChemicalType fromNBT(@Nullable CompoundNBT nbt) {
-        if (nbt != null && nbt.contains(NBTConstants.CHEMICAL_TYPE, NBT.TAG_STRING)) {
+    public static ChemicalType fromNBT(@Nullable CompoundTag nbt) {
+        if (nbt != null && nbt.contains(NBTConstants.CHEMICAL_TYPE, Tag.TAG_STRING)) {
             return fromString(nbt.getString(NBTConstants.CHEMICAL_TYPE));
         }
         return null;

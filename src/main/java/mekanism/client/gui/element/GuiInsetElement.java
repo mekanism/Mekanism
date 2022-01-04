@@ -1,9 +1,11 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
 
@@ -56,15 +58,16 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw the button background
         drawButton(matrix, mouseX, mouseY);
         drawBackgroundOverlay(matrix);
     }
 
-    protected void drawBackgroundOverlay(@Nonnull MatrixStack matrix) {
-        minecraft.textureManager.bind(getOverlay());
+    protected void drawBackgroundOverlay(@Nonnull PoseStack matrix) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, getOverlay());
         blit(matrix, getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
     }
 }

@@ -37,7 +37,9 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.MetallurgicInfuserUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFactory<MetallurgicInfuserRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<InfuseType, InfusionStack, MetallurgicInfuserRecipe> {
@@ -50,8 +52,8 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
                                                                                         "getInfuseTypeFilledPercentage"})
     private IInfusionTank infusionTank;
 
-    public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityMetallurgicInfuserFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         infusionInputHandler = InputHelper.getInputHandler(infusionTank);
         configComponent.addSupported(TransmissionType.INFUSION);
         configComponent.setupIOConfig(TransmissionType.INFUSION, infusionTank, RelativeSide.RIGHT).setCanEject(false);

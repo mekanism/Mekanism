@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
@@ -41,11 +41,11 @@ import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.ChemicalTankTier;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -252,11 +252,11 @@ public class ChemicalUtil {
         return false;
     }
 
-    public static void addAttributeTooltips(List<ITextComponent> tooltips, Chemical<?> chemical) {
+    public static void addAttributeTooltips(List<Component> tooltips, Chemical<?> chemical) {
         chemical.getAttributes().forEach(attr -> attr.addTooltipText(tooltips));
     }
 
-    public static void addChemicalDataToTooltip(List<ITextComponent> tooltips, Chemical<?> chemical, boolean advanced) {
+    public static void addChemicalDataToTooltip(List<Component> tooltips, Chemical<?> chemical, boolean advanced) {
         if (!chemical.isEmptyType()) {
             addAttributeTooltips(tooltips, chemical);
             if (chemical instanceof Gas && ((Gas) chemical).isIn(MekanismTags.Gases.WASTE_BARREL_DECAY_BLACKLIST)) {
@@ -264,20 +264,20 @@ public class ChemicalUtil {
             }
             if (advanced) {
                 //If advanced tooltips are on, display the registry name
-                tooltips.add(TextComponentUtil.build(TextFormatting.DARK_GRAY, chemical.getRegistryName()));
+                tooltips.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, chemical.getRegistryName()));
             }
         }
     }
 
-    public static void emit(IChemicalTank<?, ?> tank, TileEntity from) {
+    public static void emit(IChemicalTank<?, ?> tank, BlockEntity from) {
         emit(EnumSet.allOf(Direction.class), tank, from);
     }
 
-    public static void emit(Set<Direction> outputSides, IChemicalTank<?, ?> tank, TileEntity from) {
+    public static void emit(Set<Direction> outputSides, IChemicalTank<?, ?> tank, BlockEntity from) {
         emit(outputSides, tank, from, tank.getCapacity());
     }
 
-    public static void emit(Set<Direction> outputSides, IChemicalTank<?, ?> tank, TileEntity from, long maxOutput) {
+    public static void emit(Set<Direction> outputSides, IChemicalTank<?, ?> tank, BlockEntity from, long maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0) {
             tank.extract(emit(outputSides, tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL), from), Action.EXECUTE, AutomationType.INTERNAL);
         }
@@ -292,7 +292,7 @@ public class ChemicalUtil {
      *
      * @return the amount of chemical emitted
      */
-    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> long emit(Set<Direction> sides, @Nonnull STACK stack, TileEntity from) {
+    public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> long emit(Set<Direction> sides, @Nonnull STACK stack, BlockEntity from) {
         if (stack.isEmpty() || sides.isEmpty()) {
             return 0;
         }

@@ -11,21 +11,22 @@ import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> {
 
     private boolean handleSound;
     private boolean prevBurning;
 
-    public TileEntityFissionReactorCasing() {
-        super(GeneratorsBlocks.FISSION_REACTOR_CASING);
+    public TileEntityFissionReactorCasing(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.FISSION_REACTOR_CASING, pos, state);
     }
 
-    public TileEntityFissionReactorCasing(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityFissionReactorCasing(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         getMultiblock().setActive(active);
     }
 
-    public ITextComponent getDamageString() {
+    public Component getDamageString() {
         return MekanismLang.GENERIC_PERCENT.translate(getMultiblock().getDamagePercent());
     }
 
@@ -84,8 +85,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         FissionReactorMultiblockData multiblock = getMultiblock();
         updateTag.putBoolean(NBTConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this));
         if (multiblock.isFormed()) {
@@ -95,8 +96,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
         FissionReactorMultiblockData multiblock = getMultiblock();
         if (multiblock.isFormed()) {

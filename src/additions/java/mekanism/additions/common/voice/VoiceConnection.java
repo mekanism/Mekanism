@@ -12,10 +12,10 @@ import java.util.UUID;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.item.ItemWalkieTalkie;
 import mekanism.common.Mekanism;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class VoiceConnection extends Thread {
 
@@ -40,8 +40,8 @@ public class VoiceConnection extends Thread {
                     int retryCount = 0;
                     while (uuid == null && retryCount <= 100) {
                         try {
-                            List<ServerPlayerEntity> players = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
-                            for (ServerPlayerEntity player : players) {
+                            List<ServerPlayer> players = Collections.synchronizedList(new ArrayList<>(server.getPlayerList().getPlayers()));
+                            for (ServerPlayer player : players) {
                                 String playerIP = player.getIpAddress();
                                 if (!server.isDedicatedServer() && playerIP.equals("local") && !MekanismAdditions.voiceManager.isFoundLocal()) {
                                     MekanismAdditions.voiceManager.setFoundLocal(true);
@@ -122,8 +122,8 @@ public class VoiceConnection extends Thread {
     }
 
     public boolean canListen(int channel) {
-        ServerPlayerEntity player = getPlayer();
-        return player.inventory.items.stream().anyMatch(itemStack -> canListen(channel, itemStack)) || canListen(channel, player.getOffhandItem());
+        ServerPlayer player = getPlayer();
+        return player.getInventory().items.stream().anyMatch(itemStack -> canListen(channel, itemStack)) || canListen(channel, player.getOffhandItem());
     }
 
     private boolean canListen(int channel, ItemStack itemStack) {
@@ -135,7 +135,7 @@ public class VoiceConnection extends Thread {
     }
 
     public int getCurrentChannel() {
-        ItemStack itemStack = getPlayer().inventory.getSelected();
+        ItemStack itemStack = getPlayer().getInventory().getSelected();
         if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie) {
             ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie) itemStack.getItem();
             if (walkieTalkie.getOn(itemStack)) {
@@ -145,7 +145,7 @@ public class VoiceConnection extends Thread {
         return 0;
     }
 
-    public ServerPlayerEntity getPlayer() {
+    public ServerPlayer getPlayer() {
         return server.getPlayerList().getPlayer(uuid);
     }
 }

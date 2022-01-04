@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.window.filter.transporter;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.UnaryOperator;
@@ -22,7 +22,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 
 public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisticalSorter>, IFancyFontRenderer {
 
@@ -64,7 +64,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         return new GuiSorterFilerSelect(gui, tile);
     }
 
-    default void renderSorterForeground(MatrixStack matrix, SorterFilter<?> filter, boolean singleItem) {
+    default void renderSorterForeground(PoseStack matrix, SorterFilter<?> filter, boolean singleItem) {
         int relativeX = getRelativeX();
         int relativeY = getRelativeY();
         drawString(matrix, OnOff.of(filter.allowDefault).getTextComponent(), relativeX + 161, relativeY + 20, titleTextColor());

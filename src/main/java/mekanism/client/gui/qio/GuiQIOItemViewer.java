@@ -1,7 +1,7 @@
 package mekanism.client.gui.qio;
 
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,8 +29,8 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> {
 
@@ -41,11 +41,13 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         ALLOWED_SPECIAL_CHARS.addAll(QueryType.getPrefixChars());
     }
 
+    protected final Inventory inv;
     private GuiTextField searchField;
     private GuiCraftingWindowTab craftingWindowTab;
 
-    protected GuiQIOItemViewer(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+    protected GuiQIOItemViewer(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
+        this.inv = inv;
         imageWidth = 16 + MekanismConfig.client.qioItemViewerSlotsX.get() * 18 + 18;
         imageHeight = QIOItemViewerContainer.SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 96;
         inventoryLabelY = imageHeight - 94;
@@ -58,8 +60,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         super.addGuiElements();
         int slotsY = MekanismConfig.client.qioItemViewerSlotsY.get();
         getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
-        addButton(new GuiInnerScreen(this, 7, 15, imageWidth - 16, 12, () -> {
-            List<ITextComponent> list = new ArrayList<>();
+        addRenderableWidget(new GuiInnerScreen(this, 7, 15, imageWidth - 16, 12, () -> {
+            List<Component> list = new ArrayList<>();
             FrequencyIdentity freq = getFrequency();
             if (freq == null) {
                 list.add(MekanismLang.NO_FREQUENCY.translate());
@@ -68,7 +70,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             }
             return list;
         }).tooltip(() -> {
-            List<ITextComponent> list = new ArrayList<>();
+            List<Component> list = new ArrayList<>();
             if (getFrequency() != null) {
                 list.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                       TextUtils.format(menu.getTotalItems()), TextUtils.format(menu.getCountCapacity())));
@@ -77,7 +79,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             }
             return list;
         }));
-        searchField = addButton(new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10));
+        searchField = addRenderableWidget(new GuiTextField(this, 50, 15 + 12 + 3, imageWidth - 50 - 10, 10));
         searchField.setOffset(0, -1);
         searchField.setInputValidator(this::isValidSearchChar);
         searchField.setResponder(menu::updateSearch);
@@ -86,21 +88,21 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         searchField.setVisible(true);
         searchField.setTextColor(0xFFFFFF);
         searchField.setFocused(true);
-        addButton(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
+        addRenderableWidget(new GuiSlotScroll(this, 7, QIOItemViewerContainer.SLOTS_START_Y, MekanismConfig.client.qioItemViewerSlotsX.get(), slotsY,
               menu::getQIOItemList, menu));
-        addButton(new GuiDropdown<>(this, imageWidth - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+        addRenderableWidget(new GuiDropdown<>(this, imageWidth - 9 - 54, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               41, ListSortType.class, menu::getSortType, menu::setSortType));
-        addButton(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
+        addRenderableWidget(new GuiDigitalIconToggle<>(this, imageWidth - 9 - 12, QIOItemViewerContainer.SLOTS_START_Y + slotsY * 18 + 1,
               12, 12, SortDirection.class, menu::getSortDirection, menu::setSortDirection));
-        addButton(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - 20 - topPos, this::resize));
-        craftingWindowTab = addButton(new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
+        addRenderableWidget(new GuiResizeControls(this, (getMinecraft().getWindow().getGuiScaledHeight() / 2) - 20 - topPos, this::resize));
+        craftingWindowTab = addRenderableWidget(new GuiCraftingWindowTab(this, () -> craftingWindowTab, menu));
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor(), 41);
-        ITextComponent text = MekanismLang.LIST_SORT.translate();
+        Component text = MekanismLang.LIST_SORT.translate();
         drawString(matrix, text, imageWidth - 66 - getStringWidth(text), imageHeight - 92, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public interface ISecurityItem extends IOwnerItem {
 

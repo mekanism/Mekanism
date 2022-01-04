@@ -2,8 +2,8 @@ package mekanism.client.model;
 
 import javax.annotation.Nonnull;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.BlockModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -28,6 +28,6 @@ public abstract class BaseBlockModelProvider extends BlockModelProvider {
     }
 
     public boolean textureExists(ResourceLocation texture) {
-        return existingFileHelper.exists(texture, ResourcePackType.CLIENT_RESOURCES, ".png", "textures");
+        return existingFileHelper.exists(texture, PackType.CLIENT_RESOURCES, ".png", "textures");
     }
 }

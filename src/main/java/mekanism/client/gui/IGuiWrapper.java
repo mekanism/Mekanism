@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -11,55 +11,61 @@ import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.SelectedWindowData;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public interface IGuiWrapper {
 
-    default void displayTooltip(MatrixStack matrix, ITextComponent component, int x, int y, int maxWidth) {
+    default void displayTooltip(PoseStack matrix, Component component, int x, int y, int maxWidth) {
         this.displayTooltips(matrix, Collections.singletonList(component), x, y, maxWidth);
     }
 
-    default void displayTooltip(MatrixStack matrix, ITextComponent component, int x, int y) {
+    default void displayTooltip(PoseStack matrix, Component component, int x, int y) {
         this.displayTooltips(matrix, Collections.singletonList(component), x, y);
     }
 
-    default void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis) {
+    default void displayTooltips(PoseStack matrix, List<Component> components, int xAxis, int yAxis) {
         displayTooltips(matrix, components, xAxis, yAxis, -1);
     }
 
-    default void displayTooltips(MatrixStack matrix, List<ITextComponent> components, int xAxis, int yAxis, int maxWidth) {
+    default void displayTooltips(PoseStack matrix, List<Component> components, int xAxis, int yAxis, int maxWidth) {
         //TODO - 1.18: Re-evaluate some form of this that wraps further along for use in Gui Windows (such as viewing descriptions of supported upgrades)
-        net.minecraftforge.fml.client.gui.GuiUtils.drawHoveringText(matrix, components, xAxis, yAxis, getWidth(), getHeight(), maxWidth, getFont());
+        //TODO - 1.18: Fix this I think it may just be a normal vanilla tooltip call that is used now
+        //net.minecraftforge.client.gui.GuiUtils.drawHoveringText(matrix, components, xAxis, yAxis, getWidth(), getHeight(), maxWidth, getFont());
+        if (this instanceof Screen screen) {
+            screen.renderComponentTooltip(matrix, components, xAxis, yAxis);
+        }
+        //TODO - 1.18: Else??
     }
 
     default int getLeft() {
-        if (this instanceof ContainerScreen) {
-            return ((ContainerScreen<?>) this).getGuiLeft();
+        if (this instanceof AbstractContainerScreen) {
+            return ((AbstractContainerScreen<?>) this).getGuiLeft();
         }
         return 0;
     }
 
     default int getTop() {
-        if (this instanceof ContainerScreen) {
-            return ((ContainerScreen<?>) this).getGuiTop();
+        if (this instanceof AbstractContainerScreen) {
+            return ((AbstractContainerScreen<?>) this).getGuiTop();
         }
         return 0;
     }
 
     default int getWidth() {
-        if (this instanceof ContainerScreen) {
-            return ((ContainerScreen<?>) this).getXSize();
+        if (this instanceof AbstractContainerScreen) {
+            return ((AbstractContainerScreen<?>) this).getXSize();
         }
         return 0;
     }
 
     default int getHeight() {
-        if (this instanceof ContainerScreen) {
-            return ((ContainerScreen<?>) this).getYSize();
+        if (this instanceof AbstractContainerScreen) {
+            return ((AbstractContainerScreen<?>) this).getYSize();
         }
         return 0;
     }
@@ -89,23 +95,23 @@ public interface IGuiWrapper {
     }
 
     @Nullable
-    FontRenderer getFont();
+    Font getFont();
 
-    default void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
+    default void renderItem(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
         renderItem(matrix, stack, xAxis, yAxis, 1);
     }
 
-    default void renderItem(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
+    default void renderItem(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale) {
         GuiUtils.renderItem(matrix, getItemRenderer(), stack, xAxis, yAxis, scale, getFont(), null, false);
     }
 
     ItemRenderer getItemRenderer();
 
-    default void renderItemTooltip(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
+    default void renderItemTooltip(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
         Mekanism.logger.error("Tried to call 'renderItemTooltip' but unsupported in {}", getClass().getName());
     }
 
-    default void renderItemTooltipWithExtra(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, List<ITextComponent> toAppend) {
+    default void renderItemTooltipWithExtra(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
         if (toAppend.isEmpty()) {
             renderItemTooltip(matrix, stack, xAxis, yAxis);
         } else {
@@ -113,7 +119,7 @@ public interface IGuiWrapper {
         }
     }
 
-    default void renderItemWithOverlay(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, @Nullable String text) {
+    default void renderItemWithOverlay(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, float scale, @Nullable String text) {
         GuiUtils.renderItem(matrix, getItemRenderer(), stack, xAxis, yAxis, scale, getFont(), text, true);
     }
 

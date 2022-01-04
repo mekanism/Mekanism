@@ -32,12 +32,12 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsItems;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Items;
-import net.minecraft.tags.ITag;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.Items;
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -58,7 +58,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
     }
 
     @Override
-    protected void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void addRecipes(Consumer<FinishedRecipe> consumer) {
         addGeneratorRecipes(consumer);
         addFissionReactorRecipes(consumer);
         addFusionReactorRecipes(consumer);
@@ -70,7 +70,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         addGearModuleRecipes(consumer);
     }
 
-    private void addElectrolyticSeparatorRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addElectrolyticSeparatorRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "separator/";
         //Heavy water
         ElectrolysisRecipeBuilder.separating(
@@ -81,15 +81,15 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .build(consumer, MekanismGenerators.rl(basePath + "heavy_water"));
     }
 
-    private void addRotaryCondensentratorRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addRotaryCondensentratorRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "rotary/";
         addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.DEUTERIUM, GeneratorsFluids.DEUTERIUM, GeneratorTags.Fluids.DEUTERIUM, GeneratorTags.Gases.DEUTERIUM);
         addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.FUSION_FUEL, GeneratorsFluids.FUSION_FUEL, GeneratorTags.Fluids.FUSION_FUEL, GeneratorTags.Gases.FUSION_FUEL);
         addRotaryCondensentratorRecipe(consumer, basePath, GeneratorsGases.TRITIUM, GeneratorsFluids.TRITIUM, GeneratorTags.Fluids.TRITIUM, GeneratorTags.Gases.TRITIUM);
     }
 
-    private void addRotaryCondensentratorRecipe(Consumer<IFinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput,
-          ITag<Fluid> fluidInput, ITag<Gas> gasInput) {
+    private void addRotaryCondensentratorRecipe(Consumer<FinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput,
+          Tag<Fluid> fluidInput, Tag<Gas> gasInput) {
         RotaryRecipeBuilder.rotary(
               FluidStackIngredient.from(fluidInput, 1),
               GasStackIngredient.from(gasInput, 1),
@@ -98,7 +98,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ).build(consumer, MekanismGenerators.rl(basePath + gas.getName()));
     }
 
-    private void addChemicalInfuserRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addChemicalInfuserRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "chemical_infusing/";
         //DT Fuel
         ChemicalChemicalToChemicalRecipeBuilder.chemicalInfusing(
@@ -108,7 +108,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ).build(consumer, MekanismGenerators.rl(basePath + "fusion_fuel"));
     }
 
-    private void addSolarNeutronActivatorRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addSolarNeutronActivatorRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "activating/";
         GasToGasRecipeBuilder.activating(
               GasStackIngredient.from(MekanismGases.LITHIUM, 1),
@@ -116,7 +116,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
         ).build(consumer, MekanismGenerators.rl(basePath + "tritium"));
     }
 
-    private void addGeneratorRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addGeneratorRecipes(Consumer<FinishedRecipe> consumer) {
         //Solar panel (item component)
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsItems.SOLAR_PANEL)
               .pattern(RecipePattern.createPattern(
@@ -198,7 +198,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .build(consumer, MekanismGenerators.rl("generator/wind"));
     }
 
-    private void addFissionReactorRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addFissionReactorRecipes(Consumer<FinishedRecipe> consumer) {
         // Casing
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.FISSION_REACTOR_CASING, 4)
               .pattern(RecipePattern.createPattern(
@@ -248,7 +248,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .build(consumer, MekanismGenerators.rl("fission_reactor/control_rod_assembly"));
     }
 
-    private void addGearModuleRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addGearModuleRecipes(Consumer<FinishedRecipe> consumer) {
         //Geothermal Generator Unit
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsItems.MODULE_GEOTHERMAL_GENERATOR)
               .pattern(MekanismRecipeProvider.BASIC_MODULE)
@@ -267,7 +267,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .build(consumer);
     }
 
-    private void addFusionReactorRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addFusionReactorRecipes(Consumer<FinishedRecipe> consumer) {
         //Hohlraum
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 4),
@@ -334,7 +334,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               .build(consumer, MekanismGenerators.rl("reactor/controller"));
     }
 
-    private void addTurbineRecipes(Consumer<IFinishedRecipe> consumer) {
+    private void addTurbineRecipes(Consumer<FinishedRecipe> consumer) {
         //Electromagnetic Coil
         ExtendedShapedRecipeBuilder.shapedRecipe(GeneratorsBlocks.ELECTROMAGNETIC_COIL)
               .pattern(RecipePattern.createPattern(

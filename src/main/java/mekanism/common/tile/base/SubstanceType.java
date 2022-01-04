@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.function.Function;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public enum SubstanceType {
@@ -18,26 +18,26 @@ public enum SubstanceType {
     HEAT(NBTConstants.HEAT_CAPACITORS, tile -> tile.getHeatCapacitors(null));
 
     private final String containerTag;
-    private final Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundNBT>>> containerSupplier;
+    private final Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundTag>>> containerSupplier;
 
-    SubstanceType(String containerTag, Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundNBT>>> containerSupplier) {
+    SubstanceType(String containerTag, Function<TileEntityMekanism, List<? extends INBTSerializable<CompoundTag>>> containerSupplier) {
         this.containerTag = containerTag;
         this.containerSupplier = containerSupplier;
     }
 
-    public void write(TileEntityMekanism tile, CompoundNBT tag) {
+    public void write(TileEntityMekanism tile, CompoundTag tag) {
         tag.put(containerTag, DataHandlerUtils.writeContainers(containerSupplier.apply(tile)));
     }
 
-    public void read(TileEntityMekanism tile, CompoundNBT tag) {
-        DataHandlerUtils.readContainers(containerSupplier.apply(tile), tag.getList(containerTag, NBT.TAG_COMPOUND));
+    public void read(TileEntityMekanism tile, CompoundTag tag) {
+        DataHandlerUtils.readContainers(containerSupplier.apply(tile), tag.getList(containerTag, Tag.TAG_COMPOUND));
     }
 
     public String getContainerTag() {
         return containerTag;
     }
 
-    public List<? extends INBTSerializable<CompoundNBT>> getContainers(TileEntityMekanism tile) {
+    public List<? extends INBTSerializable<CompoundTag>> getContainers(TileEntityMekanism tile) {
         return containerSupplier.apply(tile);
     }
 

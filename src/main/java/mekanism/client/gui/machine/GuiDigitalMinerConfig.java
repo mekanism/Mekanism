@@ -1,6 +1,6 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiFilterHolder;
@@ -45,16 +45,16 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.network.chat.Component;
 
 public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
@@ -62,42 +62,42 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     private GuiTextField radiusField, minField, maxField;
 
-    public GuiDigitalMinerConfig(MekanismTileContainer<TileEntityDigitalMiner> container, PlayerInventory inv, ITextComponent title) {
+    public GuiDigitalMinerConfig(MekanismTileContainer<TileEntityDigitalMiner> container, Inventory inv, Component title) {
         super(container, inv, title);
     }
 
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new TranslationButton(this, 56, 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
+        addRenderableWidget(new TranslationButton(this, 56, 136, 96, 20, MekanismLang.BUTTON_NEW_FILTER,
               () -> addWindow(new GuiMinerFilerSelect(this, tile))));
-        addButton(new MekanismImageButton(this, 5, 5, 11, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
-        addButton(new GuiDigitalSwitch(this, 10, 115, INVERSE, tile::getInverse, MekanismLang.MINER_INVERSE.translate(),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, tile)), SwitchType.LEFT_ICON));
-        addButton(new GuiSlot(SlotType.NORMAL, this, 13, 135)).setRenderAboveSlots().setRenderHover(true)
+        addRenderableWidget(new MekanismImageButton(this, 5, 5, 11, 14, getButtonLocation("back"),
+              () -> Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
+        addRenderableWidget(new GuiDigitalSwitch(this, 10, 115, INVERSE, tile::getInverse, MekanismLang.MINER_INVERSE.translate(),
+              () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_BUTTON, tile)), SwitchType.LEFT_ICON));
+        addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 13, 135)).setRenderAboveSlots().setRenderHover(true)
               .stored(() -> new ItemStack(tile.getInverseReplaceTarget())).click((element, mouseX, mouseY) -> {
                   if (Screen.hasShiftDown()) {
                       updateInverseReplaceTarget(Items.AIR);
                   } else {
-                      ItemStack stack = minecraft.player.inventory.getCarried();
+                      ItemStack stack = minecraft.player.containerMenu.getCarried();
                       if (!stack.isEmpty() && stack.getItem() instanceof BlockItem) {
                           updateInverseReplaceTarget(stack.getItem());
                       }
                   }
               }).setGhostHandler((IGhostBlockItemConsumer) ingredient -> updateInverseReplaceTarget(((ItemStack) ingredient).getItem()));
-        addButton(new MekanismImageButton(this, 35, 137, 14, 16, getButtonLocation("exclamation"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_REQUIRES_REPLACEMENT_BUTTON, tile)),
+        addRenderableWidget(new MekanismImageButton(this, 35, 137, 14, 16, getButtonLocation("exclamation"),
+              () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_REQUIRES_REPLACEMENT_BUTTON, tile)),
               getOnHover(() -> MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.of(tile.getInverseRequiresReplacement())))));
-        radiusField = addButton(new GuiTextField(this, 13, 49, 38, 11));
+        radiusField = addRenderableWidget(new GuiTextField(this, 13, 49, 38, 11));
         radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
         radiusField.setInputValidator(InputValidator.DIGIT);
         radiusField.configureDigitalBorderInput(() -> setText(radiusField, GuiInteraction.SET_RADIUS));
-        minField = addButton(new GuiTextField(this, 13, 74, 38, 11));
+        minField = addRenderableWidget(new GuiTextField(this, 13, 74, 38, 11));
         minField.setMaxStringLength(3);
         minField.setInputValidator(InputValidator.DIGIT);
         minField.configureDigitalBorderInput(() -> setText(minField, GuiInteraction.SET_MIN_Y));
-        maxField = addButton(new GuiTextField(this, 13, 99, 38, 11));
+        maxField = addRenderableWidget(new GuiTextField(this, 13, 99, 38, 11));
         maxField.setMaxStringLength(3);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.configureDigitalBorderInput(() -> setText(maxField, GuiInteraction.SET_MAX_Y));
@@ -108,8 +108,8 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     private void updateInverseReplaceTarget(Item target) {
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteractionItem.DIGITAL_MINER_INVERSE_REPLACE_ITEM, tile, new ItemStack(target)));
-        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionItem.DIGITAL_MINER_INVERSE_REPLACE_ITEM, tile, new ItemStack(target)));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
     }
 
     @Override
@@ -118,7 +118,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.drawForegroundText(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.MINER_CONFIG.translate(), titleLabelY);
         drawScaledTextScaledBound(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 36, 0.8F);
@@ -129,7 +129,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     }
 
     @Override
-    public void drawTitleText(MatrixStack matrix, ITextComponent text, float y) {
+    public void drawTitleText(PoseStack matrix, Component text, float y) {
         //Adjust spacing for back button
         int leftShift = 11;
         int xSize = getXSize() - leftShift;
@@ -159,7 +159,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     private void setText(GuiTextField field, GuiInteraction interaction) {
         if (!field.getText().isEmpty()) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiInteract(interaction, tile, Integer.parseInt(field.getText())));
+            Mekanism.packetHandler().sendToServer(new PacketGuiInteract(interaction, tile, Integer.parseInt(field.getText())));
             field.setText("");
         }
     }

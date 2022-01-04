@@ -4,14 +4,14 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 
 /**
  * The default tiers used in Mekanism.
  *
  * @author aidancbrady
  */
-public enum BaseTier implements IStringSerializable {
+public enum BaseTier implements StringRepresentable {
     BASIC("Basic", EnumColor.BRIGHT_GREEN, EnumColor.BRIGHT_GREEN),
     ADVANCED("Advanced", EnumColor.DARK_RED, EnumColor.RED),
     ELITE("Elite", EnumColor.INDIGO, EnumColor.INDIGO),

@@ -5,9 +5,9 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketWindowSelect implements IMekanismPacket {
 
@@ -20,14 +20,14 @@ public class PacketWindowSelect implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ServerPlayerEntity player = context.getSender();
+        ServerPlayer player = context.getSender();
         if (player != null && player.containerMenu instanceof MekanismContainer) {
             ((MekanismContainer) player.containerMenu).setSelectedWindow(player.getUUID(), selectedWindow);
         }
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         //We skip using a boolean to write if it is null or not and just write our byte before our enum so that we can
         // use -1 as a marker for invalid
         if (selectedWindow == null) {
@@ -38,7 +38,7 @@ public class PacketWindowSelect implements IMekanismPacket {
         }
     }
 
-    public static PacketWindowSelect decode(PacketBuffer buffer) {
+    public static PacketWindowSelect decode(FriendlyByteBuf buffer) {
         byte extraData = buffer.readByte();
         if (extraData == -1) {
             return new PacketWindowSelect(null);

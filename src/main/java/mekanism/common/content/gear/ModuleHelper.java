@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismIMC;
 import mekanism.api.NBTConstants;
@@ -29,12 +28,13 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.InterModComms;
 
 @ParametersAreNonnullByDefault
@@ -125,7 +125,7 @@ public class ModuleHelper implements IModuleHelper {
     @Override
     public <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack container, IModuleDataProvider<MODULE> typeProvider) {
         if (container.getItem() instanceof IModuleContainerItem) {
-            CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
+            CompoundTag modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
             return load(container, typeProvider.getModuleData(), modulesTag, null);
         }
         return null;
@@ -135,7 +135,7 @@ public class ModuleHelper implements IModuleHelper {
     public List<Module<?>> loadAll(ItemStack container) {
         if (container.getItem() instanceof IModuleContainerItem) {
             List<Module<?>> modules = new ArrayList<>();
-            CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
+            CompoundTag modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
             for (ModuleData<?> moduleType : loadAllTypes(modulesTag)) {
                 Module<?> module = load(container, moduleType, modulesTag, null);
                 if (module != null) {
@@ -151,7 +151,7 @@ public class ModuleHelper implements IModuleHelper {
     public <MODULE extends ICustomModule<?>> List<Module<? extends MODULE>> loadAll(ItemStack container, Class<MODULE> moduleClass) {
         if (container.getItem() instanceof IModuleContainerItem) {
             List<Module<? extends MODULE>> modules = new ArrayList<>();
-            CompoundNBT modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
+            CompoundTag modulesTag = ItemDataUtils.getCompound(container, NBTConstants.MODULES);
             for (ModuleData<?> moduleType : loadAllTypes(modulesTag)) {
                 Module<?> module = load(container, moduleType, modulesTag, moduleClass);
                 if (module != null) {
@@ -171,7 +171,7 @@ public class ModuleHelper implements IModuleHelper {
         return Collections.emptyList();
     }
 
-    private Set<ModuleData<?>> loadAllTypes(CompoundNBT modulesTag) {
+    private Set<ModuleData<?>> loadAllTypes(CompoundTag modulesTag) {
         //We use a set so in case there is a duplicate entry somehow between legacy and non legacy,
         // we only include it once in the returned set. This shouldn't happen, but it is a just in case thing
         //TODO - 1.18: After removing legacy types we might as well change this to a list
@@ -199,21 +199,21 @@ public class ModuleHelper implements IModuleHelper {
     }
 
     @Nullable
-    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack container, ModuleData<MODULE> type, CompoundNBT modulesTag,
+    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ItemStack container, ModuleData<MODULE> type, CompoundTag modulesTag,
           @Nullable Class<? extends ICustomModule<?>> typeFilter) {
         String registryName = type.getRegistryName().toString();
-        if (modulesTag.contains(registryName, NBT.TAG_COMPOUND)) {
+        if (modulesTag.contains(registryName, Tag.TAG_COMPOUND)) {
             return load(type, container, modulesTag, registryName, typeFilter);
         }
         String legacyName = type.getLegacyName();
-        if (legacyName != null && modulesTag.contains(legacyName, NBT.TAG_COMPOUND)) {
+        if (legacyName != null && modulesTag.contains(legacyName, Tag.TAG_COMPOUND)) {
             return load(type, container, modulesTag, legacyName, typeFilter);
         }
         return null;
     }
 
     @Nullable
-    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ModuleData<MODULE> type, ItemStack container, CompoundNBT modulesTag, String key,
+    private <MODULE extends ICustomModule<MODULE>> Module<MODULE> load(ModuleData<MODULE> type, ItemStack container, CompoundTag modulesTag, String key,
           @Nullable Class<? extends ICustomModule<?>> typeFilter) {
         //TODO - 1.18: When removing the legacy handling from the above method just inline this method
         Module<MODULE> module = new Module<>(type, container);
@@ -235,7 +235,7 @@ public class ModuleHelper implements IModuleHelper {
     }
 
     @Override
-    public IHUDElement hudElement(ResourceLocation icon, ITextComponent text, HUDColor color) {
+    public IHUDElement hudElement(ResourceLocation icon, Component text, HUDColor color) {
         return HUDElement.of(icon, text, HUDElement.HUDColor.from(color));
     }
 }

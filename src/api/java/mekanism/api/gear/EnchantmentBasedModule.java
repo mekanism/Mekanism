@@ -3,8 +3,8 @@ package mekanism.api.gear;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 /**
  * Abstract implementation to make creating custom modules that provide a specific enchantment when installed easier, while also properly "hiding" the fact that there is

@@ -14,16 +14,15 @@ import mekanism.common.inventory.container.type.MekanismItemContainerType.IMekan
 import mekanism.common.registration.INamedEntry;
 import mekanism.common.registration.WrappedDeferredRegister;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraftforge.common.extensions.IForgeContainerType;
-import net.minecraftforge.fml.network.IContainerFactory;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<ContainerType<?>> {
+public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuType<?>> {
 
     public ContainerTypeDeferredRegister(String modid) {
         super(modid, ForgeRegistries.CONTAINERS);
@@ -61,7 +60,7 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<Conta
         return register(name, () -> MekanismContainerType.tile(tileClass, factory));
     }
 
-    public <ENTITY extends Entity, CONTAINER extends Container & IEntityContainer<ENTITY>> ContainerTypeRegistryObject<CONTAINER> registerEntity(String name,
+    public <ENTITY extends Entity, CONTAINER extends AbstractContainerMenu & IEntityContainer<ENTITY>> ContainerTypeRegistryObject<CONTAINER> registerEntity(String name,
           Class<ENTITY> entityClass, IMekanismContainerFactory<ENTITY, CONTAINER> factory) {
         return register(name, () -> MekanismContainerType.entity(entityClass, factory));
     }
@@ -73,25 +72,25 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<Conta
         return register(name, () -> MekanismContainerType.entity(EntityRobit.class, factory), registryObject::setRegistryObject);
     }
 
-    public <ITEM extends Item, CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Class<ITEM> itemClass,
+    public <ITEM extends Item, CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Class<ITEM> itemClass,
           IMekanismItemContainerFactory<ITEM, CONTAINER> factory) {
         return register(nameProvider.getInternalRegistryName(), itemClass, factory);
     }
 
-    public <ITEM extends Item, CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(String name, Class<ITEM> itemClass,
+    public <ITEM extends Item, CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(String name, Class<ITEM> itemClass,
           IMekanismItemContainerFactory<ITEM, CONTAINER> factory) {
         return register(name, () -> MekanismItemContainerType.item(itemClass, factory));
     }
 
-    public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(String name, IContainerFactory<CONTAINER> factory) {
-        return register(name, () -> IForgeContainerType.create(factory));
+    public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(String name, IContainerFactory<CONTAINER> factory) {
+        return register(name, () -> new MenuType<>(factory));
     }
 
-    public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Supplier<ContainerType<CONTAINER>> supplier) {
+    public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(INamedEntry nameProvider, Supplier<MenuType<CONTAINER>> supplier) {
         return register(nameProvider.getInternalRegistryName(), supplier);
     }
 
-    public <CONTAINER extends Container> ContainerTypeRegistryObject<CONTAINER> register(String name, Supplier<ContainerType<CONTAINER>> supplier) {
+    public <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> register(String name, Supplier<MenuType<CONTAINER>> supplier) {
         return register(name, supplier, ContainerTypeRegistryObject::new);
     }
 
@@ -150,7 +149,7 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<Conta
                 }
 
                 @Override
-                protected void addInventorySlots(@Nonnull PlayerInventory inv) {
+                protected void addInventorySlots(@Nonnull Inventory inv) {
                     super.addInventorySlots(inv);
                     if (armorSlotsX != -1 && armorSlotsY != -1) {
                         addArmorSlots(inv, armorSlotsX, armorSlotsY, offhandOffset);

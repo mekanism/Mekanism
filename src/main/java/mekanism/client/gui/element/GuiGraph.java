@@ -1,9 +1,9 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
 import javax.annotation.Nonnull;
@@ -11,8 +11,8 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.text.ITextComponent;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 
 public class GuiGraph extends GuiTexturedElement {
 
@@ -55,11 +55,12 @@ public class GuiGraph extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw Black and border
         renderBackgroundTexture(matrix, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
-        minecraft.textureManager.bind(getResource());
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, getResource());
         //Draw the graph
         int size = graphData.size();
         int x = this.x + 1;
@@ -70,17 +71,18 @@ public class GuiGraph extends GuiTexturedElement {
             int relativeHeight = (int) (data * height / (double) currentScale);
             blit(matrix, x + i, y + height - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
-            RenderSystem.shadeModel(GL11.GL_SMOOTH);
-            RenderSystem.disableAlphaTest();
+            //TODO - 1.18: Test this
+            //RenderSystem.shadeModel(GL11.GL_SMOOTH);
+            //RenderSystem.disableAlphaTest();
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            RenderSystem.color4f(1, 1, 1, 0.2F + 0.8F * i / size);
+            RenderSystem.setShaderColor(1, 1, 1, 0.2F + 0.8F * i / size);
             blit(matrix, x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
             int hoverIndex = mouseX - getButtonX();
             if (hoverIndex == i && mouseY >= getButtonY() && mouseY < getButtonY() + height) {
-                RenderSystem.color4f(1, 1, 1, 0.5F);
+                RenderSystem.setShaderColor(1, 1, 1, 0.5F);
                 blit(matrix, x + i, y, 2, 0, 1, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
                 MekanismRenderer.resetColor();
                 blit(matrix, x + i, y + height - relativeHeight, 0, 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
@@ -88,12 +90,12 @@ public class GuiGraph extends GuiTexturedElement {
 
             MekanismRenderer.resetColor();
             RenderSystem.disableBlend();
-            RenderSystem.enableAlphaTest();
+            //RenderSystem.enableAlphaTest();
         }
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         int hoverIndex = mouseX - relativeX;
         if (hoverIndex >= 0 && hoverIndex < graphData.size()) {
@@ -103,6 +105,6 @@ public class GuiGraph extends GuiTexturedElement {
 
     public interface GraphDataHandler {
 
-        ITextComponent getDataDisplay(long data);
+        Component getDataDisplay(long data);
     }
 }

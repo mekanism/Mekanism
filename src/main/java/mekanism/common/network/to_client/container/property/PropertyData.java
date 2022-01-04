@@ -1,7 +1,7 @@
 package mekanism.common.network.to_client.container.property;
 
 import mekanism.common.inventory.container.MekanismContainer;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public abstract class PropertyData {
 
@@ -23,12 +23,12 @@ public abstract class PropertyData {
 
     public abstract void handleWindowProperty(MekanismContainer container);
 
-    public void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         buffer.writeEnum(type);
         buffer.writeShort(property);
     }
 
-    public static PropertyData fromBuffer(PacketBuffer buffer) {
+    public static PropertyData fromBuffer(FriendlyByteBuf buffer) {
         PropertyType type = buffer.readEnum(PropertyType.class);
         short property = buffer.readShort();
         return type.createData(property, buffer);

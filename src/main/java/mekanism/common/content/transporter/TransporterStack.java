@@ -15,14 +15,14 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Contract;
 
@@ -44,19 +44,19 @@ public class TransporterStack {
     private Path pathType;
     private List<BlockPos> pathToTarget = new ArrayList<>();
 
-    public static TransporterStack readFromNBT(CompoundNBT nbtTags) {
+    public static TransporterStack readFromNBT(CompoundTag nbtTags) {
         TransporterStack stack = new TransporterStack();
         stack.read(nbtTags);
         return stack;
     }
 
-    public static TransporterStack readFromUpdate(CompoundNBT nbtTags) {
+    public static TransporterStack readFromUpdate(CompoundTag nbtTags) {
         TransporterStack stack = new TransporterStack();
         stack.readFromUpdateTag(nbtTags);
         return stack;
     }
 
-    public static TransporterStack readFromPacket(PacketBuffer dataStream) {
+    public static TransporterStack readFromPacket(FriendlyByteBuf dataStream) {
         TransporterStack stack = new TransporterStack();
         stack.read(dataStream);
         if (stack.progress == 0) {
@@ -65,7 +65,7 @@ public class TransporterStack {
         return stack;
     }
 
-    public void write(LogisticalTransporterBase transporter, PacketBuffer buf) {
+    public void write(LogisticalTransporterBase transporter, FriendlyByteBuf buf) {
         buf.writeVarInt(TransporterUtils.getColorIndex(color));
         buf.writeVarInt(progress);
         buf.writeBlockPos(originalLocation);
@@ -80,7 +80,7 @@ public class TransporterStack {
         buf.writeItem(itemStack);
     }
 
-    public void read(PacketBuffer dataStream) {
+    public void read(FriendlyByteBuf dataStream) {
         color = TransporterUtils.readColor(dataStream.readVarInt());
         progress = dataStream.readVarInt();
         originalLocation = dataStream.readBlockPos();
@@ -92,19 +92,19 @@ public class TransporterStack {
         itemStack = dataStream.readItem();
     }
 
-    public void writeToUpdateTag(LogisticalTransporterBase transporter, CompoundNBT updateTag) {
+    public void writeToUpdateTag(LogisticalTransporterBase transporter, CompoundTag updateTag) {
         updateTag.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
         updateTag.putInt(NBTConstants.PROGRESS, progress);
-        updateTag.put(NBTConstants.ORIGINAL_LOCATION, NBTUtil.writeBlockPos(originalLocation));
+        updateTag.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
         updateTag.putInt(NBTConstants.PATH_TYPE, pathType.ordinal());
         if (pathToTarget.indexOf(transporter.getTilePos()) > 0) {
-            updateTag.put(NBTConstants.CLIENT_NEXT, NBTUtil.writeBlockPos(getNext(transporter)));
+            updateTag.put(NBTConstants.CLIENT_NEXT, NbtUtils.writeBlockPos(getNext(transporter)));
         }
-        updateTag.put(NBTConstants.CLIENT_PREVIOUS, NBTUtil.writeBlockPos(getPrev(transporter)));
+        updateTag.put(NBTConstants.CLIENT_PREVIOUS, NbtUtils.writeBlockPos(getPrev(transporter)));
         itemStack.save(updateTag);
     }
 
-    public void readFromUpdateTag(CompoundNBT updateTag) {
+    public void readFromUpdateTag(CompoundTag updateTag) {
         NBTUtils.setEnumIfPresent(updateTag, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         progress = updateTag.getInt(NBTConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(updateTag, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
@@ -114,23 +114,23 @@ public class TransporterStack {
         itemStack = ItemStack.of(updateTag);
     }
 
-    public void write(CompoundNBT nbtTags) {
+    public void write(CompoundTag nbtTags) {
         nbtTags.putInt(NBTConstants.COLOR, TransporterUtils.getColorIndex(color));
 
         nbtTags.putInt(NBTConstants.PROGRESS, progress);
-        nbtTags.put(NBTConstants.ORIGINAL_LOCATION, NBTUtil.writeBlockPos(originalLocation));
+        nbtTags.put(NBTConstants.ORIGINAL_LOCATION, NbtUtils.writeBlockPos(originalLocation));
 
         if (idleDir != null) {
             nbtTags.putInt(NBTConstants.IDLE_DIR, idleDir.ordinal());
         }
         if (homeLocation != null) {
-            nbtTags.put(NBTConstants.HOME_LOCATION, NBTUtil.writeBlockPos(homeLocation));
+            nbtTags.put(NBTConstants.HOME_LOCATION, NbtUtils.writeBlockPos(homeLocation));
         }
         nbtTags.putInt(NBTConstants.PATH_TYPE, pathType.ordinal());
         itemStack.save(nbtTags);
     }
 
-    public void read(CompoundNBT nbtTags) {
+    public void read(CompoundTag nbtTags) {
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.COLOR, TransporterUtils::readColor, color -> this.color = color);
         progress = nbtTags.getInt(NBTConstants.PROGRESS);
         NBTUtils.setBlockPosIfPresent(nbtTags, NBTConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
@@ -140,7 +140,7 @@ public class TransporterStack {
         itemStack = ItemStack.of(nbtTags);
     }
 
-    private void setPath(World world, List<BlockPos> path, Path type) {
+    private void setPath(Level world, List<BlockPos> path, Path type) {
         //Make sure old path isn't null
         if (pathType != Path.NONE) {
             TransporterManager.remove(world, this);
@@ -251,7 +251,7 @@ public class TransporterStack {
         return transmitter != null && canInsertToTransporterNN(transmitter, from, transporterFrom);
     }
 
-    public boolean canInsertToTransporterNN(@Nonnull LogisticalTransporterBase transporter, Direction from, @Nullable TileEntity tileFrom) {
+    public boolean canInsertToTransporterNN(@Nonnull LogisticalTransporterBase transporter, Direction from, @Nullable BlockEntity tileFrom) {
         //If the color is valid, make sure that the connection is valid
         EnumColor color = transporter.getColor();
         return (color == null || color == this.color) && transporter.canConnectMutual(from.getOpposite(), tileFrom);

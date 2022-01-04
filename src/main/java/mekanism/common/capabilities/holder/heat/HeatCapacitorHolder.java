@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.capabilities.holder.BasicHolder;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class HeatCapacitorHolder extends BasicHolder<IHeatCapacitor> implements IHeatCapacitorHolder {
 

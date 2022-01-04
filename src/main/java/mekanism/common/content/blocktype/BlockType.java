@@ -11,8 +11,8 @@ import mekanism.common.block.attribute.AttributeCustomShape;
 import mekanism.common.block.attribute.Attributes.AttributeComputerIntegration;
 import mekanism.common.block.attribute.Attributes.AttributeLight;
 import mekanism.common.block.interfaces.ITypeBlock;
-import net.minecraft.block.Block;
-import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class BlockType {
 

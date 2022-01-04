@@ -1,8 +1,8 @@
 package mekanism.common.lib.math.voxel;
 
 import mekanism.common.lib.multiblock.Structure.Axis;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 
 public class VoxelCuboid implements IShape {
 

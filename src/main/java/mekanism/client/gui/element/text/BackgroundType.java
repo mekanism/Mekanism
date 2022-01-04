@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.text;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.BiConsumer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.GuiElementHolder;
@@ -20,13 +20,13 @@ public enum BackgroundType {
     NONE((field, matrix) -> {
     });
 
-    private final BiConsumer<GuiTextField, MatrixStack> renderFunction;
+    private final BiConsumer<GuiTextField, PoseStack> renderFunction;
 
-    BackgroundType(BiConsumer<GuiTextField, MatrixStack> renderFunction) {
+    BackgroundType(BiConsumer<GuiTextField, PoseStack> renderFunction) {
         this.renderFunction = renderFunction;
     }
 
-    public void render(GuiTextField field, MatrixStack matrix) {
+    public void render(GuiTextField field, PoseStack matrix) {
         renderFunction.accept(field, matrix);
     }
 }

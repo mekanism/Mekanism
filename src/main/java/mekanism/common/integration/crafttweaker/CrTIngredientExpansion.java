@@ -25,8 +25,8 @@ import mekanism.common.integration.crafttweaker.ingredient.CrTInfusionStackIngre
 import mekanism.common.integration.crafttweaker.ingredient.CrTItemStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTPigmentStackIngredient;
 import mekanism.common.integration.crafttweaker.ingredient.CrTSlurryStackIngredient;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.Item;
 import org.openzen.zencode.java.ZenCodeType;
 
 /**

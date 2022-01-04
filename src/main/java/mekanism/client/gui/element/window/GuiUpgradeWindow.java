@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.EnumMap;
 import java.util.Map;
 import mekanism.api.Upgrade;
@@ -24,8 +24,8 @@ import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 public class GuiUpgradeWindow extends GuiWindow {
 
@@ -47,7 +47,7 @@ public class GuiUpgradeWindow extends GuiWindow {
         removeButton = addChild(new DigitalButton(gui, relativeX + 73, relativeY + 54, 56, 12,
               MekanismLang.UPGRADE_UNINSTALL, () -> {
             if (scrollList.hasSelection()) {
-                Mekanism.packetHandler.sendToServer(new PacketGuiInteract(Screen.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
+                Mekanism.packetHandler().sendToServer(new PacketGuiInteract(Screen.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
                       this.tile, scrollList.getSelection().ordinal()));
             }
         }, (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, MekanismLang.UPGRADE_UNINSTALL_TOOLTIP.translate(), xAxis, yAxis)));
@@ -55,14 +55,14 @@ public class GuiUpgradeWindow extends GuiWindow {
         addChild(new GuiVirtualSlot(SlotType.NORMAL, gui, relativeX + 133, relativeY + 18, container.getUpgradeSlot()));
         addChild(new GuiVirtualSlot(SlotType.NORMAL, gui, relativeX + 133, relativeY + 73, container.getUpgradeOutputSlot()));
         updateEnabledButtons();
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_UPGRADES, tile, MekanismContainer.UPGRADE_WINDOW));
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_UPGRADES, tile, MekanismContainer.UPGRADE_WINDOW));
         container.startTracking(MekanismContainer.UPGRADE_WINDOW, tile.getComponent());
     }
 
     @Override
     public void close() {
         super.close();
-        Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.UPGRADE_WINDOW));
+        Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_STOP_TRACKING, tile, MekanismContainer.UPGRADE_WINDOW));
         ((MekanismContainer) ((GuiMekanism<?>) gui()).getMenu()).stopTracking(MekanismContainer.UPGRADE_WINDOW);
     }
 
@@ -71,7 +71,7 @@ public class GuiUpgradeWindow extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, MekanismLang.UPGRADES.translate(), 5);
         if (scrollList.hasSelection()) {
@@ -82,7 +82,7 @@ public class GuiUpgradeWindow extends GuiWindow {
             int lines = textRenderer.renderWithScale(matrix, relativeX + 74, textY, screenTextColor(), 56, 0.6F);
             textY += 6 * lines + 2;
             drawTextWithScale(matrix, MekanismLang.UPGRADE_COUNT.translate(amount, selectedType.getMax()), relativeX + 74, textY, screenTextColor(), 0.6F);
-            for (ITextComponent component : UpgradeUtils.getInfo(tile, selectedType)) {
+            for (Component component : UpgradeUtils.getInfo(tile, selectedType)) {
                 //Note: We add the six here instead of after to account for the line above this for loop that draws the upgrade count
                 textY += 6;
                 drawTextWithScale(matrix, component, relativeX + 74, textY, screenTextColor(), 0.6F);

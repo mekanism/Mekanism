@@ -4,15 +4,15 @@ import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.attribute.Attributes.AttributeMobSpawn;
 import mekanism.common.block.interfaces.IColoredBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
 
 public class BlockPlasticTransparent extends BlockPlastic {
 
@@ -22,7 +22,7 @@ public class BlockPlasticTransparent extends BlockPlastic {
 
     @Override
     @Deprecated
-    public float getShadeBrightness(@Nonnull BlockState state, @Nonnull IBlockReader world, @Nonnull BlockPos pos) {
+    public float getShadeBrightness(@Nonnull BlockState state, @Nonnull BlockGetter world, @Nonnull BlockPos pos) {
         return 0.8F;
     }
 
@@ -33,7 +33,7 @@ public class BlockPlasticTransparent extends BlockPlastic {
     }
 
     @Override
-    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
+    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
         return true;
     }
 
@@ -44,7 +44,7 @@ public class BlockPlasticTransparent extends BlockPlastic {
     }
 
     @Override
-    public float[] getBeaconColorMultiplier(BlockState state, IWorldReader world, BlockPos pos, BlockPos beaconPos) {
+    public float[] getBeaconColorMultiplier(BlockState state, LevelReader world, BlockPos pos, BlockPos beaconPos) {
         return getColor().getRgbCodeFloat();
     }
 
@@ -60,7 +60,7 @@ public class BlockPlasticTransparent extends BlockPlastic {
 
                     VoxelShape faceShape = shape.getFaceShape(side);
                     VoxelShape adjacentFaceShape = adjacentShape.getFaceShape(side.getOpposite());
-                    return !VoxelShapes.joinIsNotEmpty(faceShape, adjacentFaceShape, IBooleanFunction.ONLY_FIRST);
+                    return !Shapes.joinIsNotEmpty(faceShape, adjacentFaceShape, BooleanOp.ONLY_FIRST);
                 } catch (Exception ignored) {
                     //Something might have errored due to the null world and position
                 }

@@ -4,14 +4,14 @@ import java.util.Random;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-public class DisableableConfiguredFeature<FC extends IFeatureConfig, F extends Feature<FC>> extends ConfiguredFeature<FC, F> {
+public class DisableableConfiguredFeature<FC extends FeatureConfiguration, F extends Feature<FC>> extends ConfiguredFeature<FC, F> {
 
     private final BooleanSupplier enabledSupplier;
     private final boolean retroGen;
@@ -23,7 +23,7 @@ public class DisableableConfiguredFeature<FC extends IFeatureConfig, F extends F
     }
 
     @Override
-    public boolean place(@Nonnull ISeedReader reader, @Nonnull ChunkGenerator chunkGenerator, @Nonnull Random rand, @Nonnull BlockPos pos) {
+    public boolean place(@Nonnull WorldGenLevel reader, @Nonnull ChunkGenerator chunkGenerator, @Nonnull Random rand, @Nonnull BlockPos pos) {
         if (enabledSupplier.getAsBoolean()) {
             //If we are enabled, and we are either not a retrogen feature or retrogen is enabled, generate
             if (!retroGen || MekanismConfig.world.enableRegeneration.get()) {

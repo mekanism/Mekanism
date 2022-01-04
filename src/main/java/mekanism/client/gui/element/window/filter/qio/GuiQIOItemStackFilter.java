@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.window.filter.qio;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
@@ -42,7 +42,7 @@ public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawString(matrix, OnOff.of(filter.fuzzyMode).getTextComponent(), relativeX + 161, relativeY + 20, titleTextColor());
     }

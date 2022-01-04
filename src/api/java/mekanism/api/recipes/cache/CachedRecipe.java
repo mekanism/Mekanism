@@ -7,7 +7,7 @@ import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import java.util.function.IntUnaryOperator;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.energy.IEnergyContainer;
@@ -251,24 +251,8 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
     /**
      * @return Gets the current number of operating ticks that have happened so far.
      */
-    //TODO - 1.18: Make this protected
-    public int getOperatingTicks() {
+    protected int getOperatingTicks() {
         return operatingTicks;
-    }
-
-    @Deprecated//TODO - 1.18: Remove this helper
-    protected FloatingLong getStoredElectricity() {
-        return storedEnergy.get();
-    }
-
-    @Deprecated//TODO - 1.18: Remove this helper
-    protected FloatingLong getEnergyPerTick() {
-        return perTickEnergy.get();
-    }
-
-    @Deprecated//TODO - 1.18: Remove this helper
-    protected int getTicksRequired() {
-        return requiredTicks.getAsInt();
     }
 
     /**
@@ -320,11 +304,6 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe> {
         }
         //Make sure we don't have any integer overflow in calculating how much we have room for
         return Math.min(storedEnergy.get().divideToInt(energyPerTick), currentMax);
-    }
-
-    @Deprecated//TODO - 1.18: Remove this
-    public boolean canFunction() {
-        return canHolderFunction.getAsBoolean() && postProcessOperations.applyAsInt(getOperationsThisTick(1)) > 0;
     }
 
     /**

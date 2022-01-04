@@ -68,15 +68,17 @@ import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidAttributes;
+
+import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider.WeightedItemStack;
 
 public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 

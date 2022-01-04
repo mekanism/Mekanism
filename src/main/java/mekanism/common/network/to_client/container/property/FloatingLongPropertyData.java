@@ -3,7 +3,7 @@ package mekanism.common.network.to_client.container.property;
 import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.inventory.container.MekanismContainer;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class FloatingLongPropertyData extends PropertyData {
 
@@ -21,7 +21,7 @@ public class FloatingLongPropertyData extends PropertyData {
     }
 
     @Override
-    public void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         super.writeToPacket(buffer);
         value.writeToBuffer(buffer);
     }

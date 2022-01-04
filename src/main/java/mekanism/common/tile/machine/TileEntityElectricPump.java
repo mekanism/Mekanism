@@ -14,7 +14,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -44,22 +43,23 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IBucketPickupHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
@@ -99,8 +99,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityElectricPump() {
-        super(MekanismBlocks.ELECTRIC_PUMP);
+    public TileEntityElectricPump(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.ELECTRIC_PUMP, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
@@ -196,14 +196,13 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 //Just in case someone does weird things and has a fluid state that is empty and a source
                 // only allow collecting from non-empty sources
                 Block block = blockState.getBlock();
-                if (block instanceof IFluidBlock) {
-                    IFluidBlock fluidBlock = (IFluidBlock) block;
+                if (block instanceof IFluidBlock fluidBlock) {
                     if (validFluid(fluidBlock.drain(level, pos, FluidAction.SIMULATE), true)) {
                         //Actually drain it
                         suck(fluidBlock.drain(level, pos, FluidAction.EXECUTE), pos, addRecurring);
                         return true;
                     }
-                } else if (block instanceof IBucketPickupHandler) {
+                } else if (block instanceof BucketPickup bucketPickup) {
                     Fluid sourceFluid = fluidState.getType();
                     FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
                     if (validFluid(fluidStack, false)) {
@@ -211,7 +210,13 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                         if (sourceFluid != Fluids.WATER || MekanismConfig.general.pumpWaterSources.get()) {
                             //Note we only attempt taking if it is not water, or we want to pump water sources
                             // otherwise we assume the type from the fluid state is correct
-                            sourceFluid = ((IBucketPickupHandler) block).takeLiquid(level, pos, blockState);
+                            ItemStack pickedUpStack = bucketPickup.pickupBlock(level, pos, blockState);
+                            if (pickedUpStack.isEmpty()) {
+                                //Couldn't actually pick it up, exit
+                                return false;
+                            }
+                            //TODO - 1.18: I don't think this extra validation is reliably possible anymore
+                            /*sourceFluid = bucketPickup.takeLiquid(level, pos, blockState);
                             //Update the fluid stack in case something somehow changed about the type
                             // making sure that we replace to heavy water if we got heavy water
                             fluidStack = getOutput(sourceFluid, hasFilter);
@@ -219,7 +224,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                                 Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
                                       fluidState.getType(), pos, level, sourceFluid);
                                 return false;
-                            }
+                            }*/
                         }
                         suck(fluidStack, pos, addRecurring);
                         return true;
@@ -263,51 +268,45 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         recurringNodes.clear();
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
         if (!activeType.isEmpty()) {
-            nbtTags.put(NBTConstants.FLUID_STORED, activeType.writeToNBT(new CompoundNBT()));
+            nbtTags.put(NBTConstants.FLUID_STORED, activeType.writeToNBT(new CompoundTag()));
         }
         if (!recurringNodes.isEmpty()) {
-            ListNBT recurringList = new ListNBT();
+            ListTag recurringList = new ListTag();
             for (BlockPos nodePos : recurringNodes) {
-                recurringList.add(NBTUtil.writeBlockPos(nodePos));
+                recurringList.add(NbtUtils.writeBlockPos(nodePos));
             }
             nbtTags.put(NBTConstants.RECURRING_NODES, recurringList);
         }
-        return nbtTags;
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
-        if (nbtTags.getBoolean(NBTConstants.SUCKED_LAST_OPERATION)) {//TODO - 1.18: Remove this
-            //If we need were saved as needing to use power, make sure we use it when loading
-            energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
-        }
-        NBTUtils.setFluidStackIfPresent(nbtTags, NBTConstants.FLUID_STORED, fluid -> activeType = fluid);
-        if (nbtTags.contains(NBTConstants.RECURRING_NODES, NBT.TAG_LIST)) {
-            ListNBT tagList = nbtTags.getList(NBTConstants.RECURRING_NODES, NBT.TAG_COMPOUND);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
+        NBTUtils.setFluidStackIfPresent(nbt, NBTConstants.FLUID_STORED, fluid -> activeType = fluid);
+        if (nbt.contains(NBTConstants.RECURRING_NODES, Tag.TAG_LIST)) {
+            ListTag tagList = nbt.getList(NBTConstants.RECURRING_NODES, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
-                recurringNodes.add(NBTUtil.readBlockPos(tagList.getCompound(i)));
+                recurringNodes.add(NbtUtils.readBlockPos(tagList.getCompound(i)));
             }
         }
     }
 
     @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player, Direction side) {
         reset();
         player.sendMessage(MekanismUtils.logFormat(MekanismLang.PUMP_RESET), Util.NIL_UUID);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
-        return ActionResultType.PASS;
+    public InteractionResult onRightClick(Player player, Direction side) {
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -329,7 +328,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

@@ -14,9 +14,9 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 
 @ParametersAreNonnullByDefault
 public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutritionalInjectionUnit> {
@@ -24,7 +24,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
     private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "nutritional_injection_unit.png");
 
     @Override
-    public void tickServer(IModule<ModuleNutritionalInjectionUnit> module, PlayerEntity player) {
+    public void tickServer(IModule<ModuleNutritionalInjectionUnit> module, Player player) {
         FloatingLong usage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
         if (MekanismUtils.isPlayingMode(player) && player.canEat(false)) {
             //Check if we can use a single iteration of it
@@ -42,7 +42,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
     }
 
     @Override
-    public void addHUDElements(IModule<ModuleNutritionalInjectionUnit> module, PlayerEntity player, Consumer<IHUDElement> hudElementAdder) {
+    public void addHUDElements(IModule<ModuleNutritionalInjectionUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             ItemStack container = module.getContainer();
             GasStack stored = ((ItemMekaSuitArmor) container.getItem()).getContainedGas(container, MekanismGases.NUTRITIONAL_PASTE.get());

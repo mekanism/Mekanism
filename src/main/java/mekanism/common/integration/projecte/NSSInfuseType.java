@@ -8,10 +8,10 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.providers.IInfuseTypeProvider;
 import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.Tag;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Implementation of {@link NormalizedSimpleStack} and {@link moze_intel.projecte.api.nss.NSSTag} for representing {@link InfuseType}s.
@@ -71,7 +71,7 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
      * Helper method to create an {@link NSSInfuseType} representing a tag from a {@link Tag<InfuseType>}
      */
     @Nonnull
-    public static NSSInfuseType createTag(@Nonnull ITag<InfuseType> tag) {
+    public static NSSInfuseType createTag(@Nonnull Tag<InfuseType> tag) {
         return createTag(ChemicalTags.INFUSE_TYPE.lookupTag(tag));
     }
 
@@ -94,7 +94,7 @@ public final class NSSInfuseType extends AbstractNSSTag<InfuseType> {
 
     @Nonnull
     @Override
-    protected ITagCollection<InfuseType> getTagCollection() {
+    protected TagCollection<InfuseType> getTagCollection() {
         return ChemicalTags.INFUSE_TYPE.getCollection();
     }
 

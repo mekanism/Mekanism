@@ -2,9 +2,9 @@ package mekanism.api;
 
 import javax.annotation.Nonnull;
 import mekanism.api.tier.AlloyTier;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 
 /**
  * Implement this class in your TileEntity if it can interact with Mekanism alloys.
@@ -22,5 +22,5 @@ public interface IAlloyInteraction {
      * @param tier   - the tier of the alloy
      */
     //TODO - 1.18: Remove the hand parameter as it is not needed
-    void onAlloyInteraction(PlayerEntity player, Hand hand, ItemStack stack, @Nonnull AlloyTier tier);
+    void onAlloyInteraction(Player player, InteractionHand hand, ItemStack stack, @Nonnull AlloyTier tier);
 }

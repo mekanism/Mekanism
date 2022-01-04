@@ -11,63 +11,61 @@ import mekanism.common.lib.math.Pos3D;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.block.AbstractFireBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CampfireBlock;
-import net.minecraft.block.TNTBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceContext.BlockMode;
-import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.LevelEvent;
+import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.common.util.Constants.WorldEvents;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
-public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSpawnData {
+public class EntityFlame extends Projectile implements IEntityAdditionalSpawnData {
 
     public static final int LIFESPAN = 80;
     private static final int DAMAGE = 10;
 
     private FlamethrowerMode mode = FlamethrowerMode.COMBAT;
 
-    public EntityFlame(EntityType<EntityFlame> type, World world) {
+    public EntityFlame(EntityType<EntityFlame> type, Level world) {
         super(type, world);
     }
 
     @Nullable
-    public static EntityFlame create(PlayerEntity player) {
+    public static EntityFlame create(Player player) {
         EntityFlame flame = MekanismEntityTypes.FLAME.get().create(player.level);
         if (flame == null) {
             return null;
@@ -75,19 +73,19 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         Pos3D playerPos = new Pos3D(player.getX(), player.getEyeY() - 0.1, player.getZ());
         Pos3D flameVec = new Pos3D(1, 1, 1);
 
-        Vector3d lookVec = player.getLookAngle();
+        Vec3 lookVec = player.getLookAngle();
         flameVec = flameVec.multiply(lookVec).yRot(6);
 
-        Vector3d mergedVec = playerPos.add(flameVec);
+        Vec3 mergedVec = playerPos.add(flameVec);
         flame.setPos(mergedVec.x, mergedVec.y, mergedVec.z);
         flame.setOwner(player);
-        ItemStack selected = player.inventory.getSelected();
+        ItemStack selected = player.getInventory().getSelected();
         flame.mode = ((ItemFlamethrower) selected.getItem()).getMode(selected);
-        flame.shootFromRotation(player, player.xRot, player.yRot, 0, 0.5F, 1);
+        flame.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 0.5F, 1);
         //Attempt to ray trace the area between the player and where the flame would actually start
         // if it hits a block instead just have the flame hit the block directly to avoid being able
         // to shoot a flamethrower through one thick walls.
-        BlockRayTraceResult blockRayTrace = player.level.clip(new RayTraceContext(playerPos, mergedVec, BlockMode.OUTLINE, FluidMode.NONE, flame));
+        BlockHitResult blockRayTrace = player.level.clip(new ClipContext(playerPos, mergedVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, flame));
         if (blockRayTrace.getType() != Type.MISS) {
             flame.onHit(blockRayTrace);
         }
@@ -105,42 +103,42 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         yo = getY();
         zo = getZ();
 
-        xRotO = xRot;
-        yRotO = yRot;
+        xRotO = getXRot();
+        yRotO = getYRot();
 
-        Vector3d motion = getDeltaMovement();
+        Vec3 motion = getDeltaMovement();
         setPosRaw(getX() + motion.x(), getY() + motion.y(), getZ() + motion.z());
 
         setPos(getX(), getY(), getZ());
 
         calculateVector();
         if (tickCount > LIFESPAN) {
-            remove();
+            discard();
         }
     }
 
     private void calculateVector() {
-        Vector3d localVec = new Vector3d(getX(), getY(), getZ());
-        Vector3d motion = getDeltaMovement();
-        Vector3d motionVec = new Vector3d(getX() + motion.x() * 2, getY() + motion.y() * 2, getZ() + motion.z() * 2);
-        BlockRayTraceResult blockRayTrace = level.clip(new RayTraceContext(localVec, motionVec, BlockMode.OUTLINE, FluidMode.ANY, this));
-        localVec = new Vector3d(getX(), getY(), getZ());
-        motionVec = new Vector3d(getX() + motion.x(), getY() + motion.y(), getZ() + motion.z());
+        Vec3 localVec = new Vec3(getX(), getY(), getZ());
+        Vec3 motion = getDeltaMovement();
+        Vec3 motionVec = new Vec3(getX() + motion.x() * 2, getY() + motion.y() * 2, getZ() + motion.z() * 2);
+        BlockHitResult blockRayTrace = level.clip(new ClipContext(localVec, motionVec, ClipContext.Block.OUTLINE, ClipContext.Fluid.ANY, this));
+        localVec = new Vec3(getX(), getY(), getZ());
+        motionVec = new Vec3(getX() + motion.x(), getY() + motion.y(), getZ() + motion.z());
         if (blockRayTrace.getType() != Type.MISS) {
             motionVec = blockRayTrace.getLocation();
         }
-        EntityRayTraceResult entityResult = ProjectileHelper.getEntityHitResult(level, this, localVec, motionVec,
-              getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D), EntityPredicates.NO_SPECTATORS);
+        EntityHitResult entityResult = ProjectileUtil.getEntityHitResult(level, this, localVec, motionVec,
+              getBoundingBox().expandTowards(getDeltaMovement()).inflate(1.0D, 1.0D, 1.0D), EntitySelector.NO_SPECTATORS);
         onHit(entityResult == null ? blockRayTrace : entityResult);
     }
 
     @Override
-    protected void onHitEntity(EntityRayTraceResult entityResult) {
+    protected void onHitEntity(EntityHitResult entityResult) {
         Entity entity = entityResult.getEntity();
-        if (entity instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) entity;
+        if (entity instanceof Player) {
+            Player player = (Player) entity;
             Entity owner = getOwner();
-            if (player.abilities.invulnerable || owner instanceof PlayerEntity && !((PlayerEntity) owner).canHarmPlayer(player)) {
+            if (player.getAbilities().invulnerable || owner instanceof Player && !((Player) owner).canHarmPlayer(player)) {
                 return;
             }
         }
@@ -153,11 +151,11 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
                 burn(entity);
             }
         }
-        remove();
+        discard();
     }
 
     @Override
-    protected void onHitBlock(@Nonnull BlockRayTraceResult blockRayTrace) {
+    protected void onHitBlock(@Nonnull BlockHitResult blockRayTrace) {
         super.onHitBlock(blockRayTrace);
         BlockPos hitPos = blockRayTrace.getBlockPos();
         Direction hitSide = blockRayTrace.getDirection();
@@ -166,20 +164,20 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         if (!level.isClientSide && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
             if (mode == FlamethrowerMode.HEAT) {
                 Entity owner = getOwner();
-                if (owner instanceof PlayerEntity) {
-                    smeltBlock((PlayerEntity) owner, hitState, hitPos, hitSide);
+                if (owner instanceof Player) {
+                    smeltBlock((Player) owner, hitState, hitPos, hitSide);
                 }
             } else if (mode == FlamethrowerMode.INFERNO) {
                 Entity owner = getOwner();
                 BlockPos sidePos = hitPos.relative(hitSide);
                 if (CampfireBlock.canLight(hitState)) {
                     tryPlace(owner, hitPos, hitSide, hitState.setValue(BlockStateProperties.LIT, true));
-                } else if (AbstractFireBlock.canBePlacedAt(level, sidePos, hitSide)) {
-                    tryPlace(owner, sidePos, hitSide, AbstractFireBlock.getState(level, sidePos));
+                } else if (BaseFireBlock.canBePlacedAt(level, sidePos, hitSide)) {
+                    tryPlace(owner, sidePos, hitSide, BaseFireBlock.getState(level, sidePos));
                 } else if (hitState.isFlammable(level, hitPos, hitSide)) {
                     //TODO: Is there some event we should/can be firing here?
-                    hitState.catchFire(level, hitPos, hitSide, owner instanceof LivingEntity ? (LivingEntity) owner : null);
-                    if (hitState.getBlock() instanceof TNTBlock) {
+                    hitState.onCaughtFire(level, hitPos, hitSide, owner instanceof LivingEntity ? (LivingEntity) owner : null);
+                    if (hitState.getBlock() instanceof TntBlock) {
                         level.removeBlock(hitPos, false);
                     }
                 }
@@ -189,7 +187,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
             spawnParticlesAt(blockPosition());
             playSound(SoundEvents.FIRE_EXTINGUISH, 1.0F, 1.0F);
         }
-        remove();
+        discard();
     }
 
     private boolean tryPlace(@Nullable Entity shooter, BlockPos pos, Direction hitSide, BlockState newState) {
@@ -205,7 +203,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
     }
 
     private boolean smeltItem(ItemEntity item) {
-        Optional<FurnaceRecipe> recipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(item.getItem()), level);
+        Optional<SmeltingRecipe> recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(item.getItem()), level);
         if (recipe.isPresent()) {
             ItemStack result = recipe.get().getResultItem();
             item.setItem(StackUtils.size(result, item.getItem().getCount()));
@@ -217,17 +215,17 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         return false;
     }
 
-    private void smeltBlock(PlayerEntity shooter, BlockState hitState, BlockPos blockPos, Direction hitSide) {
-        if (hitState.isAir(level, blockPos)) {
+    private void smeltBlock(Player shooter, BlockState hitState, BlockPos blockPos, Direction hitSide) {
+        if (hitState.isAir()) {
             return;
         }
         ItemStack stack = new ItemStack(hitState.getBlock());
         if (stack.isEmpty()) {
             return;
         }
-        Optional<FurnaceRecipe> recipe;
+        Optional<SmeltingRecipe> recipe;
         try {
-            recipe = level.getRecipeManager().getRecipeFor(IRecipeType.SMELTING, new Inventory(stack), level);
+            recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SimpleContainer(stack), level);
         } catch (Exception e) {
             return;
         }
@@ -244,8 +242,8 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
                     item.setDeltaMovement(0, 0, 0);
                     level.addFreshEntity(item);
                 }
-                level.levelEvent(WorldEvents.BREAK_BLOCK_EFFECTS, blockPos, Block.getId(hitState));
-                spawnParticlesAt((ServerWorld) level, blockPos);
+                level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, blockPos, Block.getId(hitState));
+                spawnParticlesAt((ServerLevel) level, blockPos);
             }
         }
     }
@@ -265,7 +263,7 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
         }
     }
 
-    private void spawnParticlesAt(ServerWorld world, BlockPos pos) {
+    private void spawnParticlesAt(ServerLevel world, BlockPos pos) {
         for (int i = 0; i < 10; i++) {
             world.sendParticles(ParticleTypes.SMOKE, pos.getX() + (random.nextFloat() - 0.5), pos.getY() + (random.nextFloat() - 0.5),
                   pos.getZ() + (random.nextFloat() - 0.5), 3, 0, 0, 0, 0);
@@ -277,30 +275,30 @@ public class EntityFlame extends ProjectileEntity implements IEntityAdditionalSp
     }
 
     @Override
-    public void readAdditionalSaveData(@Nonnull CompoundNBT nbtTags) {
+    public void readAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
         super.readAdditionalSaveData(nbtTags);
         NBTUtils.setEnumIfPresent(nbtTags, NBTConstants.MODE, FlamethrowerMode::byIndexStatic, mode -> this.mode = mode);
     }
 
     @Override
-    public void addAdditionalSaveData(@Nonnull CompoundNBT nbtTags) {
+    public void addAdditionalSaveData(@Nonnull CompoundTag nbtTags) {
         super.addAdditionalSaveData(nbtTags);
         nbtTags.putInt(NBTConstants.MODE, mode.ordinal());
     }
 
     @Nonnull
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer dataStream) {
+    public void writeSpawnData(FriendlyByteBuf dataStream) {
         dataStream.writeEnum(mode);
     }
 
     @Override
-    public void readSpawnData(PacketBuffer dataStream) {
+    public void readSpawnData(FriendlyByteBuf dataStream) {
         mode = dataStream.readEnum(FlamethrowerMode.class);
     }
 }

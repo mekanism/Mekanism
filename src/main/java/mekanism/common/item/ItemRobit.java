@@ -23,18 +23,16 @@ import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 
 public class ItemRobit extends ItemEnergized implements IItemSustainedInventory, ISecurityItem {
 
@@ -43,8 +41,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flag) {
+    public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         super.appendHoverText(stack, world, tooltip, flag);
         tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getRobitName(stack)));
         tooltip.add(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, getRobitSkin(stack)));
@@ -54,12 +51,12 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
 
     @Nonnull
     @Override
-    public ActionResultType useOn(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
         if (player == null) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
-        World world = context.getLevel();
+        Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         TileEntityMekanism chargepad = WorldUtils.getTileEntity(TileEntityChargepad.class, world, pos);
         if (chargepad != null) {
@@ -68,7 +65,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
                     ItemStack stack = context.getItemInHand();
                     EntityRobit robit = EntityRobit.create(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                     if (robit == null) {
-                        return ActionResultType.FAIL;
+                        return InteractionResult.FAIL;
                     }
                     robit.setHome(chargepad.getTileCoord());
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
@@ -79,7 +76,7 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
                     if (ownerUUID == null) {
                         robit.setOwnerUUID(player.getUUID());
                         //If the robit doesn't already have an owner, make sure we portray this
-                        Mekanism.packetHandler.sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
+                        Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
                     } else {
                         robit.setOwnerUUID(ownerUUID);
                     }
@@ -90,19 +87,19 @@ public class ItemRobit extends ItemEnergized implements IItemSustainedInventory,
                     world.addFreshEntity(robit);
                     stack.shrink(1);
                 }
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return InteractionResult.PASS;
     }
 
-    public void setName(ItemStack stack, ITextComponent name) {
-        ItemDataUtils.setString(stack, NBTConstants.NAME, ITextComponent.Serializer.toJson(name));
+    public void setName(ItemStack stack, Component name) {
+        ItemDataUtils.setString(stack, NBTConstants.NAME, Component.Serializer.toJson(name));
     }
 
-    private ITextComponent getRobitName(ItemStack stack) {
+    private Component getRobitName(ItemStack stack) {
         String name = ItemDataUtils.getString(stack, NBTConstants.NAME);
-        return name.isEmpty() ? MekanismLang.ROBIT.translate() : ITextComponent.Serializer.fromJson(name);
+        return name.isEmpty() ? MekanismLang.ROBIT.translate() : Component.Serializer.fromJson(name);
     }
 
     public void setSkin(ItemStack stack, RobitSkin skin) {

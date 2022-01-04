@@ -8,32 +8,34 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.common.Mekanism;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 //Slightly modified version of Tinker's IngredientWithout
 // https://github.com/SlimeKnights/TinkersConstruct/blob/1.16/src/main/java/slimeknights/tconstruct/common/IngredientWithout.java
+import net.minecraft.world.item.crafting.Ingredient.Value;
+
 @MethodsReturnNonnullByDefault
 public class IngredientWithout extends Ingredient {
 
     public static final ResourceLocation ID = Mekanism.rl("without");
 
     //Helper methods for the two most common types we may be creating
-    public static IngredientWithout create(ITag<Item> base, IItemProvider without) {
+    public static IngredientWithout create(Tag<Item> base, ItemLike without) {
         return new IngredientWithout(Ingredient.of(base), Ingredient.of(without));
     }
 
-    public static IngredientWithout create(ITag<Item> base, ITag<Item> without) {
+    public static IngredientWithout create(Tag<Item> base, Tag<Item> without) {
         return new IngredientWithout(Ingredient.of(base), Ingredient.of(without));
     }
 
@@ -71,7 +73,7 @@ public class IngredientWithout extends Ingredient {
         return Serializer.INSTANCE;
     }
 
-    private static class ItemListWithout implements IItemList {
+    private static class ItemListWithout implements Value {
 
         private final Ingredient base;
         private final Ingredient without;
@@ -115,14 +117,14 @@ public class IngredientWithout extends Ingredient {
         }
 
         @Override
-        public IngredientWithout parse(@Nonnull PacketBuffer buffer) {
+        public IngredientWithout parse(@Nonnull FriendlyByteBuf buffer) {
             Ingredient base = Ingredient.fromNetwork(buffer);
             Ingredient without = Ingredient.fromNetwork(buffer);
             return new IngredientWithout(base, without);
         }
 
         @Override
-        public void write(@Nonnull PacketBuffer buffer, IngredientWithout ingredient) {
+        public void write(@Nonnull FriendlyByteBuf buffer, IngredientWithout ingredient) {
             CraftingHelper.write(buffer, ingredient.itemListWithout.base);
             CraftingHelper.write(buffer, ingredient.itemListWithout.without);
         }

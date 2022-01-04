@@ -13,9 +13,9 @@ import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.tier.BinTier;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSustainedInventory {
 
@@ -29,7 +29,7 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IItemSus
     }
 
     @Override
-    public void addStats(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
+    public void addStats(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         BinMekanismInventory inventory = BinMekanismInventory.create(stack);
         BinTier tier = getTier();
         if (inventory != null && tier != null) {

@@ -1,8 +1,6 @@
 package mekanism.common.item.block.machine;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.NBTConstants;
@@ -32,14 +30,13 @@ import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.OwnerDisplay;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
 public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implements IItemSustainedInventory, ISecurityItem {
@@ -48,12 +45,8 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
         super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1));
     }
 
-    public ItemBlockMachine(BlockTile<?, ?> block, Supplier<Callable<ItemStackTileEntityRenderer>> renderer) {
-        super(block, true, ItemDeferredRegister.getMekBaseProperties().stacksTo(1).setISTER(renderer));
-    }
-
     @Override
-    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
+    public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         tooltip.add(OwnerDisplay.of(MekanismClient.tryGetClientPlayer(), getOwnerUUID(stack)).getTextComponent());
         if (Attribute.has(getBlock(), AttributeSecurity.class)) {
             ISecurityObject securityObject = SecurityUtils.wrapSecurityItem(stack);
@@ -79,7 +72,7 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         if (Attribute.has(getBlock(), AttributeEnergy.class)) {
             AttributeEnergy attributeEnergy = Attribute.get(getBlock(), AttributeEnergy.class);
             FloatingLongSupplier maxEnergy;
@@ -120,12 +113,12 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
         // for how much energy a machine can store changes
         private final FloatingLongSupplier baseStorage;
         @Nullable
-        private CompoundNBT lastNBT;
+        private CompoundTag lastNBT;
         private FloatingLong value;
 
         private UpgradeBasedFloatingLongCache(ItemStack stack, FloatingLongSupplier baseStorage) {
             this.stack = stack;
-            if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
+            if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
                 this.lastNBT = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE).copy();
             } else {
                 this.lastNBT = null;
@@ -137,8 +130,8 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
         @Nonnull
         @Override
         public FloatingLong get() {
-            if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, NBT.TAG_COMPOUND)) {
-                CompoundNBT upgrades = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
+            if (ItemDataUtils.hasData(stack, NBTConstants.COMPONENT_UPGRADE, Tag.TAG_COMPOUND)) {
+                CompoundTag upgrades = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
                 if (lastNBT == null || !lastNBT.equals(upgrades)) {
                     lastNBT = upgrades.copy();
                     value = MekanismUtils.getMaxEnergy(stack, baseStorage.get());

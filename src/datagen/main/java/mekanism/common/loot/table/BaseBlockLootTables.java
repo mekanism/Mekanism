@@ -23,40 +23,41 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.interfaces.ISustainedData;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.advancements.criterion.EnchantmentPredicate;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.advancements.criterion.MinMaxBounds;
-import net.minecraft.advancements.criterion.StatePropertiesPredicate;
-import net.minecraft.block.Block;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.data.loot.BlockLootTables;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.loot.ConstantRange;
-import net.minecraft.loot.ILootConditionConsumer;
-import net.minecraft.loot.IRandomRange;
-import net.minecraft.loot.ItemLootEntry;
-import net.minecraft.loot.LootEntry;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTable.Builder;
-import net.minecraft.loot.conditions.BlockStateProperty;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.conditions.ILootCondition.IBuilder;
-import net.minecraft.loot.conditions.MatchTool;
-import net.minecraft.loot.conditions.SurvivesExplosion;
-import net.minecraft.loot.functions.ApplyBonus;
-import net.minecraft.loot.functions.CopyNbt;
-import net.minecraft.loot.functions.CopyNbt.Source;
-import net.minecraft.loot.functions.SetCount;
-import net.minecraft.state.properties.SlabType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.advancements.critereon.EnchantmentPredicate;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.core.BlockPos;
+import net.minecraft.data.loot.BlockLoot;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.LootTable.Builder;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.MatchTool;
+import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.items.IItemHandler;
 
-public abstract class BaseBlockLootTables extends BlockLootTables {
+public abstract class BaseBlockLootTables extends BlockLoot {
 
-    private static final ILootCondition.IBuilder HAS_SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item()
-          .hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.IntBound.atLeast(1))));
+    private static final LootItemCondition.Builder HAS_SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item()
+          .hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))));
 
     private final Set<Block> knownBlocks = new ObjectOpenHashSet<>();
     private final Set<Block> toSkip = new ObjectOpenHashSet<>();
@@ -88,10 +89,10 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
         return knownBlocks.contains(block) || toSkip.contains(block);
     }
 
-    protected static LootTable.Builder droppingWithFortuneOrRandomly(Block block, IItemProvider item, IRandomRange range) {
-        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, ItemLootEntry.lootTableItem(item.asItem())
-              .apply(SetCount.setCount(range))
-              .apply(ApplyBonus.addOreBonusCount(Enchantments.BLOCK_FORTUNE))
+    protected static LootTable.Builder droppingWithFortuneOrRandomly(Block block, ItemLike item, UniformGenerator range) {
+        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.asItem())
+              .apply(SetItemCountFunction.setCount(range))
+              .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))
         ));
     }
 
@@ -125,13 +126,13 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             if (skipBlock(block)) {
                 continue;
             }
-            CopyNbt.Builder nbtBuilder = CopyNbt.copyData(Source.BLOCK_ENTITY);
+            CopyNbtFunction.Builder nbtBuilder = CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY);
             boolean hasData = false;
             boolean hasContents = false;
             @Nullable
-            TileEntity tile = null;
+            BlockEntity tile = null;
             if (block instanceof IHasTileEntity) {
-                tile = ((IHasTileEntity<?>) block).getTileType().create();
+                tile = ((IHasTileEntity<?>) block).newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
             }
             if (tile instanceof IFrequencyHandler && ((IFrequencyHandler) tile).getFrequencyComponent().hasCustomFrequencies()) {
                 nbtBuilder.copy(NBTConstants.COMPONENT_FREQUENCY, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_FREQUENCY);
@@ -203,31 +204,31 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
             } else {
                 add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
                       .name("main")
-                      .setRolls(ConstantRange.exactly(1))
-                      .add(ItemLootEntry.lootTableItem(block).apply(nbtBuilder))
+                      .setRolls(ConstantValue.exactly(1))
+                      .add(LootItem.lootTableItem(block).apply(nbtBuilder))
                 )));
             }
         }
     }
 
     /**
-     * Like vanilla's {@link BlockLootTables#applyExplosionCondition(IItemProvider, ILootConditionConsumer)} except with a boolean for if it is explosion resistant.
+     * Like vanilla's {@link BlockLoot#applyExplosionCondition(ItemLike, ConditionUserBuilder)} except with a boolean for if it is explosion resistant.
      */
-    private static <T> T applyExplosionCondition(boolean explosionResistant, ILootConditionConsumer<T> condition) {
-        return explosionResistant ? condition.unwrap() : condition.when(SurvivesExplosion.survivesExplosion());
+    private static <T> T applyExplosionCondition(boolean explosionResistant, ConditionUserBuilder<T> condition) {
+        return explosionResistant ? condition.unwrap() : condition.when(ExplosionCondition.survivesExplosion());
     }
 
     /**
-     * Like vanilla's {@link BlockLootTables#createSlabItemTable(Block)} except with a named pool
+     * Like vanilla's {@link BlockLoot#createSlabItemTable(Block)} except with a named pool
      */
     @Nonnull
     protected static LootTable.Builder createSlabItemTable(Block slab) {
         return LootTable.lootTable().withPool(LootPool.lootPool()
               .name("main")
-              .setRolls(ConstantRange.exactly(1))
-              .add(applyExplosionDecay(slab, ItemLootEntry.lootTableItem(slab)
-                          .apply(SetCount.setCount(ConstantRange.exactly(2))
-                                .when(BlockStateProperty.hasBlockStateProperties(slab)
+              .setRolls(ConstantValue.exactly(1))
+              .add(applyExplosionDecay(slab, LootItem.lootTableItem(slab)
+                          .apply(SetItemCountFunction.setCount(ConstantValue.exactly(2))
+                                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(slab)
                                       .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SlabBlock.TYPE, SlabType.DOUBLE)))
                           )
                     )
@@ -236,51 +237,51 @@ public abstract class BaseBlockLootTables extends BlockLootTables {
     }
 
     /**
-     * Like vanilla's {@link BlockLootTables#dropOther(Block, IItemProvider)} except with a named pool
+     * Like vanilla's {@link BlockLoot#dropOther(Block, ItemLike)} except with a named pool
      */
     @Override
-    public void dropOther(@Nonnull Block block, @Nonnull IItemProvider drop) {
+    public void dropOther(@Nonnull Block block, @Nonnull ItemLike drop) {
         add(block, createSingleItemTable(drop));
     }
 
     /**
-     * Like vanilla's {@link BlockLootTables#createSingleItemTable(IItemProvider)} except with a named pool
+     * Like vanilla's {@link BlockLoot#createSingleItemTable(ItemLike)} except with a named pool
      */
     @Nonnull
-    protected static LootTable.Builder createSingleItemTable(IItemProvider item) {
+    protected static LootTable.Builder createSingleItemTable(ItemLike item) {
         return LootTable.lootTable().withPool(applyExplosionCondition(item, LootPool.lootPool()
               .name("main")
-              .setRolls(ConstantRange.exactly(1))
-              .add(ItemLootEntry.lootTableItem(item))
+              .setRolls(ConstantValue.exactly(1))
+              .add(LootItem.lootTableItem(item))
         ));
     }
 
     /**
-     * Like vanilla's {@link BlockLootTables#createSingleItemTableWithSilkTouch(Block, IItemProvider, IRandomRange)} except with a named pool
+     * Like vanilla's {@link BlockLoot#createSingleItemTableWithSilkTouch(Block, ItemLike, NumberProvider)} except with a named pool
      */
     @Nonnull
-    protected static LootTable.Builder createSingleItemTableWithSilkTouch(@Nonnull Block block, @Nonnull IItemProvider item, @Nonnull IRandomRange range) {
-        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, ItemLootEntry.lootTableItem(item).apply(SetCount.setCount(range))));
+    protected static LootTable.Builder createSingleItemTableWithSilkTouch(@Nonnull Block block, @Nonnull ItemLike item, @Nonnull NumberProvider range) {
+        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(range))));
     }
 
     /**
-     * Like vanilla's {@link BlockLootTables#createSilkTouchDispatchTable(Block, LootEntry.Builder)} except with a named pool
+     * Like vanilla's {@link BlockLoot#createSilkTouchDispatchTable(Block, LootPoolEntryContainer.Builder)} except with a named pool
      */
     @Nonnull
-    protected static LootTable.Builder createSilkTouchDispatchTable(@Nonnull Block block, @Nonnull LootEntry.Builder<?> builder) {
+    protected static LootTable.Builder createSilkTouchDispatchTable(@Nonnull Block block, @Nonnull LootPoolEntryContainer.Builder<?> builder) {
         return createSelfDropDispatchTable(block, HAS_SILK_TOUCH, builder);
     }
 
     /**
-     * Like vanilla's {@link BlockLootTables#createSelfDropDispatchTable(Block, IBuilder, LootEntry.Builder)} except with a named pool
+     * Like vanilla's {@link BlockLoot#createSelfDropDispatchTable(Block, LootItemCondition.Builder, LootPoolEntryContainer.Builder)} except with a named pool
      */
     @Nonnull
-    protected static LootTable.Builder createSelfDropDispatchTable(@Nonnull Block block, @Nonnull ILootCondition.IBuilder conditionBuilder,
-          @Nonnull LootEntry.Builder<?> entry) {
+    protected static LootTable.Builder createSelfDropDispatchTable(@Nonnull Block block, @Nonnull LootItemCondition.Builder conditionBuilder,
+          @Nonnull LootPoolEntryContainer.Builder<?> entry) {
         return LootTable.lootTable().withPool(LootPool.lootPool()
               .name("main")
-              .setRolls(ConstantRange.exactly(1))
-              .add(ItemLootEntry.lootTableItem(block)
+              .setRolls(ConstantValue.exactly(1))
+              .add(LootItem.lootTableItem(block)
                     .when(conditionBuilder)
                     .otherwise(entry)
               )

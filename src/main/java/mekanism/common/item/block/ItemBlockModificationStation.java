@@ -10,10 +10,10 @@ import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.tile.TileEntityModificationStation;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 
 public class ItemBlockModificationStation extends ItemBlockMachine {
 
@@ -22,7 +22,7 @@ public class ItemBlockModificationStation extends ItemBlockMachine {
     }
 
     @Override
-    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
+    public boolean placeBlock(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
         Direction side = MekanismUtils.getRight(Attribute.getFacing(state));
         BlockPos pos = context.getClickedPos();
         List<BlockPos> checkList = Arrays.asList(pos.above(), pos.relative(side), pos.above().relative(side));

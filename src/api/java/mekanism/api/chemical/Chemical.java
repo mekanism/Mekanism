@@ -7,16 +7,16 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.util.ReverseTagWrapper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -115,7 +115,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
      *
      * @return the tag compound this Chemical was written to
      */
-    public abstract CompoundNBT write(CompoundNBT nbtTags);
+    public abstract CompoundTag write(CompoundTag nbtTags);
 
     /**
      * Gets the default translation key for this chemical.
@@ -123,7 +123,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
     protected abstract String getDefaultTranslationKey();
 
     @Override
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         return TextComponentUtil.translate(getTranslationKey());
     }
 
@@ -170,7 +170,7 @@ public abstract class Chemical<CHEMICAL extends Chemical<CHEMICAL>> extends Forg
      *
      * @return {@code true} if the chemical is in the tag, {@code false} otherwise.
      */
-    public boolean isIn(ITag<CHEMICAL> tag) {
+    public boolean isIn(Tag<CHEMICAL> tag) {
         return tag.contains(getChemical());
     }
 

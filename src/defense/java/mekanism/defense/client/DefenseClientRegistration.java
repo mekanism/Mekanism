@@ -1,7 +1,7 @@
 package mekanism.defense.client;
 
 import mekanism.defense.common.MekanismDefense;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -20,7 +20,7 @@ public class DefenseClientRegistration {
     }
 
     @SubscribeEvent
-    public static void registerContainers(RegistryEvent.Register<ContainerType<?>> event) {
+    public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
     }
 
     @SubscribeEvent

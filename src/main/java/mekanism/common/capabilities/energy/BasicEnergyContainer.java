@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
@@ -14,7 +14,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -155,8 +155,8 @@ public class BasicEnergyContainer implements IEnergyContainer {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
      */
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         if (!isEmpty()) {
             nbt.putString(NBTConstants.STORED, stored.toString());
         }
@@ -164,7 +164,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         NBTUtils.setFloatingLongIfPresent(nbt, NBTConstants.STORED, this::setEnergy);
     }
 }

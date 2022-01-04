@@ -4,7 +4,7 @@ import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.api.recipes.IRecipeHandler;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 
 @IRecipeHandler.For(ElectrolysisRecipe.class)
 public class ElectrolysisRecipeHandler extends MekanismRecipeHandler<ElectrolysisRecipe> {
@@ -16,7 +16,7 @@ public class ElectrolysisRecipeHandler extends MekanismRecipeHandler<Electrolysi
     }
 
     @Override
-    public <U extends IRecipe<?>> boolean doesConflict(IRecipeManager manager, ElectrolysisRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, ElectrolysisRecipe recipe, U other) {
         //Only support if the other is an electrolysis recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
         return other instanceof ElectrolysisRecipe && ingredientConflicts(recipe.getInput(), ((ElectrolysisRecipe) other).getInput());

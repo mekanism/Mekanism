@@ -6,9 +6,9 @@ import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.network.BasePacketHandler;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagFilter<MinerTagFilter> {
 
@@ -37,26 +37,26 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putString(NBTConstants.TAG_NAME, tagName);
         return nbtTags;
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(CompoundTag nbtTags) {
         super.read(nbtTags);
         tagName = nbtTags.getString(NBTConstants.TAG_NAME);
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeUtf(tagName);
     }
 
     @Override
-    public void read(PacketBuffer dataStream) {
+    public void read(FriendlyByteBuf dataStream) {
         super.read(dataStream);
         tagName = BasePacketHandler.readString(dataStream);
     }

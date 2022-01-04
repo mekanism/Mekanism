@@ -2,7 +2,7 @@ package mekanism.common.tile.interfaces.chemical;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
@@ -10,7 +10,7 @@ import mekanism.common.capabilities.chemical.dynamic.DynamicChemicalHandler.Dyna
 import mekanism.common.capabilities.chemical.dynamic.IInfusionTracker;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager.InfusionHandlerManager;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 @MethodsReturnNonnullByDefault
 public interface IInfusionTile extends IInfusionTracker {

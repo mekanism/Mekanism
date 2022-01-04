@@ -2,12 +2,13 @@ package mekanism.additions.client.model;
 
 import javax.annotation.Nonnull;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
-import net.minecraft.client.renderer.entity.model.EndermanModel;
+import net.minecraft.client.model.EndermanModel;
+import net.minecraft.client.model.geom.ModelPart;
 
 public class ModelBabyEnderman extends EndermanModel<EntityBabyEnderman> {
 
-    public ModelBabyEnderman() {
-        super(0);
+    public ModelBabyEnderman(ModelPart part) {//TODO - 1.18: test this
+        super(part);
     }
 
     @Override

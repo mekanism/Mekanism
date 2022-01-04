@@ -18,13 +18,15 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityDynamicValve extends TileEntityDynamicTank {
 
-    public TileEntityDynamicValve() {
-        super(MekanismBlocks.DYNAMIC_VALVE);
+    public TileEntityDynamicValve(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.DYNAMIC_VALVE, pos, state);
     }
 
     @Nonnull

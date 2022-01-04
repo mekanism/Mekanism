@@ -13,13 +13,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.annotations.NonNull;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.JSONUtils;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.util.GsonHelper;
 import net.minecraftforge.common.crafting.NBTIngredient;
 
 /**
@@ -57,7 +57,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
      *
      * @param item Item provider that provides the item to match.
      */
-    public static ItemStackIngredient from(@Nonnull IItemProvider item) {
+    public static ItemStackIngredient from(@Nonnull ItemLike item) {
         return from(item, 1);
     }
 
@@ -67,7 +67,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
      * @param item   Item provider that provides the item to match.
      * @param amount Amount needed.
      */
-    public static ItemStackIngredient from(@Nonnull IItemProvider item, int amount) {
+    public static ItemStackIngredient from(@Nonnull ItemLike item, int amount) {
         return from(new ItemStack(item), amount);
     }
 
@@ -76,7 +76,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
      *
      * @param tag Tag to match.
      */
-    public static ItemStackIngredient from(@Nonnull ITag<Item> tag) {
+    public static ItemStackIngredient from(@Nonnull Tag<Item> tag) {
         return from(tag, 1);
     }
 
@@ -86,7 +86,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
      * @param tag    Tag to match.
      * @param amount Amount needed.
      */
-    public static ItemStackIngredient from(@Nonnull ITag<Item> tag, int amount) {
+    public static ItemStackIngredient from(@Nonnull Tag<Item> tag, int amount) {
         return from(Ingredient.of(tag), amount);
     }
 
@@ -116,7 +116,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
      *
      * @return Item Stack Ingredient.
      */
-    public static ItemStackIngredient read(PacketBuffer buffer) {
+    public static ItemStackIngredient read(FriendlyByteBuf buffer) {
         IngredientType type = buffer.readEnum(IngredientType.class);
         if (type == IngredientType.SINGLE) {
             return from(Ingredient.fromNetwork(buffer), buffer.readVarInt());
@@ -162,7 +162,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         int amount = 1;
         if (jsonObject.has(JsonConstants.AMOUNT)) {
             JsonElement count = jsonObject.get(JsonConstants.AMOUNT);
-            if (!JSONUtils.isNumberValue(count)) {
+            if (!GsonHelper.isNumberValue(count)) {
                 throw new JsonSyntaxException("Expected amount to be a number that is one or larger.");
             }
             amount = count.getAsJsonPrimitive().getAsInt();
@@ -170,8 +170,8 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
                 throw new JsonSyntaxException("Expected amount to larger than or equal to one");
             }
         }
-        JsonElement jsonelement = JSONUtils.isArrayNode(jsonObject, JsonConstants.INGREDIENT) ? JSONUtils.getAsJsonArray(jsonObject, JsonConstants.INGREDIENT) :
-                                  JSONUtils.getAsJsonObject(jsonObject, JsonConstants.INGREDIENT);
+        JsonElement jsonelement = GsonHelper.isArrayNode(jsonObject, JsonConstants.INGREDIENT) ? GsonHelper.getAsJsonArray(jsonObject, JsonConstants.INGREDIENT) :
+                                  GsonHelper.getAsJsonObject(jsonObject, JsonConstants.INGREDIENT);
         Ingredient ingredient = Ingredient.fromJson(jsonelement);
         return from(ingredient, amount);
     }
@@ -265,7 +265,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         }
 
         @Override
-        public void write(PacketBuffer buffer) {
+        public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.SINGLE);
             ingredient.toNetwork(buffer);
             buffer.writeVarInt(amount);
@@ -348,7 +348,7 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         }
 
         @Override
-        public void write(PacketBuffer buffer) {
+        public void write(FriendlyByteBuf buffer) {
             buffer.writeEnum(IngredientType.MULTI);
             buffer.writeVarInt(ingredients.length);
             for (ItemStackIngredient ingredient : ingredients) {

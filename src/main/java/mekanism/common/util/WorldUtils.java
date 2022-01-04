@@ -12,31 +12,29 @@ import mekanism.common.Mekanism;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.TileEntityAdvancedBoundingBlock;
 import mekanism.common.tile.TileEntityBoundingBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ILiquidContainer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IBlockDisplayReader;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraftforge.common.util.Constants.BlockFlags;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -51,14 +49,32 @@ public class WorldUtils {
      * @return True if the position is loaded or the given world is of a superclass of IWorldReader that does not have a concept of being loaded.
      */
     @Contract("null, _ -> false")
-    public static boolean isBlockLoaded(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
-        if (world == null || !World.isInWorldBounds(pos)) {
+    public static boolean isBlockLoaded(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
+        if (world == null) {
             return false;
-        } else if (world instanceof IWorldReader) {
-            //Note: We don't bother checking if it is a world and then isBlockPresent because
-            // all that does is also validate the y value is in bounds, and we already check to make
-            // sure the position is valid both in the y and xz directions
-            return ((IWorldReader) world).hasChunkAt(pos);
+        } else if (world instanceof LevelReader reader) {
+            if (reader instanceof Level level && !level.isInWorldBounds(pos)) {
+                return false;
+            }
+            return reader.hasChunkAt(pos);
+        }
+        return true;
+    }
+
+    /**
+     * Checks if a position is in bounds of the world
+     *
+     * @param world world
+     * @param pos   position
+     *
+     * @return True if the position is in bounds of the world or the given world is of a superclass of IWorldReader that does not have a concept of bounds.
+     */
+    @Contract("null, _ -> false")
+    public static boolean isBlockInBounds(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
+        if (world == null) {
+            return false;
+        } else if (world instanceof LevelReader reader) {
+            return !(reader instanceof Level level) || level.isInWorldBounds(pos);
         }
         return true;
     }
@@ -75,8 +91,8 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    private static IChunk getChunkForPos(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
-        if (world == null || !World.isInWorldBounds(pos)) {
+    private static ChunkAccess getChunkForPos(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
+        if (!isBlockInBounds(world, pos)) {
             //Allow the world to be nullable to remove warnings when we are calling things from a place that world could be null
             // Also short circuit to check if the position is out of bounds before bothering to look up the chunk
             return null;
@@ -86,7 +102,7 @@ public class WorldUtils {
         long combinedChunk = (((long) chunkX) << 32) | (chunkZ & 0xFFFFFFFFL);
         //We get the chunk rather than the world, so we can cache the chunk improving the overall
         // performance for retrieving a bunch of chunks in the general vicinity
-        IChunk chunk = chunkMap.get(combinedChunk);
+        ChunkAccess chunk = chunkMap.get(combinedChunk);
         if (chunk == null) {
             //Get the chunk but don't force load it
             chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
@@ -108,7 +124,7 @@ public class WorldUtils {
      * @return optional containing the blockstate if found, empty optional if not loaded
      */
     @Nonnull
-    public static Optional<BlockState> getBlockState(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
+    public static Optional<BlockState> getBlockState(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
         //Get the blockstate using the chunk we found/had cached
         return getBlockState(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -122,7 +138,7 @@ public class WorldUtils {
      * @return optional containing the blockstate if found, empty optional if not loaded
      */
     @Nonnull
-    public static Optional<BlockState> getBlockState(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
+    public static Optional<BlockState> getBlockState(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return empty
             return Optional.empty();
@@ -141,7 +157,7 @@ public class WorldUtils {
      * @return optional containing the fluidstate if found, empty optional if not loaded
      */
     @Nonnull
-    public static Optional<FluidState> getFluidState(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
+    public static Optional<FluidState> getFluidState(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
         //Get the fluidstate using the chunk we found/had cached
         return getFluidState(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -155,7 +171,7 @@ public class WorldUtils {
      * @return optional containing the fluidstate if found, empty optional if not loaded
      */
     @Nonnull
-    public static Optional<FluidState> getFluidState(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
+    public static Optional<FluidState> getFluidState(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return empty
             return Optional.empty();
@@ -175,7 +191,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _, _ -> null")
-    public static TileEntity getTileEntity(@Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
+    public static BlockEntity getTileEntity(@Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
         //Get the tile entity using the chunk we found/had cached
         return getTileEntity(getChunkForPos(world, chunkMap, pos), pos);
     }
@@ -193,7 +209,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _ -> null")
-    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos) {
+    public static <T extends BlockEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos) {
         return getTileEntity(clazz, world, chunkMap, pos, false);
     }
 
@@ -211,7 +227,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _, _ -> null")
-    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IWorld world, @Nonnull Long2ObjectMap<IChunk> chunkMap, @Nonnull BlockPos pos,
+    public static <T extends BlockEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable LevelAccessor world, @Nonnull Long2ObjectMap<ChunkAccess> chunkMap, @Nonnull BlockPos pos,
           boolean logWrongType) {
         //Get the tile entity using the chunk we found/had cached
         return getTileEntity(clazz, getChunkForPos(world, chunkMap, pos), pos, logWrongType);
@@ -227,7 +243,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("null, _ -> null")
-    public static TileEntity getTileEntity(@Nullable IBlockReader world, @Nonnull BlockPos pos) {
+    public static BlockEntity getTileEntity(@Nullable BlockGetter world, @Nonnull BlockPos pos) {
         if (!isBlockLoaded(world, pos)) {
             //If the world is null, or it is a world reader and the block is not loaded, return null
             return null;
@@ -246,7 +262,7 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _ -> null")
-    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IBlockReader world, @Nonnull BlockPos pos) {
+    public static <T extends BlockEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable BlockGetter world, @Nonnull BlockPos pos) {
         return getTileEntity(clazz, world, pos, false);
     }
 
@@ -262,8 +278,8 @@ public class WorldUtils {
      */
     @Nullable
     @Contract("_, null, _, _ -> null")
-    public static <T extends TileEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable IBlockReader world, @Nonnull BlockPos pos, boolean logWrongType) {
-        TileEntity tile = getTileEntity(world, pos);
+    public static <T extends BlockEntity> T getTileEntity(@Nonnull Class<T> clazz, @Nullable BlockGetter world, @Nonnull BlockPos pos, boolean logWrongType) {
+        BlockEntity tile = getTileEntity(world, pos);
         if (tile == null) {
             return null;
         }
@@ -280,7 +296,7 @@ public class WorldUtils {
      *
      * @param tile TileEntity to save
      */
-    public static void saveChunk(TileEntity tile) {
+    public static void saveChunk(BlockEntity tile) {
         if (tile != null && !tile.isRemoved() && tile.getLevel() != null) {
             markChunkDirty(tile.getLevel(), tile.getBlockPos());
         }
@@ -289,9 +305,9 @@ public class WorldUtils {
     /**
      * Marks a chunk as dirty if it is currently loaded
      */
-    public static void markChunkDirty(World world, BlockPos pos) {
+    public static void markChunkDirty(Level world, BlockPos pos) {
         if (isBlockLoaded(world, pos)) {
-            world.getChunkAt(pos).markUnsaved();
+            world.getChunkAt(pos).setUnsaved(true);
         }
         //TODO: This line below is now (1.16+) called by the mark chunk dirty method (without even validating if it is loaded).
         // And with it causes issues where chunks are easily ghost loaded. Why was it added like that and do we need to somehow
@@ -302,14 +318,14 @@ public class WorldUtils {
     /**
      * Dismantles a block, dropping it and removing it from the world.
      */
-    public static void dismantleBlock(BlockState state, World world, BlockPos pos) {
+    public static void dismantleBlock(BlockState state, Level world, BlockPos pos) {
         dismantleBlock(state, world, pos, getTileEntity(world, pos));
     }
 
     /**
      * Dismantles a block, dropping it and removing it from the world.
      */
-    public static void dismantleBlock(BlockState state, World world, BlockPos pos, @Nullable TileEntity tile) {
+    public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile) {
         Block.dropResources(state, world, pos, tile);
         world.removeBlock(pos, false);
     }
@@ -320,7 +336,7 @@ public class WorldUtils {
      * @return the distance to the defined positions
      */
     public static double distanceBetween(BlockPos start, BlockPos end) {
-        return MathHelper.sqrt(start.distSqr(end));
+        return Math.sqrt(start.distSqr(end));
     }
 
     /**
@@ -345,11 +361,11 @@ public class WorldUtils {
      *
      * @return if the chunk is being vibrated
      */
-    public static boolean isChunkVibrated(ChunkPos chunk, World world) {
+    public static boolean isChunkVibrated(ChunkPos chunk, Level world) {
         return Mekanism.activeVibrators.stream().anyMatch(coord -> coord.dimension == world.dimension() && coord.getX() >> 4 == chunk.x && coord.getZ() >> 4 == chunk.z);
     }
 
-    public static boolean tryPlaceContainedLiquid(@Nullable PlayerEntity player, World world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
+    public static boolean tryPlaceContainedLiquid(@Nullable Player player, Level world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable Direction side) {
         Fluid fluid = fluidStack.getFluid();
         if (!fluid.getAttributes().canBePlacedInWorld(world, pos, fluidStack)) {
             //If there is no fluid, or it cannot be placed in the world just
@@ -357,12 +373,12 @@ public class WorldUtils {
         }
         BlockState state = world.getBlockState(pos);
         boolean isReplaceable = state.canBeReplaced(fluid);
-        boolean canContainFluid = state.getBlock() instanceof ILiquidContainer && ((ILiquidContainer) state.getBlock()).canPlaceLiquid(world, pos, state, fluid);
-        if (state.isAir(world, pos) || isReplaceable || canContainFluid) {
+        boolean canContainFluid = state.getBlock() instanceof LiquidBlockContainer && ((LiquidBlockContainer) state.getBlock()).canPlaceLiquid(world, pos, state, fluid);
+        if (state.isAir() || isReplaceable || canContainFluid) {
             if (world.dimensionType().ultraWarm() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
                 fluid.getAttributes().vaporize(player, world, pos, fluidStack);
             } else if (canContainFluid) {
-                if (!((ILiquidContainer) state.getBlock()).placeLiquid(world, pos, state, fluid.getAttributes().getStateForPlacement(world, pos, fluidStack))) {
+                if (!((LiquidBlockContainer) state.getBlock()).placeLiquid(world, pos, state, fluid.getAttributes().getStateForPlacement(world, pos, fluidStack))) {
                     //If something went wrong return that we couldn't actually place it
                     return false;
                 }
@@ -372,27 +388,27 @@ public class WorldUtils {
                     world.destroyBlock(pos, true);
                 }
                 playEmptySound(player, world, pos, fluidStack);
-                world.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), BlockFlags.DEFAULT_AND_RERENDER);
+                world.setBlock(pos, fluid.defaultFluidState().createLegacyBlock(), Block.UPDATE_ALL_IMMEDIATE);
             }
             return true;
         }
         return side != null && tryPlaceContainedLiquid(player, world, pos.relative(side), fluidStack, null);
     }
 
-    private static void playEmptySound(@Nullable PlayerEntity player, IWorld world, BlockPos pos, @Nonnull FluidStack fluidStack) {
+    private static void playEmptySound(@Nullable Player player, LevelAccessor world, BlockPos pos, @Nonnull FluidStack fluidStack) {
         SoundEvent soundevent = fluidStack.getFluid().getAttributes().getEmptySound(world, pos);
         if (soundevent == null) {
             soundevent = fluidStack.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         }
-        world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(player, pos, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
-    public static void playFillSound(@Nullable PlayerEntity player, IWorld world, BlockPos pos, @Nonnull FluidStack fluidStack) {
+    public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @Nonnull FluidStack fluidStack) {
         SoundEvent soundevent = fluidStack.getFluid().getAttributes().getFillSound(world, pos);
         if (soundevent == null) {
             soundevent = fluidStack.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL;
         }
-        world.playSound(player, pos, soundevent, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(player, pos, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     /**
@@ -403,7 +419,7 @@ public class WorldUtils {
      *
      * @return if the block is indirectly getting powered by LOADED chunks
      */
-    public static boolean isGettingPowered(World world, BlockPos pos) {
+    public static boolean isGettingPowered(Level world, BlockPos pos) {
         if (isBlockLoaded(world, pos)) {
             for (Direction side : EnumUtils.DIRECTIONS) {
                 BlockPos offset = pos.relative(side);
@@ -427,7 +443,7 @@ public class WorldUtils {
      *
      * @return if the block is directly getting powered
      */
-    public static boolean isDirectlyGettingPowered(World world, BlockPos pos) {
+    public static boolean isDirectlyGettingPowered(Level world, BlockPos pos) {
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockPos offset = pos.relative(side);
             if (isBlockLoaded(world, offset)) {
@@ -444,7 +460,7 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@Nonnull IBlockReader world, @Nonnull BlockPos... positions) {
+    public static boolean areBlocksValidAndReplaceable(@Nonnull BlockGetter world, @Nonnull BlockPos... positions) {
         return areBlocksValidAndReplaceable(world, Arrays.stream(positions));
     }
 
@@ -453,7 +469,7 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@Nonnull IBlockReader world, @Nonnull Collection<BlockPos> positions) {
+    public static boolean areBlocksValidAndReplaceable(@Nonnull BlockGetter world, @Nonnull Collection<BlockPos> positions) {
         //TODO: Potentially move more block placement over to these methods
         return areBlocksValidAndReplaceable(world, positions.stream());
     }
@@ -463,7 +479,7 @@ public class WorldUtils {
      *
      * @return True if the blocks can be replaced and is within the world's bounds.
      */
-    public static boolean areBlocksValidAndReplaceable(@Nonnull IBlockReader world, @Nonnull Stream<BlockPos> positions) {
+    public static boolean areBlocksValidAndReplaceable(@Nonnull BlockGetter world, @Nonnull Stream<BlockPos> positions) {
         return positions.allMatch(pos -> isValidReplaceableBlock(world, pos));
     }
 
@@ -472,8 +488,8 @@ public class WorldUtils {
      *
      * @return True if the block can be replaced and is within the world's bounds.
      */
-    public static boolean isValidReplaceableBlock(@Nonnull IBlockReader world, @Nonnull BlockPos pos) {
-        return World.isInWorldBounds(pos) && world.getBlockState(pos).getMaterial().isReplaceable();
+    public static boolean isValidReplaceableBlock(@Nonnull BlockGetter world, @Nonnull BlockPos pos) {
+        return isBlockInBounds(world, pos) && world.getBlockState(pos).getMaterial().isReplaceable();
     }
 
     /**
@@ -482,7 +498,7 @@ public class WorldUtils {
      * @param world world to perform the operation in
      * @param pos   BlockPos to perform the operation on
      */
-    public static void notifyLoadedNeighborsOfTileChange(World world, BlockPos pos) {
+    public static void notifyLoadedNeighborsOfTileChange(Level world, BlockPos pos) {
         BlockState state = world.getBlockState(pos);
         for (Direction dir : EnumUtils.DIRECTIONS) {
             BlockPos offset = pos.relative(dir);
@@ -509,7 +525,7 @@ public class WorldUtils {
      * @param fromPos   pos of our block that updated
      * @param neighbors Sides to notify the neighbors on.
      */
-    public static void notifyNeighborsOfChange(@Nullable World world, BlockPos fromPos, Set<Direction> neighbors) {
+    public static void notifyNeighborsOfChange(@Nullable Level world, BlockPos fromPos, Set<Direction> neighbors) {
         if (!neighbors.isEmpty()) {
             getBlockState(world, fromPos).ifPresent(sourceState -> {
                 for (Direction neighbor : neighbors) {
@@ -530,7 +546,7 @@ public class WorldUtils {
      * @param pos     neighbor to notify
      * @param fromPos pos of our block that updated
      */
-    public static void notifyNeighborOfChange(@Nullable World world, BlockPos pos, BlockPos fromPos) {
+    public static void notifyNeighborOfChange(@Nullable Level world, BlockPos pos, BlockPos fromPos) {
         getBlockState(world, pos).ifPresent(state -> {
             state.onNeighborChange(world, pos, fromPos);
             state.neighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
@@ -544,7 +560,7 @@ public class WorldUtils {
      * @param neighborSide The side the neighbor to notify is on
      * @param fromPos      pos of our block that updated
      */
-    public static void notifyNeighborOfChange(@Nullable World world, Direction neighborSide, BlockPos fromPos) {
+    public static void notifyNeighborOfChange(@Nullable Level world, Direction neighborSide, BlockPos fromPos) {
         notifyNeighborOfChange(world, fromPos.relative(neighborSide), fromPos);
     }
 
@@ -555,13 +571,13 @@ public class WorldUtils {
      * @param boundingLocation coordinates of bounding block
      * @param orig             original block position
      */
-    public static void makeBoundingBlock(@Nullable IWorld world, BlockPos boundingLocation, BlockPos orig) {
+    public static void makeBoundingBlock(@Nullable LevelAccessor world, BlockPos boundingLocation, BlockPos orig) {
         if (world == null) {
             return;
         }
         BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.getBlock();
         BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.defaultBlockState(), world, boundingLocation, null, Direction.NORTH);
-        world.setBlock(boundingLocation, newState, BlockFlags.DEFAULT);
+        world.setBlock(boundingLocation, newState, Block.UPDATE_ALL);
         if (!world.isClientSide()) {
             TileEntityBoundingBlock tile = getTileEntity(TileEntityBoundingBlock.class, world, boundingLocation);
             if (tile != null) {
@@ -573,36 +589,15 @@ public class WorldUtils {
     }
 
     /**
-     * Places a fake advanced bounding block at the defined location.
-     *
-     * @param world            world to place block in
-     * @param boundingLocation coordinates of bounding block
-     * @param orig             original block position
-     */
-    public static void makeAdvancedBoundingBlock(IWorld world, BlockPos boundingLocation, BlockPos orig) {
-        BlockBounding boundingBlock = MekanismBlocks.ADVANCED_BOUNDING_BLOCK.getBlock();
-        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.defaultBlockState(), world, boundingLocation, null, Direction.NORTH);
-        world.setBlock(boundingLocation, newState, BlockFlags.DEFAULT);
-        if (!world.isClientSide()) {
-            TileEntityAdvancedBoundingBlock tile = getTileEntity(TileEntityAdvancedBoundingBlock.class, world, boundingLocation);
-            if (tile != null) {
-                tile.setMainLocation(orig);
-            } else {
-                Mekanism.logger.warn("Unable to find Advanced Bounding Block Tile at: {}", boundingLocation);
-            }
-        }
-    }
-
-    /**
      * Marks a block for a render update if loaded.
      *
      * @param world world the block is in
      * @param pos   Position of the block
      * @param state The block state at the position
      */
-    public static void updateBlock(@Nullable World world, @Nonnull BlockPos pos, BlockState state) {
+    public static void updateBlock(@Nullable Level world, @Nonnull BlockPos pos, BlockState state) {
         if (isBlockLoaded(world, pos)) {
-            world.sendBlockUpdated(pos, state, state, BlockFlags.DEFAULT);
+            world.sendBlockUpdated(pos, state, state, Block.UPDATE_ALL);
         }
     }
 
@@ -612,7 +607,7 @@ public class WorldUtils {
      * @param world world the block is in
      * @param pos   coordinates
      */
-    public static void recheckLighting(@Nullable IBlockDisplayReader world, @Nonnull BlockPos pos) {
+    public static void recheckLighting(@Nullable BlockAndTintGetter world, @Nonnull BlockPos pos) {
         if (isBlockLoaded(world, pos)) {
             world.getLightEngine().checkBlock(pos);
         }
@@ -621,10 +616,10 @@ public class WorldUtils {
     /**
      * Vanilla copy of {@link net.minecraft.client.world.ClientWorld#getSkyDarken(float)} used to be World#getSunBrightness
      */
-    public static float getSunBrightness(World world, float partialTicks) {
+    public static float getSunBrightness(Level world, float partialTicks) {
         float f = world.getTimeOfDay(partialTicks);
-        float f1 = 1.0F - (MathHelper.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.2F);
-        f1 = MathHelper.clamp(f1, 0.0F, 1.0F);
+        float f1 = 1.0F - (Mth.cos(f * ((float) Math.PI * 2F)) * 2.0F + 0.2F);
+        f1 = Mth.clamp(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;
         f1 = (float) (f1 * (1.0D - world.getRainLevel(partialTicks) * 5.0F / 16.0D));
         f1 = (float) (f1 * (1.0D - world.getThunderLevel(partialTicks) * 5.0F / 16.0D));
@@ -640,7 +635,7 @@ public class WorldUtils {
      * @return {@code true} if it can.
      */
     @Contract("null, _ -> false")
-    public static boolean canSeeSun(@Nullable World world, BlockPos pos) {
+    public static boolean canSeeSun(@Nullable Level world, BlockPos pos) {
         //Note: We manually handle the world#isDaytime check by just checking the subtracted skylight
         // as vanilla returns false if the world's time is set to a fixed value even if that time
         // would effectively be daytime

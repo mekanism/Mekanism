@@ -15,12 +15,12 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 
 public class DiversionTransporter extends LogisticalTransporterBase {
 
@@ -46,7 +46,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         }
     }
 
-    private void readModes(@Nonnull CompoundNBT tag) {
+    private void readModes(@Nonnull CompoundTag tag) {
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             int index = i;
             NBTUtils.setEnumIfPresent(tag, NBTConstants.MODE + index, DiversionControl::byIndexStatic, mode -> modes[index] = mode);
@@ -54,7 +54,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Nonnull
-    private CompoundNBT writeModes(@Nonnull CompoundNBT nbtTags) {
+    private CompoundTag writeModes(@Nonnull CompoundTag nbtTags) {
         for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
             nbtTags.putInt(NBTConstants.MODE + i, modes[i].ordinal());
         }
@@ -62,25 +62,25 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public void read(@Nonnull CompoundNBT nbtTags) {
+    public void read(@Nonnull CompoundTag nbtTags) {
         super.read(nbtTags);
         readModes(nbtTags);
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(@Nonnull CompoundNBT nbtTags) {
+    public CompoundTag write(@Nonnull CompoundTag nbtTags) {
         return writeModes(super.write(nbtTags));
     }
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag(CompoundNBT updateTag) {
+    public CompoundTag getReducedUpdateTag(CompoundTag updateTag) {
         return writeModes(super.getReducedUpdateTag(updateTag));
     }
 
     @Override
-    public void handleUpdateTag(@Nonnull CompoundNBT tag) {
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
         super.handleUpdateTag(tag);
         readModes(tag);
     }
@@ -96,12 +96,12 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public ActionResultType onRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onRightClick(Player player, Direction side) {
         side = getTransmitterTile().getSideLookingAt(player, side);
         DiversionControl newMode = modes[side.ordinal()].getNext();
         updateMode(side, newMode);
         player.sendMessage(MekanismUtils.logFormat(MekanismLang.TOGGLE_DIVERTER.translate(EnumColor.RED, newMode)), Util.NIL_UUID);
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -135,7 +135,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             return langEntry.translate();
         }
 

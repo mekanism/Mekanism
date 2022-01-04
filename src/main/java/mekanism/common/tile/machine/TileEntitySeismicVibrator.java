@@ -21,7 +21,9 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBoundingBlock {
 
@@ -31,8 +33,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntitySeismicVibrator() {
-        super(MekanismBlocks.SEISMIC_VIBRATOR);
+    public TileEntitySeismicVibrator(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.SEISMIC_VIBRATOR, pos, state);
         cacheCoord();
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
@@ -105,8 +107,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
 
     @Nonnull
     @Override
-    public AxisAlignedBB getRenderBoundingBox() {
-        return new AxisAlignedBB(worldPosition, worldPosition.offset(1, 2, 1));
+    public AABB getRenderBoundingBox() {
+        return new AABB(worldPosition, worldPosition.offset(1, 2, 1));
     }
 
     public MachineEnergyContainer<TileEntitySeismicVibrator> getEnergyContainer() {

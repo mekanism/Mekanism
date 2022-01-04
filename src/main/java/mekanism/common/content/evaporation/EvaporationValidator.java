@@ -16,10 +16,10 @@ import mekanism.common.lib.multiblock.FormationProtocol.StructureRequirement;
 import mekanism.common.lib.multiblock.StructureHelper;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class EvaporationValidator extends CuboidStructureValidator<EvaporationMultiblockData> {
 
@@ -73,7 +73,7 @@ public class EvaporationValidator extends CuboidStructureValidator<EvaporationMu
     }
 
     @Override
-    public FormationResult postcheck(EvaporationMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<IChunk> chunkMap) {
+    public FormationResult postcheck(EvaporationMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
         if (!foundController) {
             return FormationResult.fail(MekanismLang.MULTIBLOCK_INVALID_NO_CONTROLLER);
         }

@@ -1,7 +1,5 @@
 package mekanism.common.recipe.compat;
 
-import corgiaoc.byg.core.BYGBlocks;
-import corgiaoc.byg.core.BYGItems;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -17,11 +15,13 @@ import mekanism.common.recipe.RecipeProviderUtil;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismPigments;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
+import potionstudios.byg.common.block.BYGBlocks;
+import potionstudios.byg.common.item.BYGItems;
 
 @ParametersAreNonnullByDefault
 public class BYGRecipeProvider extends CompatRecipeProvider {
@@ -31,7 +31,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    protected void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addDyeRecipes(consumer, basePath);
         addCrushingRecipes(consumer, basePath + "crushing/");
         addEnrichingRecipes(consumer, basePath + "enriching/");
@@ -41,7 +41,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         //TODO: Bio-fuel recipes?
     }
 
-    private void addPrecisionSawmillRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addPrecisionSawmillRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.ASPEN_PLANKS, BYGItems.ASPEN_BOAT, BYGBlocks.ASPEN_DOOR, BYGBlocks.ASPEN_FENCE_GATE,
               BYGBlocks.ASPEN_PRESSURE_PLATE, BYGBlocks.ASPEN_TRAPDOOR, "aspen");
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BYGBlocks.BAOBAB_PLANKS, BYGItems.BAOBAB_BOAT, BYGBlocks.BAOBAB_DOOR, BYGBlocks.BAOBAB_FENCE_GATE,
@@ -102,18 +102,18 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
               BYGBlocks.ZELKOVA_PRESSURE_PLATE, BYGBlocks.ZELKOVA_TRAPDOOR, "zelkova");
     }
 
-    private void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, @Nullable IItemProvider boat,
-          IItemProvider door, IItemProvider fenceGate, IItemProvider pressurePlate, IItemProvider trapdoor, String name) {
+    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
+          ItemLike door, ItemLike fenceGate, ItemLike pressurePlate, ItemLike trapdoor, String name) {
         addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, pressurePlate, trapdoor, name, "logs");
     }
 
-    private void addPrecisionSawmillWoodTypeRecipes(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider planks, @Nullable IItemProvider boat,
-          IItemProvider door, IItemProvider fenceGate, IItemProvider pressurePlate, IItemProvider trapdoor, String name, String logTagType) {
+    private void addPrecisionSawmillWoodTypeRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, @Nullable ItemLike boat,
+          ItemLike door, ItemLike fenceGate, ItemLike pressurePlate, ItemLike trapdoor, String name, String logTagType) {
         RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, door, fenceGate, tag(name + "_" + logTagType), pressurePlate,
               trapdoor, name, modLoaded);
     }
 
-    private void addSandRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addSandRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Black Sandstone -> Sand
         RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + "black", modLoaded, BYGBlocks.BLACK_SAND, BYGBlocks.BLACK_SANDSTONE,
               BYGBlocks.BLACK_CHISELED_SANDSTONE, BYGBlocks.BLACK_CUT_SANDSTONE, BYGBlocks.BLACK_SMOOTH_SANDSTONE);
@@ -131,7 +131,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
               BYGBlocks.WHITE_CHISELED_SANDSTONE, BYGBlocks.WHITE_CUT_SANDSTONE, BYGBlocks.WHITE_SMOOTH_SANDSTONE);
     }
 
-    private void addDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addDyeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Black
         dye(consumer, basePath, Items.BLACK_DYE, false, EnumColor.BLACK, "black_dye");
         //Blue
@@ -168,8 +168,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         dye(consumer, basePath, Items.YELLOW_DYE, false, EnumColor.YELLOW, "yellow_dye");
     }
 
-    private void dye(Consumer<IFinishedRecipe> consumer, String basePath, IItemProvider output, boolean large, EnumColor color, String inputTag,
-          IItemProvider... extraInputs) {
+    private void dye(Consumer<FinishedRecipe> consumer, String basePath, ItemLike output, boolean large, EnumColor color, String inputTag, ItemLike... extraInputs) {
         ItemStackIngredient inputIngredient = ItemStackIngredient.from(BaseRecipeProvider.createIngredient(
               tag(inputTag),
               extraInputs
@@ -189,7 +188,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "pigment_extracting/" + name));
     }
 
-    private void addCrushingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrushingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addCrusherDaciteRecipes(consumer, basePath + "dacite/");
         addCrusherEtherRecipes(consumer, basePath + "ether/");
         addCrusherRedRockRecipes(consumer, basePath + "red_rock/");
@@ -198,7 +197,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         addCrusherTravertineRecipes(consumer, basePath + "travertine/");
     }
 
-    private void addCrusherDaciteRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherDaciteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Dacite -> Dacite Cobblestone
         crushing(consumer, BYGBlocks.DACITE, BYGBlocks.DACITE_COBBLESTONE, basePath + "to_cobblestone");
         crushing(consumer, BYGBlocks.DACITE_SLAB, BYGBlocks.DACITE_COBBLESTONE_SLAB, basePath + "slabs_to_cobblestone_slabs");
@@ -222,7 +221,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "from_pillar"));
     }
 
-    private void addCrusherEtherRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherEtherRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Ether -> Cobbled Ether
         crushing(consumer, BYGBlocks.ETHER_STONE, BYGBlocks.COBBLED_ETHER_STONE, basePath + "to_cobblestone");
         crushing(consumer, BYGBlocks.ETHER_STONE_SLAB, BYGBlocks.COBBLED_ETHER_STONE_SLAB, basePath + "slabs_to_cobblestone_slabs");
@@ -235,7 +234,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         crushing(consumer, BYGBlocks.CARVED_ETHER_STONE_WALL, BYGBlocks.ETHER_STONE_WALL, basePath + "carved_walls_to_walls");
     }
 
-    private void addCrusherRedRockRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherRedRockRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Chiseled Red Rock -> Red Rock Bricks
         crushing(consumer, BYGBlocks.CHISELED_RED_ROCK_BRICKS, BYGBlocks.RED_ROCK_BRICKS, basePath + "chiseled_to_brick");
         crushing(consumer, BYGBlocks.CHISELED_RED_ROCK_BRICK_SLAB, BYGBlocks.RED_ROCK_BRICK_SLAB, basePath + "chiseled_slabs_to_brick_slabs");
@@ -253,7 +252,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         crushing(consumer, BYGBlocks.CRACKED_RED_ROCK_BRICK_WALL, BYGBlocks.RED_ROCK_WALL, basePath + "brick_walls_to_walls");
     }
 
-    private void addCrusherScoriaRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherScoriaRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Scoria -> Scoria Cobblestone
         crushing(consumer, BYGBlocks.SCORIA_STONE, BYGBlocks.SCORIA_COBBLESTONE, basePath + "to_cobblestone");
         crushing(consumer, BYGBlocks.SCORIA_SLAB, BYGBlocks.SCORIA_COBBLESTONE_SLAB, basePath + "slabs_to_cobblestone_slabs");
@@ -275,7 +274,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "from_pillar"));
     }
 
-    private void addCrusherSoapstoneRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherSoapstoneRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Polished Soapstone -> Soapstone
         crushing(consumer, BYGBlocks.POLISHED_SOAPSTONE, BYGBlocks.SOAPSTONE, basePath + "from_polished");
         crushing(consumer, BYGBlocks.POLISHED_SOAPSTONE_SLAB, BYGBlocks.SOAPSTONE_SLAB, basePath + "polished_slabs_to_slabs");
@@ -299,7 +298,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "from_pillar"));
     }
 
-    private void addCrusherTravertineRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCrusherTravertineRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Polished Travertine -> Travertine
         crushing(consumer, BYGBlocks.POLISHED_TRAVERTINE, BYGBlocks.TRAVERTINE, basePath + "from_polished");
         crushing(consumer, BYGBlocks.POLISHED_TRAVERTINE_SLAB, BYGBlocks.TRAVERTINE_SLAB, basePath + "polished_slabs_to_slabs");
@@ -312,7 +311,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         crushing(consumer, BYGBlocks.CHISELED_TRAVERTINE_WALL, BYGBlocks.POLISHED_TRAVERTINE_WALL, basePath + "chiseled_walls_to_polished_walls");
     }
 
-    private void crushing(Consumer<IFinishedRecipe> consumer, IItemProvider input, IItemProvider output, String path) {
+    private void crushing(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output, String path) {
         ItemStackToItemStackRecipeBuilder.crushing(
                     ItemStackIngredient.from(input),
                     new ItemStack(output)
@@ -320,7 +319,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(path));
     }
 
-    private void addEnrichingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addEnrichingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addMossyStoneEnrichingRecipes(consumer, basePath + "mossy_stone/");
         addDaciteEnrichingRecipes(consumer, basePath + "dacite/");
         addEtherEnrichingRecipes(consumer, basePath + "ether/");
@@ -330,13 +329,13 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         addTravertineEnrichingRecipes(consumer, basePath + "travertine/");
     }
 
-    private void addMossyStoneEnrichingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addMossyStoneEnrichingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         enriching(consumer, BYGBlocks.MOSSY_STONE, Blocks.STONE, basePath + "stone");
         enriching(consumer, BYGBlocks.MOSSY_STONE_SLAB, Blocks.STONE_SLAB, basePath + "slabs");
         enriching(consumer, BYGBlocks.MOSSY_STONE_STAIRS, Blocks.STONE_STAIRS, basePath + "stairs");
     }
 
-    private void addDaciteEnrichingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addDaciteEnrichingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Dacite Bricks -> Dacite Tile
         enriching(consumer, BYGBlocks.DACITE_BRICKS, BYGBlocks.DACITE_TILE, basePath + "brick_to_tile");
         enriching(consumer, BYGBlocks.DACITE_BRICK_SLAB, BYGBlocks.DACITE_TILE_SLAB, basePath + "brick_slabs_to_tile_slabs");
@@ -349,7 +348,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         enriching(consumer, BYGBlocks.DACITE_WALL, BYGBlocks.DACITE_BRICK_WALL, basePath + "walls_to_brick_walls");
     }
 
-    private void addEtherEnrichingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addEtherEnrichingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Ether -> Carved Ether
         enriching(consumer, BYGBlocks.ETHER_STONE, BYGBlocks.CARVED_ETHER_STONE, basePath + "to_carved");
         enriching(consumer, BYGBlocks.ETHER_STONE_SLAB, BYGBlocks.CARVED_ETHER_STONE_SLAB, basePath + "slabs_to_carved_slabs");
@@ -357,7 +356,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         enriching(consumer, BYGBlocks.ETHER_STONE_WALL, BYGBlocks.CARVED_ETHER_STONE_WALL, basePath + "walls_to_carved_walls");
     }
 
-    private void addRedRockEnrichingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addRedRockEnrichingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Red Rock -> Cracked Red Rock Bricks
         enriching(consumer, BYGBlocks.RED_ROCK, BYGBlocks.CRACKED_RED_ROCK_BRICKS, basePath + "to_cracked_bricks");
         enriching(consumer, BYGBlocks.RED_ROCK_SLAB, BYGBlocks.CRACKED_RED_ROCK_BRICK_SLAB, basePath + "slabs_to_brick_slabs");
@@ -380,7 +379,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         enriching(consumer, BYGBlocks.MOSSY_RED_ROCK_BRICK_WALL, BYGBlocks.RED_ROCK_BRICK_WALL, basePath + "chiseled_walls_to_brick_walls");
     }
 
-    private void addScoriaEnrichingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addScoriaEnrichingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Cracked Scoria Stone Bricks -> Scoria Stone Bricks
         enriching(consumer, BYGBlocks.CRACKED_SCORIA_STONE_BRICKS, BYGBlocks.SCORIA_STONEBRICKS, basePath + "cracked_bricks_to_bricks");
         //Scoria -> Cracked Scoria Stone Bricks
@@ -391,7 +390,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         enriching(consumer, BYGBlocks.SCORIA_WALL, BYGBlocks.SCORIA_STONEBRICK_WALL, basePath + "walls_to_brick_walls");
     }
 
-    private void addSoapstoneEnrichingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addSoapstoneEnrichingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Soapstone -> Polished Soapstone
         enriching(consumer, BYGBlocks.SOAPSTONE, BYGBlocks.POLISHED_SOAPSTONE, basePath + "to_polished");
         enriching(consumer, BYGBlocks.SOAPSTONE_SLAB, BYGBlocks.POLISHED_SOAPSTONE_SLAB, basePath + "slabs_to_polished_slabs");
@@ -409,7 +408,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         enriching(consumer, BYGBlocks.SOAPSTONE_BRICK_WALL, BYGBlocks.SOAPSTONE_TILE_WALL, basePath + "brick_walls_to_tile_walls");
     }
 
-    private void addTravertineEnrichingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addTravertineEnrichingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Travertine -> Polished Travertine
         enriching(consumer, BYGBlocks.TRAVERTINE, BYGBlocks.POLISHED_TRAVERTINE, basePath + "to_polished");
         enriching(consumer, BYGBlocks.TRAVERTINE_SLAB, BYGBlocks.POLISHED_TRAVERTINE_SLAB, basePath + "slabs_to_polished_slabs");
@@ -422,7 +421,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         enriching(consumer, BYGBlocks.POLISHED_TRAVERTINE_WALL, BYGBlocks.CHISELED_TRAVERTINE_WALL, basePath + "polished_walls_to_chiseled_walls");
     }
 
-    private void enriching(Consumer<IFinishedRecipe> consumer, IItemProvider input, IItemProvider output, String path) {
+    private void enriching(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output, String path) {
         ItemStackToItemStackRecipeBuilder.enriching(
                     ItemStackIngredient.from(input),
                     new ItemStack(output)
@@ -430,26 +429,26 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(path));
     }
 
-    private void addMetallurgicInfusingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addMetallurgicInfusingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         addMossyStoneInfusingRecipes(consumer, basePath + "mossy_stone/");
         addRedRockInfusingRecipes(consumer, basePath + "red_rock/");
         infuseMoss(consumer, Blocks.NETHERRACK, BYGBlocks.MOSSY_NETHERRACK, basePath + "netherrack_to_mossy_netherrack");
     }
 
-    private void addMossyStoneInfusingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addMossyStoneInfusingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         infuseMoss(consumer, Blocks.STONE, BYGBlocks.MOSSY_STONE, basePath + "stone");
         infuseMoss(consumer, Blocks.STONE_SLAB, BYGBlocks.MOSSY_STONE_SLAB, basePath + "stone_slab");
         infuseMoss(consumer, Blocks.STONE_STAIRS, BYGBlocks.MOSSY_STONE_STAIRS, basePath + "stone_stairs");
     }
 
-    private void addRedRockInfusingRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addRedRockInfusingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         infuseMoss(consumer, BYGBlocks.RED_ROCK_BRICKS, BYGBlocks.MOSSY_RED_ROCK_BRICKS, basePath + "red_rock_brick");
         infuseMoss(consumer, BYGBlocks.RED_ROCK_BRICK_SLAB, BYGBlocks.MOSSY_RED_ROCK_BRICK_SLAB, basePath + "red_rock_brick_slab");
         infuseMoss(consumer, BYGBlocks.RED_ROCK_BRICK_STAIRS, BYGBlocks.MOSSY_RED_ROCK_BRICK_STAIRS, basePath + "red_rock_brick_stairs");
         infuseMoss(consumer, BYGBlocks.RED_ROCK_BRICK_WALL, BYGBlocks.MOSSY_RED_ROCK_BRICK_WALL, basePath + "red_rock_brick_wall");
     }
 
-    private void infuseMoss(Consumer<IFinishedRecipe> consumer, IItemProvider input, IItemProvider output, String path) {
+    private void infuseMoss(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output, String path) {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
                     ItemStackIngredient.from(input),
                     InfusionStackIngredient.from(MekanismTags.InfuseTypes.BIO, 10),

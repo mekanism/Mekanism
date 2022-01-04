@@ -16,7 +16,7 @@ import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.ChemicalInputCache;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * Similar in concept to {@link SingleInputRecipeCache} except specialized to handle Chemical Crystallizer recipes for the purposes of being able to better handle the
@@ -52,7 +52,7 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInput(@Nullable World world, BoxedChemicalStack input) {
+    public boolean containsInput(@Nullable Level world, BoxedChemicalStack input) {
         if (input.isEmpty()) {
             //Don't allow empty inputs
             return false;
@@ -70,7 +70,7 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean containsInput(@Nullable World world, CHEMICAL input) {
+    public <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> boolean containsInput(@Nullable Level world, CHEMICAL input) {
         if (input.isEmptyType()) {
             //Don't allow empty inputs
             return false;
@@ -94,7 +94,7 @@ public class ChemicalCrystallizerInputRecipeCache extends AbstractInputRecipeCac
      * @return Recipe matching the given input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public ChemicalCrystallizerRecipe findFirstRecipe(@Nullable World world, BoxedChemicalStack input) {
+    public ChemicalCrystallizerRecipe findFirstRecipe(@Nullable Level world, BoxedChemicalStack input) {
         if (input.isEmpty()) {
             //Don't allow empty inputs
             return null;

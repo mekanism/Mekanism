@@ -6,17 +6,17 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.heat.HeatAPI;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class CachedAmbientTemperature implements DoubleSupplier {
 
     private final double[] ambientTemperature = new double[EnumUtils.DIRECTIONS.length + 1];
-    private final Supplier<World> worldSupplier;
+    private final Supplier<Level> worldSupplier;
     private final Supplier<BlockPos> positionSupplier;
 
-    public CachedAmbientTemperature(Supplier<World> worldSupplier, Supplier<BlockPos> positionSupplier) {
+    public CachedAmbientTemperature(Supplier<Level> worldSupplier, Supplier<BlockPos> positionSupplier) {
         this.worldSupplier = worldSupplier;
         this.positionSupplier = positionSupplier;
         Arrays.fill(ambientTemperature, -1);
@@ -31,7 +31,7 @@ public class CachedAmbientTemperature implements DoubleSupplier {
         int index = side == null ? EnumUtils.DIRECTIONS.length : side.ordinal();
         double biomeAmbientTemp = ambientTemperature[index];
         if (biomeAmbientTemp == -1) {
-            World world = worldSupplier.get();
+            Level world = worldSupplier.get();
             if (world == null) {
                 return HeatAPI.AMBIENT_TEMP;
             }

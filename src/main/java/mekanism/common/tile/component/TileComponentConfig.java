@@ -46,10 +46,10 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -295,15 +295,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
-        if (nbtTags.contains(NBTConstants.COMPONENT_CONFIG, NBT.TAG_COMPOUND)) {
-            CompoundNBT configNBT = nbtTags.getCompound(NBTConstants.COMPONENT_CONFIG);
+    public void read(CompoundTag nbtTags) {
+        if (nbtTags.contains(NBTConstants.COMPONENT_CONFIG, Tag.TAG_COMPOUND)) {
+            CompoundTag configNBT = nbtTags.getCompound(NBTConstants.COMPONENT_CONFIG);
             Set<Direction> directionsToUpdate = EnumSet.noneOf(Direction.class);
             for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
                 TransmissionType type = entry.getKey();
                 ConfigInfo info = entry.getValue();
                 info.setEjecting(configNBT.getBoolean(NBTConstants.EJECT + type.ordinal()));
-                CompoundNBT sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
+                CompoundTag sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
                 for (RelativeSide side : EnumUtils.SIDES) {
                     NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> {
                         if (info.getDataType(side) != dataType) {
@@ -322,13 +322,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void write(CompoundNBT nbtTags) {
-        CompoundNBT configNBT = new CompoundNBT();
+    public void write(CompoundTag nbtTags) {
+        CompoundTag configNBT = new CompoundTag();
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
             configNBT.putBoolean(NBTConstants.EJECT + type.ordinal(), info.isEjecting());
-            CompoundNBT sideConfig = new CompoundNBT();
+            CompoundTag sideConfig = new CompoundTag();
             for (RelativeSide side : EnumUtils.SIDES) {
                 sideConfig.putInt(NBTConstants.SIDE + side.ordinal(), info.getDataType(side).ordinal());
             }
@@ -338,13 +338,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void addToUpdateTag(CompoundNBT updateTag) {
+    public void addToUpdateTag(CompoundTag updateTag) {
         //Note: This is slightly different from read and write as we don't bother syncing the ejecting status
-        CompoundNBT configNBT = new CompoundNBT();
+        CompoundTag configNBT = new CompoundTag();
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            CompoundNBT sideConfig = new CompoundNBT();
+            CompoundTag sideConfig = new CompoundTag();
             for (RelativeSide side : EnumUtils.SIDES) {
                 sideConfig.putInt(NBTConstants.SIDE + side.ordinal(), info.getDataType(side).ordinal());
             }
@@ -354,13 +354,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void readFromUpdateTag(CompoundNBT updateTag) {
-        if (updateTag.contains(NBTConstants.COMPONENT_CONFIG, NBT.TAG_COMPOUND)) {
-            CompoundNBT configNBT = updateTag.getCompound(NBTConstants.COMPONENT_CONFIG);
+    public void readFromUpdateTag(CompoundTag updateTag) {
+        if (updateTag.contains(NBTConstants.COMPONENT_CONFIG, Tag.TAG_COMPOUND)) {
+            CompoundTag configNBT = updateTag.getCompound(NBTConstants.COMPONENT_CONFIG);
             for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
                 TransmissionType type = entry.getKey();
                 ConfigInfo info = entry.getValue();
-                CompoundNBT sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
+                CompoundTag sideConfig = configNBT.getCompound(NBTConstants.CONFIG + type.ordinal());
                 for (RelativeSide side : EnumUtils.SIDES) {
                     NBTUtils.setEnumIfPresent(sideConfig, NBTConstants.SIDE + side.ordinal(), DataType::byIndexStatic, dataType -> info.setDataType(dataType, side));
                 }

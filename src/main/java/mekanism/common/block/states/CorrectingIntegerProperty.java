@@ -2,7 +2,7 @@ package mekanism.common.block.states;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import net.minecraft.state.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 @Deprecated//TODO - 1.18: Remove this
 public class CorrectingIntegerProperty extends IntegerProperty {

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Chunk3D;
 import mekanism.api.Coord4D;
 import mekanism.api.MekanismAPI;
@@ -46,27 +46,26 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.DimensionSavedDataManager;
-import net.minecraft.world.storage.WorldSavedData;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 /**
  * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
@@ -205,7 +204,7 @@ public class RadiationManager implements IRadiationManager {
         if (!isRadiationEnabled()) {
             return;
         }
-        if (!(entity instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) entity)) {
+        if (!(entity instanceof Player) || MekanismUtils.isPlayingMode((Player) entity)) {
             entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity)))));
         }
     }
@@ -238,7 +237,7 @@ public class RadiationManager implements IRadiationManager {
         return false;
     }
 
-    public void createMeltdown(World world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance, UUID multiblockID) {
+    public void createMeltdown(Level world, BlockPos minPos, BlockPos maxPos, double magnitude, double chance, UUID multiblockID) {
         meltdowns.computeIfAbsent(world.dimension().location(), id -> new ArrayList<>()).add(new Meltdown(minPos, maxPos, magnitude, chance, multiblockID));
         markDirty();
     }
@@ -256,7 +255,7 @@ public class RadiationManager implements IRadiationManager {
 
     private double getRadiationResistance(LivingEntity entity) {
         double resistance = 0;
-        for (EquipmentSlotType type : EnumUtils.ARMOR_SLOTS) {
+        for (EquipmentSlot type : EnumUtils.ARMOR_SLOTS) {
             ItemStack stack = entity.getItemBySlot(type);
             Optional<IRadiationShielding> shielding = CapabilityUtils.getCapability(stack, Capabilities.RADIATION_SHIELDING_CAPABILITY, null).resolve();
             if (shielding.isPresent()) {
@@ -279,7 +278,7 @@ public class RadiationManager implements IRadiationManager {
         return clientRadiationScale;
     }
 
-    public void tickClient(PlayerEntity player) {
+    public void tickClient(Player player) {
         // perhaps also play Geiger counter sound effect, even when not using item (similar to fallout)
         if (clientRadiationScale != RadiationScale.NONE && player.level.getRandom().nextInt(2) == 0) {
             int count = player.level.getRandom().nextInt(clientRadiationScale.ordinal() * MekanismConfig.client.radiationParticleCount.get());
@@ -293,7 +292,7 @@ public class RadiationManager implements IRadiationManager {
         }
     }
 
-    public void tickServer(ServerPlayerEntity player) {
+    public void tickServer(ServerPlayer player) {
         updateEntityRadiation(player);
     }
 
@@ -307,17 +306,17 @@ public class RadiationManager implements IRadiationManager {
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
         if (entity.level.getRandom().nextInt(20) == 0) {
             double magnitude = getRadiationLevel(new Coord4D(entity));
-            if (magnitude > BASELINE && (!(entity instanceof PlayerEntity) || MekanismUtils.isPlayingMode((PlayerEntity) entity))) {
+            if (magnitude > BASELINE && (!(entity instanceof Player) || MekanismUtils.isPlayingMode((Player) entity))) {
                 // apply radiation to the player
                 radiate(entity, magnitude / 3_600D); // convert to Sv/s
             }
             radiationCap.ifPresent(IRadiationEntity::decay);
-            if (entity instanceof ServerPlayerEntity) {
+            if (entity instanceof ServerPlayer) {
                 double current = playerExposureMap.getOrDefault(entity.getUUID(), BASELINE);
                 //If the last sync radiation value is different in magnitude by over the baseline, sync
                 if (Math.abs(magnitude - current) >= BASELINE) {
                     playerExposureMap.put(entity.getUUID(), magnitude);
-                    Mekanism.packetHandler.sendTo(PacketRadiationData.createEnvironmental(magnitude), (ServerPlayerEntity) entity);
+                    Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(magnitude), (ServerPlayer) entity);
                 }
             }
         }
@@ -325,7 +324,7 @@ public class RadiationManager implements IRadiationManager {
         radiationCap.ifPresent(c -> c.update(entity));
     }
 
-    public void tickServerWorld(World world) {
+    public void tickServerWorld(Level world) {
         // terminate early if we're disabled
         if (!isRadiationEnabled()) {
             return;
@@ -367,8 +366,12 @@ public class RadiationManager implements IRadiationManager {
     public void createOrLoad() {
         if (dataHandler == null) {
             //Always associate the world with the over world as the frequencies are global
-            DimensionSavedDataManager savedData = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
-            dataHandler = savedData.computeIfAbsent(RadiationDataHandler::new, DATA_HANDLER_NAME);
+            DimensionDataStorage savedData = ServerLifecycleHooks.getCurrentServer().overworld().getDataStorage();
+            dataHandler = savedData.computeIfAbsent(tag -> {
+                RadiationDataHandler handler = new RadiationDataHandler();
+                handler.load(tag);
+                return handler;
+            }, RadiationDataHandler::new, DATA_HANDLER_NAME);
             dataHandler.setManagerAndSync(this);
             dataHandler.clearCached();
         }
@@ -396,8 +399,8 @@ public class RadiationManager implements IRadiationManager {
 
     @SubscribeEvent
     public void onLivingUpdate(LivingUpdateEvent event) {
-        World world = event.getEntityLiving().getCommandSenderWorld();
-        if (!world.isClientSide() && !(event.getEntityLiving() instanceof PlayerEntity)) {
+        Level world = event.getEntityLiving().getCommandSenderWorld();
+        if (!world.isClientSide() && !(event.getEntityLiving() instanceof Player)) {
             updateEntityRadiation(event.getEntityLiving());
         }
     }
@@ -477,15 +480,16 @@ public class RadiationManager implements IRadiationManager {
         }
     }
 
-    public static class RadiationDataHandler extends WorldSavedData {
+    public static class RadiationDataHandler extends SavedData {
 
         private Map<ResourceLocation, List<Meltdown>> savedMeltdowns = Collections.emptyMap();
         public List<RadiationSource> loadedSources = Collections.emptyList();
         public RadiationManager manager;
 
-        public RadiationDataHandler() {
+        //TODO - 1.18: I think this is unneeded and handled by adding the save data
+        /*public RadiationDataHandler() {
             super(DATA_HANDLER_NAME);
-        }
+        }*/
 
         public void setManagerAndSync(RadiationManager m) {
             manager = m;
@@ -508,26 +512,25 @@ public class RadiationManager implements IRadiationManager {
             savedMeltdowns = Collections.emptyMap();
         }
 
-        @Override
-        public void load(@Nonnull CompoundNBT nbtTags) {
-            if (nbtTags.contains(NBTConstants.RADIATION_LIST, NBT.TAG_LIST)) {
-                ListNBT list = nbtTags.getList(NBTConstants.RADIATION_LIST, NBT.TAG_COMPOUND);
+        public void load(@Nonnull CompoundTag nbtTags) {
+            if (nbtTags.contains(NBTConstants.RADIATION_LIST, Tag.TAG_LIST)) {
+                ListTag list = nbtTags.getList(NBTConstants.RADIATION_LIST, Tag.TAG_COMPOUND);
                 loadedSources = new HashList<>(list.size());
-                for (INBT nbt : list) {
-                    loadedSources.add(RadiationSource.load((CompoundNBT) nbt));
+                for (Tag nbt : list) {
+                    loadedSources.add(RadiationSource.load((CompoundTag) nbt));
                 }
             } else {
                 loadedSources = Collections.emptyList();
             }
-            if (nbtTags.contains(NBTConstants.MELTDOWNS, NBT.TAG_COMPOUND)) {
-                CompoundNBT meltdownNBT = nbtTags.getCompound(NBTConstants.MELTDOWNS);
+            if (nbtTags.contains(NBTConstants.MELTDOWNS, Tag.TAG_COMPOUND)) {
+                CompoundTag meltdownNBT = nbtTags.getCompound(NBTConstants.MELTDOWNS);
                 savedMeltdowns = new HashMap<>(meltdownNBT.size());
                 for (String dim : meltdownNBT.getAllKeys()) {
                     ResourceLocation dimension = ResourceLocation.tryParse(dim);
                     if (dimension != null) {
                         //It should be a valid dimension, but validate it just in case
-                        ListNBT meltdowns = meltdownNBT.getList(dim, NBT.TAG_COMPOUND);
-                        savedMeltdowns.put(dimension, meltdowns.stream().map(nbt -> Meltdown.load((CompoundNBT) nbt)).collect(Collectors.toList()));
+                        ListTag meltdowns = meltdownNBT.getList(dim, Tag.TAG_COMPOUND);
+                        savedMeltdowns.put(dimension, meltdowns.stream().map(nbt -> Meltdown.load((CompoundTag) nbt)).collect(Collectors.toList()));
                     }
                 }
             } else {
@@ -537,24 +540,24 @@ public class RadiationManager implements IRadiationManager {
 
         @Nonnull
         @Override
-        public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
+        public CompoundTag save(@Nonnull CompoundTag nbtTags) {
             if (!manager.radiationTable.isEmpty()) {
-                ListNBT list = new ListNBT();
+                ListTag list = new ListTag();
                 for (RadiationSource source : manager.radiationTable.values()) {
-                    CompoundNBT compound = new CompoundNBT();
+                    CompoundTag compound = new CompoundTag();
                     source.write(compound);
                     list.add(compound);
                 }
                 nbtTags.put(NBTConstants.RADIATION_LIST, list);
             }
             if (!manager.meltdowns.isEmpty()) {
-                CompoundNBT meltdownNBT = new CompoundNBT();
+                CompoundTag meltdownNBT = new CompoundTag();
                 for (Map.Entry<ResourceLocation, List<Meltdown>> entry : manager.meltdowns.entrySet()) {
                     List<Meltdown> meltdowns = entry.getValue();
                     if (!meltdowns.isEmpty()) {
-                        ListNBT list = new ListNBT();
+                        ListTag list = new ListTag();
                         for (Meltdown meltdown : meltdowns) {
-                            CompoundNBT compound = new CompoundNBT();
+                            CompoundTag compound = new CompoundTag();
                             meltdown.write(compound);
                             list.add(compound);
                         }

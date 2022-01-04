@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -22,8 +22,8 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 
 @FieldsAreNonnullByDefault
@@ -41,7 +41,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
      * Gets the ChemicalStack from ItemStack conversion, ignoring the size of the item stack.
      */
     protected static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>>
-    STACK getPotentialConversion(MekanismRecipeType<RECIPE, SingleItem<RECIPE>> recipeType, @Nullable World world, ItemStack itemStack, STACK empty) {
+    STACK getPotentialConversion(MekanismRecipeType<RECIPE, SingleItem<RECIPE>> recipeType, @Nullable Level world, ItemStack itemStack, STACK empty) {
         ItemStackToChemicalRecipe<CHEMICAL, STACK> foundRecipe = recipeType.getInputCache().findTypeBasedRecipe(world, itemStack);
         return foundRecipe == null ? empty : foundRecipe.getOutput(itemStack);
     }
@@ -145,10 +145,10 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
         };
     }
 
-    protected final Supplier<World> worldSupplier;
+    protected final Supplier<Level> worldSupplier;
     protected final IChemicalTank<CHEMICAL, STACK> chemicalTank;
 
-    protected ChemicalInventorySlot(IChemicalTank<CHEMICAL, STACK> chemicalTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
+    protected ChemicalInventorySlot(IChemicalTank<CHEMICAL, STACK> chemicalTank, Supplier<Level> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
         setSlotType(ContainerSlotType.EXTRA);
@@ -160,7 +160,7 @@ public abstract class ChemicalInventorySlot<CHEMICAL extends Chemical<CHEMICAL>,
     protected abstract IChemicalHandler<CHEMICAL, STACK> getCapability();
 
     @Nullable
-    protected ItemStackToChemicalRecipe<CHEMICAL, STACK> getConversionRecipe(@Nullable World world, ItemStack stack) {
+    protected ItemStackToChemicalRecipe<CHEMICAL, STACK> getConversionRecipe(@Nullable Level world, ItemStack stack) {
         return null;
     }
 

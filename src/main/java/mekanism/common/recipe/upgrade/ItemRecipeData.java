@@ -21,11 +21,11 @@ import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedInventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -36,7 +36,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
 
     private final List<IInventorySlot> slots;
 
-    ItemRecipeData(ListNBT slots) {
+    ItemRecipeData(ListTag slots) {
         int count = DataHandlerUtils.getMaxId(slots, NBTConstants.SLOT);
         this.slots = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {

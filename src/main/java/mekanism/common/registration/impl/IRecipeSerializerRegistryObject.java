@@ -2,18 +2,18 @@ package mekanism.common.registration.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.common.registration.WrappedRegistryObject;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.registries.RegistryObject;
 
-public class IRecipeSerializerRegistryObject<RECIPE extends IRecipe<?>> extends WrappedRegistryObject<IRecipeSerializer<RECIPE>> {
+public class IRecipeSerializerRegistryObject<RECIPE extends Recipe<?>> extends WrappedRegistryObject<RecipeSerializer<RECIPE>> {
 
-    public IRecipeSerializerRegistryObject(RegistryObject<IRecipeSerializer<RECIPE>> registryObject) {
+    public IRecipeSerializerRegistryObject(RegistryObject<RecipeSerializer<RECIPE>> registryObject) {
         super(registryObject);
     }
 
     @Nonnull
-    public IRecipeSerializer<RECIPE> getRecipeSerializer() {
+    public RecipeSerializer<RECIPE> getRecipeSerializer() {
         return get();
     }
 }

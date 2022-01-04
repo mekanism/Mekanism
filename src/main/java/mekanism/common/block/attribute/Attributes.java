@@ -6,12 +6,12 @@ import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.AbstractBlock.IExtendedPositionPredicate;
-import net.minecraft.block.AbstractBlock.Properties;
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockBehaviour.StateArgumentPredicate;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.LevelReader;
 
 public class Attributes {
 
@@ -69,13 +69,13 @@ public class Attributes {
     /** If mobs can spawn on the block. */
     public static class AttributeMobSpawn implements Attribute {
 
-        public static final IExtendedPositionPredicate<EntityType<?>> NEVER_PREDICATE = (state, reader, pos, entityType) -> false;
+        public static final StateArgumentPredicate<EntityType<?>> NEVER_PREDICATE = (state, reader, pos, entityType) -> false;
         public static final AttributeMobSpawn NEVER = new AttributeMobSpawn(NEVER_PREDICATE);
         //TODO: Make mob spawn denying on internal multiblocks smarter?
         public static final AttributeMobSpawn WHEN_NOT_FORMED = new AttributeMobSpawn((state, reader, pos, entityType) -> {
             TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, reader, pos);
             if (tile != null) {
-                if (reader instanceof IWorldReader && ((IWorldReader) reader).isClientSide()) {
+                if (reader instanceof LevelReader && ((LevelReader) reader).isClientSide()) {
                     //If we are on the client just check if we are formed as we don't sync structure information
                     // to the client. This way the client is at least relatively accurate with what values
                     // it returns for if mobs can spawn
@@ -89,12 +89,12 @@ public class Attributes {
                 }
             }
             //Super implementation
-            return state.isFaceSturdy(reader, pos, Direction.UP) && state.getLightValue(reader, pos) < 14;
+            return state.isFaceSturdy(reader, pos, Direction.UP) && state.getLightEmission(reader, pos) < 14;
         });
 
-        private final IExtendedPositionPredicate<EntityType<?>> spawningPredicate;
+        private final StateArgumentPredicate<EntityType<?>> spawningPredicate;
 
-        public AttributeMobSpawn(IExtendedPositionPredicate<EntityType<?>> spawningPredicate) {
+        public AttributeMobSpawn(StateArgumentPredicate<EntityType<?>> spawningPredicate) {
             this.spawningPredicate = spawningPredicate;
         }
 
@@ -150,7 +150,7 @@ public class Attributes {
         }
 
         @Override
-        public void adjustProperties(AbstractBlock.Properties props) {
+        public void adjustProperties(BlockBehaviour.Properties props) {
             BlockStateHelper.applyLightLevelAdjustments(props, state -> light);
         }
     }

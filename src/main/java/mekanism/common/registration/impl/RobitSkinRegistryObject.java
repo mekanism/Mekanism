@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.providers.IRobitSkinProvider;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.registration.WrappedRegistryObject;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 public class RobitSkinRegistryObject<ROBIT_SKIN extends RobitSkin> extends WrappedRegistryObject<ROBIT_SKIN> implements IRobitSkinProvider {
 

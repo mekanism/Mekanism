@@ -13,9 +13,9 @@ import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketTransporterUpdate implements IMekanismPacket {
 
@@ -85,7 +85,7 @@ public class PacketTransporterUpdate implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         buffer.writeBoolean(isSync);
         buffer.writeBoolean(isDiversion);
@@ -112,7 +112,7 @@ public class PacketTransporterUpdate implements IMekanismPacket {
         }
     }
 
-    public static PacketTransporterUpdate decode(PacketBuffer buffer) {
+    public static PacketTransporterUpdate decode(FriendlyByteBuf buffer) {
         PacketTransporterUpdate packet = new PacketTransporterUpdate(buffer.readBlockPos(), buffer.readBoolean(), buffer.readBoolean());
         if (packet.isSync) {
             //Sync

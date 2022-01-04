@@ -8,7 +8,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class PigmentMixingRecipeSerializer<RECIPE extends PigmentMixingRecipe> extends
       ChemicalChemicalToChemicalRecipeSerializer<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> {
@@ -28,7 +28,7 @@ public class PigmentMixingRecipeSerializer<RECIPE extends PigmentMixingRecipe> e
     }
 
     @Override
-    protected PigmentStack fromBuffer(@Nonnull PacketBuffer buffer) {
+    protected PigmentStack fromBuffer(@Nonnull FriendlyByteBuf buffer) {
         return PigmentStack.readFromPacket(buffer);
     }
 }

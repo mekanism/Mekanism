@@ -7,8 +7,8 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.item.interfaces.IItemSustainedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
 
 /**
  * Helper class for implementing handling of inventories for items

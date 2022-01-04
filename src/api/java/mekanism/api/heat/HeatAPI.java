@@ -1,8 +1,8 @@
 package mekanism.api.heat;
 
 import javax.annotation.Nullable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelReader;
 
 public class HeatAPI {
 
@@ -12,7 +12,7 @@ public class HeatAPI {
     /**
      * Default atmospheric temperature, automatically set in all heat capacitors. Heat is grounded in 0 degrees Kelvin.
      *
-     * @see #getAmbientTemp(IWorldReader, BlockPos)
+     * @see #getAmbientTemp(LevelReader, BlockPos)
      * @see #getAmbientTemp(double)
      */
     public static final double AMBIENT_TEMP = 300;
@@ -45,16 +45,17 @@ public class HeatAPI {
      * @implNote This method is a helper to call {@link #getAmbientTemp(double)} using the temperature of the biome at the location specified.
      * @see #AMBIENT_TEMP
      */
-    public static double getAmbientTemp(@Nullable IWorldReader world, BlockPos pos) {
+    public static double getAmbientTemp(@Nullable LevelReader world, BlockPos pos) {
         if (world == null) {
             return AMBIENT_TEMP;
         }
-        return getAmbientTemp(world.getBiome(pos).getTemperature(pos));
+        //TODO 1.18: Figure this out, potentially we need to AT getTemperature
+        return AMBIENT_TEMP;//getAmbientTemp(world.getBiome(pos).getTemperature(pos));
     }
 
     /**
-     * Gets the atmospheric temperature based on the temperature modifier of a {@link net.minecraft.world.biome.Biome}, with the baseline being the same as the plains
-     * biome, or 0.8.
+     * Gets the atmospheric temperature based on the temperature modifier of a {@link net.minecraft.world.level.biome.Biome}, with the baseline being the same as the
+     * plains biome, or 0.8.
      *
      * @param biomeTemp Temperature of the biome.
      *

@@ -1,168 +1,107 @@
 package mekanism.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModelAtomicDisassembler extends MekanismJavaModel {
 
+    public static final ModelLayerLocation DISASSEMBLER_LAYER = new ModelLayerLocation(Mekanism.rl("atomic_disassembler"), "main");
     private static final ResourceLocation DISASSEMBLER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "atomic_disassembler.png");
-    private static final RenderType BLADE_RENDER_TYPE = MekanismRenderType.bladeRender(DISASSEMBLER_TEXTURE);
-    private final RenderType RENDER_TYPE = renderType(DISASSEMBLER_TEXTURE);
 
-    private final ModelRenderer handle;
-    private final ModelRenderer handleTop;
-    private final ModelRenderer bladeBack;
-    private final ModelRenderer head;
-    private final ModelRenderer neck;
-    private final ModelRenderer bladeFrontUpper;
-    private final ModelRenderer bladeFrontLower;
-    private final ModelRenderer neckAngled;
-    private final ModelRenderer bladeFrontConnector;
-    private final ModelRenderer bladeHolderBack;
-    private final ModelRenderer bladeHolderMain;
-    private final ModelRenderer bladeHolderFront;
-    private final ModelRenderer rearBar;
-    private final ModelRenderer bladeBackSmall;
-    private final ModelRenderer handleBase;
-    private final ModelRenderer handleTopBack;
+    private static final ModelPartData HANDLE = new ModelPartData("handle", CubeListBuilder.create()
+          .texOffs(0, 10)
+          .addBox(0, -1, -3, 1, 16, 1));
+    private static final ModelPartData HANDLE_TOP = new ModelPartData("handleTop", CubeListBuilder.create()
+          .texOffs(34, 9)
+          .addBox(-0.5F, -3.5F, -3.5F, 2, 5, 2));
+    private static final ModelPartData BLADE_BACK = new ModelPartData("bladeBack", CubeListBuilder.create()
+          .texOffs(42, 0)
+          .addBox(0, -4, -4, 1, 2, 10));
+    private static final ModelPartData HEAD = new ModelPartData("head", CubeListBuilder.create()
+          .texOffs(24, 0)
+          .addBox(-5, -5.7F, -5.5F, 3, 3, 6),
+          PartPose.rotation(0, 0, 0.7853982F));
+    private static final ModelPartData NECK = new ModelPartData("neck", CubeListBuilder.create()
+          .addBox(-0.5F, -6, -7, 2, 2, 8));
+    private static final ModelPartData BLADE_FRONT_UPPER = new ModelPartData("bladeFrontUpper", CubeListBuilder.create()
+          .texOffs(60, 0)
+          .addBox(0, -0.5333334F, -9.6F, 1, 3, 1),
+          PartPose.rotation(-0.7853982F, 0, 0));
+    private static final ModelPartData BLADE_FRONT_LOWER = new ModelPartData("bladeFrontLower", CubeListBuilder.create()
+          .texOffs(58, 0)
+          .addBox(0, -9.58F, -4, 1, 5, 2),
+          PartPose.rotation(0.7853982F, 0, 0));
+    private static final ModelPartData NECK_ANGLED = new ModelPartData("neckAngled", CubeListBuilder.create()
+          .texOffs(12, 0)
+          .addBox(-0.5F, -8.2F, -2.5F, 2, 1, 1),
+          PartPose.rotation(0.7853982F, 0, 0));
+    private static final ModelPartData BLADE_FRONT_CONNECTOR = new ModelPartData("bladeFrontConnector", CubeListBuilder.create()
+          .texOffs(56, 0)
+          .addBox(0, -2.44F, -6.07F, 1, 2, 3));
+    private static final ModelPartData BLADE_HOLDER_BACK = new ModelPartData("bladeHolderBack", CubeListBuilder.create()
+          .texOffs(42, 14)
+          .addBox(-0.5F, -0.5F, 3.5F, 2, 1, 1));
+    private static final ModelPartData BLADE_HOLDER_MAIN = new ModelPartData("bladeHolderMain", CubeListBuilder.create()
+          .texOffs(30, 16)
+          .addBox(-0.5F, -3.5F, -1.5F, 2, 1, 4));
+    private static final ModelPartData BLADE_HOLDER_FRONT = new ModelPartData("bladeHolderFront", CubeListBuilder.create()
+          .texOffs(42, 12)
+          .addBox(-0.5F, -4.5F, 1.5F, 2, 1, 1));
+    private static final ModelPartData REAR_BAR = new ModelPartData("rearBar", CubeListBuilder.create()
+          .texOffs(4, 10)
+          .addBox(0, -5.3F, 0, 1, 1, 7));
+    private static final ModelPartData BLADE_BACK_SMALL = new ModelPartData("bladeBackSmall", CubeListBuilder.create()
+          .texOffs(60, 0)
+          .addBox(0, -4, 6, 1, 1, 1));
+    private static final ModelPartData HANDLE_BASE = new ModelPartData("handleBase", CubeListBuilder.create()
+          .texOffs(26, 9)
+          .addBox(-0.5F, 15, -3.5F, 2, 4, 2));
+    private static final ModelPartData HANDLE_TOP_BACK = new ModelPartData("handleTopBack", CubeListBuilder.create()
+          .texOffs(37, 0)
+          .addBox(0, -2, -2, 1, 4, 1));
 
-    public ModelAtomicDisassembler() {
-        super(RenderType::entitySolid);
-        texWidth = 64;
-        texHeight = 32;
-
-        handle = new ModelRenderer(this, 0, 10);
-        handle.addBox(0F, -1F, -3F, 1, 16, 1, false);
-        handle.setPos(0F, 0F, 0F);
-        handle.setTexSize(64, 32);
-        handle.mirror = true;
-        setRotation(handle, 0F, 0F, 0F);
-        handleTop = new ModelRenderer(this, 34, 9);
-        handleTop.addBox(-0.5F, -3.5F, -3.5F, 2, 5, 2, false);
-        handleTop.setPos(0F, 0F, 0F);
-        handleTop.setTexSize(64, 32);
-        handleTop.mirror = true;
-        setRotation(handleTop, 0F, 0F, 0F);
-        bladeBack = new ModelRenderer(this, 42, 0);
-        bladeBack.addBox(0F, -4F, -4F, 1, 2, 10, false);
-        bladeBack.setPos(0F, 0F, 0F);
-        bladeBack.setTexSize(64, 32);
-        bladeBack.mirror = true;
-        setRotation(bladeBack, 0F, 0F, 0F);
-        head = new ModelRenderer(this, 24, 0);
-        head.addBox(-5F, -5.7F, -5.5F, 3, 3, 6, false);
-        head.setPos(0F, 0F, 0F);
-        head.setTexSize(64, 32);
-        head.mirror = true;
-        setRotation(head, 0F, 0F, 0.7853982F);
-        neck = new ModelRenderer(this, 0, 0);
-        neck.addBox(-0.5F, -6F, -7F, 2, 2, 8, false);
-        neck.setPos(0F, 0F, 0F);
-        neck.setTexSize(64, 32);
-        neck.mirror = true;
-        setRotation(neck, 0F, 0F, 0F);
-        bladeFrontUpper = new ModelRenderer(this, 60, 0);
-        bladeFrontUpper.addBox(0F, -0.5333334F, -9.6F, 1, 3, 1, false);
-        bladeFrontUpper.setPos(0F, 0F, 0F);
-        bladeFrontUpper.setTexSize(64, 32);
-        bladeFrontUpper.mirror = true;
-        setRotation(bladeFrontUpper, -0.7853982F, 0F, 0F);
-        bladeFrontLower = new ModelRenderer(this, 58, 0);
-        bladeFrontLower.addBox(0F, -9.58F, -4F, 1, 5, 2, false);
-        bladeFrontLower.setPos(0F, 0F, 0F);
-        bladeFrontLower.setTexSize(64, 32);
-        bladeFrontLower.mirror = true;
-        setRotation(bladeFrontLower, 0.7853982F, 0F, 0F);
-        neckAngled = new ModelRenderer(this, 12, 0);
-        neckAngled.addBox(-0.5F, -8.2F, -2.5F, 2, 1, 1, false);
-        neckAngled.setPos(0F, 0F, 0F);
-        neckAngled.setTexSize(64, 32);
-        neckAngled.mirror = true;
-        setRotation(neckAngled, 0.7853982F, 0F, 0F);
-        bladeFrontConnector = new ModelRenderer(this, 56, 0);
-        bladeFrontConnector.addBox(0F, -2.44F, -6.07F, 1, 2, 3, false);
-        bladeFrontConnector.setPos(0F, 0F, 0F);
-        bladeFrontConnector.setTexSize(64, 32);
-        bladeFrontConnector.mirror = true;
-        setRotation(bladeFrontConnector, 0F, 0F, 0F);
-        bladeHolderBack = new ModelRenderer(this, 42, 14);
-        bladeHolderBack.addBox(-0.5F, -0.5F, 3.5F, 2, 1, 1, false);
-        bladeHolderBack.setPos(0F, -4F, 0F);
-        bladeHolderBack.setTexSize(64, 32);
-        bladeHolderBack.mirror = true;
-        setRotation(bladeHolderBack, 0F, 0F, 0F);
-        bladeHolderMain = new ModelRenderer(this, 30, 16);
-        bladeHolderMain.addBox(-0.5F, -3.5F, -1.5F, 2, 1, 4, false);
-        bladeHolderMain.setPos(0F, 0F, 0F);
-        bladeHolderMain.setTexSize(64, 32);
-        bladeHolderMain.mirror = true;
-        setRotation(bladeHolderMain, 0F, 0F, 0F);
-        bladeHolderFront = new ModelRenderer(this, 42, 12);
-        bladeHolderFront.addBox(-0.5F, -4.5F, 1.5F, 2, 1, 1, false);
-        bladeHolderFront.setPos(0F, 0F, 0F);
-        bladeHolderFront.setTexSize(64, 32);
-        bladeHolderFront.mirror = true;
-        setRotation(bladeHolderFront, 0F, 0F, 0F);
-        rearBar = new ModelRenderer(this, 4, 10);
-        rearBar.addBox(0F, -5.3F, 0F, 1, 1, 7, false);
-        rearBar.setPos(0F, 0F, 0F);
-        rearBar.setTexSize(64, 32);
-        rearBar.mirror = true;
-        setRotation(rearBar, 0F, 0F, 0F);
-        bladeBackSmall = new ModelRenderer(this, 60, 0);
-        bladeBackSmall.addBox(0F, -4F, 6F, 1, 1, 1, false);
-        bladeBackSmall.setPos(0F, 0F, 0F);
-        bladeBackSmall.setTexSize(64, 32);
-        bladeBackSmall.mirror = true;
-        setRotation(bladeBackSmall, 0F, 0F, 0F);
-        handleBase = new ModelRenderer(this, 26, 9);
-        handleBase.addBox(-0.5F, 15F, -3.5F, 2, 4, 2, false);
-        handleBase.setPos(0F, 0F, 0F);
-        handleBase.setTexSize(64, 32);
-        handleBase.mirror = true;
-        setRotation(handleBase, 0F, 0F, 0F);
-        handleTopBack = new ModelRenderer(this, 37, 0);
-        handleTopBack.addBox(0F, -2F, -2F, 1, 4, 1, false);
-        handleTopBack.setPos(0F, 0F, 0F);
-        handleTopBack.setTexSize(64, 32);
-        handleTopBack.mirror = true;
-        setRotation(handleTopBack, 0F, 0F, 0F);
+    public static LayerDefinition createLayerDefinition() {
+        return createLayerDefinition(64, 32, HANDLE, HANDLE_TOP, BLADE_BACK, HEAD, NECK, BLADE_FRONT_UPPER, BLADE_FRONT_LOWER,
+              NECK_ANGLED, BLADE_FRONT_CONNECTOR, BLADE_HOLDER_BACK, BLADE_HOLDER_MAIN, BLADE_HOLDER_FRONT, REAR_BAR, BLADE_BACK_SMALL, HANDLE_BASE,
+              HANDLE_TOP_BACK);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
-        renderBlade(matrix, getVertexBuilder(renderer, BLADE_RENDER_TYPE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.75F);
+    private final RenderType BLADE_RENDER_TYPE = MekanismRenderType.BLADE.apply(DISASSEMBLER_TEXTURE);
+    private final RenderType RENDER_TYPE = renderType(DISASSEMBLER_TEXTURE);
+    private final List<ModelPart> parts;
+    private final List<ModelPart> bladeParts;
+
+    public ModelAtomicDisassembler(EntityModelSet entityModelSet) {
+        super(RenderType::entitySolid);
+        ModelPart root = entityModelSet.bakeLayer(DISASSEMBLER_LAYER);
+        parts = getRenderableParts(root, HANDLE, HANDLE_TOP, HEAD, NECK, REAR_BAR, NECK_ANGLED, BLADE_HOLDER_BACK, BLADE_HOLDER_MAIN,
+              BLADE_HOLDER_FRONT, HANDLE_BASE, HANDLE_TOP_BACK);
+        bladeParts = getRenderableParts(root, BLADE_FRONT_CONNECTOR, BLADE_BACK, BLADE_FRONT_UPPER, BLADE_FRONT_LOWER, BLADE_BACK_SMALL);
+    }
+
+    public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
+        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
+        renderPartsToBuffer(bladeParts, matrix, getVertexConsumer(renderer, BLADE_RENDER_TYPE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.75F);
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        handle.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        handleTop.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        head.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        neck.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        rearBar.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        neckAngled.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        bladeHolderBack.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        bladeHolderMain.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        bladeHolderFront.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        handleBase.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        handleTopBack.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-    }
-
-    private void renderBlade(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        bladeFrontConnector.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        bladeBack.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        bladeFrontUpper.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        bladeFrontLower.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        bladeBackSmall.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 }

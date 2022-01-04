@@ -1,7 +1,7 @@
 package mekanism.defense.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 
 public enum DefenseLang implements ILangEntry {
     PLACEHOLDER("null", "null");

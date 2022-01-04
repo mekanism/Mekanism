@@ -13,8 +13,8 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.StackUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiFilter<FILTER, TILE> {
@@ -27,8 +27,8 @@ public abstract class GuiMaterialFilter<FILTER extends IMaterialFilter<FILTER>, 
     }
 
     @Override
-    protected List<ITextComponent> getScreenText() {
-        List<ITextComponent> list = super.getScreenText();
+    protected List<Component> getScreenText() {
+        List<Component> list = super.getScreenText();
         if (filter.hasFilter()) {
             list.add(MekanismLang.MATERIAL_FILTER_DETAILS.translate());
             list.add(filter.getMaterialItem().getHoverName());

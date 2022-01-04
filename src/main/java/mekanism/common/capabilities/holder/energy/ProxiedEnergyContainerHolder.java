@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.capabilities.holder.ProxiedHolder;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class ProxiedEnergyContainerHolder extends ProxiedHolder implements IEnergyContainerHolder {
 

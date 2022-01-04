@@ -1,97 +1,106 @@
 package mekanism.generators.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.model.MekanismJavaModel;
+import mekanism.client.model.ModelPartData;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModelTurbine extends MekanismJavaModel {
 
+    public static final ModelLayerLocation TURBINE_LAYER = new ModelLayerLocation(MekanismGenerators.rl("turbine"), "main");
     private static final ResourceLocation TURBINE_TEXTURE = MekanismGenerators.rl("render/turbine.png");
     private static final float BLADE_ROTATE = 0.418879F;
 
-    private final RenderType RENDER_TYPE = renderType(TURBINE_TEXTURE);
+    private static final ModelPartData EXTENSION_SOUTH = new ModelPartData("extensionSouth", CubeListBuilder.create()
+          .addBox(-1.0F, 0.0F, 1.0F, 2, 1, 3),
+          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, 0.0F, 0.0F, -BLADE_ROTATE));
+    private static final ModelPartData EXTENSION_WEST = new ModelPartData("extensionWest", CubeListBuilder.create()
+          .texOffs(0, 4)
+          .addBox(-4.0F, 0.0F, -1.0F, 3, 1, 2),
+          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, BLADE_ROTATE, 0.0F, 0.0F));
+    private static final ModelPartData BLADE_EAST = new ModelPartData("bladeEast", CubeListBuilder.create()
+          .texOffs(10, 5)
+          .addBox(4.0F, 0.0F, -1.5F, 4, 1, 3),
+          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, -BLADE_ROTATE, 0.0F, 0.0F));
+    private static final ModelPartData BLADE_NORTH = new ModelPartData("bladeNorth", CubeListBuilder.create()
+          .texOffs(10, 0)
+          .addBox(-1.5F, 0.0F, -8.0F, 3, 1, 4),
+          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, 0.0F, 0.0F, BLADE_ROTATE));
+    private static final ModelPartData EXTENSION_EAST = new ModelPartData("extensionEast", CubeListBuilder.create()
+          .texOffs(0, 4)
+          .addBox(1.0F, 0.0F, -1.0F, 3, 1, 2),
+          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, -BLADE_ROTATE, 0.0F, 0.0F));
+    private static final ModelPartData BLADE_SOUTH = new ModelPartData("bladeSouth", CubeListBuilder.create()
+          .texOffs(10, 0)
+          .addBox(-1.5F, 0.0F, 4.0F, 3, 1, 4),
+          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, 0.0F, 0.0F, -BLADE_ROTATE));
+    private static final ModelPartData EXTENSION_NORTH = new ModelPartData("extensionNorth", CubeListBuilder.create()
+          .addBox(-1.0F, 0.0F, -4.0F, 2, 1, 3),
+          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, 0.0F, 0.0F, BLADE_ROTATE));
+    private static final ModelPartData BLADE_WEST = new ModelPartData("bladeWest", CubeListBuilder.create()
+          .texOffs(10, 5)
+          .addBox(-8.0F, 0.0F, -1.5F, 4, 1, 3),
+          PartPose.offsetAndRotation(0.0F, 20.0F, 0.0F, BLADE_ROTATE, 0.0F, 0.0F));
 
-    private final ModelRenderer extension_north;
-    private final ModelRenderer blade_north;
-    private final ModelRenderer extension_south;
-    private final ModelRenderer extension_west;
-    private final ModelRenderer extension_east;
-    private final ModelRenderer blade_south;
-    private final ModelRenderer blade_east;
-    private final ModelRenderer blade_west;
-
-    public ModelTurbine() {
-        super(RenderType::entitySolid);
-        texWidth = 64;
-        texHeight = 64;
-        extension_south = new ModelRenderer(this, 0, 0);
-        extension_south.setPos(0.0F, 20.0F, 0.0F);
-        extension_south.addBox(-1.0F, 0.0F, 1.0F, 2, 1, 3, 0.0F);
-        setRotation(extension_south, 0.0F, 0.0F, -BLADE_ROTATE);
-        extension_west = new ModelRenderer(this, 0, 4);
-        extension_west.setPos(0.0F, 20.0F, 0.0F);
-        extension_west.addBox(-4.0F, 0.0F, -1.0F, 3, 1, 2, 0.0F);
-        setRotation(extension_west, BLADE_ROTATE, 0.0F, 0.0F);
-        blade_east = new ModelRenderer(this, 10, 5);
-        blade_east.setPos(0.0F, 20.0F, 0.0F);
-        blade_east.addBox(4.0F, 0.0F, -1.5F, 4, 1, 3, 0.0F);
-        setRotation(blade_east, -BLADE_ROTATE, 0.0F, 0.0F);
-        blade_north = new ModelRenderer(this, 10, 0);
-        blade_north.setPos(0.0F, 20.0F, 0.0F);
-        blade_north.addBox(-1.5F, 0.0F, -8.0F, 3, 1, 4, 0.0F);
-        setRotation(blade_north, 0.0F, 0.0F, BLADE_ROTATE);
-        extension_east = new ModelRenderer(this, 0, 4);
-        extension_east.setPos(0.0F, 20.0F, 0.0F);
-        extension_east.addBox(1.0F, 0.0F, -1.0F, 3, 1, 2, 0.0F);
-        setRotation(extension_east, -BLADE_ROTATE, 0.0F, 0.0F);
-        blade_south = new ModelRenderer(this, 10, 0);
-        blade_south.setPos(0.0F, 20.0F, 0.0F);
-        blade_south.addBox(-1.5F, 0.0F, 4.0F, 3, 1, 4, 0.0F);
-        setRotation(blade_south, 0.0F, 0.0F, -BLADE_ROTATE);
-        extension_north = new ModelRenderer(this, 0, 0);
-        extension_north.setPos(0.0F, 20.0F, 0.0F);
-        extension_north.addBox(-1.0F, 0.0F, -4.0F, 2, 1, 3, 0.0F);
-        setRotation(extension_north, 0.0F, 0.0F, BLADE_ROTATE);
-        blade_west = new ModelRenderer(this, 10, 5);
-        blade_west.setPos(0.0F, 20.0F, 0.0F);
-        blade_west.addBox(-8.0F, 0.0F, -1.5F, 4, 1, 3, 0.0F);
-        setRotation(blade_west, BLADE_ROTATE, 0.0F, 0.0F);
+    public static LayerDefinition createLayerDefinition() {
+        return createLayerDefinition(64, 64, EXTENSION_SOUTH, EXTENSION_WEST, BLADE_EAST, BLADE_NORTH, EXTENSION_EAST, BLADE_SOUTH,
+              EXTENSION_NORTH, BLADE_WEST);
     }
 
-    public IVertexBuilder getBuffer(@Nonnull IRenderTypeBuffer renderer) {
+    private final RenderType RENDER_TYPE = renderType(TURBINE_TEXTURE);
+    private final List<ModelPart> parts;
+    private final ModelPart bladeWest;
+    private final ModelPart bladeEast;
+    private final ModelPart bladeNorth;
+    private final ModelPart bladeSouth;
+
+    public ModelTurbine(EntityModelSet entityModelSet) {
+        super(RenderType::entitySolid);
+        ModelPart root = entityModelSet.bakeLayer(TURBINE_LAYER);
+        parts = getRenderableParts(root, EXTENSION_SOUTH, EXTENSION_WEST, EXTENSION_EAST, EXTENSION_NORTH);
+        bladeWest = BLADE_WEST.getFromRoot(root);
+        bladeEast = BLADE_EAST.getFromRoot(root);
+        bladeNorth = BLADE_NORTH.getFromRoot(root);
+        bladeSouth = BLADE_SOUTH.getFromRoot(root);
+    }
+
+    public VertexConsumer getBuffer(@Nonnull MultiBufferSource renderer) {
         return renderer.getBuffer(RENDER_TYPE);
     }
 
-    public void render(@Nonnull MatrixStack matrix, IVertexBuilder buffer, int light, int overlayLight, int index) {
+    public void render(@Nonnull PoseStack matrix, VertexConsumer buffer, int light, int overlayLight, int index) {
         matrix.pushPose();
         matrix.mulPose(Vector3f.YP.rotationDegrees(index * 5));
         renderToBuffer(matrix, buffer, light, overlayLight, 1, 1, 1, 1);
         float scale = index * 0.5F;
         float widthDiv = 16;
-        renderBlade(matrix, buffer, light, overlayLight, blade_west, scale, scale / widthDiv, -0.25, 0);
-        renderBlade(matrix, buffer, light, overlayLight, blade_east, scale, scale / widthDiv, 0.25, 0);
-        renderBlade(matrix, buffer, light, overlayLight, blade_north, scale / widthDiv, scale, 0, -0.25);
-        renderBlade(matrix, buffer, light, overlayLight, blade_south, scale / widthDiv, scale, 0, 0.25);
+        renderBlade(matrix, buffer, light, overlayLight, bladeWest, scale, scale / widthDiv, -0.25, 0);
+        renderBlade(matrix, buffer, light, overlayLight, bladeEast, scale, scale / widthDiv, 0.25, 0);
+        renderBlade(matrix, buffer, light, overlayLight, bladeNorth, scale / widthDiv, scale, 0, -0.25);
+        renderBlade(matrix, buffer, light, overlayLight, bladeSouth, scale / widthDiv, scale, 0, 0.25);
         matrix.popPose();
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue,
+    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue,
           float alpha) {
-        extension_south.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        extension_west.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        extension_east.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        extension_north.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 
-    private void renderBlade(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, ModelRenderer blade, float scaleX,
+    private void renderBlade(@Nonnull PoseStack matrix, @Nonnull VertexConsumer vertexBuilder, int light, int overlayLight, ModelPart blade, float scaleX,
           float scaleZ, double transX, double transZ) {
         matrix.pushPose();
         matrix.translate(transX, 0, transZ);

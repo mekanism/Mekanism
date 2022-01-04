@@ -4,9 +4,9 @@ import java.util.UUID;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.impl.DataSerializerDeferredRegister;
 import mekanism.common.registration.impl.DataSerializerRegistryObject;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.IDataSerializer;
-import net.minecraftforge.common.extensions.IForgePacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraftforge.common.extensions.IForgeFriendlyByteBuf;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 public class MekanismDataSerializers {
@@ -15,15 +15,15 @@ public class MekanismDataSerializers {
 
     @SuppressWarnings("rawtypes")
     private static final DataSerializerRegistryObject REGISTRY_ENTRY = registerRegistryEntry();
-    public static final DataSerializerRegistryObject<UUID> UUID = DATA_SERIALIZERS.registerSimple("uuid", PacketBuffer::writeUUID, PacketBuffer::readUUID);
+    public static final DataSerializerRegistryObject<UUID> UUID = DATA_SERIALIZERS.registerSimple("uuid", FriendlyByteBuf::writeUUID, FriendlyByteBuf::readUUID);
 
     @SuppressWarnings("unchecked")
-    public static <ENTRY extends IForgeRegistryEntry<ENTRY>> IDataSerializer<ENTRY> getRegistryEntrySerializer() {
-        return (IDataSerializer<ENTRY>) REGISTRY_ENTRY.getSerializer();
+    public static <ENTRY extends IForgeRegistryEntry<ENTRY>> EntityDataSerializer<ENTRY> getRegistryEntrySerializer() {
+        return (EntityDataSerializer<ENTRY>) REGISTRY_ENTRY.getSerializer();
     }
 
     @SuppressWarnings("rawtypes")
     private static <ENTRY extends IForgeRegistryEntry<ENTRY>> DataSerializerRegistryObject registerRegistryEntry() {
-        return DATA_SERIALIZERS.<ENTRY>registerSimple("registry_entry", IForgePacketBuffer::writeRegistryId, IForgePacketBuffer::readRegistryId);
+        return DATA_SERIALIZERS.<ENTRY>registerSimple("registry_entry", IForgeFriendlyByteBuf::writeRegistryId, IForgeFriendlyByteBuf::readRegistryId);
     }
 }

@@ -1,6 +1,6 @@
 package mekanism.client.render.transmitter;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,21 +26,21 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult.Type;
 
 @ParametersAreNonnullByDefault
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
@@ -49,16 +49,17 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static SpriteInfo gunpowderIcon;
     private static SpriteInfo torchOffIcon;
     private static SpriteInfo torchOnIcon;
-    private final ModelTransporterBox modelBox = new ModelTransporterBox();
+    private final ModelTransporterBox modelBox;
     private final ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
     private final EntityRenderer<? super ItemEntity> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem);
 
-    public RenderLogisticalTransporter(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderLogisticalTransporter(BlockEntityRendererProvider.Context context) {
+        super(context);
+        modelBox = new ModelTransporterBox(context.getModelSet());
         entityItem.setExtendedLifetime();
     }
 
-    public static void onStitch(AtlasTexture map) {
+    public static void onStitch(TextureAtlas map) {
         cachedOverlays.clear();
         gunpowderIcon = new SpriteInfo(map.getSprite(new ResourceLocation("minecraft", "item/gunpowder")), 16);
         torchOffIcon = new SpriteInfo(map.getSprite(new ResourceLocation("minecraft", "block/redstone_torch_off")), 16);
@@ -66,8 +67,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     }
 
     @Override
-    protected void render(TileEntityLogisticalTransporterBase tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
-          IProfiler profiler) {
+    protected void render(TileEntityLogisticalTransporterBase tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
+          ProfilerFiller profiler) {
         LogisticalTransporterBase transporter = tile.getTransmitter();
         Collection<TransporterStack> inTransit = transporter.getTransit();
         BlockPos pos = tile.getBlockPos();
@@ -95,16 +96,16 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             matrix.popPose();
         }
         if (transporter instanceof DiversionTransporter) {
-            PlayerEntity player = Minecraft.getInstance().player;
-            ItemStack itemStack = player.inventory.getSelected();
+            Player player = Minecraft.getInstance().player;
+            ItemStack itemStack = player.getInventory().getSelected();
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
-                BlockRayTraceResult rayTraceResult = MekanismUtils.rayTrace(player);
+                BlockHitResult rayTraceResult = MekanismUtils.rayTrace(player);
                 if (!rayTraceResult.getType().equals(Type.MISS) && rayTraceResult.getBlockPos().equals(pos)) {
                     Direction side = tile.getSideLookingAt(player, rayTraceResult.getDirection());
                     matrix.pushPose();
                     matrix.scale(0.5F, 0.5F, 0.5F);
                     matrix.translate(0.5, 0.5, 0.5);
-                    MekanismRenderer.renderObject(getOverlayModel((DiversionTransporter) transporter, side), matrix, renderer.getBuffer(Atlases.translucentCullBlockSheet()),
+                    MekanismRenderer.renderObject(getOverlayModel((DiversionTransporter) transporter, side), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
                           MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
                     matrix.popPose();
                 }

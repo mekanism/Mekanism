@@ -5,23 +5,23 @@ import java.util.Map;
 import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.WrappedDeferredRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap.MutableAttribute;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier.Builder;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class EntityTypeDeferredRegister extends WrappedDeferredRegister<EntityType<?>> {
 
-    private Map<EntityTypeRegistryObject<? extends LivingEntity>, Supplier<MutableAttribute>> livingEntityAttributes = new HashMap<>();
+    private Map<EntityTypeRegistryObject<? extends LivingEntity>, Supplier<Builder>> livingEntityAttributes = new HashMap<>();
 
     public EntityTypeDeferredRegister(String modid) {
         super(modid, ForgeRegistries.ENTITIES);
     }
 
-    public <ENTITY extends LivingEntity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder, Supplier<MutableAttribute> attributes) {
+    public <ENTITY extends LivingEntity> EntityTypeRegistryObject<ENTITY> register(String name, EntityType.Builder<ENTITY> builder, Supplier<Builder> attributes) {
         EntityTypeRegistryObject<ENTITY> entityTypeRO = register(name, builder);
         livingEntityAttributes.put(entityTypeRO, attributes);
         return entityTypeRO;
@@ -42,7 +42,7 @@ public class EntityTypeDeferredRegister extends WrappedDeferredRegister<EntityTy
             Mekanism.logger.error("GlobalEntityTypeAttributes have already been set. This should not happen.");
         } else {
             //Register our living entity attributes
-            for (Map.Entry<EntityTypeRegistryObject<? extends LivingEntity>, Supplier<MutableAttribute>> entry : livingEntityAttributes.entrySet()) {
+            for (Map.Entry<EntityTypeRegistryObject<? extends LivingEntity>, Supplier<Builder>> entry : livingEntityAttributes.entrySet()) {
                 event.put(entry.getKey().get(), entry.getValue().get().build());
             }
             //And set the map to null to allow it to be garbage collected

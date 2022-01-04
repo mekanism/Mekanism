@@ -29,8 +29,8 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<NucleosynthesizingRecipe> {
 
@@ -69,7 +69,7 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
     }
 
     @Override
-    public List<ITextComponent> getTooltipStrings(NucleosynthesizingRecipe recipe, double mouseX, double mouseY) {
+    public List<Component> getTooltipStrings(NucleosynthesizingRecipe recipe, double mouseX, double mouseY) {
         if (rateBar.isMouseOver(mouseX, mouseY)) {
             return Collections.singletonList(MekanismLang.TICKS_REQUIRED.translate(recipe.getDuration()));
         }

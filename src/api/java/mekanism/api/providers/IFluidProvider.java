@@ -1,9 +1,9 @@
 package mekanism.api.providers;
 
 import javax.annotation.Nonnull;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fluids.FluidStack;
 
 public interface IFluidProvider extends IBaseProvider {
@@ -13,12 +13,6 @@ public interface IFluidProvider extends IBaseProvider {
      */
     @Nonnull
     Fluid getFluid();
-
-    //Note: Uses FluidStack in case we want to check NBT or something
-    @Deprecated//TODO - 1.18: Remove this as we don't actually use this
-    default boolean fluidMatches(FluidStack other) {
-        return getFluid() == other.getFluid();
-    }
 
     /**
      * Creates a fluid stack of the given size using the fluid this provider represents.
@@ -36,7 +30,7 @@ public interface IFluidProvider extends IBaseProvider {
     }
 
     @Override
-    default ITextComponent getTextComponent() {
+    default Component getTextComponent() {
         return getFluid().getAttributes().getDisplayName(getFluidStack(1));
     }
 

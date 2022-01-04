@@ -28,8 +28,8 @@ import mekanism.common.recipe.impl.InjectingIRecipe;
 import mekanism.common.recipe.impl.MetallurgicInfuserIRecipe;
 import mekanism.common.recipe.impl.PaintingIRecipe;
 import mekanism.common.recipe.impl.PurifyingIRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister

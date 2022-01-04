@@ -6,7 +6,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
-import net.minecraft.item.ItemTier;
+import net.minecraft.world.item.Tiers;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 @FieldsAreNonnullByDefault
@@ -62,7 +62,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
     }
 
     @Nonnull
-    public ItemTier getVanillaTier() {
+    public Tiers getVanillaTier() {
         return fallback.getVanillaTier();
     }
 

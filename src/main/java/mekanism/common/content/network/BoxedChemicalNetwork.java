@@ -40,10 +40,12 @@ import mekanism.common.lib.transmitter.DynamicBufferedNetwork;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
+
+import mekanism.common.lib.transmitter.DynamicBufferedNetwork.TransferEvent;
 
 /**
  * A DynamicNetwork extension created specifically for the transfer of Chemicals.
@@ -300,12 +302,12 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     @Override
-    public ITextComponent getNeededInfo() {
+    public Component getNeededInfo() {
         return TextComponentUtil.build(getCurrentTankWithFallback().getNeeded());
     }
 
     @Override
-    public ITextComponent getStoredInfo() {
+    public Component getStoredInfo() {
         if (isTankEmpty()) {
             return MekanismLang.NONE.translate();
         }
@@ -314,7 +316,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     @Override
-    public ITextComponent getFlowInfo() {
+    public Component getFlowInfo() {
         return MekanismLang.NETWORK_MB_PER_TICK.translate(prevTransferAmount);
     }
 
@@ -333,7 +335,7 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     @Override
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         return MekanismLang.NETWORK_DESCRIPTION.translate(MekanismLang.CHEMICAL_NETWORK, transmittersSize(), getAcceptorCount());
     }
 

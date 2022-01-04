@@ -7,13 +7,13 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Predicate;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -128,7 +128,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         input.write(buffer);
         buffer.writeItem(mainOutput);
         buffer.writeItem(secondaryOutput);

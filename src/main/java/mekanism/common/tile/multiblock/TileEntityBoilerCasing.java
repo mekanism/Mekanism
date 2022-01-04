@@ -10,15 +10,17 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultiblockData> {
 
-    public TileEntityBoilerCasing() {
-        this(MekanismBlocks.BOILER_CASING);
+    public TileEntityBoilerCasing(BlockPos pos, BlockState state) {
+        this(MekanismBlocks.BOILER_CASING, pos, state);
     }
 
-    public TileEntityBoilerCasing(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityBoilerCasing(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Nonnull

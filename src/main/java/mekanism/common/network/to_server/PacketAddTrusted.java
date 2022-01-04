@@ -4,10 +4,10 @@ import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.TileEntitySecurityDesk;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketAddTrusted implements IMekanismPacket {
 
@@ -29,7 +29,7 @@ public class PacketAddTrusted implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         if (!name.isEmpty() && InputValidator.test(name, InputValidator.USERNAME)) {
-            PlayerEntity player = context.getSender();
+            Player player = context.getSender();
             if (player != null) {
                 TileEntitySecurityDesk tile = WorldUtils.getTileEntity(TileEntitySecurityDesk.class, player.level, tilePosition);
                 if (tile != null) {
@@ -40,12 +40,12 @@ public class PacketAddTrusted implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(tilePosition);
         buffer.writeUtf(name, MAX_NAME_LENGTH);
     }
 
-    public static PacketAddTrusted decode(PacketBuffer buffer) {
+    public static PacketAddTrusted decode(FriendlyByteBuf buffer) {
         return new PacketAddTrusted(buffer.readBlockPos(), buffer.readUtf(MAX_NAME_LENGTH));
     }
 }

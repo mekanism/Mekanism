@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import mekanism.common.lib.Color;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class BoltEffect {
@@ -16,8 +16,8 @@ public class BoltEffect {
 
     private final BoltRenderInfo renderInfo;
 
-    private final Vector3d start;
-    private final Vector3d end;
+    private final Vec3 start;
+    private final Vec3 end;
 
     private final int segments;
 
@@ -29,11 +29,11 @@ public class BoltEffect {
     private SpawnFunction spawnFunction = SpawnFunction.delay(60);
     private FadeFunction fadeFunction = FadeFunction.fade(0.5F);
 
-    public BoltEffect(Vector3d start, Vector3d end) {
+    public BoltEffect(Vec3 start, Vec3 end) {
         this(BoltRenderInfo.DEFAULT, start, end, (int) (Math.sqrt(start.distanceTo(end) * 100)));
     }
 
-    public BoltEffect(BoltRenderInfo info, Vector3d start, Vector3d end, int segments) {
+    public BoltEffect(BoltRenderInfo info, Vec3 start, Vec3 end, int segments) {
         this.renderInfo = info;
         this.start = start;
         this.end = end;
@@ -118,22 +118,22 @@ public class BoltEffect {
 
     public List<BoltQuads> generate() {
         List<BoltQuads> quads = new ArrayList<>();
-        Vector3d diff = end.subtract(start);
+        Vec3 diff = end.subtract(start);
         float totalDistance = (float) diff.length();
         for (int i = 0; i < count; i++) {
             Queue<BoltInstructions> drawQueue = new LinkedList<>();
-            drawQueue.add(new BoltInstructions(start, 0, new Vector3d(0, 0, 0), null, false));
+            drawQueue.add(new BoltInstructions(start, 0, new Vec3(0, 0, 0), null, false));
             while (!drawQueue.isEmpty()) {
                 BoltInstructions data = drawQueue.poll();
-                Vector3d perpendicularDist = data.perpendicularDist;
+                Vec3 perpendicularDist = data.perpendicularDist;
                 float progress = data.progress + (1F / segments) * (1 - renderInfo.parallelNoise + random.nextFloat() * renderInfo.parallelNoise * 2);
-                Vector3d segmentEnd;
+                Vec3 segmentEnd;
                 float segmentDiffScale = renderInfo.spreadFunction.getMaxSpread(progress);
                 if (progress >= 1 && segmentDiffScale <= 0) {
                     segmentEnd = end;
                 } else {
                     float maxDiff = renderInfo.spreadFactor * segmentDiffScale * totalDistance;
-                    Vector3d randVec = findRandomOrthogonalVector(diff, random);
+                    Vec3 randVec = findRandomOrthogonalVector(diff, random);
                     double rand = renderInfo.randomFunction.getRandom(random);
                     perpendicularDist = renderInfo.segmentSpreader.getSegmentAdd(perpendicularDist, randVec, maxDiff, segmentDiffScale, progress, rand);
                     // new vector is original + current progress through segments + perpendicular change
@@ -162,20 +162,20 @@ public class BoltEffect {
         return quads;
     }
 
-    private static Vector3d findRandomOrthogonalVector(Vector3d vec, Random rand) {
-        Vector3d newVec = new Vector3d(-0.5 + rand.nextDouble(), -0.5 + rand.nextDouble(), -0.5 + rand.nextDouble());
+    private static Vec3 findRandomOrthogonalVector(Vec3 vec, Random rand) {
+        Vec3 newVec = new Vec3(-0.5 + rand.nextDouble(), -0.5 + rand.nextDouble(), -0.5 + rand.nextDouble());
         return vec.cross(newVec).normalize();
     }
 
-    private Pair<BoltQuads, QuadCache> createQuads(QuadCache cache, Vector3d startPos, Vector3d end, float size) {
-        Vector3d diff = end.subtract(startPos);
-        Vector3d rightAdd = diff.cross(new Vector3d(0.5, 0.5, 0.5)).normalize().scale(size);
-        Vector3d backAdd = diff.cross(rightAdd).normalize().scale(size), rightAddSplit = rightAdd.scale(0.5F);
+    private Pair<BoltQuads, QuadCache> createQuads(QuadCache cache, Vec3 startPos, Vec3 end, float size) {
+        Vec3 diff = end.subtract(startPos);
+        Vec3 rightAdd = diff.cross(new Vec3(0.5, 0.5, 0.5)).normalize().scale(size);
+        Vec3 backAdd = diff.cross(rightAdd).normalize().scale(size), rightAddSplit = rightAdd.scale(0.5F);
 
-        Vector3d start = cache != null ? cache.prevEnd : startPos;
-        Vector3d startRight = cache != null ? cache.prevEndRight : start.add(rightAdd);
-        Vector3d startBack = cache != null ? cache.prevEndBack : start.add(rightAddSplit).add(backAdd);
-        Vector3d endRight = end.add(rightAdd), endBack = end.add(rightAddSplit).add(backAdd);
+        Vec3 start = cache != null ? cache.prevEnd : startPos;
+        Vec3 startRight = cache != null ? cache.prevEndRight : start.add(rightAdd);
+        Vec3 startBack = cache != null ? cache.prevEndBack : start.add(rightAddSplit).add(backAdd);
+        Vec3 endRight = end.add(rightAdd), endBack = end.add(rightAddSplit).add(backAdd);
 
         BoltQuads quads = new BoltQuads();
         quads.addQuad(start, end, endRight, startRight);
@@ -189,9 +189,9 @@ public class BoltEffect {
 
     private static class QuadCache {
 
-        private final Vector3d prevEnd, prevEndRight, prevEndBack;
+        private final Vec3 prevEnd, prevEndRight, prevEndBack;
 
-        private QuadCache(Vector3d prevEnd, Vector3d prevEndRight, Vector3d prevEndBack) {
+        private QuadCache(Vec3 prevEnd, Vec3 prevEndRight, Vec3 prevEndBack) {
             this.prevEnd = prevEnd;
             this.prevEndRight = prevEndRight;
             this.prevEndBack = prevEndBack;
@@ -200,13 +200,13 @@ public class BoltEffect {
 
     protected static class BoltInstructions {
 
-        private final Vector3d start;
-        private final Vector3d perpendicularDist;
+        private final Vec3 start;
+        private final Vec3 perpendicularDist;
         private final QuadCache cache;
         private final float progress;
         private final boolean isBranch;
 
-        private BoltInstructions(Vector3d start, float progress, Vector3d perpendicularDist, QuadCache cache, boolean isBranch) {
+        private BoltInstructions(Vec3 start, float progress, Vec3 perpendicularDist, QuadCache cache, boolean isBranch) {
             this.start = start;
             this.perpendicularDist = perpendicularDist;
             this.progress = progress;
@@ -217,13 +217,13 @@ public class BoltEffect {
 
     public static class BoltQuads {
 
-        private final List<Vector3d> vecs = new ArrayList<>();
+        private final List<Vec3> vecs = new ArrayList<>();
 
-        protected void addQuad(Vector3d... quadVecs) {
+        protected void addQuad(Vec3... quadVecs) {
             vecs.addAll(Arrays.asList(quadVecs));
         }
 
-        public List<Vector3d> getVecs() {
+        public List<Vec3> getVecs() {
             return vecs;
         }
     }
@@ -280,7 +280,7 @@ public class BoltEffect {
         static SegmentSpreader memory(float memoryFactor) {
             return (perpendicularDist, randVec, maxDiff, spreadScale, progress, rand) -> {
                 double nextDiff = maxDiff * (1 - memoryFactor) * rand;
-                Vector3d cur = randVec.scale(nextDiff);
+                Vec3 cur = randVec.scale(nextDiff);
                 perpendicularDist = perpendicularDist.add(cur);
                 double length = perpendicularDist.length();
                 if (length > maxDiff) {
@@ -290,7 +290,7 @@ public class BoltEffect {
             };
         }
 
-        Vector3d getSegmentAdd(Vector3d perpendicularDist, Vector3d randVec, float maxDiff, float scale, float progress, double rand);
+        Vec3 getSegmentAdd(Vec3 perpendicularDist, Vec3 randVec, float maxDiff, float scale, float progress, double rand);
     }
 
     /**

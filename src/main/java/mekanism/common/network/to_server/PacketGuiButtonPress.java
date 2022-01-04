@@ -12,17 +12,17 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkHooks;
 
 /**
  * Used for informing the server that a click happened in a GUI and the gui window needs to change
@@ -33,16 +33,16 @@ public class PacketGuiButtonPress implements IMekanismPacket {
     private ClickedItemButton itemButton;
     private ClickedTileButton tileButton;
     private ClickedEntityButton entityButton;
-    private Hand hand;
+    private InteractionHand hand;
     private int entityID;
     private int extra;
     private BlockPos tilePosition;
 
-    public PacketGuiButtonPress(ClickedTileButton buttonClicked, TileEntity tile) {
+    public PacketGuiButtonPress(ClickedTileButton buttonClicked, BlockEntity tile) {
         this(buttonClicked, tile.getBlockPos());
     }
 
-    public PacketGuiButtonPress(ClickedTileButton buttonClicked, TileEntity tile, int extra) {
+    public PacketGuiButtonPress(ClickedTileButton buttonClicked, BlockEntity tile, int extra) {
         this(buttonClicked, tile.getBlockPos(), extra);
     }
 
@@ -50,7 +50,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
         this(buttonClicked, tilePosition, 0);
     }
 
-    public PacketGuiButtonPress(ClickedItemButton buttonClicked, Hand hand) {
+    public PacketGuiButtonPress(ClickedItemButton buttonClicked, InteractionHand hand) {
         type = Type.ITEM;
         this.itemButton = buttonClicked;
         this.hand = hand;
@@ -75,14 +75,14 @@ public class PacketGuiButtonPress implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ServerPlayerEntity player = context.getSender();
+        ServerPlayer player = context.getSender();
         if (player == null) {
             return;
         }
         if (type == Type.ENTITY) {
             Entity entity = player.level.getEntity(entityID);
             if (entity != null) {
-                INamedContainerProvider provider = entityButton.getProvider(entity);
+                MenuProvider provider = entityButton.getProvider(entity);
                 if (provider != null) {
                     //Ensure valid data
                     NetworkHooks.openGui(player, provider, buf -> buf.writeVarInt(entityID));
@@ -91,7 +91,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
         } else if (type == Type.TILE) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, tilePosition);
             if (tile != null) {
-                INamedContainerProvider provider = tileButton.getProvider(tile, extra);
+                MenuProvider provider = tileButton.getProvider(tile, extra);
                 if (provider != null) {
                     //Ensure valid data
                     NetworkHooks.openGui(player, provider, buf -> {
@@ -103,7 +103,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
         } else if (type == Type.ITEM) {
             ItemStack stack = player.getItemInHand(hand);
             if (stack.getItem() instanceof IGuiItem) {
-                INamedContainerProvider provider = itemButton.getProvider(stack, hand);
+                MenuProvider provider = itemButton.getProvider(stack, hand);
                 if (provider != null) {
                     NetworkHooks.openGui(player, provider, buf -> {
                         buf.writeEnum(hand);
@@ -115,7 +115,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(type);
         if (type == Type.ENTITY) {
             buffer.writeEnum(entityButton);
@@ -130,7 +130,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
         }
     }
 
-    public static PacketGuiButtonPress decode(PacketBuffer buffer) {
+    public static PacketGuiButtonPress decode(FriendlyByteBuf buffer) {
         Type type = buffer.readEnum(Type.class);
         switch (type) {
             case ENTITY:
@@ -138,7 +138,7 @@ public class PacketGuiButtonPress implements IMekanismPacket {
             case TILE:
                 return new PacketGuiButtonPress(buffer.readEnum(ClickedTileButton.class), buffer.readBlockPos(), buffer.readVarInt());
             case ITEM:
-                return new PacketGuiButtonPress(buffer.readEnum(ClickedItemButton.class), buffer.readEnum(Hand.class));
+                return new PacketGuiButtonPress(buffer.readEnum(ClickedItemButton.class), buffer.readEnum(InteractionHand.class));
             default:
                 return null;
         }
@@ -153,13 +153,13 @@ public class PacketGuiButtonPress implements IMekanismPacket {
         }),
         QIO_FREQUENCY_SELECT((stack, hand) -> MekanismContainerTypes.QIO_FREQUENCY_SELECT_ITEM.getProvider(MekanismLang.QIO_FREQUENCY_SELECT, hand, stack));
 
-        private final BiFunction<ItemStack, Hand, INamedContainerProvider> providerFromItem;
+        private final BiFunction<ItemStack, InteractionHand, MenuProvider> providerFromItem;
 
-        ClickedItemButton(BiFunction<ItemStack, Hand, INamedContainerProvider> providerFromItem) {
+        ClickedItemButton(BiFunction<ItemStack, InteractionHand, MenuProvider> providerFromItem) {
             this.providerFromItem = providerFromItem;
         }
 
-        public INamedContainerProvider getProvider(ItemStack stack, Hand hand) {
+        public MenuProvider getProvider(ItemStack stack, InteractionHand hand) {
             return providerFromItem.apply(stack, hand);
         }
     }
@@ -193,13 +193,13 @@ public class PacketGuiButtonPress implements IMekanismPacket {
             return null;
         });
 
-        private final BiFunction<TileEntityMekanism, Integer, INamedContainerProvider> providerFromTile;
+        private final BiFunction<TileEntityMekanism, Integer, MenuProvider> providerFromTile;
 
-        ClickedTileButton(BiFunction<TileEntityMekanism, Integer, INamedContainerProvider> providerFromTile) {
+        ClickedTileButton(BiFunction<TileEntityMekanism, Integer, MenuProvider> providerFromTile) {
             this.providerFromTile = providerFromTile;
         }
 
-        public INamedContainerProvider getProvider(TileEntityMekanism tile, int extra) {
+        public MenuProvider getProvider(TileEntityMekanism tile, int extra) {
             return providerFromTile.apply(tile, extra);
         }
     }
@@ -212,13 +212,13 @@ public class PacketGuiButtonPress implements IMekanismPacket {
         ROBIT_REPAIR(entity -> MekanismContainerTypes.REPAIR_ROBIT.getProvider(MekanismLang.ROBIT_REPAIR, entity)),
         ROBIT_SMELTING(entity -> MekanismContainerTypes.SMELTING_ROBIT.getProvider(MekanismLang.ROBIT_SMELTING, entity));
 
-        private final Function<Entity, INamedContainerProvider> providerFromEntity;
+        private final Function<Entity, MenuProvider> providerFromEntity;
 
-        ClickedEntityButton(Function<Entity, INamedContainerProvider> providerFromEntity) {
+        ClickedEntityButton(Function<Entity, MenuProvider> providerFromEntity) {
             this.providerFromEntity = providerFromEntity;
         }
 
-        public INamedContainerProvider getProvider(Entity entity) {
+        public MenuProvider getProvider(Entity entity) {
             return providerFromEntity.apply(entity);
         }
     }

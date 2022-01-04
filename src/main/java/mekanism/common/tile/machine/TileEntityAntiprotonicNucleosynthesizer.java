@@ -45,7 +45,9 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressMachine<NucleosynthesizingRecipe> implements
       ItemChemicalRecipeLookupHandler<Gas, GasStack, NucleosynthesizingRecipe> {
@@ -73,8 +75,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
 
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
 
-    public TileEntityAntiprotonicNucleosynthesizer() {
-        super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, BASE_DURATION);
+    public TileEntityAntiprotonicNucleosynthesizer(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, pos, state, BASE_DURATION);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, gasInputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.GAS, gasTank);

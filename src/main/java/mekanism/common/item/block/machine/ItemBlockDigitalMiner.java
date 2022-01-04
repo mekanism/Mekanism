@@ -7,10 +7,10 @@ import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.lib.security.ISecurityItem;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemSustainedInventory, ISecurityItem {
 
@@ -19,8 +19,8 @@ public class ItemBlockDigitalMiner extends ItemBlockMachine implements IItemSust
     }
 
     @Override
-    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
-        World world = context.getLevel();
+    public boolean placeBlock(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
+        Level world = context.getLevel();
         BlockPos placePos = context.getClickedPos();
         for (int xPos = -1; xPos <= 1; xPos++) {
             for (int yPos = 0; yPos <= 1; yPos++) {

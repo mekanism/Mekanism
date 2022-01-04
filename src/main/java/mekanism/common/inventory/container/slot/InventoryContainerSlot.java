@@ -7,16 +7,16 @@ import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 //Like net.minecraftforge.items.SlotItemHandler, except directly interacts with the IInventorySlot instead
 public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
-    private static final IInventory emptyInventory = new Inventory(0);
+    private static final Container emptyInventory = new SimpleContainer(0);
     private final Consumer<ItemStack> uncheckedSetter;
     private final ContainerSlotType slotType;
     private final BasicInventorySlot slot;
@@ -113,7 +113,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     }
 
     @Override
-    public boolean mayPickup(@Nonnull PlayerEntity player) {
+    public boolean mayPickup(@Nonnull Player player) {
         return !slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty();
     }
 

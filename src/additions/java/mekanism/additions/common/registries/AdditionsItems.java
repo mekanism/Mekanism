@@ -10,7 +10,7 @@ import mekanism.common.registration.impl.EntityTypeRegistryObject;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Mob;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 
 public class AdditionsItems {
@@ -35,7 +35,7 @@ public class AdditionsItems {
         }
     }
 
-    private static <ENTITY extends Entity> ItemRegistryObject<ForgeSpawnEggItem> registerSpawnEgg(EntityTypeRegistryObject<ENTITY> entityTypeProvider,
+    private static <ENTITY extends Mob> ItemRegistryObject<ForgeSpawnEggItem> registerSpawnEgg(EntityTypeRegistryObject<ENTITY> entityTypeProvider,
           int primaryColor, int secondaryColor) {
         //Note: We are required to use a custom item as we cannot use the base SpawnEggItem due to the entity type not being initialized yet
         return ITEMS.register(entityTypeProvider.getInternalRegistryName() + "_spawn_egg", props -> new ForgeSpawnEggItem(entityTypeProvider, primaryColor, secondaryColor, props));

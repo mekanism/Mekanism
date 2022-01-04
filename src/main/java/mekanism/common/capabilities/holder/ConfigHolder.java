@@ -15,7 +15,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public abstract class ConfigHolder<TYPE> implements IHolder {
 

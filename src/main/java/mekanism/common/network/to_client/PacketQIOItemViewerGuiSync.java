@@ -6,9 +6,9 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
 
@@ -38,7 +38,7 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player != null && player.containerMenu instanceof QIOItemViewerContainer) {
             QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
             switch (type) {
@@ -56,7 +56,7 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(type);
         if (type == Type.BATCH || type == Type.UPDATE) {
             buffer.writeVarLong(countCapacity);
@@ -76,7 +76,7 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
         }
     }
 
-    public static PacketQIOItemViewerGuiSync decode(PacketBuffer buffer) {
+    public static PacketQIOItemViewerGuiSync decode(FriendlyByteBuf buffer) {
         Type type = buffer.readEnum(Type.class);
         long countCapacity = 0;
         int typeCapacity = 0;

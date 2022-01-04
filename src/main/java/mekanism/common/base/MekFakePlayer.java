@@ -7,9 +7,9 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.common.util.FakePlayer;
 
 /**
@@ -34,13 +34,13 @@ public class MekFakePlayer extends FakePlayer {
      */
     private UUID emulatingUUID = null;
 
-    public MekFakePlayer(ServerWorld world) {
+    public MekFakePlayer(ServerLevel world) {
         super(world, new FakeGameProfile());
         ((FakeGameProfile) this.getGameProfile()).myFakePlayer = this;
     }
 
     @Override
-    public boolean canBeAffected(@Nonnull EffectInstance effect) {
+    public boolean canBeAffected(@Nonnull MobEffectInstance effect) {
         return false;
     }
 
@@ -67,11 +67,10 @@ public class MekFakePlayer extends FakePlayer {
      * @return the return value of fakePlayerConsumer
      */
     @SuppressWarnings("WeakerAccess")
-    public static <R> R withFakePlayer(ServerWorld world, Function<MekFakePlayer, R> fakePlayerConsumer) {
+    public static <R> R withFakePlayer(ServerLevel world, Function<MekFakePlayer, R> fakePlayerConsumer) {
         MekFakePlayer actual = INSTANCE != null ? INSTANCE.get() : null;
         if (actual == null) {
             actual = new MekFakePlayer(world);
-            actual.connection = new MekFakeNetHandler(world.getServer(), actual);
             INSTANCE = new WeakReference<>(actual);
         }
         MekFakePlayer player = actual;
@@ -83,8 +82,8 @@ public class MekFakePlayer extends FakePlayer {
     }
 
     /**
-     * Same as {@link MekFakePlayer#withFakePlayer(net.minecraft.world.server.ServerWorld, java.util.function.Function)} but sets the Fake Player's position. Use when you
-     * think the entity position is relevant.
+     * Same as {@link MekFakePlayer#withFakePlayer(ServerLevel, java.util.function.Function)} but sets the Fake Player's position. Use when you think the entity position
+     * is relevant.
      *
      * @param world              World to set on the fake player
      * @param fakePlayerConsumer consumer of the fake player
@@ -95,14 +94,14 @@ public class MekFakePlayer extends FakePlayer {
      *
      * @return the return value of fakePlayerConsumer
      */
-    public static <R> R withFakePlayer(ServerWorld world, double x, double y, double z, Function<MekFakePlayer, R> fakePlayerConsumer) {
+    public static <R> R withFakePlayer(ServerLevel world, double x, double y, double z, Function<MekFakePlayer, R> fakePlayerConsumer) {
         return withFakePlayer(world, fakePlayer -> {
             fakePlayer.setPosRaw(x, y, z);
             return fakePlayerConsumer.apply(fakePlayer);
         });
     }
 
-    public static void releaseInstance(IWorld world) {
+    public static void releaseInstance(LevelAccessor world) {
         // If the fake player has a reference to the world getting unloaded,
         // null out the fake player so that the world can unload
         MekFakePlayer actual = INSTANCE != null ? INSTANCE.get() : null;

@@ -55,7 +55,7 @@ public class ModelToVoxelShapeUtil {
             e.printStackTrace();
             return;
         }
-        JsonObject obj = new JsonParser().parse(builder.toString()).getAsJsonObject();
+        JsonObject obj = JsonParser.parseString(builder.toString()).getAsJsonObject();
         if (obj.has("elements")) {
             printoutObject(obj);
         } else if (obj.has("layers")) {

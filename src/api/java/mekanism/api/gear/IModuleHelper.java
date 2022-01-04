@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.providers.IModuleDataProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 /**
  * Helper class for interacting with and creating custom modules. Get an instance from {@link mekanism.api.MekanismAPI#getModuleHelper()}.
@@ -111,7 +111,7 @@ public interface IModuleHelper {
      *
      * @return A new HUD element.
      */
-    IHUDElement hudElement(ResourceLocation icon, ITextComponent text, HUDColor color);
+    IHUDElement hudElement(ResourceLocation icon, Component text, HUDColor color);
 
     /**
      * Helper method to create a HUD element representing an enabled state with a given icon.

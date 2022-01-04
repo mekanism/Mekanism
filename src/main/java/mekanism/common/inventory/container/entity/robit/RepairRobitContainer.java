@@ -6,23 +6,23 @@ import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.container.entity.IEntityContainer;
 import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registries.MekanismContainerTypes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.RepairContainer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.AnvilMenu;
 
-public class RepairRobitContainer extends RepairContainer implements IEntityContainer<EntityRobit>, ISecurityContainer {
+public class RepairRobitContainer extends AnvilMenu implements IEntityContainer<EntityRobit>, ISecurityContainer {
 
     private final EntityRobit entity;
 
-    public RepairRobitContainer(int id, PlayerInventory inv, EntityRobit robit) {
+    public RepairRobitContainer(int id, Inventory inv, EntityRobit robit) {
         super(id, inv, robit.getWorldPosCallable());
         this.entity = robit;
         entity.open(inv.player);
     }
 
     @Override
-    public boolean stillValid(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull Player player) {
         return entity.isAlive();
     }
 
@@ -34,12 +34,12 @@ public class RepairRobitContainer extends RepairContainer implements IEntityCont
 
     @Nonnull
     @Override
-    public ContainerType<?> getType() {
+    public MenuType<?> getType() {
         return MekanismContainerTypes.REPAIR_ROBIT.getContainerType();
     }
 
     @Override
-    public void removed(@Nonnull PlayerEntity player) {
+    public void removed(@Nonnull Player player) {
         super.removed(player);
         entity.close(player);
     }

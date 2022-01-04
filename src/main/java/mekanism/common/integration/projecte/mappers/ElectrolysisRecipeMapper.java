@@ -13,8 +13,8 @@ import moze_intel.projecte.api.mapper.recipe.IRecipeTypeMapper;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSFluid;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -32,12 +32,12 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
     }
 
     @Override
-    public boolean canHandle(IRecipeType<?> recipeType) {
+    public boolean canHandle(RecipeType<?> recipeType) {
         return recipeType == MekanismRecipeType.SEPARATING;
     }
 
     @Override
-    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, IRecipe<?> iRecipe, INSSFakeGroupManager groupManager) {
+    public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
         if (!(iRecipe instanceof ElectrolysisRecipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;

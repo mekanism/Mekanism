@@ -1,100 +1,79 @@
 package mekanism.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModelFreeRunners extends MekanismJavaModel {
 
+    public static final ModelLayerLocation FREE_RUNNER_LAYER = new ModelLayerLocation(Mekanism.rl("free_runners"), "main");
     private static final ResourceLocation FREE_RUNNER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png");
-    private final RenderType RENDER_TYPE = renderType(FREE_RUNNER_TEXTURE);
 
-    private final ModelRenderer SpringL;
-    private final ModelRenderer SpringR;
-    private final ModelRenderer BraceL;
-    private final ModelRenderer BraceR;
-    private final ModelRenderer SupportL;
-    private final ModelRenderer SupportR;
+    private static final ModelPartData SPRING_L = new ModelPartData("SpringL", CubeListBuilder.create()
+          .texOffs(8, 0)
+          .addBox(1.5F, 18F, 0F, 1, 6, 1),
+          PartPose.rotation(0.1047198F, 0F, 0F));
+    private static final ModelPartData SPRING_R = new ModelPartData("SpringR", CubeListBuilder.create()
+          .texOffs(8, 0)
+          .addBox(-2.5F, 18F, 0F, 1, 6, 1),
+          PartPose.rotation(0.1047198F, 0F, 0F));
+    private static final ModelPartData BRACE_L = new ModelPartData("BraceL", CubeListBuilder.create()
+          .texOffs(12, 0)
+          .addBox(0.2F, 18F, -0.8F, 4, 2, 3));
+    private static final ModelPartData BRACE_R = new ModelPartData("BraceR", CubeListBuilder.create()
+          .texOffs(12, 0)
+          .addBox(-4.2F, 18F, -0.8F, 4, 2, 3));
+    private static final ModelPartData SUPPORT_L = new ModelPartData("SupportL", CubeListBuilder.create()
+          .addBox(1F, 16.5F, -4.2F, 2, 4, 2),
+          PartPose.rotation(0.296706F, 0F, 0F));
+    private static final ModelPartData SUPPORT_R = new ModelPartData("SupportR", CubeListBuilder.create()
+          .addBox(-3F, 16.5F, -4.2F, 2, 4, 2),
+          PartPose.rotation(0.296706F, 0F, 0F));
 
-    public ModelFreeRunners() {
-        super(RenderType::entitySolid);
-        texWidth = 64;
-        texHeight = 32;
-
-        SpringL = new ModelRenderer(this, 8, 0);
-        SpringL.addBox(1.5F, 18F, 0F, 1, 6, 1, false);
-        SpringL.setPos(0F, 0F, 0F);
-        SpringL.setTexSize(64, 32);
-        SpringL.mirror = true;
-        setRotation(SpringL, 0.1047198F, 0F, 0F);
-        SpringR = new ModelRenderer(this, 8, 0);
-        SpringR.addBox(-2.5F, 18F, 0F, 1, 6, 1, false);
-        SpringR.setPos(0F, 0F, 0F);
-        SpringR.setTexSize(64, 32);
-        SpringR.mirror = true;
-        setRotation(SpringR, 0.1047198F, 0F, 0F);
-        SpringR.mirror = false;
-        BraceL = new ModelRenderer(this, 12, 0);
-        BraceL.addBox(0.2F, 18F, -0.8F, 4, 2, 3, false);
-        BraceL.setPos(0F, 0F, 0F);
-        BraceL.setTexSize(64, 32);
-        BraceL.mirror = true;
-        setRotation(BraceL, 0F, 0F, 0F);
-        BraceR = new ModelRenderer(this, 12, 0);
-        BraceR.addBox(-4.2F, 18F, -0.8F, 4, 2, 3, false);
-        BraceR.setPos(0F, 0F, 0F);
-        BraceR.setTexSize(64, 32);
-        BraceR.mirror = true;
-        setRotation(BraceR, 0F, 0F, 0F);
-        SupportL = new ModelRenderer(this, 0, 0);
-        SupportL.addBox(1F, 16.5F, -4.2F, 2, 4, 2, false);
-        SupportL.setPos(0F, 0F, 0F);
-        SupportL.setTexSize(64, 32);
-        SupportL.mirror = true;
-        setRotation(SupportL, 0.296706F, 0F, 0F);
-        SupportR = new ModelRenderer(this, 0, 0);
-        SupportR.addBox(-3F, 16.5F, -4.2F, 2, 4, 2, false);
-        SupportR.setPos(0F, 0F, 0F);
-        SupportR.setTexSize(64, 32);
-        SupportR.mirror = true;
-        setRotation(SupportR, 0.296706F, 0F, 0F);
-        SupportR.mirror = false;
+    public static LayerDefinition createLayerDefinition() {
+        return createLayerDefinition(64, 32, SPRING_L, SPRING_R, BRACE_L, BRACE_R, SUPPORT_L, SUPPORT_R);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
+    private final RenderType RENDER_TYPE = renderType(FREE_RUNNER_TEXTURE);
+    private final List<ModelPart> leftParts;
+    private final List<ModelPart> rightParts;
+
+    public ModelFreeRunners(EntityModelSet entityModelSet) {
+        super(RenderType::entitySolid);
+        ModelPart root = entityModelSet.bakeLayer(FREE_RUNNER_LAYER);
+        leftParts = getRenderableParts(root, SPRING_L, BRACE_L, SUPPORT_L);
+        rightParts = getRenderableParts(root, SPRING_R, BRACE_R, SUPPORT_R);
+    }
+
+    public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
+        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        SpringL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        BraceL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        SupportL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        SpringR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        BraceR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        SupportR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        renderPartsToBuffer(leftParts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+        renderPartsToBuffer(rightParts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
     }
 
-    public void renderLeg(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect, boolean left) {
-        IVertexBuilder vertexBuilder = getVertexBuilder(renderer, RENDER_TYPE, hasEffect);
-        float red = 1;
-        float green = 1;
-        float blue = 1;
-        float alpha = 1;
+    public void renderLeg(@Nonnull PoseStack poseStack, @Nonnull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect, boolean left) {
+        VertexConsumer vertexConsumer = getVertexConsumer(renderer, RENDER_TYPE, hasEffect);
         if (left) {
-            SpringL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-            BraceL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-            SupportL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            renderPartsToBuffer(leftParts, poseStack, vertexConsumer, light, overlayLight, 1, 1, 1, 1);
         } else {
-            SpringR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-            BraceR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-            SupportR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+            renderPartsToBuffer(rightParts, poseStack, vertexConsumer, light, overlayLight, 1, 1, 1, 1);
         }
     }
 }

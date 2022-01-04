@@ -6,12 +6,12 @@ import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.SpriteUploader;
+import net.minecraft.client.resources.TextureAtlasHolder;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
-public class RobitSpriteUploader extends SpriteUploader {
+public class RobitSpriteUploader extends TextureAtlasHolder {
 
     public static final ResourceLocation ATLAS_LOCATION = Mekanism.rl("textures/atlas/robit.png");
     public static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(ATLAS_LOCATION);

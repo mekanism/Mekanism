@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -29,7 +29,9 @@ import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.DynamicHandler;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+
+import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

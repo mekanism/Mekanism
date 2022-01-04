@@ -6,7 +6,7 @@ import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.item.ItemTurbineBlade;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class GeneratorsItems {
 

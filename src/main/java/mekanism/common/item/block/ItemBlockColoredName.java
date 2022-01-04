@@ -5,11 +5,11 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.registration.impl.ItemDeferredRegister;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 //TODO: Do we want an interface for getting the block easier with the correct type
 public class ItemBlockColoredName extends BlockItem {
@@ -24,7 +24,7 @@ public class ItemBlockColoredName extends BlockItem {
 
     @Nonnull
     @Override
-    public ITextComponent getName(@Nonnull ItemStack stack) {
+    public Component getName(@Nonnull ItemStack stack) {
         EnumColor color = getColor(stack);
         if (color == EnumColor.BLACK) {
             color = EnumColor.DARK_GRAY;

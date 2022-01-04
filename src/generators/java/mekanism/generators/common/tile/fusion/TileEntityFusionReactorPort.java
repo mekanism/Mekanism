@@ -26,16 +26,18 @@ import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.Direction;
+import net.minecraft.Util;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock implements IConfigurable {
 
-    public TileEntityFusionReactorPort() {
-        super(GeneratorsBlocks.FUSION_REACTOR_PORT);
+    public TileEntityFusionReactorPort(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.FUSION_REACTOR_PORT, pos, state);
         delaySupplier = () -> 0;
     }
 
@@ -98,7 +100,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     @Override
     public IHeatHandler getAdjacent(@Nonnull Direction side) {
         if (canHandleHeat() && getHeatCapacitorCount(side) > 0) {
-            TileEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
+            BlockEntity adj = WorldUtils.getTileEntity(getLevel(), getBlockPos().relative(side));
             if (!(adj instanceof TileEntityFusionReactorBlock)) {
                 return CapabilityUtils.getCapability(adj, Capabilities.HEAT_HANDLER_CAPABILITY, side.getOpposite()).resolve().orElse(null);
             }
@@ -107,13 +109,13 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     }
 
     @Override
-    public ActionResultType onSneakRightClick(PlayerEntity player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player, Direction side) {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
             player.sendMessage(MekanismUtils.logFormat(GeneratorsLang.REACTOR_PORT_EJECT.translate(InputOutput.of(oldMode, true))), Util.NIL_UUID);
         }
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     @Override

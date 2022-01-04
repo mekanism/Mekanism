@@ -117,9 +117,9 @@ import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 public class MekanismBlockTypes {
 
@@ -408,7 +408,7 @@ public class MekanismBlockTypes {
           .withGui(() -> MekanismContainerTypes.FUELWOOD_HEATER)
           .with(Attributes.SECURITY, Attributes.INVENTORY, Attributes.ACTIVE_LIGHT, new AttributeStateFacing(), new AttributeParticleFX()
                 .add(ParticleTypes.SMOKE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52))
-                .add(RedstoneParticleData.REDSTONE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
+                .add(DustParticleOptions.REDSTONE, rand -> new Pos3D(rand.nextFloat() * 0.6F - 0.3F, rand.nextFloat() * 6.0F / 16.0F, -0.52)))
           .withComputerSupport("fuelwoodHeater")
           .build();
     // Oredictionificator

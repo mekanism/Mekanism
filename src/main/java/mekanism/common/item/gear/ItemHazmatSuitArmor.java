@@ -2,43 +2,45 @@ package mekanism.common.item.gear;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemStack.TooltipDisplayFlags;
-import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStack.TooltipPart;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+
+import net.minecraft.world.item.Item.Properties;
 
 public class ItemHazmatSuitArmor extends ArmorItem {
 
     private static final HazmatMaterial HAZMAT_MATERIAL = new HazmatMaterial();
 
-    public ItemHazmatSuitArmor(EquipmentSlotType slot, Properties properties) {
+    public ItemHazmatSuitArmor(EquipmentSlot slot, Properties properties) {
         super(HAZMAT_MATERIAL, slot, properties.rarity(Rarity.UNCOMMON));
     }
 
-    public static double getShieldingByArmor(EquipmentSlotType type) {
-        if (type == EquipmentSlotType.HEAD) {
+    public static double getShieldingByArmor(EquipmentSlot type) {
+        if (type == EquipmentSlot.HEAD) {
             return 0.25;
-        } else if (type == EquipmentSlotType.CHEST) {
+        } else if (type == EquipmentSlot.CHEST) {
             return 0.4;
-        } else if (type == EquipmentSlotType.LEGS) {
+        } else if (type == EquipmentSlot.LEGS) {
             return 0.2;
-        } else if (type == EquipmentSlotType.FEET) {
+        } else if (type == EquipmentSlot.FEET) {
             return 0.15;
         }
         return 0;
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
-        stack.hideTooltipPart(TooltipDisplayFlags.MODIFIERS);
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
+        stack.hideTooltipPart(TooltipPart.MODIFIERS);
         return new ItemCapabilityWrapper(stack, RadiationShieldingHandler.create(item -> getShieldingByArmor(slot)));
     }
 

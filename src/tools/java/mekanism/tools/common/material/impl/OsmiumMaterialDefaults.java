@@ -5,10 +5,10 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 
 public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
@@ -58,7 +58,7 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(@Nonnull EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(@Nonnull EquipmentSlot slotType) {
         switch (slotType) {
             case FEET:
                 return 390;
@@ -73,7 +73,7 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefenseForSlot(@Nonnull EquipmentSlotType slotType) {
+    public int getDefenseForSlot(@Nonnull EquipmentSlot slotType) {
         switch (slotType) {
             case FEET:
                 return 3;

@@ -6,10 +6,10 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.resources.ResourceLocation;
 
 public class SawmillIRecipe extends SawmillRecipe {
 
@@ -19,13 +19,13 @@ public class SawmillIRecipe extends SawmillRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<SawmillRecipe> getType() {
+    public RecipeType<SawmillRecipe> getType() {
         return MekanismRecipeType.SAWING;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<SawmillRecipe> getSerializer() {
+    public RecipeSerializer<SawmillRecipe> getSerializer() {
         return MekanismRecipeSerializers.SAWING.getRecipeSerializer();
     }
 

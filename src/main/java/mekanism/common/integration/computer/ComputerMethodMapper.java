@@ -71,14 +71,14 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                     //If the required mods are not loaded, skip this annotation as the restrictions are not met
                     continue;
                 }
-                if (data.getTargetType() == ElementType.FIELD) {
+                if (data.targetType() == ElementType.FIELD) {
                     //Synthetic Computer Method(s) need to be generated for the field
-                    String fieldName = data.getMemberName();
+                    String fieldName = data.memberName();
                     Field field = getField(annotatedClass, fieldName);
                     if (field == null) {
                         continue;
                     }
-                    if (data.getAnnotationType().equals(wrappingType)) {
+                    if (data.annotationType().equals(wrappingType)) {
                         //Wrapping computer method
                         try {
                             MethodHandle methodHandle = LOOKUP.unreflectGetter(field);
@@ -103,7 +103,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                 } else {//data.getTargetType() == ElementType.METHOD
                     //Note: Signature is methodName followed by the method descriptor
                     // For example this method is: collectScanDataUnsafe(Ljava/util/Map;Ljava/util/Map;)V
-                    String methodSignature = data.getMemberName();
+                    String methodSignature = data.memberName();
                     int descriptorStart = methodSignature.indexOf('(');
                     if (descriptorStart == -1) {
                         Mekanism.logger.error("Method '{}' in class '{}' does not have a method descriptor.", methodSignature, annotatedClass.getSimpleName());
@@ -121,7 +121,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                                       annotatedClass.getSimpleName());
                                 continue;
                             }
-                            if (data.getAnnotationType().equals(wrappingType)) {
+                            if (data.annotationType().equals(wrappingType)) {
                                 //Wrapping computer method
                                 wrapMethodHandle(classNameCache, methodHandle, data, methodDetails, cachedWrappers, annotatedClass, methodName);
                             } else {//ComputerMethod

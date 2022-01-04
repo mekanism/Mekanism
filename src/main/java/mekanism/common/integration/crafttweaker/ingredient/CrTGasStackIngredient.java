@@ -11,7 +11,7 @@ import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -58,7 +58,7 @@ public class CrTGasStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient from(MCTag<Gas> gasTag, long amount) {
-        ITag<Gas> tag = CrTIngredientHelper.assertValidAndGet(gasTag, amount, CrTGasTagManager.INSTANCE::getInternal, "GasStackIngredients");
+        Tag<Gas> tag = CrTIngredientHelper.assertValidAndGet(gasTag, amount, CrTGasTagManager.INSTANCE::getInternal, "GasStackIngredients");
         return GasStackIngredient.from(tag, amount);
     }
 

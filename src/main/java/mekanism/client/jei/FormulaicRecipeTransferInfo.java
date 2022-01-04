@@ -8,10 +8,11 @@ import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 
-public class FormulaicRecipeTransferInfo implements IRecipeTransferInfo<FormulaicAssemblicatorContainer> {
+public class FormulaicRecipeTransferInfo implements IRecipeTransferInfo<FormulaicAssemblicatorContainer, CraftingRecipe> {
 
     @Override
     public Class<FormulaicAssemblicatorContainer> getContainerClass() {
@@ -24,12 +25,17 @@ public class FormulaicRecipeTransferInfo implements IRecipeTransferInfo<Formulai
     }
 
     @Override
-    public boolean canHandle(FormulaicAssemblicatorContainer container) {
+    public boolean canHandle(FormulaicAssemblicatorContainer container, CraftingRecipe recipe) {
         return true;
     }
 
     @Override
-    public List<Slot> getRecipeSlots(FormulaicAssemblicatorContainer container) {
+    public Class<CraftingRecipe> getRecipeClass() {
+        return CraftingRecipe.class;
+    }
+
+    @Override
+    public List<Slot> getRecipeSlots(FormulaicAssemblicatorContainer container, CraftingRecipe recipe) {
         List<Slot> slots = new ArrayList<>();
         for (InventoryContainerSlot slot : container.getInventoryContainerSlots()) {
             if (slot.getInventorySlot() instanceof FormulaicCraftingSlot) {
@@ -40,7 +46,7 @@ public class FormulaicRecipeTransferInfo implements IRecipeTransferInfo<Formulai
     }
 
     @Override
-    public List<Slot> getInventorySlots(FormulaicAssemblicatorContainer container) {
+    public List<Slot> getInventorySlots(FormulaicAssemblicatorContainer container, CraftingRecipe recipe) {
         List<Slot> slots = new ArrayList<>();
         slots.addAll(container.getMainInventorySlots());
         slots.addAll(container.getHotBarSlots());

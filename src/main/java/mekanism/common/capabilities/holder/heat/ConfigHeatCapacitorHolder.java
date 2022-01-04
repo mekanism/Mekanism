@@ -10,7 +10,7 @@ import mekanism.common.capabilities.holder.ConfigHolder;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.slot.HeatSlotInfo;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class ConfigHeatCapacitorHolder extends ConfigHolder<IHeatCapacitor> implements IHeatCapacitorHolder {
 

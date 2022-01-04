@@ -9,7 +9,7 @@ import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 //TODO - 1.18: Look at TODOs related to warning system
 public class WarningTracker implements IWarningTracker {
@@ -42,8 +42,8 @@ public class WarningTracker implements IWarningTracker {
     }
 
     @Override
-    public List<ITextComponent> getWarnings() {
-        List<ITextComponent> warningMessages = new ArrayList<>();
+    public List<Component> getWarnings() {
+        List<Component> warningMessages = new ArrayList<>();
         for (Map.Entry<WarningType, List<BooleanSupplier>> entry : warnings.entrySet()) {
             for (BooleanSupplier warningSupplier : entry.getValue()) {
                 if (warningSupplier.getAsBoolean()) {

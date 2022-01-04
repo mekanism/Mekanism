@@ -16,7 +16,9 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityGenerator extends TileEntityMekanism {
 
@@ -29,8 +31,8 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
     /**
      * Generator -- a block that produces energy. It has a certain amount of fuel it can store as well as an output rate.
      */
-    public TileEntityGenerator(IBlockProvider blockProvider, @Nonnull FloatingLong out) {
-        super(blockProvider);
+    public TileEntityGenerator(IBlockProvider blockProvider, BlockPos pos, BlockState state, @Nonnull FloatingLong out) {
+        super(blockProvider, pos, state);
         output = out;
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }

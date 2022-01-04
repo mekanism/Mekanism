@@ -1,6 +1,6 @@
 package mekanism.generators.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Arrays;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
@@ -18,20 +18,20 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.content.turbine.TurbineValidator;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, EmptyTileContainer<TileEntityTurbineCasing>> {
 
-    public GuiTurbineStats(EmptyTileContainer<TileEntityTurbineCasing> container, PlayerInventory inv, ITextComponent title) {
+    public GuiTurbineStats(EmptyTileContainer<TileEntityTurbineCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
     }
 
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiTurbineTab(this, tile, TurbineTab.MAIN));
-        addButton(new GuiEnergyTab(this, () -> {
+        addRenderableWidget(new GuiTurbineTab(this, tile, TurbineTab.MAIN));
+        addRenderableWidget(new GuiEnergyTab(this, () -> {
             EnergyDisplay storing;
             EnergyDisplay producing;
             TurbineMultiblockData multiblock = tile.getMultiblock();
@@ -49,11 +49,11 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, GeneratorsLang.TURBINE_STATS.translate(), titleLabelY);
         TurbineMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed()) {
-            ITextComponent limiting = GeneratorsLang.IS_LIMITING.translateColored(EnumColor.DARK_RED);
+            Component limiting = GeneratorsLang.IS_LIMITING.translateColored(EnumColor.DARK_RED);
             int lowerVolume = multiblock.lowerVolume;
             int dispersers = multiblock.getDispersers();
             int vents = multiblock.vents;

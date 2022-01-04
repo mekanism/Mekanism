@@ -13,7 +13,7 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraftforge.common.Tags;
@@ -21,14 +21,14 @@ import net.minecraftforge.common.Tags;
 class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "reaction/";
         addCoalGasificationRecipes(consumer, basePath + "coal_gasification/");
         addWoodGasificationRecipes(consumer, basePath + "wood_gasification/");
         addSubstrateRecipes(consumer, basePath + "substrate/");
     }
 
-    private void addCoalGasificationRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCoalGasificationRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Blocks
         PressurizedReactionRecipeBuilder.reaction(
               ItemStackIngredient.from(BaseRecipeProvider.createIngredient(Arrays.asList(
@@ -65,7 +65,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
 
     }
 
-    private void addWoodGasificationRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addWoodGasificationRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //TODO: Figure out a way to specify only the woods that burn. Vanilla has a logs_that_burn tag
         // but doe snot have one for the other types of wood
         //Dusts, each worth a 32th of a log.
@@ -120,7 +120,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "wooden_stairs"));
     }
 
-    private void addSubstrateRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addSubstrateRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Ethene + oxygen
         PressurizedReactionRecipeBuilder.reaction(
                     ItemStackIngredient.from(MekanismItems.SUBSTRATE),

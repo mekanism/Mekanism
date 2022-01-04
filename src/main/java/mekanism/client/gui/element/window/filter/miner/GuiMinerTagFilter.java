@@ -9,7 +9,7 @@ import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.miner.MinerTagFilter;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class GuiMinerTagFilter extends GuiTagFilter<MinerTagFilter, TileEntityDigitalMiner> implements GuiMinerFilterHelper {
 

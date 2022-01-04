@@ -8,8 +8,8 @@ import mekanism.api.gear.config.IModuleConfigItem;
 import mekanism.api.gear.config.ModuleBooleanData;
 import mekanism.api.gear.config.ModuleConfigData;
 import mekanism.api.text.ILangEntry;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 
 public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
 
@@ -25,7 +25,7 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
         this.data = data;
     }
 
-    public ITextComponent getDescription() {
+    public Component getDescription() {
         return description.translate();
     }
 
@@ -73,13 +73,13 @@ public class ModuleConfigItem<TYPE> implements IModuleConfigItem<TYPE> {
         module.save(callback);
     }
 
-    public void read(CompoundNBT tag) {
+    public void read(CompoundTag tag) {
         if (tag.contains(name)) {
             data.read(name, tag);
         }
     }
 
-    public void write(CompoundNBT tag) {
+    public void write(CompoundTag tag) {
         data.write(name, tag);
     }
 

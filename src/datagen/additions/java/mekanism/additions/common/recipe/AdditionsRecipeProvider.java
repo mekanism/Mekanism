@@ -34,11 +34,11 @@ import mekanism.common.registries.MekanismPigments;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -64,7 +64,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     }
 
     @Override
-    protected void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void addRecipes(Consumer<FinishedRecipe> consumer) {
         ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsItems.WALKIE_TALKIE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.EMPTY, Pattern.OSMIUM),
@@ -97,13 +97,13 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         );
     }
 
-    private void registerBalloons(Consumer<IFinishedRecipe> consumer) {
+    private void registerBalloons(Consumer<FinishedRecipe> consumer) {
         for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
             registerBalloon(consumer, balloon, "balloon/");
         }
     }
 
-    private void registerBalloon(Consumer<IFinishedRecipe> consumer, ItemRegistryObject<ItemBalloon> result, String basePath) {
+    private void registerBalloon(Consumer<FinishedRecipe> consumer, ItemRegistryObject<ItemBalloon> result, String basePath) {
         EnumColor color = result.getItem().getColor();
         String colorString = color.getRegistryPrefix();
         IngredientWithout recolorInput = IngredientWithout.create(Items.BALLOONS, result);
@@ -126,13 +126,13 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "recolor/painting/" + colorString));
     }
 
-    private void registerGlowPanels(Consumer<IFinishedRecipe> consumer) {
+    private void registerGlowPanels(Consumer<FinishedRecipe> consumer) {
         for (BlockRegistryObject<BlockGlowPanel, ItemBlockColoredName> glowPanel : AdditionsBlocks.GLOW_PANELS.values()) {
             registerGlowPanel(consumer, glowPanel, "glow_panel/");
         }
     }
 
-    private void registerGlowPanel(Consumer<IFinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
+    private void registerGlowPanel(Consumer<FinishedRecipe> consumer, BlockRegistryObject<? extends IColoredBlock, ?> result, String basePath) {
         EnumColor color = result.getBlock().getColor();
         DyeColor dye = color.getDyeColor();
         if (dye != null) {

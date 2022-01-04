@@ -20,11 +20,11 @@ import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class RecipeRegistryHelper {
@@ -62,7 +62,7 @@ public class RecipeRegistryHelper {
         List<NutritionalLiquifierIRecipe> list = new ArrayList<>();
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
             if (item.isEdible()) {
-                Food food = item.getFoodProperties();
+                FoodProperties food = item.getFoodProperties();
                 //Only display consuming foods that provide healing as otherwise no paste will be made
                 if (food != null && food.getNutrition() > 0) {
                     list.add(new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(food.getNutrition() * 50L)));
@@ -93,7 +93,7 @@ public class RecipeRegistryHelper {
         }
     }
 
-    private static ClientWorld getWorld() {
+    private static ClientLevel getWorld() {
         return Minecraft.getInstance().level;
     }
 }

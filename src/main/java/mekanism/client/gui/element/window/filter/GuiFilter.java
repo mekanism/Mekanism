@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.window.filter;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -29,10 +29,10 @@ import mekanism.common.network.to_server.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.StackUtils;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>> extends GuiWindow
       implements GuiFilterHelper<TILE> {
@@ -40,18 +40,18 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     public static final Predicate<ItemStack> NOT_EMPTY = stack -> !stack.isEmpty();
     public static final Predicate<ItemStack> NOT_EMPTY_BLOCK = stack -> !stack.isEmpty() && stack.getItem() instanceof BlockItem;
 
-    private final ITextComponent filterName;
+    private final Component filterName;
     @Nullable
     protected final FILTER origFilter;
     protected final FILTER filter;
     protected final TILE tile;
     private final boolean isNew;
 
-    protected ITextComponent status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
+    protected Component status = MekanismLang.STATUS_OK.translateColored(EnumColor.DARK_GREEN);
     protected GuiSequencedSlotDisplay slotDisplay;
     private int ticker;
 
-    protected GuiFilter(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent filterName, TILE tile, @Nullable FILTER origFilter) {
+    protected GuiFilter(IGuiWrapper gui, int x, int y, int width, int height, Component filterName, TILE tile, @Nullable FILTER origFilter) {
         super(gui, x, y, width, height, SelectedWindowData.UNSPECIFIED);
         this.tile = tile;
         this.origFilter = origFilter;
@@ -114,7 +114,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         addChild(new TranslationButton(gui(), getLeftButtonX(), screenBottom + 2, 60, 20,
               isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, () -> {
             if (origFilter != null) {
-                Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getBlockPos(), true, origFilter, null));
+                Mekanism.packetHandler().sendToServer(new PacketEditFilter(tile.getBlockPos(), true, origFilter, null));
             }
             close();
         }));
@@ -135,8 +135,8 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         close();
     }
 
-    protected List<ITextComponent> getScreenText() {
-        List<ITextComponent> list = new ArrayList<>();
+    protected List<Component> getScreenText() {
+        List<Component> list = new ArrayList<>();
         list.add(MekanismLang.STATUS.translate(status));
         return list;
     }
@@ -179,9 +179,9 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected void saveFilter() {
         if (isNew) {
-            Mekanism.packetHandler.sendToServer(new PacketNewFilter(tile.getBlockPos(), filter));
+            Mekanism.packetHandler().sendToServer(new PacketNewFilter(tile.getBlockPos(), filter));
         } else {
-            Mekanism.packetHandler.sendToServer(new PacketEditFilter(tile.getBlockPos(), false, origFilter, filter));
+            Mekanism.packetHandler().sendToServer(new PacketEditFilter(tile.getBlockPos(), false, origFilter, filter));
         }
         close();
     }
@@ -192,7 +192,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     protected abstract List<ItemStack> getRenderStacks();
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawTitleText(matrix, (isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), 6);
     }
@@ -219,7 +219,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
                 if (Screen.hasShiftDown()) {
                     toSet = ItemStack.EMPTY;
                 } else {
-                    ItemStack stack = minecraft.player.inventory.getCarried();
+                    ItemStack stack = minecraft.player.containerMenu.getCarried();
                     if (!stackValidator.test(stack)) {
                         return false;
                     }

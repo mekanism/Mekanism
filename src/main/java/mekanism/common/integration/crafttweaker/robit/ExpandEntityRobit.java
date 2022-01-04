@@ -5,7 +5,7 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -35,7 +35,7 @@ public class ExpandEntityRobit {
      * @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
      */
     @ZenCodeType.Method
-    public static boolean setSkin(EntityRobit internal, RobitSkin skin, @ZenCodeType.Nullable PlayerEntity player) {
+    public static boolean setSkin(EntityRobit internal, RobitSkin skin, @ZenCodeType.Nullable Player player) {
         return internal.setSkin(skin, player);
     }
 }

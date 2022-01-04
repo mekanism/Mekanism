@@ -14,7 +14,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class MergedChemicalInventorySlot<MERGED extends MergedChemicalTank> extends BasicInventorySlot {
 

@@ -77,7 +77,6 @@ public class CraftTweakerParamNameMapper extends AbstractProcessor {
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
-        //TODO - 1.18: Java 17
-        return SourceVersion.RELEASE_8;
+        return SourceVersion.RELEASE_17;
     }
 }

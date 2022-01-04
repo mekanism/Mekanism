@@ -12,15 +12,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registration.impl.PigmentRegistryObject;
 import mekanism.common.registries.MekanismPigments;
-import net.minecraft.block.BannerBlock;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.block.BannerBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.Tags;
 
 public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
@@ -35,13 +35,13 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     private static final long WOOL_RATE = DYE_RATE * 3 / 4;//192
     private static final long CARPET_RATE = WOOL_RATE * 2 / 3;//128
 
-    static final Map<EnumColor, IItemProvider> CONCRETE = new EnumMap<>(EnumColor.class);
-    static final Map<EnumColor, IItemProvider> CONCRETE_POWDER = new EnumMap<>(EnumColor.class);
-    static final Map<EnumColor, IItemProvider> CARPETS = new EnumMap<>(EnumColor.class);
-    static final Map<EnumColor, IItemProvider> TERRACOTTA = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, ITag<Item>> STAINED_GLASS = new EnumMap<>(EnumColor.class);
-    private static final Map<EnumColor, ITag<Item>> STAINED_GLASS_PANES = new EnumMap<>(EnumColor.class);
-    static final Map<EnumColor, IItemProvider> WOOL = new EnumMap<>(EnumColor.class);
+    static final Map<EnumColor, ItemLike> CONCRETE = new EnumMap<>(EnumColor.class);
+    static final Map<EnumColor, ItemLike> CONCRETE_POWDER = new EnumMap<>(EnumColor.class);
+    static final Map<EnumColor, ItemLike> CARPETS = new EnumMap<>(EnumColor.class);
+    static final Map<EnumColor, ItemLike> TERRACOTTA = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Tag<Item>> STAINED_GLASS = new EnumMap<>(EnumColor.class);
+    private static final Map<EnumColor, Tag<Item>> STAINED_GLASS_PANES = new EnumMap<>(EnumColor.class);
+    static final Map<EnumColor, ItemLike> WOOL = new EnumMap<>(EnumColor.class);
 
     static {
         addTypes(EnumColor.WHITE, Blocks.WHITE_CONCRETE, Blocks.WHITE_CONCRETE_POWDER, Blocks.WHITE_CARPET, Blocks.WHITE_TERRACOTTA, Tags.Items.GLASS_WHITE,
@@ -78,8 +78,8 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
               Tags.Items.GLASS_PANES_BLACK, Blocks.BLACK_WOOL);
     }
 
-    private static void addTypes(EnumColor color, IItemProvider concrete, IItemProvider concretePowder, IItemProvider carpet, IItemProvider terracotta,
-          ITag<Item> stainedGlass, ITag<Item> stainedGlassPane, IItemProvider wool) {
+    private static void addTypes(EnumColor color, ItemLike concrete, ItemLike concretePowder, ItemLike carpet, ItemLike terracotta,
+          Tag<Item> stainedGlass, Tag<Item> stainedGlassPane, ItemLike wool) {
         CONCRETE.put(color, concrete);
         CONCRETE_POWDER.put(color, concretePowder);
         CARPETS.put(color, carpet);
@@ -90,13 +90,13 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
     }
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "pigment_extracting/";
         addExtractionRecipes(consumer, basePath);
         addFlowerExtractionRecipes(consumer, basePath);
     }
 
-    private static void addFlowerExtractionRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private static void addFlowerExtractionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         basePath += "flower/";
         //Flowers -> 4x dye output
         //Note: We use this higher rate as the pigment extractor is rather effective at extracting
@@ -205,7 +205,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "white"));
     }
 
-    private static void addExtractionRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private static void addExtractionRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         for (Map.Entry<EnumColor, PigmentRegistryObject<Pigment>> entry : MekanismPigments.PIGMENT_COLOR_LOOKUP.entrySet()) {
             EnumColor color = entry.getKey();
             IPigmentProvider pigment = entry.getValue();
@@ -231,7 +231,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         }
     }
 
-    private static void addExtractionRecipe(Consumer<IFinishedRecipe> consumer, EnumColor color, Map<EnumColor, IItemProvider> input, IPigmentProvider pigment, long rate,
+    private static void addExtractionRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, Map<EnumColor, ItemLike> input, IPigmentProvider pigment, long rate,
           String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               ItemStackIngredient.from(input.get(color)),
@@ -239,7 +239,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 
-    private static void addTagExtractionRecipe(Consumer<IFinishedRecipe> consumer, EnumColor color, Map<EnumColor, ITag<Item>> input, IPigmentProvider pigment, long rate,
+    private static void addTagExtractionRecipe(Consumer<FinishedRecipe> consumer, EnumColor color, Map<EnumColor, Tag<Item>> input, IPigmentProvider pigment, long rate,
           String basePath) {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               ItemStackIngredient.from(input.get(color)),

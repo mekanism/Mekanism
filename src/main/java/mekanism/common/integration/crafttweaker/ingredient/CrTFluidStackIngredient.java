@@ -10,9 +10,9 @@ import com.blamejared.crafttweaker.impl.tag.manager.TagManagerFluid;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.tags.ITag;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.tags.Tag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -64,7 +64,7 @@ public class CrTFluidStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static FluidStackIngredient from(MCTag<Fluid> fluidTag, int amount) {
-        ITag<Fluid> tag = CrTIngredientHelper.assertValidAndGet(fluidTag, amount, TagManagerFluid.INSTANCE::getInternal, "FluidStackIngredients");
+        Tag<Fluid> tag = CrTIngredientHelper.assertValidAndGet(fluidTag, amount, TagManagerFluid.INSTANCE::getInternal, "FluidStackIngredients");
         return FluidStackIngredient.from(tag, amount);
     }
 

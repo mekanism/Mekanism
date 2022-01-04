@@ -78,6 +78,7 @@ e5f1cddaca7b34c79979bb6a24f2d9cb6f946d69 assets/mekanismtools/models/item/steel_
 0e4adc880c945fb04a266c0a8b4311cad54b2c4c assets/mekanismtools/models/item/steel_sword.json
 aee740ab0f7ef10adb310b0b4d9c53f96a73a89e assets/mekanismtools/models/item/stone_paxel.json
 f79723c1857e69ea98ec74ac504a8a2b9d77a841 assets/mekanismtools/models/item/wood_paxel.json
+3b631d0443ed44a68594481be71be4d77f77b96b data/forge/tags/blocks/mineable/paxel.json
 801286459f57250641c0611fc64744db343d3737 data/mekanismtools/recipes/banner_shield.json
 fa264a5b7d6f303bfcbdda039e2bbe774c6182b2 data/mekanismtools/recipes/bronze/armor/boots.json
 0c64c1780e485f731558e0eacfda2a39cd378a37 data/mekanismtools/recipes/bronze/armor/chestplate.json

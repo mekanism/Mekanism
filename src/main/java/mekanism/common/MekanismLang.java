@@ -1,8 +1,8 @@
 package mekanism.common;
 
 import mekanism.api.text.ILangEntry;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.Util;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.Util;
 
 public enum MekanismLang implements ILangEntry {
     //Vanilla lang strings we use, for purposes of not having to have them copy-pasted all over the place
@@ -802,7 +802,7 @@ public enum MekanismLang implements ILangEntry {
         return key;
     }
 
-    public static MekanismLang get(EquipmentSlotType type) {
+    public static MekanismLang get(EquipmentSlot type) {
         switch (type) {
             case HEAD:
                 return HEAD;

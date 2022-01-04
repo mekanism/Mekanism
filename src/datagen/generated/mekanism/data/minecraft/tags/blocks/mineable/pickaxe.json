@@ -1,0 +1,28 @@
+{
+  "values": [
+    "mekanism:structural_glass",
+    "mekanism:bounding_block",
+    "mekanism:basic_energy_cube",
+    "mekanism:advanced_energy_cube",
+    "mekanism:elite_energy_cube",
+    "mekanism:ultimate_energy_cube",
+    "mekanism:creative_energy_cube",
+    "mekanism:block_bronze",
+    "mekanism:block_refined_obsidian",
+    "mekanism:block_charcoal",
+    "mekanism:block_refined_glowstone",
+    "mekanism:block_steel",
+    "mekanism:block_fluorite",
+    "mekanism:block_osmium",
+    "mekanism:block_copper",
+    "mekanism:block_tin",
+    "mekanism:block_lead",
+    "mekanism:block_uranium",
+    "mekanism:copper_ore",
+    "mekanism:tin_ore",
+    "mekanism:osmium_ore",
+    "mekanism:uranium_ore",
+    "mekanism:fluorite_ore",
+    "mekanism:lead_ore"
+  ]
+}

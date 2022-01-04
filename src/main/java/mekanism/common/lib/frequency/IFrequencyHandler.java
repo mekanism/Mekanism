@@ -5,7 +5,7 @@ import java.util.UUID;
 import mekanism.api.NBTConstants;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.ISecurityTile;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public interface IFrequencyHandler extends ISecurityTile {
 
@@ -20,7 +20,7 @@ public interface IFrequencyHandler extends ISecurityTile {
      *
      * @param frequencyCompound Frequency identity super saturated with the owner of the frequency.
      */
-    default void setFrequency(FrequencyType<?> type, CompoundNBT frequencyCompound) {
+    default void setFrequency(FrequencyType<?> type, CompoundTag frequencyCompound) {
         FrequencyIdentity freq = FrequencyIdentity.load(type, frequencyCompound);
         if (freq != null) {
             UUID owner;

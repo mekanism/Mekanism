@@ -67,22 +67,22 @@ import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.HashCache;
+import net.minecraft.data.DataProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public abstract class BaseCrTExampleProvider implements IDataProvider {
+public abstract class BaseCrTExampleProvider implements DataProvider {
 
     public static final Map<String, Map<String, List<String>>> PARAMETER_NAMES = new HashMap<>();
 
@@ -236,7 +236,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
     }
 
     public boolean recipeExists(ResourceLocation location) {
-        return existingFileHelper.exists(location, ResourcePackType.SERVER_DATA, ".json", "recipes");
+        return existingFileHelper.exists(location, PackType.SERVER_DATA, ".json", "recipes");
     }
 
     protected abstract void addExamples();
@@ -258,12 +258,12 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         }
         CrTExampleBuilder<?> exampleBuilder = new CrTExampleBuilder<>(this, fileName);
         examples.put(fileName, exampleBuilder);
-        existingFileHelper.trackGenerated(new ResourceLocation(modid, fileName), ResourcePackType.SERVER_DATA, ".zs", "scripts");
+        existingFileHelper.trackGenerated(new ResourceLocation(modid, fileName), PackType.SERVER_DATA, ".zs", "scripts");
         return exampleBuilder;
     }
 
     @Override
-    public void run(@Nonnull DirectoryCache cache) {
+    public void run(@Nonnull HashCache cache) {
         examples.clear();
         addExamples();
         for (Map.Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
@@ -295,7 +295,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
                   if (ingredient instanceof ItemStackIngredient.Single) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return MekanismRecipeHandler.basicImplicitIngredient(((ItemStackIngredient.Single) ingredient).getInputRaw(),
-                            JSONUtils.getAsInt(serialized, JsonConstants.AMOUNT, 1), serialized.get(JsonConstants.INGREDIENT));
+                            GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1), serialized.get(JsonConstants.INGREDIENT));
                   }
                   return null;
               });
@@ -308,12 +308,12 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
             // are easier to get the information of out of the serialized ingredient
             JsonObject serializedIngredient = serialized.getAsJsonObject(JsonConstants.INGREDIENT);
             Ingredient vanillaIngredient = ((ItemStackIngredient.Single) ingredient).getInputRaw();
-            int amount = JSONUtils.getAsInt(serialized, JsonConstants.AMOUNT, 1);
+            int amount = GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1);
             String representation = null;
             if (amount > 1) {
                 //Special case handling for when we would want to use a different constructor
                 if (vanillaIngredient.isVanilla() && !serializedIngredient.isJsonArray() && serializedIngredient.has(JsonConstants.ITEM)) {
-                    Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(JSONUtils.getAsString(serializedIngredient, JsonConstants.ITEM)));
+                    Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(serializedIngredient, JsonConstants.ITEM)));
                     representation = ItemStackHelper.getCommandString(new ItemStack(item, amount));
                     amount = 1;
                 } else if (vanillaIngredient instanceof NBTIngredient) {
@@ -453,7 +453,7 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
      * GSON.
      */
     @SuppressWarnings("UnstableApiUsage")
-    private static void save(DirectoryCache cache, String contents, Path path) throws IOException {
+    private static void save(HashCache cache, String contents, Path path) throws IOException {
         String sha1 = SHA1.hashUnencodedChars(contents).toString();
         if (!Objects.equals(cache.getHash(path), sha1) || !Files.exists(path)) {
             Files.createDirectories(path.getParent());
@@ -478,11 +478,11 @@ public abstract class BaseCrTExampleProvider implements IDataProvider {
         private final ItemStack stack;
         private final double chance;
 
-        public WeightedItemStack(IItemProvider item) {
+        public WeightedItemStack(ItemLike item) {
             this(item, 1);
         }
 
-        public WeightedItemStack(IItemProvider item, double chance) {
+        public WeightedItemStack(ItemLike item, double chance) {
             this(new ItemStack(item), chance);
         }
 

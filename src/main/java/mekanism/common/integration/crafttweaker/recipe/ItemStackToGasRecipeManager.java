@@ -11,7 +11,7 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.ChemicalOxidizerIRecipe;
 import mekanism.common.recipe.impl.GasConversionIRecipe;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -46,7 +46,7 @@ public abstract class ItemStackToGasRecipeManager extends MekanismRecipeManager<
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return CrTUtils.describeOutputs(getRecipe().getOutputDefinitionNew(), CrTGasStack::new);
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), CrTGasStack::new);
             }
         };
     }

@@ -12,10 +12,10 @@ import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.client.jei.interfaces.IJEIRecipeArea;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
 
@@ -23,20 +23,20 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
         return x < parentX || y < parentY || x + width > parentX + parentWidth || y + height > parentY + parentHeight;
     }
 
-    public static List<Rectangle2d> getAreasFor(int parentX, int parentY, int parentWidth, int parentHeight, Collection<? extends IGuiEventListener> children) {
-        List<Rectangle2d> areas = new ArrayList<>();
-        for (IGuiEventListener child : children) {
-            if (child instanceof Widget) {
-                Widget widget = (Widget) child;
+    public static List<Rect2i> getAreasFor(int parentX, int parentY, int parentWidth, int parentHeight, Collection<? extends GuiEventListener> children) {
+        List<Rect2i> areas = new ArrayList<>();
+        for (GuiEventListener child : children) {
+            if (child instanceof AbstractWidget) {
+                AbstractWidget widget = (AbstractWidget) child;
                 if (widget.visible) {
                     if (areaSticksOut(widget.x, widget.y, widget.getWidth(), widget.getHeight(), parentX, parentY, parentWidth, parentHeight)) {
                         //If the element sticks out at all add it
-                        areas.add(new Rectangle2d(widget.x, widget.y, widget.getWidth(), widget.getHeight()));
+                        areas.add(new Rect2i(widget.x, widget.y, widget.getWidth(), widget.getHeight()));
                     }
                     if (widget instanceof GuiElement) {
                         //Start by getting all the areas in the grandchild that stick outside the child in theory this should cut down
                         // on our checks a fair bit as most children will fully contain all their grandchildren
-                        for (Rectangle2d grandChildArea : getAreasFor(widget.x, widget.y, widget.getWidth(), widget.getHeight(), ((GuiElement) widget).children())) {
+                        for (Rect2i grandChildArea : getAreasFor(widget.x, widget.y, widget.getWidth(), widget.getHeight(), ((GuiElement) widget).children())) {
                             //Then check if that area that is sticking outside the child sticks outside the parent as well
                             if (areaSticksOut(grandChildArea.getX(), grandChildArea.getY(), grandChildArea.getWidth(), grandChildArea.getHeight(),
                                   parentX, parentY, parentWidth, parentHeight)) {
@@ -52,13 +52,13 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
     }
 
     @Override
-    public List<Rectangle2d> getGuiExtraAreas(GuiMekanism<?> gui) {
+    public List<Rect2i> getGuiExtraAreas(GuiMekanism<?> gui) {
         int parentX = gui.getLeft();
         int parentY = gui.getTop();
         int parentWidth = gui.getWidth();
         int parentHeight = gui.getHeight();
         //Add any children the gui has and any windows the gui has including all grandchildren that poke out of the main gui
-        List<Rectangle2d> extraAreas = getAreasFor(parentX, parentY, parentWidth, parentHeight, gui.children());
+        List<Rect2i> extraAreas = getAreasFor(parentX, parentY, parentWidth, parentHeight, gui.children());
         extraAreas.addAll(getAreasFor(parentX, parentY, parentWidth, parentHeight, gui.getWindows()));
         return extraAreas;
     }
@@ -72,10 +72,10 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
     }
 
     @Nullable
-    private Object getIngredientUnderMouse(List<? extends IGuiEventListener> children, double mouseX, double mouseY) {
-        for (IGuiEventListener child : children) {
-            if (child instanceof Widget) {
-                Widget widget = (Widget) child;
+    private Object getIngredientUnderMouse(List<? extends GuiEventListener> children, double mouseX, double mouseY) {
+        for (GuiEventListener child : children) {
+            if (child instanceof AbstractWidget) {
+                AbstractWidget widget = (AbstractWidget) child;
                 if (!widget.visible) {
                     //Skip this child if it isn't visible
                     continue;
@@ -112,8 +112,8 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
         return getGuiClickableArea(guiWindow.children(), mouseX, mouseY);
     }
 
-    private Collection<IGuiClickableArea> getGuiClickableArea(List<? extends IGuiEventListener> children, double mouseX, double mouseY) {
-        for (IGuiEventListener child : children) {
+    private Collection<IGuiClickableArea> getGuiClickableArea(List<? extends GuiEventListener> children, double mouseX, double mouseY) {
+        for (GuiEventListener child : children) {
             if (child instanceof GuiElement) {
                 GuiElement element = (GuiElement) child;
                 if (element.visible) {

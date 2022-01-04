@@ -11,9 +11,9 @@ import mekanism.common.lib.security.ISecurityObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 
 public class MekanismTileContainer<TILE extends TileEntityMekanism> extends MekanismContainer {
 
@@ -22,7 +22,7 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     @Nonnull
     protected final TILE tile;
 
-    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, @Nonnull TILE tile) {
+    public MekanismTileContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, @Nonnull TILE tile) {
         super(type, id, inv);
         this.tile = tile;
         addContainerTrackers();
@@ -43,19 +43,19 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
     }
 
     @Override
-    protected void openInventory(@Nonnull PlayerInventory inv) {
+    protected void openInventory(@Nonnull Inventory inv) {
         super.openInventory(inv);
         tile.open(inv.player);
     }
 
     @Override
-    protected void closeInventory(@Nonnull PlayerEntity player) {
+    protected void closeInventory(@Nonnull Player player) {
         super.closeInventory(player);
         tile.close(player);
     }
 
     @Override
-    public boolean stillValid(@Nonnull PlayerEntity player) {
+    public boolean stillValid(@Nonnull Player player) {
         //prevent Containers from remaining valid after the chunk has unloaded;
         return tile.hasGui() && !tile.isRemoved() && WorldUtils.isBlockLoaded(tile.getLevel(), tile.getBlockPos());
     }

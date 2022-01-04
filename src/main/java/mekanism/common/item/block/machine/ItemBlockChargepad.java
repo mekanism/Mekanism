@@ -11,10 +11,10 @@ import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class ItemBlockChargepad extends ItemBlockTooltip<BlockTileModel<?, ?>> {
@@ -24,12 +24,12 @@ public class ItemBlockChargepad extends ItemBlockTooltip<BlockTileModel<?, ?>> {
     }
 
     @Override
-    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
+    public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         StorageUtils.addStoredEnergy(stack, tooltip, true);
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         AttributeEnergy attributeEnergy = Attribute.get(getBlock(), AttributeEnergy.class);
         return new ItemCapabilityWrapper(stack, RateLimitEnergyHandler.create(attributeEnergy::getStorage, BasicEnergyContainer.manualOnly,
               BasicEnergyContainer.alwaysTrue));

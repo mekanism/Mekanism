@@ -1,8 +1,14 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
@@ -40,18 +46,14 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -62,7 +64,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
-import org.lwjgl.opengl.GL11;
 
 @Mod.EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MekanismRenderer {
@@ -116,7 +117,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getSprite(ResourceLocation spriteLocation) {
-        return Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(spriteLocation);
+        return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(spriteLocation);
     }
 
     public static void prepFlowing(Model3D model, @Nonnull FluidStack fluid) {
@@ -178,26 +179,26 @@ public class MekanismRenderer {
         }
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay,
+    public static void renderObject(@Nullable Model3D object, @Nonnull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
           FaceDisplay faceDisplay) {
         renderObject(object, matrix, buffer, argb, light, overlay, faceDisplay, true);
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int argb, int light, int overlay,
+    public static void renderObject(@Nullable Model3D object, @Nonnull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
           FaceDisplay faceDisplay, boolean fakeDisableDiffuse) {
         if (object != null) {
             RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, fakeDisableDiffuse);
         }
     }
 
-    public static void renderObject(@Nullable Model3D object, @Nonnull MatrixStack matrix, IVertexBuilder buffer, int[] colors, int light, int overlay,
+    public static void renderObject(@Nullable Model3D object, @Nonnull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
           FaceDisplay faceDisplay) {
         if (object != null) {
             RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, true);
         }
     }
 
-    public static void renderValves(MatrixStack matrix, IVertexBuilder buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow, int overlay,
+    public static void renderValves(PoseStack matrix, VertexConsumer buffer, Set<ValveData> valves, FluidRenderData data, BlockPos pos, int glow, int overlay,
           BooleanSupplier inMultiblock) {
         FaceDisplay faceDisplay;
         if (!valves.isEmpty()) {
@@ -214,12 +215,14 @@ public class MekanismRenderer {
     }
 
     public static void bindTexture(ResourceLocation texture) {
-        Minecraft.getInstance().textureManager.bind(texture);
+        //TODO - 1.18: inline this?
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, texture);
     }
 
     //Color
     public static void resetColor() {
-        RenderSystem.color4f(1, 1, 1, 1);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 
     public static float getRed(int color) {
@@ -239,7 +242,7 @@ public class MekanismRenderer {
     }
 
     public static void color(int color) {
-        RenderSystem.color4f(getRed(color), getGreen(color), getBlue(color), getAlpha(color));
+        RenderSystem.setShaderColor(getRed(color), getGreen(color), getBlue(color), getAlpha(color));
     }
 
     public static void color(ColorRegistryObject colorRO) {
@@ -247,7 +250,7 @@ public class MekanismRenderer {
     }
 
     public static void color(Color color) {
-        RenderSystem.color4f(color.rf(), color.gf(), color.bf(), color.af());
+        RenderSystem.setShaderColor(color.rf(), color.gf(), color.bf(), color.af());
     }
 
     public static void color(@Nonnull FluidStack fluid) {
@@ -265,7 +268,8 @@ public class MekanismRenderer {
     public static void color(@Nonnull Chemical<?> chemical) {
         if (!chemical.isEmptyType()) {
             int color = chemical.getTint();
-            RenderSystem.color3f(getRed(color), getGreen(color), getBlue(color));
+            //TODO - 1.18: Test this
+            RenderSystem.setShaderColor(getRed(color), getGreen(color), getBlue(color), 1);
         }
     }
 
@@ -279,7 +283,7 @@ public class MekanismRenderer {
 
     public static void color(@Nullable EnumColor color, float alpha) {
         if (color != null) {
-            RenderSystem.color4f(color.getColor(0), color.getColor(1), color.getColor(2), alpha);
+            RenderSystem.setShaderColor(color.getColor(0), color.getColor(1), color.getColor(2), alpha);
         }
     }
 
@@ -337,7 +341,7 @@ public class MekanismRenderer {
         return (combinedLight & 0xFFFF0000) | Math.max(Math.min(glow, 15) << 4, combinedLight & 0xFFFF);
     }
 
-    public static void renderColorOverlay(MatrixStack matrix, int x, int y, int width, int height, int color) {
+    public static void renderColorOverlay(PoseStack matrix, int x, int y, int width, int height, int color) {
         float r = getRed(color);
         float g = getGreen(color);
         float b = getBlue(color);
@@ -345,21 +349,22 @@ public class MekanismRenderer {
         RenderSystem.disableDepthTest();
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
+        //TODO - 1.18: Test this
+        //RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        Tessellator tessellator = Tessellator.getInstance();
+        //RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
-        bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         Matrix4f matrix4f = matrix.last().pose();
         bufferbuilder.vertex(matrix4f, width, y, 0).color(r, g, b, a).endVertex();
         bufferbuilder.vertex(matrix4f, x, y, 0).color(r, g, b, a).endVertex();
         bufferbuilder.vertex(matrix4f, x, height, 0).color(r, g, b, a).endVertex();
         bufferbuilder.vertex(matrix4f, width, height, 0).color(r, g, b, a).endVertex();
         tessellator.end();
-        RenderSystem.shadeModel(GL11.GL_FLAT);
+        //RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
+        //RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
         RenderSystem.enableDepthTest();
     }
@@ -368,7 +373,7 @@ public class MekanismRenderer {
         return Minecraft.getInstance().getFrameTime();
     }
 
-    public static void rotate(MatrixStack matrix, Direction facing, float north, float south, float west, float east) {
+    public static void rotate(PoseStack matrix, Direction facing, float north, float south, float west, float east) {
         switch (facing) {
             case NORTH:
                 matrix.mulPose(Vector3f.YP.rotationDegrees(north));
@@ -396,7 +401,7 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Pre event) {
-        if (!event.getMap().location().equals(AtlasTexture.LOCATION_BLOCKS)) {
+        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
@@ -462,8 +467,8 @@ public class MekanismRenderer {
 
     @SubscribeEvent
     public static void onStitch(TextureStitchEvent.Post event) {
-        AtlasTexture map = event.getMap();
-        if (!map.location().equals(AtlasTexture.LOCATION_BLOCKS)) {
+        TextureAtlas map = event.getAtlas();
+        if (!map.location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {

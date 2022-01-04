@@ -9,18 +9,20 @@ import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class TileEntityInductionCasing extends TileEntityMultiblock<MatrixMultiblockData> {
 
-    public TileEntityInductionCasing() {
-        this(MekanismBlocks.INDUCTION_CASING);
+    public TileEntityInductionCasing(BlockPos pos, BlockState state) {
+        this(MekanismBlocks.INDUCTION_CASING, pos, state);
         //Disable item handler caps if we are the induction casing, don't disable it for the subclassed port though
         addDisabledCapabilities(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
     }
 
-    public TileEntityInductionCasing(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityInductionCasing(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Nonnull

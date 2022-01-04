@@ -25,12 +25,13 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISustainedInventory;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidUtil;
 
 @ParametersAreNonnullByDefault
@@ -56,7 +57,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         if (item instanceof BlockItem) {
             Block block = ((BlockItem) item).getBlock();
             if (block instanceof IHasTileEntity) {
-                TileEntity tileEntity = ((IHasTileEntity<?>) block).getTileType().create();
+                BlockEntity tileEntity = ((IHasTileEntity<?>) block).newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
                 if (tileEntity instanceof TileEntityMekanism) {
                     tile = (TileEntityMekanism) tileEntity;
                 }
@@ -127,7 +128,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 UUID ownerUUID = securityItem.getOwnerUUID(stack);
                 return ownerUUID == null ? null : new SecurityRecipeData(ownerUUID, securityItem.getSecurity(stack));
             case UPGRADE:
-                CompoundNBT componentUpgrade = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
+                CompoundTag componentUpgrade = ItemDataUtils.getCompound(stack, NBTConstants.COMPONENT_UPGRADE);
                 return componentUpgrade.isEmpty() ? null : new UpgradesRecipeData(Upgrade.buildMap(componentUpgrade));
             case QIO_DRIVE:
                 DriveMetadata data = DriveMetadata.load(stack);
@@ -158,7 +159,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     @Nullable
     default TileEntityMekanism getTileFromBlock(Block block) {
         if (block instanceof IHasTileEntity) {
-            TileEntity tileEntity = ((IHasTileEntity<?>) block).getTileType().create();
+            BlockEntity tileEntity = ((IHasTileEntity<?>) block).newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
             if (tileEntity instanceof TileEntityMekanism) {
                 return (TileEntityMekanism) tileEntity;
             }

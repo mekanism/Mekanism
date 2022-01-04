@@ -3,7 +3,7 @@ package mekanism.common.registration.impl;
 import java.util.function.Supplier;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.registration.WrappedDeferredRegister;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class RobitSkinDeferredRegister extends WrappedDeferredRegister<RobitSkin> {
 

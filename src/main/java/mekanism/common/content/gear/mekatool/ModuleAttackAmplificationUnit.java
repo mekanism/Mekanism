@@ -11,8 +11,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.chat.Component;
 
 @ParametersAreNonnullByDefault
 public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttackAmplificationUnit> {
@@ -30,7 +30,7 @@ public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttack
     }
 
     @Override
-    public void addHUDStrings(IModule<ModuleAttackAmplificationUnit> module, PlayerEntity player, Consumer<ITextComponent> hudStringAdder) {
+    public void addHUDStrings(IModule<ModuleAttackAmplificationUnit> module, Player player, Consumer<Component> hudStringAdder) {
         if (module.isEnabled()) {
             hudStringAdder.accept(MekanismLang.MODULE_DAMAGE.translateColored(EnumColor.DARK_GRAY, EnumColor.INDIGO, attackDamage.get().getDamage()));
         }
@@ -45,7 +45,7 @@ public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttack
         MAX(32);
 
         private final int damage;
-        private final ITextComponent label;
+        private final Component label;
 
         AttackDamage(int damage) {
             this.damage = damage;
@@ -53,7 +53,7 @@ public class ModuleAttackAmplificationUnit implements ICustomModule<ModuleAttack
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             return label;
         }
 

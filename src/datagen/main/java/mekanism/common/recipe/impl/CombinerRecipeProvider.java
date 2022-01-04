@@ -6,16 +6,16 @@ import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 
 class CombinerRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "combining/";
         addCombinerDyeRecipes(consumer, basePath + "dye/");
         //Gravel
@@ -32,7 +32,7 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "obsidian"));
     }
 
-    private void addCombinerDyeRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addCombinerDyeRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Black + white -> light gray
         CombinerRecipeBuilder.combining(
               ItemStackIngredient.from(Tags.Items.DYES_BLACK),

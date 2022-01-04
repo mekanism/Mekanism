@@ -4,18 +4,18 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.Property;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.LevelAccessor;
 import org.jetbrains.annotations.Contract;
 
 public class AttributeStateFacing implements AttributeState {
@@ -96,7 +96,7 @@ public class AttributeStateFacing implements AttributeState {
 
     @Override
     @Contract("_, null, _, _, _, _ -> null")
-    public BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull IWorld world, @Nonnull BlockPos pos, @Nullable PlayerEntity player,
+    public BlockState getStateForPlacement(Block block, @Nullable BlockState state, @Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nullable Player player,
           @Nonnull Direction face) {
         if (state == null) {
             return null;
@@ -106,7 +106,7 @@ public class AttributeStateFacing implements AttributeState {
         if (blockFacing.getPlacementType() == FacePlacementType.PLAYER_LOCATION) {
             //TODO: Somehow weight this stuff towards context.getFace(), so that it has a higher likelihood of going with the face that was clicked on
             if (blockFacing.supportsDirection(Direction.DOWN) && blockFacing.supportsDirection(Direction.UP)) {
-                float rotationPitch = player == null ? 0 : player.xRot;
+                float rotationPitch = player == null ? 0 : player.getXRot();
                 int height = Math.round(rotationPitch);
                 if (height >= 65) {
                     newDirection = Direction.UP;
@@ -116,8 +116,8 @@ public class AttributeStateFacing implements AttributeState {
             }
             if (newDirection != Direction.DOWN && newDirection != Direction.UP) {
                 //TODO: Can this just use newDirection = context.getPlacementHorizontalFacing().getOpposite(); or is that not accurate
-                float placementYaw = player == null ? 0 : player.yRot;
-                int side = MathHelper.floor((placementYaw * 4.0F / 360.0F) + 0.5D) & 3;
+                float placementYaw = player == null ? 0 : player.getYRot();
+                int side = Mth.floor((placementYaw * 4.0F / 360.0F) + 0.5D) & 3;
                 switch (side) {
                     case 0:
                         newDirection = Direction.NORTH;
@@ -142,7 +142,7 @@ public class AttributeStateFacing implements AttributeState {
         return state;
     }
 
-    public static BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation rotation) {
+    public static BlockState rotate(BlockState state, LevelAccessor world, BlockPos pos, Rotation rotation) {
         return rotate(state, rotation);
     }
 

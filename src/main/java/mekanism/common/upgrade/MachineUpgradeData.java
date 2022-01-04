@@ -9,7 +9,7 @@ import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public class MachineUpgradeData implements IUpgradeData {
 
@@ -21,7 +21,7 @@ public class MachineUpgradeData implements IUpgradeData {
     public final EnergyInventorySlot energySlot;
     public final List<IInventorySlot> inputSlots;
     public final List<IInventorySlot> outputSlots;
-    public final CompoundNBT components;
+    public final CompoundTag components;
 
     //Machine Constructor
     public MachineUpgradeData(boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int operatingTicks, EnergyInventorySlot energySlot,
@@ -41,7 +41,7 @@ public class MachineUpgradeData implements IUpgradeData {
         this.inputSlots = inputSlots;
         this.outputSlots = outputSlots;
         this.sorting = sorting;
-        this.components = new CompoundNBT();
+        this.components = new CompoundTag();
         for (ITileComponent component : components) {
             component.write(this.components);
         }

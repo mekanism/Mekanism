@@ -12,8 +12,9 @@ import mekanism.common.particle.SPSOrbitEffect;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
 
 public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData> {
 
@@ -22,12 +23,12 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
     private boolean handleSound;
     private boolean prevActive;
 
-    public TileEntitySPSCasing() {
-        super(MekanismBlocks.SPS_CASING);
+    public TileEntitySPSCasing(BlockPos pos, BlockState state) {
+        this(MekanismBlocks.SPS_CASING, pos, state);
     }
 
-    public TileEntitySPSCasing(IBlockProvider provider) {
-        super(provider);
+    public TileEntitySPSCasing(IBlockProvider provider, BlockPos pos, BlockState state) {
+        super(provider, pos, state);
     }
 
     @Override
@@ -82,16 +83,16 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
 
     @Nonnull
     @Override
-    public CompoundNBT getReducedUpdateTag() {
-        CompoundNBT updateTag = super.getReducedUpdateTag();
+    public CompoundTag getReducedUpdateTag() {
+        CompoundTag updateTag = super.getReducedUpdateTag();
         SPSMultiblockData multiblock = getMultiblock();
         updateTag.putBoolean(NBTConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this) && multiblock.lastProcessed > 0);
         return updateTag;
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, @Nonnull CompoundNBT tag) {
-        super.handleUpdateTag(state, tag);
+    public void handleUpdateTag(@Nonnull CompoundTag tag) {
+        super.handleUpdateTag(tag);
         NBTUtils.setBooleanIfPresent(tag, NBTConstants.HANDLE_SOUND, value -> handleSound = value);
     }
 }

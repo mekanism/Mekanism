@@ -45,10 +45,11 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgressMachine<ItemStackGasToItemStackRecipe> implements
       ItemChemicalRecipeLookupHandler<Gas, GasStack, ItemStackGasToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
@@ -79,8 +80,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, int ticksRequired) {
-        super(blockProvider, ticksRequired);
+    public TileEntityAdvancedElectricMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state, int ticksRequired) {
+        super(blockProvider, pos, state, ticksRequired);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.ENERGY);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, secondarySlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
@@ -194,7 +195,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     }
 
     @Override
-    public boolean isConfigurationDataCompatible(TileEntityType<?> tileType) {
+    public boolean isConfigurationDataCompatible(BlockEntityType<?> tileType) {
         //Allow exact match or factories of the same type (as we will just ignore the extra data)
         return super.isConfigurationDataCompatible(tileType) || MekanismUtils.isSameTypeFactory(getBlockType(), tileType);
     }
@@ -205,17 +206,15 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        usedSoFar = nbtTags.getLong(NBTConstants.USED_SO_FAR);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        usedSoFar = nbt.getLong(NBTConstants.USED_SO_FAR);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putLong(NBTConstants.USED_SO_FAR, usedSoFar);
-        return nbtTags;
     }
 
     //Methods relating to IComputerTile

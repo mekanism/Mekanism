@@ -10,8 +10,8 @@ import javax.imageio.ImageIO;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.IResource;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.resources.ResourceLocation;
 
 public class ColorAtlas {
 
@@ -57,7 +57,7 @@ public class ColorAtlas {
     }
 
     private static void loadColorAtlas(ResourceLocation rl, int count, List<Color> ret) throws IOException {
-        IResource resource = Minecraft.getInstance().getResourceManager().getResource(rl);
+        Resource resource = Minecraft.getInstance().getResourceManager().getResource(rl);
         BufferedImage img = ImageIO.read(resource.getInputStream());
         for (int i = 0; i < count; i++) {
             int rgb = img.getRGB(i % ATLAS_SIZE, i / ATLAS_SIZE);

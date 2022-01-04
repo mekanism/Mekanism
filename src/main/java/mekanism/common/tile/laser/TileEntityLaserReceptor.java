@@ -8,12 +8,14 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityLaserReceptor extends TileEntityBasicLaser implements ILaserReceptor {
 
-    public TileEntityLaserReceptor(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityLaserReceptor(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.LASER_RECEPTOR_CAPABILITY, this));
     }
 

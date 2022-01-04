@@ -11,6 +11,7 @@ import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.registries.GeneratorsGases;
 import mekanism.generators.common.registries.GeneratorsTileEntityTypes;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -26,6 +27,7 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         addEndermanBlacklist();
         addFluids();
         addGases();
+        addHarvestRequirements();
     }
 
     private void addBoxBlacklist() {
@@ -79,5 +81,10 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         addToTag(GeneratorTags.Gases.DEUTERIUM, GeneratorsGases.DEUTERIUM);
         addToTag(GeneratorTags.Gases.TRITIUM, GeneratorsGases.TRITIUM);
         addToTag(GeneratorTags.Gases.FUSION_FUEL, GeneratorsGases.FUSION_FUEL);
+    }
+
+    private void addHarvestRequirements() {
+        //TODO - 1.18:
+        addToTag(BlockTags.MINEABLE_WITH_PICKAXE, GeneratorsBlocks.REACTOR_GLASS);
     }
 }

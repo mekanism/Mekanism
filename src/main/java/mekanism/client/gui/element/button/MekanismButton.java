@@ -1,12 +1,15 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+
+import mekanism.client.gui.element.GuiElement.ButtonBackground;
+import mekanism.client.gui.element.GuiElement.IHoverable;
 
 /**
  * Extends our "Widget" class (GuiElement) instead of Button so that we can easier utilize common code
@@ -20,12 +23,12 @@ public class MekanismButton extends GuiElement {
     @Nullable
     private final Runnable onRightClick;
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text, @Nullable Runnable onLeftClick, @Nullable IHoverable onHover) {
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @Nullable Runnable onLeftClick, @Nullable IHoverable onHover) {
         this(gui, x, y, width, height, text, onLeftClick, onLeftClick, onHover);
         //TODO: Decide if default implementation for right clicking should be do nothing, or act as left click
     }
 
-    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, ITextComponent text, @Nullable Runnable onLeftClick, @Nullable Runnable onRightClick,
+    public MekanismButton(IGuiWrapper gui, int x, int y, int width, int height, Component text, @Nullable Runnable onLeftClick, @Nullable Runnable onRightClick,
           @Nullable IHoverable onHover) {
         super(gui, x, y, width, height, text);
         this.onHover = onHover;
@@ -60,7 +63,7 @@ public class MekanismButton extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (onHover != null) {
             onHover.onHover(this, matrix, mouseX, mouseY);
@@ -72,7 +75,7 @@ public class MekanismButton extends GuiElement {
         if (super.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
-        if (this.active && this.visible && isHovered()) {
+        if (this.active && this.visible && isHoveredOrFocused()) {
             if (button == 1) {
                 //Right-clicked
                 playDownSound(Minecraft.getInstance().getSoundManager());

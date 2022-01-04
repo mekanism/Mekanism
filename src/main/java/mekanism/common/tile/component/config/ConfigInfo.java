@@ -21,7 +21,7 @@ import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class ConfigInfo {
 

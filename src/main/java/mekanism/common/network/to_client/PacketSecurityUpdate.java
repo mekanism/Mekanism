@@ -12,8 +12,8 @@ import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.network.BasePacketHandler;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketSecurityUpdate implements IMekanismPacket {
 
@@ -56,7 +56,7 @@ public class PacketSecurityUpdate implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBoolean(isUpdate);
         if (isUpdate) {
             buffer.writeUUID(playerUUID);
@@ -82,7 +82,7 @@ public class PacketSecurityUpdate implements IMekanismPacket {
         }
     }
 
-    public static PacketSecurityUpdate decode(PacketBuffer buffer) {
+    public static PacketSecurityUpdate decode(FriendlyByteBuf buffer) {
         PacketSecurityUpdate packet = new PacketSecurityUpdate(buffer.readBoolean());
         if (packet.isUpdate) {
             packet.playerUUID = buffer.readUUID();

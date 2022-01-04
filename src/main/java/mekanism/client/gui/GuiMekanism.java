@@ -1,7 +1,7 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -38,20 +38,19 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IGuiEventListener;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.RenderProperties;
 import org.apache.commons.lang3.tuple.Pair;
 
-//TODO: Add our own "addButton" type thing for elements that are just "drawn" but don't actually have any logic behind them
-public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
+public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
     public static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
     public static final ResourceLocation SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
@@ -68,7 +67,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
 
     public static int maxZOffset;
 
-    protected GuiMekanism(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+    protected GuiMekanism(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
     }
 
@@ -111,7 +110,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
 
     protected void addWarningTab(IWarningTracker warningTracker) {
         //TODO - WARNING SYSTEM: Move this for any GUIs that also have a heat tab (81 y would be above heat)
-        addButton(new GuiWarningTab(this, warningTracker, 109));
+        addRenderableWidget(new GuiWarningTab(this, warningTracker, 109));
     }
 
     /**
@@ -125,17 +124,17 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        children.stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
+    public void containerTick() {
+        super.containerTick();
+        children().stream().filter(child -> child instanceof GuiElement).map(child -> (GuiElement) child).forEach(GuiElement::tick);
         windows.forEach(GuiWindow::tick);
     }
 
     protected IHoverable getOnHover(ILangEntry translationHelper) {
-        return getOnHover((Supplier<ITextComponent>) translationHelper::translate);
+        return getOnHover((Supplier<Component>) translationHelper::translate);
     }
 
-    protected IHoverable getOnHover(Supplier<ITextComponent> componentSupplier) {
+    protected IHoverable getOnHover(Supplier<Component> componentSupplier) {
         return (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, componentSupplier.get(), xAxis, yAxis);
     }
 
@@ -184,8 +183,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         // code we normally would run for when things get resized, we then are able to
         // properly reinstate/transfer the states of the various elements
         List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
-        for (int i = 0; i < buttons.size(); i++) {
-            Widget widget = buttons.get(i);
+        for (int i = 0; i < children().size(); i++) {
+            GuiEventListener widget = children().get(i);
             if (widget instanceof GuiElement && ((GuiElement) widget).hasPersistentData()) {
                 prevElements.add(Pair.of(i, (GuiElement) widget));
             }
@@ -198,8 +197,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         windows.forEach(window -> window.resize(prevLeft, prevTop, leftPos, topPos));
 
         prevElements.forEach(e -> {
-            if (e.getLeft() < buttons.size()) {
-                Widget widget = buttons.get(e.getLeft());
+            if (e.getLeft() < children().size()) {
+                GuiEventListener widget = children().get(e.getLeft());
                 // we're forced to assume that the children list is the same before and after the resize.
                 // for verification, we run a lightweight class equality check
                 // Note: We do not perform an instance check on widget to ensure it is a GuiElement, as that is
@@ -212,21 +211,30 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     @Override
-    protected void renderLabels(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void renderLabels(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+        //TODO - 1.18: Figure out all this RenderSystem#translatef, may not be needed anymore hopefully?
+        // but assuming it is I think this is how it is done
+        PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        modelViewStack.pushPose();
+
         matrix.translate(0, 0, 300);
-        RenderSystem.translatef(-leftPos, -topPos, 0);
+        //RenderSystem.translatef(-leftPos, -topPos, 0);
+        modelViewStack.translate(-leftPos, -topPos, 0);
+        RenderSystem.applyModelViewMatrix();
         children().stream().filter(c -> c instanceof GuiElement).forEach(c -> ((GuiElement) c).onDrawBackground(matrix, mouseX, mouseY, MekanismRenderer.getPartialTick()));
-        RenderSystem.translatef(leftPos, topPos, 0);
+        //RenderSystem.translatef(leftPos, topPos, 0);
+        modelViewStack.translate(leftPos, topPos, 0);
+        RenderSystem.applyModelViewMatrix();
         drawForegroundText(matrix, mouseX, mouseY);
         int xAxis = mouseX - leftPos;
         int yAxis = mouseY - topPos;
         // first render general foregrounds
         maxZOffset = 200;
         int zOffset = 200;
-        for (Widget widget : this.buttons) {
-            if (widget instanceof GuiElement) {
+        for (GuiEventListener widget : children()) {
+            if (widget instanceof GuiElement element) {
                 matrix.pushPose();
-                ((GuiElement) widget).onRenderForeground(matrix, mouseX, mouseY, zOffset, zOffset);
+                element.onRenderForeground(matrix, mouseX, mouseY, zOffset, zOffset);
                 matrix.popPose();
             }
         }
@@ -247,10 +255,10 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         // then render tooltips, translating above max z offset to prevent clashing
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
         if (tooltipElement == null) {
-            for (int i = buttons.size() - 1; i >= 0; i--) {
-                Widget widget = buttons.get(i);
-                if (widget instanceof GuiElement && widget.isMouseOver(mouseX, mouseY)) {
-                    tooltipElement = (GuiElement) widget;
+            for (int i = children().size() - 1; i >= 0; i--) {
+                GuiEventListener widget = children().get(i);
+                if (widget instanceof GuiElement element && element.isMouseOver(mouseX, mouseY)) {
+                    tooltipElement = element;
                     break;
                 }
             }
@@ -259,27 +267,37 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         // translate forwards using RenderSystem. this should never have to happen as we do all the necessary translations with MatrixStacks,
         // but Minecraft has decided to not fully adopt MatrixStacks for many crucial ContainerScreen render operations. should be re-evaluated
         // when mc updates related logic on their end (IMPORTANT)
-        RenderSystem.translatef(0, 0, maxZOffset);
+        //RenderSystem.translatef(0, 0, maxZOffset);
+        modelViewStack.translate(0, 0, maxZOffset);
+        RenderSystem.applyModelViewMatrix();
 
         if (tooltipElement != null) {
             tooltipElement.renderToolTip(matrix, xAxis, yAxis);
         }
 
         // render item tooltips
-        RenderSystem.translatef(-leftPos, -topPos, 0);
+        //RenderSystem.translatef(-leftPos, -topPos, 0);
+        modelViewStack.translate(-leftPos, -topPos, 0);
+        RenderSystem.applyModelViewMatrix();
         renderTooltip(matrix, mouseX, mouseY);
-        RenderSystem.translatef(leftPos, topPos, 0);
+        //RenderSystem.translatef(leftPos, topPos, 0);
+        modelViewStack.translate(leftPos, topPos, 0);
 
         // IMPORTANT: additional hacky translation so held items render okay. re-evaluate as discussed above
-        RenderSystem.translatef(0, 0, 200);
+        //RenderSystem.translatef(0, 0, 200);
+        modelViewStack.translate(0, 0, 200);
+        //TODO - 1.18: Figure this out maybe we aren't meant ot be pushing it?? give the above seems weird if we just pop it
+        // or maybe we are meant to apply before popping?
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
     }
 
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
     }
 
     @Nonnull
     @Override
-    public Optional<IGuiEventListener> getChildAt(double mouseX, double mouseY) {
+    public Optional<GuiEventListener> getChildAt(double mouseX, double mouseY) {
         GuiWindow window = getWindowHovering(mouseX, mouseY);
         return window != null ? Optional.of(window) : super.getChildAt(mouseX, mouseY);
     }
@@ -309,8 +327,8 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
             return true;
         }
         // otherwise, we send it to the current element
-        for (int i = buttons.size() - 1; i >= 0; i--) {
-            IGuiEventListener listener = buttons.get(i);
+        for (int i = children().size() - 1; i >= 0; i--) {
+            GuiEventListener listener = children().get(i);
             if (listener.mouseClicked(mouseX, mouseY, button)) {
                 setFocused(listener);
                 if (button == 0) {
@@ -335,12 +353,12 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         return windows.stream().anyMatch(window -> window.keyPressed(keyCode, scanCode, modifiers)) ||
-               GuiUtils.checkChildren(buttons, child -> child.keyPressed(keyCode, scanCode, modifiers)) || super.keyPressed(keyCode, scanCode, modifiers);
+               GuiUtils.checkChildren(children(), child -> child.keyPressed(keyCode, scanCode, modifiers)) || super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
     public boolean charTyped(char c, int keyCode) {
-        return windows.stream().anyMatch(window -> window.charTyped(c, keyCode)) || GuiUtils.checkChildren(buttons, child -> child.charTyped(c, keyCode)) ||
+        return windows.stream().anyMatch(window -> window.charTyped(c, keyCode)) || GuiUtils.checkChildren(children(), child -> child.charTyped(c, keyCode)) ||
                super.charTyped(c, keyCode);
     }
 
@@ -413,7 +431,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
 
     private boolean overNoButtons(@Nullable GuiWindow window, double mouseX, double mouseY) {
         if (window == null) {
-            return buttons.stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
+            return children().stream().noneMatch(button -> button.isMouseOver(mouseX, mouseY));
         }
         return !window.childrenContainsElement(e -> e.isMouseOver(mouseX, mouseY));
     }
@@ -455,9 +473,9 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
                     int index = i;
                     guiSlot.validity(() -> checkValidity(index));
                 }
-                addButton(guiSlot);
+                addRenderableWidget(guiSlot);
             } else {
-                addButton(new GuiSlot(SlotType.NORMAL, this, slot.x - 1, slot.y - 1));
+                addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, slot.x - 1, slot.y - 1));
             }
         }
     }
@@ -478,7 +496,7 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     @Override
-    protected void renderBg(@Nonnull MatrixStack matrix, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@Nonnull PoseStack matrix, float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor();
@@ -490,14 +508,21 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
     }
 
     @Override
-    public FontRenderer getFont() {
+    public Font getFont() {
         return font;
     }
 
     @Override
-    public void render(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+        //TODO - 1.18: Figure out all this RenderSystem#translatef, may not be needed anymore hopefully?
+        // but assuming it is I think this is how it is done
+        PoseStack modelViewStack = RenderSystem.getModelViewStack();
+        modelViewStack.pushPose();
+
         // shift back a whole lot so we can stack more windows
-        RenderSystem.translated(0, 0, -500);
+        //RenderSystem.translated(0, 0, -500);
+        modelViewStack.translate(0, 0,-500);
+        RenderSystem.applyModelViewMatrix();
         matrix.pushPose();
         renderBackground(matrix);
         //Apply our matrix stack to the render system and pass an unmodified one to the super method
@@ -505,25 +530,26 @@ public abstract class GuiMekanism<CONTAINER extends Container> extends VirtualSl
         // is required to not have tooltips of GuiElements rendering behind the items
         super.render(matrix, mouseX, mouseY, partialTicks);
         matrix.popPose();
-        RenderSystem.translated(0, 0, 500);
+        //RenderSystem.translated(0, 0, 500);
+        modelViewStack.translate(0, 0,500);
+        modelViewStack.popPose();
+        RenderSystem.applyModelViewMatrix();
     }
 
     @Override
-    public void renderItemTooltip(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
+    public void renderItemTooltip(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis) {
         renderTooltip(matrix, stack, xAxis, yAxis);
     }
 
     @Override
-    public void renderItemTooltipWithExtra(MatrixStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, List<ITextComponent> toAppend) {
+    public void renderItemTooltipWithExtra(PoseStack matrix, @Nonnull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
         if (toAppend.isEmpty()) {
             renderItemTooltip(matrix, stack, xAxis, yAxis);
         } else {
-            FontRenderer font = stack.getItem().getFontRenderer(stack);
-            net.minecraftforge.fml.client.gui.GuiUtils.preItemToolTip(stack);
-            List<ITextComponent> tooltip = new ArrayList<>(getTooltipFromItem(stack));
+            Font font = RenderProperties.get(stack.getItem()).getFont(stack);
+            List<Component> tooltip = new ArrayList<>(getTooltipFromItem(stack));
             tooltip.addAll(toAppend);
-            renderWrappedToolTip(matrix, tooltip, xAxis, yAxis, (font == null ? this.font : font));
-            net.minecraftforge.fml.client.gui.GuiUtils.postItemToolTip();
+            renderTooltip(matrix, tooltip, stack.getTooltipImage(), xAxis, yAxis, (font == null ? this.font : font), stack);
         }
     }
 

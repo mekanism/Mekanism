@@ -10,7 +10,7 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInf
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.InfusionConversionIRecipe;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -43,7 +43,7 @@ public abstract class ItemStackToInfuseTypeRecipeManager extends MekanismRecipeM
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return CrTUtils.describeOutputs(getRecipe().getOutputDefinitionNew(), CrTInfusionStack::new);
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), CrTInfusionStack::new);
             }
         };
     }

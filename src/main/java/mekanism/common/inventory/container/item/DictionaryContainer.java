@@ -1,13 +1,13 @@
 package mekanism.common.inventory.container.item;
 
 import mekanism.common.registries.MekanismContainerTypes;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 
 public class DictionaryContainer extends MekanismItemContainer {
 
-    public DictionaryContainer(int id, PlayerInventory inv, Hand hand, ItemStack stack) {
+    public DictionaryContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack) {
         super(MekanismContainerTypes.DICTIONARY, id, inv, hand, stack);
     }
 

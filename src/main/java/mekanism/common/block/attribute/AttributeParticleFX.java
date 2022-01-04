@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 import mekanism.common.lib.math.Pos3D;
-import net.minecraft.particles.IParticleData;
+import net.minecraft.core.particles.ParticleOptions;
 
 public class AttributeParticleFX implements Attribute {
 
@@ -15,22 +15,22 @@ public class AttributeParticleFX implements Attribute {
         return particleFunctions;
     }
 
-    public AttributeParticleFX add(IParticleData type, Function<Random, Pos3D> posSupplier) {
+    public AttributeParticleFX add(ParticleOptions type, Function<Random, Pos3D> posSupplier) {
         particleFunctions.add(random -> new Particle(type, posSupplier.apply(random)));
         return this;
     }
 
     public static class Particle {
 
-        private final IParticleData type;
+        private final ParticleOptions type;
         private final Pos3D pos;
 
-        protected Particle(IParticleData type, Pos3D pos) {
+        protected Particle(ParticleOptions type, Pos3D pos) {
             this.type = type;
             this.pos = pos;
         }
 
-        public IParticleData getType() {
+        public ParticleOptions getType() {
             return type;
         }
 

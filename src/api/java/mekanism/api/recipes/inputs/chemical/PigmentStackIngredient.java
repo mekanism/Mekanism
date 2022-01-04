@@ -9,8 +9,8 @@ import mekanism.api.providers.IPigmentProvider;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
 
 /**
  * Base implementation for how Mekanism handle's PigmentStack Ingredients.
@@ -42,7 +42,7 @@ public interface PigmentStackIngredient extends IChemicalStackIngredient<Pigment
      * @param tag    Tag to match.
      * @param amount Amount needed.
      */
-    static PigmentStackIngredient from(@Nonnull ITag<Pigment> tag, long amount) {
+    static PigmentStackIngredient from(@Nonnull Tag<Pigment> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -53,7 +53,7 @@ public interface PigmentStackIngredient extends IChemicalStackIngredient<Pigment
      *
      * @return Pigment Stack Ingredient.
      */
-    static PigmentStackIngredient read(PacketBuffer buffer) {
+    static PigmentStackIngredient read(FriendlyByteBuf buffer) {
         return ChemicalIngredientDeserializer.PIGMENT.read(buffer);
     }
 
@@ -93,7 +93,7 @@ public interface PigmentStackIngredient extends IChemicalStackIngredient<Pigment
 
     class Tagged extends TaggedIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
 
-        private Tagged(@Nonnull ITag<Pigment> tag, long amount) {
+        private Tagged(@Nonnull Tag<Pigment> tag, long amount) {
             super(tag, amount);
         }
     }

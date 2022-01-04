@@ -10,7 +10,7 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTPig
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.PigmentExtractingIRecipe;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -42,7 +42,7 @@ public abstract class ItemStackToPigmentRecipeManager extends MekanismRecipeMana
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return CrTUtils.describeOutputs(getRecipe().getOutputDefinitionNew(), CrTPigmentStack::new);
+                return CrTUtils.describeOutputs(getRecipe().getOutputDefinition(), CrTPigmentStack::new);
             }
         };
     }

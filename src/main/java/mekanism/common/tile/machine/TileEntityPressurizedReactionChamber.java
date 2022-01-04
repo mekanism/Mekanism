@@ -47,7 +47,9 @@ import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -80,8 +82,8 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityPressurizedReactionChamber() {
-        super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, BASE_DURATION);
+    public TileEntityPressurizedReactionChamber(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.PRESSURIZED_REACTION_CHAMBER, pos, state, BASE_DURATION);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.ENERGY, TransmissionType.FLUID, TransmissionType.GAS);
         configComponent.setupItemIOConfig(inputSlot, outputSlot, energySlot);
         configComponent.setupInputConfig(TransmissionType.FLUID, inputFluidTank);

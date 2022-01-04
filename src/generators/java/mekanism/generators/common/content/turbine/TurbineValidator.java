@@ -19,12 +19,12 @@ import mekanism.generators.common.tile.turbine.TileEntityRotationalComplex;
 import mekanism.generators.common.tile.turbine.TileEntitySaturatingCondenser;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblockData> {
 
@@ -48,7 +48,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
     }
 
     @Override
-    protected boolean validateInner(BlockState state, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
+    protected boolean validateInner(BlockState state, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         if (super.validateInner(state, chunkMap, pos)) {
             return true;
         }
@@ -57,7 +57,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
     }
 
     @Override
-    public FormationResult postcheck(TurbineMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<IChunk> chunkMap) {
+    public FormationResult postcheck(TurbineMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
         if (structure.length() % 2 != 1 || structure.width() % 2 != 1) {
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_EVEN_LENGTH);
         }
@@ -73,7 +73,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
 
         //Scan for complex
         for (BlockPos pos : innerNodes) {
-            TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             if (tile instanceof TileEntityRotationalComplex) {
                 if (complex != null || pos.getX() != centerX || pos.getZ() != centerZ) {
                     return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_BAD_COMPLEX, pos);
@@ -110,7 +110,7 @@ public class TurbineValidator extends CuboidStructureValidator<TurbineMultiblock
             return FormationResult.fail(GeneratorsLang.TURBINE_INVALID_MISSING_COILS);
         }
 
-        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         //Make sure a flat, horizontal plane of dispersers exists within the multiblock around the complex
         for (int x = complex.getX() - innerRadius; x <= complex.getX() + innerRadius; x++) {
             for (int z = complex.getZ() - innerRadius; z <= complex.getZ() + innerRadius; z++) {

@@ -14,19 +14,19 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.Region;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.PathNavigationRegion;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread {
 
     private final TileEntityDigitalMiner tile;
     private final Long2ObjectMap<BitSet> oresToMine = new Long2ObjectOpenHashMap<>();
-    private Region chunkCache;
+    private PathNavigationRegion chunkCache;
     public State state = State.IDLE;
     public int found = 0;
 
@@ -34,7 +34,7 @@ public class ThreadMinerSearch extends Thread {
         this.tile = tile;
     }
 
-    public void setChunkCache(Region cache) {
+    public void setChunkCache(PathNavigationRegion cache) {
         this.chunkCache = cache;
     }
 
@@ -63,12 +63,12 @@ public class ThreadMinerSearch extends Thread {
                 continue;
             }
             BlockState state = chunkCache.getBlockState(testPos);
-            if (state.isAir(chunkCache, testPos) || state.is(MekanismTags.Blocks.MINER_BLACKLIST) || state.getDestroySpeed(chunkCache, testPos) < 0) {
+            if (state.isAir() || state.is(MekanismTags.Blocks.MINER_BLACKLIST) || state.getDestroySpeed(chunkCache, testPos) < 0) {
                 //Skip air, blacklisted blocks, and unbreakable blocks
                 continue;
             }
             info = state.getBlock();
-            if (info instanceof FlowingFluidBlock || info instanceof IFluidBlock) {
+            if (info instanceof LiquidBlock || info instanceof IFluidBlock) {
                 //Skip liquids
                 continue;
             }
@@ -114,7 +114,7 @@ public class ThreadMinerSearch extends Thread {
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             return langEntry.translate();
         }
 

@@ -10,9 +10,9 @@ import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot implements IHasExtraData {
 
@@ -80,20 +80,18 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         amountCrafted += numItemsCrafted;
     }
 
-    @Nonnull
     @Override
-    public ItemStack onTake(@Nonnull PlayerEntity player, @Nonnull ItemStack stack) {
+    public void onTake(@Nonnull Player player, @Nonnull ItemStack stack) {
         ItemStack result = craftingWindow.performCraft(player, stack, amountCrafted);
         amountCrafted = 0;
-        return result;
     }
 
     @Override
-    public boolean mayPickup(@Nonnull PlayerEntity player) {
-        if (player.level.isClientSide || !(player instanceof ServerPlayerEntity)) {
+    public boolean mayPickup(@Nonnull Player player) {
+        if (player.level.isClientSide || !(player instanceof ServerPlayer)) {
             return canCraft && super.mayPickup(player);
         }
-        return craftingWindow.canViewRecipe((ServerPlayerEntity) player) && super.mayPickup(player);
+        return craftingWindow.canViewRecipe((ServerPlayer) player) && super.mayPickup(player);
     }
 
     @Nonnull
@@ -103,7 +101,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Nonnull
-    public ItemStack shiftClickSlot(@Nonnull PlayerEntity player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
+    public ItemStack shiftClickSlot(@Nonnull Player player, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
         //Perform the craft in the crafting window. This handles moving the stacks to the proper inventory slots
         craftingWindow.performCraft(player, hotBarSlots, mainInventorySlots);
         // afterwards we want to "stop" crafting as our window determines how much a shift click should produce
@@ -113,8 +111,8 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Override
-    public void addTrackers(PlayerEntity player, Consumer<ISyncableData> tracker) {
-        if (player.level.isClientSide || !(player instanceof ServerPlayerEntity)) {
+    public void addTrackers(Player player, Consumer<ISyncableData> tracker) {
+        if (player.level.isClientSide || !(player instanceof ServerPlayer)) {
             //If we are on the client or not a server player entity for some reason return our cached value
             tracker.accept(SyncableBoolean.create(() -> canCraft, value -> canCraft = value));
         } else {
@@ -130,7 +128,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
             // 2. The player specific one
             // and then when encoding it just add the sizes together and pretend they are all part of the first list for purposes of
             // what the client is aware of as the client shouldn't care about them
-            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) player;
+            ServerPlayer serverPlayer = (ServerPlayer) player;
             tracker.accept(SyncableBoolean.create(() -> craftingWindow.canViewRecipe(serverPlayer), value -> canCraft = value));
         }
     }

@@ -9,8 +9,8 @@ import mekanism.api.providers.IGasProvider;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.MultiIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.SingleIngredient;
 import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient.TaggedIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
 
 /**
  * Base implementation for how Mekanism handle's GasStack Ingredients.
@@ -42,7 +42,7 @@ public interface GasStackIngredient extends IChemicalStackIngredient<Gas, GasSta
      * @param tag    Tag to match.
      * @param amount Amount needed.
      */
-    static GasStackIngredient from(@Nonnull ITag<Gas> tag, long amount) {
+    static GasStackIngredient from(@Nonnull Tag<Gas> tag, long amount) {
         return new Tagged(tag, amount);
     }
 
@@ -53,7 +53,7 @@ public interface GasStackIngredient extends IChemicalStackIngredient<Gas, GasSta
      *
      * @return Gas Stack Ingredient.
      */
-    static GasStackIngredient read(PacketBuffer buffer) {
+    static GasStackIngredient read(FriendlyByteBuf buffer) {
         return ChemicalIngredientDeserializer.GAS.read(buffer);
     }
 
@@ -93,7 +93,7 @@ public interface GasStackIngredient extends IChemicalStackIngredient<Gas, GasSta
 
     class Tagged extends TaggedIngredient<Gas, GasStack> implements GasStackIngredient {
 
-        private Tagged(@Nonnull ITag<Gas> tag, long amount) {
+        private Tagged(@Nonnull Tag<Gas> tag, long amount) {
             super(tag, amount);
         }
     }

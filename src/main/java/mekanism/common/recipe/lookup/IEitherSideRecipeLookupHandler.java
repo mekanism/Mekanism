@@ -11,7 +11,7 @@ import mekanism.api.recipes.inputs.chemical.IChemicalStackIngredient;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
 import mekanism.common.recipe.lookup.cache.EitherSideInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 /**
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes two inputs of the same type that are
@@ -39,7 +39,7 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link EitherSideInputRecipeCache#containsInput(World, Object, Object)} for more details about what order to pass the inputs.
+     * @apiNote See {@link EitherSideInputRecipeCache#containsInput(Level, Object, Object)} for more details about what order to pass the inputs.
      */
     default boolean containsRecipe(INPUT inputA, INPUT inputB) {
         return getRecipeType().getInputCache().containsInput(getHandlerWorld(), inputA, inputB);

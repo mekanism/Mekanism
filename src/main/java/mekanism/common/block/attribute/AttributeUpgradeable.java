@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.registration.impl.BlockRegistryObject;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class AttributeUpgradeable implements Attribute {
 

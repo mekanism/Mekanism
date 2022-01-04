@@ -1,6 +1,6 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,11 +28,11 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.ChatFormatting;
 
 public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStackToEnergyRecipe> {
 
@@ -69,7 +69,7 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     }
 
     @Override
-    public void draw(ItemStackToEnergyRecipe recipe, MatrixStack matrix, double mouseX, double mouseY) {
+    public void draw(ItemStackToEnergyRecipe recipe, PoseStack matrix, double mouseX, double mouseY) {
         super.draw(recipe, matrix, mouseX, mouseY);
         if (!recipe.getOutputDefinition().isZero()) {
             //Manually draw the contents of the recipe
@@ -78,14 +78,14 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     }
 
     @Override
-    public List<ITextComponent> getTooltipStrings(ItemStackToEnergyRecipe recipe, double mouseX, double mouseY) {
+    public List<Component> getTooltipStrings(ItemStackToEnergyRecipe recipe, double mouseX, double mouseY) {
         if (gauge.isMouseOver(mouseX, mouseY)) {
             FloatingLong energy = getOutputEnergy(recipe);
             if (!energy.isZero()) {
                 //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
-                ITextComponent energyOutput = EnergyDisplay.of(energy).getTextComponent();
+                Component energyOutput = EnergyDisplay.of(energy).getTextComponent();
                 if (Minecraft.getInstance().options.advancedItemTooltips || Screen.hasShiftDown()) {
-                    return Arrays.asList(energyOutput, TextComponentUtil.build(TextFormatting.DARK_GRAY, MekanismLang.JEI_RECIPE_ID.translate(recipe.getId())));
+                    return Arrays.asList(energyOutput, TextComponentUtil.build(ChatFormatting.DARK_GRAY, MekanismLang.JEI_RECIPE_ID.translate(recipe.getId())));
                 }
                 return Collections.singletonList(energyOutput);
             }

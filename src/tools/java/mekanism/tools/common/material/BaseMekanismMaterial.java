@@ -2,8 +2,9 @@ package mekanism.tools.common.material;
 
 import javax.annotation.Nonnull;
 import mekanism.tools.common.MekanismTools;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient;
 
+//TODO - 1.18: Remove from harvest level stuff from the config and make sure to register the materials with the tier sorting registry
 public abstract class BaseMekanismMaterial extends IItemTierHelper implements IArmorMaterialHelper, IPaxelMaterial {
 
     public abstract int getShieldDurability();

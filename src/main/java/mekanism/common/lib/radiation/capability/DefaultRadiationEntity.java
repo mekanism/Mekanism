@@ -14,13 +14,13 @@ import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -43,7 +43,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
 
     @Override
     public void update(@Nonnull LivingEntity entity) {
-        if (entity instanceof PlayerEntity && !MekanismUtils.isPlayingMode((PlayerEntity) entity)) {
+        if (entity instanceof Player && !MekanismUtils.isPlayingMode((Player) entity)) {
             return;
         }
 
@@ -62,8 +62,8 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             }
         }
 
-        if (entity instanceof PlayerEntity) {
-            ServerPlayerEntity player = (ServerPlayerEntity) entity;
+        if (entity instanceof Player) {
+            ServerPlayer player = (ServerPlayer) entity;
 
             if (clientSeverity != radiation) {
                 clientSeverity = radiation;
@@ -87,34 +87,18 @@ public class DefaultRadiationEntity implements IRadiationEntity {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT ret = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag ret = new CompoundTag();
         ret.putDouble(NBTConstants.RADIATION, radiation);
         return ret;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         radiation = nbt.getDouble(NBTConstants.RADIATION);
     }
 
-    public static void register() {
-        CapabilityManager.INSTANCE.register(IRadiationEntity.class, new Capability.IStorage<IRadiationEntity>() {
-            @Override
-            public CompoundNBT writeNBT(Capability<IRadiationEntity> capability, IRadiationEntity instance, Direction side) {
-                return instance.serializeNBT();
-            }
-
-            @Override
-            public void readNBT(Capability<IRadiationEntity> capability, IRadiationEntity instance, Direction side, INBT nbt) {
-                if (nbt instanceof CompoundNBT) {
-                    instance.deserializeNBT((CompoundNBT) nbt);
-                }
-            }
-        }, DefaultRadiationEntity::new);
-    }
-
-    public static class Provider implements ICapabilitySerializable<CompoundNBT> {
+    public static class Provider implements ICapabilitySerializable<CompoundTag> {
 
         public static final ResourceLocation NAME = Mekanism.rl(NBTConstants.RADIATION);
         private final IRadiationEntity defaultImpl = new DefaultRadiationEntity();
@@ -135,12 +119,12 @@ public class DefaultRadiationEntity implements IRadiationEntity {
         }
 
         @Override
-        public CompoundNBT serializeNBT() {
+        public CompoundTag serializeNBT() {
             return defaultImpl.serializeNBT();
         }
 
         @Override
-        public void deserializeNBT(CompoundNBT nbt) {
+        public void deserializeNBT(CompoundTag nbt) {
             defaultImpl.deserializeNBT(nbt);
         }
     }

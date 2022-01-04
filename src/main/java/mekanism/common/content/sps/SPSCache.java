@@ -5,8 +5,8 @@ import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 public class SPSCache extends MultiblockCache<SPSMultiblockData> {
 
@@ -47,7 +47,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     }
 
     @Override
-    public void load(CompoundNBT nbtTags) {
+    public void load(CompoundTag nbtTags) {
         super.load(nbtTags);
         NBTUtils.setDoubleIfPresent(nbtTags, NBTConstants.PROGRESS, val -> progress = val);
         NBTUtils.setIntIfPresent(nbtTags, NBTConstants.PROCESSED, val -> inputProcessed = val);
@@ -57,7 +57,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     }
 
     @Override
-    public void save(CompoundNBT nbtTags) {
+    public void save(CompoundTag nbtTags) {
         super.save(nbtTags);
         nbtTags.putDouble(NBTConstants.PROGRESS, progress);
         nbtTags.putInt(NBTConstants.PROCESSED, inputProcessed);

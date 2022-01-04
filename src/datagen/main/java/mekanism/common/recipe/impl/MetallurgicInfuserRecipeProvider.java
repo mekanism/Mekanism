@@ -8,15 +8,15 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.Tags;
 
 class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "metallurgic_infusing/";
         addMetallurgicInfuserAlloyRecipes(consumer, basePath + "alloy/");
         addMetallurgicInfuserMossyRecipes(consumer, basePath + "mossy/");
@@ -59,7 +59,7 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "blackstone_to_gilded_blackstone"));
     }
 
-    private void addMetallurgicInfuserAlloyRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addMetallurgicInfuserAlloyRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Infused
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(Tags.Items.INGOTS_IRON),
@@ -80,7 +80,7 @@ class MetallurgicInfuserRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "atomic"));
     }
 
-    private void addMetallurgicInfuserMossyRecipes(Consumer<IFinishedRecipe> consumer, String basePath) {
+    private void addMetallurgicInfuserMossyRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
         //Cobblestone
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               ItemStackIngredient.from(Blocks.COBBLESTONE),

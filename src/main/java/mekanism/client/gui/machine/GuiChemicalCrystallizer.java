@@ -1,6 +1,6 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,11 +28,11 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.machine.TileEntityChemicalCrystallizer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.tags.Tag;
+import net.minecraft.network.chat.Component;
 
 public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemicalCrystallizer, MekanismTileContainer<TileEntityChemicalCrystallizer>> {
 
@@ -42,7 +42,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     @Nonnull
     private Slurry prevSlurry = MekanismAPI.EMPTY_SLURRY;
 
-    public GuiChemicalCrystallizer(MekanismTileContainer<TileEntityChemicalCrystallizer> container, PlayerInventory inv, ITextComponent title) {
+    public GuiChemicalCrystallizer(MekanismTileContainer<TileEntityChemicalCrystallizer> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
         titleLabelY = 4;
@@ -51,28 +51,28 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23));
-        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
-        addButton(new GuiMergedChemicalTankGauge<>(() -> tile.inputTank, () -> tile, GaugeType.STANDARD, this, 7, 4));
-        addButton(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).jeiCategory(tile));
+        addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 23));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
+        addRenderableWidget(new GuiMergedChemicalTankGauge<>(() -> tile.inputTank, () -> tile, GaugeType.STANDARD, this, 7, 4));
+        addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 53, 61).jeiCategory(tile));
         //Init slot display before gui screen, so it can reference it, but add it after, so it renders above it
         slotDisplay = new GuiSequencedSlotDisplay(this, 129, 14, () -> iterStacks);
         updateSlotContents();
-        addButton(new GuiInnerScreen(this, 31, 13, 115, 42, () -> getScreenRenderStrings(this.oreInfo)));
-        addButton(new GuiSlot(SlotType.ORE, this, 128, 13).setRenderAboveSlots());
-        addButton(slotDisplay);
+        addRenderableWidget(new GuiInnerScreen(this, 31, 13, 115, 42, () -> getScreenRenderStrings(this.oreInfo)));
+        addRenderableWidget(new GuiSlot(SlotType.ORE, this, 128, 13).setRenderAboveSlots());
+        addRenderableWidget(slotDisplay);
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
     @Override
-    public void tick() {
+    public void containerTick() {
         updateSlotContents();
-        super.tick();
+        super.containerTick();
     }
 
     private void updateSlotContents() {
@@ -83,7 +83,7 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
                 prevSlurry = inputSlurry;
                 iterStacks.clear();
                 if (!prevSlurry.isEmptyType() && !prevSlurry.isIn(MekanismTags.Slurries.DIRTY)) {
-                    ITag<Item> oreTag = prevSlurry.getOreTag();
+                    Tag<Item> oreTag = prevSlurry.getOreTag();
                     if (oreTag != null) {
                         for (Item ore : oreTag.getValues()) {
                             iterStacks.add(new ItemStack(ore));
@@ -99,10 +99,10 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
         }
     }
 
-    public static List<ITextComponent> getScreenRenderStrings(IOreInfo oreInfo) {
+    public static List<Component> getScreenRenderStrings(IOreInfo oreInfo) {
         BoxedChemicalStack boxedChemical = oreInfo.getInputChemical();
         if (!boxedChemical.isEmpty()) {
-            List<ITextComponent> ret = new ArrayList<>();
+            List<Component> ret = new ArrayList<>();
             ret.add(boxedChemical.getTextComponent());
             if (boxedChemical.getChemicalType() == ChemicalType.SLURRY && !oreInfo.getRenderStack().isEmpty()) {
                 ret.add(MekanismLang.GENERIC_PARENTHESIS.translate(oreInfo.getRenderStack()));

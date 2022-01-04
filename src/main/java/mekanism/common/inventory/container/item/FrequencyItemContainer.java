@@ -8,9 +8,9 @@ import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.InteractionHand;
 
 public abstract class FrequencyItemContainer<FREQ extends Frequency> extends MekanismItemContainer {
 
@@ -18,13 +18,13 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
     private List<FREQ> privateCache = Collections.emptyList();
     private FREQ selectedFrequency;
 
-    protected FrequencyItemContainer(ContainerTypeRegistryObject<?> type, int id, PlayerInventory inv, Hand hand, ItemStack stack) {
+    protected FrequencyItemContainer(ContainerTypeRegistryObject<?> type, int id, Inventory inv, InteractionHand hand, ItemStack stack) {
         super(type, id, inv, hand, stack);
     }
 
     public abstract FrequencyType<FREQ> getFrequencyType();
 
-    public Hand getHand() {
+    public InteractionHand getHand() {
         return hand;
     }
 

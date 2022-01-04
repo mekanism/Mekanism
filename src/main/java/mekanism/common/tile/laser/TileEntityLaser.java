@@ -7,11 +7,13 @@ import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityLaser extends TileEntityBasicLaser {
 
-    public TileEntityLaser() {
-        super(MekanismBlocks.LASER);
+    public TileEntityLaser(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.LASER, pos, state);
     }
 
     @Override

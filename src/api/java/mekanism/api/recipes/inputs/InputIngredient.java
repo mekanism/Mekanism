@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 /**
  * Interface describing the base methods common to all inputs of our recipes.
@@ -60,7 +60,7 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @param buffer The buffer to write to.
      */
-    void write(PacketBuffer buffer);
+    void write(FriendlyByteBuf buffer);
 
     /**
      * Serializes this ingredient to a JsonElement

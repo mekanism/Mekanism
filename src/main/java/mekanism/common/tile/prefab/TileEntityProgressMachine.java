@@ -11,9 +11,10 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> extends TileEntityRecipeMachine<RECIPE> {
 
@@ -21,8 +22,8 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     protected int baseTicksRequired;
     public int ticksRequired;
 
-    protected TileEntityProgressMachine(IBlockProvider blockProvider, int baseTicksRequired) {
-        super(blockProvider);
+    protected TileEntityProgressMachine(IBlockProvider blockProvider, BlockPos pos, BlockState state, int baseTicksRequired) {
+        super(blockProvider, pos, state);
         this.baseTicksRequired = baseTicksRequired;
         ticksRequired = this.baseTicksRequired;
     }
@@ -51,17 +52,15 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, getOperatingTicks());
-        return nbtTags;
     }
 
     @Override
@@ -73,7 +72,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe> e
     }
 
     @Override
-    public List<ITextComponent> getInfo(Upgrade upgrade) {
+    public List<Component> getInfo(Upgrade upgrade) {
         return UpgradeUtils.getMultScaledInfo(this, upgrade);
     }
 

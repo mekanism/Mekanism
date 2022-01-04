@@ -1,6 +1,6 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.lang.ref.WeakReference;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.pigment.PigmentStack;
@@ -15,12 +15,12 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.machine.TileEntityPigmentMixer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer, MekanismTileContainer<TileEntityPigmentMixer>> {
 
-    public GuiPigmentMixer(MekanismTileContainer<TileEntityPigmentMixer> container, PlayerInventory inv, ITextComponent title) {
+    public GuiPigmentMixer(MekanismTileContainer<TileEntityPigmentMixer> container, Inventory inv, Component title) {
         super(container, inv, title);
         inventoryLabelY += 2;
         titleLabelX = 5;
@@ -31,19 +31,19 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
-        addButton(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
-        addButton(new GuiPigmentGauge(() -> tile.leftInputTank, () -> tile.getPigmentTanks(null), GaugeType.STANDARD, this, 25, 13));
-        addButton(new GuiPigmentGauge(() -> tile.outputTank, () -> tile.getPigmentTanks(null), GaugeType.STANDARD, this, 79, 4));
-        addButton(new GuiPigmentGauge(() -> tile.rightInputTank, () -> tile.getPigmentTanks(null), GaugeType.STANDARD, this, 133, 13));
-        addButton(new GuiProgress(tile::getActive, ProgressType.SMALL_RIGHT, this, 47, 39).jeiCategory(tile).colored(new LeftColorDetails()));
-        addButton(new GuiProgress(tile::getActive, ProgressType.SMALL_LEFT, this, 101, 39).jeiCategory(tile).colored(new RightColorDetails()));
+        addRenderableWidget(new GuiHorizontalPowerBar(this, tile.getEnergyContainer(), 115, 75));
+        addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
+        addRenderableWidget(new GuiPigmentGauge(() -> tile.leftInputTank, () -> tile.getPigmentTanks(null), GaugeType.STANDARD, this, 25, 13));
+        addRenderableWidget(new GuiPigmentGauge(() -> tile.outputTank, () -> tile.getPigmentTanks(null), GaugeType.STANDARD, this, 79, 4));
+        addRenderableWidget(new GuiPigmentGauge(() -> tile.rightInputTank, () -> tile.getPigmentTanks(null), GaugeType.STANDARD, this, 133, 13));
+        addRenderableWidget(new GuiProgress(tile::getActive, ProgressType.SMALL_RIGHT, this, 47, 39).jeiCategory(tile).colored(new LeftColorDetails()));
+        addRenderableWidget(new GuiProgress(tile::getActive, ProgressType.SMALL_LEFT, this, 101, 39).jeiCategory(tile).colored(new RightColorDetails()));
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         drawString(matrix, tile.getName(), titleLabelX, titleLabelY, titleTextColor());
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

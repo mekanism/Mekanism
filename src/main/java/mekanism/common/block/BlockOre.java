@@ -5,15 +5,14 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.resource.OreType;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.IWorldReader;
-import net.minecraftforge.common.ToolType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.LevelReader;
 
 public class BlockOre extends Block implements IHasDescription {
 
@@ -21,8 +20,8 @@ public class BlockOre extends Block implements IHasDescription {
     private String descriptionTranslationKey;
 
     public BlockOre(OreType ore) {
-        super(BlockStateHelper.applyLightLevelAdjustments(AbstractBlock.Properties.of(Material.STONE).strength(3, 3)
-              .requiresCorrectToolForDrops().harvestTool(ToolType.PICKAXE).harvestLevel(1)));
+        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of(Material.STONE).strength(3, 3)
+              .requiresCorrectToolForDrops()));
         this.ore = ore;
     }
 
@@ -40,9 +39,9 @@ public class BlockOre extends Block implements IHasDescription {
     }
 
     @Override
-    public int getExpDrop(BlockState state, IWorldReader reader, BlockPos pos, int fortune, int silkTouch) {
+    public int getExpDrop(BlockState state, LevelReader reader, BlockPos pos, int fortune, int silkTouch) {
         if (ore.getMaxExp() > 0 && silkTouch == 0) {
-            return MathHelper.nextInt(RANDOM, ore.getMinExp(), ore.getMaxExp());
+            return Mth.nextInt(RANDOM, ore.getMinExp(), ore.getMaxExp());
         }
         return super.getExpDrop(state, reader, pos, fortune, silkTouch);
     }

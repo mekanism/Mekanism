@@ -1,6 +1,6 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
@@ -19,7 +19,7 @@ import mekanism.common.content.filter.IMaterialFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.collection.HashList;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class MovableFilterButton extends FilterButton {
 
@@ -55,7 +55,7 @@ public class MovableFilterButton extends FilterButton {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
         if (upButton.isMouseOverCheckWindows(mouseX, mouseY)) {
             upButton.renderToolTip(matrix, xAxis, yAxis);
@@ -86,7 +86,7 @@ public class MovableFilterButton extends FilterButton {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         IFilter<?> filter = getFilter(filters, filterIndex, index);
         EnumColor color;

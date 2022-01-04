@@ -8,10 +8,10 @@ import java.util.function.Supplier;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.registration.DoubleDeferredRegister;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
@@ -22,7 +22,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
         super(modid, ForgeRegistries.BLOCKS, ForgeRegistries.ITEMS);
     }
 
-    public BlockRegistryObject<Block, BlockItem> register(String name, AbstractBlock.Properties properties) {
+    public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {
         return registerDefaultProperties(name, () -> new Block(BlockStateHelper.applyLightLevelAdjustments(properties)), BlockItem::new);
     }
 

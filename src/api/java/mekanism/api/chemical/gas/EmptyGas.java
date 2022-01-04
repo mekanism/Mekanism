@@ -3,8 +3,8 @@ package mekanism.api.chemical.gas;
 import java.util.Collections;
 import java.util.Set;
 import javax.annotation.Nonnull;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.resources.ResourceLocation;
 
 public final class EmptyGas extends Gas {
 
@@ -13,7 +13,7 @@ public final class EmptyGas extends Gas {
     }
 
     @Override
-    public boolean isIn(@Nonnull ITag<Gas> tags) {
+    public boolean isIn(@Nonnull Tag<Gas> tags) {
         //Empty gas is in no tags
         return false;
     }

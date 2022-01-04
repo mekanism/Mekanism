@@ -8,6 +8,8 @@ import mekanism.common.network.to_client.container.property.list.ListPropertyDat
 import mekanism.common.network.to_client.container.property.list.RegistryEntryListPropertyData;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
+
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling registry entry based lists
  */

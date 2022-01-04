@@ -6,7 +6,7 @@ import mekanism.api.recipes.ItemStackGasToItemStackRecipe;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 
 public abstract class ItemStackChemicalToItemStackRecipeHandler<RECIPE extends ItemStackChemicalToItemStackRecipe<?, ?, ?>> extends MekanismRecipeHandler<RECIPE> {
 
@@ -16,7 +16,7 @@ public abstract class ItemStackChemicalToItemStackRecipeHandler<RECIPE extends I
     }
 
     @Override
-    public <U extends IRecipe<?>> boolean doesConflict(IRecipeManager manager, RECIPE recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, RECIPE recipe, U other) {
         //Only support if the other is an itemstack chemical to itemstack recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
         if (other instanceof ItemStackChemicalToItemStackRecipe) {

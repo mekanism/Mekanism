@@ -28,7 +28,7 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.InfusionSlotI
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.PigmentSlotInfo;
 import mekanism.common.tile.component.config.slot.ChemicalSlotInfo.SlurrySlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public abstract class ConfigChemicalTankHolder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>>
       extends ConfigHolder<TANK> implements IChemicalTankHolder<CHEMICAL, STACK, TANK> {

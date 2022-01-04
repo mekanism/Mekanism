@@ -12,9 +12,9 @@ import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.tags.ITag;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Item;
+import net.minecraft.tags.Tag;
 
 public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
 
@@ -24,7 +24,7 @@ public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
 
     @Override
-    public void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "plastic/stairs/";
         registerPlasticStairs(consumer, AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_BLOCKS, AdditionsTags.Items.STAIRS_PLASTIC, false, basePath);
         registerPlasticStairs(consumer, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS,
@@ -33,15 +33,15 @@ public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
               basePath + "glow/");
     }
 
-    private void registerPlasticStairs(Consumer<IFinishedRecipe> consumer, Map<EnumColor, ? extends IItemProvider> blocks, Map<EnumColor, ? extends IItemProvider> plastic,
-          ITag<Item> blockType, boolean transparent, String basePath) {
+    private void registerPlasticStairs(Consumer<FinishedRecipe> consumer, Map<EnumColor, ? extends IItemProvider> blocks, Map<EnumColor, ? extends IItemProvider> plastic,
+          Tag<Item> blockType, boolean transparent, String basePath) {
         for (Map.Entry<EnumColor, ? extends IItemProvider> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
             registerPlasticStairs(consumer, color, entry.getValue(), plastic.get(color), blockType, transparent, basePath);
         }
     }
 
-    private void registerPlasticStairs(Consumer<IFinishedRecipe> consumer, EnumColor color, IItemProvider result, IItemProvider plastic, ITag<Item> blockType,
+    private void registerPlasticStairs(Consumer<FinishedRecipe> consumer, EnumColor color, IItemProvider result, IItemProvider plastic, Tag<Item> blockType,
           boolean transparent, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(PLASTIC_STAIRS)

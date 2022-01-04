@@ -9,6 +9,8 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IEmptyStackProvider;
 import mekanism.common.inventory.container.sync.ISyncableData;
 
+import mekanism.common.inventory.container.sync.ISyncableData.DirtyType;
+
 /**
  * Version of {@link net.minecraft.util.IntReferenceHolder} for handling chemical stacks
  */

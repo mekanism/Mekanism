@@ -57,7 +57,9 @@ import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<RotaryRecipe> implements IHasMode {
@@ -94,8 +96,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityRotaryCondensentrator() {
-        super(MekanismBlocks.ROTARY_CONDENSENTRATOR);
+    public TileEntityRotaryCondensentrator(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.ROTARY_CONDENSENTRATOR, pos, state);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.FLUID, TransmissionType.ENERGY);
         configComponent.setupItemIOConfig(Arrays.asList(gasInputSlot, fluidInputSlot), Arrays.asList(gasOutputSlot, fluidOutputSlot), energySlot, true);
         configComponent.setupIOConfig(TransmissionType.GAS, gasTank, RelativeSide.LEFT, true).setEjecting(true);
@@ -199,13 +201,13 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
         NBTUtils.setBooleanIfPresent(data, NBTConstants.MODE, value -> mode = value);
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
         data.putBoolean(NBTConstants.MODE, mode);
     }

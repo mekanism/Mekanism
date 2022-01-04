@@ -1,6 +1,7 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
@@ -8,15 +9,16 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
 
 public class GuiScreenSwitch extends GuiInnerScreen {
 
     private final BooleanSupplier stateSupplier;
     private final Runnable onToggle;
 
-    public GuiScreenSwitch(IGuiWrapper gui, int x, int y, int width, ITextComponent buttonName, BooleanSupplier stateSupplier, Runnable onToggle) {
+    public GuiScreenSwitch(IGuiWrapper gui, int x, int y, int width, Component buttonName, BooleanSupplier stateSupplier, Runnable onToggle) {
         super(gui, x, y, width, GuiDigitalSwitch.BUTTON_SIZE_Y * 2 + 5, () -> Collections.singletonList(buttonName));
         this.stateSupplier = stateSupplier;
         this.onToggle = onToggle;
@@ -24,9 +26,10 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bind(GuiDigitalSwitch.SWITCH);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, GuiDigitalSwitch.SWITCH);
         int buttonSizeX = GuiDigitalSwitch.BUTTON_SIZE_X;
         int buttonSizeY = GuiDigitalSwitch.BUTTON_SIZE_Y;
         blit(matrix, x + width - 2 - buttonSizeX, y + 2, 0, stateSupplier.getAsBoolean() ? 0 : buttonSizeY, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
@@ -34,7 +37,7 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         drawScaledCenteredText(matrix, MekanismLang.ON.translate(), relativeX + width - 9, relativeY + 2, 0x101010, 0.5F);
         drawScaledCenteredText(matrix, MekanismLang.OFF.translate(), relativeX + width - 9, relativeY + 11, 0x101010, 0.5F);
@@ -42,7 +45,7 @@ public class GuiScreenSwitch extends GuiInnerScreen {
 
     @Override
     public void onClick(double mouseX, double mouseY) {
-        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(MekanismSounds.BEEP.get(), 1.0F));
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP.get(), 1.0F));
         onToggle.run();
     }
 }

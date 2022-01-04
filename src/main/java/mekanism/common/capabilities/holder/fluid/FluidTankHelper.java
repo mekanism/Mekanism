@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.RelativeSide;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.tile.component.TileComponentConfig;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public class FluidTankHelper {
 

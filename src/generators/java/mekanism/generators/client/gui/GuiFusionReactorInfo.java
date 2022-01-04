@@ -7,12 +7,12 @@ import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.network.to_server.PacketGuiButtonPress;
 import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFusionReactorController, EmptyTileContainer<TileEntityFusionReactorController>> {
 
-    protected GuiFusionReactorInfo(EmptyTileContainer<TileEntityFusionReactorController> container, PlayerInventory inv, ITextComponent title) {
+    protected GuiFusionReactorInfo(EmptyTileContainer<TileEntityFusionReactorController> container, Inventory inv, Component title) {
         super(container, inv, title);
         titleLabelY = 5;
     }
@@ -20,7 +20,7 @@ public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFus
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
-              () -> Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
+        addRenderableWidget(new MekanismImageButton(this, 6, 6, 14, getButtonLocation("back"),
+              () -> Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(ClickedTileButton.BACK_BUTTON, tile))));
     }
 }

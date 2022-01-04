@@ -11,9 +11,11 @@ import mekanism.common.lib.security.SecurityMode;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.SecurityUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 
 public class TileEntityPersonalChest extends TileEntityMekanism {
@@ -22,8 +24,8 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
 
     public float prevLidAngle;
 
-    public TileEntityPersonalChest() {
-        super(MekanismBlocks.PERSONAL_CHEST);
+    public TileEntityPersonalChest(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.PERSONAL_CHEST, pos, state);
     }
 
     @Nonnull
@@ -61,7 +63,7 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
         float increment = 0.1F;
         if (!playersUsing.isEmpty() && lidAngle == 0.0F) {
             level.playSound(null, getBlockPos().getX() + 0.5F, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5F,
-                  SoundEvents.CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, (level.random.nextFloat() * 0.1F) + 0.9F);
+                  SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.5F, (level.random.nextFloat() * 0.1F) + 0.9F);
         }
 
         if ((playersUsing.isEmpty() && lidAngle > 0.0F) || (!playersUsing.isEmpty() && lidAngle < 1.0F)) {
@@ -77,7 +79,7 @@ public class TileEntityPersonalChest extends TileEntityMekanism {
             float split = 0.5F;
             if (lidAngle < split && angle >= split) {
                 level.playSound(null, getBlockPos().getX() + 0.5D, getBlockPos().getY() + 0.5D, getBlockPos().getZ() + 0.5D,
-                      SoundEvents.CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, (level.random.nextFloat() * 0.1F) + 0.9F);
+                      SoundEvents.CHEST_CLOSE, SoundSource.BLOCKS, 0.5F, (level.random.nextFloat() * 0.1F) + 0.9F);
             }
             if (lidAngle < 0.0F) {
                 lidAngle = 0.0F;

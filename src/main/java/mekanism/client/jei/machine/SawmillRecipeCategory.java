@@ -1,6 +1,6 @@
 package mekanism.client.jei.machine;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Arrays;
 import java.util.Collections;
 import mekanism.api.providers.IBlockProvider;
@@ -55,7 +55,7 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
     }
 
     @Override
-    public void draw(SawmillRecipe recipe, MatrixStack matrix, double mouseX, double mouseY) {
+    public void draw(SawmillRecipe recipe, PoseStack matrix, double mouseX, double mouseY) {
         super.draw(recipe, matrix, mouseX, mouseY);
         double secondaryChance = recipe.getSecondaryChance();
         if (secondaryChance > 0) {

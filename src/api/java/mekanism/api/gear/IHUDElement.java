@@ -1,8 +1,8 @@
 package mekanism.api.gear;
 
 import javax.annotation.Nonnull;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 /**
  * Interface representing the needed information for rendering elements on the MekaSuit HUD. It is recommended to use one of the following helper methods to build this,
@@ -29,7 +29,7 @@ public interface IHUDElement {
      * @return Text to render.
      */
     @Nonnull
-    ITextComponent getText();
+    Component getText();
 
     /**
      * Gets the color to use for this {@link IHUDElement}.

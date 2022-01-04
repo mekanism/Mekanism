@@ -14,11 +14,11 @@ import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityPressureDisperser;
 import mekanism.common.tile.multiblock.TileEntitySuperheatingElement;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
 
 public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockData> {
 
@@ -34,7 +34,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
     }
 
     @Override
-    protected boolean validateInner(BlockState state, Long2ObjectMap<IChunk> chunkMap, BlockPos pos) {
+    protected boolean validateInner(BlockState state, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         if (super.validateInner(state, chunkMap, pos)) {
             return true;
         }
@@ -42,11 +42,11 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
     }
 
     @Override
-    public FormationResult postcheck(BoilerMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<IChunk> chunkMap) {
+    public FormationResult postcheck(BoilerMultiblockData structure, Set<BlockPos> innerNodes, Long2ObjectMap<ChunkAccess> chunkMap) {
         Set<BlockPos> dispersers = new ObjectOpenHashSet<>();
         Set<BlockPos> elements = new ObjectOpenHashSet<>();
         for (BlockPos pos : innerNodes) {
-            TileEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
+            BlockEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
             if (tile instanceof TileEntityPressureDisperser) {
                 dispersers.add(pos);
             } else if (tile instanceof TileEntitySuperheatingElement) {
@@ -67,7 +67,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         final BlockPos initDisperser = dispersers.iterator().next();
 
         //Ensure that a full horizontal plane of dispersers exists, surrounding the found disperser
-        BlockPos.Mutable mutablePos = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (int x = 1; x < structure.length() - 1; x++) {
             for (int z = 1; z < structure.width() - 1; z++) {
                 mutablePos.set(structure.renderLocation.getX() + x, initDisperser.getY(), structure.renderLocation.getZ() + z);
@@ -92,7 +92,7 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         }
 
         BlockPos initAir = null;
-        BlockPos.Mutable mutableAir = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos mutableAir = new BlockPos.MutableBlockPos();
         int totalAir = 0;
 
         //Find the first available block in the structure for water storage (including casings)
@@ -129,9 +129,9 @@ public class BoilerValidator extends CuboidStructureValidator<BoilerMultiblockDa
         return FormationResult.SUCCESS;
     }
 
-    private boolean isAirOrFrame(Long2ObjectMap<IChunk> chunkMap, BlockPos airPos) {
+    private boolean isAirOrFrame(Long2ObjectMap<ChunkAccess> chunkMap, BlockPos airPos) {
         Optional<BlockState> stateOptional = WorldUtils.getBlockState(world, chunkMap, airPos);
-        return (stateOptional.isPresent() && stateOptional.get().isAir(world, airPos)) ||
+        return (stateOptional.isPresent() && stateOptional.get().isAir()) ||
                isFrameCompatible(WorldUtils.getTileEntity(world, chunkMap, airPos));
     }
 }

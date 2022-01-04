@@ -43,11 +43,12 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.LongArrayNBT;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.LongArrayTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 //Compressing, injecting, purifying
 public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToItemFactory<ItemStackGasToItemStackRecipe> implements IHasDumpButton,
@@ -64,8 +65,8 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     private double gasPerTickMeanMultiplier = 1;
     private long baseTotalUsage;
 
-    public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityItemStackGasToItemStackFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         gasInputHandler = InputHelper.getInputHandler(gasTank);
         configComponent.addSupported(TransmissionType.GAS);
         configComponent.setupInputConfig(TransmissionType.GAS, gasTank);
@@ -198,10 +199,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        if (nbtTags.contains(NBTConstants.USED_SO_FAR, NBT.TAG_LONG_ARRAY)) {
-            long[] savedUsed = nbtTags.getLongArray(NBTConstants.USED_SO_FAR);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        if (nbt.contains(NBTConstants.USED_SO_FAR, Tag.TAG_LONG_ARRAY)) {
+            long[] savedUsed = nbt.getLongArray(NBTConstants.USED_SO_FAR);
             if (tier.processes != savedUsed.length) {
                 Arrays.fill(usedSoFar, 0);
             }
@@ -213,12 +214,10 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
         }
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
-        nbtTags.put(NBTConstants.USED_SO_FAR, new LongArrayNBT(Arrays.copyOf(usedSoFar, usedSoFar.length)));
-        return nbtTags;
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
+        nbtTags.put(NBTConstants.USED_SO_FAR, new LongArrayTag(Arrays.copyOf(usedSoFar, usedSoFar.length)));
     }
 
     @Override

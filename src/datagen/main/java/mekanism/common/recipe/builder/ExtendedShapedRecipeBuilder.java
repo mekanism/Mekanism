@@ -9,15 +9,15 @@ import it.unimi.dsi.fastutil.chars.CharSet;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
 import mekanism.common.DataGenJsonConstants;
 import mekanism.common.recipe.pattern.RecipePattern;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -26,19 +26,19 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     private final Char2ObjectMap<Ingredient> key = new Char2ObjectArrayMap<>(9);
     private final List<String> pattern = new ArrayList<>();
 
-    protected ExtendedShapedRecipeBuilder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {
+    protected ExtendedShapedRecipeBuilder(RecipeSerializer<?> serializer, ItemLike result, int count) {
         super(serializer, result, count);
     }
 
-    private ExtendedShapedRecipeBuilder(IItemProvider result, int count) {
-        this(IRecipeSerializer.SHAPED_RECIPE, result, count);
+    private ExtendedShapedRecipeBuilder(ItemLike result, int count) {
+        this(RecipeSerializer.SHAPED_RECIPE, result, count);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(IItemProvider result) {
+    public static ExtendedShapedRecipeBuilder shapedRecipe(ItemLike result) {
         return shapedRecipe(result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder shapedRecipe(IItemProvider result, int count) {
+    public static ExtendedShapedRecipeBuilder shapedRecipe(ItemLike result, int count) {
         return new ExtendedShapedRecipeBuilder(result, count);
     }
 
@@ -56,11 +56,11 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, ITag<Item> tag) {
+    public ExtendedShapedRecipeBuilder key(char symbol, Tag<Item> tag) {
         return key(symbol, Ingredient.of(tag));
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, IItemProvider item) {
+    public ExtendedShapedRecipeBuilder key(char symbol, ItemLike item) {
         return key(symbol, Ingredient.of(item));
     }
 

@@ -13,8 +13,8 @@ import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE extends TileEntityMekanism & ITileFilterHolder<? super FILTER>>
       extends GuiTextFilter<FILTER, TILE> {
@@ -29,8 +29,8 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
     }
 
     @Override
-    protected List<ITextComponent> getScreenText() {
-        List<ITextComponent> list = super.getScreenText();
+    protected List<Component> getScreenText() {
+        List<Component> list = super.getScreenText();
         list.add(MekanismLang.TAG_FILTER_TAG.translate(filter.getTagName()));
         return list;
     }

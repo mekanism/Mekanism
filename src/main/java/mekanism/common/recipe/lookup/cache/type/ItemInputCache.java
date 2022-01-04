@@ -3,9 +3,9 @@ package mekanism.common.recipe.lookup.cache.type;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.lib.inventory.HashedItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CompoundIngredient;
 import net.minecraftforge.common.crafting.NBTIngredient;
 

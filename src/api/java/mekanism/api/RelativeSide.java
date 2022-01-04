@@ -5,7 +5,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public enum RelativeSide implements IHasTranslationKey {
     FRONT(APILang.FRONT),

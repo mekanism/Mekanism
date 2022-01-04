@@ -6,7 +6,7 @@ import mekanism.api.chemical.ChemicalUtils;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import mekanism.common.network.to_client.container.property.PropertyType;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public abstract class ChemicalStackPropertyData<STACK extends ChemicalStack<?>> extends PropertyData {
 
@@ -24,7 +24,7 @@ public abstract class ChemicalStackPropertyData<STACK extends ChemicalStack<?>> 
     }
 
     @Override
-    public void writeToPacket(PacketBuffer buffer) {
+    public void writeToPacket(FriendlyByteBuf buffer) {
         super.writeToPacket(buffer);
         ChemicalUtils.writeChemicalStack(buffer, value);
     }

@@ -9,11 +9,11 @@ import mekanism.common.item.interfaces.IItemSustainedInventory;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockSecurityDesk> implements IItemSustainedInventory {
 
@@ -22,12 +22,12 @@ public class ItemBlockSecurityDesk extends ItemBlockTooltip<BlockSecurityDesk> i
     }
 
     @Override
-    public void addDetails(@Nonnull ItemStack stack, World world, @Nonnull List<ITextComponent> tooltip, boolean advanced) {
+    public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
         tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.of(hasInventory(stack))));
     }
 
     @Override
-    public boolean placeBlock(@Nonnull BlockItemUseContext context, @Nonnull BlockState state) {
+    public boolean placeBlock(@Nonnull BlockPlaceContext context, @Nonnull BlockState state) {
         if (!WorldUtils.isValidReplaceableBlock(context.getLevel(), context.getClickedPos().above())) {
             //If there is not enough room, fail
             return false;

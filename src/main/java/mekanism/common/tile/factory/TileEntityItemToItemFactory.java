@@ -13,15 +13,17 @@ import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.FactoryInputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tier.FactoryTier;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe> extends TileEntityFactory<RECIPE> {
 
     protected IInputHandler<@NonNull ItemStack>[] inputHandlers;
     protected IOutputHandler<@NonNull ItemStack>[] outputHandlers;
 
-    protected TileEntityItemToItemFactory(IBlockProvider blockProvider) {
-        super(blockProvider);
+    protected TileEntityItemToItemFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Override

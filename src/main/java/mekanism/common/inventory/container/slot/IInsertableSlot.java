@@ -6,7 +6,7 @@ import mekanism.api.Action;
 import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.SelectedWindowData;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public interface IInsertableSlot {
 

@@ -2,12 +2,12 @@ package mekanism.common.network.to_client;
 
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketPortalFX implements IMekanismPacket {
 
@@ -25,7 +25,7 @@ public class PacketPortalFX implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ClientWorld world = Minecraft.getInstance().level;
+        ClientLevel world = Minecraft.getInstance().level;
         if (world != null) {
             BlockPos secondPos = pos.relative(direction);
             for (int i = 0; i < 50; i++) {
@@ -38,12 +38,12 @@ public class PacketPortalFX implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         buffer.writeEnum(direction);
     }
 
-    public static PacketPortalFX decode(PacketBuffer buffer) {
+    public static PacketPortalFX decode(FriendlyByteBuf buffer) {
         return new PacketPortalFX(buffer.readBlockPos(), buffer.readEnum(Direction.class));
     }
 }

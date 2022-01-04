@@ -19,11 +19,11 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.Direction;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -31,7 +31,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
 
     private final List<IEnergyContainer> energyContainers;
 
-    EnergyRecipeData(ListNBT containers) {
+    EnergyRecipeData(ListTag containers) {
         int count = DataHandlerUtils.getMaxId(containers, NBTConstants.CONTAINER);
         energyContainers = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {

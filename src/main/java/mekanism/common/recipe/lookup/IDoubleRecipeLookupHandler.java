@@ -11,8 +11,8 @@ import mekanism.common.recipe.lookup.cache.DoubleInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.FluidChemical;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -29,7 +29,7 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(World, Object, Object)} and {@link DoubleInputRecipeCache#containsInputBA(World, Object, Object)} for
+     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, Object, Object)} and {@link DoubleInputRecipeCache#containsInputBA(Level, Object, Object)} for
      * more details about when this method should be called versus when {@link #containsRecipeBA(Object, Object)} should be called.
      */
     default boolean containsRecipeAB(INPUT_A inputA, INPUT_B inputB) {
@@ -44,7 +44,7 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(World, Object, Object)} and {@link DoubleInputRecipeCache#containsInputBA(World, Object, Object)} for
+     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, Object, Object)} and {@link DoubleInputRecipeCache#containsInputBA(Level, Object, Object)} for
      * more details about when this method should be called versus when {@link #containsRecipeAB(Object, Object)} should be called.
      */
     default boolean containsRecipeBA(INPUT_A inputA, INPUT_B inputB) {

@@ -19,18 +19,18 @@ import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.audio.Sound;
-import net.minecraft.client.audio.SoundEngine;
-import net.minecraft.client.audio.TickableSound;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.client.resources.sounds.Sound;
+import net.minecraft.client.sounds.SoundEngine;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
@@ -67,7 +67,7 @@ public class SoundHandler {
     private static final Map<UUID, PlayerSound> gravitationalModulationSounds = new Object2ObjectOpenHashMap<>();
     public static final Map<RadiationScale, GeigerSound> radiationSoundMap = new EnumMap<>(RadiationScale.class);
 
-    private static final Long2ObjectMap<ISound> soundMap = new Long2ObjectOpenHashMap<>();
+    private static final Long2ObjectMap<SoundInstance> soundMap = new Long2ObjectOpenHashMap<>();
     private static boolean IN_MUFFLED_CHECK = false;
     private static SoundEngine soundEngine;
     private static boolean hadPlayerSounds;
@@ -86,7 +86,7 @@ public class SoundHandler {
         gravitationalModulationSounds.remove(uuid);
     }
 
-    public static void startSound(@Nonnull IWorld world, @Nonnull UUID uuid, @Nonnull SoundType soundType) {
+    public static void startSound(@Nonnull LevelAccessor world, @Nonnull UUID uuid, @Nonnull SoundType soundType) {
         switch (soundType) {
             case JETPACK:
                 startSound(world, uuid, jetpackSounds, JetpackSound::new);
@@ -105,14 +105,14 @@ public class SoundHandler {
         }
     }
 
-    private static void startSound(IWorld world, UUID uuid, Map<UUID, PlayerSound> knownSounds, Function<PlayerEntity, PlayerSound> soundCreator) {
+    private static void startSound(LevelAccessor world, UUID uuid, Map<UUID, PlayerSound> knownSounds, Function<Player, PlayerSound> soundCreator) {
         if (knownSounds.containsKey(uuid)) {
             if (playerSoundsEnabled()) {
                 //Check if it needs to be restarted
                 restartSounds(knownSounds.get(uuid));
             }
         } else {
-            PlayerEntity player = world.getPlayerByUUID(uuid);
+            Player player = world.getPlayerByUUID(uuid);
             if (player != null) {
                 PlayerSound sound = soundCreator.apply(player);
                 playSound(sound);
@@ -122,14 +122,14 @@ public class SoundHandler {
     }
 
     @SafeVarargs
-    private static void startSounds(IWorld world, UUID uuid, Map<UUID, PlayerSound[]> knownSounds, Function<PlayerEntity, PlayerSound>... soundCreators) {
+    private static void startSounds(LevelAccessor world, UUID uuid, Map<UUID, PlayerSound[]> knownSounds, Function<Player, PlayerSound>... soundCreators) {
         if (knownSounds.containsKey(uuid)) {
             if (playerSoundsEnabled()) {
                 //Check if it needs to be restarted
                 restartSounds(knownSounds.get(uuid));
             }
         } else {
-            PlayerEntity player = world.getPlayerByUUID(uuid);
+            Player player = world.getPlayerByUUID(uuid);
             if (player != null) {
                 PlayerSound[] sounds = new PlayerSound[soundCreators.length];
                 for (int i = 0; i < soundCreators.length; i++) {
@@ -168,10 +168,10 @@ public class SoundHandler {
     }
 
     private static boolean playerSoundsEnabled() {
-        return getVolume(SoundCategory.MASTER) > 0 && getVolume(SoundCategory.PLAYERS) > 0;
+        return getVolume(SoundSource.MASTER) > 0 && getVolume(SoundSource.PLAYERS) > 0;
     }
 
-    private static float getVolume(SoundCategory category) {
+    private static float getVolume(SoundSource category) {
         return Minecraft.getInstance().options.getSoundSourceVolume(category);
     }
 
@@ -180,16 +180,16 @@ public class SoundHandler {
     }
 
     public static void playSound(SoundEvent sound) {
-        playSound(SimpleSound.forUI(sound, 1, MekanismConfig.client.baseSoundVolume.get()));
+        playSound(SimpleSoundInstance.forUI(sound, 1, MekanismConfig.client.baseSoundVolume.get()));
     }
 
-    public static void playSound(ISound sound) {
+    public static void playSound(SoundInstance sound) {
         Minecraft.getInstance().getSoundManager().play(sound);
     }
 
-    public static ISound startTileSound(SoundEvent soundEvent, SoundCategory category, float volume, BlockPos pos) {
+    public static SoundInstance startTileSound(SoundEvent soundEvent, SoundSource category, float volume, BlockPos pos) {
         // First, check to see if there's already a sound playing at the desired location
-        ISound s = soundMap.get(pos.asLong());
+        SoundInstance s = soundMap.get(pos.asLong());
         if (s == null || !Minecraft.getInstance().getSoundManager().isActive(s)) {
             // No sound playing, start one up - we assume that tile sounds will play until explicitly stopped
             // The TileTickableSound will then periodically poll to see if the volume should be adjusted
@@ -213,7 +213,7 @@ public class SoundHandler {
 
     public static void stopTileSound(BlockPos pos) {
         long posKey = pos.asLong();
-        ISound s = soundMap.get(posKey);
+        SoundInstance s = soundMap.get(posKey);
         if (s != null) {
             // and maybe we can avoid this dedicated soundMap
             Minecraft.getInstance().getSoundManager().stop(s);
@@ -221,12 +221,12 @@ public class SoundHandler {
         }
     }
 
-    private static boolean isClientPlayerInRange(ISound sound) {
-        if (sound.isRelative() || sound.getAttenuation() == ISound.AttenuationType.NONE) {
+    private static boolean isClientPlayerInRange(SoundInstance sound) {
+        if (sound.isRelative() || sound.getAttenuation() == SoundInstance.Attenuation.NONE) {
             //If the sound is global or has no attenuation, then return that the player is in range
             return true;
         }
-        PlayerEntity player = Minecraft.getInstance().player;
+        Player player = Minecraft.getInstance().player;
         if (player == null) {
             //Shouldn't happen but just in case
             return false;
@@ -251,19 +251,19 @@ public class SoundHandler {
         if (soundEngine == null) {
             //Note: We include a null check as the constructor for SoundEngine is public and calls this event
             // And we do not want to end up grabbing a modders variant of this
-            soundEngine = event.getManager();
+            soundEngine = event.getEngine();
         }
     }
 
     public static void onTilePlaySound(PlaySoundEvent event) {
         // Ignore any sound event which is null or is happening in a muffled check
-        ISound resultSound = event.getResultSound();
+        SoundInstance resultSound = event.getSound();
         if (resultSound == null || IN_MUFFLED_CHECK) {
             return;
         }
 
         // Ignore any sound event outside this mod namespace
-        ResourceLocation soundLoc = event.getSound().getLocation();
+        ResourceLocation soundLoc = event.getOriginalSound().getLocation();
         //If it is mekanism or one of the submodules let continue
         if (!soundLoc.getNamespace().startsWith(Mekanism.MODID)) {
             return;
@@ -272,8 +272,8 @@ public class SoundHandler {
         // If this is a Mek player sound, unwrap any muffling that other mods may have attempted. I haven't
         // sorted out a good way to deal with long-lived, non-repeating, dynamic volume sounds -- something
         // to investigate in the future.
-        if (event.getSound() instanceof PlayerSound) {
-            event.setResultSound(event.getSound());
+        if (event.getOriginalSound() instanceof PlayerSound sound) {
+            event.setSound(sound);
             return;
         }
 
@@ -288,7 +288,7 @@ public class SoundHandler {
         }
     }
 
-    private static class TileTickableSound extends TickableSound {
+    private static class TileTickableSound extends AbstractTickableSoundInstance {
 
         private final float originalVolume;
 
@@ -297,7 +297,7 @@ public class SoundHandler {
         // uneven spikes of CPU usage
         private final int checkInterval = 20 + ThreadLocalRandom.current().nextInt(20);
 
-        TileTickableSound(SoundEvent soundEvent, SoundCategory category, BlockPos pos, float volume) {
+        TileTickableSound(SoundEvent soundEvent, SoundSource category, BlockPos pos, float volume) {
             super(soundEvent, category);
             //Keep track of our original volume
             this.originalVolume = volume * MekanismConfig.client.baseSoundVolume.get();
@@ -326,7 +326,7 @@ public class SoundHandler {
                 //Make sure we set our volume back to what it actually would be for purposes of letting other mods know
                 // what volume to use
                 volume = originalVolume;
-                ISound s = ForgeHooksClient.playSound(soundEngine, this);
+                SoundInstance s = ForgeHooksClient.playSound(soundEngine, this);
                 IN_MUFFLED_CHECK = false;
 
                 if (s == this) {
@@ -345,7 +345,7 @@ public class SoundHandler {
         private float getTileVolumeFactor() {
             // Pull the TE from the sound position and see if supports muffling upgrades. If it does, calculate what
             // percentage of the original volume should be muted
-            TileEntity tile = WorldUtils.getTileEntity(Minecraft.getInstance().level, new BlockPos(getX(), getY(), getZ()));
+            BlockEntity tile = WorldUtils.getTileEntity(Minecraft.getInstance().level, new BlockPos(getX(), getY(), getZ()));
             float retVolume = 1.0F;
 
             if (tile instanceof IUpgradeTile) {

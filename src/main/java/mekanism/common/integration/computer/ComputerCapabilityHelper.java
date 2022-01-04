@@ -8,16 +8,16 @@ import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.integration.computer.computercraft.CCEnergyHelper;
 import mekanism.common.integration.computer.computercraft.MekanismPeripheral;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public class ComputerCapabilityHelper {
 
-    @CapabilityInject(IPeripheral.class)
-    public static Capability<IPeripheral> COMPUTER_CRAFT_CAPABILITY;
+    public static final Capability<IPeripheral> COMPUTER_CRAFT_CAPABILITY = CapabilityManager.get(new CapabilityToken<>(){});
 
-    public static <TILE extends TileEntity & IComputerTile> void addComputerCapabilities(TILE tile, Consumer<ICapabilityResolver> capabilityAdder) {
+    public static <TILE extends BlockEntity & IComputerTile> void addComputerCapabilities(TILE tile, Consumer<ICapabilityResolver> capabilityAdder) {
         if (tile.hasComputerSupport()) {
             if (Mekanism.hooks.CCLoaded) {
                 //If ComputerCraft is loaded add the capability for it
@@ -27,7 +27,7 @@ public class ComputerCapabilityHelper {
         }
     }
 
-    private static <TILE extends TileEntity & IComputerTile> ICapabilityResolver getComputerCraftCapability(TILE tile) {
+    private static <TILE extends BlockEntity & IComputerTile> ICapabilityResolver getComputerCraftCapability(TILE tile) {
         if (tile.isComputerCapabilityPersistent()) {
             return BasicCapabilityResolver.persistent(COMPUTER_CRAFT_CAPABILITY, () -> MekanismPeripheral.create(tile));
         }

@@ -6,18 +6,18 @@ import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISoundEventListener;
-import net.minecraft.client.audio.SoundEventAccessor;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.audio.TickableSound;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.client.sounds.SoundEventListener;
+import net.minecraft.client.sounds.WeighedSoundEvents;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvent;
 
-public abstract class PlayerSound extends TickableSound {
+public abstract class PlayerSound extends AbstractTickableSoundInstance {
 
     @Nonnull
-    private final WeakReference<PlayerEntity> playerReference;
+    private final WeakReference<Player> playerReference;
     private final int subtitleFrequency;
     private float lastX;
     private float lastY;
@@ -27,13 +27,13 @@ public abstract class PlayerSound extends TickableSound {
     private float fadeDownStep = 0.1f;
     private int consecutiveTicks;
 
-    public PlayerSound(@Nonnull PlayerEntity player, @Nonnull SoundEventRegistryObject<?> sound) {
+    public PlayerSound(@Nonnull Player player, @Nonnull SoundEventRegistryObject<?> sound) {
         this(player, sound.get(), 60);
         //Set it to repeat the subtitle every 3 seconds the sound is constantly playing
     }
 
-    public PlayerSound(@Nonnull PlayerEntity player, @Nonnull SoundEvent sound, int subtitleFrequency) {
-        super(sound, SoundCategory.PLAYERS);
+    public PlayerSound(@Nonnull Player player, @Nonnull SoundEvent sound, int subtitleFrequency) {
+        super(sound, SoundSource.PLAYERS);
         this.playerReference = new WeakReference<>(player);
         this.subtitleFrequency = subtitleFrequency;
         this.lastX = (float) player.getX();
@@ -48,7 +48,7 @@ public abstract class PlayerSound extends TickableSound {
     }
 
     @Nullable
-    private PlayerEntity getPlayer() {
+    private Player getPlayer() {
         return playerReference.get();
     }
 
@@ -60,7 +60,7 @@ public abstract class PlayerSound extends TickableSound {
     @Override
     public double getX() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
-        PlayerEntity player = getPlayer();
+        Player player = getPlayer();
         if (player != null) {
             this.lastX = (float) player.getX();
         }
@@ -70,7 +70,7 @@ public abstract class PlayerSound extends TickableSound {
     @Override
     public double getY() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
-        PlayerEntity player = getPlayer();
+        Player player = getPlayer();
         if (player != null) {
             this.lastY = (float) player.getY();
         }
@@ -80,7 +80,7 @@ public abstract class PlayerSound extends TickableSound {
     @Override
     public double getZ() {
         //Gracefully handle the player becoming null if this object is kept around after update marks us as donePlaying
-        PlayerEntity player = getPlayer();
+        Player player = getPlayer();
         if (player != null) {
             this.lastZ = (float) player.getZ();
         }
@@ -89,7 +89,7 @@ public abstract class PlayerSound extends TickableSound {
 
     @Override
     public void tick() {
-        PlayerEntity player = getPlayer();
+        Player player = getPlayer();
         if (player == null || !player.isAlive()) {
             stop();
             volume = 0.0F;
@@ -103,9 +103,9 @@ public abstract class PlayerSound extends TickableSound {
                 volume = Math.min(1.0F, volume + fadeUpStep);
             }
             if (consecutiveTicks % subtitleFrequency == 0) {
-                SoundHandler soundHandler = Minecraft.getInstance().getSoundManager();
-                for (ISoundEventListener soundEventListener : soundHandler.soundEngine.listeners) {
-                    SoundEventAccessor soundEventAccessor = resolve(soundHandler);
+                SoundManager soundHandler = Minecraft.getInstance().getSoundManager();
+                for (SoundEventListener soundEventListener : soundHandler.soundEngine.listeners) {
+                    WeighedSoundEvents soundEventAccessor = resolve(soundHandler);
                     if (soundEventAccessor != null) {
                         soundEventListener.onPlaySound(this, soundEventAccessor);
                     }
@@ -121,7 +121,7 @@ public abstract class PlayerSound extends TickableSound {
         }
     }
 
-    public abstract boolean shouldPlaySound(@Nonnull PlayerEntity player);
+    public abstract boolean shouldPlaySound(@Nonnull Player player);
 
     @Override
     public float getVolume() {
@@ -135,7 +135,7 @@ public abstract class PlayerSound extends TickableSound {
 
     @Override
     public boolean canPlaySound() {
-        PlayerEntity player = getPlayer();
+        Player player = getPlayer();
         if (player == null) {
             return super.canPlaySound();
         }

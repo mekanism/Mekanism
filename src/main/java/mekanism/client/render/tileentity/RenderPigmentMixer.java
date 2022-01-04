@@ -1,8 +1,9 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.matrix.MatrixStack.Entry;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -14,14 +15,13 @@ import mekanism.client.render.lib.Vertex;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.tile.machine.TileEntityPigmentMixer;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.Atlases;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 @ParametersAreNonnullByDefault
 public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPigmentMixer> implements IWireFrameRenderer {
@@ -33,21 +33,21 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         vertices.clear();
     }
 
-    public RenderPigmentMixer(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderPigmentMixer(BlockEntityRendererProvider.Context context) {
+        super(context);
     }
 
     @Override
-    protected void render(TileEntityPigmentMixer tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight,
-          IProfiler profiler) {
+    protected void render(TileEntityPigmentMixer tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
+          ProfilerFiller profiler) {
         //We only actually need to do rendering if the tile is active as that means we are using the active model
         // which has no shaft
         if (tile.getActive()) {
             performTranslations(tile, partialTick, matrix);
-            Entry entry = matrix.last();
-            IVertexBuilder buffer = renderer.getBuffer(Atlases.solidBlockSheet());
+            Pose entry = matrix.last();
+            VertexConsumer buffer = renderer.getBuffer(Sheets.solidBlockSheet());
             for (BakedQuad quad : MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel().getQuads(null, null, tile.getLevel().random)) {
-                buffer.addVertexData(entry, quad, 1F, 1F, 1F, 1F, light, overlayLight);
+                buffer.putBulkData(entry, quad, 1F, 1F, 1F, 1F, light, overlayLight);
             }
             matrix.popPose();
         }
@@ -69,7 +69,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     @Override
-    public void renderWireFrame(TileEntity tile, float partialTick, MatrixStack matrix, IVertexBuilder buffer, float red, float green, float blue, float alpha) {
+    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
         if (tile instanceof TileEntityPigmentMixer) {
             performTranslations((TileEntityPigmentMixer) tile, partialTick, matrix);
             if (vertices.isEmpty()) {
@@ -85,7 +85,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     /**
      * Make sure to call {@link MatrixStack#popPose()} afterwards
      */
-    private void performTranslations(TileEntityPigmentMixer tile, float partialTick, MatrixStack matrix) {
+    private void performTranslations(TileEntityPigmentMixer tile, float partialTick, PoseStack matrix) {
         matrix.pushPose();
         switch (tile.getDirection()) {
             case NORTH:

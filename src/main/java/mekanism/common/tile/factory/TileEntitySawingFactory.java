@@ -30,7 +30,9 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.SawmillUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
@@ -38,8 +40,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     protected IInputHandler<@NonNull ItemStack>[] inputHandlers;
     protected IOutputHandler<@NonNull ChanceOutput>[] outputHandlers;
 
-    public TileEntitySawingFactory(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntitySawingFactory(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
     }
 
     @Override

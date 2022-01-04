@@ -1,18 +1,19 @@
 package mekanism.client.render.armor;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
-public abstract class CustomArmor extends BipedModel<LivingEntity> {
+//TODO - 1.18: Evaluate
+public abstract class CustomArmor {//extends HumanoidModel<LivingEntity> {
 
-    protected CustomArmor(float size) {
-        super(size);
+    protected CustomArmor() {//ModelPart root) {
+        //super(root);
     }
 
-    public abstract void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, float partialTicks, boolean hasEffect,
-          LivingEntity entity, ItemStack stack);
+    public abstract void render(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
+          int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity, ItemStack stack);
 }

@@ -3,8 +3,7 @@
   "conditions": [
     {
       "modid": "ilikewood",
-      "minVersion": "1.16.3-4.0.2.0",
-      "type": "mekanism:mod_version_loaded"
+      "type": "forge:mod_loaded"
     }
   ],
   "input": {

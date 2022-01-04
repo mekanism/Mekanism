@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class FilterListPropertyData<FILTER extends IFilter<?>> extends ListPropertyData<FILTER> {
 
@@ -13,7 +13,7 @@ public class FilterListPropertyData<FILTER extends IFilter<?>> extends ListPrope
         super(property, ListType.FILTER, values);
     }
 
-    public static <FILTER extends IFilter<?>> FilterListPropertyData<FILTER> read(short property, int elements, PacketBuffer buffer) {
+    public static <FILTER extends IFilter<?>> FilterListPropertyData<FILTER> read(short property, int elements, FriendlyByteBuf buffer) {
         List<FILTER> values = new ArrayList<>(elements);
         for (int i = 0; i < elements; i++) {
             values.add((FILTER) BaseFilter.readFromPacket(buffer));
@@ -22,7 +22,7 @@ public class FilterListPropertyData<FILTER extends IFilter<?>> extends ListPrope
     }
 
     @Override
-    protected void writeListElement(PacketBuffer buffer, FILTER value) {
+    protected void writeListElement(FriendlyByteBuf buffer, FILTER value) {
         value.write(buffer);
     }
 }

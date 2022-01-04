@@ -1,9 +1,13 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
@@ -12,21 +16,18 @@ import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.tier.BinTier;
 import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.profiler.IProfiler;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 @ParametersAreNonnullByDefault
 public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
@@ -39,13 +40,13 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         FAKE_NORMALS = new Matrix3f(new Quaternion(NORMAL, 0, true));
     }
 
-    public RenderBin(TileEntityRendererDispatcher renderer) {
-        super(renderer);
+    public RenderBin(BlockEntityRendererProvider.Context context) {
+        super(context);
     }
 
     @Override
-    protected void render(TileEntityBin tile, float partialTick, MatrixStack matrix, IRenderTypeBuffer renderer, int light, int overlayLight, IProfiler profiler) {
-        World world = tile.getLevel();
+    protected void render(TileEntityBin tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
+        Level world = tile.getLevel();
         BinInventorySlot binSlot = tile.getBinSlot();
         if (world != null && !binSlot.isEmpty()) {
             Direction facing = tile.getDirection();
@@ -54,7 +55,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
             //if the bin has an item stack and the face isn't covered by a solid side
             Optional<BlockState> blockState = WorldUtils.getBlockState(world, coverPos);
             if (!blockState.isPresent() || !blockState.get().canOcclude() || !blockState.get().isFaceSturdy(world, coverPos, facing.getOpposite())) {
-                ITextComponent amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.getCount());
+                Component amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.getCount());
                 matrix.pushPose();
                 //TODO: Come up with a better way to do this hack? Basically we adjust the normals so that the lighting
                 // isn't screwy when it tries to apply the diffuse lighting as we aren't able to disable diffuse lighting
@@ -86,8 +87,9 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
                 matrix.translate(8, -8, 8);
                 matrix.scale(16, 16, 16);
                 //Calculate lighting based on the light at the block the bin is facing
-                light = WorldRenderer.getLightColor(world, tile.getBlockPos().relative(facing));
-                Minecraft.getInstance().getItemRenderer().renderStatic(binSlot.getStack(), TransformType.GUI, light, overlayLight, matrix, renderer);
+                light = LevelRenderer.getLightColor(world, tile.getBlockPos().relative(facing));
+                Minecraft.getInstance().getItemRenderer().renderStatic(binSlot.getStack(), TransformType.GUI, light, overlayLight, matrix, renderer,
+                      MathUtils.clampToInt(tile.getBlockPos().asLong()));
                 matrix.popPose();
                 renderText(matrix, renderer, light, overlayLight, amount, facing, 0.02F);
             }
@@ -100,7 +102,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
     }
 
     @SuppressWarnings("incomplete-switch")
-    private void renderText(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, ITextComponent text, Direction side,
+    private void renderText(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, Component text, Direction side,
           float maxScale) {
         matrix.pushPose();
         matrix.translate(0, -0.3725, 0);
@@ -131,7 +133,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         matrix.translate(displayWidth / 2, 1, displayHeight / 2);
         matrix.mulPose(Vector3f.XP.rotationDegrees(-90));
 
-        FontRenderer font = this.renderer.getFont();
+        Font font = context.getFont();
 
         int requiredWidth = Math.max(font.width(text), 1);
         int requiredHeight = font.lineHeight + 2;

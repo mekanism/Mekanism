@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
@@ -22,11 +22,12 @@ import mekanism.common.recipe.upgrade.RecipeUpgradeData;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ItemDataUtils;
-import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 
 @FieldsAreNonnullByDefault
@@ -37,7 +38,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
 
     protected final List<TANK> tanks;
 
-    protected ChemicalRecipeData(ListNBT tanks) {
+    protected ChemicalRecipeData(ListTag tanks) {
         int count = DataHandlerUtils.getMaxId(tanks, NBTConstants.TANK);
         this.tanks = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
@@ -86,7 +87,7 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
             TileEntityMekanism tile = null;
             Block block = ((BlockItem) stack.getItem()).getBlock();
             if (block instanceof IHasTileEntity) {
-                TileEntity tileEntity = ((IHasTileEntity<?>) block).getTileType().create();
+                BlockEntity tileEntity = ((IHasTileEntity<?>) block).newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
                 if (tileEntity instanceof TileEntityMekanism) {
                     tile = (TileEntityMekanism) tileEntity;
                 }

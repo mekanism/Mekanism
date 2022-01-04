@@ -9,8 +9,8 @@ import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.text.IHasTextComponent;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 
 public class BoxedChemicalStack implements IHasTextComponent {
 
@@ -40,7 +40,7 @@ public class BoxedChemicalStack implements IHasTextComponent {
      *
      * @return Boxed Chemical Stack.
      */
-    public static BoxedChemicalStack read(@Nullable CompoundNBT nbt) {
+    public static BoxedChemicalStack read(@Nullable CompoundTag nbt) {
         ChemicalType chemicalType = ChemicalType.fromNBT(nbt);
         ChemicalStack<?> stack = null;
         if (chemicalType == ChemicalType.GAS) {
@@ -96,7 +96,7 @@ public class BoxedChemicalStack implements IHasTextComponent {
      *
      * @return tag compound with this BoxedChemicalStack's data
      */
-    public CompoundNBT write(CompoundNBT nbt) {
+    public CompoundTag write(CompoundTag nbt) {
         chemicalType.write(nbt);
         chemicalStack.write(nbt);
         return nbt;
@@ -110,7 +110,7 @@ public class BoxedChemicalStack implements IHasTextComponent {
     }
 
     @Override
-    public ITextComponent getTextComponent() {
+    public Component getTextComponent() {
         return chemicalStack.getTextComponent();
     }
 

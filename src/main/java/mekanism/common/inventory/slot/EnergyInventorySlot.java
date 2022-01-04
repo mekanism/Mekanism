@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
@@ -20,8 +20,8 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -31,7 +31,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     /**
      * Gets the energy from ItemStack conversion, ignoring the size of the item stack.
      */
-    private static FloatingLong getPotentialConversion(@Nullable World world, ItemStack itemStack) {
+    private static FloatingLong getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
         ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findTypeBasedRecipe(world, itemStack);
         return foundRecipe == null ? FloatingLong.ZERO : foundRecipe.getOutput(itemStack);
     }
@@ -39,7 +39,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     /**
      * Fills the container from this item OR converts the given item to energy
      */
-    public static EnergyInventorySlot fillOrConvert(IEnergyContainer energyContainer, Supplier<World> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
+    public static EnergyInventorySlot fillOrConvert(IEnergyContainer energyContainer, Supplier<Level> worldSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(energyContainer, "Energy container cannot be null");
         Objects.requireNonNull(worldSupplier, "World supplier cannot be null");
         return new EnergyInventorySlot(energyContainer, worldSupplier, stack -> {
@@ -105,7 +105,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         return itemEnergyHandler != null && !itemEnergyHandler.extractEnergy(FloatingLong.MAX_VALUE, Action.SIMULATE).isZero();
     }
 
-    private final Supplier<World> worldSupplier;
+    private final Supplier<Level> worldSupplier;
     private final IEnergyContainer energyContainer;
 
     private EnergyInventorySlot(IEnergyContainer energyContainer, Predicate<@NonNull ItemStack> canExtract, Predicate<@NonNull ItemStack> canInsert,
@@ -113,7 +113,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
         this(energyContainer, () -> null, canExtract, canInsert, validator, listener, x, y);
     }
 
-    private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
+    private EnergyInventorySlot(IEnergyContainer energyContainer, Supplier<Level> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
         this.energyContainer = energyContainer;

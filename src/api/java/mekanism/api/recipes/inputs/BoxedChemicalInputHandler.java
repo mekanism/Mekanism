@@ -112,33 +112,6 @@ public class BoxedChemicalInputHandler {
     /**
      * Calculates how many operations the input can sustain.
      *
-     * @param recipeIngredient Recipe ingredient.
-     * @param currentMax       The current maximum number of operations that can happen.
-     *
-     * @return The number of operations the input can sustain.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public int operationsCanSupport(IChemicalStackIngredient<?, ?> recipeIngredient, int currentMax) {
-        return operationsCanSupport(recipeIngredient, currentMax, 1);
-    }
-
-    /**
-     * Calculates how many operations the input can sustain.
-     *
-     * @param recipeIngredient Recipe ingredient.
-     * @param currentMax       The current maximum number of operations that can happen.
-     * @param usageMultiplier  Usage multiplier to multiply the recipeIngredient's amount by per operation.
-     *
-     * @return The number of operations the input can sustain.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public int operationsCanSupport(IChemicalStackIngredient<?, ?> recipeIngredient, int currentMax, long usageMultiplier) {
-        return operationsCanSupport(getRecipeInput(recipeIngredient), currentMax, usageMultiplier);
-    }
-
-    /**
-     * Calculates how many operations the input can sustain.
-     *
      * @param recipeInput Recipe input gotten from {@link #getRecipeInput(IChemicalStackIngredient)}.
      * @param currentMax  The current maximum number of operations that can happen.
      *

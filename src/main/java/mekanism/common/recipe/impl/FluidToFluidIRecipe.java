@@ -6,10 +6,10 @@ import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidToFluidIRecipe extends FluidToFluidRecipe {
@@ -20,13 +20,13 @@ public class FluidToFluidIRecipe extends FluidToFluidRecipe {
 
     @Nonnull
     @Override
-    public IRecipeType<FluidToFluidRecipe> getType() {
+    public RecipeType<FluidToFluidRecipe> getType() {
         return MekanismRecipeType.EVAPORATING;
     }
 
     @Nonnull
     @Override
-    public IRecipeSerializer<FluidToFluidRecipe> getSerializer() {
+    public RecipeSerializer<FluidToFluidRecipe> getSerializer() {
         return MekanismRecipeSerializers.EVAPORATING.getRecipeSerializer();
     }
 

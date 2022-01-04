@@ -7,9 +7,9 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 @FieldsAreNonnullByDefault
@@ -125,21 +125,21 @@ public class MaterialCreator extends BaseMekanismMaterial {
         knockbackResistance = CachedFloatValue.wrap(config, builder.comment("Base armor knockback resistance value of " + name + " armor.")
               .defineInRange(toolKey + "KnockbackResistance", materialDefaults.getKnockbackResistance(), 0, Float.MAX_VALUE));
         bootDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " boots.")
-              .defineInRange(toolKey + "BootDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.FEET), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "BootDurability", materialDefaults.getDurabilityForSlot(EquipmentSlot.FEET), 1, Integer.MAX_VALUE));
         leggingDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " leggings.")
-              .defineInRange(toolKey + "LeggingDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.LEGS), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "LeggingDurability", materialDefaults.getDurabilityForSlot(EquipmentSlot.LEGS), 1, Integer.MAX_VALUE));
         chestplateDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " chestplates.")
-              .defineInRange(toolKey + "ChestplateDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.CHEST), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ChestplateDurability", materialDefaults.getDurabilityForSlot(EquipmentSlot.CHEST), 1, Integer.MAX_VALUE));
         helmetDurability = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " helmets.")
-              .defineInRange(toolKey + "HelmetDurability", materialDefaults.getDurabilityForSlot(EquipmentSlotType.HEAD), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "HelmetDurability", materialDefaults.getDurabilityForSlot(EquipmentSlot.HEAD), 1, Integer.MAX_VALUE));
         bootArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " boots.")
-              .defineInRange(toolKey + "BootArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.FEET), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "BootArmor", materialDefaults.getDefenseForSlot(EquipmentSlot.FEET), 0, Integer.MAX_VALUE));
         leggingArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " leggings.")
-              .defineInRange(toolKey + "LeggingArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.LEGS), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "LeggingArmor", materialDefaults.getDefenseForSlot(EquipmentSlot.LEGS), 0, Integer.MAX_VALUE));
         chestplateArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " chestplates.")
-              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.CHEST), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ChestplateArmor", materialDefaults.getDefenseForSlot(EquipmentSlot.CHEST), 0, Integer.MAX_VALUE));
         helmetArmor = CachedIntValue.wrap(config, builder.comment("Protection value of " + name + " helmets.")
-              .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDefenseForSlot(EquipmentSlotType.HEAD), 0, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "HelmetArmor", materialDefaults.getDefenseForSlot(EquipmentSlot.HEAD), 0, Integer.MAX_VALUE));
         builder.pop();
     }
 
@@ -244,7 +244,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForSlot(EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(EquipmentSlot slotType) {
         switch (slotType) {
             case FEET:
                 return bootDurability.get();
@@ -259,7 +259,7 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefenseForSlot(EquipmentSlotType slotType) {
+    public int getDefenseForSlot(EquipmentSlot slotType) {
         switch (slotType) {
             case FEET:
                 return bootArmor.get();

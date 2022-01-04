@@ -3,7 +3,7 @@ package mekanism.common.content.qio;
 import java.util.List;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public interface IQIODriveHolder extends IQIOFrequencyHolder {
 

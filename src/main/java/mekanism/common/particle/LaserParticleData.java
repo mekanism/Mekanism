@@ -8,14 +8,16 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.Direction;
 
-public class LaserParticleData implements IParticleData {
+import net.minecraft.core.particles.ParticleOptions.Deserializer;
 
-    public static final IDeserializer<LaserParticleData> DESERIALIZER = new IDeserializer<LaserParticleData>() {
+public class LaserParticleData implements ParticleOptions {
+
+    public static final Deserializer<LaserParticleData> DESERIALIZER = new Deserializer<LaserParticleData>() {
         @Nonnull
         @Override
         public LaserParticleData fromCommand(@Nonnull ParticleType<LaserParticleData> type, @Nonnull StringReader reader) throws CommandSyntaxException {
@@ -30,7 +32,7 @@ public class LaserParticleData implements IParticleData {
 
         @Nonnull
         @Override
-        public LaserParticleData fromNetwork(@Nonnull ParticleType<LaserParticleData> type, PacketBuffer buf) {
+        public LaserParticleData fromNetwork(@Nonnull ParticleType<LaserParticleData> type, FriendlyByteBuf buf) {
             return new LaserParticleData(buf.readEnum(Direction.class), buf.readDouble(), buf.readFloat());
         }
     };
@@ -57,7 +59,7 @@ public class LaserParticleData implements IParticleData {
     }
 
     @Override
-    public void writeToNetwork(@Nonnull PacketBuffer buffer) {
+    public void writeToNetwork(@Nonnull FriendlyByteBuf buffer) {
         buffer.writeEnum(direction);
         buffer.writeDouble(distance);
         buffer.writeFloat(energyScale);

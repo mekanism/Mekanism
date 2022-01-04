@@ -2,9 +2,9 @@ package mekanism.common.network.to_server;
 
 import mekanism.common.Mekanism;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 public class PacketKey implements IMekanismPacket {
 
@@ -18,7 +18,7 @@ public class PacketKey implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player != null) {
             if (add) {
                 Mekanism.keyMap.add(player.getUUID(), key);
@@ -29,12 +29,12 @@ public class PacketKey implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeVarInt(key);
         buffer.writeBoolean(add);
     }
 
-    public static PacketKey decode(PacketBuffer buffer) {
+    public static PacketKey decode(FriendlyByteBuf buffer) {
         return new PacketKey(buffer.readVarInt(), buffer.readBoolean());
     }
 }

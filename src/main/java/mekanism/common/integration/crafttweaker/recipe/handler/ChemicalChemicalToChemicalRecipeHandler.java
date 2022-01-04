@@ -5,7 +5,7 @@ import com.blamejared.crafttweaker.api.recipes.IRecipeHandler;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 
 public abstract class ChemicalChemicalToChemicalRecipeHandler<RECIPE extends ChemicalChemicalToChemicalRecipe<?, ?, ?>> extends MekanismRecipeHandler<RECIPE> {
 
@@ -15,7 +15,7 @@ public abstract class ChemicalChemicalToChemicalRecipeHandler<RECIPE extends Che
     }
 
     @Override
-    public <U extends IRecipe<?>> boolean doesConflict(IRecipeManager manager, RECIPE recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, RECIPE recipe, U other) {
         //Only support if the other is a chemical chemical to chemical recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
         if (recipeIsInstance(other)) {
@@ -31,13 +31,13 @@ public abstract class ChemicalChemicalToChemicalRecipeHandler<RECIPE extends Che
     /**
      * @return if the other recipe the correct class type.
      */
-    protected abstract boolean recipeIsInstance(IRecipe<?> other);
+    protected abstract boolean recipeIsInstance(Recipe<?> other);
 
     @IRecipeHandler.For(ChemicalInfuserRecipe.class)
     public static class ChemicalInfuserRecipeHandler extends ChemicalChemicalToChemicalRecipeHandler<ChemicalInfuserRecipe> {
 
         @Override
-        protected boolean recipeIsInstance(IRecipe<?> other) {
+        protected boolean recipeIsInstance(Recipe<?> other) {
             return other instanceof ChemicalInfuserRecipe;
         }
     }
@@ -46,7 +46,7 @@ public abstract class ChemicalChemicalToChemicalRecipeHandler<RECIPE extends Che
     public static class PigmentMixingRecipeHandler extends ChemicalChemicalToChemicalRecipeHandler<PigmentMixingRecipe> {
 
         @Override
-        protected boolean recipeIsInstance(IRecipe<?> other) {
+        protected boolean recipeIsInstance(Recipe<?> other) {
             return other instanceof PigmentMixingRecipe;
         }
     }

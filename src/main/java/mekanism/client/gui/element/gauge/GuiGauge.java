@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.gauge;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -22,9 +23,10 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 public abstract class GuiGauge<T> extends GuiTexturedElement {
 
@@ -53,9 +55,9 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
 
     public abstract TextureAtlasSprite getIcon();
 
-    public abstract ITextComponent getLabel();
+    public abstract Component getLabel();
 
-    public abstract List<ITextComponent> getTooltipText();
+    public abstract List<Component> getTooltipText();
 
     public GaugeOverlay getGaugeOverlay() {
         return gaugeType.getGaugeOverlay();
@@ -69,7 +71,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         GaugeInfo color = getGaugeColor();
         renderExtendedTexture(matrix, color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
@@ -78,12 +80,13 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         }
     }
 
-    public void renderContents(MatrixStack matrix) {
+    public void renderContents(PoseStack matrix) {
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
             // we may as well show the background)
-            minecraft.textureManager.bind(GuiSlot.WARNING_BACKGROUND_TEXTURE);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.setShaderTexture(0, GuiSlot.WARNING_BACKGROUND_TEXTURE);
             blit(matrix, x + 1, y + 1, 0, 0, width - 2, height - 2, 256, 256);
         }
         int scale = getScaledLevel();
@@ -95,7 +98,8 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
             if (warning && scale == height - 2) {
                 //TODO - WARNING SYSTEM: Also decide if this should be using some check for when it is just close to max so that it is easily visible
                 //If we have a warning and the gauge is entirely filled draw a warning vertically next to it
-                minecraft.textureManager.bind(WARNING_TEXTURE);
+                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                RenderSystem.setShaderTexture(0, WARNING_TEXTURE);
                 int halfWidth = (width - 2) / 2;
                 //Note: We also start the drawing after half the width so that we are sure it will properly line up with the background
                 blit(matrix, x + 1 + halfWidth, y + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
@@ -105,16 +109,17 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         drawBarOverlay(matrix);
     }
 
-    public void drawBarOverlay(MatrixStack matrix) {
-        minecraft.textureManager.bind(getResource());
+    public void drawBarOverlay(PoseStack matrix) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, getResource());
         GaugeOverlay gaugeOverlay = getGaugeOverlay();
         blit(matrix, x + 1, y + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        ItemStack stack = minecraft.player.inventory.getCarried();
+        ItemStack stack = minecraft.player.containerMenu.getCarried();
         EnumColor color = getGaugeColor().getColor();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
             if (gui() instanceof GuiMekanismTile) {
@@ -139,7 +144,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                 }
             }
         } else {
-            List<ITextComponent> list = new ArrayList<>();
+            List<Component> list = new ArrayList<>();
             if (getLabel() != null) {
                 list.add(getLabel());
             }

@@ -3,16 +3,16 @@ package mekanism.api.recipes;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import mekanism.api.inventory.IgnoredIInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 /**
  * Base class for helping wrap our recipes into IRecipes.
  */
-public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {//TODO: Should we make implementations override equals and hashcode?
+public abstract class MekanismRecipe implements Recipe<IgnoredIInventory> {//TODO: Should we make implementations override equals and hashcode?
 
     private final ResourceLocation id;
 
@@ -28,7 +28,7 @@ public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {//TO
      *
      * @param buffer The buffer to write to.
      */
-    public abstract void write(PacketBuffer buffer);
+    public abstract void write(FriendlyByteBuf buffer);
 
     @Nonnull
     @Override
@@ -37,7 +37,7 @@ public abstract class MekanismRecipe implements IRecipe<IgnoredIInventory> {//TO
     }
 
     @Override
-    public boolean matches(@Nonnull IgnoredIInventory inv, @Nonnull World world) {
+    public boolean matches(@Nonnull IgnoredIInventory inv, @Nonnull Level world) {
         return true;
     }
 

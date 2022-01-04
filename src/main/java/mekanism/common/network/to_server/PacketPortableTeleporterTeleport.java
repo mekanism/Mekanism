@@ -15,30 +15,30 @@ import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 public class PacketPortableTeleporterTeleport implements IMekanismPacket {
 
     private final FrequencyIdentity identity;
-    private final Hand currentHand;
+    private final InteractionHand currentHand;
 
-    public PacketPortableTeleporterTeleport(Hand hand, FrequencyIdentity identity) {
+    public PacketPortableTeleporterTeleport(InteractionHand hand, FrequencyIdentity identity) {
         currentHand = hand;
         this.identity = identity;
     }
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        ServerPlayerEntity player = context.getSender();
+        ServerPlayer player = context.getSender();
         if (player == null) {
             return;
         }
@@ -51,7 +51,7 @@ public class PacketPortableTeleporterTeleport implements IMekanismPacket {
             }
             Coord4D coords = found.getClosestCoords(new Coord4D(player));
             if (coords != null) {
-                World teleWorld = ServerLifecycleHooks.getCurrentServer().getLevel(coords.dimension);
+                Level teleWorld = ServerLifecycleHooks.getCurrentServer().getLevel(coords.dimension);
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.getPos());
                 if (teleporter != null) {
                     if (!player.isCreative()) {
@@ -68,22 +68,22 @@ public class PacketPortableTeleporterTeleport implements IMekanismPacket {
                         teleporter.teleDelay = 5;
                         player.connection.aboveGroundTickCount = 0;
                         player.closeContainer();
-                        Mekanism.packetHandler.sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level, coords.getPos());
+                        Mekanism.packetHandler().sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level, coords.getPos());
                         if (player.isPassenger()) {
                             player.stopRiding();
                         }
                         double oldX = player.getX();
                         double oldY = player.getY();
                         double oldZ = player.getZ();
-                        World oldWorld = player.level;
+                        Level oldWorld = player.level;
                         BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
                         TileEntityTeleporter.teleportEntityTo(player, teleWorld, teleporterTargetPos);
                         TileEntityTeleporter.alignPlayer(player, teleporterTargetPos, teleporter);
                         if (player.level != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
                             //If the player teleported over 5 blocks, play the sound at both the destination and the source
-                            oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
                         }
-                        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
                         teleporter.sendTeleportParticles();
                     } catch (Exception ignored) {
                     }
@@ -93,12 +93,12 @@ public class PacketPortableTeleporterTeleport implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(currentHand);
         FrequencyType.TELEPORTER.getIdentitySerializer().write(buffer, identity);
     }
 
-    public static PacketPortableTeleporterTeleport decode(PacketBuffer buffer) {
-        return new PacketPortableTeleporterTeleport(buffer.readEnum(Hand.class), FrequencyType.TELEPORTER.getIdentitySerializer().read(buffer));
+    public static PacketPortableTeleporterTeleport decode(FriendlyByteBuf buffer) {
+        return new PacketPortableTeleporterTeleport(buffer.readEnum(InteractionHand.class), FrequencyType.TELEPORTER.getIdentitySerializer().read(buffer));
     }
 }

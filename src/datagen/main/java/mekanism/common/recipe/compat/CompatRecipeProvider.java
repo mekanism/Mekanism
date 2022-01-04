@@ -3,11 +3,11 @@ package mekanism.common.recipe.compat;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.common.recipe.ISubRecipeProvider;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.tags.ITag;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.world.item.Item;
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.AndCondition;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
@@ -35,11 +35,11 @@ public abstract class CompatRecipeProvider implements ISubRecipeProvider {
     }
 
     @Override
-    public final void addRecipes(Consumer<IFinishedRecipe> consumer) {
+    public final void addRecipes(Consumer<FinishedRecipe> consumer) {
         registerRecipes(consumer, getBasePath());
     }
 
-    protected abstract void registerRecipes(Consumer<IFinishedRecipe> consumer, String basePath);
+    protected abstract void registerRecipes(Consumer<FinishedRecipe> consumer, String basePath);
 
     protected String getBasePath() {
         return "compat/" + modid + "/";
@@ -49,7 +49,7 @@ public abstract class CompatRecipeProvider implements ISubRecipeProvider {
         return new ResourceLocation(modid, path);
     }
 
-    protected ITag<Item> tag(String path) {
+    protected Tag<Item> tag(String path) {
         return ItemTags.bind(rl(path).toString());
     }
 }

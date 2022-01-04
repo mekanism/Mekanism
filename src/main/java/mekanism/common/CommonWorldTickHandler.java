@@ -8,16 +8,15 @@ import java.util.Random;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
-import mekanism.common.lib.chunkloading.ChunkManager;
 import mekanism.common.lib.frequency.FrequencyManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.world.GenHandler;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
@@ -31,7 +30,7 @@ public class CommonWorldTickHandler {
     private Map<ResourceLocation, Queue<ChunkPos>> chunkRegenMap;
     public static boolean flushTagAndRecipeCaches;
 
-    public void addRegenChunk(RegistryKey<World> dimension, ChunkPos chunkCoord) {
+    public void addRegenChunk(ResourceKey<Level> dimension, ChunkPos chunkCoord) {
         if (chunkRegenMap == null) {
             chunkRegenMap = new Object2ObjectArrayMap<>();
         }
@@ -59,9 +58,6 @@ public class CommonWorldTickHandler {
         if (!event.getWorld().isClientSide()) {
             FrequencyManager.load();
             RadiationManager.INSTANCE.createOrLoad();
-            if (event.getWorld() instanceof ServerWorld) {
-                ChunkManager.worldLoad((ServerWorld) event.getWorld());
-            }
         }
     }
 
@@ -75,7 +71,7 @@ public class CommonWorldTickHandler {
     @SubscribeEvent
     public void onTick(WorldTickEvent event) {
         if (event.side.isServer() && event.phase == Phase.END) {
-            tickEnd((ServerWorld) event.world);
+            tickEnd((ServerLevel) event.world);
         }
     }
 
@@ -84,12 +80,12 @@ public class CommonWorldTickHandler {
         RadiationManager.INSTANCE.tickServer();
     }
 
-    private void tickEnd(ServerWorld world) {
+    private void tickEnd(ServerLevel world) {
         if (!world.isClientSide) {
             RadiationManager.INSTANCE.tickServerWorld(world);
             if (flushTagAndRecipeCaches) {
                 //Loop all open containers and if it is a portable qio dashboard force refresh the window's recipes
-                for (ServerPlayerEntity player : world.players()) {
+                for (ServerPlayer player : world.players()) {
                     if (player.containerMenu instanceof PortableQIODashboardContainer) {
                         PortableQIODashboardContainer qioDashboard = (PortableQIODashboardContainer) player.containerMenu;
                         for (byte index = 0; index < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS; index++) {

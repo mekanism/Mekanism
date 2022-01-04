@@ -40,7 +40,7 @@ import mekanism.common.lib.MekAnnotationScanner.BaseAnnotationScanner;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.network.to_client.container.property.PropertyType;
 import mekanism.common.util.LambdaMetaFactoryUtil;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
@@ -115,7 +115,7 @@ public class SyncMapper extends BaseAnnotationScanner {
             List<PropertyFieldInfo> propertyInfo = new ArrayList<>();
             rawPropertyMap.put(annotatedClass, propertyInfo);
             for (AnnotationData data : entry.getValue()) {
-                String fieldName = data.getMemberName();
+                String fieldName = data.memberName();
                 Field field = getField(annotatedClass, fieldName);
                 if (field == null) {
                     continue;

@@ -9,7 +9,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class CatalystRegistryHelper {
 

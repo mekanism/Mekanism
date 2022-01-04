@@ -6,9 +6,9 @@ import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements IItemStackFilter<QIOItemStackFilter> {
 
@@ -28,7 +28,7 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT nbtTags) {
+    public CompoundTag write(CompoundTag nbtTags) {
         super.write(nbtTags);
         nbtTags.putBoolean(NBTConstants.FUZZY_MODE, fuzzyMode);
         itemType.save(nbtTags);
@@ -36,20 +36,20 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
     }
 
     @Override
-    public void read(CompoundNBT nbtTags) {
+    public void read(CompoundTag nbtTags) {
         NBTUtils.setBooleanIfPresent(nbtTags, NBTConstants.FUZZY_MODE, fuzzy -> fuzzyMode = fuzzy);
         itemType = ItemStack.of(nbtTags);
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeBoolean(fuzzyMode);
         buffer.writeItem(itemType);
     }
 
     @Override
-    public void read(PacketBuffer dataStream) {
+    public void read(FriendlyByteBuf dataStream) {
         fuzzyMode = dataStream.readBoolean();
         itemType = dataStream.readItem();
     }

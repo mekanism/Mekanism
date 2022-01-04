@@ -30,12 +30,12 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
 
 public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
 
@@ -51,8 +51,8 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     public InputInventorySlot containerSlot;
     private MachineEnergyContainer<TileEntityModificationStation> energyContainer;
 
-    public TileEntityModificationStation() {
-        super(MekanismBlocks.MODIFICATION_STATION);
+    public TileEntityModificationStation(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.MODIFICATION_STATION, pos, state);
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIG_CARD_CAPABILITY, this));
     }
 
@@ -113,11 +113,11 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         }
     }
 
-    public void removeModule(PlayerEntity player, ModuleData<?> type) {
+    public void removeModule(Player player, ModuleData<?> type) {
         ItemStack stack = containerSlot.getStack();
         if (!stack.isEmpty()) {
             IModuleContainerItem container = (IModuleContainerItem) stack.getItem();
-            if (container.hasModule(stack, type) && player.inventory.add(type.getItemProvider().getItemStack())) {
+            if (container.hasModule(stack, type) && player.getInventory().add(type.getItemProvider().getItemStack())) {
                 container.removeModule(stack, type);
                 containerSlot.setStack(stack);
             }
@@ -129,17 +129,15 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     }
 
     @Override
-    public void load(@Nonnull BlockState state, @Nonnull CompoundNBT nbtTags) {
-        super.load(state, nbtTags);
-        operatingTicks = nbtTags.getInt(NBTConstants.PROGRESS);
+    public void load(@Nonnull CompoundTag nbt) {
+        super.load(nbt);
+        operatingTicks = nbt.getInt(NBTConstants.PROGRESS);
     }
 
-    @Nonnull
     @Override
-    public CompoundNBT save(@Nonnull CompoundNBT nbtTags) {
-        super.save(nbtTags);
+    public void saveAdditional(@Nonnull CompoundTag nbtTags) {
+        super.saveAdditional(nbtTags);
         nbtTags.putInt(NBTConstants.PROGRESS, operatingTicks);
-        return nbtTags;
     }
 
     @Override

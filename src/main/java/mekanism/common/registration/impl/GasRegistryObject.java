@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.providers.IGasProvider;
 import mekanism.common.registration.WrappedRegistryObject;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 public class GasRegistryObject<GAS extends Gas> extends WrappedRegistryObject<GAS> implements IGasProvider {
 

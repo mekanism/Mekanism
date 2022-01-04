@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
@@ -15,8 +15,8 @@ import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.capabilities.Capabilities;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -46,7 +46,7 @@ public class SlurryInventorySlot extends ChemicalInventorySlot<Slurry, SlurrySta
         this(slurryTank, () -> null, canExtract, canInsert, validator, listener, x, y);
     }
 
-    private SlurryInventorySlot(ISlurryTank slurryTank, Supplier<World> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
+    private SlurryInventorySlot(ISlurryTank slurryTank, Supplier<Level> worldSupplier, Predicate<@NonNull ItemStack> canExtract,
           Predicate<@NonNull ItemStack> canInsert, Predicate<@NonNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
         super(slurryTank, worldSupplier, canExtract, canInsert, validator, listener, x, y);
     }

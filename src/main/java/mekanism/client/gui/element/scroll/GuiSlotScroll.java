@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -18,9 +19,10 @@ import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiSlotScroll extends GuiElement {
 
@@ -49,9 +51,10 @@ public class GuiSlotScroll extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@Nonnull MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        minecraft.textureManager.bind(getSlotList() == null ? SLOTS_DARK : SLOTS);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, getSlotList() == null ? SLOTS_DARK : SLOTS);
         blit(matrix, x, y, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
 
         List<IScrollableSlot> list = getSlotList();
@@ -70,7 +73,7 @@ public class GuiSlotScroll extends GuiElement {
     }
 
     @Override
-    public void renderForeground(MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderForeground(PoseStack matrix, int mouseX, int mouseY) {
         super.renderForeground(matrix, mouseX, mouseY);
         int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
         int slotX = (xAxis - relativeX) / 18, slotY = (yAxis - relativeY) / 18;
@@ -84,7 +87,7 @@ public class GuiSlotScroll extends GuiElement {
     }
 
     @Override
-    public void renderToolTip(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         IScrollableSlot slot = getSlot(mouseX, mouseY, relativeX, relativeY);
         if (slot != null) {
@@ -105,7 +108,7 @@ public class GuiSlotScroll extends GuiElement {
         }
         super.mouseReleased(mouseX, mouseY, button);
         IScrollableSlot slot = getSlot(mouseX, mouseY, x, y);
-        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.inventory.getCarried());
+        clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.containerMenu.getCarried());
         return true;
     }
 
@@ -132,7 +135,7 @@ public class GuiSlotScroll extends GuiElement {
         return list.get(slot);
     }
 
-    private void renderSlot(MatrixStack matrix, IScrollableSlot slot, int slotX, int slotY) {
+    private void renderSlot(PoseStack matrix, IScrollableSlot slot, int slotX, int slotY) {
         // sanity checks
         if (isSlotEmpty(slot)) {
             return;
@@ -143,7 +146,7 @@ public class GuiSlotScroll extends GuiElement {
         }
     }
 
-    private void renderSlotTooltip(MatrixStack matrix, IScrollableSlot slot, int slotX, int slotY) {
+    private void renderSlotTooltip(PoseStack matrix, IScrollableSlot slot, int slotX, int slotY) {
         // sanity checks
         if (isSlotEmpty(slot)) {
             return;
@@ -163,7 +166,7 @@ public class GuiSlotScroll extends GuiElement {
         return slot.getItem() == null || slot.getItem().getStack().isEmpty();
     }
 
-    private void renderSlotText(MatrixStack matrix, String text, int x, int y) {
+    private void renderSlotText(PoseStack matrix, String text, int x, int y) {
         matrix.pushPose();
         MekanismRenderer.resetColor();
         float scale = 0.6F;

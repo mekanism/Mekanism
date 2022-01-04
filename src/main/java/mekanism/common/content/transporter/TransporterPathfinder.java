@@ -29,11 +29,11 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import org.apache.commons.lang3.tuple.Pair;
 
 public final class TransporterPathfinder {
@@ -46,7 +46,7 @@ public final class TransporterPathfinder {
         if (network == null) {
             return Collections.emptyList();
         }
-        Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+        Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
         List<AcceptorData> acceptors = network.calculateAcceptors(request, stack, chunkMap);
         List<Destination> paths = new ArrayList<>();
         for (AcceptorData data : acceptors) {
@@ -75,7 +75,7 @@ public final class TransporterPathfinder {
 
     @Nullable
     private static Destination getPath(InventoryNetwork network, AcceptorData data, LogisticalTransporterBase start, TransporterStack stack, int min,
-          Long2ObjectMap<IChunk> chunkMap) {
+          Long2ObjectMap<ChunkAccess> chunkMap) {
         TransitResponse response = data.getResponse();
         if (response.getSendingAmount() >= min) {
             BlockPos dest = data.getLocation();
@@ -85,7 +85,7 @@ public final class TransporterPathfinder {
             }
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
-                public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
+                public boolean isValid(TransporterStack stack, Direction side, BlockEntity tile) {
                     return TransporterUtils.canInsert(tile, stack.color, response.getStack(), side, false);
                 }
             }, network, start.getTileWorld(), dest, start.getTilePos(), stack);
@@ -162,10 +162,10 @@ public final class TransporterPathfinder {
             return null;
         }
         if (stack.homeLocation != null) {
-            Long2ObjectMap<IChunk> chunkMap = new Long2ObjectOpenHashMap<>();
+            Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
-                public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
+                public boolean isValid(TransporterStack stack, Direction side, BlockEntity tile) {
                     return TransporterUtils.canInsert(tile, stack.color, stack.itemStack, side, true);
                 }
             }, network, start.getTileWorld(), stack.homeLocation, start.getTilePos(), stack);
@@ -354,12 +354,12 @@ public final class TransporterPathfinder {
         private final BlockPos finalNode;
         private final TransporterStack transportStack;
         private final DestChecker destChecker;
-        private final World world;
+        private final Level world;
         private double finalScore;
         private Direction side;
         private List<BlockPos> results = new ArrayList<>();
 
-        public Pathfinder(DestChecker checker, InventoryNetwork network, World world, BlockPos finalNode, BlockPos start, TransporterStack stack) {
+        public Pathfinder(DestChecker checker, InventoryNetwork network, Level world, BlockPos finalNode, BlockPos start, TransporterStack stack) {
             destChecker = checker;
             this.network = network;
             this.world = world;
@@ -368,7 +368,7 @@ public final class TransporterPathfinder {
             transportStack = stack;
         }
 
-        public boolean find(Long2ObjectMap<IChunk> chunkMap) {
+        public boolean find(Long2ObjectMap<ChunkAccess> chunkMap) {
             openSet.add(start);
             gScore.put(start, 0D);
             //Note: This is gScore + estimate, but given our gScore starts at zero we just skip getting it back out
@@ -449,10 +449,10 @@ public final class TransporterPathfinder {
          * @return True if we found a valid connection to the destination and can insert into it, false otherwise
          */
         private boolean isValidDestination(BlockPos start, @Nullable LogisticalTransporterBase startTransporter, Direction direction, BlockPos neighbor,
-              Long2ObjectMap<IChunk> chunkMap) {
+              Long2ObjectMap<ChunkAccess> chunkMap) {
             //Check to make sure that it is the destination
             if (startTransporter != null && neighbor.equals(finalNode)) {
-                TileEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
+                BlockEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
                 if (neighborTile != null && destChecker.isValid(transportStack, direction, neighborTile)) {
                     if (startTransporter.canEmitTo(direction) || (finalNode.equals(transportStack.homeLocation) && startTransporter.canConnect(direction))) {
                         //If it is, and we can emit to it (normal or push mode),
@@ -491,7 +491,7 @@ public final class TransporterPathfinder {
 
         public static class DestChecker {
 
-            public boolean isValid(TransporterStack stack, Direction side, TileEntity tile) {
+            public boolean isValid(TransporterStack stack, Direction side, BlockEntity tile) {
                 return false;
             }
         }

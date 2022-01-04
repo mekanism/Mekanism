@@ -1,7 +1,7 @@
 package mekanism.client.render.data;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 public abstract class RenderData {
 

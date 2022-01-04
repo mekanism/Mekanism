@@ -11,11 +11,10 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -29,7 +28,7 @@ public class EnergyCompatUtils {
           //We always have our own energy capability as the first one we check
           new StrictEnergyCompat(),
           //Note: We check the Flux Networks capability above Forge's so that we allow it to use the higher throughput amount supported by Flux Networks
-          new FNEnergyCompat(),
+          //new FNEnergyCompat(),
           new ForgeEnergyCompat()
     ));
 
@@ -60,7 +59,7 @@ public class EnergyCompatUtils {
         return energyCompats.stream().filter(IEnergyCompat::isUsable).map(IEnergyCompat::getCapability).collect(Collectors.toList());
     }
 
-    private static boolean isTileValid(@Nullable TileEntity tile) {
+    private static boolean isTileValid(@Nullable BlockEntity tile) {
         return tile != null && !tile.isRemoved() && tile.hasLevel();
     }
 
@@ -68,7 +67,7 @@ public class EnergyCompatUtils {
         return !stack.isEmpty() && hasStrictEnergyHandler(stack, null);
     }
 
-    public static boolean hasStrictEnergyHandler(@Nullable TileEntity tile, Direction side) {
+    public static boolean hasStrictEnergyHandler(@Nullable BlockEntity tile, Direction side) {
         return isTileValid(tile) && hasStrictEnergyHandler((ICapabilityProvider) tile, side);
     }
 
@@ -93,7 +92,7 @@ public class EnergyCompatUtils {
     }
 
     @Nonnull
-    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nullable TileEntity tile, Direction side) {
+    public static LazyOptional<IStrictEnergyHandler> getLazyStrictEnergyHandler(@Nullable BlockEntity tile, Direction side) {
         return isTileValid(tile) ? getLazyStrictEnergyHandler((ICapabilityProvider) tile, side) : LazyOptional.empty();
     }
 

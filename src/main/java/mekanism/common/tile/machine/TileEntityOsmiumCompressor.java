@@ -8,11 +8,13 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityOsmiumCompressor extends TileEntityAdvancedElectricMachine {
 
-    public TileEntityOsmiumCompressor() {
-        super(MekanismBlocks.OSMIUM_COMPRESSOR, BASE_TICKS_REQUIRED);
+    public TileEntityOsmiumCompressor(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.OSMIUM_COMPRESSOR, pos, state, BASE_TICKS_REQUIRED);
     }
 
     @Nonnull

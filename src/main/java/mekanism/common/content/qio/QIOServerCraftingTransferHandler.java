@@ -34,13 +34,13 @@ import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 /**
@@ -50,7 +50,7 @@ public class QIOServerCraftingTransferHandler {
 
     private final QIOCraftingWindow craftingWindow;
     private final ResourceLocation recipeID;
-    private final PlayerEntity player;
+    private final Player player;
     @Nullable
     private final QIOFrequency frequency;
     private final List<HotBarSlot> hotBarSlots;
@@ -60,13 +60,13 @@ public class QIOServerCraftingTransferHandler {
     private final Map<UUID, FrequencySlotData> frequencyAvailableItems = new HashMap<>();
     private final NonNullList<ItemStack> recipeToTest = NonNullList.withSize(9, ItemStack.EMPTY);
 
-    public static void tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, PlayerEntity player, ResourceLocation recipeID,
-          ICraftingRecipe recipe, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
+    public static void tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, Player player, ResourceLocation recipeID,
+          CraftingRecipe recipe, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
         QIOServerCraftingTransferHandler transferHandler = new QIOServerCraftingTransferHandler(container, selectedCraftingGrid, player, recipeID);
         transferHandler.tryTransfer(recipe, sources);
     }
 
-    private QIOServerCraftingTransferHandler(QIOItemViewerContainer container, byte selectedCraftingGrid, PlayerEntity player, ResourceLocation recipeID) {
+    private QIOServerCraftingTransferHandler(QIOItemViewerContainer container, byte selectedCraftingGrid, Player player, ResourceLocation recipeID) {
         this.player = player;
         this.recipeID = recipeID;
         this.frequency = container.getFrequency();
@@ -75,7 +75,7 @@ public class QIOServerCraftingTransferHandler {
         this.mainInventorySlots = container.getMainInventorySlots();
     }
 
-    private void tryTransfer(ICraftingRecipe recipe, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
+    private void tryTransfer(CraftingRecipe recipe, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
         //Calculate what items are available inside the crafting window and if they can be extracted as we will
         // need to be able to extract the contents afterwards anyway
         for (byte slot = 0; slot < 9; slot++) {
@@ -140,7 +140,7 @@ public class QIOServerCraftingTransferHandler {
                 return;
             }
         }
-        CraftingInventory dummy = MekanismUtils.getDummyCraftingInv();
+        CraftingContainer dummy = MekanismUtils.getDummyCraftingInv();
         for (int slot = 0; slot < 9; slot++) {
             dummy.setItem(slot, StackUtils.size(recipeToTest.get(slot), 1));
         }
@@ -186,7 +186,7 @@ public class QIOServerCraftingTransferHandler {
      * @return {@code -1} if an error occurred, and we should bail, otherwise the amount that should be actually used.
      */
     private int simulateSlotSource(byte targetSlot, byte slot, int used, int currentStackSize) {
-        if (slot < 0 || slot >= 9 + PlayerInventory.getSelectionSize() + 27) {
+        if (slot < 0 || slot >= 9 + Inventory.getSelectionSize() + 27) {
             return fail("Received transfer request from: {}, for: {}, with an invalid slot id: {}.", player, recipeID, slot);
         }
         SlotData slotData = availableItems.get(slot);
@@ -198,7 +198,7 @@ public class QIOServerCraftingTransferHandler {
                       player, recipeID, slot);
             }
             InsertableSlot inventorySlot;
-            if (slot < 9 + PlayerInventory.getSelectionSize()) {
+            if (slot < 9 + Inventory.getSelectionSize()) {
                 //Hotbar
                 int actualSlot = slot - 9;
                 if (actualSlot >= hotBarSlots.size()) {
@@ -212,7 +212,7 @@ public class QIOServerCraftingTransferHandler {
                 }
             } else {
                 //Main inventory
-                int actualSlot = slot - 9 - PlayerInventory.getSelectionSize();
+                int actualSlot = slot - 9 - Inventory.getSelectionSize();
                 if (actualSlot >= mainInventorySlots.size()) {
                     //Something went wrong, shouldn't happen even with an invalid packet
                     return fail("Received transfer request from: {}, for: {}, could not find main inventory slot: {}.", player, recipeID, actualSlot);
@@ -441,12 +441,12 @@ public class QIOServerCraftingTransferHandler {
                         actualSlot = slot;
                         slotType = "crafting window";
                         stack = craftingWindow.getInputSlot(slot).extractItem(source.getUsed(), Action.EXECUTE, AutomationType.MANUAL);
-                    } else if (slot < 9 + PlayerInventory.getSelectionSize()) {//Hotbar
+                    } else if (slot < 9 + Inventory.getSelectionSize()) {//Hotbar
                         actualSlot = slot - 9;
                         slotType = "hotbar";
                         stack = hotBarSlots.get(actualSlot).remove(source.getUsed());
                     } else {//Main inventory
-                        actualSlot = slot - 9 - PlayerInventory.getSelectionSize();
+                        actualSlot = slot - 9 - Inventory.getSelectionSize();
                         slotType = "main inventory";
                         stack = mainInventorySlots.get(actualSlot).remove(source.getUsed());
                     }

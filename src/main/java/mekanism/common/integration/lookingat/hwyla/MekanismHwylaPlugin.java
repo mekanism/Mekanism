@@ -4,21 +4,18 @@ import mcp.mobius.waila.api.IRegistrar;
 import mcp.mobius.waila.api.IWailaPlugin;
 import mcp.mobius.waila.api.TooltipPosition;
 import mcp.mobius.waila.api.WailaPlugin;
-import mekanism.common.Mekanism;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 @WailaPlugin
 public class MekanismHwylaPlugin implements IWailaPlugin {
 
-    public static final ResourceLocation HWLYA_TOOLTIP = Mekanism.rl("hwlya_tooltip");
     public static final String TEXT = "text";
     public static final String CHEMICAL_STACK = "chemical";
 
     @Override
     public void register(IRegistrar registrar) {
-        registrar.registerBlockDataProvider(HwylaDataProvider.INSTANCE, TileEntity.class);
-        registrar.registerComponentProvider(HwylaTooltipRenderer.INSTANCE, TooltipPosition.BODY, TileEntity.class);
-        registrar.registerTooltipRenderer(HWLYA_TOOLTIP, HwylaTooltipRenderer.INSTANCE);
+        registrar.registerBlockDataProvider(HwylaDataProvider.INSTANCE, BlockEntity.class);
+        registrar.registerComponentProvider(HwylaTooltipRenderer.INSTANCE, TooltipPosition.BODY, Block.class);
     }
 }

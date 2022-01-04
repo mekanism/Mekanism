@@ -32,10 +32,12 @@ import mekanism.common.util.ItemDataUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -50,8 +52,8 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     private final EfficientEjector<Map.Entry<HashedItem, QIOItemTypeData>> filterlessEjector =
           new EfficientEjector<>(Entry::getKey, e -> MathUtils.clampToInt(e.getValue().getCount()));
 
-    public TileEntityQIOExporter() {
-        super(MekanismBlocks.QIO_EXPORTER);
+    public TileEntityQIOExporter(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.QIO_EXPORTER, pos, state);
     }
 
     @Override
@@ -70,7 +72,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     private void tryEject() {
         QIOFrequency freq = getQIOFrequency();
         Direction direction = getDirection();
-        TileEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
+        BlockEntity back = WorldUtils.getTileEntity(getLevel(), worldPosition.relative(direction.getOpposite()));
         if (freq == null || !InventoryUtils.isItemHandler(back, direction)) {
             return;
         }
@@ -84,7 +86,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
         }
     }
 
-    private Object2LongMap<HashedItem> getFilterEjectMap(TileEntity back, QIOFrequency freq) {
+    private Object2LongMap<HashedItem> getFilterEjectMap(BlockEntity back, QIOFrequency freq) {
         Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
         for (QIOFilter<?> filter : getFilters()) {
             if (filter instanceof QIOItemStackFilter) {
@@ -142,13 +144,13 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     }
 
     @Override
-    protected void addGeneralPersistentData(CompoundNBT data) {
+    protected void addGeneralPersistentData(CompoundTag data) {
         super.addGeneralPersistentData(data);
         data.putBoolean(NBTConstants.AUTO, exportWithoutFilter);
     }
 
     @Override
-    protected void loadGeneralPersistentData(CompoundNBT data) {
+    protected void loadGeneralPersistentData(CompoundTag data) {
         super.loadGeneralPersistentData(data);
         NBTUtils.setBooleanIfPresent(data, NBTConstants.AUTO, value -> exportWithoutFilter = value);
     }
@@ -187,7 +189,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
             this.countSupplier = countSupplier;
         }
 
-        private void eject(QIOFrequency freq, TileEntity tile, Collection<T> ejectMap) {
+        private void eject(QIOFrequency freq, BlockEntity tile, Collection<T> ejectMap) {
             if (ejectMap.isEmpty()) {
                 return;
             }

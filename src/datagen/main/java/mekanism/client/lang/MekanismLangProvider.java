@@ -34,7 +34,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class MekanismLangProvider extends BaseLanguageProvider {
 
@@ -283,7 +283,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.SUPERCHARGED_COIL, "Supercharged Coil");
         //Bounding block (I don't think these lang keys actually will ever be used, but set them just in case)
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
-        add(MekanismBlocks.ADVANCED_BOUNDING_BLOCK, "Advanced Bounding Block");
         //Ores
         addOre(OreType.OSMIUM, "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
         addOre(OreType.COPPER, "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
@@ -593,7 +592,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.NEW_YEAR_LINE_THREE, "new and exciting year of %s! :)");
         add(MekanismLang.MAY_4_LINE_ONE, "May the 4th be with you, %s!");
         //Generic
-        add(APILang.GENERIC, "%s");
         //Note: How translation text component is implemented requires a double percent sign to make it show up as a single percent sign
         add(MekanismLang.GENERIC_PERCENT, "%s%%");
         add(MekanismLang.GENERIC_WITH_COMMA, "%s, %s");

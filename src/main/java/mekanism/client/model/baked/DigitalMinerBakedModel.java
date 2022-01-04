@@ -6,8 +6,8 @@ import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformati
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.base.HolidayManager;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraftforge.client.event.TextureStitchEvent;
 
@@ -21,7 +21,7 @@ public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {
 
     private static TextureAtlasSprite AFD_SAD, AFD_TEXT, MAY_4TH;
 
-    public DigitalMinerBakedModel(IBakedModel original) {
+    public DigitalMinerBakedModel(BakedModel original) {
         super(original);
     }
 
@@ -32,9 +32,9 @@ public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {
     }
 
     public static void onStitch(TextureStitchEvent.Post event) {
-        AFD_SAD = event.getMap().getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_sad"));
-        AFD_TEXT = event.getMap().getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_text"));
-        MAY_4TH = event.getMap().getSprite(Mekanism.rl("block/models/digital_miner_screen_may4th"));
+        AFD_SAD = event.getAtlas().getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_sad"));
+        AFD_TEXT = event.getAtlas().getSprite(Mekanism.rl("block/models/digital_miner_screen_afd_text"));
+        MAY_4TH = event.getAtlas().getSprite(Mekanism.rl("block/models/digital_miner_screen_may4th"));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {
     }
 
     @Override
-    protected DigitalMinerBakedModel wrapModel(IBakedModel model) {
+    protected DigitalMinerBakedModel wrapModel(BakedModel model) {
         return new DigitalMinerBakedModel(model);
     }
 }

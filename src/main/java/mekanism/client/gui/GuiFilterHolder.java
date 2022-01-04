@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -22,9 +22,9 @@ import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends TileEntityMekanism & ITileFilterHolder<FILTER>, CONTAINER extends MekanismTileContainer<TILE>>
       extends GuiMekanismTile<TILE, CONTAINER> {
@@ -35,7 +35,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     private static final int FILTER_COUNT = 4;
     private GuiScrollBar scrollBar;
 
-    protected GuiFilterHolder(CONTAINER container, PlayerInventory inv, ITextComponent title) {
+    protected GuiFilterHolder(CONTAINER container, Inventory inv, Component title) {
         super(container, inv, title);
         imageHeight += 86;
         inventoryLabelY = imageHeight - 92;
@@ -45,21 +45,21 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiInnerScreen(this, 9, 17, 46, 140));
+        addRenderableWidget(new GuiInnerScreen(this, 9, 17, 46, 140));
         //Filter holder
-        addButton(new GuiElementHolder(this, 55, 17, 98, 118));
+        addRenderableWidget(new GuiElementHolder(this, 55, 17, 98, 118));
         //new filter button border
-        addButton(new GuiElementHolder(this, 55, 135, 98, 22));
-        scrollBar = addButton(new GuiScrollBar(this, 153, 17, 140, () -> getFilters().size(), () -> FILTER_COUNT));
+        addRenderableWidget(new GuiElementHolder(this, 55, 135, 98, 22));
+        scrollBar = addRenderableWidget(new GuiScrollBar(this, 153, 17, 140, () -> getFilters().size(), () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
             addFilterButton(new MovableFilterButton(this, 56, 18 + i * 29, i, scrollBar::getCurrentSelection, this::getFilters, index -> {
                 if (index > 0) {
-                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
+                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_UP, tile, index));
                 }
             }, index -> {
                 if (index < getFilters().size() - 1) {
-                    Mekanism.packetHandler.sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
+                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.MOVE_FILTER_DOWN, tile, index));
                 }
             }, this::onClick, filter -> {
                 List<ItemStack> list = new ArrayList<>();
@@ -80,7 +80,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     }
 
     protected FilterButton addFilterButton(FilterButton button) {
-        return addButton(button);
+        return addRenderableWidget(button);
     }
 
     protected HashList<FILTER> getFilters() {
@@ -97,8 +97,8 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected abstract List<ItemStack> getTagStacks(String tagName);
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.drawForegroundText(matrix, mouseX, mouseY);
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
     }
 }

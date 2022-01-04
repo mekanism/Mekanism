@@ -2,13 +2,13 @@ package mekanism.common.entity.ai;
 
 import java.util.EnumSet;
 import mekanism.common.entity.EntityRobit;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.pathfinding.WalkNodeProcessor;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 public abstract class RobitAIBase extends Goal {
 
@@ -34,25 +34,25 @@ public abstract class RobitAIBase extends Goal {
         setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
-    protected PathNavigator getNavigator() {
+    protected PathNavigation getNavigator() {
         return theRobit.getNavigation();
     }
 
-    protected World getWorld() {
+    protected Level getWorld() {
         return theRobit.getCommandSenderWorld();
     }
 
     @Override
     public void start() {
         timeToRecalcPath = 0;
-        oldWaterCost = theRobit.getPathfindingMalus(PathNodeType.WATER);
-        theRobit.setPathfindingMalus(PathNodeType.WATER, 0);
+        oldWaterCost = theRobit.getPathfindingMalus(BlockPathTypes.WATER);
+        theRobit.setPathfindingMalus(BlockPathTypes.WATER, 0);
     }
 
     @Override
     public void stop() {
         getNavigator().stop();
-        theRobit.setPathfindingMalus(PathNodeType.WATER, oldWaterCost);
+        theRobit.setPathfindingMalus(BlockPathTypes.WATER, oldWaterCost);
     }
 
     protected void updateTask(Entity target) {
@@ -82,15 +82,15 @@ public abstract class RobitAIBase extends Goal {
         if (Math.abs(x - target.getX()) < 2 && Math.abs(z - target.getZ()) < 2 || !canNavigate(new BlockPos(x, y, z))) {
             return false;
         }
-        theRobit.moveTo(x + 0.5, y, z + 0.5, theRobit.yRot, theRobit.xRot);
+        theRobit.moveTo(x + 0.5, y, z + 0.5, theRobit.getYRot(), theRobit.getXRot());
         getNavigator().stop();
         return true;
     }
 
     private boolean canNavigate(BlockPos pos) {
-        World world = getWorld();
-        PathNodeType pathnodetype = WalkNodeProcessor.getBlockPathTypeStatic(world, pos.mutable());
-        if (pathnodetype == PathNodeType.WALKABLE) {
+        Level world = getWorld();
+        BlockPathTypes pathnodetype = WalkNodeEvaluator.getBlockPathTypeStatic(world, pos.mutable());
+        if (pathnodetype == BlockPathTypes.WALKABLE) {
             BlockPos blockpos = pos.subtract(theRobit.blockPosition());
             return world.noCollision(theRobit, theRobit.getBoundingBox().move(blockpos));
         }

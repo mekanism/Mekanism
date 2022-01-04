@@ -11,10 +11,10 @@ import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleConfigItem;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.network.IMekanismPacket;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 
 //TODO: Eventually it would be nice to make this more generic in terms of how it can sync module data so that we can support custom types
 // though given the module tweaker screen doesn't currently have a way to support custom types it isn't that big a deal to make this support it yet either
@@ -45,9 +45,9 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
 
     @Override
     public void handle(NetworkEvent.Context context) {
-        PlayerEntity player = context.getSender();
+        Player player = context.getSender();
         if (player != null && dataIndex >= 0 && value != null) {
-            ItemStack stack = player.inventory.getItem(slotId);
+            ItemStack stack = player.getInventory().getItem(slotId);
             if (!stack.isEmpty() && stack.getItem() instanceof IModuleContainerItem) {
                 Module<?> module = ModuleHelper.INSTANCE.load(stack, moduleType);
                 if (module != null) {
@@ -71,7 +71,7 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
     }
 
     @Override
-    public void encode(PacketBuffer buffer) {
+    public void encode(FriendlyByteBuf buffer) {
         buffer.writeVarInt(slotId);
         buffer.writeRegistryId(moduleType);
         buffer.writeVarInt(dataIndex);
@@ -86,7 +86,7 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
         }
     }
 
-    public static PacketUpdateModuleSettings decode(PacketBuffer buffer) {
+    public static PacketUpdateModuleSettings decode(FriendlyByteBuf buffer) {
         int slotId = buffer.readVarInt();
         ModuleData<?> moduleType = buffer.readRegistryId();
         int dataIndex = buffer.readVarInt();

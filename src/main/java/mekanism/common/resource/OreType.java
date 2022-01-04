@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 
-public enum OreType implements IStringSerializable {
+public enum OreType implements StringRepresentable {
     COPPER(PrimaryResource.COPPER, 16, 8, 0, 0, 60),
     TIN(PrimaryResource.TIN, 14, 8, 0, 0, 60),
     OSMIUM(PrimaryResource.OSMIUM, 12, 8, 0, 0, 60),
@@ -16,7 +16,7 @@ public enum OreType implements IStringSerializable {
     FLUORITE(MiscResource.FLUORITE, 6, 12, 0, 0, 32, 1, 4),
     LEAD(PrimaryResource.LEAD, 8, 8, 0, 0, 48);
 
-    public static Codec<OreType> CODEC = IStringSerializable.fromEnum(OreType::values, OreType::byName);
+    public static Codec<OreType> CODEC = StringRepresentable.fromEnum(OreType::values, OreType::byName);
     private static final Map<String, OreType> NAME_LOOKUP = Arrays.stream(values()).collect(Collectors.toMap(OreType::getSerializedName, oreType -> oreType));
 
     private final IResource resource;
@@ -53,6 +53,11 @@ public enum OreType implements IStringSerializable {
 
     public int getMaxVeinSize() {
         return maxVeinSize;
+    }
+
+    public float getDiscardChanceOnAirExposure() {
+        //TODO - 1.18: Implement this and update the other values
+        return 0;
     }
 
     public int getBottomOffset() {

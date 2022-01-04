@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.warning.WarningTracker.WarningType;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public interface IWarningTracker {
 
@@ -12,7 +12,7 @@ public interface IWarningTracker {
 
     boolean hasWarning();
 
-    List<ITextComponent> getWarnings();
+    List<Component> getWarnings();
 
     void clearTrackedWarnings();
 }

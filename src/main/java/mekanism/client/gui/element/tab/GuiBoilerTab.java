@@ -12,8 +12,8 @@ import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, BoilerTab> {
 
@@ -44,11 +44,11 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
 
         @Override
         public void onClick(TileEntityBoilerCasing tile) {
-            Mekanism.packetHandler.sendToServer(new PacketGuiButtonPress(button, tile));
+            Mekanism.packetHandler().sendToServer(new PacketGuiButtonPress(button, tile));
         }
 
         @Override
-        public ITextComponent getDescription() {
+        public Component getDescription() {
             return description.translate();
         }
 

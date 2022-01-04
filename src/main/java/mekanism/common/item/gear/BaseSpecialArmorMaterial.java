@@ -1,19 +1,19 @@
 package mekanism.common.item.gear;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class BaseSpecialArmorMaterial implements IArmorMaterial {
+public abstract class BaseSpecialArmorMaterial implements ArmorMaterial {
 
     @Override
-    public int getDurabilityForSlot(EquipmentSlotType slotType) {
+    public int getDurabilityForSlot(EquipmentSlot slotType) {
         return 0;
     }
 
@@ -33,7 +33,7 @@ public abstract class BaseSpecialArmorMaterial implements IArmorMaterial {
     }
 
     @Override
-    public int getDefenseForSlot(EquipmentSlotType slotType) {
+    public int getDefenseForSlot(EquipmentSlot slotType) {
         return 0;
     }
 

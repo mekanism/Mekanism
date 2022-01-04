@@ -13,10 +13,10 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
 
 @ParametersAreNonnullByDefault
 public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomotiveBoostingUnit> {
@@ -30,7 +30,7 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
     }
 
     @Override
-    public void changeMode(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player, ItemStack stack, int shift, boolean displayChangeMessage) {
+    public void changeMode(IModule<ModuleLocomotiveBoostingUnit> module, Player player, ItemStack stack, int shift, boolean displayChangeMessage) {
         if (module.isEnabled()) {
             SprintBoost newMode = sprintBoost.get().adjust(shift, v -> v.ordinal() < module.getInstalledCount() + 1);
             if (sprintBoost.get() != newMode) {
@@ -43,19 +43,19 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
     }
 
     @Override
-    public void tickServer(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
+    public void tickServer(IModule<ModuleLocomotiveBoostingUnit> module, Player player) {
         if (tick(module, player)) {
             module.useEnergy(player, MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
         }
     }
 
     @Override
-    public void tickClient(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
+    public void tickClient(IModule<ModuleLocomotiveBoostingUnit> module, Player player) {
         // leave energy usage up to server
         tick(module, player);
     }
 
-    private boolean tick(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
+    private boolean tick(IModule<ModuleLocomotiveBoostingUnit> module, Player player) {
         if (canFunction(module, player)) {
             float boost = getBoost();
             if (!player.isOnGround()) {
@@ -64,13 +64,13 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
             if (player.isInWater()) {
                 boost /= 5F; // throttle if we're in the water
             }
-            player.moveRelative(boost, new Vector3d(0, 0, 1));
+            player.moveRelative(boost, new Vec3(0, 0, 1));
             return true;
         }
         return false;
     }
 
-    public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, PlayerEntity player) {
+    public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, Player player) {
         //Don't allow boosting unit to work when flying with the elytra, a jetpack should be used instead
         return !player.isFallFlying() && player.isSprinting() && module.canUseEnergy(player,
               MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get().multiply(getBoost() / 0.1F));
@@ -90,7 +90,7 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
         private static final SprintBoost[] MODES = values();
 
         private final float boost;
-        private final ITextComponent label;
+        private final Component label;
 
         SprintBoost(float boost) {
             this.boost = boost;
@@ -104,7 +104,7 @@ public class ModuleLocomotiveBoostingUnit implements ICustomModule<ModuleLocomot
         }
 
         @Override
-        public ITextComponent getTextComponent() {
+        public Component getTextComponent() {
             return label;
         }
 

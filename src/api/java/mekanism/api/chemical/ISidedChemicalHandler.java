@@ -2,9 +2,9 @@ package mekanism.api.chemical;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 /**
  * A sided variant of {@link IChemicalHandler}

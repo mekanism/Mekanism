@@ -6,8 +6,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class VirtualInventoryContainerSlot extends InventoryContainerSlot implements IVirtualSlot {
 

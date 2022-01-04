@@ -1,6 +1,6 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -18,12 +18,12 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
 
 public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileContainer<TileEntitySPSCasing>> {
 
-    public GuiSPS(MekanismTileContainer<TileEntitySPSCasing> container, PlayerInventory inv, ITextComponent title) {
+    public GuiSPS(MekanismTileContainer<TileEntitySPSCasing> container, Inventory inv, Component title) {
         super(container, inv, title);
         dynamicSlots = true;
         imageHeight += 16;
@@ -33,10 +33,10 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
     @Override
     protected void addGuiElements() {
         super.addGuiElements();
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 7, 17));
-        addButton(new GuiGasGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 151, 17));
-        addButton(new GuiInnerScreen(this, 27, 17, 122, 60, () -> {
-            List<ITextComponent> list = new ArrayList<>();
+        addRenderableWidget(new GuiGasGauge(() -> tile.getMultiblock().inputTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 7, 17));
+        addRenderableWidget(new GuiGasGauge(() -> tile.getMultiblock().outputTank, () -> tile.getMultiblock().getGasTanks(null), GaugeType.STANDARD, this, 151, 17));
+        addRenderableWidget(new GuiInnerScreen(this, 27, 17, 122, 60, () -> {
+            List<Component> list = new ArrayList<>();
             SPSMultiblockData multiblock = tile.getMultiblock();
             boolean active = multiblock.lastProcessed > 0;
             list.add(MekanismLang.STATUS.translate(active ? MekanismLang.ACTIVE : MekanismLang.IDLE));
@@ -46,9 +46,9 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
             }
             return list;
         }).jeiCategories(MekanismBlocks.SPS_CASING.getRegistryName()));
-        addButton(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
+        addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {
             @Override
-            public ITextComponent getTooltip() {
+            public Component getTooltip() {
                 return MekanismLang.PROGRESS.translate(TextUtils.getPercent(tile.getMultiblock().getScaledProgress()));
             }
 
@@ -60,9 +60,9 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull MatrixStack matrix, int mouseX, int mouseY) {
+    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         drawTitleText(matrix, MekanismLang.SPS.translate(), titleLabelY);
-        drawString(matrix, inventory.getDisplayName(), inventoryLabelX, inventoryLabelY, titleTextColor());
+        drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

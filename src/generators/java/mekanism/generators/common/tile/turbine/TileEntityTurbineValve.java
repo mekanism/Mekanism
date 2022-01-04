@@ -10,11 +10,13 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.CableUtils;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityTurbineValve extends TileEntityTurbineCasing {
 
-    public TileEntityTurbineValve() {
-        super(GeneratorsBlocks.TURBINE_VALVE);
+    public TileEntityTurbineValve(BlockPos pos, BlockState state) {
+        super(GeneratorsBlocks.TURBINE_VALVE, pos, state);
     }
 
     @Nonnull

@@ -11,12 +11,14 @@ import mekanism.common.integration.computer.ComputerCapabilityHelper;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityDiversionTransporter extends TileEntityLogisticalTransporterBase implements IComputerTile {
 
-    public TileEntityDiversionTransporter() {
-        super(MekanismBlocks.DIVERSION_TRANSPORTER);
+    public TileEntityDiversionTransporter(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.DIVERSION_TRANSPORTER, pos, state);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
         }

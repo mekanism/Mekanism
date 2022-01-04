@@ -51,13 +51,13 @@ public class MekAnnotationScanner {
     }
 
     private static void gatherScanData(Map<ElementType, List<ScanData>> elementBasedScanData, Map<String, Class<?>> classNameCache, AnnotationData data) {
-        ElementType targetType = data.getTargetType();
+        ElementType targetType = data.targetType();
         List<ScanData> elementScanData = elementBasedScanData.get(targetType);
         if (elementScanData != null) {
             for (ScanData scannerData : elementScanData) {
                 for (Type type : scannerData.supportedTypes.get(targetType)) {
-                    if (type.equals(data.getAnnotationType())) {
-                        Class<?> clazz = getClassForName(classNameCache, data.getClassType().getClassName());
+                    if (type.equals(data.annotationType())) {
+                        Class<?> clazz = getClassForName(classNameCache, data.clazz().getClassName());
                         if (clazz != null) {
                             //If the class was successfully found, add it to the known classes
                             scannerData.knownClasses.computeIfAbsent(clazz, c -> new ArrayList<>()).add(data);
@@ -125,7 +125,7 @@ public class MekAnnotationScanner {
          */
         @Nullable
         protected static Class<?> getAnnotationValue(Map<String, Class<?>> classNameCache, AnnotationData data, String key) {
-            Type type = (Type) data.getAnnotationData().get(key);
+            Type type = (Type) data.annotationData().get(key);
             return type == null ? null : getClassForName(classNameCache, type.getClassName());
         }
 
@@ -133,14 +133,14 @@ public class MekAnnotationScanner {
          * Gets the value of an annotation or falls back to the default if the key isn't present.
          */
         protected static <T> T getAnnotationValue(AnnotationData data, String key, T defaultValue) {
-            return (T) data.getAnnotationData().getOrDefault(key, defaultValue);
+            return (T) data.annotationData().getOrDefault(key, defaultValue);
         }
 
         /**
          * Gets the value of an annotation or falls back to the default if the key isn't present. Enum version
          */
         protected static <T extends Enum<T>> T getAnnotationValue(AnnotationData data, String key, T defaultValue) {
-            Map<String, Object> annotationData = data.getAnnotationData();
+            Map<String, Object> annotationData = data.annotationData();
             if (annotationData.containsKey(key)) {
                 Object value = annotationData.get(key);
                 if (value instanceof ModAnnotation.EnumHolder) {
@@ -164,7 +164,7 @@ public class MekAnnotationScanner {
          * Gets the value of an annotation or falls back to the default if the key isn't present, or the set value is not valid
          */
         protected static <T> T getAnnotationValue(AnnotationData data, String key, T defaultValue, Predicate<T> validator) {
-            Map<String, Object> annotationData = data.getAnnotationData();
+            Map<String, Object> annotationData = data.annotationData();
             if (annotationData.containsKey(key)) {
                 T value = (T) annotationData.get(key);
                 if (validator.test(value)) {
@@ -178,7 +178,7 @@ public class MekAnnotationScanner {
          * Gets the value of an annotation or falls back to the default if the key isn't present, or the set value is not valid. Enum version
          */
         protected static <T extends Enum<T>> T getAnnotationValue(AnnotationData data, String key, T defaultValue, Predicate<T> validator) {
-            Map<String, Object> annotationData = data.getAnnotationData();
+            Map<String, Object> annotationData = data.annotationData();
             if (annotationData.containsKey(key)) {
                 Object value = annotationData.get(key);
                 if (value instanceof ModAnnotation.EnumHolder) {

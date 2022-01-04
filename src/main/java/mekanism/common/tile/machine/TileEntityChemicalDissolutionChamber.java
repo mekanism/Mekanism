@@ -55,7 +55,9 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMachine<ChemicalDissolutionRecipe> implements
       ItemChemicalRecipeLookupHandler<Gas, GasStack, ChemicalDissolutionRecipe> {
@@ -82,8 +84,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem")
     private EnergyInventorySlot energySlot;
 
-    public TileEntityChemicalDissolutionChamber() {
-        super(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, BASE_TICKS_REQUIRED);
+    public TileEntityChemicalDissolutionChamber(BlockPos pos, BlockState state) {
+        super(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, pos, state, BASE_TICKS_REQUIRED);
         configComponent = new TileComponentConfig(this, TransmissionType.ITEM, TransmissionType.GAS, TransmissionType.INFUSION, TransmissionType.PIGMENT,
               TransmissionType.SLURRY, TransmissionType.ENERGY);
         configComponent.setupItemIOExtraConfig(inputSlot, outputSlot, gasInputSlot, energySlot);

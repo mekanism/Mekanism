@@ -12,9 +12,9 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.CapabilityUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.StackUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.core.Direction;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -26,15 +26,15 @@ public abstract class TransitRequest {
         return new SimpleTransitRequest(stack);
     }
 
-    public static TransitRequest anyItem(TileEntity tile, Direction side, int amount) {
+    public static TransitRequest anyItem(BlockEntity tile, Direction side, int amount) {
         return definedItem(tile, side, amount, Finder.ANY);
     }
 
-    public static TransitRequest definedItem(TileEntity tile, Direction side, int amount, Finder finder) {
+    public static TransitRequest definedItem(BlockEntity tile, Direction side, int amount, Finder finder) {
         return definedItem(tile, side, 1, amount, finder);
     }
 
-    public static TransitRequest definedItem(TileEntity tile, Direction side, int min, int max, Finder finder) {
+    public static TransitRequest definedItem(BlockEntity tile, Direction side, int min, int max, Finder finder) {
         TileTransitRequest ret = new TileTransitRequest(tile, side);
         IItemHandler inventory = InventoryUtils.assertItemHandler("TransitRequest", tile, side);
         if (inventory == null) {
@@ -61,7 +61,7 @@ public abstract class TransitRequest {
     public abstract Collection<? extends ItemData> getItemData();
 
     @Nonnull
-    public TransitResponse addToInventory(TileEntity tile, Direction side, int min, boolean force) {
+    public TransitResponse addToInventory(BlockEntity tile, Direction side, int min, boolean force) {
         if (force && tile instanceof TileEntityLogisticalSorter) {
             return ((TileEntityLogisticalSorter) tile).sendHome(this);
         }

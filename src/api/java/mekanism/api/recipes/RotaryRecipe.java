@@ -4,13 +4,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Contract;
 
@@ -171,28 +171,12 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     }
 
     /**
-     * @deprecated Use {@link #getGasOutputDefinition()}.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public GasStack getGasOutputRepresentation() {
-        return gasOutput;
-    }
-
-    /**
      * For JEI, gets the gas output representations to display. This method assumes {@link #hasFluidToGas()} is {@code true}.
      *
      * @return Representation of the gas output, <strong>MUST NOT</strong> be modified.
      */
     public List<GasStack> getGasOutputDefinition() {
         return Collections.singletonList(gasOutput);
-    }
-
-    /**
-     * @deprecated Use {@link #getFluidOutputDefinition()}.
-     */
-    @Deprecated//TODO - 1.18: Remove this
-    public FluidStack getFluidOutputRepresentation() {
-        return fluidOutput;
     }
 
     /**
@@ -237,7 +221,7 @@ public abstract class RotaryRecipe extends MekanismRecipe {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         buffer.writeBoolean(hasFluidToGas);
         if (hasFluidToGas) {
             fluidInput.write(buffer);

@@ -21,9 +21,10 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
@@ -31,8 +32,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
 
     private final FluidHandlerManager fluidHandlerManager;
 
-    public TileEntityMechanicalPipe(IBlockProvider blockProvider) {
-        super(blockProvider);
+    public TileEntityMechanicalPipe(IBlockProvider blockProvider, BlockPos pos, BlockState state) {
+        super(blockProvider, pos, state);
         addCapabilityResolver(fluidHandlerManager = new FluidHandlerManager(direction -> {
             MechanicalPipe pipe = getTransmitter();
             if (direction != null && pipe.getConnectionTypeRaw(direction) == ConnectionType.NONE) {
@@ -57,11 +58,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
     }
 
     @Override
-    public void tick() {
-        if (!isRemote()) {
-            getTransmitter().pullFromAcceptors();
-        }
-        super.tick();
+    protected void onUpdateServer() {
+        getTransmitter().pullFromAcceptors();
+        super.onUpdateServer();
     }
 
     @Override
@@ -87,12 +86,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
+    public CompoundTag getUpdateTag() {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
-        CompoundNBT updateTag = super.getUpdateTag();
+        CompoundTag updateTag = super.getUpdateTag();
         if (getTransmitter().hasTransmitterNetwork()) {
             FluidNetwork network = getTransmitter().getTransmitterNetwork();
-            updateTag.put(NBTConstants.FLUID_STORED, network.lastFluid.writeToNBT(new CompoundNBT()));
+            updateTag.put(NBTConstants.FLUID_STORED, network.lastFluid.writeToNBT(new CompoundTag()));
             updateTag.putFloat(NBTConstants.SCALE, network.currentScale);
         }
         return updateTag;

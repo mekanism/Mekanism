@@ -1,270 +1,145 @@
 package mekanism.client.model;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class ModelScubaMask extends MekanismJavaModel {
 
+    public static final ModelLayerLocation MASK_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_mask"), "main");
     private static final ResourceLocation MASK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
-    private static final RenderType GLASS_RENDER_TYPE = MekanismRenderType.mekStandard(MASK_TEXTURE);
-    private final RenderType RENDER_TYPE = renderType(MASK_TEXTURE);
 
-    private final ModelRenderer helmetFeed;
-    private final ModelRenderer tubeBack;
-    private final ModelRenderer tubeL;
-    private final ModelRenderer tubeR;
-    private final ModelRenderer tubeFront;
-    private final ModelRenderer mouthIntake;
-    private final ModelRenderer finUpperR;
-    private final ModelRenderer finUpperL;
-    private final ModelRenderer finMidR;
-    private final ModelRenderer finMidL;
-    private final ModelRenderer finBack;
-    private final ModelRenderer topPlate;
-    private final ModelRenderer filterL;
-    private final ModelRenderer filterR;
-    private final ModelRenderer filterPipeLower;
-    private final ModelRenderer filterPipeUpper;
-    private final ModelRenderer glassTop;
-    private final ModelRenderer glassFront;
-    private final ModelRenderer glassR;
-    private final ModelRenderer glassL;
-    private final ModelRenderer glassBackR;
-    private final ModelRenderer glassBackL;
-    private final ModelRenderer pipeCornerFL;
-    private final ModelRenderer pipeCornerFR;
-    private final ModelRenderer pipeCornerBR;
-    private final ModelRenderer pipeCornerBL;
-    private final ModelRenderer lightL;
-    private final ModelRenderer lightR;
+    private static final ModelPartData HELMET_FEED = new ModelPartData("helmetFeed", CubeListBuilder.create()
+          .texOffs(88, 43)
+          .addBox(-2F, -2F, 2F, 4, 3, 4));
+    private static final ModelPartData TUBE_BACK = new ModelPartData("tubeBack", CubeListBuilder.create()
+          .texOffs(106, 50)
+          .addBox(-4.5F, -1F, 4.5F, 9, 1, 1));
+    private static final ModelPartData TUBE_L = new ModelPartData("tubeL", CubeListBuilder.create()
+          .texOffs(106, 54)
+          .addBox(4.5F, -1F, -4.5F, 1, 1, 9));
+    private static final ModelPartData TUBE_R = new ModelPartData("tubeR", CubeListBuilder.create()
+          .texOffs(106, 54)
+          .addBox(-5.5F, -1F, -4.5F, 1, 1, 9));
+    private static final ModelPartData TUBE_FRONT = new ModelPartData("tubeFront", CubeListBuilder.create()
+          .texOffs(106, 50)
+          .addBox(-4.5F, -1F, -5.5F, 9, 1, 1));
+    private static final ModelPartData MOUTH_INTAKE = new ModelPartData("mouthIntake", CubeListBuilder.create()
+          .texOffs(118, 42)
+          .addBox(-1.5F, -0.7F, -6F, 3, 2, 3),
+          PartPose.offsetAndRotation(0F, -2F, 0F, 0.2094395F, 0F, 0F));
+    private static final ModelPartData FIN_UPPER_R = new ModelPartData("finUpperR", CubeListBuilder.create()
+          .texOffs(78, 50)
+          .addBox(-6F, -7.5F, -3.3F, 1, 2, 12),
+          PartPose.rotation(0.0698132F, 0F, 0F));
+    private static final ModelPartData FIN_UPPER_L = new ModelPartData("finUpperL", CubeListBuilder.create()
+          .texOffs(78, 50)
+          .addBox(5F, -7.5F, -3.3F, 1, 2, 12),
+          PartPose.rotation(0.0698132F, 0F, 0F));
+    private static final ModelPartData FIN_MID_R = new ModelPartData("finMidR", CubeListBuilder.create()
+          .texOffs(72, 34)
+          .addBox(-7.5F, -6F, -1F, 2, 2, 5));
+    private static final ModelPartData FIN_MID_L = new ModelPartData("finMidL", CubeListBuilder.create()
+          .texOffs(72, 34)
+          .addBox(5.5F, -6F, -1F, 2, 2, 5));
+    private static final ModelPartData FIN_BACK = new ModelPartData("finBack", CubeListBuilder.create()
+          .texOffs(80, 0)
+          .addBox(-1F, -9.6F, 2.5F, 2, 10, 3));
+    private static final ModelPartData TOP_PLATE = new ModelPartData("topPlate", CubeListBuilder.create()
+          .texOffs(104, 34)
+          .addBox(-3F, -10F, -2F, 6, 2, 6),
+          PartPose.rotation(0.1396263F, 0F, 0F));
+    private static final ModelPartData FILTER_L = new ModelPartData("filterL", CubeListBuilder.create()
+          .texOffs(108, 42)
+          .addBox(3.4F, -1.8F, -5F, 2, 3, 3),
+          PartPose.rotation(0F, 0.3839724F, 0.5061455F));
+    private static final ModelPartData FILTER_R = new ModelPartData("filterR", CubeListBuilder.create()
+          .texOffs(108, 42)
+          .addBox(-5.4F, -1.8F, -5F, 2, 3, 3),
+          PartPose.rotation(0F, -0.3839724F, -0.5061455F));
+    private static final ModelPartData FILTER_PIPE_LOWER = new ModelPartData("filterPipeLower", CubeListBuilder.create()
+          .texOffs(92, 41)
+          .addBox(-3F, 1F, -5F, 5, 1, 1));
+    private static final ModelPartData FILTER_PIPE_UPPER = new ModelPartData("filterPipeUpper", CubeListBuilder.create()
+          .texOffs(104, 42)
+          .addBox(-0.5F, 0F, -5F, 1, 1, 1));
+    private static final ModelPartData GLASS_TOP = new ModelPartData("glassTop", CubeListBuilder.create()
+          .addBox(-4F, -9F, -4F, 8, 1, 8));
+    private static final ModelPartData GLASS_FRONT = new ModelPartData("glassFront", CubeListBuilder.create()
+          .addBox(-4F, -8F, -5F, 8, 7, 1));
+    private static final ModelPartData GLASS_R = new ModelPartData("glassR", CubeListBuilder.create()
+          .addBox(-5F, -8F, -4F, 1, 7, 8));
+    private static final ModelPartData GLASS_L = new ModelPartData("glassL", CubeListBuilder.create()
+          .addBox(4F, -8F, -4F, 1, 7, 8));
+    private static final ModelPartData GLASS_BACK_R = new ModelPartData("glassBackR", CubeListBuilder.create()
+          .addBox(-4F, -8F, 4F, 3, 7, 1));
+    private static final ModelPartData GLASS_BACK_L = new ModelPartData("glassBackL", CubeListBuilder.create()
+          .addBox(1F, -8F, 4F, 3, 7, 1));
+    private static final ModelPartData PIPE_CORNER_F_L = new ModelPartData("pipeCornerFL", CubeListBuilder.create()
+          .texOffs(109, 50)
+          .addBox(3.5F, -1F, -4.5F, 1, 1, 1));
+    private static final ModelPartData PIPE_CORNER_F_R = new ModelPartData("pipeCornerFR", CubeListBuilder.create()
+          .texOffs(109, 50)
+          .addBox(-4.5F, -1F, -4.5F, 1, 1, 1));
+    private static final ModelPartData PIPE_CORNER_B_R = new ModelPartData("pipeCornerBR", CubeListBuilder.create()
+          .texOffs(109, 50)
+          .addBox(-4.5F, -1F, 3.5F, 1, 1, 1));
+    private static final ModelPartData PIPE_CORNER_B_L = new ModelPartData("pipeCornerBL", CubeListBuilder.create()
+          .texOffs(109, 50)
+          .addBox(3.5F, -1F, 4.5F, 1, 1, 1),
+          PartPose.offset(0F, 0F, -1F));
+    private static final ModelPartData LIGHT_L = new ModelPartData("lightL", CubeListBuilder.create()
+          .texOffs(89, 37)
+          .addBox(5.5F, -6F, -2F, 2, 2, 1));
+    private static final ModelPartData LIGHT_R = new ModelPartData("lightR", CubeListBuilder.create()
+          .texOffs(89, 37)
+          .addBox(-7.5F, -6F, -2F, 2, 2, 1));
 
-    public ModelScubaMask() {
-        super(RenderType::entitySolid);
-        texWidth = 128;
-        texHeight = 64;
-
-        helmetFeed = new ModelRenderer(this, 88, 43);
-        helmetFeed.addBox(-2F, -2F, 2F, 4, 3, 4, false);
-        helmetFeed.setPos(0F, 0F, 0F);
-        helmetFeed.setTexSize(128, 64);
-        helmetFeed.mirror = true;
-        setRotation(helmetFeed, 0F, 0F, 0F);
-        tubeBack = new ModelRenderer(this, 106, 50);
-        tubeBack.addBox(-4.5F, -1F, 4.5F, 9, 1, 1, false);
-        tubeBack.setPos(0F, 0F, 0F);
-        tubeBack.setTexSize(128, 64);
-        tubeBack.mirror = true;
-        setRotation(tubeBack, 0F, 0F, 0F);
-        tubeL = new ModelRenderer(this, 106, 54);
-        tubeL.addBox(4.5F, -1F, -4.5F, 1, 1, 9, false);
-        tubeL.setPos(0F, 0F, 0F);
-        tubeL.setTexSize(128, 64);
-        tubeL.mirror = true;
-        setRotation(tubeL, 0F, 0F, 0F);
-        tubeR = new ModelRenderer(this, 106, 54);
-        tubeR.addBox(-5.5F, -1F, -4.5F, 1, 1, 9, false);
-        tubeR.setPos(0F, 0F, 0F);
-        tubeR.setTexSize(128, 64);
-        tubeR.mirror = true;
-        setRotation(tubeR, 0F, 0F, 0F);
-        tubeFront = new ModelRenderer(this, 106, 50);
-        tubeFront.addBox(-4.5F, -1F, -5.5F, 9, 1, 1, false);
-        tubeFront.setPos(0F, 0F, 0F);
-        tubeFront.setTexSize(128, 64);
-        tubeFront.mirror = true;
-        setRotation(tubeFront, 0F, 0F, 0F);
-        mouthIntake = new ModelRenderer(this, 118, 42);
-        mouthIntake.addBox(-1.5F, -0.7F, -6F, 3, 2, 3, false);
-        mouthIntake.setPos(0F, -2F, 0F);
-        mouthIntake.setTexSize(128, 64);
-        mouthIntake.mirror = true;
-        setRotation(mouthIntake, 0.2094395F, 0F, 0F);
-        finUpperR = new ModelRenderer(this, 78, 50);
-        finUpperR.addBox(-6F, -7.5F, -3.3F, 1, 2, 12, false);
-        finUpperR.setPos(0F, 0F, 0F);
-        finUpperR.setTexSize(128, 64);
-        finUpperR.mirror = true;
-        setRotation(finUpperR, 0.0698132F, 0F, 0F);
-        finUpperL = new ModelRenderer(this, 78, 50);
-        finUpperL.addBox(5F, -7.5F, -3.3F, 1, 2, 12, false);
-        finUpperL.setPos(0F, 0F, 0F);
-        finUpperL.setTexSize(128, 64);
-        finUpperL.mirror = true;
-        setRotation(finUpperL, 0.0698132F, 0F, 0F);
-        finUpperL.mirror = false;
-        finMidR = new ModelRenderer(this, 72, 34);
-        finMidR.addBox(-7.5F, -6F, -1F, 2, 2, 5, false);
-        finMidR.setPos(0F, 0F, 0F);
-        finMidR.setTexSize(128, 64);
-        finMidR.mirror = true;
-        setRotation(finMidR, 0F, 0F, 0F);
-        finMidL = new ModelRenderer(this, 72, 34);
-        finMidL.addBox(5.5F, -6F, -1F, 2, 2, 5, false);
-        finMidL.setPos(0F, 0F, 0F);
-        finMidL.setTexSize(128, 64);
-        finMidL.mirror = true;
-        setRotation(finMidL, 0F, 0F, 0F);
-        finMidL.mirror = false;
-        finBack = new ModelRenderer(this, 80, 0);
-        finBack.addBox(-1F, -9.6F, 2.5F, 2, 10, 3, false);
-        finBack.setPos(0F, 0F, 0F);
-        finBack.setTexSize(128, 64);
-        finBack.mirror = true;
-        setRotation(finBack, 0F, 0F, 0F);
-        topPlate = new ModelRenderer(this, 104, 34);
-        topPlate.addBox(-3F, -10F, -2F, 6, 2, 6, false);
-        topPlate.setPos(0F, 0F, 0F);
-        topPlate.setTexSize(128, 64);
-        topPlate.mirror = true;
-        setRotation(topPlate, 0.1396263F, 0F, 0F);
-        filterL = new ModelRenderer(this, 108, 42);
-        filterL.addBox(3.4F, -1.8F, -5F, 2, 3, 3, false);
-        filterL.setPos(0F, 0F, 0F);
-        filterL.setTexSize(128, 64);
-        filterL.mirror = true;
-        setRotation(filterL, 0F, 0.3839724F, 0.5061455F);
-        filterL.mirror = false;
-        filterR = new ModelRenderer(this, 108, 42);
-        filterR.addBox(-5.4F, -1.8F, -5F, 2, 3, 3, false);
-        filterR.setPos(0F, 0F, 0F);
-        filterR.setTexSize(128, 64);
-        filterR.mirror = true;
-        setRotation(filterR, 0F, -0.3839724F, -0.5061455F);
-        filterPipeLower = new ModelRenderer(this, 92, 41);
-        filterPipeLower.addBox(-3F, 1F, -5F, 5, 1, 1, false);
-        filterPipeLower.setPos(0F, 0F, 0F);
-        filterPipeLower.setTexSize(128, 64);
-        filterPipeLower.mirror = true;
-        setRotation(filterPipeLower, 0F, 0F, 0F);
-        filterPipeUpper = new ModelRenderer(this, 104, 42);
-        filterPipeUpper.addBox(-0.5F, 0F, -5F, 1, 1, 1, false);
-        filterPipeUpper.setPos(0F, 0F, 0F);
-        filterPipeUpper.setTexSize(128, 64);
-        filterPipeUpper.mirror = true;
-        setRotation(filterPipeUpper, 0F, 0F, 0F);
-        glassTop = new ModelRenderer(this, 0, 0);
-        glassTop.addBox(-4F, -9F, -4F, 8, 1, 8, false);
-        glassTop.setPos(0F, 0F, 0F);
-        glassTop.setTexSize(128, 64);
-        glassTop.mirror = true;
-        setRotation(glassTop, 0F, 0F, 0F);
-        glassFront = new ModelRenderer(this, 0, 0);
-        glassFront.addBox(-4F, -8F, -5F, 8, 7, 1, false);
-        glassFront.setPos(0F, 0F, 0F);
-        glassFront.setTexSize(128, 64);
-        glassFront.mirror = true;
-        setRotation(glassFront, 0F, 0F, 0F);
-        glassR = new ModelRenderer(this, 0, 0);
-        glassR.addBox(-5F, -8F, -4F, 1, 7, 8, false);
-        glassR.setPos(0F, 0F, 0F);
-        glassR.setTexSize(128, 64);
-        glassR.mirror = true;
-        setRotation(glassR, 0F, 0F, 0F);
-        glassL = new ModelRenderer(this, 0, 0);
-        glassL.addBox(4F, -8F, -4F, 1, 7, 8, false);
-        glassL.setPos(0F, 0F, 0F);
-        glassL.setTexSize(128, 64);
-        glassL.mirror = true;
-        setRotation(glassL, 0F, 0F, 0F);
-        glassBackR = new ModelRenderer(this, 0, 0);
-        glassBackR.addBox(-4F, -8F, 4F, 3, 7, 1, false);
-        glassBackR.setPos(0F, 0F, 0F);
-        glassBackR.setTexSize(128, 64);
-        glassBackR.mirror = true;
-        setRotation(glassBackR, 0F, 0F, 0F);
-        glassBackL = new ModelRenderer(this, 0, 0);
-        glassBackL.addBox(1F, -8F, 4F, 3, 7, 1, false);
-        glassBackL.setPos(0F, 0F, 0F);
-        glassBackL.setTexSize(128, 64);
-        glassBackL.mirror = true;
-        setRotation(glassBackL, 0F, 0F, 0F);
-        pipeCornerFL = new ModelRenderer(this, 109, 50);
-        pipeCornerFL.addBox(3.5F, -1F, -4.5F, 1, 1, 1, false);
-        pipeCornerFL.setPos(0F, 0F, 0F);
-        pipeCornerFL.setTexSize(128, 64);
-        pipeCornerFL.mirror = true;
-        setRotation(pipeCornerFL, 0F, 0F, 0F);
-        pipeCornerFR = new ModelRenderer(this, 109, 50);
-        pipeCornerFR.addBox(-4.5F, -1F, -4.5F, 1, 1, 1, false);
-        pipeCornerFR.setPos(0F, 0F, 0F);
-        pipeCornerFR.setTexSize(128, 64);
-        pipeCornerFR.mirror = true;
-        setRotation(pipeCornerFR, 0F, 0F, 0F);
-        pipeCornerBR = new ModelRenderer(this, 109, 50);
-        pipeCornerBR.addBox(-4.5F, -1F, 3.5F, 1, 1, 1, false);
-        pipeCornerBR.setPos(0F, 0F, 0F);
-        pipeCornerBR.setTexSize(128, 64);
-        pipeCornerBR.mirror = true;
-        setRotation(pipeCornerBR, 0F, 0F, 0F);
-        pipeCornerBL = new ModelRenderer(this, 109, 50);
-        pipeCornerBL.addBox(3.5F, -1F, 4.5F, 1, 1, 1, false);
-        pipeCornerBL.setPos(0F, 0F, -1F);
-        pipeCornerBL.setTexSize(128, 64);
-        pipeCornerBL.mirror = true;
-        setRotation(pipeCornerBL, 0F, 0F, 0F);
-        lightL = new ModelRenderer(this, 89, 37);
-        lightL.addBox(5.5F, -6F, -2F, 2, 2, 1, false);
-        lightL.setPos(0F, 0F, 0F);
-        lightL.setTexSize(128, 64);
-        lightL.mirror = true;
-        setRotation(lightL, 0F, 0F, 0F);
-        lightR = new ModelRenderer(this, 89, 37);
-        lightR.addBox(-7.5F, -6F, -2F, 2, 2, 1, false);
-        lightR.setPos(0F, 0F, 0F);
-        lightR.setTexSize(128, 64);
-        lightR.mirror = true;
-        setRotation(lightR, 0F, 0F, 0F);
+    public static LayerDefinition createLayerDefinition() {
+        return createLayerDefinition(128, 64, HELMET_FEED, TUBE_BACK, TUBE_L, TUBE_R, TUBE_FRONT, MOUTH_INTAKE, FIN_UPPER_R, FIN_UPPER_L,
+              FIN_MID_R, FIN_MID_L, FIN_BACK, TOP_PLATE, FILTER_L, FILTER_R, FILTER_PIPE_LOWER, FILTER_PIPE_UPPER, GLASS_TOP, GLASS_FRONT, GLASS_R, GLASS_L,
+              GLASS_BACK_R, GLASS_BACK_L, PIPE_CORNER_F_L, PIPE_CORNER_F_R, PIPE_CORNER_B_R, PIPE_CORNER_B_L, LIGHT_L, LIGHT_R);
     }
 
-    public void render(@Nonnull MatrixStack matrix, @Nonnull IRenderTypeBuffer renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(matrix, getVertexBuilder(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
-        renderGlass(matrix, getVertexBuilder(renderer, GLASS_RENDER_TYPE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.3F);
+    private final RenderType GLASS_RENDER_TYPE = MekanismRenderType.standard(MASK_TEXTURE);
+    private final RenderType RENDER_TYPE = renderType(MASK_TEXTURE);
+    private final List<ModelPart> parts;
+    private final List<ModelPart> litParts;
+    private final List<ModelPart> glass;
+
+    public ModelScubaMask(EntityModelSet entityModelSet) {
+        super(RenderType::entitySolid);
+        ModelPart root = entityModelSet.bakeLayer(MASK_LAYER);
+        parts = getRenderableParts(root, HELMET_FEED, TUBE_BACK, TUBE_L, TUBE_R, TUBE_FRONT, MOUTH_INTAKE, FIN_UPPER_R, FIN_UPPER_L,
+              FIN_MID_R, FIN_MID_L, FIN_BACK, TOP_PLATE, FILTER_L, FILTER_R, FILTER_PIPE_LOWER, FILTER_PIPE_UPPER, PIPE_CORNER_F_L,
+              PIPE_CORNER_F_R, PIPE_CORNER_B_R, PIPE_CORNER_B_L);
+        litParts = getRenderableParts(root, LIGHT_L, LIGHT_R);
+        glass = getRenderableParts(root, GLASS_TOP, GLASS_FRONT, GLASS_R, GLASS_L, GLASS_BACK_R, GLASS_BACK_L);
+    }
+
+    public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
+        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
+        renderPartsToBuffer(glass, matrix, getVertexConsumer(renderer, GLASS_RENDER_TYPE, hasEffect), MekanismRenderer.FULL_LIGHT, overlayLight, 1, 1, 1, 0.3F);
     }
 
     @Override
-    public void renderToBuffer(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        helmetFeed.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tubeBack.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tubeL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tubeR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        tubeFront.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        mouthIntake.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        finUpperR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        finUpperL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        finMidR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        finMidL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        finBack.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        topPlate.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        filterL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        filterR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        filterPipeLower.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        filterPipeUpper.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-
-        pipeCornerFL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        pipeCornerFR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        pipeCornerBR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        pipeCornerBL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-
-        //These should be full bright
-        lightL.render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
-        lightR.render(matrix, vertexBuilder, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
-    }
-
-    private void renderGlass(@Nonnull MatrixStack matrix, @Nonnull IVertexBuilder vertexBuilder, int light, int overlayLight, float red, float green, float blue, float alpha) {
-        glassTop.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        glassFront.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        glassR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        glassL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        glassBackR.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
-        glassBackL.render(matrix, vertexBuilder, light, overlayLight, red, green, blue, alpha);
+    public void renderToBuffer(@Nonnull PoseStack poseStack, @Nonnull VertexConsumer vertexConsumer, int light, int overlayLight, float red, float green, float blue, float alpha) {
+        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, red, green, blue, alpha);
+        renderPartsToBuffer(litParts, poseStack, vertexConsumer, MekanismRenderer.FULL_LIGHT, overlayLight, red, green, blue, alpha);
     }
 }

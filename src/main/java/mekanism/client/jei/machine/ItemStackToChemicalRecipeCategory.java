@@ -20,8 +20,8 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       RECIPE extends ItemStackToChemicalRecipe<CHEMICAL, STACK>> extends BaseRecipeCategory<RECIPE> {
@@ -35,7 +35,7 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
         this(helper, provider.getRegistryName(), provider.getTextComponent(), createIcon(helper, provider), ingredientType, isConversion);
     }
 
-    protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, ResourceLocation id, ITextComponent component, IDrawable icon, IIngredientType<STACK> ingredientType,
+    protected ItemStackToChemicalRecipeCategory(IGuiHelper helper, ResourceLocation id, Component component, IDrawable icon, IIngredientType<STACK> ingredientType,
           boolean isConversion) {
         super(helper, id, component, icon, 20, 12, 132, 62);
         this.ingredientType = ingredientType;
@@ -49,12 +49,12 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
     @Override
     public void setIngredients(RECIPE recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutputLists(ingredientType, Collections.singletonList(recipe.getOutputDefinitionNew()));
+        ingredients.setOutputLists(ingredientType, Collections.singletonList(recipe.getOutputDefinition()));
     }
 
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, RECIPE recipe, IIngredients ingredients) {
         initItem(recipeLayout.getItemStacks(), 0, true, input, recipe.getInput().getRepresentations());
-        initChemical(recipeLayout.getIngredientsGroup(ingredientType), 0, false, output, recipe.getOutputDefinitionNew());
+        initChemical(recipeLayout.getIngredientsGroup(ingredientType), 0, false, output, recipe.getOutputDefinition());
     }
 }

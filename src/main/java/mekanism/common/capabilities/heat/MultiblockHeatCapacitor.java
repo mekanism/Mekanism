@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.function.DoubleSupplier;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.heat.HeatAPI;
 import mekanism.common.lib.multiblock.MultiblockData;

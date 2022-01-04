@@ -2,7 +2,7 @@ package mekanism.api.recipes.inputs;
 
 import java.util.Collections;
 import java.util.List;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.Tag;
 
 /**
  * @apiNote Only use this from within mekanism
@@ -13,7 +13,7 @@ public class TagResolverHelper {
     }
 
     @Deprecated//TODO - 1.18: Remove this, presuming that the changes to when JEI loads made this no longer necessary
-    public static <TYPE> List<TYPE> getRepresentations(ITag<TYPE> tag) {
+    public static <TYPE> List<TYPE> getRepresentations(Tag<TYPE> tag) {
         try {
             return tag.getValues();
         } catch (IllegalStateException e) {

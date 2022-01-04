@@ -8,7 +8,7 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.MekanismLang;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 /**
  * Code taken from UE and modified to fit Mekanism.
@@ -20,7 +20,7 @@ public class UnitDisplayUtils {
     /**
      * Displays the unit as text. Does not handle negative numbers, as {@link FloatingLong} does not have a concept of negatives
      */
-    public static ITextComponent getDisplay(FloatingLong value, ElectricUnit unit, int decimalPlaces, boolean isShort) {
+    public static Component getDisplay(FloatingLong value, ElectricUnit unit, int decimalPlaces, boolean isShort) {
         ILangEntry label = unit.pluralLangEntry;
         if (isShort) {
             label = unit.shortLangEntry;
@@ -47,15 +47,15 @@ public class UnitDisplayUtils {
         return TextComponentUtil.build(value.toString(decimalPlaces), label);
     }
 
-    public static ITextComponent getDisplayShort(FloatingLong value, ElectricUnit unit) {
+    public static Component getDisplayShort(FloatingLong value, ElectricUnit unit) {
         return getDisplay(value, unit, 2, true);
     }
 
-    public static ITextComponent getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
+    public static Component getDisplay(double temp, TemperatureUnit unit, int decimalPlaces, boolean shift, boolean isShort) {
         return getDisplayBase(unit.convertFromK(temp, shift), unit, decimalPlaces, isShort, false);
     }
 
-    public static ITextComponent getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
+    public static Component getDisplayBase(double value, Unit unit, int decimalPlaces, boolean isShort, boolean spaceBetweenSymbol) {
         ILangEntry label = unit.getLabel();
         String spaceStr = spaceBetweenSymbol ? " " : "";
         if (value == 0) {
@@ -96,19 +96,19 @@ public class UnitDisplayUtils {
         return TextComponentUtil.build(roundDecimals(negative, value, decimalPlaces) + " ", label);
     }
 
-    public static ITextComponent getDisplayShort(double value, TemperatureUnit unit) {
+    public static Component getDisplayShort(double value, TemperatureUnit unit) {
         return getDisplayShort(value, unit, true);
     }
 
-    public static ITextComponent getDisplayShort(double value, TemperatureUnit unit, boolean shift) {
+    public static Component getDisplayShort(double value, TemperatureUnit unit, boolean shift) {
         return getDisplayShort(value, unit, shift, 2);
     }
 
-    public static ITextComponent getDisplayShort(double value, TemperatureUnit unit, boolean shift, int decimalPlaces) {
+    public static Component getDisplayShort(double value, TemperatureUnit unit, boolean shift, int decimalPlaces) {
         return getDisplay(value, unit, decimalPlaces, shift, true);
     }
 
-    public static ITextComponent getDisplayShort(double value, RadiationUnit unit, int decimalPlaces) {
+    public static Component getDisplayShort(double value, RadiationUnit unit, int decimalPlaces) {
         return getDisplayBase(value, unit, decimalPlaces, true, true);
     }
 
