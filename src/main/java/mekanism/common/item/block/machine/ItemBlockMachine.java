@@ -7,7 +7,6 @@ import mekanism.api.NBTConstants;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
-import mekanism.client.MekanismClient;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeEnergy;
@@ -47,7 +46,7 @@ public class ItemBlockMachine extends ItemBlockTooltip<BlockTile<?, ?>> implemen
 
     @Override
     public void addDetails(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, boolean advanced) {
-        tooltip.add(OwnerDisplay.of(MekanismClient.tryGetClientPlayer(), getOwnerUUID(stack)).getTextComponent());
+        tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), getOwnerUUID(stack)).getTextComponent());
         if (Attribute.has(getBlock(), AttributeSecurity.class)) {
             ISecurityObject securityObject = SecurityUtils.wrapSecurityItem(stack);
             tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(securityObject, Dist.CLIENT)));

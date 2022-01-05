@@ -145,7 +145,7 @@ public final class SecurityUtils {
      */
     public static void addSecurityTooltip(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip) {
         if (stack.getItem() instanceof IOwnerItem ownerItem) {
-            tooltip.add(OwnerDisplay.of(MekanismClient.tryGetClientPlayer(), ownerItem.getOwnerUUID(stack)).getTextComponent());
+            tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), ownerItem.getOwnerUUID(stack)).getTextComponent());
         }
         ISecurityObject securityObject = SecurityUtils.wrapSecurityItem(stack);
         tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(securityObject, Dist.CLIENT)));
