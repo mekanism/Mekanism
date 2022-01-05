@@ -73,8 +73,8 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
                 int slot = i;
                 slots.add(new DummyInventorySlot(itemHandler.getSlotLimit(slot), itemStack -> itemHandler.isItemValid(slot, itemStack), isBin));
             }
-        } else if (item instanceof BlockItem) {
-            TileEntityMekanism tile = getTileFromBlock(((BlockItem) item).getBlock());
+        } else if (item instanceof BlockItem blockItem) {
+            TileEntityMekanism tile = getTileFromBlock(blockItem.getBlock());
             if (tile == null || !tile.persistInventory()) {
                 //Something went wrong
                 return false;
@@ -103,12 +103,12 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, itemStack -> MekanismRecipeType.SMELTING.getInputCache().containsInput(null, itemStack), false));
             //Smelting output slot
             slots.add(new DummyInventorySlot(BasicInventorySlot.DEFAULT_LIMIT, BasicInventorySlot.alwaysTrue, false));
-        } else if (item instanceof ISustainedInventory) {
+        } else if (item instanceof ISustainedInventory sustainedInventory) {
             //Fallback just save it all
             for (IInventorySlot slot : this.slots) {
                 if (!slot.isEmpty()) {
                     //We have no information about what our item supports, but we have at least some stacks we want to transfer
-                    ((ISustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeContainers(this.slots), stack);
+                    sustainedInventory.setInventory(DataHandlerUtils.writeContainers(this.slots), stack);
                     return true;
                 }
             }

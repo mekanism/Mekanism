@@ -25,8 +25,8 @@ public abstract class MekanismItemContainer extends MekanismContainer {
     }
 
     protected void addContainerTrackers() {
-        if (stack.getItem() instanceof IItemContainerTracker) {
-            ((IItemContainerTracker) stack.getItem()).addContainerTrackers(this, stack);
+        if (stack.getItem() instanceof IItemContainerTracker containerTracker) {
+            containerTracker.addContainerTrackers(this, stack);
         }
     }
 

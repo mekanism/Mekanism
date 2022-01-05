@@ -6,7 +6,6 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;

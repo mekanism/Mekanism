@@ -1,7 +1,5 @@
 package mekanism.common.integration.energy;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
@@ -24,13 +22,13 @@ public class EnergyCompatUtils {
     private EnergyCompatUtils() {
     }
 
-    private static final List<IEnergyCompat> energyCompats = Collections.unmodifiableList(Arrays.asList(
+    private static final List<IEnergyCompat> energyCompats = List.of(
           //We always have our own energy capability as the first one we check
           new StrictEnergyCompat(),
           //Note: We check the Flux Networks capability above Forge's so that we allow it to use the higher throughput amount supported by Flux Networks
           //new FNEnergyCompat(),
           new ForgeEnergyCompat()
-    ));
+    );
 
     public static List<IEnergyCompat> getCompats() {
         return energyCompats;

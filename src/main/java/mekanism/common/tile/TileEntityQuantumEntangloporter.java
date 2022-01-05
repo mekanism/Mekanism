@@ -181,8 +181,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
             getFreq().handleEject(level.getGameTime());
             updateHeatCapacitors(null); // manually trigger heat capacitor update
             HeatTransfer loss = simulate();
-            lastTransferLoss = loss.getAdjacentTransfer();
-            lastEnvironmentLoss = loss.getEnvironmentTransfer();
+            lastTransferLoss = loss.adjacentTransfer();
+            lastEnvironmentLoss = loss.environmentTransfer();
         } else {
             lastTransferLoss = 0;
             lastEnvironmentLoss = 0;

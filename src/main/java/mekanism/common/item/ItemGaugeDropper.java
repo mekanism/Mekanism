@@ -73,8 +73,7 @@ public class ItemGaugeDropper extends Item {
                 Optional<IFluidHandlerItem> fluidCapability = FluidUtil.getFluidHandler(stack).resolve();
                 if (fluidCapability.isPresent()) {
                     IFluidHandlerItem fluidHandler = fluidCapability.get();
-                    if (fluidHandler instanceof IExtendedFluidHandler) {
-                        IExtendedFluidHandler fluidHandlerItem = (IExtendedFluidHandler) fluidHandler;
+                    if (fluidHandler instanceof IExtendedFluidHandler fluidHandlerItem) {
                         for (int tank = 0; tank < fluidHandlerItem.getTanks(); tank++) {
                             fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);
                         }

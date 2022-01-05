@@ -22,8 +22,8 @@ public abstract class ItemStackMekanismInventory implements IMekanismInventory {
     protected ItemStackMekanismInventory(@Nonnull ItemStack stack) {
         this.stack = stack;
         this.slots = getInitialInventory();
-        if (!stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory) {
-            DataHandlerUtils.readContainers(getInventorySlots(null), ((IItemSustainedInventory) stack.getItem()).getInventory(stack));
+        if (!stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory sustainedInventory) {
+            DataHandlerUtils.readContainers(getInventorySlots(null), sustainedInventory.getInventory(stack));
         }
     }
 
@@ -37,8 +37,8 @@ public abstract class ItemStackMekanismInventory implements IMekanismInventory {
 
     @Override
     public void onContentsChanged() {
-        if (!stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory) {
-            ((IItemSustainedInventory) stack.getItem()).setInventory(DataHandlerUtils.writeContainers(getInventorySlots(null)), stack);
+        if (!stack.isEmpty() && stack.getItem() instanceof IItemSustainedInventory sustainedInventory) {
+            sustainedInventory.setInventory(DataHandlerUtils.writeContainers(getInventorySlots(null)), stack);
         }
     }
 }

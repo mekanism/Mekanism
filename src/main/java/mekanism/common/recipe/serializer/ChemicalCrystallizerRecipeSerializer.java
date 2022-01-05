@@ -32,7 +32,7 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
         ChemicalType chemicalType = SerializerHelper.getChemicalType(json);
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        ChemicalStackIngredient<?, ?> inputIngredient = (ChemicalStackIngredient<?, ?>) SerializerHelper.getDeserializerForType(chemicalType).deserialize(input);
+        ChemicalStackIngredient<?, ?> inputIngredient = SerializerHelper.getDeserializerForType(chemicalType).deserialize(input);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
@@ -44,7 +44,7 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
             ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-            ChemicalStackIngredient<?, ?> inputIngredient = (ChemicalStackIngredient<?, ?>) SerializerHelper.getDeserializerForType(chemicalType).read(buffer);
+            ChemicalStackIngredient<?, ?> inputIngredient = SerializerHelper.getDeserializerForType(chemicalType).read(buffer);
             ItemStack output = buffer.readItem();
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {

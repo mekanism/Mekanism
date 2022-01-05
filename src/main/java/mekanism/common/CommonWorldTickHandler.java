@@ -86,8 +86,7 @@ public class CommonWorldTickHandler {
             if (flushTagAndRecipeCaches) {
                 //Loop all open containers and if it is a portable qio dashboard force refresh the window's recipes
                 for (ServerPlayer player : world.players()) {
-                    if (player.containerMenu instanceof PortableQIODashboardContainer) {
-                        PortableQIODashboardContainer qioDashboard = (PortableQIODashboardContainer) player.containerMenu;
+                    if (player.containerMenu instanceof PortableQIODashboardContainer qioDashboard) {
                         for (byte index = 0; index < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS; index++) {
                             qioDashboard.getCraftingWindow(index).invalidateRecipe();
                         }

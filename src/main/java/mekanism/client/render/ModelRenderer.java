@@ -70,62 +70,54 @@ public final class ModelRenderer {
         MekanismRenderer.prepFlowing(model, data.fluidType);
         cachedValveFluids.put(data, model);
         switch (data.side) {
-            case DOWN:
+            case DOWN -> {
                 model.minX = 0.3F;
                 model.minY = 1.01F;
                 model.minZ = 0.3F;
-
                 model.maxX = 0.7F;
                 model.maxY = 1.5F;
                 model.maxZ = 0.7F;
-                break;
-            case UP:
+            }
+            case UP -> {
                 model.minX = 0.3F;
                 model.minY = -data.height - 0.01F;
                 model.minZ = 0.3F;
-
                 model.maxX = 0.7F;
                 model.maxY = -0.01F;
                 model.maxZ = 0.7F;
-                break;
-            case NORTH:
+            }
+            case NORTH -> {
                 model.minX = 0.3F;
                 model.minY = -getValveFluidHeight(data) + 0.02F;
                 model.minZ = 1.02F;
-
                 model.maxX = 0.7F;
                 model.maxY = 0.7F;
                 model.maxZ = 1.4F;
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 model.minX = 0.3F;
                 model.minY = -getValveFluidHeight(data) + 0.02F;
                 model.minZ = -0.4F;
-
                 model.maxX = 0.7F;
                 model.maxY = 0.7F;
                 model.maxZ = -0.03F;
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 model.minX = 1.02F;
                 model.minY = -getValveFluidHeight(data) + 0.02F;
                 model.minZ = 0.3F;
-
                 model.maxX = 1.4F;
                 model.maxY = 0.7F;
                 model.maxZ = 0.7F;
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 model.minX = -0.4F;
                 model.minY = -getValveFluidHeight(data) + 0.02F;
                 model.minZ = 0.3F;
-
                 model.maxX = -0.03F;
                 model.maxY = 0.7F;
                 model.maxZ = 0.7F;
-                break;
-            default:
-                break;
+            }
         }
         return model;
     }

@@ -131,10 +131,10 @@ public abstract class BaseBlockLootTables extends BlockLoot {
             boolean hasContents = false;
             @Nullable
             BlockEntity tile = null;
-            if (block instanceof IHasTileEntity) {
-                tile = ((IHasTileEntity<?>) block).newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
+            if (block instanceof IHasTileEntity<?> hasTileEntity) {
+                tile = hasTileEntity.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
             }
-            if (tile instanceof IFrequencyHandler && ((IFrequencyHandler) tile).getFrequencyComponent().hasCustomFrequencies()) {
+            if (tile instanceof IFrequencyHandler frequencyHandler && frequencyHandler.getFrequencyComponent().hasCustomFrequencies()) {
                 nbtBuilder.copy(NBTConstants.COMPONENT_FREQUENCY, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_FREQUENCY);
                 hasData = true;
             }
@@ -153,8 +153,8 @@ public abstract class BaseBlockLootTables extends BlockLoot {
                 nbtBuilder.copy(NBTConstants.COMPONENT_EJECTOR, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_EJECTOR);
                 hasData = true;
             }
-            if (tile instanceof ISustainedData) {
-                Set<Entry<String, String>> remapEntries = ((ISustainedData) tile).getTileDataRemap().entrySet();
+            if (tile instanceof ISustainedData sustainedData) {
+                Set<Entry<String, String>> remapEntries = sustainedData.getTileDataRemap().entrySet();
                 for (Entry<String, String> remapEntry : remapEntries) {
                     nbtBuilder.copy(remapEntry.getKey(), NBTConstants.MEK_DATA + "." + remapEntry.getValue());
                 }
@@ -166,8 +166,7 @@ public abstract class BaseBlockLootTables extends BlockLoot {
                 nbtBuilder.copy(NBTConstants.CONTROL_TYPE, NBTConstants.MEK_DATA + "." + NBTConstants.CONTROL_TYPE);
                 hasData = true;
             }
-            if (tile instanceof TileEntityMekanism) {
-                TileEntityMekanism tileEntity = (TileEntityMekanism) tile;
+            if (tile instanceof TileEntityMekanism tileEntity) {
                 for (SubstanceType type : EnumUtils.SUBSTANCES) {
                     if (tileEntity.handles(type) && !type.getContainers(tileEntity).isEmpty()) {
                         nbtBuilder.copy(type.getContainerTag(), NBTConstants.MEK_DATA + "." + type.getContainerTag());
@@ -182,9 +181,9 @@ public abstract class BaseBlockLootTables extends BlockLoot {
                 //If the block has an inventory, copy the inventory slots,
                 // but if it is an IItemHandler, which for most cases of ours it will be,
                 // then only copy the slots if we actually have any slots because otherwise maybe something just went wrong
-                if (!(tile instanceof IItemHandler) || ((IItemHandler) tile).getSlots() > 0) {
+                if (!(tile instanceof IItemHandler handler) || handler.getSlots() > 0) {
                     //If we don't actually handle saving an inventory (such as the quantum entangloporter, don't actually add it as something to copy)
-                    if (!(tile instanceof TileEntityMekanism) || ((TileEntityMekanism) tile).persistInventory()) {
+                    if (!(tile instanceof TileEntityMekanism tileMek) || tileMek.persistInventory()) {
                         nbtBuilder.copy(NBTConstants.ITEMS, NBTConstants.MEK_DATA + "." + NBTConstants.ITEMS);
                         hasData = true;
                         hasContents = true;

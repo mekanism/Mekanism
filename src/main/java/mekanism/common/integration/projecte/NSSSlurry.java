@@ -10,7 +10,6 @@ import moze_intel.projecte.api.nss.AbstractNSSTag;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
-import net.minecraft.tags.Tag;
 import net.minecraft.resources.ResourceLocation;
 
 /**

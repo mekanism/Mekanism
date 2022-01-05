@@ -137,7 +137,7 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<MenuT
 
         public ContainerTypeRegistryObject<MekanismTileContainer<TILE>> build() {
             ContainerTypeRegistryObject<MekanismTileContainer<TILE>> registryObject = new ContainerTypeRegistryObject<>(null);
-            IMekanismContainerFactory<TILE, MekanismTileContainer<TILE>> factory = (id, inv, data) -> new MekanismTileContainer<TILE>(registryObject, id, inv, data) {
+            IMekanismContainerFactory<TILE, MekanismTileContainer<TILE>> factory = (id, inv, data) -> new MekanismTileContainer<>(registryObject, id, inv, data) {
                 @Override
                 protected int getInventoryXOffset() {
                     return super.getInventoryXOffset() + offsetX;

@@ -44,15 +44,15 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
 
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
-        if (tile instanceof TileEntityWindGenerator) {
-            double angle = performTranslationsAndGetAngle((TileEntityWindGenerator) tile, partialTick, matrix);
+        if (tile instanceof TileEntityWindGenerator windGenerator) {
+            double angle = performTranslationsAndGetAngle(windGenerator, partialTick, matrix);
             model.renderWireFrame(matrix, buffer, angle, red, green, blue, alpha);
             matrix.popPose();
         }
     }
 
     /**
-     * Make sure to call {@link MatrixStack#popPose()} afterwards
+     * Make sure to call {@link PoseStack#popPose()} afterwards
      */
     private double performTranslationsAndGetAngle(TileEntityWindGenerator tile, float partialTick, PoseStack matrix) {
         matrix.pushPose();

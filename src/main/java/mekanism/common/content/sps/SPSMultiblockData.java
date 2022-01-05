@@ -290,11 +290,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             if (o == this) {
                 return true;
             }
-            if (o instanceof CoilData) {
-                CoilData other = (CoilData) o;
-                return coilPos.equals(other.coilPos) && prevLevel == other.prevLevel;
-            }
-            return false;
+            return o instanceof CoilData other && coilPos.equals(other.coilPos) && prevLevel == other.prevLevel;
         }
     }
 }

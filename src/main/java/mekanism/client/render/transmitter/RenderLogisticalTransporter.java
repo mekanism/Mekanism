@@ -95,7 +95,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             }
             matrix.popPose();
         }
-        if (transporter instanceof DiversionTransporter) {
+        if (transporter instanceof DiversionTransporter diversionTransporter) {
             Player player = Minecraft.getInstance().player;
             ItemStack itemStack = player.getInventory().getSelected();
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemConfigurator) {
@@ -105,7 +105,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                     matrix.pushPose();
                     matrix.scale(0.5F, 0.5F, 0.5F);
                     matrix.translate(0.5, 0.5, 0.5);
-                    MekanismRenderer.renderObject(getOverlayModel((DiversionTransporter) transporter, side), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
+                    MekanismRenderer.renderObject(getOverlayModel(diversionTransporter, side), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
                           MekanismRenderer.getColorARGB(255, 255, 255, 0.8F), MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
                     matrix.popPose();
                 }
@@ -145,18 +145,11 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             return m;
         });
         // and then figure out which texture we need to use
-        SpriteInfo icon = null;
-        switch (transporter.modes[side.ordinal()]) {
-            case DISABLED:
-                icon = gunpowderIcon;
-                break;
-            case HIGH:
-                icon = torchOnIcon;
-                break;
-            case LOW:
-                icon = torchOffIcon;
-                break;
-        }
+        SpriteInfo icon = switch (transporter.modes[side.ordinal()]) {
+            case DISABLED -> gunpowderIcon;
+            case HIGH -> torchOnIcon;
+            case LOW -> torchOffIcon;
+        };
         // and set that proper side to that texture
         model.setTexture(side, icon);
         return model;
@@ -191,11 +184,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             if (obj == this) {
                 return true;
             }
-            if (obj instanceof TransportInformation) {
-                TransportInformation other = (TransportInformation) obj;
-                return progress == other.progress && color == other.color && item.equals(other.item);
-            }
-            return false;
+            return obj instanceof TransportInformation other && progress == other.progress && color == other.color && item.equals(other.item);
         }
     }
 }

@@ -77,8 +77,8 @@ class SearchQueryParserTest {
     @SuppressWarnings("unused")
     private void readout(String queryStr) {
         ISearchQuery query = SearchQueryParser.parse(queryStr);
-        if (query instanceof SearchQueryList) {
-            System.out.println(((SearchQueryList) query).getQueries());
+        if (query instanceof SearchQueryList searchQueryList) {
+            System.out.println(searchQueryList.getQueries());
         }
         System.out.println(query.isInvalid());
     }

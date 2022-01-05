@@ -29,8 +29,8 @@ public final class MultipartUtils {
         float lookX = f2 * f3;
         float lookZ = f1 * f3;
         double reach = 5.0D;
-        if (entity instanceof Player) {
-            reach = ((Player) entity).getAttributeValue(ForgeMod.REACH_DISTANCE.get());
+        if (entity instanceof Player player) {
+            reach = player.getAttributeValue(ForgeMod.REACH_DISTANCE.get());
         }
         Vec3 end = start.add(lookX * reach, lookY * reach, lookZ * reach);
         return Pair.of(start, end);

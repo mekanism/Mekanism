@@ -158,16 +158,12 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
     @Nonnull
     @Override
     public MekanismRecipeType<ItemStackGasToItemStackRecipe, ItemChemical<Gas, GasStack, ItemStackGasToItemStackRecipe>> getRecipeType() {
-        switch (type) {
-            case INJECTING:
-                return MekanismRecipeType.INJECTING;
-            case PURIFYING:
-                return MekanismRecipeType.PURIFYING;
-            case COMPRESSING:
-            default:
-                //TODO: Make it so that it throws an error if it is not one of the three types
-                return MekanismRecipeType.COMPRESSING;
-        }
+        return switch (type) {
+            case INJECTING -> MekanismRecipeType.INJECTING;
+            case PURIFYING -> MekanismRecipeType.PURIFYING;
+            //TODO: Make it so that it throws an error if it is not one of the three types
+            default -> MekanismRecipeType.COMPRESSING;
+        };
     }
 
     private boolean useStatisticalMechanics() {
@@ -239,10 +235,9 @@ public class TileEntityItemStackGasToItemStackFactory extends TileEntityItemToIt
 
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof AdvancedMachineUpgradeData) {
+        if (upgradeData instanceof AdvancedMachineUpgradeData data) {
             //Generic factory upgrade data handling
             super.parseUpgradeData(upgradeData);
-            AdvancedMachineUpgradeData data = (AdvancedMachineUpgradeData) upgradeData;
             //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
             gasTank.deserializeNBT(data.stored.serializeNBT());
             extraSlot.deserializeNBT(data.gasSlot.serializeNBT());

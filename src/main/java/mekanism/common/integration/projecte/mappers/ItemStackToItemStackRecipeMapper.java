@@ -32,12 +32,11 @@ public class ItemStackToItemStackRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ItemStackToItemStackRecipe)) {
+        if (!(iRecipe instanceof ItemStackToItemStackRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        ItemStackToItemStackRecipe recipe = (ItemStackToItemStackRecipe) iRecipe;
         for (ItemStack representation : recipe.getInput().getRepresentations()) {
             ItemStack output = recipe.getOutput(representation);
             if (!output.isEmpty()) {

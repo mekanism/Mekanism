@@ -75,14 +75,6 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
     }
 
     //TODO - V11: Make the SPS have a proper recipe type to allow for custom recipes
-    public static class SPSJEIRecipe {
-
-        private final GasStackIngredient input;
-        private final GasStack output;
-
-        public SPSJEIRecipe(GasStackIngredient input, GasStack output) {
-            this.input = input;
-            this.output = output;
-        }
+    public record SPSJEIRecipe(GasStackIngredient input, GasStack output) {
     }
 }

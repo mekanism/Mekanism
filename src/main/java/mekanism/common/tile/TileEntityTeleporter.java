@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
@@ -48,25 +47,25 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.portal.PortalInfo;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.entity.PartEntity;
@@ -134,20 +133,10 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         float yaw = player.getYRot();
         if (side != null) {
             switch (side) {
-                case NORTH:
-                    yaw = 180;
-                    break;
-                case SOUTH:
-                    yaw = 0;
-                    break;
-                case WEST:
-                    yaw = 90;
-                    break;
-                case EAST:
-                    yaw = 270;
-                    break;
-                default:
-                    break;
+                case NORTH -> yaw = 180;
+                case SOUTH -> yaw = 0;
+                case WEST -> yaw = 90;
+                case EAST -> yaw = 270;
             }
         }
         player.connection.teleport(player.getX(), player.getY(), player.getZ(), yaw, player.getXRot());
@@ -191,7 +180,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     private void cleanTeleportCache() {
-        List<UUID> inTeleporter = level.getEntitiesOfClass(Entity.class, teleportBounds).stream().map(Entity::getUUID).collect(Collectors.toList());
+        List<UUID> inTeleporter = level.getEntitiesOfClass(Entity.class, teleportBounds).stream().map(Entity::getUUID).toList();
         if (inTeleporter.isEmpty()) {
             didTeleport.clear();
         } else {
@@ -287,8 +276,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                     double oldY = entity.getY();
                     double oldZ = entity.getZ();
                     Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporterTargetPos);
-                    if (teleportedEntity instanceof ServerPlayer) {
-                        alignPlayer((ServerPlayer) teleportedEntity, teleporterTargetPos, teleporter);
+                    if (teleportedEntity instanceof ServerPlayer player) {
+                        alignPlayer(player, teleporterTargetPos, teleporter);
                     }
                     for (Coord4D coords : activeCoords) {
                         Level world = level.dimension() == coords.dimension ? level : currentServer.getLevel(coords.dimension);
@@ -330,8 +319,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
                 ((ServerChunkCache) entity.getCommandSenderWorld().getChunkSource()).broadcast(entity, new ClientboundSetPassengersPacket(entity));
                 Entity controller = entity.getControllingPassenger();
-                if (controller != entity && controller instanceof ServerPlayer && !(controller instanceof FakePlayer)) {
-                    ServerPlayer player = (ServerPlayer) controller;
+                if (controller != entity && controller instanceof ServerPlayer player && !(controller instanceof FakePlayer)) {
                     if (player.connection != null) {
                         //Force sync the fact that the vehicle moved to the client that is controlling it
                         // so that it makes sure to use the correct positions when sending move packets
@@ -543,21 +531,14 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     private AABB getTeleporterBoundingBox(@Nonnull Direction frameDirection) {
         //Note: We only include the area inside the frame, we don't bother including the teleporter's block itself
-        switch (frameDirection) {
-            case UP:
-                return new AABB(worldPosition.above(), worldPosition.offset(1, 3, 1));
-            case DOWN:
-                return new AABB(worldPosition, worldPosition.offset(1, -2, 1));
-            case EAST:
-                return new AABB(worldPosition.east(), worldPosition.offset(3, 1, 1));
-            case WEST:
-                return new AABB(worldPosition, worldPosition.offset(-2, 1, 1));
-            case NORTH:
-                return new AABB(worldPosition, worldPosition.offset(1, 1, -2));
-            case SOUTH:
-                return new AABB(worldPosition.south(), worldPosition.offset(1, 1, 3));
-        }
-        throw new IllegalArgumentException("Invalid frame direction");
+        return switch (frameDirection) {
+            case UP -> new AABB(worldPosition.above(), worldPosition.offset(1, 3, 1));
+            case DOWN -> new AABB(worldPosition, worldPosition.offset(1, -2, 1));
+            case EAST -> new AABB(worldPosition.east(), worldPosition.offset(3, 1, 1));
+            case WEST -> new AABB(worldPosition, worldPosition.offset(-2, 1, 1));
+            case NORTH -> new AABB(worldPosition, worldPosition.offset(1, 1, -2));
+            case SOUTH -> new AABB(worldPosition.south(), worldPosition.offset(1, 1, 3));
+        };
     }
 
     @Override
@@ -691,17 +672,12 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @ComputerMethod
     private String getStatus() {
         if (hasFrequency()) {
-            switch (status) {
-                case 1:
-                    return "ready";
-                case 2:
-                    return "no frame";
-                case 4:
-                    return "needs energy";
-                case 3:
-                default:
-                    return "no link";
-            }
+            return switch (status) {
+                case 1 -> "ready";
+                case 2 -> "no frame";
+                case 4 -> "needs energy";
+                default -> "no link";
+            };
         }
         return "no frequency";
     }

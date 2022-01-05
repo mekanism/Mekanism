@@ -38,12 +38,11 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ElectrolysisRecipe)) {
+        if (!(iRecipe instanceof ElectrolysisRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        ElectrolysisRecipe recipe = (ElectrolysisRecipe) iRecipe;
         FluidStackIngredient input = recipe.getInput();
         for (FluidStack representation : input.getRepresentations()) {
             Pair<@NonNull GasStack, @NonNull GasStack> output = recipe.getOutput(representation);

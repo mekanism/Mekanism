@@ -1,11 +1,9 @@
 package mekanism.common.block.transmitter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.block.BlockMekanism;
@@ -106,7 +104,7 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
             return getRealShape(world, pos);
         }
         //Get the partial selection box if we are holding a configurator
-        if ((!(context instanceof EntityCollisionContext entityContext)) || entityContext.getEntity() == null) {
+        if (!(context instanceof EntityCollisionContext entityContext) || entityContext.getEntity() == null) {
             //If we don't have an entity get the full VoxelShape
             return getRealShape(world, pos);
         }
@@ -179,33 +177,6 @@ public abstract class BlockTransmitter extends BlockMekanism implements IStateFl
         return shape;
     }
 
-    private static class ConnectionInfo {
-
-        private final Size size;
-        private final ConnectionType[] connectionTypes;
-
-        private ConnectionInfo(Size size, ConnectionType[] connectionTypes) {
-            this.size = size;
-            this.connectionTypes = connectionTypes;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o instanceof ConnectionInfo) {
-                ConnectionInfo other = (ConnectionInfo) o;
-                return size == other.size && Arrays.equals(connectionTypes, other.connectionTypes);
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = Objects.hash(size);
-            result = 31 * result + Arrays.hashCode(connectionTypes);
-            return result;
-        }
+    private record ConnectionInfo(Size size, ConnectionType[] connectionTypes) {
     }
 }

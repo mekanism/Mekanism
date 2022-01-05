@@ -29,8 +29,8 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
     private final long itemCount;
 
     QIORecipeData(DriveMetadata data, ListTag nbtItemMap) {
-        itemCount = data.getCount();
-        itemMap = new Object2LongOpenHashMap<>(data.getTypes());
+        itemCount = data.count();
+        itemMap = new Object2LongOpenHashMap<>(data.types());
         for (int i = 0; i < nbtItemMap.size(); i++) {
             CompoundTag tag = nbtItemMap.getCompound(i);
             ItemStack itemType = ItemStack.of(tag.getCompound(NBTConstants.ITEM));

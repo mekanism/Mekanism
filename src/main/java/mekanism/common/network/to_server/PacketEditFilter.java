@@ -41,8 +41,8 @@ public class PacketEditFilter implements IMekanismPacket {
         }
         BlockEntity tile = WorldUtils.getTileEntity(player.level, pos);
         if (tile != null) {
-            if (filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
-                HashList<SorterFilter<?>> filters = ((TileEntityLogisticalSorter) tile).getFilters();
+            if (filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter sorter) {
+                HashList<SorterFilter<?>> filters = sorter.getFilters();
                 int index = filters.indexOf(filter);
                 if (index != -1) {
                     filters.remove(index);
@@ -50,8 +50,8 @@ public class PacketEditFilter implements IMekanismPacket {
                         filters.add(index, (SorterFilter<?>) edited);
                     }
                 }
-            } else if (filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {
-                HashList<MinerFilter<?>> filters = ((TileEntityDigitalMiner) tile).getFilters();
+            } else if (filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner miner) {
+                HashList<MinerFilter<?>> filters = miner.getFilters();
                 int index = filters.indexOf(filter);
                 if (index != -1) {
                     filters.remove(index);
@@ -59,8 +59,8 @@ public class PacketEditFilter implements IMekanismPacket {
                         filters.add(index, (MinerFilter<?>) edited);
                     }
                 }
-            } else if (filter instanceof OredictionificatorItemFilter && tile instanceof TileEntityOredictionificator) {
-                HashList<OredictionificatorItemFilter> filters = ((TileEntityOredictionificator) tile).getFilters();
+            } else if (filter instanceof OredictionificatorItemFilter && tile instanceof TileEntityOredictionificator oredictionificator) {
+                HashList<OredictionificatorItemFilter> filters = oredictionificator.getFilters();
                 int index = filters.indexOf(filter);
                 if (index != -1) {
                     filters.remove(index);
@@ -68,8 +68,8 @@ public class PacketEditFilter implements IMekanismPacket {
                         filters.add(index, (OredictionificatorItemFilter) edited);
                     }
                 }
-            } else if (filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
-                HashList<QIOFilter<?>> filters = ((TileEntityQIOFilterHandler) tile).getFilters();
+            } else if (filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler qioFilterHandler) {
+                HashList<QIOFilter<?>> filters = qioFilterHandler.getFilters();
                 int index = filters.indexOf(filter);
                 if (index != -1) {
                     filters.remove(index);

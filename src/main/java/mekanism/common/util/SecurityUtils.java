@@ -40,29 +40,24 @@ public final class SecurityUtils {
      * @return if the player has operator privileges
      */
     public static boolean isOp(Player p) {
-        if (p instanceof ServerPlayer) {
-            ServerPlayer player = (ServerPlayer) p;
-            return MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().isOp(player.getGameProfile());
-        }
-        return false;
+        return p instanceof ServerPlayer player && MekanismConfig.general.opsBypassRestrictions.get() && player.server.getPlayerList().isOp(player.getGameProfile());
     }
 
     public static boolean canAccess(Player player, Object object) {
         ISecurityObject security;
-        if (object instanceof ItemStack) {
-            ItemStack stack = (ItemStack) object;
-            if (!(stack.getItem() instanceof ISecurityItem) && stack.getItem() instanceof IOwnerItem) {
+        if (object instanceof ItemStack stack) {
+            if (!(stack.getItem() instanceof ISecurityItem) && stack.getItem() instanceof IOwnerItem ownerItem) {
                 //If it is an owner item but not a security item make sure the owner matches
                 if (!MekanismConfig.general.allowProtection.get() || isOp(player)) {
                     //If protection is disabled or the player is an op and bypass restrictions are enabled, access is always granted
                     return true;
                 }
-                UUID owner = ((IOwnerItem) stack.getItem()).getOwnerUUID(stack);
+                UUID owner = ownerItem.getOwnerUUID(stack);
                 return owner == null || owner.equals(player.getUUID());
             }
             security = wrapSecurityItem(stack);
-        } else if (object instanceof ISecurityObject) {
-            security = (ISecurityObject) object;
+        } else if (object instanceof ISecurityObject securityObject) {
+            security = securityObject;
         } else {
             //The object doesn't have security so there are no security restrictions
             return true;
@@ -108,8 +103,8 @@ public final class SecurityUtils {
         }
         if (side.isDedicatedServer()) {
             SecurityFrequency freq;
-            if (security instanceof ISecurityTile) {
-                freq = ((ISecurityTile) security).getSecurity().getFrequency();
+            if (security instanceof ISecurityTile securityTile) {
+                freq = securityTile.getSecurity().getFrequency();
             } else {
                 freq = getFrequency(security.getOwnerUUID());
             }
@@ -138,8 +133,8 @@ public final class SecurityUtils {
     }
 
     public static void claimItem(Player player, ItemStack stack) {
-        if (stack.getItem() instanceof IOwnerItem) {
-            ((IOwnerItem) stack.getItem()).setOwnerUUID(stack, player.getUUID());
+        if (stack.getItem() instanceof IOwnerItem ownerItem) {
+            ownerItem.setOwnerUUID(stack, player.getUUID());
             Mekanism.packetHandler().sendToAll(new PacketSecurityUpdate(player.getUUID(), null));
             player.sendMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN), Util.NIL_UUID);
         }
@@ -149,8 +144,8 @@ public final class SecurityUtils {
      * Only call this on the client
      */
     public static void addSecurityTooltip(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip) {
-        if (stack.getItem() instanceof IOwnerItem) {
-            tooltip.add(OwnerDisplay.of(MekanismClient.tryGetClientPlayer(), ((IOwnerItem) stack.getItem()).getOwnerUUID(stack)).getTextComponent());
+        if (stack.getItem() instanceof IOwnerItem ownerItem) {
+            tooltip.add(OwnerDisplay.of(MekanismClient.tryGetClientPlayer(), ownerItem.getOwnerUUID(stack)).getTextComponent());
         }
         ISecurityObject securityObject = SecurityUtils.wrapSecurityItem(stack);
         tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(securityObject, Dist.CLIENT)));

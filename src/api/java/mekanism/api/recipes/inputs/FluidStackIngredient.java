@@ -164,10 +164,10 @@ public abstract class FluidStackIngredient implements InputIngredient<@NonNull F
         }
         List<FluidStackIngredient> cleanedIngredients = new ArrayList<>();
         for (FluidStackIngredient ingredient : ingredients) {
-            if (ingredient instanceof Multi) {
+            if (ingredient instanceof Multi multi) {
                 //Don't worry about if our inner ingredients are multi as well, as if this is the only external method for
                 // creating a multi ingredient, then we are certified they won't be of a higher depth
-                cleanedIngredients.addAll(Arrays.asList(((Multi) ingredient).ingredients));
+                Collections.addAll(cleanedIngredients, multi.ingredients);
             } else {
                 cleanedIngredients.add(ingredient);
             }

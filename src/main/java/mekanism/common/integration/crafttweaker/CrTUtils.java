@@ -77,18 +77,13 @@ public class CrTUtils {
         if (stack.isEmpty()) {
             return null;
         }
-        switch (stack.getChemicalType()) {
-            case GAS:
-                return new CrTGasStack((GasStack) stack.getChemicalStack());
-            case INFUSION:
-                return new CrTInfusionStack((InfusionStack) stack.getChemicalStack());
-            case PIGMENT:
-                return new CrTPigmentStack((PigmentStack) stack.getChemicalStack());
-            case SLURRY:
-                return new CrTSlurryStack((SlurryStack) stack.getChemicalStack());
-            default:
-                return null;
-        }
+        return switch (stack.getChemicalType()) {
+            case GAS -> new CrTGasStack((GasStack) stack.getChemicalStack());
+            case INFUSION -> new CrTInfusionStack((InfusionStack) stack.getChemicalStack());
+            case PIGMENT -> new CrTPigmentStack((PigmentStack) stack.getChemicalStack());
+            case SLURRY -> new CrTSlurryStack((SlurryStack) stack.getChemicalStack());
+            default -> null;
+        };
     }
 
     /**

@@ -193,7 +193,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     public static abstract class CacheSubstance<HANDLER, ELEMENT> {
 
-        public static final CacheSubstance<IMekanismInventory, IInventorySlot> ITEMS = new CacheSubstance<IMekanismInventory, IInventorySlot>(NBTConstants.ITEMS) {
+        public static final CacheSubstance<IMekanismInventory, IInventorySlot> ITEMS = new CacheSubstance<>(NBTConstants.ITEMS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.inventorySlots.add(BasicInventorySlot.at(cache, 0, 0));
@@ -210,7 +210,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IMekanismFluidHandler, IExtendedFluidTank> FLUID = new CacheSubstance<IMekanismFluidHandler, IExtendedFluidTank>(NBTConstants.FLUID_TANKS) {
+        public static final CacheSubstance<IMekanismFluidHandler, IExtendedFluidTank> FLUID = new CacheSubstance<>(NBTConstants.FLUID_TANKS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.fluidTanks.add(BasicFluidTank.create(Integer.MAX_VALUE, cache));
@@ -227,7 +227,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IGasTracker, IGasTank> GAS = new CacheSubstance<IGasTracker, IGasTank>(NBTConstants.GAS_TANKS) {
+        public static final CacheSubstance<IGasTracker, IGasTank> GAS = new CacheSubstance<>(NBTConstants.GAS_TANKS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.gasTanks.add(ChemicalTankBuilder.GAS.createAllValid(Long.MAX_VALUE, cache));
@@ -244,7 +244,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IInfusionTracker, IInfusionTank> INFUSION = new CacheSubstance<IInfusionTracker, IInfusionTank>(NBTConstants.INFUSION_TANKS) {
+        public static final CacheSubstance<IInfusionTracker, IInfusionTank> INFUSION = new CacheSubstance<>(NBTConstants.INFUSION_TANKS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.infusionTanks.add(ChemicalTankBuilder.INFUSION.createAllValid(Long.MAX_VALUE, cache));
@@ -261,7 +261,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IPigmentTracker, IPigmentTank> PIGMENT = new CacheSubstance<IPigmentTracker, IPigmentTank>(NBTConstants.PIGMENT_TANKS) {
+        public static final CacheSubstance<IPigmentTracker, IPigmentTank> PIGMENT = new CacheSubstance<>(NBTConstants.PIGMENT_TANKS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.pigmentTanks.add(ChemicalTankBuilder.PIGMENT.createAllValid(Long.MAX_VALUE, cache));
@@ -278,7 +278,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<ISlurryTracker, ISlurryTank> SLURRY = new CacheSubstance<ISlurryTracker, ISlurryTank>(NBTConstants.SLURRY_TANKS) {
+        public static final CacheSubstance<ISlurryTracker, ISlurryTank> SLURRY = new CacheSubstance<>(NBTConstants.SLURRY_TANKS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.slurryTanks.add(ChemicalTankBuilder.SLURRY.createAllValid(Long.MAX_VALUE, cache));
@@ -295,7 +295,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IMekanismStrictEnergyHandler, IEnergyContainer> ENERGY = new CacheSubstance<IMekanismStrictEnergyHandler, IEnergyContainer>(NBTConstants.ENERGY_CONTAINERS) {
+        public static final CacheSubstance<IMekanismStrictEnergyHandler, IEnergyContainer> ENERGY = new CacheSubstance<>(NBTConstants.ENERGY_CONTAINERS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.energyContainers.add(BasicEnergyContainer.create(FloatingLong.MAX_VALUE, cache));
@@ -312,7 +312,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IMekanismHeatHandler, IHeatCapacitor> HEAT = new CacheSubstance<IMekanismHeatHandler, IHeatCapacitor>(NBTConstants.HEAT_CAPACITORS) {
+        public static final CacheSubstance<IMekanismHeatHandler, IHeatCapacitor> HEAT = new CacheSubstance<>(NBTConstants.HEAT_CAPACITORS) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, null, cache));
@@ -326,8 +326,8 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             @Override
             public void sync(IHeatCapacitor cache, IHeatCapacitor data) {
                 cache.setHeat(data.getHeat());
-                if (cache instanceof BasicHeatCapacitor) {
-                    ((BasicHeatCapacitor) cache).setHeatCapacity(data.getHeatCapacity(), false);
+                if (cache instanceof BasicHeatCapacitor heatCapacitor) {
+                    heatCapacitor.setHeatCapacity(data.getHeatCapacity(), false);
                 }
             }
         };

@@ -59,10 +59,10 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof ChemicalTankHolder) {
-            ((ChemicalTankHolder<CHEMICAL, STACK, TANK>) slotHolder).addTank(tank);
-        } else if (slotHolder instanceof ConfigChemicalTankHolder) {
-            ((ConfigChemicalTankHolder<CHEMICAL, STACK, TANK>) slotHolder).addTank(tank);
+        if (slotHolder instanceof ChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
+            slotHolder.addTank(tank);
+        } else if (slotHolder instanceof ConfigChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
+            slotHolder.addTank(tank);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks");
         }
@@ -72,8 +72,8 @@ public class ChemicalTankHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK exten
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof ChemicalTankHolder) {
-            ((ChemicalTankHolder<CHEMICAL, STACK, TANK>) slotHolder).addTank(tank, sides);
+        if (slotHolder instanceof ChemicalTankHolder<CHEMICAL, STACK, TANK> slotHolder) {
+            slotHolder.addTank(tank, sides);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add tanks on specific sides");
         }

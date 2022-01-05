@@ -48,8 +48,8 @@ public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDF
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return filter instanceof QIOModIDFilter && ((QIOModIDFilter) filter).modID.equals(modID);
+    public boolean equals(Object o) {
+        return o instanceof QIOModIDFilter filter && filter.modID.equals(modID);
     }
 
     @Override

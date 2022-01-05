@@ -51,7 +51,7 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>>
     }
 
     private List<CHEMICAL> getChemicals(List<CHEMICAL> toConvert) {
-        return toConvert.stream().map(IChemicalProvider::getChemical).collect(Collectors.toList());
+        return toConvert.stream().map(IChemicalProvider::getChemical).toList();
     }
 
     @Override

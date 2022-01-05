@@ -24,6 +24,7 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.ITickTimer;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
@@ -48,7 +49,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     protected static IDrawable createIcon(IGuiHelper helper, IItemProvider provider) {
-        return helper.createDrawableIngredient(provider.getItemStack());
+        return helper.createDrawableIngredient(VanillaTypes.ITEM, provider.getItemStack());
     }
 
     private final Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();

@@ -88,8 +88,8 @@
               "limit": 1
             },
             {
-              "function": "minecraft:set_nbt",
-              "tag": "{Potion:\"minecraft:slowness\"}"
+              "function": "minecraft:set_potion",
+              "id": "minecraft:slowness"
             }
           ],
           "name": "minecraft:tipped_arrow"

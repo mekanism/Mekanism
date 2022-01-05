@@ -39,12 +39,12 @@ public class InventorySlotHelper {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof InventorySlotHolder) {
-            ((InventorySlotHolder) slotHolder).addSlot(slot);
-        } else if (slotHolder instanceof ReadOnlyInventorySlotHolder) {
-            ((ReadOnlyInventorySlotHolder) slotHolder).addSlot(slot);
-        } else if (slotHolder instanceof ConfigInventorySlotHolder) {
-            ((ConfigInventorySlotHolder) slotHolder).addSlot(slot);
+        if (slotHolder instanceof InventorySlotHolder slotHolder) {
+            slotHolder.addSlot(slot);
+        } else if (slotHolder instanceof ReadOnlyInventorySlotHolder slotHolder) {
+            slotHolder.addSlot(slot);
+        } else if (slotHolder instanceof ConfigInventorySlotHolder slotHolder) {
+            slotHolder.addSlot(slot);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add slots");
         }
@@ -54,8 +54,8 @@ public class InventorySlotHelper {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof InventorySlotHolder) {
-            ((InventorySlotHolder) slotHolder).addSlot(slot, sides);
+        if (slotHolder instanceof InventorySlotHolder slotHolder) {
+            slotHolder.addSlot(slot, sides);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add slots on specific sides");
         }

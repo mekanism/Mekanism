@@ -421,8 +421,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public void addComponent(ITileComponent component) {
         components.add(component);
-        if (component instanceof TileComponentConfig) {
-            addConfigComponent((TileComponentConfig) component);
+        if (component instanceof TileComponentConfig config) {
+            addConfigComponent(config);
         }
     }
 
@@ -476,8 +476,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
             //Pass on this activation if the player is rotating with a configurator
             ItemStack stack = player.getMainHandItem();
-            if (isDirectional() && !stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
-                ItemConfigurator configurator = (ItemConfigurator) stack.getItem();
+            if (isDirectional() && !stack.isEmpty() && stack.getItem() instanceof ItemConfigurator configurator) {
                 if (configurator.getMode(stack) == ItemConfigurator.ConfiguratorMode.ROTATE) {
                     return InteractionResult.PASS;
                 }
@@ -727,8 +726,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(null);
             for (IHeatCapacitor capacitor : heatCapacitors) {
                 container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
-                if (capacitor instanceof BasicHeatCapacitor) {
-                    container.track(SyncableDouble.create(capacitor::getHeatCapacity, capacity -> ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacity, false)));
+                if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
+                    container.track(SyncableDouble.create(capacitor::getHeatCapacity, capacity -> heatCapacitor.setHeatCapacity(capacity, false)));
                 }
             }
         }
@@ -737,8 +736,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             List<IEnergyContainer> energyContainers = getEnergyContainers(null);
             for (IEnergyContainer energyContainer : energyContainers) {
                 container.track(SyncableFloatingLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
-                if (energyContainer instanceof MachineEnergyContainer) {
-                    MachineEnergyContainer<?> machineEnergy = (MachineEnergyContainer<?>) energyContainer;
+                if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
                         container.track(SyncableFloatingLong.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
                         container.track(SyncableFloatingLong.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
@@ -902,14 +900,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public void recalculateUpgrades(Upgrade upgrade) {
         if (upgrade == Upgrade.SPEED) {
             for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
-                if (energyContainer instanceof MachineEnergyContainer) {
-                    ((MachineEnergyContainer<?>) energyContainer).updateEnergyPerTick();
+                if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
+                    machineEnergy.updateEnergyPerTick();
                 }
             }
         } else if (upgrade == Upgrade.ENERGY) {
             for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
-                if (energyContainer instanceof MachineEnergyContainer) {
-                    MachineEnergyContainer<?> machineEnergy = (MachineEnergyContainer<?>) energyContainer;
+                if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     machineEnergy.updateMaxEnergy();
                     machineEnergy.updateEnergyPerTick();
                 }

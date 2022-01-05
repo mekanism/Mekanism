@@ -14,9 +14,9 @@ public class FluidToFluidRecipeHandler extends MekanismRecipeHandler<FluidToFlui
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, FluidToFluidRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, FluidToFluidRecipe recipe, U o) {
         //Only support if the other is a fluid to fluid recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
-        return other instanceof FluidToFluidRecipe && ingredientConflicts(recipe.getInput(), ((FluidToFluidRecipe) other).getInput());
+        return o instanceof FluidToFluidRecipe other && ingredientConflicts(recipe.getInput(), other.getInput());
     }
 }

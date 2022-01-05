@@ -47,11 +47,8 @@ public class Quaternion {
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
-        } else if (!(obj instanceof Quaternion)) {
-            return false;
         }
-        Quaternion other = (Quaternion) obj;
-        return x == other.x && y == other.y && z == other.z && w == other.w;
+        return obj instanceof Quaternion other && x == other.x && y == other.y && z == other.z && w == other.w;
     }
 
     @Override

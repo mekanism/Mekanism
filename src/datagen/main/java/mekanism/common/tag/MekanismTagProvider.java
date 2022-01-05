@@ -113,29 +113,13 @@ public class MekanismTagProvider extends BaseTagProvider {
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             addToTag(item.getRowKey(), item.getColumnKey(), item.getValue());
             switch (item.getRowKey()) {
-                case SHARD:
-                    addToTag(MekanismTags.Items.SHARDS, item.getValue());
-                    break;
-                case CRYSTAL:
-                    addToTag(MekanismTags.Items.CRYSTALS, item.getValue());
-                    break;
-                case DUST:
-                    addToTag(Tags.Items.DUSTS, item.getValue());
-                    break;
-                case DIRTY_DUST:
-                    addToTag(MekanismTags.Items.DIRTY_DUSTS, item.getValue());
-                    break;
-                case CLUMP:
-                    addToTag(MekanismTags.Items.CLUMPS, item.getValue());
-                    break;
-                case INGOT:
-                    addToTag(Tags.Items.INGOTS, item.getValue());
-                    break;
-                case NUGGET:
-                    addToTag(Tags.Items.NUGGETS, item.getValue());
-                    break;
-                default:
-                    break;
+                case SHARD -> addToTag(MekanismTags.Items.SHARDS, item.getValue());
+                case CRYSTAL -> addToTag(MekanismTags.Items.CRYSTALS, item.getValue());
+                case DUST -> addToTag(Tags.Items.DUSTS, item.getValue());
+                case DIRTY_DUST -> addToTag(MekanismTags.Items.DIRTY_DUSTS, item.getValue());
+                case CLUMP -> addToTag(MekanismTags.Items.CLUMPS, item.getValue());
+                case INGOT -> addToTag(Tags.Items.INGOTS, item.getValue());
+                case NUGGET -> addToTag(Tags.Items.NUGGETS, item.getValue());
             }
         }
     }

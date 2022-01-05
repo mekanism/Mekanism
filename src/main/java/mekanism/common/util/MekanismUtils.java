@@ -158,8 +158,8 @@ public final class MekanismUtils {
     }
 
     public static ItemStack getItemInHand(LivingEntity entity, HumanoidArm side) {
-        if (entity instanceof Player) {
-            return getItemInHand((Player) entity, side);
+        if (entity instanceof Player player) {
+            return getItemInHand(player, side);
         } else if (side == HumanoidArm.RIGHT) {
             return entity.getMainHandItem();
         }
@@ -373,17 +373,12 @@ public final class MekanismUtils {
         if (!tile.supportsRedstone()) {
             return true;
         }
-        switch (tile.getControlType()) {
-            case DISABLED:
-                return true;
-            case HIGH:
-                return tile.isPowered();
-            case LOW:
-                return !tile.isPowered();
-            case PULSE:
-                return tile.isPowered() && !tile.wasPowered();
-        }
-        return false;
+        return switch (tile.getControlType()) {
+            case DISABLED -> true;
+            case HIGH -> tile.isPowered();
+            case LOW -> !tile.isPowered();
+            case PULSE -> tile.isPowered() && !tile.wasPowered();
+        };
     }
 
     /**
@@ -454,7 +449,7 @@ public final class MekanismUtils {
     public static void addFrequencyItemTooltip(ItemStack stack, List<Component> tooltip) {
         FrequencyIdentity frequency = ((IFrequencyItem) stack.getItem()).getFrequencyIdentity(stack);
         if (frequency != null) {
-            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getKey()));
+            tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.key()));
             CompoundTag frequencyCompound = ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY);
             if (frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
                 String owner = OwnerDisplay.getOwnerName(MekanismClient.tryGetClientPlayer(), frequencyCompound.getUUID(NBTConstants.OWNER_UUID), null);
@@ -476,15 +471,11 @@ public final class MekanismUtils {
     }
 
     public static Component getEnergyDisplayShort(FloatingLong energy) {
-        switch (MekanismConfig.general.energyUnit.get()) {
-            case J:
-                return UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
-            case FE:
-                return UnitDisplayUtils.getDisplayShort(EnergyType.FORGE.convertToAsFloatingLong(energy), ElectricUnit.FORGE_ENERGY);
-            case EU:
-                return UnitDisplayUtils.getDisplayShort(EnergyType.EU.convertToAsFloatingLong(energy), ElectricUnit.ELECTRICAL_UNITS);
-        }
-        return MekanismLang.ERROR.translate();
+        return switch (MekanismConfig.general.energyUnit.get()) {
+            case J -> UnitDisplayUtils.getDisplayShort(energy, ElectricUnit.JOULES);
+            case FE -> UnitDisplayUtils.getDisplayShort(EnergyType.FORGE.convertToAsFloatingLong(energy), ElectricUnit.FORGE_ENERGY);
+            case EU -> UnitDisplayUtils.getDisplayShort(EnergyType.EU.convertToAsFloatingLong(energy), ElectricUnit.ELECTRICAL_UNITS);
+        };
     }
 
     /**
@@ -495,14 +486,11 @@ public final class MekanismUtils {
      * @return energy converted to joules
      */
     public static FloatingLong convertToJoules(FloatingLong energy) {
-        switch (MekanismConfig.general.energyUnit.get()) {
-            case FE:
-                return EnergyType.FORGE.convertFrom(energy);
-            case EU:
-                return EnergyType.EU.convertFrom(energy);
-            default:
-                return energy;
-        }
+        return switch (MekanismConfig.general.energyUnit.get()) {
+            case FE -> EnergyType.FORGE.convertFrom(energy);
+            case EU -> EnergyType.EU.convertFrom(energy);
+            default -> energy;
+        };
     }
 
     /**
@@ -513,14 +501,11 @@ public final class MekanismUtils {
      * @return energy converted to configured unit
      */
     public static FloatingLong convertToDisplay(FloatingLong energy) {
-        switch (MekanismConfig.general.energyUnit.get()) {
-            case FE:
-                return EnergyType.FORGE.convertToAsFloatingLong(energy);
-            case EU:
-                return EnergyType.EU.convertToAsFloatingLong(energy);
-            default:
-                return energy;
-        }
+        return switch (MekanismConfig.general.energyUnit.get()) {
+            case FE -> EnergyType.FORGE.convertToAsFloatingLong(energy);
+            case EU -> EnergyType.EU.convertToAsFloatingLong(energy);
+            default -> energy;
+        };
     }
 
     /**
@@ -532,19 +517,13 @@ public final class MekanismUtils {
      */
     public static Component getTemperatureDisplay(double temp, TemperatureUnit unit, boolean shift) {
         double tempKelvin = unit.convertToK(temp, true);
-        switch (MekanismConfig.general.tempUnit.get()) {
-            case K:
-                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.KELVIN, shift);
-            case C:
-                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.CELSIUS, shift);
-            case R:
-                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.RANKINE, shift);
-            case F:
-                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.FAHRENHEIT, shift);
-            case STP:
-                return UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.AMBIENT, shift);
-        }
-        return MekanismLang.ERROR.translate();
+        return switch (MekanismConfig.general.tempUnit.get()) {
+            case K -> UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.KELVIN, shift);
+            case C -> UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.CELSIUS, shift);
+            case R -> UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.RANKINE, shift);
+            case F -> UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.FAHRENHEIT, shift);
+            case STP -> UnitDisplayUtils.getDisplayShort(tempKelvin, TemperatureUnit.AMBIENT, shift);
+        };
     }
 
     public static CraftingContainer getDummyCraftingInv() {
@@ -565,8 +544,8 @@ public final class MekanismUtils {
             return false;
         }
         Item item = stack.getItem();
-        if (item instanceof ItemConfigurator) {
-            return ((ItemConfigurator) item).getMode(stack) == ConfiguratorMode.WRENCH;
+        if (item instanceof ItemConfigurator configurator) {
+            return configurator.getMode(stack) == ConfiguratorMode.WRENCH;
         }
         return MekanismTags.Items.CONFIGURATORS.contains(item);
     }
@@ -614,9 +593,9 @@ public final class MekanismUtils {
             effect.removeAttributeModifiers(entity, entity.getAttributes(), effectInstance.getAmplifier());
             effect.addAttributeModifiers(entity, entity.getAttributes(), effectInstance.getAmplifier());
         }
-        if (entity instanceof ServerPlayer) {
-            ((ServerPlayer) entity).connection.send(new ClientboundUpdateMobEffectPacket(entity.getId(), effectInstance));
-            CriteriaTriggers.EFFECTS_CHANGED.trigger((ServerPlayer) entity, null);
+        if (entity instanceof ServerPlayer player) {
+            player.connection.send(new ClientboundUpdateMobEffectPacket(entity.getId(), effectInstance));
+            CriteriaTriggers.EFFECTS_CHANGED.trigger(player, null);
         }
     }
 
@@ -747,10 +726,10 @@ public final class MekanismUtils {
                         if (bb.minY <= fluidY) {
                             //The fluid intersects the bounding box
                             Fluid fluid = fluidState.getType();
-                            if (fluid instanceof FlowingFluid) {
+                            if (fluid instanceof FlowingFluid flowingFluid) {
                                 //Almost always will be flowing fluid but check just in case
                                 // and if it is grab the source state to not have duplicates
-                                fluid = ((FlowingFluid) fluid).getSource();
+                                fluid = flowingFluid.getSource();
                             }
                             FluidInDetails details = fluidsIn.computeIfAbsent(fluid, f -> new FluidInDetails());
                             details.positions.add(mutablePos.immutable());
@@ -865,7 +844,7 @@ public final class MekanismUtils {
         }
 
         public double getMaxHeight() {
-            return heights.values().stream().mapToDouble(value -> value).max().orElse(0);
+            return heights.values().doubleStream().max().orElse(0);
         }
     }
 }

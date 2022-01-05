@@ -13,10 +13,10 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
 
     @Override
     public boolean mapInputs(RECIPE recipe, ItemStackIngredient inputIngredient) {
-        if (inputIngredient instanceof ItemStackIngredient.Single) {
-            return mapIngredient(recipe, ((ItemStackIngredient.Single) inputIngredient).getInputRaw());
-        } else if (inputIngredient instanceof ItemStackIngredient.Multi) {
-            return ((ItemStackIngredient.Multi) inputIngredient).forEachIngredient(ingredient -> mapInputs(recipe, ingredient));
+        if (inputIngredient instanceof ItemStackIngredient.Single single) {
+            return mapIngredient(recipe, single.getInputRaw());
+        } else if (inputIngredient instanceof ItemStackIngredient.Multi multi) {
+            return multi.forEachIngredient(ingredient -> mapInputs(recipe, ingredient));
         }
         //This should never really happen as we don't really allow for custom ingredients especially for networking,
         // but if it does add it as a fallback
@@ -30,9 +30,8 @@ public class ItemInputCache<RECIPE extends MekanismRecipe> extends NBTSensitiveI
             for (ItemStack item : input.getItems()) {
                 addInputCache(item.getItem(), recipe);
             }
-        } else if (input instanceof CompoundIngredient) {
+        } else if (input instanceof CompoundIngredient compoundIngredient) {
             //Special handling for forge's compound ingredient to map all children
-            CompoundIngredient compoundIngredient = (CompoundIngredient) input;
             boolean result = false;
             for (Ingredient child : compoundIngredient.getChildren()) {
                 result |= mapIngredient(recipe, child);

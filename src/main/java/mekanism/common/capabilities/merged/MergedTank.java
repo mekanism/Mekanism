@@ -42,20 +42,13 @@ public class MergedTank extends MergedChemicalTank {
         if (!getFluidTank().isEmpty()) {
             return CurrentType.FLUID;
         }
-        switch (getCurrent()) {
-            case EMPTY:
-                return CurrentType.EMPTY;
-            case GAS:
-                return CurrentType.GAS;
-            case INFUSION:
-                return CurrentType.INFUSION;
-            case PIGMENT:
-                return CurrentType.PIGMENT;
-            case SLURRY:
-                return CurrentType.SLURRY;
-        }
-        //Fallback to empty
-        return CurrentType.EMPTY;
+        return switch (getCurrent()) {
+            case EMPTY -> CurrentType.EMPTY;
+            case GAS -> CurrentType.GAS;
+            case INFUSION -> CurrentType.INFUSION;
+            case PIGMENT -> CurrentType.PIGMENT;
+            case SLURRY -> CurrentType.SLURRY;
+        };
     }
 
     public final IExtendedFluidTank getFluidTank() {

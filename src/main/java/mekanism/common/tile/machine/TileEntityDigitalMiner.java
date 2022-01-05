@@ -242,8 +242,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
                 TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectTile, oppositeDirection, mainSlots);
                 if (!ejectMap.isEmpty()) {
                     TransitResponse response;
-                    if (ejectInv instanceof TileEntityLogisticalTransporterBase) {
-                        response = ((TileEntityLogisticalTransporterBase) ejectInv).getTransmitter().insert(ejectTile, ejectMap, null, true, 0);
+                    if (ejectInv instanceof TileEntityLogisticalTransporterBase transporter) {
+                        response = transporter.getTransmitter().insert(ejectTile, ejectMap, null, true, 0);
                     } else {
                         response = ejectMap.addToInventory(ejectInv, oppositeDirection, 0, false);
                     }
@@ -899,8 +899,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             ListTag tagList = data.getList(NBTConstants.FILTERS, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof MinerFilter) {
-                    filters.add((MinerFilter<?>) filter);
+                if (filter instanceof MinerFilter<?> minerFilter) {
+                    filters.add(minerFilter);
                 }
             }
         }
@@ -959,8 +959,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
             ListTag tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof MinerFilter) {
-                    filters.add((MinerFilter<?>) filter);
+                if (filter instanceof MinerFilter<?> minerFilter) {
+                    filters.add(minerFilter);
                 }
             }
         }
@@ -1145,10 +1145,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         container.track(SyncableBoolean.create(this::getInverseRequiresReplacement, value -> inverseRequiresReplacement = value));
         container.track(SyncableRegistryEntry.create(this::getInverseReplaceTarget, value -> inverseReplaceTarget = value));
         container.track(SyncableFilterList.create(this::getFilters, value -> {
-            if (value instanceof HashList) {
-                filters = (HashList<MinerFilter<?>>) value;
+            if (value instanceof HashList<MinerFilter<?>> filters) {
+                this.filters = filters;
             } else {
-                filters = new HashList<>(value);
+                this.filters = new HashList<>(value);
             }
         }));
     }

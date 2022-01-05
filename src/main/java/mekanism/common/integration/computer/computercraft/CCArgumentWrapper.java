@@ -173,10 +173,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     return item;
                 }
             }
-        } else if (argument instanceof Map) {
+        } else if (argument instanceof Map<?, ?> arg) {
             if (IFilter.class.isAssignableFrom(expectedType)) {
-                //Note: instanceof has slightly better performance than if we would instead fo Map.class.isAssignableFrom(argumentType)
-                Object sanitized = convertMapToFilter(expectedType, (Map<?, ?>) argument);
+                //Note: instanceof has slightly better performance than if we would instead of Map.class.isAssignableFrom(argumentType)
+                Object sanitized = convertMapToFilter(expectedType, arg);
                 if (sanitized != null) {
                     return sanitized;
                 }
@@ -208,55 +208,50 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
             return result;
         } else if (result instanceof ResourceLocation || result instanceof UUID) {
             return result.toString();
-        } else if (result instanceof ForgeRegistryEntry<?>) {
-            return getName((ForgeRegistryEntry<?>) result);
-        } else if (result instanceof ChemicalStack<?>) {
-            ChemicalStack<?> stack = (ChemicalStack<?>) result;
+        } else if (result instanceof ForgeRegistryEntry<?> registryEntry) {
+            return getName(registryEntry);
+        } else if (result instanceof ChemicalStack<?> stack) {
             Map<String, Object> wrapped = new HashMap<>(2);
             wrapped.put("name", getName(stack.getType()));
             wrapped.put("amount", stack.getAmount());
             return wrapped;
-        } else if (result instanceof FluidStack) {
-            FluidStack stack = (FluidStack) result;
+        } else if (result instanceof FluidStack stack) {
             return wrapStack(stack.getFluid(), "amount", stack.getAmount(), stack.getTag());
-        } else if (result instanceof ItemStack) {
-            ItemStack stack = (ItemStack) result;
+        } else if (result instanceof ItemStack stack) {
             return wrapStack(stack.getItem(), "count", stack.getCount(), stack.getTag());
-        } else if (result instanceof Tag) {
-            Object wrapped = wrapNBT((Tag) result);
+        } else if (result instanceof Tag tag) {
+            Object wrapped = wrapNBT(tag);
             if (wrapped != null) {
                 return wrapped;
             }
-        } else if (result instanceof Vec3i) {
+        } else if (result instanceof Vec3i pos) {
             //BlockPos is covered by this case
-            Vec3i pos = (Vec3i) result;
             Map<String, Object> wrapped = new HashMap<>(3);
             wrapped.put("x", pos.getX());
             wrapped.put("y", pos.getY());
             wrapped.put("z", pos.getZ());
             return wrapped;
-        } else if (result instanceof Coord4D) {
+        } else if (result instanceof Coord4D coord) {
             //BlockPos is covered by this case
-            Coord4D coord = (Coord4D) result;
             Map<String, Object> wrapped = new HashMap<>(4);
             wrapped.put("x", coord.getX());
             wrapped.put("y", coord.getY());
             wrapped.put("z", coord.getZ());
             wrapped.put("dimension", wrapReturnType(coord.dimension.location()));
             return wrapped;
-        } else if (result instanceof Frequency) {
-            FrequencyIdentity identity = ((Frequency) result).getIdentity();
+        } else if (result instanceof Frequency frequency) {
+            FrequencyIdentity identity = frequency.getIdentity();
             Map<String, Object> wrapped = new HashMap<>(2);
-            wrapped.put("key", wrapReturnType(identity.getKey()));
+            wrapped.put("key", wrapReturnType(identity.key()));
             wrapped.put("public", identity.isPublic());
             return wrapped;
-        } else if (result instanceof Enum) {
-            return ((Enum<?>) result).name();
-        } else if (result instanceof IFilter) {
+        } else if (result instanceof Enum<?> res) {
+            return res.name();
+        } else if (result instanceof IFilter res) {
             Map<String, Object> wrapped = new HashMap<>();
-            wrapped.put("type", wrapReturnType(((IFilter<?>) result).getFilterType()));
-            if (result instanceof IItemStackFilter) {
-                ItemStack stack = ((IItemStackFilter<?>) result).getItemStack();
+            wrapped.put("type", wrapReturnType(res.getFilterType()));
+            if (result instanceof IItemStackFilter<?> itemFilter) {
+                ItemStack stack = itemFilter.getItemStack();
                 wrapped.put("item", wrapReturnType(stack.getItem()));
                 if (!stack.isEmpty()) {
                     CompoundTag tag = stack.getTag();
@@ -264,51 +259,44 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                         wrapped.put("itemNBT", wrapNBT(tag));
                     }
                 }
-            } else if (result instanceof IMaterialFilter) {
-                wrapped.put("materialItem", wrapReturnType(((IMaterialFilter<?>) result).getMaterialItem().getItem()));
-            } else if (result instanceof IModIDFilter) {
-                wrapped.put("modId", ((IModIDFilter<?>) result).getModID());
-            } else if (result instanceof ITagFilter) {
-                wrapped.put("tag", ((ITagFilter<?>) result).getTagName());
+            } else if (result instanceof IMaterialFilter<?> materialFilter) {
+                wrapped.put("materialItem", wrapReturnType(materialFilter.getMaterialItem().getItem()));
+            } else if (result instanceof IModIDFilter<?> modIDFilter) {
+                wrapped.put("modId", modIDFilter.getModID());
+            } else if (result instanceof ITagFilter<?> tagFilter) {
+                wrapped.put("tag", tagFilter.getTagName());
             }
-            if (result instanceof MinerFilter) {
-                MinerFilter<?> minerFilter = (MinerFilter<?>) result;
+            if (result instanceof MinerFilter<?> minerFilter) {
                 wrapped.put("requiresReplacement", minerFilter.requiresReplacement);
                 wrapped.put("replaceTarget", wrapReturnType(minerFilter.replaceTarget));
-            } else if (result instanceof SorterFilter) {
-                SorterFilter<?> sorterFilter = (SorterFilter<?>) result;
+            } else if (result instanceof SorterFilter<?> sorterFilter) {
                 wrapped.put("allowDefault", sorterFilter.allowDefault);
                 wrapped.put("color", wrapReturnType(sorterFilter.color));
                 wrapped.put("size", sorterFilter.sizeMode);
                 wrapped.put("min", sorterFilter.min);
                 wrapped.put("max", sorterFilter.max);
-                if (sorterFilter instanceof SorterItemStackFilter) {
-                    SorterItemStackFilter filter = (SorterItemStackFilter) sorterFilter;
+                if (sorterFilter instanceof SorterItemStackFilter filter) {
                     wrapped.put("fuzzy", filter.fuzzyMode);
                 }
-            } else if (result instanceof QIOFilter) {
-                QIOFilter<?> qioFilter = (QIOFilter<?>) result;
-                if (qioFilter instanceof QIOItemStackFilter) {
-                    QIOItemStackFilter filter = (QIOItemStackFilter) qioFilter;
+            } else if (result instanceof QIOFilter<?> qioFilter) {
+                if (qioFilter instanceof QIOItemStackFilter filter) {
                     wrapped.put("fuzzy", filter.fuzzyMode);
                 }
-            } else if (result instanceof OredictionificatorFilter) {
-                OredictionificatorFilter<?, ?, ?> filter = (OredictionificatorFilter<?, ?, ?>) result;
+            } else if (result instanceof OredictionificatorFilter<?, ?, ?> filter) {
                 wrapped.put("target", filter.getFilterText());
                 wrapped.put("selected", wrapReturnType(filter.getResultElement()));
             }
             return wrapped;
-        } else if (result instanceof Map) {
-            return ((Map<?, ?>) result).entrySet().stream().collect(Collectors.toMap(entry -> wrapReturnType(entry.getKey()), entry -> wrapReturnType(entry.getValue()),
-                  (a, b) -> b));
-        } else if (result instanceof Collection) {
+        } else if (result instanceof Map<?, ?> res) {
+            return res.entrySet().stream().collect(Collectors.toMap(entry -> wrapReturnType(entry.getKey()), entry -> wrapReturnType(entry.getValue()), (a, b) -> b));
+        } else if (result instanceof Collection<?> res) {
             //Note: We support any "collection" as it doesn't really matter if it is a set vs a list because
             // on ComputerCraft's end it will just be converted from a collection to a table, and be iterated
             // so there is no real difference at that point about the type it is
-            return ((Collection<?>) result).stream().map(CCArgumentWrapper::wrapReturnType).collect(Collectors.toList());
-        } else if (result instanceof Object[]) {
+            return res.stream().map(CCArgumentWrapper::wrapReturnType).toList();
+        } else if (result instanceof Object[] res) {
             //Note: This doesn't handle/deal with primitive arrays
-            return Arrays.stream((Object[]) result).map(CCArgumentWrapper::wrapReturnType).toArray();
+            return Arrays.stream(res).map(CCArgumentWrapper::wrapReturnType).toArray();
         }
         return result;
     }
@@ -404,8 +392,8 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
     }
 
     private static Item tryCreateItem(@Nullable Object rawName) {
-        if (rawName instanceof String) {
-            ResourceLocation itemName = ResourceLocation.tryParse((String) rawName);
+        if (rawName instanceof String name) {
+            ResourceLocation itemName = ResourceLocation.tryParse(name);
             if (itemName != null) {
                 Item item = ForgeRegistries.ITEMS.getValue(itemName);
                 if (item != null) {
@@ -418,13 +406,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
 
     @Nullable
     private static String tryGetFilterTag(@Nullable Object rawTag) {
-        if (rawTag instanceof String) {
-            String tag = (String) rawTag;
-            if (!tag.isEmpty()) {
-                tag = tag.toLowerCase(Locale.ROOT);
-                if (InputValidator.test(tag, InputValidator.RESOURCE_LOCATION.or(InputValidator.WILDCARD_CHARS))) {
-                    return tag;
-                }
+        if (rawTag instanceof String tag && !tag.isEmpty()) {
+            tag = tag.toLowerCase(Locale.ROOT);
+            if (InputValidator.test(tag, InputValidator.RESOURCE_LOCATION.or(InputValidator.WILDCARD_CHARS))) {
+                return tag;
             }
         }
         return null;
@@ -432,30 +417,21 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
 
     @Nullable
     private static String tryGetFilterModId(@Nullable Object rawModId) {
-        if (rawModId instanceof String) {
-            String modId = (String) rawModId;
-            if (!modId.isEmpty()) {
-                modId = modId.toLowerCase(Locale.ROOT);
-                if (InputValidator.test(modId, InputValidator.RL_NAMESPACE.or(InputValidator.WILDCARD_CHARS))) {
-                    return modId;
-                }
+        if (rawModId instanceof String modId && !modId.isEmpty()) {
+            modId = modId.toLowerCase(Locale.ROOT);
+            if (InputValidator.test(modId, InputValidator.RL_NAMESPACE.or(InputValidator.WILDCARD_CHARS))) {
+                return modId;
             }
         }
         return null;
     }
 
     private static boolean getBooleanFromRaw(@Nullable Object raw) {
-        if (raw instanceof Boolean) {
-            return (Boolean) raw;
-        }
-        return false;
+        return raw instanceof Boolean bool ? bool : Boolean.valueOf(false);
     }
 
     private static int getIntFromRaw(@Nullable Object raw) {
-        if (raw instanceof Number) {
-            return ((Number) raw).intValue();
-        }
-        return 0;
+        return raw instanceof Number number ? number.intValue() : 0;
     }
 
     @Nullable
@@ -463,44 +439,42 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         //We may want to try improving this at some point, or somehow making it slightly less hardcoded
         // but for now this will have to do
         Object type = map.get("type");
-        if (type instanceof String) {
+        if (type instanceof String string) {
             //Handle filters as arguments, this may not be the best implementation, but it will do for now
-            FilterType filterType = sanitizeStringToEnum(FilterType.class, (String) type);
+            FilterType filterType = sanitizeStringToEnum(FilterType.class, string);
             if (filterType != null) {
                 IFilter<?> filter = BaseFilter.fromType(filterType);
                 if (expectedType.isInstance(filter)) {
                     //Validate the filter is of the type we expect
-                    if (filter instanceof IItemStackFilter) {
+                    if (filter instanceof IItemStackFilter<?> itemFilter) {
                         ItemStack stack = tryCreateFilterItem(map.get("item"), map.get("itemNBT"));
                         if (stack.isEmpty()) {
                             return null;
                         }
-                        ((IItemStackFilter<?>) filter).setItemStack(stack);
-                    } else if (filter instanceof IMaterialFilter) {
+                        itemFilter.setItemStack(stack);
+                    } else if (filter instanceof IMaterialFilter<?> materialFilter) {
                         ItemStack stack = tryCreateFilterItem(map.get("materialItem"), null);
                         if (stack.isEmpty()) {
                             return null;
                         }
-                        ((IMaterialFilter<?>) filter).setMaterialItem(stack);
-                    } else if (filter instanceof IModIDFilter) {
+                        materialFilter.setMaterialItem(stack);
+                    } else if (filter instanceof IModIDFilter<?> modIDFilter) {
                         String modId = tryGetFilterModId(map.get("modId"));
                         if (modId == null) {
                             return null;
                         }
-                        ((IModIDFilter<?>) filter).setModID(modId);
-                    } else if (filter instanceof ITagFilter) {
+                        modIDFilter.setModID(modId);
+                    } else if (filter instanceof ITagFilter<?> tagFilter) {
                         String tag = tryGetFilterTag(map.get("tag"));
                         if (tag == null) {
                             return null;
                         }
-                        ((ITagFilter<?>) filter).setTagName(tag);
+                        tagFilter.setTagName(tag);
                     }
-                    if (filter instanceof MinerFilter) {
-                        MinerFilter<?> minerFilter = (MinerFilter<?>) filter;
+                    if (filter instanceof MinerFilter<?> minerFilter) {
                         minerFilter.requiresReplacement = getBooleanFromRaw(map.get("requiresReplacement"));
                         minerFilter.replaceTarget = tryCreateItem(map.get("replaceTarget"));
-                    } else if (filter instanceof SorterFilter) {
-                        SorterFilter<?> sorterFilter = (SorterFilter<?>) filter;
+                    } else if (filter instanceof SorterFilter<?> sorterFilter) {
                         sorterFilter.allowDefault = getBooleanFromRaw(map.get("allowDefault"));
                         Object rawColor = map.get("color");
                         if (rawColor instanceof String) {
@@ -512,23 +486,18 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                         if (sorterFilter.min < 0 || sorterFilter.max < 0 || sorterFilter.min > sorterFilter.max || sorterFilter.max > 64) {
                             return null;
                         }
-                        if (sorterFilter instanceof SorterItemStackFilter) {
-                            SorterItemStackFilter sorterItemFilter = (SorterItemStackFilter) sorterFilter;
+                        if (sorterFilter instanceof SorterItemStackFilter sorterItemFilter) {
                             sorterItemFilter.fuzzyMode = getBooleanFromRaw(map.get("fuzzy"));
                         }
-                    } else if (filter instanceof QIOFilter) {
-                        QIOFilter<?> qioFilter = (QIOFilter<?>) filter;
-                        if (qioFilter instanceof QIOItemStackFilter) {
-                            QIOItemStackFilter qioItemFilter = (QIOItemStackFilter) qioFilter;
+                    } else if (filter instanceof QIOFilter<?> qioFilter) {
+                        if (qioFilter instanceof QIOItemStackFilter qioItemFilter) {
                             qioItemFilter.fuzzyMode = getBooleanFromRaw(map.get("fuzzy"));
                         }
-                    } else if (filter instanceof OredictionificatorFilter) {
-                        OredictionificatorFilter<?, ?, ?> oredictionificatorFilter = (OredictionificatorFilter<?, ?, ?>) filter;
+                    } else if (filter instanceof OredictionificatorFilter<?, ?, ?> oredictionificatorFilter) {
                         Object rawTag = map.get("target");
-                        if (!(rawTag instanceof String)) {
+                        if (!(rawTag instanceof String tag)) {
                             return null;
                         }
-                        String tag = (String) rawTag;
                         if (tag.isEmpty()) {
                             return null;
                         }
@@ -537,10 +506,10 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                             return null;
                         }
                         oredictionificatorFilter.setFilter(rl);
-                        if (oredictionificatorFilter instanceof OredictionificatorItemFilter) {
+                        if (oredictionificatorFilter instanceof OredictionificatorItemFilter itemFilter) {
                             Item item = tryCreateItem(map.get("selected"));
                             if (item != Items.AIR) {
-                                ((OredictionificatorItemFilter) oredictionificatorFilter).setSelectedOutput(item);
+                                itemFilter.setSelectedOutput(item);
                             }
                         }
                     }
@@ -609,8 +578,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 //Unlikely to ever be the expected case but handle it anyway as it is easy.
                 return EndTag.INSTANCE;
             }
-        } else if (argument instanceof Map) {
-            Map<?, ?> map = (Map<?, ?>) argument;
+        } else if (argument instanceof Map<?, ?> map) {
             if (map.size() == 2) {
                 //If the size of the map is two, check if it is a hint for the type of NBT
                 //TODO: We may want to document the existence of this typeHint system somewhere
@@ -679,37 +647,23 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
     }
 
     private static Class<? extends Tag> getTypeFromHint(int hint) {
-        switch (hint) {
-            case Tag.TAG_BYTE:
-                return ByteTag.class;
-            case Tag.TAG_SHORT:
-                return ShortTag.class;
-            case Tag.TAG_INT:
-                return IntTag.class;
-            case Tag.TAG_LONG:
-                return LongTag.class;
-            case Tag.TAG_FLOAT:
-                return FloatTag.class;
-            case Tag.TAG_DOUBLE:
-                return DoubleTag.class;
-            case Tag.TAG_ANY_NUMERIC:
-                return NumericTag.class;
-            case Tag.TAG_STRING:
-                return StringTag.class;
-            case Tag.TAG_BYTE_ARRAY:
-                return ByteArrayTag.class;
-            case Tag.TAG_INT_ARRAY:
-                return IntArrayTag.class;
-            case Tag.TAG_LONG_ARRAY:
-                return LongArrayTag.class;
-            case Tag.TAG_LIST:
-                return ListTag.class;
-            case Tag.TAG_COMPOUND:
-                return CompoundTag.class;
-            case Tag.TAG_END:
-                return EndTag.class;
-        }
-        return Tag.class;
+        return switch (hint) {
+            case Tag.TAG_BYTE -> ByteTag.class;
+            case Tag.TAG_SHORT -> ShortTag.class;
+            case Tag.TAG_INT -> IntTag.class;
+            case Tag.TAG_LONG -> LongTag.class;
+            case Tag.TAG_FLOAT -> FloatTag.class;
+            case Tag.TAG_DOUBLE -> DoubleTag.class;
+            case Tag.TAG_ANY_NUMERIC -> NumericTag.class;
+            case Tag.TAG_STRING -> StringTag.class;
+            case Tag.TAG_BYTE_ARRAY -> ByteArrayTag.class;
+            case Tag.TAG_INT_ARRAY -> IntArrayTag.class;
+            case Tag.TAG_LONG_ARRAY -> LongArrayTag.class;
+            case Tag.TAG_LIST -> ListTag.class;
+            case Tag.TAG_COMPOUND -> CompoundTag.class;
+            case Tag.TAG_END -> EndTag.class;
+            default -> Tag.class;
+        };
     }
 
     @Nullable
@@ -717,13 +671,13 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         CompoundTag nbt = new CompoundTag();
         for (Map.Entry<?, ?> entry : entries) {
             Object key = entry.getKey();
-            if (!(key instanceof String)) {
+            if (!(key instanceof String string)) {
                 //If the key isn't a String: fail
                 return null;
             }
             Object value = entry.getValue();
             Tag nbtValue = sanitizeNBT(Tag.class, value.getClass(), value);
-            if (nbtValue == null || nbt.put((String) key, nbtValue) != null) {
+            if (nbtValue == null || nbt.put(string, nbtValue) != null) {
                 //If the value is not an NBT value, or we already have an entry in our compound for that key: fail
                 return null;
             }
@@ -737,7 +691,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         if (nbtList != null) {
             //If we have a list, if it is either entirely bytes, ints, or longs then convert it to the corresponding array type
             if (nbtList.getElementType() == Tag.TAG_BYTE) {
-                return new ByteArrayTag(nbtList.stream().map(e -> ((ByteTag) e).getAsByte()).collect(Collectors.toList()));
+                return new ByteArrayTag(nbtList.stream().map(e -> ((ByteTag) e).getAsByte()).toList());
             } else if (nbtList.getElementType() == Tag.TAG_INT) {
                 return new IntArrayTag(nbtList.stream().mapToInt(e -> ((IntTag) e).getAsInt()).toArray());
             } else if (nbtList.getElementType() == Tag.TAG_LONG) {
@@ -779,17 +733,8 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
         return true;
     }
 
-    private static class ArrayElementValidator implements BiFunction<Integer, Object, Boolean> {
-
-        private final DoublePredicate rangeValidator;
-        private final BiConsumer<Integer, Double> consumeValue;
-        private final int expectedType;
-
-        public ArrayElementValidator(DoublePredicate rangeValidator, BiConsumer<Integer, Double> consumeValue, int expectedType) {
-            this.rangeValidator = rangeValidator;
-            this.consumeValue = consumeValue;
-            this.expectedType = expectedType;
-        }
+    private record ArrayElementValidator(DoublePredicate rangeValidator, BiConsumer<Integer, Double> consumeValue, int expectedType) implements
+          BiFunction<Integer, Object, Boolean> {
 
         @Override
         public Boolean apply(Integer key, Object value) {
@@ -799,8 +744,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                     consumeValue.accept(key, v);
                     return true;
                 }
-            } else if (value instanceof Map) {
-                Map<?, ?> map = (Map<?, ?>) value;
+            } else if (value instanceof Map<?, ?> map) {
                 if (map.size() == 2) {
                     //If the size of the map is two, check if it is a hint for the type of NBT. This is a massively reduced
                     // hint matching check as we can make a lot of assumptions about how this method is used and not have
@@ -855,7 +799,7 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 } else if (element instanceof CollectionTag) {
                     //Arrays
                     searchClass = CollectionTag.class;
-                } else if (!(element instanceof CompoundTag) || !((CompoundTag) element).isEmpty()) {
+                } else if (!(element instanceof CompoundTag tag) || !tag.isEmpty()) {
                     //If it is not a CompoundNBT, or it is not an empty CompoundNBT mark it as the type we search for
                     // otherwise if it is an empty CompoundNBT allow it to search INBT to try and get other things like arrays/lists
                     searchClass = elementClass;
@@ -997,28 +941,28 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                 for (Tag element : elements) {
                     if (element instanceof IntArrayTag) {
                         listNBT.add(element);
-                    } else if (element instanceof ByteArrayTag) {
-                        byte[] values = ((ByteArrayTag) element).getAsByteArray();
+                    } else if (element instanceof ByteArrayTag tag) {
+                        byte[] values = tag.getAsByteArray();
                         listNBT.add(new IntArrayTag(IntStream.range(0, values.length).map(i -> values[i]).toArray()));
                     } else if (element instanceof CompoundTag) {//Empty compound
                         listNBT.add(new IntArrayTag(new int[0]));
-                    } else if (element instanceof ListTag) {//List of shorts or empty list
-                        listNBT.add(new IntArrayTag(((ListTag) element).stream().mapToInt(nbt -> ((ShortTag) nbt).getAsInt()).toArray()));
+                    } else if (element instanceof ListTag tag) {//List of shorts or empty list
+                        listNBT.add(new IntArrayTag(tag.stream().mapToInt(nbt -> ((ShortTag) nbt).getAsInt()).toArray()));
                     }
                 }
             } else if (desiredClass == LongArrayTag.class) {
                 for (Tag element : elements) {
                     if (element instanceof LongArrayTag) {
                         listNBT.add(element);
-                    } else if (element instanceof IntArrayTag) {
-                        listNBT.add(new LongArrayTag(Arrays.stream(((IntArrayTag) element).getAsIntArray()).asLongStream().toArray()));
-                    } else if (element instanceof ByteArrayTag) {
-                        byte[] values = ((ByteArrayTag) element).getAsByteArray();
+                    } else if (element instanceof IntArrayTag tag) {
+                        listNBT.add(new LongArrayTag(Arrays.stream(tag.getAsIntArray()).asLongStream().toArray()));
+                    } else if (element instanceof ByteArrayTag tag) {
+                        byte[] values = tag.getAsByteArray();
                         listNBT.add(new LongArrayTag(IntStream.range(0, values.length).map(i -> values[i]).asLongStream().toArray()));
                     } else if (element instanceof CompoundTag) {//Empty compound
                         listNBT.add(new LongArrayTag(new long[0]));
-                    } else if (element instanceof ListTag) {//List of shorts or empty list
-                        listNBT.add(new LongArrayTag(((ListTag) element).stream().mapToLong(nbt -> ((ShortTag) nbt).getAsLong()).toArray()));
+                    } else if (element instanceof ListTag tag) {//List of shorts or empty list
+                        listNBT.add(new LongArrayTag(tag.stream().mapToLong(nbt -> ((ShortTag) nbt).getAsLong()).toArray()));
                     }
                 }
             } else if (desiredClass == ListTag.class) {
@@ -1027,9 +971,9 @@ public class CCArgumentWrapper extends ComputerArgumentHandler<LuaException, Met
                         listNBT.add(element);
                     } else if (element instanceof CompoundTag) {//Empty compound
                         listNBT.add(new ListTag());
-                    } else if (element instanceof CollectionTag) {//Byte int or long array
+                    } else if (element instanceof CollectionTag<?> tag) {//Byte int or long array
                         ListTag byteList = new ListTag();
-                        byteList.addAll((CollectionTag<?>) element);
+                        byteList.addAll(tag);
                         listNBT.add(byteList);
                     }
                 }

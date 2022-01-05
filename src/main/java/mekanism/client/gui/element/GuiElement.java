@@ -344,7 +344,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     /**
-     * Override this if you do not want {@link #drawButton(MatrixStack, int, int)} to reset the color before drawing.
+     * Override this if you do not want {@link #drawButton(PoseStack, int, int)} to reset the color before drawing.
      */
     protected boolean resetColorBeforeRender() {
         return true;

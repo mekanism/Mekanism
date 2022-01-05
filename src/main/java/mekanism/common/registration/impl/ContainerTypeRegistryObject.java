@@ -39,8 +39,8 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
     public MenuProvider getProvider(Component name, Object object) {
         MenuConstructor provider = null;
         MenuType<CONTAINER> containerType = get();
-        if (containerType instanceof MekanismContainerType) {
-            provider = ((MekanismContainerType<?, CONTAINER>) containerType).create(object);
+        if (containerType instanceof MekanismContainerType<?, CONTAINER> mekanismContainerType) {
+            provider = mekanismContainerType.create(object);
         }
         if (provider == null) {
             Mekanism.logger.info("Unable to create container for type: {}", containerType.getRegistryName());
@@ -57,8 +57,8 @@ public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu
     public MenuProvider getProvider(Component name, InteractionHand hand, ItemStack stack) {
         MenuConstructor provider = null;
         MenuType<CONTAINER> containerType = get();
-        if (containerType instanceof MekanismItemContainerType) {
-            provider = ((MekanismItemContainerType<?, ?>) containerType).create(hand, stack);
+        if (containerType instanceof MekanismItemContainerType<?, ?> mekanismItemContainerType) {
+            provider = mekanismItemContainerType.create(hand, stack);
         }
         if (provider == null) {
             Mekanism.logger.info("Unable to create container for type: {}", containerType.getRegistryName());

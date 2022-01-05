@@ -92,8 +92,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return filter instanceof SorterFilter && ((SorterFilter<?>) filter).color == color && ((SorterFilter<?>) filter).sizeMode == sizeMode
-               && ((SorterFilter<?>) filter).min == min && ((SorterFilter<?>) filter).max == max;
+    public boolean equals(Object o) {
+        return o instanceof SorterFilter<?> filter && filter.color == color && filter.sizeMode == sizeMode && filter.min == min && filter.max == max;
     }
 }

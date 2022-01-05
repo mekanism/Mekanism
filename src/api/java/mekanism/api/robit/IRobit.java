@@ -27,7 +27,7 @@ public interface IRobit {//TODO: When we expose the security system to the API m
      * @param player       The player who is trying to set the skin of the robit, or null if the player is unknown.
      *
      * @return {@code true} if the Robit's skin was set, or false if the player does not have security clearance or doesn't have the skin unlocked ({@link
-     * RobitSkin#isUnlocked(PlayerEntity)}).
+     * RobitSkin#isUnlocked(Player)}).
      *
      * @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
      */

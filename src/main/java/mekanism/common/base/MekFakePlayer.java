@@ -143,12 +143,9 @@ public class MekFakePlayer extends FakePlayer {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof GameProfile)) {
+            if (!(o instanceof GameProfile that)) {
                 return false;
             }
-
-            final GameProfile that = (GameProfile) o;
-
             if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) {
                 return false;
             }

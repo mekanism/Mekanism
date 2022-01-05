@@ -24,8 +24,8 @@ public class PacketRadialModeChange implements IMekanismPacket {
         Player player = context.getSender();
         if (player != null) {
             ItemStack stack = player.getItemBySlot(slot);
-            if (!stack.isEmpty() && stack.getItem() instanceof IRadialModeItem) {
-                setMode(stack, (IRadialModeItem<?>) stack.getItem(), player);
+            if (!stack.isEmpty() && stack.getItem() instanceof IRadialModeItem<?> radialModeItem) {
+                setMode(stack, radialModeItem, player);
             }
         }
     }

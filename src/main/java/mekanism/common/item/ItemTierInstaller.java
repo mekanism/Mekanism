@@ -12,19 +12,17 @@ import mekanism.common.tile.interfaces.ITierUpgradable;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
-
-import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class ItemTierInstaller extends Item {
 
@@ -75,13 +73,13 @@ public class ItemTierInstaller extends Item {
                     return InteractionResult.PASS;
                 }
                 BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-                if (tile instanceof ITierUpgradable) {
-                    if (tile instanceof TileEntityMekanism && !((TileEntityMekanism) tile).playersUsing.isEmpty()) {
+                if (tile instanceof ITierUpgradable tierUpgradable) {
+                    if (tile instanceof TileEntityMekanism tileMek && !tileMek.playersUsing.isEmpty()) {
                         return InteractionResult.FAIL;
                     }
-                    IUpgradeData upgradeData = ((ITierUpgradable) tile).getUpgradeData();
+                    IUpgradeData upgradeData = tierUpgradable.getUpgradeData();
                     if (upgradeData == null) {
-                        if (((ITierUpgradable) tile).canBeUpgraded()) {
+                        if (tierUpgradable.canBeUpgraded()) {
                             Mekanism.logger.warn("Got no upgrade data for block {} at position: {} in {} but it said it would be able to provide some.", block, pos, world);
                             return InteractionResult.FAIL;
                         }
@@ -93,8 +91,8 @@ public class ItemTierInstaller extends Item {
                             Mekanism.logger.warn("Error upgrading block at position: {} in {}.", pos, world);
                             return InteractionResult.FAIL;
                         } else {
-                            if (tile instanceof ITileDirectional && ((ITileDirectional) tile).isDirectional()) {
-                                upgradedTile.setFacing(((ITileDirectional) tile).getDirection());
+                            if (tile instanceof ITileDirectional directional && directional.isDirectional()) {
+                                upgradedTile.setFacing(directional.getDirection());
                             }
                             upgradedTile.parseUpgradeData(upgradeData);
                             upgradedTile.sendUpdatePacket();

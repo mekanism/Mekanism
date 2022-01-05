@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.computer.ComputerMethodMapper;
@@ -143,9 +142,8 @@ public class MekAnnotationScanner {
             Map<String, Object> annotationData = data.annotationData();
             if (annotationData.containsKey(key)) {
                 Object value = annotationData.get(key);
-                if (value instanceof ModAnnotation.EnumHolder) {
-                    //This should always be an enum holder, but check just in case
-                    ModAnnotation.EnumHolder enumHolder = (ModAnnotation.EnumHolder) value;
+                //This should always be an enum holder, but check just in case
+                if (value instanceof ModAnnotation.EnumHolder enumHolder) {
                     //Note: We ignore the description on the enumHolder, as we can just grab the enum's class
                     // directly from the default value
                     try {
@@ -181,9 +179,8 @@ public class MekAnnotationScanner {
             Map<String, Object> annotationData = data.annotationData();
             if (annotationData.containsKey(key)) {
                 Object value = annotationData.get(key);
-                if (value instanceof ModAnnotation.EnumHolder) {
-                    //This should always be an enum holder, but check just in case
-                    ModAnnotation.EnumHolder enumHolder = (ModAnnotation.EnumHolder) value;
+                //This should always be an enum holder, but check just in case
+                if (value instanceof ModAnnotation.EnumHolder enumHolder) {
                     //Note: We ignore the description on the enumHolder, as we can just grab the enum's class
                     // directly from the default value
                     try {
@@ -283,7 +280,7 @@ public class MekAnnotationScanner {
                 map.put(clazz, info);
             }
             return map.entrySet().stream().map(entry -> new ClassBasedInfo<>(entry.getKey(), entry.getValue()))
-                  .sorted(Comparator.comparing(info -> info.className)).collect(Collectors.toList());
+                  .sorted(Comparator.comparing(info -> info.className)).toList();
         }
 
         protected static class ClassBasedInfo<INFO> {

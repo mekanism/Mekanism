@@ -62,8 +62,8 @@ public abstract class TransitRequest {
 
     @Nonnull
     public TransitResponse addToInventory(BlockEntity tile, Direction side, int min, boolean force) {
-        if (force && tile instanceof TileEntityLogisticalSorter) {
-            return ((TileEntityLogisticalSorter) tile).sendHome(this);
+        if (force && tile instanceof TileEntityLogisticalSorter sorter) {
+            return sorter.sendHome(this);
         }
         if (isEmpty()) {
             return getEmptyResponse();

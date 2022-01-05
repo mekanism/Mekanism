@@ -128,54 +128,54 @@ public class MekanismRenderer {
 
     public static void prepSingleFaceModelSize(Model3D model, Direction face) {
         switch (face) {
-            case DOWN:
+            case DOWN -> {
                 model.minX = 0;
                 model.maxX = 1;
                 model.minY = -0.01F;
                 model.maxY = -0.001F;
                 model.minZ = 0;
                 model.maxZ = 1;
-                break;
-            case UP:
+            }
+            case UP -> {
                 model.minX = 0;
                 model.maxX = 1;
                 model.minY = 1.001F;
                 model.maxY = 1.01F;
                 model.minZ = 0;
                 model.maxZ = 1;
-                break;
-            case NORTH:
+            }
+            case NORTH -> {
                 model.minX = 0;
                 model.maxX = 1;
                 model.minY = 0;
                 model.maxY = 1;
                 model.minZ = -0.01F;
                 model.maxZ = -0.001F;
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 model.minX = 0;
                 model.maxX = 1;
                 model.minY = 0;
                 model.maxY = 1;
                 model.minZ = 1.001F;
                 model.maxZ = 1.01F;
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 model.minX = -0.01F;
                 model.maxX = -0.001F;
                 model.minY = 0;
                 model.maxY = 1;
                 model.minZ = 0;
                 model.maxZ = 1;
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 model.minX = 1.001F;
                 model.maxX = 1.01F;
                 model.minY = 0;
                 model.maxY = 1;
                 model.minZ = 0;
                 model.maxZ = 1;
-                break;
+            }
         }
     }
 
@@ -375,18 +375,10 @@ public class MekanismRenderer {
 
     public static void rotate(PoseStack matrix, Direction facing, float north, float south, float west, float east) {
         switch (facing) {
-            case NORTH:
-                matrix.mulPose(Vector3f.YP.rotationDegrees(north));
-                break;
-            case SOUTH:
-                matrix.mulPose(Vector3f.YP.rotationDegrees(south));
-                break;
-            case WEST:
-                matrix.mulPose(Vector3f.YP.rotationDegrees(west));
-                break;
-            case EAST:
-                matrix.mulPose(Vector3f.YP.rotationDegrees(east));
-                break;
+            case NORTH -> matrix.mulPose(Vector3f.YP.rotationDegrees(north));
+            case SOUTH -> matrix.mulPose(Vector3f.YP.rotationDegrees(south));
+            case WEST -> matrix.mulPose(Vector3f.YP.rotationDegrees(west));
+            case EAST -> matrix.mulPose(Vector3f.YP.rotationDegrees(east));
         }
     }
 
@@ -549,15 +541,7 @@ public class MekanismRenderer {
             textures[5] = east;
         }
 
-        public static final class SpriteInfo {
-
-            public final TextureAtlasSprite sprite;
-            public final int size;
-
-            public SpriteInfo(TextureAtlasSprite sprite, int size) {
-                this.sprite = sprite;
-                this.size = size;
-            }
+        public record SpriteInfo(TextureAtlasSprite sprite, int size) {
         }
     }
 }

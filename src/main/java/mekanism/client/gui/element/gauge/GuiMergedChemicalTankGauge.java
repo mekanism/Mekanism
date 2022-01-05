@@ -120,16 +120,12 @@ public class GuiMergedChemicalTankGauge<HANDLER extends IGasTracker & IInfusionT
     @Nullable
     private GuiTankGauge<?, ?> getCurrentGaugeNoFallback() {
         MergedChemicalTank mergedTank = mergedTankSupplier.get();
-        switch (mergedTank.getCurrent()) {
-            case GAS:
-                return gasGauge;
-            case INFUSION:
-                return infusionGauge;
-            case PIGMENT:
-                return pigmentGauge;
-            case SLURRY:
-                return slurryGauge;
-        }
-        return null;
+        return switch (mergedTank.getCurrent()) {
+            case GAS -> gasGauge;
+            case INFUSION -> infusionGauge;
+            case PIGMENT -> pigmentGauge;
+            case SLURRY -> slurryGauge;
+            default -> null;
+        };
     }
 }

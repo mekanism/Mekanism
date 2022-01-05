@@ -57,8 +57,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
 
     @Override
     public void releaseUsing(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull LivingEntity entityLiving, int timeLeft) {
-        if (entityLiving instanceof Player) {
-            Player player = (Player) entityLiving;
+        if (entityLiving instanceof Player player) {
             //Vanilla diff - Get the energy container, because if something went wrong, and we don't have one then we can exit early
             IEnergyContainer energyContainer = null;
             boolean fireState = getFireState(stack);
@@ -83,7 +82,7 @@ public class ItemElectricBow extends BowItem implements IModeItem, IItemHUDProvi
                 if (ammo.isEmpty()) {
                     ammo = new ItemStack(Items.ARROW);
                 }
-                boolean noConsume = player.isCreative() || (ammo.getItem() instanceof ArrowItem && ((ArrowItem) ammo.getItem()).isInfinite(ammo, stack, player));
+                boolean noConsume = player.isCreative() || (ammo.getItem() instanceof ArrowItem arrow && arrow.isInfinite(ammo, stack, player));
                 if (!world.isClientSide) {
                     ArrowItem arrowitem = (ArrowItem) (ammo.getItem() instanceof ArrowItem ? ammo.getItem() : Items.ARROW);
                     AbstractArrow arrowEntity = arrowitem.createArrow(world, ammo, player);

@@ -46,25 +46,15 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
             TankMultiblockData multiblock = tile.getMultiblock();
             long capacity = multiblock.getChemicalTankCapacity();
             switch (multiblock.mergedTank.getCurrentType()) {
-                case EMPTY:
-                    ret.add(MekanismLang.EMPTY.translate());
-                    break;
-                case FLUID:
+                case EMPTY -> ret.add(MekanismLang.EMPTY.translate());
+                case FLUID -> {
                     addStored(ret, multiblock.getFluidTank().getFluid(), FluidStack::getAmount);
                     capacity = multiblock.getTankCapacity();
-                    break;
-                case GAS:
-                    addStored(ret, multiblock.getGasTank());
-                    break;
-                case INFUSION:
-                    addStored(ret, multiblock.getInfusionTank());
-                    break;
-                case PIGMENT:
-                    addStored(ret, multiblock.getPigmentTank());
-                    break;
-                case SLURRY:
-                    addStored(ret, multiblock.getSlurryTank());
-                    break;
+                }
+                case GAS -> addStored(ret, multiblock.getGasTank());
+                case INFUSION -> addStored(ret, multiblock.getInfusionTank());
+                case PIGMENT -> addStored(ret, multiblock.getPigmentTank());
+                case SLURRY -> addStored(ret, multiblock.getSlurryTank());
             }
             ret.add(MekanismLang.CAPACITY.translate(""));
             ret.add(MekanismLang.GENERIC_MB.translate(TextUtils.format(capacity)));

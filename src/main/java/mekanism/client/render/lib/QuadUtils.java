@@ -3,7 +3,6 @@ package mekanism.client.render.lib;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
@@ -15,15 +14,15 @@ public class QuadUtils {
     private static final float eps = 1F / 0x100;
 
     public static List<Quad> unpack(List<BakedQuad> quads) {
-        return quads.stream().map(Quad::new).collect(Collectors.toList());
+        return quads.stream().map(Quad::new).toList();
     }
 
     public static List<BakedQuad> bake(List<Quad> quads) {
-        return quads.stream().map(Quad::bake).collect(Collectors.toList());
+        return quads.stream().map(Quad::bake).toList();
     }
 
     public static List<Quad> flip(List<Quad> quads) {
-        return quads.stream().map(Quad::flip).collect(Collectors.toList());
+        return quads.stream().map(Quad::flip).toList();
     }
 
     public static List<Quad> transformQuads(List<Quad> orig, QuadTransformation transformation) {

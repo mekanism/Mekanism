@@ -169,12 +169,12 @@ public class CrTItemStackIngredient {
 
     private static void addIngredients(List<ItemStackIngredient> itemStackIngredients, IIngredient[] ingredients) {
         for (IIngredient ingredient : ingredients) {
-            if (ingredient instanceof IItemStack) {
+            if (ingredient instanceof IItemStack stack) {
                 //If the ingredient is an IItemStack make sure to process it as such so
-                itemStackIngredients.add(from((IItemStack) ingredient));
-            } else if (ingredient instanceof MCIngredientList) {
+                itemStackIngredients.add(from(stack));
+            } else if (ingredient instanceof MCIngredientList ingredientList) {
                 //If it is another multi ingredient add the different components
-                addIngredients(itemStackIngredients, ((MCIngredientList) ingredient).getIngredients());
+                addIngredients(itemStackIngredients, ingredientList.getIngredients());
             } else {
                 itemStackIngredients.add(from(ingredient));
             }

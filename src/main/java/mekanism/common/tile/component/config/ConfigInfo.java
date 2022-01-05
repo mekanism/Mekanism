@@ -120,16 +120,16 @@ public class ConfigInfo {
     public void addSlotInfo(@Nonnull DataType dataType, @Nonnull ISlotInfo info) {
         slotInfo.put(dataType, info);
         // set up mapping
-        if (info instanceof ChemicalSlotInfo) {
-            for (IChemicalTank<?, ?> tank : ((ChemicalSlotInfo<?, ?, ?>) info).getTanks()) {
+        if (info instanceof ChemicalSlotInfo<?, ?, ?> slotInfo) {
+            for (IChemicalTank<?, ?> tank : slotInfo.getTanks()) {
                 containerTypeMapping.computeIfAbsent(tank, t -> new ArrayList<>()).add(dataType);
             }
-        } else if (info instanceof FluidSlotInfo) {
-            for (IExtendedFluidTank tank : ((FluidSlotInfo) info).getTanks()) {
+        } else if (info instanceof FluidSlotInfo slotInfo) {
+            for (IExtendedFluidTank tank : slotInfo.getTanks()) {
                 containerTypeMapping.computeIfAbsent(tank, t -> new ArrayList<>()).add(dataType);
             }
-        } else if (info instanceof InventorySlotInfo) {
-            for (IInventorySlot slot : ((InventorySlotInfo) info).getSlots()) {
+        } else if (info instanceof InventorySlotInfo slotInfo) {
+            for (IInventorySlot slot : slotInfo.getSlots()) {
                 containerTypeMapping.computeIfAbsent(slot, t -> new ArrayList<>()).add(dataType);
             }
         }

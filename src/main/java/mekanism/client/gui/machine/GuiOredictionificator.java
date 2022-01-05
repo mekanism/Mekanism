@@ -51,8 +51,8 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
         for (int i = 0; i < FILTER_COUNT; i++) {
             addRenderableWidget(new FilterButton(this, 10, 18 + i * 22, 142, 22, i, scrollBar::getCurrentSelection, tile::getFilters, this::onClick,
                   filter -> {
-                      if (filter instanceof OredictionificatorItemFilter) {
-                          return Collections.singletonList(((OredictionificatorItemFilter) filter).getResult());
+                      if (filter instanceof OredictionificatorItemFilter oredictionificatorFilter) {
+                          return Collections.singletonList(oredictionificatorFilter.getResult());
                       }
                       return Collections.emptyList();
                   })).warning(WarningType.INVALID_OREDICTIONIFICATOR_FILTER, filter -> filter != null && !filter.hasFilter());
@@ -66,8 +66,8 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     }
 
     protected void onClick(IFilter<?> filter, int index) {
-        if (filter instanceof OredictionificatorItemFilter) {
-            addWindow(GuiOredictionificatorFilter.edit(this, tile, (OredictionificatorItemFilter) filter));
+        if (filter instanceof OredictionificatorItemFilter oredictionificatorFilter) {
+            addWindow(GuiOredictionificatorFilter.edit(this, tile, oredictionificatorFilter));
         }
     }
 

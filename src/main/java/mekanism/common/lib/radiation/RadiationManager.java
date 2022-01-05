@@ -204,7 +204,7 @@ public class RadiationManager implements IRadiationManager {
         if (!isRadiationEnabled()) {
             return;
         }
-        if (!(entity instanceof Player) || MekanismUtils.isPlayingMode((Player) entity)) {
+        if (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player)) {
             entity.getCapability(Capabilities.RADIATION_ENTITY_CAPABILITY).ifPresent(c -> c.radiate(magnitude * (1 - Math.min(1, getRadiationResistance(entity)))));
         }
     }
@@ -306,17 +306,17 @@ public class RadiationManager implements IRadiationManager {
         // this helps distribute the CPU load across ticks, and makes exposure slightly inconsistent
         if (entity.level.getRandom().nextInt(20) == 0) {
             double magnitude = getRadiationLevel(new Coord4D(entity));
-            if (magnitude > BASELINE && (!(entity instanceof Player) || MekanismUtils.isPlayingMode((Player) entity))) {
+            if (magnitude > BASELINE && (!(entity instanceof Player player) || MekanismUtils.isPlayingMode(player))) {
                 // apply radiation to the player
                 radiate(entity, magnitude / 3_600D); // convert to Sv/s
             }
             radiationCap.ifPresent(IRadiationEntity::decay);
-            if (entity instanceof ServerPlayer) {
+            if (entity instanceof ServerPlayer player) {
                 double current = playerExposureMap.getOrDefault(entity.getUUID(), BASELINE);
                 //If the last sync radiation value is different in magnitude by over the baseline, sync
                 if (Math.abs(magnitude - current) >= BASELINE) {
                     playerExposureMap.put(entity.getUUID(), magnitude);
-                    Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(magnitude), (ServerPlayer) entity);
+                    Mekanism.packetHandler().sendTo(PacketRadiationData.createEnvironmental(magnitude), player);
                 }
             }
         }
@@ -394,7 +394,7 @@ public class RadiationManager implements IRadiationManager {
     }
 
     public void resetPlayer(UUID uuid) {
-        playerExposureMap.remove(uuid);
+        playerExposureMap.removeDouble(uuid);
     }
 
     @SubscribeEvent
@@ -464,19 +464,13 @@ public class RadiationManager implements IRadiationManager {
         }
 
         public SoundEvent getSoundEvent() {
-            switch (this) {
-                case LOW:
-                    return MekanismSounds.GEIGER_SLOW.get();
-                case MEDIUM:
-                    return MekanismSounds.GEIGER_MEDIUM.get();
-                case ELEVATED:
-                case HIGH:
-                    return MekanismSounds.GEIGER_ELEVATED.get();
-                case EXTREME:
-                    return MekanismSounds.GEIGER_FAST.get();
-                default:
-                    return null;
-            }
+            return switch (this) {
+                case LOW -> MekanismSounds.GEIGER_SLOW.get();
+                case MEDIUM -> MekanismSounds.GEIGER_MEDIUM.get();
+                case ELEVATED, HIGH -> MekanismSounds.GEIGER_ELEVATED.get();
+                case EXTREME -> MekanismSounds.GEIGER_FAST.get();
+                default -> null;
+            };
         }
     }
 

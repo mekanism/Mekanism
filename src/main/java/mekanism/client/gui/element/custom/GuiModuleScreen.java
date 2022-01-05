@@ -70,7 +70,7 @@ public class GuiModuleScreen extends GuiElement {
                 ModuleConfigItem<?> configItem = configItems.get(i);
                 // Don't show the enabled option if this is enabled by default
                 if (configItem.getData() instanceof ModuleBooleanData && (!configItem.getName().equals(Module.ENABLED_KEY) || !module.getData().isNoDisable())) {
-                    if (configItem instanceof DisableableModuleConfigItem && !((DisableableModuleConfigItem) configItem).isConfigEnabled()) {
+                    if (configItem instanceof DisableableModuleConfigItem item && !item.isConfigEnabled()) {
                         //Skip options that are force disabled by the config
                         //TODO: Eventually we may want to make it slightly "faster" in that it allows updating the toggle elements rather than just
                         // not adding them back when switching to another module and then back again
@@ -83,8 +83,8 @@ public class GuiModuleScreen extends GuiElement {
                     newElements.add(toggle);
                     startY += 34;
                     // allow the dragger to continue sliding, even when we reset the config element
-                    if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(i) instanceof EnumToggle) {
-                        toggle.dragging = ((EnumToggle) miniElements.get(i)).dragging;
+                    if (currentModule != null && currentModule.getData() == module.getData() && miniElements.get(i) instanceof EnumToggle enumToggle) {
+                        toggle.dragging = enumToggle.dragging;
                     }
                 }
             }

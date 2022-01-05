@@ -58,9 +58,6 @@ public class CrTBracketDumpers {
     }
 
     private static <V extends IForgeRegistryEntry<V>> Collection<String> getDump(IForgeRegistry<V> registry, Function<V, String> getter) {
-        return registry.getValues()
-              .stream()
-              .map(getter)
-              .collect(Collectors.toList());
+        return registry.getValues().stream().map(getter).toList();
     }
 }

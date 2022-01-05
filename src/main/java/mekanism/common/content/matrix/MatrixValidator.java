@@ -44,11 +44,11 @@ public class MatrixValidator extends CuboidStructureValidator<MatrixMultiblockDa
               MekanismBlockTypes.ADVANCED_INDUCTION_PROVIDER, MekanismBlockTypes.ELITE_INDUCTION_PROVIDER, MekanismBlockTypes.ULTIMATE_INDUCTION_PROVIDER)) {
             //Compare blocks against the type before bothering to look up the tile
             BlockEntity tile = WorldUtils.getTileEntity(world, chunkMap, pos);
-            if (tile instanceof TileEntityInductionCell) {
-                cells.add((TileEntityInductionCell) tile);
+            if (tile instanceof TileEntityInductionCell cell) {
+                cells.add(cell);
                 return true;
-            } else if (tile instanceof TileEntityInductionProvider) {
-                providers.add((TileEntityInductionProvider) tile);
+            } else if (tile instanceof TileEntityInductionProvider provider) {
+                providers.add(provider);
                 return true;
             }
             //Else something went wrong

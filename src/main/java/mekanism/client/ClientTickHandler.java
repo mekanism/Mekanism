@@ -240,9 +240,9 @@ public class ClientTickHandler {
             }
 
             ItemStack stack = minecraft.player.getItemBySlot(EquipmentSlot.MAINHAND);
-            if (MekKeyHandler.isRadialPressed() && stack.getItem() instanceof IRadialModeItem) {
+            if (MekKeyHandler.isRadialPressed() && stack.getItem() instanceof IRadialModeItem<?> item) {
                 if (minecraft.screen == null || minecraft.screen instanceof GuiRadialSelector) {
-                    updateSelectorRenderer((IRadialModeItem<?>) stack.getItem());
+                    updateSelectorRenderer(item);
                 }
             } else if (minecraft.screen instanceof GuiRadialSelector) {
                 minecraft.setScreen(null);
@@ -261,7 +261,7 @@ public class ClientTickHandler {
 
     private <TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYPE>> void updateSelectorRenderer(IRadialModeItem<TYPE> modeItem) {
         Class<TYPE> modeClass = modeItem.getModeClass();
-        if (!(minecraft.screen instanceof GuiRadialSelector) || ((GuiRadialSelector<?>) minecraft.screen).getEnumClass() != modeClass) {
+        if (!(minecraft.screen instanceof GuiRadialSelector<?> screen) || screen.getEnumClass() != modeClass) {
             minecraft.setScreen(new GuiRadialSelector<>(modeClass, () -> {
                 if (minecraft.player != null) {
                     ItemStack s = minecraft.player.getItemBySlot(EquipmentSlot.MAINHAND);
@@ -341,18 +341,18 @@ public class ClientTickHandler {
     @SubscribeEvent
     public void renderEntityPre(RenderLivingEvent.Pre<?, ?> evt) {
         EntityModel<?> model = evt.getRenderer().getModel();
-        if (model instanceof HumanoidModel) {
+        if (model instanceof HumanoidModel<?> humanoidModel) {
             //If the entity has a biped model, then see if it is wearing a meka suit, in which case we want to hide various parts of the model
-            setModelVisibility(evt.getEntity(), (HumanoidModel<?>) model, false);
+            setModelVisibility(evt.getEntity(), humanoidModel, false);
         }
     }
 
     @SubscribeEvent
     public void renderEntityPost(RenderLivingEvent.Post<?, ?> evt) {
         EntityModel<?> model = evt.getRenderer().getModel();
-        if (model instanceof HumanoidModel) {
+        if (model instanceof HumanoidModel<?> humanoidModel) {
             //Undo model visibility changes we made to ensure that other entities of the same type are properly visible
-            setModelVisibility(evt.getEntity(), (HumanoidModel<?>) model, true);
+            setModelVisibility(evt.getEntity(), humanoidModel, true);
         }
     }
 
@@ -360,8 +360,7 @@ public class ClientTickHandler {
         if (entity.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof ItemMekaSuitArmor) {
             entityModel.head.visible = showModel;
             entityModel.hat.visible = showModel;
-            if (entityModel instanceof PlayerModel) {
-                PlayerModel<?> playerModel = (PlayerModel<?>) entityModel;
+            if (entityModel instanceof PlayerModel<?> playerModel) {
                 playerModel.ear.visible = showModel;
             }
         }
@@ -373,45 +372,30 @@ public class ClientTickHandler {
                 entityModel.leftArm.visible = showModel;
                 entityModel.rightArm.visible = showModel;
             }
-            if (entityModel instanceof PlayerModel) {
-                PlayerModel<?> playerModel = (PlayerModel<?>) entityModel;
+            if (entityModel instanceof PlayerModel<?> playerModel) {
                 playerModel.cloak.visible = showModel;
                 playerModel.jacket.visible = showModel;
                 playerModel.leftSleeve.visible = showModel;
                 playerModel.rightSleeve.visible = showModel;
-            } else if (entityModel instanceof ArmorStandModel) {
-                ArmorStandModel armorStandModel = (ArmorStandModel) entityModel;
+            } else if (entityModel instanceof ArmorStandModel armorStandModel) {
                 armorStandModel.rightBodyStick.visible = showModel;
                 armorStandModel.leftBodyStick.visible = showModel;
                 armorStandModel.shoulderStick.visible = showModel;
             }
-        } else if (chest.getItem() instanceof ItemHDPEElytra && entityModel instanceof PlayerModel) {
+        } else if (chest.getItem() instanceof ItemHDPEElytra && entityModel instanceof PlayerModel<?> playerModel) {
             //Hide the player's cape if they have an HDPE elytra as it will be part of the elytra's layer and shouldn't be rendered
-            PlayerModel<?> playerModel = (PlayerModel<?>) entityModel;
             playerModel.cloak.visible = showModel;
         }
         if (entity.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof ItemMekaSuitArmor) {
             entityModel.leftLeg.visible = showModel;
             entityModel.rightLeg.visible = showModel;
-            if (entityModel instanceof PlayerModel) {
-                PlayerModel<?> playerModel = (PlayerModel<?>) entityModel;
+            if (entityModel instanceof PlayerModel<?> playerModel) {
                 playerModel.leftPants.visible = showModel;
                 playerModel.rightPants.visible = showModel;
             }
         }
     }
 
-    //TODO - 1.18: Convert this to a record
-    private static class TeleportData {
-
-        private final InteractionHand hand;
-        private final FrequencyIdentity identity;
-        private final long teleportTime;
-
-        public TeleportData(InteractionHand hand, FrequencyIdentity identity, long teleportTime) {
-            this.hand = hand;
-            this.identity = identity;
-            this.teleportTime = teleportTime;
-        }
+    private record TeleportData(InteractionHand hand, FrequencyIdentity identity, long teleportTime) {
     }
 }

@@ -8,13 +8,12 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
-import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
 
 /**
@@ -68,22 +67,22 @@ public class PacketGeneratorsGuiInteract implements IMekanismPacket {
 
     public enum GeneratorsGuiInteraction {
         INJECTION_RATE((tile, player, extra) -> {
-            if (tile instanceof TileEntityFusionReactorBlock) {
-                ((TileEntityFusionReactorController) tile).setInjectionRateFromPacket((int) Math.round(extra));
-            } else if (tile instanceof TileEntityFissionReactorCasing) {
-                ((TileEntityFissionReactorCasing) tile).setRateLimitFromPacket(extra);
+            if (tile instanceof TileEntityFusionReactorBlock reactorBlock) {
+                reactorBlock.setInjectionRateFromPacket((int) Math.round(extra));
+            } else if (tile instanceof TileEntityFissionReactorCasing reactorCasing) {
+                reactorCasing.setRateLimitFromPacket(extra);
             }
         }),
         LOGIC_TYPE((tile, player, extra) -> {
-            if (tile instanceof TileEntityFissionReactorLogicAdapter) {
-                ((TileEntityFissionReactorLogicAdapter) tile).setLogicTypeFromPacket(FissionReactorLogic.byIndexStatic((int) Math.round(extra)));
-            } else if (tile instanceof TileEntityFusionReactorLogicAdapter) {
-                ((TileEntityFusionReactorLogicAdapter) tile).setLogicTypeFromPacket(FusionReactorLogic.byIndexStatic((int) Math.round(extra)));
+            if (tile instanceof TileEntityFissionReactorLogicAdapter logicAdapter) {
+                logicAdapter.setLogicTypeFromPacket(FissionReactorLogic.byIndexStatic((int) Math.round(extra)));
+            } else if (tile instanceof TileEntityFusionReactorLogicAdapter logicAdapter) {
+                logicAdapter.setLogicTypeFromPacket(FusionReactorLogic.byIndexStatic((int) Math.round(extra)));
             }
         }),
         FISSION_ACTIVE((tile, player, extra) -> {
-            if (tile instanceof TileEntityFissionReactorCasing) {
-                ((TileEntityFissionReactorCasing) tile).setReactorActive(Math.round(extra) == 1);
+            if (tile instanceof TileEntityFissionReactorCasing reactorCasing) {
+                reactorCasing.setReactorActive(Math.round(extra) == 1);
             }
         });
 

@@ -124,40 +124,23 @@ public class RecipeProviderUtil {
     }
 
     private static ItemLike getWool(DyeColor color) {
-        switch (color) {
-            default:
-            case WHITE:
-                return Items.WHITE_WOOL;
-            case ORANGE:
-                return Items.ORANGE_WOOL;
-            case MAGENTA:
-                return Items.MAGENTA_WOOL;
-            case LIGHT_BLUE:
-                return Items.LIGHT_BLUE_WOOL;
-            case YELLOW:
-                return Items.YELLOW_WOOL;
-            case LIME:
-                return Items.LIME_WOOL;
-            case PINK:
-                return Items.PINK_WOOL;
-            case GRAY:
-                return Items.GRAY_WOOL;
-            case LIGHT_GRAY:
-                return Items.LIGHT_GRAY_WOOL;
-            case CYAN:
-                return Items.CYAN_WOOL;
-            case PURPLE:
-                return Items.PURPLE_WOOL;
-            case BLUE:
-                return Items.BLUE_WOOL;
-            case BROWN:
-                return Items.BROWN_WOOL;
-            case GREEN:
-                return Items.GREEN_WOOL;
-            case RED:
-                return Items.RED_WOOL;
-            case BLACK:
-                return Items.BLACK_WOOL;
-        }
+        return switch (color) {
+            case WHITE -> Items.WHITE_WOOL;
+            case ORANGE -> Items.ORANGE_WOOL;
+            case MAGENTA -> Items.MAGENTA_WOOL;
+            case LIGHT_BLUE -> Items.LIGHT_BLUE_WOOL;
+            case YELLOW -> Items.YELLOW_WOOL;
+            case LIME -> Items.LIME_WOOL;
+            case PINK -> Items.PINK_WOOL;
+            case GRAY -> Items.GRAY_WOOL;
+            case LIGHT_GRAY -> Items.LIGHT_GRAY_WOOL;
+            case CYAN -> Items.CYAN_WOOL;
+            case PURPLE -> Items.PURPLE_WOOL;
+            case BLUE -> Items.BLUE_WOOL;
+            case BROWN -> Items.BROWN_WOOL;
+            case GREEN -> Items.GREEN_WOOL;
+            case RED -> Items.RED_WOOL;
+            case BLACK -> Items.BLACK_WOOL;
+        };
     }
 }

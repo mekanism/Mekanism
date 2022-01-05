@@ -48,7 +48,7 @@ public interface IFrequencyItem extends IOwnerItem {
                         return null;
                     }
                 }
-                return getFrequencyType().getManager(identity, owner).getFrequency(identity.getKey());
+                return getFrequencyType().getManager(identity, owner).getFrequency(identity.key());
             }
         }
         return null;

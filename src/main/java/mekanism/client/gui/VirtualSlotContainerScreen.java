@@ -59,7 +59,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
     protected final void renderFloatingItem(@Nonnull ItemStack stack, int x, int y, @Nullable String altText) {
         if (!stack.isEmpty()) {
-            if (stack == this.snapbackItem && this.snapbackEnd instanceof IVirtualSlot) {
+            if (stack == this.snapbackItem && this.snapbackEnd instanceof IVirtualSlot returningVirtualSlot) {
                 //Use an instance equality check to see if we are rendering the returning stack (used in touch screens)
                 // if we are and the slot we are returning to is a virtual one, so the position may be changing
                 // then recalculate where the stack actually is/should be to send it to the correct position
@@ -71,7 +71,6 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                     return;
                 }
                 //Recalculate the x and y values to make sure they are the correct values
-                IVirtualSlot returningVirtualSlot = (IVirtualSlot) this.snapbackEnd;
                 int xOffset = returningVirtualSlot.getActualX() - this.snapbackStartX;
                 int yOffset = returningVirtualSlot.getActualY() - this.snapbackStartY;
                 x = this.snapbackStartX + (int) (xOffset * f);
@@ -85,7 +84,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
     protected final void renderSlot(@Nonnull PoseStack matrixStack, @Nonnull Slot slot) {
-        if (!(slot instanceof IVirtualSlot)) {
+        if (!(slot instanceof IVirtualSlot virtualSlot)) {
             //If we are not a virtual slot, the super method is good enough
             super.renderSlot(matrixStack, slot);
             return;
@@ -119,7 +118,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
             }
         }
         //If the slot is a virtual slot, have the GuiSlot that corresponds to it handle the rendering
-        ((IVirtualSlot) slot).updateRenderInfo(skipStackRendering ? ItemStack.EMPTY : currentStack, shouldDrawOverlay, s);
+        virtualSlot.updateRenderInfo(skipStackRendering ? ItemStack.EMPTY : currentStack, shouldDrawOverlay, s);
     }
 
     public boolean slotClicked(@Nonnull Slot slot, int button) {

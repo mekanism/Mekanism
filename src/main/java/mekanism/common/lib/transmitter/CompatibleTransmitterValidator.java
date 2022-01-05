@@ -44,9 +44,9 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
         public boolean isNetworkCompatible(BoxedChemicalNetwork network) {
             if (super.isNetworkCompatible(network)) {
                 BoxedChemical otherBuffer;
-                if (network.getTransmitterValidator() instanceof CompatibleChemicalTransmitterValidator) {
+                if (network.getTransmitterValidator() instanceof CompatibleChemicalTransmitterValidator validator) {
                     //Null check it, but use instanceof to double-check it is actually the expected type
-                    otherBuffer = ((CompatibleChemicalTransmitterValidator) network.getTransmitterValidator()).buffer;
+                    otherBuffer = validator.buffer;
                 } else {
                     otherBuffer = network.getBuffer().getType();
                     if (otherBuffer.isEmpty() && network.getPrevTransferAmount() > 0) {
@@ -60,8 +60,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
 
         @Override
         public boolean isTransmitterCompatible(Transmitter<?, ?, ?> transmitter) {
-            return super.isTransmitterCompatible(transmitter) && transmitter instanceof BoxedPressurizedTube &&
-                   compareBuffers(((BoxedPressurizedTube) transmitter).getBufferWithFallback().getType());
+            return super.isTransmitterCompatible(transmitter) && transmitter instanceof BoxedPressurizedTube tube && compareBuffers(tube.getBufferWithFallback().getType());
         }
     }
 
@@ -85,9 +84,9 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
         public boolean isNetworkCompatible(FluidNetwork network) {
             if (super.isNetworkCompatible(network)) {
                 FluidStack otherBuffer;
-                if (network.getTransmitterValidator() instanceof CompatibleFluidTransmitterValidator) {
+                if (network.getTransmitterValidator() instanceof CompatibleFluidTransmitterValidator validator) {
                     //Null check it, but use instanceof to double-check it is actually the expected type
-                    otherBuffer = ((CompatibleFluidTransmitterValidator) network.getTransmitterValidator()).buffer;
+                    otherBuffer = validator.buffer;
                 } else {
                     otherBuffer = network.getBuffer();
                     if (otherBuffer.isEmpty() && network.getPrevTransferAmount() > 0) {
@@ -101,8 +100,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
 
         @Override
         public boolean isTransmitterCompatible(Transmitter<?, ?, ?> transmitter) {
-            return super.isTransmitterCompatible(transmitter) && transmitter instanceof MechanicalPipe &&
-                   compareBuffers(((MechanicalPipe) transmitter).getBufferWithFallback());
+            return super.isTransmitterCompatible(transmitter) && transmitter instanceof MechanicalPipe pipe && compareBuffers(pipe.getBufferWithFallback());
         }
     }
 }

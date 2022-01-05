@@ -66,8 +66,8 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerStartTrackingEvent(PlayerEvent.StartTracking event) {
-        if (event.getTarget() instanceof Player && event.getPlayer() instanceof ServerPlayer) {
-            Mekanism.packetHandler().sendTo(new PacketPlayerData(event.getTarget().getUUID()), (ServerPlayer) event.getPlayer());
+        if (event.getTarget() instanceof Player player && event.getPlayer() instanceof ServerPlayer serverPlayer) {
+            Mekanism.packetHandler().sendTo(new PacketPlayerData(player.getUUID()), serverPlayer);
         }
     }
 

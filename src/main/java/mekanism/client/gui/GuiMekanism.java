@@ -32,7 +32,6 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.collection.LRU;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
@@ -185,8 +184,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
         for (int i = 0; i < children().size(); i++) {
             GuiEventListener widget = children().get(i);
-            if (widget instanceof GuiElement && ((GuiElement) widget).hasPersistentData()) {
-                prevElements.add(Pair.of(i, (GuiElement) widget));
+            if (widget instanceof GuiElement element && element.hasPersistentData()) {
+                prevElements.add(Pair.of(i, element));
             }
         }
         // flush the focus listeners list unless it's an overlay
@@ -400,8 +399,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                 if (overNoButtons && slot.isActive()) {
                     if (window == null) {
                         return slot;
-                    } else if (virtual && window.childrenContainsElement(element ->
-                          element instanceof GuiVirtualSlot && ((GuiVirtualSlot) element).isElementForSlot((IVirtualSlot) slot))) {
+                    } else if (virtual && window.childrenContainsElement(element -> element instanceof GuiVirtualSlot v && v.isElementForSlot((IVirtualSlot) slot))) {
                         return slot;
                     }
                 }
@@ -412,15 +410,14 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     protected boolean isMouseOverSlot(@Nonnull Slot slot, double mouseX, double mouseY) {
-        if (slot instanceof IVirtualSlot) {
+        if (slot instanceof IVirtualSlot virtualSlot) {
             //Virtual slots need special handling to allow for matching them to the window they may be attached to
-            IVirtualSlot virtualSlot = (IVirtualSlot) slot;
             int xPos = virtualSlot.getActualX();
             int yPos = virtualSlot.getActualY();
             if (super.isHovering(xPos, yPos, 16, 16, mouseX, mouseY)) {
                 GuiWindow window = getWindowHovering(mouseX, mouseY);
                 //If we are hovering over a window, check if the virtual slot is a child of the window
-                if (window == null || window.childrenContainsElement(element -> element instanceof GuiVirtualSlot && ((GuiVirtualSlot) element).isElementForSlot(virtualSlot))) {
+                if (window == null || window.childrenContainsElement(element -> element instanceof GuiVirtualSlot v && v.isElementForSlot(virtualSlot))) {
                     return overNoButtons(window, mouseX, mouseY);
                 }
             }
@@ -447,8 +444,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         int size = menu.slots.size();
         for (int i = 0; i < size; i++) {
             Slot slot = menu.slots.get(i);
-            if (slot instanceof InventoryContainerSlot) {
-                InventoryContainerSlot containerSlot = (InventoryContainerSlot) slot;
+            if (slot instanceof InventoryContainerSlot containerSlot) {
                 ContainerSlotType slotType = containerSlot.getSlotType();
                 DataType dataType = findDataType(containerSlot);
                 //Shift the slots by one as the elements include the border of the slot
@@ -482,11 +478,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Nullable
     protected DataType findDataType(InventoryContainerSlot slot) {
-        if (menu instanceof MekanismTileContainer) {
-            TileEntityMekanism tileEntity = ((MekanismTileContainer<?>) menu).getTileEntity();
-            if (tileEntity instanceof ISideConfiguration) {
-                return ((ISideConfiguration) tileEntity).getActiveDataType(slot.getInventorySlot());
-            }
+        if (menu instanceof MekanismTileContainer container && container.getTileEntity() instanceof ISideConfiguration sideConfig) {
+            return sideConfig.getActiveDataType(slot.getInventorySlot());
         }
         return null;
     }
@@ -599,15 +592,15 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     protected void lastWindowRemoved() {
         //Mark that no windows are now selected
-        if (menu instanceof MekanismContainer) {
-            ((MekanismContainer) menu).setSelectedWindow(null);
+        if (menu instanceof MekanismContainer container) {
+            container.setSelectedWindow(null);
         }
     }
 
     @Override
     public void setSelectedWindow(SelectedWindowData selectedWindow) {
-        if (menu instanceof MekanismContainer) {
-            ((MekanismContainer) menu).setSelectedWindow(selectedWindow);
+        if (menu instanceof MekanismContainer container) {
+            container.setSelectedWindow(selectedWindow);
         }
     }
 

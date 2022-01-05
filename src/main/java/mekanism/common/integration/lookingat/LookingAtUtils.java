@@ -47,10 +47,10 @@ public class LookingAtUtils {
 
     @Nullable
     private static MultiblockData getMultiblock(@Nonnull BlockEntity tile) {
-        if (tile instanceof IMultiblock) {
-            return ((IMultiblock<?>) tile).getMultiblock();
-        } else if (tile instanceof IStructuralMultiblock) {
-            for (Entry<MultiblockManager<?>, Structure> entry : ((IStructuralMultiblock) tile).getStructureMap().entrySet()) {
+        if (tile instanceof IMultiblock<?> multiblock) {
+            return multiblock.getMultiblock();
+        } else if (tile instanceof IStructuralMultiblock multiblock) {
+            for (Entry<MultiblockManager<?>, Structure> entry : multiblock.getStructureMap().entrySet()) {
                 if (entry.getKey() != null) {
                     //TODO: Figure out if the structure map is supposed to be able to have nulls in it (in which handling it like this is correct)
                     // if it is not meant to have nulls then we should modify how Structure#getManager handles things
@@ -93,11 +93,10 @@ public class LookingAtUtils {
     }
 
     private static void displayFluid(LookingAtHelper info, IFluidHandler fluidHandler) {
-        if (fluidHandler instanceof IMekanismFluidHandler) {
-            IMekanismFluidHandler mekFluidHandler = (IMekanismFluidHandler) fluidHandler;
+        if (fluidHandler instanceof IMekanismFluidHandler mekFluidHandler) {
             for (IExtendedFluidTank fluidTank : mekFluidHandler.getFluidTanks(null)) {
-                if (fluidTank instanceof FluidTankWrapper) {
-                    MergedTank mergedTank = ((FluidTankWrapper) fluidTank).getMergedTank();
+                if (fluidTank instanceof FluidTankWrapper wrapper) {
+                    MergedTank mergedTank = wrapper.getMergedTank();
                     CurrentType currentType = mergedTank.getCurrentType();
                     if (currentType != CurrentType.EMPTY && currentType != CurrentType.FLUID) {
                         //Skip if the tank is on a chemical
@@ -166,9 +165,9 @@ public class LookingAtUtils {
           LookingAtHelper info, ILangEntry langEntry, TANK chemicalTank, Current matchingCurrent, CurrentType matchingCurrentType) {
         if (chemicalTank instanceof ChemicalTankWrapper) {
             MergedChemicalTank mergedTank = ((ChemicalTankWrapper<CHEMICAL, STACK>) chemicalTank).getMergedTank();
-            if (mergedTank instanceof MergedTank) {
+            if (mergedTank instanceof MergedTank tank) {
                 //If we are also support fluid, only show if we are the correct type
-                if (((MergedTank) mergedTank).getCurrentType() != matchingCurrentType) {
+                if (tank.getCurrentType() != matchingCurrentType) {
                     //Skip if the tank is not the correct chemical type (fluid is default for merged tanks when empty)
                     return;
                 }

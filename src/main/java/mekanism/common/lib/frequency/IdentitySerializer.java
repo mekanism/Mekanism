@@ -26,14 +26,14 @@ public interface IdentitySerializer {
 
         @Override
         public void write(FriendlyByteBuf buf, FrequencyIdentity data) {
-            buf.writeUtf(data.getKey().toString());
+            buf.writeUtf(data.key().toString());
             buf.writeBoolean(data.isPublic());
         }
 
         @Override
         public CompoundTag serialize(FrequencyIdentity data) {
             CompoundTag tag = new CompoundTag();
-            tag.putString(NBTConstants.NAME, data.getKey().toString());
+            tag.putString(NBTConstants.NAME, data.key().toString());
             tag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, data.isPublic());
             return tag;
         }
@@ -55,14 +55,14 @@ public interface IdentitySerializer {
 
         @Override
         public void write(FriendlyByteBuf buf, FrequencyIdentity data) {
-            buf.writeUUID((UUID) data.getKey());
+            buf.writeUUID((UUID) data.key());
             buf.writeBoolean(data.isPublic());
         }
 
         @Override
         public CompoundTag serialize(FrequencyIdentity data) {
             CompoundTag tag = new CompoundTag();
-            tag.putUUID(NBTConstants.OWNER_UUID, (UUID) data.getKey());
+            tag.putUUID(NBTConstants.OWNER_UUID, (UUID) data.key());
             tag.putBoolean(NBTConstants.PUBLIC_FREQUENCY, data.isPublic());
             return tag;
         }

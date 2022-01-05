@@ -42,13 +42,11 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
     @Override
     protected ResourceLocation getOverlay() {
-        switch (dataSource.getControlType()) {
-            case HIGH:
-                return HIGH;
-            case LOW:
-                return LOW;
-        }
-        return super.getOverlay();
+        return switch (dataSource.getControlType()) {
+            case HIGH -> HIGH;
+            case LOW -> LOW;
+            default -> super.getOverlay();
+        };
     }
 
     @Override

@@ -121,8 +121,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
             setActive(false);
         }
         HeatTransfer loss = simulate();
-        lastTransferLoss = loss.getAdjacentTransfer();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer();
+        lastTransferLoss = loss.adjacentTransfer();
+        lastEnvironmentLoss = loss.environmentTransfer();
         producingEnergy = getEnergyContainer().getEnergy().subtract(prev);
     }
 

@@ -104,9 +104,9 @@ public class ItemDictionary extends Item {
             BlockHitResult result = MekanismUtils.rayTrace(player, ClipContext.Fluid.ANY);
             if (result.getType() != Type.MISS) {
                 Block block = world.getBlockState(result.getBlockPos()).getBlock();
-                if (block instanceof LiquidBlock) {
+                if (block instanceof LiquidBlock liquidBlock) {
                     if (!world.isClientSide()) {
-                        sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, ((LiquidBlock) block).getFluid().getTags());
+                        sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, liquidBlock.getFluid().getTags());
                     }
                     return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
                 }

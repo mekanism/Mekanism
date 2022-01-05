@@ -23,7 +23,6 @@ import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.core.Direction;
@@ -119,70 +118,63 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
         float stageRatio = (stage / (float) stages) * height;
         switch (sideOrdinal) {
-            case 0:
+            case 0 -> {
                 model.minX = 0.5F - stageRatio / 2;
                 model.minY = 0;
                 model.minZ = 0.5F - stageRatio / 2;
-
                 model.maxX = 0.5F + stageRatio / 2;
                 model.maxY = 0.25F + offset;
                 model.maxZ = 0.5F + stageRatio / 2;
-                break;
-            case 1:
+            }
+            case 1 -> {
                 model.minX = 0.5F - stageRatio / 2;
                 model.minY = 0.25F - offset + stageRatio;
                 model.minZ = 0.5F - stageRatio / 2;
-
                 model.maxX = 0.5F + stageRatio / 2;
                 model.maxY = 1;
                 model.maxZ = 0.5F + stageRatio / 2;
-                break;
-            case 2:
+            }
+            case 2 -> {
                 model.minX = 0.25F + offset;
                 model.minY = 0.25F + offset;
                 model.minZ = 0;
-
                 model.maxX = 0.75F - offset;
                 model.maxY = 0.25F + offset + stageRatio;
                 model.maxZ = 0.25F + offset;
-                break;
-            case 3:
+            }
+            case 3 -> {
                 model.minX = 0.25F + offset;
                 model.minY = 0.25F + offset;
                 model.minZ = 0.75F - offset;
-
                 model.maxX = 0.75F - offset;
                 model.maxY = 0.25F + offset + stageRatio;
                 model.maxZ = 1;
-                break;
-            case 4:
+            }
+            case 4 -> {
                 model.minX = 0;
                 model.minY = 0.25F + offset;
                 model.minZ = 0.25F + offset;
-
                 model.maxX = 0.25F + offset;
                 model.maxY = 0.25F + offset + stageRatio;
                 model.maxZ = 0.75F - offset;
-                break;
-            case 5:
+            }
+            case 5 -> {
                 model.minX = 0.75F - offset;
                 model.minY = 0.25F + offset;
                 model.minZ = 0.25F + offset;
-
                 model.maxX = 1;
                 model.maxY = 0.25F + offset + stageRatio;
                 model.maxZ = 0.75F - offset;
-                break;
-            case 6:
+            }
+            case 6 -> {
                 //Null side
                 model.minX = 0.25F + offset;
                 model.minY = 0.25F + offset;
                 model.minZ = 0.25F + offset;
-
                 model.maxX = 0.75F - offset;
                 model.maxY = 0.25F + offset + stageRatio;
                 model.maxZ = 0.75F - offset;
-                break;
+            }
         }
         cachedFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>()).putIfAbsent(stage, model);
         return model;

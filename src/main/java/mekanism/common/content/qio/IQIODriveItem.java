@@ -46,15 +46,7 @@ public interface IQIODriveItem {
 
     int getTypeCapacity(ItemStack stack);
 
-    class DriveMetadata {
-
-        private final long count;
-        private final int types;
-
-        public DriveMetadata(long count, int types) {
-            this.count = count;
-            this.types = types;
-        }
+    record DriveMetadata(long count, int types) {
 
         public void write(ItemStack stack) {
             ItemDataUtils.setLong(stack, NBTConstants.QIO_META_COUNT, count);
@@ -63,14 +55,6 @@ public interface IQIODriveItem {
 
         public static DriveMetadata load(ItemStack stack) {
             return new DriveMetadata(ItemDataUtils.getLong(stack, NBTConstants.QIO_META_COUNT), ItemDataUtils.getInt(stack, NBTConstants.QIO_META_TYPES));
-        }
-
-        public long getCount() {
-            return count;
-        }
-
-        public int getTypes() {
-            return types;
         }
     }
 }

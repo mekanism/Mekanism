@@ -18,7 +18,6 @@ import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.core.BlockPos;
@@ -50,8 +49,8 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
                     Model3D model = ModelRenderer.getModel(data, multiblock.prevScale);
                     MekanismRenderer.renderObject(model, matrix, buffer, data.getColorARGB(multiblock.prevScale), glow, overlayLight, getFaceDisplay(data, model));
                     matrix.popPose();
-                    if (data instanceof FluidRenderData) {
-                        MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, (FluidRenderData) data, pos, glow, overlayLight, isInsideMultiblock(data));
+                    if (data instanceof FluidRenderData fluidRenderData) {
+                        MekanismRenderer.renderValves(matrix, buffer, multiblock.valves, fluidRenderData, pos, glow, overlayLight, isInsideMultiblock(data));
                     }
                 }
             }
@@ -60,19 +59,14 @@ public class RenderDynamicTank extends MekanismTileEntityRenderer<TileEntityDyna
 
     @Nullable
     private RenderData getRenderData(TankMultiblockData multiblock) {
-        switch (multiblock.mergedTank.getCurrentType()) {
-            case FLUID:
-                return new FluidRenderData(multiblock.getFluidTank().getFluid());
-            case GAS:
-                return new GasRenderData(multiblock.getGasTank().getStack());
-            case INFUSION:
-                return new InfusionRenderData(multiblock.getInfusionTank().getStack());
-            case PIGMENT:
-                return new PigmentRenderData(multiblock.getPigmentTank().getStack());
-            case SLURRY:
-                return new SlurryRenderData(multiblock.getSlurryTank().getStack());
-        }
-        return null;
+        return switch (multiblock.mergedTank.getCurrentType()) {
+            case FLUID -> new FluidRenderData(multiblock.getFluidTank().getFluid());
+            case GAS -> new GasRenderData(multiblock.getGasTank().getStack());
+            case INFUSION -> new InfusionRenderData(multiblock.getInfusionTank().getStack());
+            case PIGMENT -> new PigmentRenderData(multiblock.getPigmentTank().getStack());
+            case SLURRY -> new SlurryRenderData(multiblock.getSlurryTank().getStack());
+            default -> null;
+        };
     }
 
     @Override

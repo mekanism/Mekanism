@@ -66,7 +66,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             if (freq == null) {
                 list.add(MekanismLang.NO_FREQUENCY.translate());
             } else {
-                list.add(MekanismLang.FREQUENCY.translate(freq.getKey()));
+                list.add(MekanismLang.FREQUENCY.translate(freq.key()));
             }
             return list;
         }).tooltip(() -> {
@@ -175,11 +175,11 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     protected void transferWindows(Collection<GuiWindow> windows) {
         for (GuiWindow window : windows) {
             //Transition all current popup windows over to the new screen.
-            if (window instanceof GuiCraftingWindow) {
+            if (window instanceof GuiCraftingWindow craftingWindow) {
                 //Updating the references for listeners and the like for crafting windows
-                craftingWindowTab.adoptWindows(window);
+                craftingWindowTab.adoptWindows(craftingWindow);
                 //Update the container the virtual slots point to be correct
-                ((GuiCraftingWindow) window).updateContainer(menu);
+                craftingWindow.updateContainer(menu);
             }
             addWindow(window);
             window.transferToNewGui(this);

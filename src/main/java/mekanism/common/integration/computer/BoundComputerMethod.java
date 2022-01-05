@@ -233,14 +233,6 @@ public class BoundComputerMethod {
         }
     }
 
-    public static class ThreadAwareMethodHandle {
-
-        private final MethodHandle methodHandle;
-        private final boolean threadSafe;
-
-        public ThreadAwareMethodHandle(MethodHandle methodHandle, boolean threadSafe) {
-            this.methodHandle = methodHandle;
-            this.threadSafe = threadSafe;
-        }
+    public record ThreadAwareMethodHandle(MethodHandle methodHandle, boolean threadSafe) {
     }
 }

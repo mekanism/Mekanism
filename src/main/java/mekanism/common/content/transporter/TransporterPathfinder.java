@@ -80,8 +80,8 @@ public final class TransporterPathfinder {
         if (response.getSendingAmount() >= min) {
             BlockPos dest = data.getLocation();
             CachedPath test = PathfinderCache.getCache(start, dest, data.getSides());
-            if (test != null && checkPath(network, test.getPath(), stack)) {
-                return new Destination(test.getPath(), false, response, test.getCost());
+            if (test != null && checkPath(network, test.path(), stack)) {
+                return new Destination(test.path(), false, response, test.cost());
             }
             Pathfinder p = new Pathfinder(new DestChecker() {
                 @Override
@@ -315,8 +315,8 @@ public final class TransporterPathfinder {
         }
 
         @Override
-        public boolean equals(Object dest) {
-            return dest instanceof Destination && ((Destination) dest).path.equals(path);
+        public boolean equals(Object o) {
+            return o instanceof Destination other && other.path.equals(path);
         }
 
         @Override

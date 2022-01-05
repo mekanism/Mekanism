@@ -1,7 +1,6 @@
 package mekanism.common.content.gear.mekasuit;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.energy.IEnergyContainer;
@@ -14,12 +13,10 @@ import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.damagesource.DamageSource;
-
-import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.player.Player;
 
 @ParametersAreNonnullByDefault
 public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInhalationPurificationUnit> {
@@ -48,8 +45,7 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
             if (free || energy.greaterOrEqual(usage)) {
                 //Gather all the active effects that we can handle, so that we have them in their own list and
                 // don't run into any issues related to CMEs
-                List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(effect -> canHandle(effect.getEffect().getCategory()))
-                      .collect(Collectors.toList());
+                List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(effect -> canHandle(effect.getEffect().getCategory())).toList();
                 for (MobEffectInstance effect : effects) {
                     if (free) {
                         speedupEffect(player, effect);
@@ -75,8 +71,7 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
             //Gather all the active effects that we can handle, so that we have them in their own list and
             // don't run into any issues related to CMEs
             List<MobEffectInstance> effects = player.getActiveEffects().stream()
-                  .filter(effect -> canHandle(effect.getEffect().getCategory()))
-                  .collect(Collectors.toList());
+                  .filter(effect -> canHandle(effect.getEffect().getCategory())).toList();
             for (MobEffectInstance effect : effects) {
                 if (free) {
                     speedupEffect(player, effect);
@@ -107,14 +102,10 @@ public class ModuleInhalationPurificationUnit implements ICustomModule<ModuleInh
     }
 
     private boolean canHandle(MobEffectCategory effectType) {
-        switch (effectType) {
-            case BENEFICIAL:
-                return beneficialEffects.get();
-            case HARMFUL:
-                return harmfulEffects.get();
-            case NEUTRAL:
-                return neutralEffects.get();
-        }
-        return false;
+        return switch (effectType) {
+            case BENEFICIAL -> beneficialEffects.get();
+            case HARMFUL -> harmfulEffects.get();
+            case NEUTRAL -> neutralEffects.get();
+        };
     }
 }

@@ -67,7 +67,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     public void init() {
-        enabled = addConfigItem(new ModuleConfigItem<Boolean>(this, ENABLED_KEY, MekanismLang.MODULE_ENABLED, new ModuleBooleanData(!data.isDisabledByDefault())) {
+        enabled = addConfigItem(new ModuleConfigItem<>(this, ENABLED_KEY, MekanismLang.MODULE_ENABLED, new ModuleBooleanData(!data.isDisabledByDefault())) {
             @Override
             public void set(@Nonnull Boolean val, @Nullable Runnable callback) {
                 //Custom override of set to see if it changed and if so notify the custom module of that fact
@@ -142,7 +142,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     public boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean ignoreCreative) {
         if (energyContainer != null && !wearer.isSpectator()) {
             //Don't check spectators in general
-            if (!ignoreCreative || !(wearer instanceof Player) || !((Player) wearer).isCreative()) {
+            if (!ignoreCreative || !(wearer instanceof Player player) || !player.isCreative()) {
                 return energyContainer.extract(energy, Action.SIMULATE, AutomationType.MANUAL).equals(energy);
             }
         }
@@ -163,7 +163,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     public FloatingLong useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, FloatingLong energy, boolean freeCreative) {
         if (energyContainer != null) {
             //Use from spectators if this is called due to the various edge cases that exist for when things are calculated manually
-            if (!freeCreative || !(wearer instanceof Player) || MekanismUtils.isPlayingMode((Player) wearer)) {
+            if (!freeCreative || !(wearer instanceof Player player) || MekanismUtils.isPlayingMode(player)) {
                 return energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);
             }
         }

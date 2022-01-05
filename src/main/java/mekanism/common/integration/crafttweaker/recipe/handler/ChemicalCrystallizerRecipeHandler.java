@@ -14,9 +14,9 @@ public class ChemicalCrystallizerRecipeHandler extends MekanismRecipeHandler<Che
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, ChemicalCrystallizerRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, ChemicalCrystallizerRecipe recipe, U o) {
         //Only support if the other is a chemical crystallizer recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
-        return other instanceof ChemicalCrystallizerRecipe && chemicalIngredientConflicts(recipe.getInput(), ((ChemicalCrystallizerRecipe) other).getInput());
+        return p instanceof ChemicalCrystallizerRecipe other && chemicalIngredientConflicts(recipe.getInput(), other.getInput());
     }
 }

@@ -142,8 +142,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
         super.onCreated(world);
         for (ValveData data : valves) {
             BlockEntity tile = WorldUtils.getTileEntity(world, data.location);
-            if (tile instanceof TileEntityFusionReactorPort) {
-                heatHandlers.add((ITileHeatHandler) tile);
+            if (tile instanceof TileEntityFusionReactorPort port) {
+                heatHandlers.add(port);
             }
         }
         biomeAmbientTemp = calculateAverageAmbientTemperature(world);

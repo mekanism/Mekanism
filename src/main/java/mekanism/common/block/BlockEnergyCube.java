@@ -145,10 +145,10 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
 
     @Override
     public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
-        if (tile instanceof TileEntityEnergyCube) {
+        if (tile instanceof TileEntityEnergyCube energyCube) {
             if (Attribute.getTier(this, EnergyCubeTier.class) == EnergyCubeTier.CREATIVE) {
                 //TODO: Move this to being set in the variant added to the item group
-                ConfigInfo energyConfig = ((TileEntityEnergyCube) tile).configComponent.getConfig(TransmissionType.ENERGY);
+                ConfigInfo energyConfig = energyCube.configComponent.getConfig(TransmissionType.ENERGY);
                 if (energyConfig != null) {
                     Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
                     if (capability.isPresent()) {

@@ -155,8 +155,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     @Override
     public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
-        if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof MechanicalPipe) {
-            MechanicalPipe other = (MechanicalPipe) transmitter.getTransmitter();
+        if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof MechanicalPipe other) {
             FluidStack buffer = getBufferWithFallback();
             if (buffer.isEmpty() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
                 buffer = getTransmitterNetwork().lastFluid;

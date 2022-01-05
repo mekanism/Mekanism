@@ -36,12 +36,11 @@ public class FluidSlurryToSlurryRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof FluidSlurryToSlurryRecipe)) {
+        if (!(iRecipe instanceof FluidSlurryToSlurryRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        FluidSlurryToSlurryRecipe recipe = (FluidSlurryToSlurryRecipe) iRecipe;
         List<@NonNull FluidStack> fluidRepresentations = recipe.getFluidInput().getRepresentations();
         List<@NonNull SlurryStack> slurryRepresentations = recipe.getChemicalInput().getRepresentations();
         for (FluidStack fluidRepresentation : fluidRepresentations) {

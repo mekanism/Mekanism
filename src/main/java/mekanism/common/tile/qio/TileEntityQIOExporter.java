@@ -89,19 +89,18 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler {
     private Object2LongMap<HashedItem> getFilterEjectMap(BlockEntity back, QIOFrequency freq) {
         Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
         for (QIOFilter<?> filter : getFilters()) {
-            if (filter instanceof QIOItemStackFilter) {
-                QIOItemStackFilter itemFilter = (QIOItemStackFilter) filter;
+            if (filter instanceof QIOItemStackFilter itemFilter) {
                 if (itemFilter.fuzzyMode) {
                     map.putAll(freq.getStacksByItem(itemFilter.getItemStack().getItem()));
                 } else {
                     HashedItem type = HashedItem.create(itemFilter.getItemStack());
                     map.put(type, freq.getStored(type));
                 }
-            } else if (filter instanceof QIOTagFilter) {
-                String tagName = ((QIOTagFilter) filter).getTagName();
+            } else if (filter instanceof QIOTagFilter tagFilter) {
+                String tagName = tagFilter.getTagName();
                 map.putAll(freq.getStacksByTagWildcard(tagName));
-            } else if (filter instanceof QIOModIDFilter) {
-                String modID = ((QIOModIDFilter) filter).getModID();
+            } else if (filter instanceof QIOModIDFilter modIDFilter) {
+                String modID = modIDFilter.getModID();
                 map.putAll(freq.getStacksByModIDWildcard(modID));
             }
         }

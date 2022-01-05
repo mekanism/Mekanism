@@ -69,8 +69,8 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof MinerModIDFilter && ((MinerModIDFilter) filter).modID.equals(modID);
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof MinerModIDFilter filter && filter.modID.equals(modID);
     }
 
     @Override

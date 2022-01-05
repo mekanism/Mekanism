@@ -278,12 +278,12 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         } catch (ArrayIndexOutOfBoundsException e) {
             //Note: ChunkRenderCache is client side only, though it does not seem to have any class loading issues on the server
             // due to this exception not being caught in that specific case
-            if (world instanceof RenderChunkRegion) {
+            if (world instanceof RenderChunkRegion region) {
                 //Workaround for when the main spot of the miner is out of bounds of the ChunkRenderCache thus causing an
                 // ArrayIndexOutOfBoundException on the client as seen by:
                 // https://github.com/mekanism/Mekanism/issues/5792
                 // https://github.com/mekanism/Mekanism/issues/5844
-                world = ((RenderChunkRegion) world).level;
+                world = region.level;
                 mainState = world.getBlockState(mainPos);
             } else {
                 Mekanism.logger.error("Error getting bounding block shape, for position {}, with main position {}. World of type {}", pos, mainPos, world.getClass().getName());

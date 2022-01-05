@@ -58,8 +58,8 @@ public class SorterMaterialFilter extends SorterFilter<SorterMaterialFilter> imp
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof SorterMaterialFilter && ((SorterMaterialFilter) filter).materialItem.sameItem(materialItem);
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof SorterMaterialFilter filter && filter.materialItem.sameItem(materialItem);
     }
 
     @Override

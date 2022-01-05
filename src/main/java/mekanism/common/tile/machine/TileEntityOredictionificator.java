@@ -232,8 +232,8 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     private void setFilters(ListTag filterList) {
         for (int i = 0; i < filterList.size(); i++) {
             IFilter<?> filter = BaseFilter.readFromNBT(filterList.getCompound(i));
-            if (filter instanceof OredictionificatorItemFilter) {
-                filters.add((OredictionificatorItemFilter) filter);
+            if (filter instanceof OredictionificatorItemFilter oredictionificatorFilter) {
+                filters.add(oredictionificatorFilter);
             }
         }
     }
@@ -261,10 +261,10 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(() -> didProcess, value -> didProcess = value));
         container.track(SyncableFilterList.create(this::getFilters, value -> {
-            if (value instanceof HashList) {
-                filters = (HashList<OredictionificatorItemFilter>) value;
+            if (value instanceof HashList<OredictionificatorItemFilter> filters) {
+                this.filters = filters;
             } else {
-                filters = new HashList<>(value);
+                this.filters = new HashList<>(value);
             }
         }));
     }

@@ -35,8 +35,7 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         ServerPlayer player = context.getSender();
-        if (player != null && player.containerMenu instanceof QIOItemViewerContainer) {
-            QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
+        if (player != null && player.containerMenu instanceof QIOItemViewerContainer container) {
             byte selectedCraftingGrid = container.getSelectedCraftingGrid(player.getUUID());
             if (selectedCraftingGrid == -1) {
                 Mekanism.logger.warn("Received transfer request from: {}, but they do not currently have a crafting window open.", player);
@@ -44,8 +43,8 @@ public class PacketQIOFillCraftingWindow implements IMekanismPacket {
                 Optional<? extends Recipe<?>> optionalRecipe = player.level.getRecipeManager().byKey(recipeID);
                 if (optionalRecipe.isPresent()) {
                     Recipe<?> recipe = optionalRecipe.get();
-                    if (recipe instanceof CraftingRecipe) {
-                        QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, player, recipeID, (CraftingRecipe) recipe, sources);
+                    if (recipe instanceof CraftingRecipe craftingRecipe) {
+                        QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, player, recipeID, craftingRecipe, sources);
                     } else {
                         Mekanism.logger.warn("Received transfer request from: {}, but the type ({}) of the specified recipe was not a crafting recipe.",
                               player, recipe.getClass());

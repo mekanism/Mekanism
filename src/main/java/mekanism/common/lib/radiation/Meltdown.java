@@ -143,9 +143,9 @@ public class Meltdown {
             BlockState state = world.getBlockState(toExplode);
             //If the block didn't already get broken when running the normal explosion
             if (!state.isAir()) {
-                if (state.canDropFromExplosion(world, toExplode, explosion) && world instanceof ServerLevel) {
+                if (state.canDropFromExplosion(world, toExplode, explosion) && world instanceof ServerLevel level) {
                     BlockEntity tileentity = state.hasBlockEntity() ? world.getBlockEntity(toExplode) : null;
-                    LootContext.Builder lootContextBuilder = new LootContext.Builder((ServerLevel) world)
+                    LootContext.Builder lootContextBuilder = new LootContext.Builder(level)
                           .withRandom(world.random)
                           .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(toExplode))
                           .withParameter(LootContextParams.TOOL, ItemStack.EMPTY)

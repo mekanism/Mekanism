@@ -248,8 +248,8 @@ public class Mekanism {
             Optional<? extends ModContainer> crtModContainer = ModList.get().getModContainerById(MekanismHooks.CRAFTTWEAKER_MOD_ID);
             if (crtModContainer.isPresent()) {
                 ModContainer container = crtModContainer.get();
-                if (container instanceof FMLModContainer) {
-                    crtModEventBus = ((FMLModContainer) container).getEventBus();
+                if (container instanceof FMLModContainer modContainer) {
+                    crtModEventBus = modContainer.getEventBus();
                 }
             }
             //Register these at lowest priority to try and ensure they get later ids in the chemical registries
@@ -456,9 +456,9 @@ public class Mekanism {
 
     private synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         LevelAccessor world = event.getWorld();
-        if (world instanceof Level && !world.isClientSide() && MekanismConfig.world.enableRegeneration.get()) {
+        if (world instanceof Level level && !world.isClientSide() && MekanismConfig.world.enableRegeneration.get()) {
             if (event.getData().getInt(NBTConstants.WORLD_GEN_VERSION) < MekanismConfig.world.userGenVersion.get()) {
-                worldTickHandler.addRegenChunk(((Level) world).dimension(), event.getChunk().getPos());
+                worldTickHandler.addRegenChunk(level.dimension(), event.getChunk().getPos());
             }
         }
     }
@@ -468,8 +468,8 @@ public class Mekanism {
         // cached values from calls before the initial loading
         ModConfig config = configEvent.getConfig();
         //Make sure it is for the same modid as us
-        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig) {
-            ((MekanismModConfig) config).clearCache();
+        if (config.getModId().equals(MODID) && config instanceof MekanismModConfig mekConfig) {
+            mekConfig.clearCache();
         }
     }
 
@@ -484,12 +484,12 @@ public class Mekanism {
             MekFakePlayer.releaseInstance(event.getWorld());
         }
         //TODO - 1.18: See if this is even needed anymore? Maybe unloading the world properly unloads the tiles
-        /*if (event.getWorld() instanceof Level && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
+        /*if (event.getWorld() instanceof Level level && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
             //If there are any invalidation listeners for the oredictionificator as there was a loaded oredictionificator
             // then go through the entities and remove the corresponding invalidation listeners from them
-            for (BlockEntity tile : ((Level) event.getWorld()).blockEntityList) {
-                if (tile instanceof TileEntityOredictionificator) {
-                    ((TileEntityOredictionificator) tile).removeInvalidationListener();
+            for (BlockEntity tile : level.blockEntityList) {
+                if (tile instanceof TileEntityOredictionificator oredictionificator) {
+                    oredictionificator.removeInvalidationListener();
                 }
             }
         }*/

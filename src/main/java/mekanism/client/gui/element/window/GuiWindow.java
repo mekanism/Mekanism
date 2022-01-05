@@ -1,8 +1,7 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.datafixers.util.Pair;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
@@ -14,11 +13,12 @@ import mekanism.client.gui.element.button.GuiCloseButton;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
+import mekanism.common.inventory.container.SelectedWindowData.WindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.lwjgl.glfw.GLFW;
 
 public class GuiWindow extends GuiTexturedElement {
@@ -35,10 +35,9 @@ public class GuiWindow extends GuiTexturedElement {
 
     protected InteractionStrategy interactionStrategy = InteractionStrategy.CONTAINER;
 
-    //TODO - 1.18: Switch this method to returning a record instead of a pair
-    private static Pair<Integer, Integer> calculateOpenPosition(IGuiWrapper gui, SelectedWindowData windowData, int x, int y, int width, int height) {
-        Pair<Integer, Integer> lastPosition = windowData.getLastPosition();
-        int lastX = lastPosition.getFirst();
+    private static WindowPosition calculateOpenPosition(IGuiWrapper gui, SelectedWindowData windowData, int x, int y, int width, int height) {
+        WindowPosition lastPosition = windowData.getLastPosition();
+        int lastX = lastPosition.x();
         if (lastX != Integer.MAX_VALUE) {
             int guiLeft = gui.getLeft();
             if (guiLeft + lastX < 0) {
@@ -49,7 +48,7 @@ public class GuiWindow extends GuiTexturedElement {
                 lastX = minecraft.getWindow().getGuiScaledWidth() - guiLeft - width;
             }
         }
-        int lastY = lastPosition.getSecond();
+        int lastY = lastPosition.y();
         if (lastY != Integer.MAX_VALUE) {
             int guiTop = gui.getTop();
             if (guiTop + lastY < 0) {
@@ -60,7 +59,7 @@ public class GuiWindow extends GuiTexturedElement {
                 lastY = minecraft.getWindow().getGuiScaledHeight() - guiTop - height;
             }
         }
-        return Pair.of(lastX == Integer.MAX_VALUE ? x : lastX, lastY == Integer.MAX_VALUE ? y : lastY);
+        return new WindowPosition(lastX == Integer.MAX_VALUE ? x : lastX, lastY == Integer.MAX_VALUE ? y : lastY);
     }
 
     public GuiWindow(IGuiWrapper gui, int x, int y, int width, int height, WindowType windowType) {
@@ -72,8 +71,8 @@ public class GuiWindow extends GuiTexturedElement {
         this(gui, calculateOpenPosition(gui, windowData, x, y, width, height), width, height, windowData);
     }
 
-    private GuiWindow(IGuiWrapper gui, Pair<Integer, Integer> calculatedPosition, int width, int height, SelectedWindowData windowData) {
-        super(GuiMekanism.BASE_BACKGROUND, gui, calculatedPosition.getFirst(), calculatedPosition.getSecond(), width, height);
+    private GuiWindow(IGuiWrapper gui, WindowPosition calculatedPosition, int width, int height, SelectedWindowData windowData) {
+        super(GuiMekanism.BASE_BACKGROUND, gui, calculatedPosition.x(), calculatedPosition.y(), width, height);
         this.windowData = windowData;
         isOverlay = true;
         active = true;
@@ -106,8 +105,8 @@ public class GuiWindow extends GuiTexturedElement {
                 prevDY = 0;
             }
         } else if (!ret && interactionStrategy.allowContainer()) {
-            if (gui() instanceof GuiMekanism) {
-                AbstractContainerMenu c = ((GuiMekanism<?>) gui()).getMenu();
+            if (gui() instanceof GuiMekanism<?> gui) {
+                AbstractContainerMenu c = gui.getMenu();
                 if (!(c instanceof IEmptyContainer)) {
                     // allow interaction with slots
                     if (mouseX >= getGuiLeft() && mouseX < getGuiLeft() + getGuiWidth() && mouseY >= getGuiTop() + getGuiHeight() - 90) {

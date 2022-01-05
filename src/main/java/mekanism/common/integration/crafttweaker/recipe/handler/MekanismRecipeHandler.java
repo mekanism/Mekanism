@@ -98,22 +98,21 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
      * Super simplified/watered down version of BaseCrTExampleProvider#getConversionRepresentations
      */
     private String convertParam(Object param) {
-        if (param instanceof ItemStack) {
-            return ItemStackHelper.getCommandString((ItemStack) param);
-        } else if (param instanceof FluidStack) {
-            return new MCFluidStack((FluidStack) param).getCommandString();
-        } else if (param instanceof GasStack) {
-            return new CrTGasStack((GasStack) param).getCommandString();
-        } else if (param instanceof InfusionStack) {
-            return new CrTInfusionStack((InfusionStack) param).getCommandString();
-        } else if (param instanceof PigmentStack) {
-            return new CrTPigmentStack((PigmentStack) param).getCommandString();
-        } else if (param instanceof SlurryStack) {
-            return new CrTSlurryStack((SlurryStack) param).getCommandString();
-        } else if (param instanceof BoxedChemicalStack) {
-            return convertParam(((BoxedChemicalStack) param).getChemicalStack());
-        } else if (param instanceof FloatingLong) {
-            FloatingLong fl = (FloatingLong) param;
+        if (param instanceof ItemStack stack) {
+            return ItemStackHelper.getCommandString(stack);
+        } else if (param instanceof FluidStack stack) {
+            return new MCFluidStack(stack).getCommandString();
+        } else if (param instanceof GasStack stack) {
+            return new CrTGasStack(stack).getCommandString();
+        } else if (param instanceof InfusionStack stack) {
+            return new CrTInfusionStack(stack).getCommandString();
+        } else if (param instanceof PigmentStack stack) {
+            return new CrTPigmentStack(stack).getCommandString();
+        } else if (param instanceof SlurryStack stack) {
+            return new CrTSlurryStack(stack).getCommandString();
+        } else if (param instanceof BoxedChemicalStack stack) {
+            return convertParam(stack.getChemicalStack());
+        } else if (param instanceof FloatingLong fl) {
             //Note: Handled via implicit casts
             if (fl.getDecimal() == 0) {
                 //No decimal, don't bother printing it
@@ -123,23 +122,19 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             return fl.toString().replaceAll("0*$", "");
         } else if (param instanceof Number || param instanceof Boolean) {//Handle integers and the like
             return param.toString();
-        } else if (param instanceof ItemStackIngredient) {
-            return convertIngredient((ItemStackIngredient) param);
-        } else if (param instanceof FluidStackIngredient) {
-            return convertIngredient((FluidStackIngredient) param);
-        } else if (param instanceof GasStackIngredient) {
-            return convertIngredient(CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTGasTagManager.INSTANCE, ChemicalIngredientDeserializer.GAS, (GasStackIngredient) param);
-        } else if (param instanceof InfusionStackIngredient) {
-            return convertIngredient(CrTConstants.CLASS_INFUSION_STACK_INGREDIENT, CrTInfuseTypeTagManager.INSTANCE, ChemicalIngredientDeserializer.INFUSION,
-                  (InfusionStackIngredient) param);
-        } else if (param instanceof PigmentStackIngredient) {
-            return convertIngredient(CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT, CrTPigmentTagManager.INSTANCE, ChemicalIngredientDeserializer.PIGMENT,
-                  (PigmentStackIngredient) param);
-        } else if (param instanceof SlurryStackIngredient) {
-            return convertIngredient(CrTConstants.CLASS_SLURRY_STACK_INGREDIENT, CrTSlurryTagManager.INSTANCE, ChemicalIngredientDeserializer.SLURRY,
-                  (SlurryStackIngredient) param);
-        } else if (param instanceof List) {
-            List<?> list = (List<?>) param;
+        } else if (param instanceof ItemStackIngredient ingredient) {
+            return convertIngredient(ingredient);
+        } else if (param instanceof FluidStackIngredient ingredient) {
+            return convertIngredient(ingredient);
+        } else if (param instanceof GasStackIngredient ingredient) {
+            return convertIngredient(CrTConstants.CLASS_GAS_STACK_INGREDIENT, CrTGasTagManager.INSTANCE, ChemicalIngredientDeserializer.GAS, ingredient);
+        } else if (param instanceof InfusionStackIngredient ingredient) {
+            return convertIngredient(CrTConstants.CLASS_INFUSION_STACK_INGREDIENT, CrTInfuseTypeTagManager.INSTANCE, ChemicalIngredientDeserializer.INFUSION, ingredient);
+        } else if (param instanceof PigmentStackIngredient ingredient) {
+            return convertIngredient(CrTConstants.CLASS_PIGMENT_STACK_INGREDIENT, CrTPigmentTagManager.INSTANCE, ChemicalIngredientDeserializer.PIGMENT, ingredient);
+        } else if (param instanceof SlurryStackIngredient ingredient) {
+            return convertIngredient(CrTConstants.CLASS_SLURRY_STACK_INGREDIENT, CrTSlurryTagManager.INSTANCE, ChemicalIngredientDeserializer.SLURRY, ingredient);
+        } else if (param instanceof List<?> list) {
             if (list.isEmpty()) {
                 //Shouldn't happen
                 return "Invalid (output) list, no outputs";
@@ -179,9 +174,9 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     }
 
     private String convertIngredient(ItemStackIngredient ingredient) {
-        if (ingredient instanceof ItemStackIngredient.Single) {
+        if (ingredient instanceof ItemStackIngredient.Single single) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
-            Ingredient vanillaIngredient = ((ItemStackIngredient.Single) ingredient).getInputRaw();
+            Ingredient vanillaIngredient = single.getInputRaw();
             int amount = GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1);
             String rep = basicImplicitIngredient(vanillaIngredient, amount, serialized.get(JsonConstants.INGREDIENT));
             if (rep == null) {
@@ -192,8 +187,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             }
             //Note: Handled via implicit casts
             return rep;
-        } else if (ingredient instanceof ItemStackIngredient.Multi) {
-            ItemStackIngredient.Multi multiIngredient = (ItemStackIngredient.Multi) ingredient;
+        } else if (ingredient instanceof ItemStackIngredient.Multi multiIngredient) {
             StringBuilder builder = new StringBuilder(CrTConstants.CLASS_ITEM_STACK_INGREDIENT + ".createMulti(");
             multiIngredient.forEachIngredient(i -> {
                 builder.append(convertIngredient(i)).append(", ");
@@ -218,8 +212,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             //Note: Handled via implicit casts
             return getTagWithExplicitAmount(TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString()),
                   serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt());
-        } else if (ingredient instanceof FluidStackIngredient.Multi) {
-            FluidStackIngredient.Multi multiIngredient = (FluidStackIngredient.Multi) ingredient;
+        } else if (ingredient instanceof FluidStackIngredient.Multi multiIngredient) {
             StringBuilder builder = new StringBuilder(CrTConstants.CLASS_FLUID_STACK_INGREDIENT + ".createMulti(");
             multiIngredient.forEachIngredient(i -> {
                 builder.append(convertIngredient(i)).append(", ");
@@ -251,8 +244,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             }
             //Tag with amount can only handle up to max int, so we have to do it explicitly if we have more
             return crtClass + ".from(" + tag.getCommandString() + ", " + amount + ")";
-        } else if (ingredient instanceof ChemicalStackIngredient.MultiIngredient) {
-            ChemicalStackIngredient.MultiIngredient<CHEMICAL, STACK, ?> multiIngredient = (ChemicalStackIngredient.MultiIngredient<CHEMICAL, STACK, ?>) ingredient;
+        } else if (ingredient instanceof ChemicalStackIngredient.MultiIngredient<CHEMICAL, STACK, ?> multiIngredient) {
             StringBuilder builder = new StringBuilder(crtClass + ".createMulti(");
             multiIngredient.forEachIngredient(i -> {
                 builder.append(convertIngredient(crtClass, tagManager, deserializer, i)).append(", ");

@@ -223,8 +223,8 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
     public boolean equals(Object o) {
         if (o == this) {
             return true;
-        } else if (o instanceof DynamicNetwork) {
-            return uuid.equals(((DynamicNetwork<?, ?, ?>) o).uuid);
+        } else if (o instanceof DynamicNetwork<?, ?, ?> other) {
+            return uuid.equals(other.uuid);
         }
         return false;
     }

@@ -32,12 +32,11 @@ public class FluidToFluidRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof FluidToFluidRecipe)) {
+        if (!(iRecipe instanceof FluidToFluidRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        FluidToFluidRecipe recipe = (FluidToFluidRecipe) iRecipe;
         for (FluidStack representation : recipe.getInput().getRepresentations()) {
             FluidStack output = recipe.getOutput(representation);
             if (!output.isEmpty()) {

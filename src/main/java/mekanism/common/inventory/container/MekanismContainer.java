@@ -116,20 +116,20 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     @Override
     protected Slot addSlot(@Nonnull Slot slot) {
         super.addSlot(slot);
-        if (slot instanceof IHasExtraData) {
+        if (slot instanceof IHasExtraData hasExtraData) {
             //If the slot has any extra data, allow it to add any trackers it may have
-            ((IHasExtraData) slot).addTrackers(inv.player, this::track);
+            hasExtraData.addTrackers(inv.player, this::track);
         }
-        if (slot instanceof InventoryContainerSlot) {
-            inventoryContainerSlots.add((InventoryContainerSlot) slot);
-        } else if (slot instanceof ArmorSlot) {
-            armorSlots.add((ArmorSlot) slot);
-        } else if (slot instanceof MainInventorySlot) {
-            mainInventorySlots.add((MainInventorySlot) slot);
-        } else if (slot instanceof HotBarSlot) {
-            hotBarSlots.add((HotBarSlot) slot);
-        } else if (slot instanceof OffhandSlot) {
-            offhandSlots.add((OffhandSlot) slot);
+        if (slot instanceof InventoryContainerSlot inventorySlot) {
+            inventoryContainerSlots.add(inventorySlot);
+        } else if (slot instanceof ArmorSlot armorSlot) {
+            armorSlots.add(armorSlot);
+        } else if (slot instanceof MainInventorySlot inventorySlot) {
+            mainInventorySlots.add(inventorySlot);
+        } else if (slot instanceof HotBarSlot hotBarSlot) {
+            hotBarSlots.add(hotBarSlot);
+        } else if (slot instanceof OffhandSlot offhandSlot) {
+            offhandSlots.add(offhandSlot);
         }
         return slot;
     }
@@ -260,7 +260,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             return ItemStack.EMPTY;
         }
         SelectedWindowData selectedWindow = player.level.isClientSide ? getSelectedWindow() : getSelectedWindow(player.getUUID());
-        if (currentSlot instanceof IInsertableSlot && !((IInsertableSlot) currentSlot).exists(selectedWindow)) {
+        if (currentSlot instanceof IInsertableSlot insertableSlot && !insertableSlot.exists(selectedWindow)) {
             return ItemStack.EMPTY;
         }
         ItemStack slotStack = currentSlot.getItem();
@@ -511,81 +511,81 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
 
     public void handleWindowProperty(short property, boolean value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableBoolean) {
-            ((SyncableBoolean) data).set(value);
+        if (data instanceof SyncableBoolean syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, byte value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableByte) {
-            ((SyncableByte) data).set(value);
+        if (data instanceof SyncableByte syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, short value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableShort) {
-            ((SyncableShort) data).set(value);
-        } else if (data instanceof SyncableFloatingLong) {
-            ((SyncableFloatingLong) data).setDecimal(value);
+        if (data instanceof SyncableShort syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableFloatingLong syncable) {
+            syncable.setDecimal(value);
         }
     }
 
     public void handleWindowProperty(short property, int value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableInt) {
-            ((SyncableInt) data).set(value);
-        } else if (data instanceof SyncableEnum) {
-            ((SyncableEnum<?>) data).set(value);
-        } else if (data instanceof SyncableFluidStack) {
-            ((SyncableFluidStack) data).set(value);
-        } else if (data instanceof SyncableItemStack) {
-            ((SyncableItemStack) data).set(value);
+        if (data instanceof SyncableInt syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableEnum<?> syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableFluidStack syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableItemStack syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, long value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableLong) {
-            ((SyncableLong) data).set(value);
-        } else if (data instanceof SyncableChemicalStack) {
-            ((SyncableChemicalStack<?, ?>) data).set(value);
+        if (data instanceof SyncableLong syncable) {
+            syncable.set(value);
+        } else if (data instanceof SyncableChemicalStack<?, ?> syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, float value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableFloat) {
-            ((SyncableFloat) data).set(value);
+        if (data instanceof SyncableFloat syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, double value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableDouble) {
-            ((SyncableDouble) data).set(value);
+        if (data instanceof SyncableDouble syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, @Nonnull ItemStack value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableItemStack) {
-            ((SyncableItemStack) data).set(value);
+        if (data instanceof SyncableItemStack syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, @Nonnull FluidStack value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableFluidStack) {
-            ((SyncableFluidStack) data).set(value);
+        if (data instanceof SyncableFluidStack syncable) {
+            syncable.set(value);
         }
     }
 
     public void handleWindowProperty(short property, @Nullable BlockPos value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableBlockPos) {
-            ((SyncableBlockPos) data).set(value);
+        if (data instanceof SyncableBlockPos syncable) {
+            syncable.set(value);
         }
     }
 
@@ -598,14 +598,14 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
 
     public <STACK extends ChemicalStack<?>> void handleWindowProperty(short property, @Nonnull STACK value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableGasStack && value instanceof GasStack) {
-            ((SyncableGasStack) data).set((GasStack) value);
-        } else if (data instanceof SyncableInfusionStack && value instanceof InfusionStack) {
-            ((SyncableInfusionStack) data).set((InfusionStack) value);
-        } else if (data instanceof SyncablePigmentStack && value instanceof PigmentStack) {
-            ((SyncablePigmentStack) data).set((PigmentStack) value);
-        } else if (data instanceof SyncableSlurryStack && value instanceof SlurryStack) {
-            ((SyncableSlurryStack) data).set((SlurryStack) value);
+        if (data instanceof SyncableGasStack syncable && value instanceof GasStack stack) {
+            syncable.set(stack);
+        } else if (data instanceof SyncableInfusionStack syncable && value instanceof InfusionStack stack) {
+            syncable.set(stack);
+        } else if (data instanceof SyncablePigmentStack syncable && value instanceof PigmentStack stack) {
+            syncable.set(stack);
+        } else if (data instanceof SyncableSlurryStack syncable && value instanceof SlurryStack stack) {
+            syncable.set(stack);
         }
     }
 
@@ -618,8 +618,8 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
 
     public void handleWindowProperty(short property, @Nonnull FloatingLong value) {
         ISyncableData data = trackedData.get(property);
-        if (data instanceof SyncableFloatingLong) {
-            ((SyncableFloatingLong) data).set(value);
+        if (data instanceof SyncableFloatingLong syncable) {
+            syncable.set(value);
         }
     }
 

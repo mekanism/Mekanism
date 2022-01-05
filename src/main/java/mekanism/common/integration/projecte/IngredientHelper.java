@@ -56,15 +56,15 @@ public class IngredientHelper {
         }
     }
 
-    public void put(ChemicalStack<?> stack) {
-        if (stack instanceof GasStack) {
-            put((GasStack) stack);
-        } else if (stack instanceof InfusionStack) {
-            put((InfusionStack) stack);
-        } else if (stack instanceof PigmentStack) {
-            put((PigmentStack) stack);
-        } else if (stack instanceof SlurryStack) {
-            put((SlurryStack) stack);
+    public void put(ChemicalStack<?> chemicalStack) {
+        if (chemicalStack instanceof GasStack stack) {
+            put(stack);
+        } else if (chemicalStack instanceof InfusionStack stack) {
+            put(stack);
+        } else if (chemicalStack instanceof PigmentStack stack) {
+            put(stack);
+        } else if (chemicalStack instanceof SlurryStack stack) {
+            put(stack);
         }
     }
 
@@ -107,15 +107,15 @@ public class IngredientHelper {
         return addAsConversion(output, (int) outputAmount);
     }
 
-    public boolean addAsConversion(ChemicalStack<?> stack) {
-        if (stack instanceof GasStack) {
-            return addAsConversion((GasStack) stack);
-        } else if (stack instanceof InfusionStack) {
-            return addAsConversion((InfusionStack) stack);
-        } else if (stack instanceof PigmentStack) {
-            return addAsConversion((PigmentStack) stack);
-        } else if (stack instanceof SlurryStack) {
-            return addAsConversion((SlurryStack) stack);
+    public boolean addAsConversion(ChemicalStack<?> chemicalStack) {
+        if (chemicalStack instanceof GasStack stack) {
+            return addAsConversion(stack);
+        } else if (chemicalStack instanceof InfusionStack stack) {
+            return addAsConversion(stack);
+        } else if (chemicalStack instanceof PigmentStack stack) {
+            return addAsConversion(stack);
+        } else if (chemicalStack instanceof SlurryStack stack) {
+            return addAsConversion(stack);
         }
         return false;
     }

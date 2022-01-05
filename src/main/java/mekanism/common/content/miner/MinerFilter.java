@@ -70,8 +70,7 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return filter instanceof MinerFilter && ((MinerFilter<?>) filter).requiresReplacement == requiresReplacement &&
-               ((MinerFilter<?>) filter).replaceTarget == replaceTarget;
+    public boolean equals(Object o) {
+        return o instanceof MinerFilter<?> filter && filter.requiresReplacement == requiresReplacement && filter.replaceTarget == replaceTarget;
     }
 }

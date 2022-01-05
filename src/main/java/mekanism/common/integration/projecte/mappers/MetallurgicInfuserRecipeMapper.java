@@ -36,12 +36,11 @@ public class MetallurgicInfuserRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof MetallurgicInfuserRecipe)) {
+        if (!(iRecipe instanceof MetallurgicInfuserRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        MetallurgicInfuserRecipe recipe = (MetallurgicInfuserRecipe) iRecipe;
         List<@NonNull InfusionStack> infuseTypeRepresentations = recipe.getChemicalInput().getRepresentations();
         List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
         for (InfusionStack infuseTypeRepresentation : infuseTypeRepresentations) {

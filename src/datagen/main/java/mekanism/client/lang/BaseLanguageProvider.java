@@ -41,8 +41,8 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     }
 
     protected void add(IHasTranslationKey key, String value) {
-        if (key instanceof IBlockProvider) {
-            Block block = ((IBlockProvider) key).getBlock();
+        if (key instanceof IBlockProvider blockProvider) {
+            Block block = blockProvider.getBlock();
             if (Attribute.has(block, AttributeGui.class)) {
                 add(Util.makeDescriptionId("container", block.getRegistryName()), value);
             }

@@ -101,14 +101,6 @@ public class GuiSupportedUpgrades extends GuiElement {
         return new UpgradePos((index % ROW_ROOM) * ELEMENT_SIZE, row * ELEMENT_SIZE);
     }
 
-    private static class UpgradePos {
-
-        private final int x;
-        private final int y;
-
-        public UpgradePos(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
+    private record UpgradePos(int x, int y) {
     }
 }

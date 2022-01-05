@@ -59,8 +59,8 @@ public class MultiblockManager<T extends MultiblockData> {
     }
 
     public boolean isCompatible(BlockEntity tile) {
-        if (tile instanceof IMultiblock) {
-            return ((IMultiblock<?>) tile).getManager() == this;
+        if (tile instanceof IMultiblock<?> multiblock) {
+            return multiblock.getManager() == this;
         }
         return false;
     }
@@ -94,8 +94,8 @@ public class MultiblockManager<T extends MultiblockData> {
         CacheWrapper toReturn = inventories.get(id);
         for (Coord4D obj : toReturn.locations) {
             BlockEntity tile = WorldUtils.getTileEntity(BlockEntity.class, world, obj.getPos());
-            if (tile instanceof IMultiblock) {
-                ((IMultiblock<?>) tile).resetCache();
+            if (tile instanceof IMultiblock<?> multiblock) {
+                multiblock.resetCache();
             }
         }
         inventories.remove(id);

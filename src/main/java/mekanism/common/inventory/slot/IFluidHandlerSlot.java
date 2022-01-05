@@ -184,7 +184,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
 
         ItemStack input = StackUtils.size(getStack(), 1);
         Optional<IFluidHandlerItem> cap = FluidUtil.getFluidHandler(input).resolve();
-        if (!cap.isPresent()) {
+        if (cap.isEmpty()) {
             //The capability should be present based on checks that happen before this method, but if for some reason it isn't just exit
             return false;
         }

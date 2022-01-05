@@ -20,7 +20,6 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.common.CommonWorldTickHandler;
-import mekanism.common.base.ProcessInfo;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -113,10 +112,10 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         outputSlots = new ArrayList<>();
 
         for (ProcessInfo info : processInfoSlots) {
-            inputSlots.add(info.getInputSlot());
-            outputSlots.add(info.getOutputSlot());
-            if (info.getSecondaryOutputSlot() != null) {
-                outputSlots.add(info.getSecondaryOutputSlot());
+            inputSlots.add(info.inputSlot());
+            outputSlots.add(info.outputSlot());
+            if (info.secondaryOutputSlot() != null) {
+                outputSlots.add(info.secondaryOutputSlot());
             }
         }
         configComponent.setupItemIOConfig(inputSlots, outputSlots, energySlot, false);
@@ -431,8 +430,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
 
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof MachineUpgradeData) {
-            MachineUpgradeData data = (MachineUpgradeData) upgradeData;
+        if (upgradeData instanceof MachineUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
@@ -479,13 +477,13 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
     @ComputerMethod
     private ItemStack getInput(int process) throws ComputerException {
         validateValidProcess(process);
-        return processInfoSlots[process].getInputSlot().getStack();
+        return processInfoSlots[process].inputSlot().getStack();
     }
 
     @ComputerMethod
     private ItemStack getOutput(int process) throws ComputerException {
         validateValidProcess(process);
-        return processInfoSlots[process].getOutputSlot().getStack();
+        return processInfoSlots[process].outputSlot().getStack();
     }
     //End methods IComputerTile
 
@@ -493,7 +491,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
         Map<HashedItem, RecipeProcessInfo> processes = new HashMap<>();
         List<ProcessInfo> emptyProcesses = new ArrayList<>();
         for (ProcessInfo processInfo : processInfoSlots) {
-            IInventorySlot inputSlot = processInfo.getInputSlot();
+            IInventorySlot inputSlot = processInfo.inputSlot();
             if (inputSlot.isEmpty()) {
                 emptyProcesses.add(processInfo);
             } else {
@@ -505,7 +503,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 if (recipeProcessInfo.lazyMinPerSlot == null && !CommonWorldTickHandler.flushTagAndRecipeCaches) {
                     //If we don't have a lazily initialized min per slot calculation set for it yet
                     // and our cache is not invalid/out of date due to a reload
-                    CachedRecipe<RECIPE> cachedRecipe = getCachedRecipe(processInfo.getProcess());
+                    CachedRecipe<RECIPE> cachedRecipe = getCachedRecipe(processInfo.process());
                     if (isCachedRecipeValid(cachedRecipe, inputStack)) {
                         // And our current process has a cached recipe then set the lazily initialized per slot value
                         // Note: If something goes wrong, and we end up with zero as how much we need as an input
@@ -533,7 +531,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                     ItemStack largerInput = item.createStack(Math.min(item.getStack().getMaxStackSize(), recipeProcessInfo.totalCount));
                     ProcessInfo processInfo = recipeProcessInfo.processes.get(0);
                     //Try getting a recipe for our input with a larger size, and update the cache if we find one
-                    RECIPE recipe = getRecipeForInput(processInfo.getProcess(), largerInput, processInfo.getOutputSlot(), processInfo.getSecondaryOutputSlot(), true);
+                    RECIPE recipe = getRecipeForInput(processInfo.process(), largerInput, processInfo.outputSlot(), processInfo.secondaryOutputSlot(), true);
                     if (recipe != null) {
                         return Math.max(1, getNeededInput(recipe, largerInput));
                     }
@@ -572,8 +570,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             int added = 0;
             List<ProcessInfo> toRemove = new ArrayList<>();
             for (ProcessInfo emptyProcess : emptyProcesses) {
-                if (inputProducesOutput(emptyProcess.getProcess(), sourceStack, emptyProcess.getOutputSlot(),
-                      emptyProcess.getSecondaryOutputSlot(), true)) {
+                if (inputProducesOutput(emptyProcess.process(), sourceStack, emptyProcess.outputSlot(), emptyProcess.secondaryOutputSlot(), true)) {
                     //If the input is valid for the stuff in the empty process' output slot
                     // then add our empty process to our recipeProcessInfo, and mark
                     // the empty process as accounted for
@@ -645,7 +642,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
             }
             for (int i = 0; i < processCount; i++) {
                 ProcessInfo processInfo = recipeProcessInfo.processes.get(i);
-                FactoryInputInventorySlot inputSlot = processInfo.getInputSlot();
+                FactoryInputInventorySlot inputSlot = processInfo.inputSlot();
                 int sizeForSlot = numberPerSlot;
                 if (remainder > 0) {
                     //If we have a remainder, factor it into our slots
@@ -691,6 +688,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe> extends T
                 }
             }
         }
+    }
+
+    public record ProcessInfo(int process, @Nonnull FactoryInputInventorySlot inputSlot, @Nonnull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
     }
 
     private static class RecipeProcessInfo {

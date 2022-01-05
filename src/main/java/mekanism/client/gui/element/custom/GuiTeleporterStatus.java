@@ -12,10 +12,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-
-import mekanism.client.gui.element.GuiElement.ButtonBackground;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiTeleporterStatus extends GuiTexturedElement {
 
@@ -43,17 +41,12 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     @Override
     protected ResourceLocation getResource() {
         if (hasFrequency.getAsBoolean()) {
-            switch (statusSupplier.getAsByte()) {
-                case 1:
-                    return READY;
-                case 2:
-                    return NO_FRAME;
-                case 4:
-                    return NEEDS_ENERGY;
-                case 3:
-                default:
-                    return NO_LINK;
-            }
+            return switch (statusSupplier.getAsByte()) {
+                case 1 -> READY;
+                case 2 -> NO_FRAME;
+                case 4 -> NEEDS_ENERGY;
+                default -> NO_LINK;
+            };
         }
         return NO_FREQUENCY;
     }
@@ -74,17 +67,12 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
 
     private Component getStatusDisplay() {
         if (hasFrequency.getAsBoolean()) {
-            switch (statusSupplier.getAsByte()) {
-                case 1:
-                    return MekanismLang.TELEPORTER_READY.translateColored(EnumColor.DARK_GREEN);
-                case 2:
-                    return MekanismLang.TELEPORTER_NO_FRAME.translateColored(EnumColor.DARK_RED);
-                case 4:
-                    return MekanismLang.TELEPORTER_NEEDS_ENERGY.translateColored(EnumColor.DARK_RED);
-                case 3:
-                default:
-                    return MekanismLang.TELEPORTER_NO_LINK.translateColored(EnumColor.DARK_RED);
-            }
+            return switch (statusSupplier.getAsByte()) {
+                case 1 -> MekanismLang.TELEPORTER_READY.translateColored(EnumColor.DARK_GREEN);
+                case 2 -> MekanismLang.TELEPORTER_NO_FRAME.translateColored(EnumColor.DARK_RED);
+                case 4 -> MekanismLang.TELEPORTER_NEEDS_ENERGY.translateColored(EnumColor.DARK_RED);
+                default -> MekanismLang.TELEPORTER_NO_LINK.translateColored(EnumColor.DARK_RED);
+            };
         }
         return MekanismLang.NO_FREQUENCY.translateColored(EnumColor.DARK_RED);
     }

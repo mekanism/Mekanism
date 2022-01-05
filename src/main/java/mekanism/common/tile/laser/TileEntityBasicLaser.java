@@ -118,7 +118,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         to = from.adjustPosition(direction, entity);
                         break;
                     }
-                    if (entity instanceof ItemEntity && handleHitItem((ItemEntity) entity)) {
+                    if (entity instanceof ItemEntity item && handleHitItem(item)) {
                         //TODO: Allow the tractor beam to have an energy cost for pulling items?
                         continue;
                     }
@@ -126,10 +126,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     FloatingLong value = remainingEnergy.divide(energyPerDamage);
                     float damage = value.floatValue();
                     float health = 0;
-                    if (entity instanceof LivingEntity) {
+                    if (entity instanceof LivingEntity livingEntity) {
                         //If the entity is a living entity check if they are blocking with a shield and then allow
                         // the shield to cause some damage to be dissipated in exchange for durability
-                        LivingEntity livingEntity = (LivingEntity) entity;
                         boolean updateDamage = false;
                         if (livingEntity.isBlocking() && livingEntity.getUseItem().canPerformAction(ToolActions.SHIELD_BLOCK)) {
                             //TODO - V11: Add a laser reflector capability that shields can implement to cause the laser beam to be reflected
@@ -213,9 +212,9 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         entity.invulnerableTime = lastHurtResistTime;
                         if (damaged) {
                             //If we damaged it
-                            if (entity instanceof LivingEntity) {
+                            if (entity instanceof LivingEntity livingEntity) {
                                 //Update the damage to match how much health the entity lost
-                                damage = Math.min(damage, Math.max(0, health - ((LivingEntity) entity).getHealth()));
+                                damage = Math.min(damage, Math.max(0, health - livingEntity.getHealth()));
                             }
                             remainingEnergy = remainingEnergy.minusEqual(energyPerDamage.multiply(damage));
                             if (remainingEnergy.isZero()) {
@@ -315,8 +314,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             InteractionHand hand = livingEntity.getUsedItemHand();
             activeStack.hurtAndBreak(durabilityNeeded, livingEntity, entity -> {
                 entity.broadcastBreakEvent(hand);
-                if (livingEntity instanceof Player) {
-                    ForgeEventFactory.onPlayerDestroyItem((Player) livingEntity, activeStack, hand);
+                if (livingEntity instanceof Player player) {
+                    ForgeEventFactory.onPlayerDestroyItem(player, activeStack, hand);
                 }
             });
             if (activeStack.isEmpty()) {
@@ -332,8 +331,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 damageBlocked = Math.max(0, damage - unblockedDamage);
             }
         }
-        if (livingEntity instanceof ServerPlayer && damageBlocked > 0 && damageBlocked < 3.4028235E37F) {
-            ((ServerPlayer) livingEntity).awardStat(Stats.DAMAGE_BLOCKED_BY_SHIELD, Math.round(damageBlocked * 10F));
+        if (livingEntity instanceof ServerPlayer player && damageBlocked > 0 && damageBlocked < 3.4028235E37F) {
+            player.awardStat(Stats.DAMAGE_BLOCKED_BY_SHIELD, Math.round(damageBlocked * 10F));
         }
         return damageBlocked;
     }
@@ -343,8 +342,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     private void sendLaserDataToPlayers(LaserParticleData data, Vec3 from) {
-        if (!isRemote() && level instanceof ServerLevel) {
-            ServerLevel serverWorld = (ServerLevel) level;
+        if (!isRemote() && level instanceof ServerLevel serverWorld) {
             for (ServerPlayer player : serverWorld.players()) {
                 serverWorld.sendParticles(player, data, true, from.x, from.y, from.z, 1, 0, 0, 0, 0);
             }

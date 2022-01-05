@@ -15,7 +15,7 @@ import net.minecraft.network.FriendlyByteBuf;
 
 public class LaserParticleData implements ParticleOptions {
 
-    public static final Deserializer<LaserParticleData> DESERIALIZER = new Deserializer<LaserParticleData>() {
+    public static final Deserializer<LaserParticleData> DESERIALIZER = new Deserializer<>() {
         @Nonnull
         @Override
         public LaserParticleData fromCommand(@Nonnull ParticleType<LaserParticleData> type, @Nonnull StringReader reader) throws CommandSyntaxException {

@@ -11,7 +11,6 @@ import mekanism.api.recipes.cache.ICachedRecipeHolder;
 import mekanism.api.recipes.cache.chemical.ItemStackConstantChemicalToItemStackCachedRecipe;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler;
-import mekanism.common.recipe.lookup.IRecipeLookupHandler.ConstantUsageRecipeLookupHandler;
 
 public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements ICachedRecipeHolder<RECIPE>, IContentsListener {
 
@@ -72,8 +71,9 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe> implements 
     public void loadSavedData(@Nonnull CachedRecipe<RECIPE> cached, int cacheIndex) {
         if (cachedIndexMatches(cacheIndex)) {
             ICachedRecipeHolder.super.loadSavedData(cached, cacheIndex);
-            if (cached instanceof ItemStackConstantChemicalToItemStackCachedRecipe && handler instanceof IRecipeLookupHandler.ConstantUsageRecipeLookupHandler) {
-                ((ItemStackConstantChemicalToItemStackCachedRecipe<?, ?, ?, ?>) cached).loadSavedUsageSoFar(((ConstantUsageRecipeLookupHandler) handler).getSavedUsedSoFar(cacheIndex));
+            if (cached instanceof ItemStackConstantChemicalToItemStackCachedRecipe<?, ?, ?, ?> c &&
+                handler instanceof IRecipeLookupHandler.ConstantUsageRecipeLookupHandler handler) {
+                c.loadSavedUsageSoFar(handler.getSavedUsedSoFar(cacheIndex));
             }
         }
     }

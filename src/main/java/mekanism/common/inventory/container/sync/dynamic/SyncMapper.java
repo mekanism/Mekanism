@@ -329,16 +329,6 @@ public class SyncMapper extends BaseAnnotationScanner {
         }
     }
 
-    private static class PropertyFieldInfo {
-
-        private final PropertyField field;
-        private final String fieldPath;
-        private final String tag;
-
-        private PropertyFieldInfo(String fieldPath, String tag, PropertyField field) {
-            this.fieldPath = fieldPath;
-            this.field = field;
-            this.tag = tag;
-        }
+    private record PropertyFieldInfo(String fieldPath, String tag, PropertyField field) {
     }
 }

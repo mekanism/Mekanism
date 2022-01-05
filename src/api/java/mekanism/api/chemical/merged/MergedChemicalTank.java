@@ -69,7 +69,7 @@ public class MergedChemicalTank {
             for (IChemicalTank<?, ?> tank : allTanks) {
                 if (type.canHandle(tank)) {
                     //TODO: Improve this so it doesn't have to loop nearly as much?
-                    List<IChemicalTank<?, ?>> otherTanks = Arrays.stream(allTanks).filter(otherTank -> tank != otherTank).collect(Collectors.toList());
+                    List<IChemicalTank<?, ?>> otherTanks = Arrays.stream(allTanks).filter(otherTank -> tank != otherTank).toList();
                     BooleanSupplier insertionCheck;
                     if (extraCheck == null) {
                         insertionCheck = () -> otherTanks.stream().allMatch(IChemicalTank::isEmpty);

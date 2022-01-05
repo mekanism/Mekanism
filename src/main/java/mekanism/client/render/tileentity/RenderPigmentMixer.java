@@ -70,8 +70,8 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
 
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
-        if (tile instanceof TileEntityPigmentMixer) {
-            performTranslations((TileEntityPigmentMixer) tile, partialTick, matrix);
+        if (tile instanceof TileEntityPigmentMixer mixer) {
+            performTranslations(mixer, partialTick, matrix);
             if (vertices.isEmpty()) {
                 for (Quad quad : QuadUtils.unpack(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel().getQuads(null, null, tile.getLevel().random))) {
                     vertices.add(quad.getVertices());
@@ -83,23 +83,15 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     /**
-     * Make sure to call {@link MatrixStack#popPose()} afterwards
+     * Make sure to call {@link PoseStack#popPose()} afterwards
      */
     private void performTranslations(TileEntityPigmentMixer tile, float partialTick, PoseStack matrix) {
         matrix.pushPose();
         switch (tile.getDirection()) {
-            case NORTH:
-                matrix.translate(7 / 16F, 0, 6 / 16F);
-                break;
-            case SOUTH:
-                matrix.translate(7 / 16F, 0, 0.5F);
-                break;
-            case WEST:
-                matrix.translate(6 / 16F, 0, 7 / 16F);
-                break;
-            case EAST:
-                matrix.translate(0.5F, 0, 7 / 16F);
-                break;
+            case NORTH -> matrix.translate(7 / 16F, 0, 6 / 16F);
+            case SOUTH -> matrix.translate(7 / 16F, 0, 0.5F);
+            case WEST -> matrix.translate(6 / 16F, 0, 7 / 16F);
+            case EAST -> matrix.translate(0.5F, 0, 7 / 16F);
         }
         float shift = 1 / 16F;
         matrix.translate(shift, 0, shift);

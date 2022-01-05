@@ -67,8 +67,7 @@ public class PacketConfigurationUpdate implements IMekanismPacket {
             return;
         }
         BlockEntity tile = WorldUtils.getTileEntity(player.level, pos);
-        if (tile instanceof ISideConfiguration) {
-            ISideConfiguration config = (ISideConfiguration) tile;
+        if (tile instanceof ISideConfiguration config) {
             if (packetType == ConfigurationPacket.EJECT) {
                 ConfigInfo info = config.getConfig().getConfig(transmission);
                 if (info != null) {

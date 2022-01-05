@@ -41,11 +41,10 @@ public class SawmillRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof SawmillRecipe)) {
+        if (!(iRecipe instanceof SawmillRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
-        SawmillRecipe recipe = (SawmillRecipe) iRecipe;
         ItemStackIngredient input = recipe.getInput();
         int primaryMultiplier = 1;
         int secondaryMultiplier = 1;

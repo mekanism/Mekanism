@@ -33,8 +33,8 @@ public class PacketModeChange implements IMekanismPacket {
         Player player = context.getSender();
         if (player != null) {
             ItemStack stack = player.getItemBySlot(slot);
-            if (!stack.isEmpty() && stack.getItem() instanceof IModeItem) {
-                ((IModeItem) stack.getItem()).changeMode(player, stack, shift, displayChangeMessage);
+            if (!stack.isEmpty() && stack.getItem() instanceof IModeItem modeItem) {
+                modeItem.changeMode(player, stack, shift, displayChangeMessage);
             }
         }
     }

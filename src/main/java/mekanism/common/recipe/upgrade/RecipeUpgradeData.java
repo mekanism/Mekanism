@@ -54,10 +54,10 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
         Set<RecipeUpgradeType> supportedTypes = EnumSet.noneOf(RecipeUpgradeType.class);
         Item item = stack.getItem();
         TileEntityMekanism tile = null;
-        if (item instanceof BlockItem) {
-            Block block = ((BlockItem) item).getBlock();
-            if (block instanceof IHasTileEntity) {
-                BlockEntity tileEntity = ((IHasTileEntity<?>) block).newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
+        if (item instanceof BlockItem blockItem) {
+            Block block = blockItem.getBlock();
+            if (block instanceof IHasTileEntity<?> hasTileEntity) {
+                BlockEntity tileEntity = hasTileEntity.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
                 if (tileEntity instanceof TileEntityMekanism) {
                     tile = (TileEntityMekanism) tileEntity;
                 }
@@ -132,7 +132,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 return componentUpgrade.isEmpty() ? null : new UpgradesRecipeData(Upgrade.buildMap(componentUpgrade));
             case QIO_DRIVE:
                 DriveMetadata data = DriveMetadata.load(stack);
-                if (data.getCount() > 0 && ((IQIODriveItem) item).hasStoredItemMap(stack)) {
+                if (data.count() > 0 && ((IQIODriveItem) item).hasStoredItemMap(stack)) {
                     //If we don't have any stored items don't actually grab any recipe data
                     return new QIORecipeData(data, ItemDataUtils.getList(stack, NBTConstants.QIO_ITEM_MAP));
                 }
@@ -158,8 +158,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
 
     @Nullable
     default TileEntityMekanism getTileFromBlock(Block block) {
-        if (block instanceof IHasTileEntity) {
-            BlockEntity tileEntity = ((IHasTileEntity<?>) block).newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
+        if (block instanceof IHasTileEntity<?> hasTileEntity) {
+            BlockEntity tileEntity = hasTileEntity.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
             if (tileEntity instanceof TileEntityMekanism) {
                 return (TileEntityMekanism) tileEntity;
             }

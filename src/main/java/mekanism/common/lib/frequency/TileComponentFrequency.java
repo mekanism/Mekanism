@@ -109,7 +109,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     public void removeFrequencyFromData(FrequencyType<?> type, FrequencyIdentity data, UUID player) {
         FrequencyManager<?> manager = type.getManager(data, player);
-        if (manager != null && manager.remove(data.getKey(), player)) {
+        if (manager != null && manager.remove(data.key(), player)) {
             setNeedsNotify(type);
         }
     }
@@ -274,16 +274,6 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    private static class FrequencyTrackingData {
-
-        private final boolean needsContainerSync;
-        private final boolean needsListCache;
-        private final boolean notifyNeighbors;
-
-        public FrequencyTrackingData(boolean needsContainerSync, boolean needsListCache, boolean notifyNeighbors) {
-            this.needsContainerSync = needsContainerSync;
-            this.needsListCache = needsListCache;
-            this.notifyNeighbors = notifyNeighbors;
-        }
+    private record FrequencyTrackingData(boolean needsContainerSync, boolean needsListCache, boolean notifyNeighbors) {
     }
 }

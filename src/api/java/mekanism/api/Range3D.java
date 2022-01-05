@@ -33,12 +33,7 @@ public class Range3D {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Range3D &&
-               ((Range3D) obj).xMin == xMin &&
-               ((Range3D) obj).zMin == zMin &&
-               ((Range3D) obj).xMax == xMax &&
-               ((Range3D) obj).zMax == zMax &&
-               ((Range3D) obj).dimension == dimension;
+        return obj instanceof Range3D other && other.xMin == xMin && other.zMin == zMin && other.xMax == xMax && other.zMax == zMax && other.dimension == dimension;
     }
 
     @Override

@@ -23,9 +23,9 @@ public class CachedFloatingLongValue extends CachedResolvableConfigValue<Floatin
 
     @Nullable
     private static FloatingLong tryGetValue(Object object) {
-        if (object instanceof String) {
+        if (object instanceof String string) {
             try {
-                return FloatingLong.parseFloatingLong((String) object);
+                return FloatingLong.parseFloatingLong(string);
             } catch (NumberFormatException ignored) {
             }
         }

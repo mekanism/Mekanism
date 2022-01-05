@@ -59,8 +59,8 @@ public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends Input
 
     /**
      * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputA is not empty and
-     * inputB is empty without doing any extra validation on inputA. This is similar to {@link DoubleInputRecipeCache#containsInputAB(World, Object, Object)} and {@link
-     * DoubleInputRecipeCache#containsInputBA(World, Object, Object)} except that because {@link EitherSideInputRecipeCache} assumes both inputs are the same type and
+     * inputB is empty without doing any extra validation on inputA. This is similar to {@link DoubleInputRecipeCache#containsInputAB(Level, Object, Object)} and {@link
+     * DoubleInputRecipeCache#containsInputBA(Level, Object, Object)} except that because {@link EitherSideInputRecipeCache} assumes both inputs are the same type and
      * that the order doesn't matter we just have one method and require the inputs to be passed in the corresponding order instead.
      *
      * @param world  World.

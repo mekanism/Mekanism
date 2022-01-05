@@ -91,15 +91,15 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     }
 
     private DataType getFromSlot(Slot slot) {
-        if (slot.index < tile.getSlots() && slot instanceof InventoryContainerSlot) {
+        if (slot.index < tile.getSlots() && slot instanceof InventoryContainerSlot containerSlot) {
             ISideConfiguration config = (ISideConfiguration) tile;
             ConfigInfo info = config.getConfig().getConfig(TransmissionType.ITEM);
             if (info != null) {
                 Set<DataType> supportedDataTypes = info.getSupportedDataTypes();
-                IInventorySlot inventorySlot = ((InventoryContainerSlot) slot).getInventorySlot();
+                IInventorySlot inventorySlot = containerSlot.getInventorySlot();
                 for (DataType type : supportedDataTypes) {
                     ISlotInfo slotInfo = info.getSlotInfo(type);
-                    if (slotInfo instanceof InventorySlotInfo && ((InventorySlotInfo) slotInfo).hasSlot(inventorySlot)) {
+                    if (slotInfo instanceof InventorySlotInfo inventorySlotInfo && inventorySlotInfo.hasSlot(inventorySlot)) {
                         return type;
                     }
                 }

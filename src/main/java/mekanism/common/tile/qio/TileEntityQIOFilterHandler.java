@@ -55,8 +55,8 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
             ListTag tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof QIOFilter) {
-                    filters.add((QIOFilter<?>) filter);
+                if (filter instanceof QIOFilter<?> qioFilter) {
+                    filters.add(qioFilter);
                 }
             }
         }
@@ -89,8 +89,8 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
             ListTag tagList = data.getList(NBTConstants.FILTERS, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof QIOFilter) {
-                    filters.add((QIOFilter<?>) filter);
+                if (filter instanceof QIOFilter<?> qioFilter) {
+                    filters.add(qioFilter);
                 }
             }
         }
@@ -100,10 +100,10 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableFilterList.create(this::getFilters, value -> {
-            if (value instanceof HashList) {
-                filters = (HashList<QIOFilter<?>>) value;
+            if (value instanceof HashList<QIOFilter<?>> filters) {
+                this.filters = filters;
             } else {
-                filters = new HashList<>(value);
+                this.filters = new HashList<>(value);
             }
         }));
     }

@@ -166,7 +166,7 @@ public class EnumUtils {
     public static final ResourceType[] RESOURCE_TYPES = ResourceType.values();
 
     /**
-     * Cached value of {@link EquipmentSlotType#values()}. DO NOT MODIFY THIS LIST.
+     * Cached value of {@link EquipmentSlot#values()}. DO NOT MODIFY THIS LIST.
      */
     public static final EquipmentSlot[] EQUIPMENT_SLOT_TYPES = EquipmentSlot.values();
 

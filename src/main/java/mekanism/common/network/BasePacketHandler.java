@@ -149,10 +149,10 @@ public abstract class BasePacketHandler {
     }
 
     public <MSG> void sendToAllTracking(MSG message, Level world, BlockPos pos) {
-        if (world instanceof ServerLevel) {
+        if (world instanceof ServerLevel level) {
             //If we have a ServerWorld just directly figure out the ChunkPos to not require looking up the chunk
             // This provides a decent performance boost over using the packet distributor
-            ((ServerLevel) world).getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
+            level.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false).forEach(p -> sendTo(message, p));
         } else {
             //Otherwise, fallback to entities tracking the chunk if some mod did something odd and our world is not a ServerWorld
             getChannel().send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunk(pos.getX() >> 4, pos.getZ() >> 4)), message);

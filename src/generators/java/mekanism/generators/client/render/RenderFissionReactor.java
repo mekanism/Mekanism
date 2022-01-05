@@ -19,7 +19,6 @@ import mekanism.generators.common.content.fission.FissionReactorValidator.Formed
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.core.BlockPos;
@@ -63,8 +62,8 @@ public class RenderFissionReactor extends MekanismTileEntityRenderer<TileEntityF
                     }
                     for (FormedAssembly assembly : multiblock.assemblies) {
                         matrix.pushPose();
-                        matrix.translate(assembly.getPos().getX() - pos.getX(), assembly.getPos().getY() - pos.getY(), assembly.getPos().getZ() - pos.getZ());
-                        matrix.scale(1, assembly.getHeight(), 1);
+                        matrix.translate(assembly.pos().getX() - pos.getX(), assembly.pos().getY() - pos.getY(), assembly.pos().getZ() - pos.getZ());
+                        matrix.scale(1, assembly.height(), 1);
                         MekanismRenderer.renderObject(glowModel, matrix, buffer, GLOW_ARGB, MekanismRenderer.FULL_LIGHT, overlayLight, FaceDisplay.FRONT);
                         matrix.popPose();
                     }

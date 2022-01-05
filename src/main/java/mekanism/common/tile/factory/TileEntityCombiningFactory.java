@@ -108,10 +108,9 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof CombinerUpgradeData) {
+        if (upgradeData instanceof CombinerUpgradeData data) {
             //Generic factory upgrade data handling
             super.parseUpgradeData(upgradeData);
-            CombinerUpgradeData data = (CombinerUpgradeData) upgradeData;
             //Copy the stack using NBT so that if it is not actually valid due to a reload we don't crash
             extraSlot.deserializeNBT(data.extraSlot.serializeNBT());
         } else {

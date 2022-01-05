@@ -159,8 +159,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     }
 
     public boolean setShape(IShape shape) {
-        if (shape instanceof VoxelCuboid) {
-            VoxelCuboid cuboid = (VoxelCuboid) shape;
+        if (shape instanceof VoxelCuboid cuboid) {
             bounds = cuboid;
             renderLocation = cuboid.getMinPos().relative(Direction.UP);
             setVolume(bounds.length() * bounds.width() * bounds.height());
@@ -295,8 +294,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
                 //If we are in the wall check if we are really an inner position. For example evap towers
                 MultiblockManager<T> manager = (MultiblockManager<T>) structure.getManager();
                 IStructureValidator<T> validator = manager.createValidator();
-                if (validator instanceof CuboidStructureValidator) {
-                    CuboidStructureValidator<T> cuboidValidator = (CuboidStructureValidator<T>) validator;
+                if (validator instanceof CuboidStructureValidator<T> cuboidValidator) {
                     validator.init(getWorld(), manager, structure);
                     cuboidValidator.loadCuboid(getBounds());
                     return cuboidValidator.getStructureRequirement(pos) == StructureRequirement.INNER;

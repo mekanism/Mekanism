@@ -28,12 +28,9 @@ import mekanism.common.lib.collection.HashList;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.TextComponent;
-
-//TODO: This almost seems more like it should be a more generic GuiElement, than a MekanismButton
-import mekanism.client.gui.element.GuiElement.ButtonBackground;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class FilterButton extends MekanismButton {
 
@@ -108,12 +105,11 @@ public class FilterButton extends MekanismButton {
             drawFilterType(matrix, x, y, MekanismLang.MATERIAL_FILTER);
         } else if (filter instanceof IModIDFilter) {
             drawFilterType(matrix, x, y, MekanismLang.MODID_FILTER);
-        } else if (filter instanceof OredictionificatorFilter) {
+        } else if (filter instanceof OredictionificatorFilter<?, ?, ?> oredictionificatorFilter) {
             drawFilterType(matrix, x, y, MekanismLang.FILTER);
-            drawTextScaledBound(matrix, ((OredictionificatorFilter<?, ?, ?>) filter).getFilterText(), x + 22, y + 11, titleTextColor(), getMaxLength());
+            drawTextScaledBound(matrix, oredictionificatorFilter.getFilterText(), x + 22, y + 11, titleTextColor(), getMaxLength());
         }
-        if (filter instanceof SorterFilter) {
-            SorterFilter<?> sorterFilter = (SorterFilter<?>) filter;
+        if (filter instanceof SorterFilter<?> sorterFilter) {
             drawTextScaledBound(matrix, sorterFilter.color == null ? MekanismLang.NONE.translate() : sorterFilter.color.getColoredName(), x + 22, y + 11,
                   titleTextColor(), getMaxLength());
         }

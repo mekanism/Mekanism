@@ -65,7 +65,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
             }
         }
         List<String> missingMethods = usedMethodNames.object2BooleanEntrySet().stream()
-              .filter(entry -> !entry.getBooleanValue()).map(Map.Entry::getKey).collect(Collectors.toList());
+              .filter(entry -> !entry.getBooleanValue()).map(Map.Entry::getKey).toList();
         if (!missingMethods.isEmpty()) {
             throw new RuntimeException("Recipe manager: '" + recipeManagerClass.getSimpleName() + "' does not contain any implementations for methods with names: ["
                                        + String.join(", ", missingMethods) + "].");
@@ -310,14 +310,6 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
         }
     }
 
-    private static class RecipeExample {
-
-        private final RecipeMethod method;
-        private final Object[] params;
-
-        public RecipeExample(RecipeMethod method, Object[] params) {
-            this.method = method;
-            this.params = params;
-        }
+    private record RecipeExample(RecipeMethod method, Object[] params) {
     }
 }

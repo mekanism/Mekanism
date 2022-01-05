@@ -49,8 +49,7 @@ public class HeatAPI {
         if (world == null) {
             return AMBIENT_TEMP;
         }
-        //TODO 1.18: Figure this out, potentially we need to AT getTemperature
-        return AMBIENT_TEMP;//getAmbientTemp(world.getBiome(pos).getTemperature(pos));
+        return getAmbientTemp(world.getBiome(pos).getTemperature(pos));
     }
 
     /**
@@ -73,22 +72,6 @@ public class HeatAPI {
         return AMBIENT_TEMP + 25 * (biomeTemp - 0.8);
     }
 
-    public static class HeatTransfer {
-
-        private final double adjacentTransfer;
-        private final double environmentTransfer;
-
-        public HeatTransfer(double adjacentTransfer, double environmentTransfer) {
-            this.adjacentTransfer = adjacentTransfer;
-            this.environmentTransfer = environmentTransfer;
-        }
-
-        public double getAdjacentTransfer() {
-            return adjacentTransfer;
-        }
-
-        public double getEnvironmentTransfer() {
-            return environmentTransfer;
-        }
+    public record HeatTransfer(double adjacentTransfer, double environmentTransfer) {
     }
 }

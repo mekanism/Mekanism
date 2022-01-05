@@ -154,7 +154,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     @Override
     protected FilterButton addFilterButton(FilterButton button) {
-        return super.addFilterButton(button).warning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, filter -> filter instanceof MinerFilter && ((MinerFilter<?>) filter).hasBlacklistedElement());
+        return super.addFilterButton(button).warning(WarningType.FILTER_HAS_BLACKLISTED_ELEMENT, filter -> filter instanceof MinerFilter<?> minerFilter && minerFilter.hasBlacklistedElement());
     }
 
     private void setText(GuiTextField field, GuiInteraction interaction) {

@@ -373,7 +373,7 @@ public class WorldUtils {
         }
         BlockState state = world.getBlockState(pos);
         boolean isReplaceable = state.canBeReplaced(fluid);
-        boolean canContainFluid = state.getBlock() instanceof LiquidBlockContainer && ((LiquidBlockContainer) state.getBlock()).canPlaceLiquid(world, pos, state, fluid);
+        boolean canContainFluid = state.getBlock() instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(world, pos, state, fluid);
         if (state.isAir() || isReplaceable || canContainFluid) {
             if (world.dimensionType().ultraWarm() && fluid.getAttributes().doesVaporize(world, pos, fluidStack)) {
                 fluid.getAttributes().vaporize(player, world, pos, fluidStack);
@@ -614,7 +614,7 @@ public class WorldUtils {
     }
 
     /**
-     * Vanilla copy of {@link net.minecraft.client.world.ClientWorld#getSkyDarken(float)} used to be World#getSunBrightness
+     * Vanilla copy of {@link net.minecraft.client.multiplayer.ClientLevel#getSkyDarken(float)} used to be World#getSunBrightness
      */
     public static float getSunBrightness(Level world, float partialTicks) {
         float f = world.getTimeOfDay(partialTicks);

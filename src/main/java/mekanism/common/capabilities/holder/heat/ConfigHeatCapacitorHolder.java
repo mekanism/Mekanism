@@ -26,7 +26,7 @@ public class ConfigHeatCapacitorHolder extends ConfigHolder<IHeatCapacitor> impl
     @Nonnull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction direction) {
-        return getSlots(direction, slotInfo -> slotInfo instanceof HeatSlotInfo ? ((HeatSlotInfo) slotInfo).getHeatCapacitors() : Collections.emptyList());
+        return getSlots(direction, slotInfo -> slotInfo instanceof HeatSlotInfo info ? info.getHeatCapacitors() : Collections.emptyList());
     }
 
     void addCapacitor(@Nonnull IHeatCapacitor capacitor) {

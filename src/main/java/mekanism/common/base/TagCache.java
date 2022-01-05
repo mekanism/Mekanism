@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -67,9 +66,9 @@ public final class TagCache {
             return tileEntityTypeTagCache.get(block);
         }
         List<String> tagsAsString;
-        if (block instanceof IHasTileEntity) {
+        if (block instanceof IHasTileEntity<?> hasTileEntity) {
             //If it is one of our blocks, short circuit and just lookup the tile's type directly
-            tagsAsString = getTagsAsStrings(((IHasTileEntity<?>) block).getTileType().get().getTags());
+            tagsAsString = getTagsAsStrings(hasTileEntity.getTileType().get().getTags());
         } else {
             BlockState state = block.defaultBlockState();
             if (state.hasBlockEntity()) {
@@ -121,7 +120,7 @@ public final class TagCache {
                 items.addAll(entry.getValue().getValues());
             }
         }
-        List<ItemStack> stacks = items.stream().map(ItemStack::new).collect(Collectors.toList());
+        List<ItemStack> stacks = items.stream().map(ItemStack::new).toList();
         cache.put(oreName, stacks);
         return stacks;
     }
@@ -134,7 +133,7 @@ public final class TagCache {
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
             if (!forceBlock || item instanceof BlockItem) {
                 //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderShape() with a dummy BlockState
-                if (item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof BlockBounding) {
+                if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof BlockBounding) {
                     continue;
                 }
                 //Note: We get the modid based on the stack so that if there is a mod that has a different modid for an item
@@ -159,8 +158,8 @@ public final class TagCache {
         }
         List<ItemStack> stacks = new ArrayList<>();
         for (Item item : ForgeRegistries.ITEMS.getValues()) {
-            if (item instanceof BlockItem) {
-                Block block = ((BlockItem) item).getBlock();
+            if (item instanceof BlockItem blockItem) {
+                Block block = blockItem.getBlock();
                 //Ugly check to make sure we don't include our bounding block in render list. Eventually this should use getRenderShape() with a dummy BlockState
                 //noinspection ConstantConditions getBlock is nonnull, but if something "goes wrong" it returns null, just skip it
                 if (block == null || block instanceof BlockBounding) {

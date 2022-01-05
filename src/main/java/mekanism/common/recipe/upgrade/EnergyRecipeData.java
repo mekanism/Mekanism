@@ -66,8 +66,8 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             for (int container = 0; container < energyHandler.getEnergyContainerCount(); container++) {
                 energyContainers.add(BasicEnergyContainer.create(energyHandler.getMaxEnergy(container), null));
             }
-        } else if (item instanceof BlockItem) {
-            TileEntityMekanism tile = getTileFromBlock(((BlockItem) item).getBlock());
+        } else if (item instanceof BlockItem blockItem) {
+            TileEntityMekanism tile = getTileFromBlock(blockItem.getBlock());
             if (tile == null || !tile.handles(SubstanceType.ENERGY)) {
                 //Something went wrong
                 return false;

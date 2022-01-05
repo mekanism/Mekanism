@@ -36,12 +36,11 @@ public class PaintingMachineRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof PaintingRecipe)) {
+        if (!(iRecipe instanceof PaintingRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        PaintingRecipe recipe = (PaintingRecipe) iRecipe;
         List<@NonNull PigmentStack> pigmentRepresentations = recipe.getChemicalInput().getRepresentations();
         List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
         for (PigmentStack pigmentRepresentation : pigmentRepresentations) {

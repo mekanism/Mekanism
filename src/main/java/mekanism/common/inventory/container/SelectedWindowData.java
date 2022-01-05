@@ -53,15 +53,15 @@ public class SelectedWindowData {
     public void updateLastPosition(int x, int y) {
         String saveName = type.getSaveName(extraData);
         if (saveName != null) {
-            Pair<CachedIntValue, CachedIntValue> cachedPosition = MekanismConfig.client.lastWindowPositions.get(saveName);
+            CachedWindowPosition cachedPosition = MekanismConfig.client.lastWindowPositions.get(saveName);
             if (cachedPosition != null) {
                 boolean changed = false;
-                CachedIntValue cachedX = cachedPosition.getFirst();
+                CachedIntValue cachedX = cachedPosition.x();
                 if (cachedX.get() != x) {
                     cachedX.set(x);
                     changed = true;
                 }
-                CachedIntValue cachedY = cachedPosition.getSecond();
+                CachedIntValue cachedY = cachedPosition.y();
                 if (cachedY.get() != y) {
                     cachedY.set(y);
                     changed = true;
@@ -76,15 +76,21 @@ public class SelectedWindowData {
     /**
      * @apiNote Only call this on the client.
      */
-    public Pair<Integer, Integer> getLastPosition() {
+    public WindowPosition getLastPosition() {
         String saveName = type.getSaveName(extraData);
         if (saveName != null) {
-            Pair<CachedIntValue, CachedIntValue> cachedPosition = MekanismConfig.client.lastWindowPositions.get(saveName);
+            CachedWindowPosition cachedPosition = MekanismConfig.client.lastWindowPositions.get(saveName);
             if (cachedPosition != null) {
-                return Pair.of(cachedPosition.getFirst().get(), cachedPosition.getSecond().get());
+                return new WindowPosition(cachedPosition.x().get(), cachedPosition.y().get());
             }
         }
-        return Pair.of(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        return new WindowPosition(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
+
+    public record CachedWindowPosition(CachedIntValue x, CachedIntValue y) {
+    }
+
+    public record WindowPosition(int x, int y) {
     }
 
     public enum WindowType {

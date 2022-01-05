@@ -60,9 +60,9 @@ public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height) {
             IGuiWrapper gui = gui();
-            if (gui instanceof VirtualSlotContainerScreen && virtualSlot != null) {
+            if (gui instanceof VirtualSlotContainerScreen<?> screen && virtualSlot != null) {
                 //Redirect to a copy of vanilla logic
-                return ((VirtualSlotContainerScreen<?>) gui).slotClicked(virtualSlot.getSlot(), button);
+                return screen.slotClicked(virtualSlot.getSlot(), button);
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);

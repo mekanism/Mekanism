@@ -45,12 +45,11 @@ public class PressurizedReactionRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof PressurizedReactionRecipe)) {
+        if (!(iRecipe instanceof PressurizedReactionRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        PressurizedReactionRecipe recipe = (PressurizedReactionRecipe) iRecipe;
         List<@NonNull ItemStack> itemRepresentations = recipe.getInputSolid().getRepresentations();
         List<@NonNull FluidStack> fluidRepresentations = recipe.getInputFluid().getRepresentations();
         List<@NonNull GasStack> gasRepresentations = recipe.getInputGas().getRepresentations();

@@ -58,8 +58,8 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof SorterTagFilter && ((SorterTagFilter) filter).tagName.equals(tagName);
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof SorterTagFilter filter && filter.tagName.equals(tagName);
     }
 
     @Override

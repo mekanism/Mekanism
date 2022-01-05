@@ -124,16 +124,12 @@ public class GuiMergedChemicalBar<HANDLER extends IGasTracker & IInfusionTracker
 
     @Nullable
     private GuiChemicalBar<?, ?> getCurrentBarNoFallback() {
-        switch (chemicalTank.getCurrent()) {
-            case GAS:
-                return gasBar;
-            case INFUSION:
-                return infusionBar;
-            case PIGMENT:
-                return pigmentBar;
-            case SLURRY:
-                return slurryBar;
-        }
-        return null;
+        return switch (chemicalTank.getCurrent()) {
+            case GAS -> gasBar;
+            case INFUSION -> infusionBar;
+            case PIGMENT -> pigmentBar;
+            case SLURRY -> slurryBar;
+            default -> null;
+        };
     }
 }

@@ -23,8 +23,8 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
     public static PacketUpdateModuleSettings create(int slotId, ModuleData<?> moduleType, int dataIndex, ModuleConfigData<?> configData) {
         if (configData instanceof ModuleBooleanData) {
             return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, ModuleDataType.BOOLEAN, configData.get());
-        } else if (configData instanceof ModuleEnumData) {
-            return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, ModuleDataType.ENUM, ((ModuleEnumData<?>) configData).get().ordinal());
+        } else if (configData instanceof ModuleEnumData<?> enumData) {
+            return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, ModuleDataType.ENUM, enumData.get().ordinal());
         }
         throw new IllegalArgumentException("Unknown config data type.");
     }
@@ -77,12 +77,8 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
         buffer.writeVarInt(dataIndex);
         buffer.writeEnum(dataType);
         switch (dataType) {
-            case BOOLEAN:
-                buffer.writeBoolean((boolean) value);
-                break;
-            case ENUM:
-                buffer.writeVarInt((int) value);
-                break;
+            case BOOLEAN -> buffer.writeBoolean((boolean) value);
+            case ENUM -> buffer.writeVarInt((int) value);
         }
     }
 
@@ -91,15 +87,10 @@ public class PacketUpdateModuleSettings implements IMekanismPacket {
         ModuleData<?> moduleType = buffer.readRegistryId();
         int dataIndex = buffer.readVarInt();
         ModuleDataType dataType = buffer.readEnum(ModuleDataType.class);
-        Object data = null;
-        switch (dataType) {
-            case BOOLEAN:
-                data = buffer.readBoolean();
-                break;
-            case ENUM:
-                data = buffer.readVarInt();
-                break;
-        }
+        Object data = switch (dataType) {
+            case BOOLEAN -> buffer.readBoolean();
+            case ENUM -> buffer.readVarInt();
+        };
         return new PacketUpdateModuleSettings(slotId, moduleType, dataIndex, dataType, data);
     }
 

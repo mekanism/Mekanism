@@ -63,8 +63,8 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return filter instanceof QIOItemStackFilter && ((QIOItemStackFilter) filter).itemType.sameItem(itemType) && ((QIOItemStackFilter) filter).fuzzyMode == fuzzyMode;
+    public boolean equals(Object o) {
+        return o instanceof QIOItemStackFilter filter && filter.itemType.sameItem(itemType) && filter.fuzzyMode == fuzzyMode;
     }
 
     @Override

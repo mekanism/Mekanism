@@ -146,20 +146,20 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             //Lazy init outputData
                             outputData = new HashMap<>();
                         }
-                        if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo) {
-                            for (IChemicalTank<?, ?> tank : ((ChemicalSlotInfo<?, ?, ?>) slotInfo).getTanks()) {
+                        if (type.isChemical() && slotInfo instanceof ChemicalSlotInfo<?, ?, ?> chemicalSlotInfo) {
+                            for (IChemicalTank<?, ?> tank : chemicalSlotInfo.getTanks()) {
                                 if (!tank.isEmpty() && (canTankEject == null || canTankEject.test(tank))) {
                                     outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
                                 }
                             }
-                        } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo) {
-                            for (IExtendedFluidTank tank : ((FluidSlotInfo) slotInfo).getTanks()) {
+                        } else if (type == TransmissionType.FLUID && slotInfo instanceof FluidSlotInfo fluidSlotInfo) {
+                            for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
                                 if (!tank.isEmpty()) {
                                     outputData.computeIfAbsent(tank, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
                                 }
                             }
-                        } else if (type == TransmissionType.ENERGY && slotInfo instanceof EnergySlotInfo) {
-                            for (IEnergyContainer container : ((EnergySlotInfo) slotInfo).getContainers()) {
+                        } else if (type == TransmissionType.ENERGY && slotInfo instanceof EnergySlotInfo energySlotInfo) {
+                            for (IEnergyContainer container : energySlotInfo.getContainers()) {
                                 if (!container.isEmpty()) {
                                     outputData.computeIfAbsent(container, t -> EnumSet.noneOf(Direction.class)).addAll(outputSides);
                                 }
@@ -206,8 +206,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                                 ejectMap.side = side;
                                 //If the spot is not loaded just skip trying to eject to it
                                 TransitResponse response;
-                                if (target instanceof TileEntityLogisticalTransporterBase) {
-                                    response = ((TileEntityLogisticalTransporterBase) target).getTransmitter().insert(tile, ejectMap, outputColor, true, 0);
+                                if (target instanceof TileEntityLogisticalTransporterBase transporter) {
+                                    response = transporter.getTransmitter().insert(tile, ejectMap, outputColor, true, 0);
                                 } else {
                                     response = ejectMap.addToInventory(target, side, 0, false);
                                 }

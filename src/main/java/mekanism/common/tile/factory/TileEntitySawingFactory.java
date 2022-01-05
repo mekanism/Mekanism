@@ -16,7 +16,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ProcessInfo;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -143,7 +142,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     @ComputerMethod
     private ItemStack getSecondaryOutput(int process) throws ComputerException {
         validateValidProcess(process);
-        IInventorySlot secondaryOutputSlot = processInfoSlots[process].getSecondaryOutputSlot();
+        IInventorySlot secondaryOutputSlot = processInfoSlots[process].secondaryOutputSlot();
         //This should never be null, but in case it is, handle it
         return secondaryOutputSlot == null ? ItemStack.EMPTY : secondaryOutputSlot.getStack();
     }

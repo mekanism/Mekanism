@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -191,10 +192,10 @@ public abstract class ItemStackIngredient implements InputIngredient<@NonNull It
         }
         List<ItemStackIngredient> cleanedIngredients = new ArrayList<>();
         for (ItemStackIngredient ingredient : ingredients) {
-            if (ingredient instanceof Multi) {
+            if (ingredient instanceof Multi multi) {
                 //Don't worry about if our inner ingredients are multi as well, as if this is the only external method for
                 // creating a multi ingredient, then we are certified they won't be of a higher depth
-                cleanedIngredients.addAll(Arrays.asList(((Multi) ingredient).ingredients));
+                Collections.addAll(cleanedIngredients, multi.ingredients);
             } else {
                 cleanedIngredients.add(ingredient);
             }

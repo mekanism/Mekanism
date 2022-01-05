@@ -34,73 +34,57 @@ public final class VoxelShapeUtils {
     }
 
     /**
-     * Rotates an {@link AxisAlignedBB} to a specific side, similar to how the block states rotate models.
+     * Rotates an {@link AABB} to a specific side, similar to how the block states rotate models.
      *
-     * @param box  The {@link AxisAlignedBB} to rotate
+     * @param box  The {@link AABB} to rotate
      * @param side The side to rotate it to.
      *
-     * @return The rotated {@link AxisAlignedBB}
+     * @return The rotated {@link AABB}
      */
     public static AABB rotate(AABB box, Direction side) {
-        switch (side) {
-            case DOWN:
-                return box;
-            case UP:
-                return new AABB(box.minX, -box.minY, -box.minZ, box.maxX, -box.maxY, -box.maxZ);
-            case NORTH:
-                return new AABB(box.minX, -box.minZ, box.minY, box.maxX, -box.maxZ, box.maxY);
-            case SOUTH:
-                return new AABB(-box.minX, -box.minZ, -box.minY, -box.maxX, -box.maxZ, -box.maxY);
-            case WEST:
-                return new AABB(box.minY, -box.minZ, -box.minX, box.maxY, -box.maxZ, -box.maxX);
-            case EAST:
-                return new AABB(-box.minY, -box.minZ, box.minX, -box.maxY, -box.maxZ, box.maxX);
-        }
-        return box;
+        return switch (side) {
+            case DOWN -> box;
+            case UP -> new AABB(box.minX, -box.minY, -box.minZ, box.maxX, -box.maxY, -box.maxZ);
+            case NORTH -> new AABB(box.minX, -box.minZ, box.minY, box.maxX, -box.maxZ, box.maxY);
+            case SOUTH -> new AABB(-box.minX, -box.minZ, -box.minY, -box.maxX, -box.maxZ, -box.maxY);
+            case WEST -> new AABB(box.minY, -box.minZ, -box.minX, box.maxY, -box.maxZ, -box.maxX);
+            case EAST -> new AABB(-box.minY, -box.minZ, box.minX, -box.maxY, -box.maxZ, box.maxX);
+        };
     }
 
     /**
-     * Rotates an {@link AxisAlignedBB} according to a specific rotation.
+     * Rotates an {@link AABB} according to a specific rotation.
      *
-     * @param box      The {@link AxisAlignedBB} to rotate
+     * @param box      The {@link AABB} to rotate
      * @param rotation The rotation we are performing.
      *
-     * @return The rotated {@link AxisAlignedBB}
+     * @return The rotated {@link AABB}
      */
     public static AABB rotate(AABB box, Rotation rotation) {
-        switch (rotation) {
-            case NONE:
-                return box;
-            case CLOCKWISE_90:
-                return new AABB(-box.minZ, box.minY, box.minX, -box.maxZ, box.maxY, box.maxX);
-            case CLOCKWISE_180:
-                return new AABB(-box.minX, box.minY, -box.minZ, -box.maxX, box.maxY, -box.maxZ);
-            case COUNTERCLOCKWISE_90:
-                return new AABB(box.minZ, box.minY, -box.minX, box.maxZ, box.maxY, -box.maxX);
-        }
-        return box;
+        return switch (rotation) {
+            case NONE -> box;
+            case CLOCKWISE_90 -> new AABB(-box.minZ, box.minY, box.minX, -box.maxZ, box.maxY, box.maxX);
+            case CLOCKWISE_180 -> new AABB(-box.minX, box.minY, -box.minZ, -box.maxX, box.maxY, -box.maxZ);
+            case COUNTERCLOCKWISE_90 -> new AABB(box.minZ, box.minY, -box.minX, box.maxZ, box.maxY, -box.maxX);
+        };
     }
 
     /**
-     * Rotates an {@link AxisAlignedBB} to a specific side horizontally. This is a default most common rotation setup as to {@link #rotate(AxisAlignedBB, Rotation)}
+     * Rotates an {@link AABB} to a specific side horizontally. This is a default most common rotation setup as to {@link #rotate(AABB, Rotation)}
      *
-     * @param box  The {@link AxisAlignedBB} to rotate
+     * @param box  The {@link AABB} to rotate
      * @param side The side to rotate it to.
      *
-     * @return The rotated {@link AxisAlignedBB}
+     * @return The rotated {@link AABB}
      */
     public static AABB rotateHorizontal(AABB box, Direction side) {
-        switch (side) {
-            case NORTH:
-                return rotate(box, Rotation.NONE);
-            case SOUTH:
-                return rotate(box, Rotation.CLOCKWISE_180);
-            case WEST:
-                return rotate(box, Rotation.COUNTERCLOCKWISE_90);
-            case EAST:
-                return rotate(box, Rotation.CLOCKWISE_90);
-        }
-        return box;
+        return switch (side) {
+            case NORTH -> rotate(box, Rotation.NONE);
+            case SOUTH -> rotate(box, Rotation.CLOCKWISE_180);
+            case WEST -> rotate(box, Rotation.COUNTERCLOCKWISE_90);
+            case EAST -> rotate(box, Rotation.CLOCKWISE_90);
+            default -> box;
+        };
     }
 
     /**
@@ -140,10 +124,10 @@ public final class VoxelShapeUtils {
     }
 
     /**
-     * Rotates a {@link VoxelShape} using a specific transformation function for each {@link AxisAlignedBB} in the {@link VoxelShape}.
+     * Rotates a {@link VoxelShape} using a specific transformation function for each {@link AABB} in the {@link VoxelShape}.
      *
      * @param shape          The {@link VoxelShape} to rotate
-     * @param rotateFunction The transformation function to apply to each {@link AxisAlignedBB} in the {@link VoxelShape}.
+     * @param rotateFunction The transformation function to apply to each {@link AABB} in the {@link VoxelShape}.
      *
      * @return The rotated {@link VoxelShape}
      */
@@ -195,10 +179,10 @@ public final class VoxelShapeUtils {
     }
 
     /**
-     * Used for mass combining shapes using a specific {@link IBooleanFunction} and a given start shape.
+     * Used for mass combining shapes using a specific {@link BooleanOp} and a given start shape.
      *
      * @param initial  The {@link VoxelShape} to start with
-     * @param function The {@link IBooleanFunction} to perform
+     * @param function The {@link BooleanOp} to perform
      * @param simplify True if the returned shape should run {@link VoxelShape#optimize()}, False otherwise
      * @param shapes   The collection of {@link VoxelShape}s to include
      *
@@ -216,10 +200,10 @@ public final class VoxelShapeUtils {
     }
 
     /**
-     * Used for mass combining shapes using a specific {@link IBooleanFunction} and a given start shape.
+     * Used for mass combining shapes using a specific {@link BooleanOp} and a given start shape.
      *
      * @param initial  The {@link VoxelShape} to start with
-     * @param function The {@link IBooleanFunction} to perform
+     * @param function The {@link BooleanOp} to perform
      * @param simplify True if the returned shape should run {@link VoxelShape#optimize()}, False otherwise
      * @param shapes   The list of {@link VoxelShape}s to include
      *

@@ -137,21 +137,10 @@ public class FormatSplitter {
 
     public interface Component {
 
-        String getContents();
+        String contents();
     }
 
-    public static class TextComponent implements Component {
-
-        private final String contents;
-
-        private TextComponent(String contents) {
-            this.contents = contents;
-        }
-
-        @Override
-        public String getContents() {
-            return contents;
-        }
+    private record TextComponent(String contents) implements Component {
     }
 
     public static class FormatComponent implements Component {
@@ -163,7 +152,7 @@ public class FormatSplitter {
         }
 
         @Override
-        public String getContents() {
+        public String contents() {
             return formattingCode;
         }
     }

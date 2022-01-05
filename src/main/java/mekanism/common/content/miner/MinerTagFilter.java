@@ -69,8 +69,8 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof MinerTagFilter && ((MinerTagFilter) filter).tagName.equals(tagName);
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof MinerTagFilter filter && filter.tagName.equals(tagName);
     }
 
     @Override

@@ -35,12 +35,11 @@ public class ChemicalInfuserRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ChemicalInfuserRecipe)) {
+        if (!(iRecipe instanceof ChemicalInfuserRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        ChemicalInfuserRecipe recipe = (ChemicalInfuserRecipe) iRecipe;
         List<@NonNull GasStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
         List<@NonNull GasStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
         for (GasStack leftRepresentation : leftInputRepresentations) {

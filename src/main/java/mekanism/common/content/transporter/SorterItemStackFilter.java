@@ -67,9 +67,8 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof SorterItemStackFilter && ((SorterItemStackFilter) filter).itemType.sameItem(itemType)
-               && ((SorterItemStackFilter) filter).fuzzyMode == fuzzyMode;
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof SorterItemStackFilter filter && filter.itemType.sameItem(itemType) && filter.fuzzyMode == fuzzyMode;
     }
 
     @Override

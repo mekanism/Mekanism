@@ -70,8 +70,8 @@ public class ItemNetworkReader extends ItemEnergized {
                     energyContainer.extract(energyPerUse, Action.EXECUTE, AutomationType.MANUAL);
                 }
                 Direction opposite = context.getClickedFace().getOpposite();
-                if (tile instanceof TileEntityTransmitter) {
-                    displayTransmitterInfo(player, ((TileEntityTransmitter) tile).getTransmitter(), tile, opposite);
+                if (tile instanceof TileEntityTransmitter transmitterTile) {
+                    displayTransmitterInfo(player, transmitterTile.getTransmitter(), tile, opposite);
                 } else {
                     Optional<IHeatHandler> heatHandler = CapabilityUtils.getCapability(tile, Capabilities.HEAT_HANDLER_CAPABILITY, opposite).resolve();
                     if (heatHandler.isPresent()) {
@@ -116,8 +116,8 @@ public class ItemNetworkReader extends ItemEnergized {
         Set<DynamicNetwork<?, ?, ?>> iteratedNetworks = new ObjectOpenHashSet<>();
         for (Direction side : EnumUtils.DIRECTIONS) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos.relative(side));
-            if (tile instanceof TileEntityTransmitter) {
-                Transmitter<?, ?, ?> transmitter = ((TileEntityTransmitter) tile).getTransmitter();
+            if (tile instanceof TileEntityTransmitter transmitterTile) {
+                Transmitter<?, ?, ?> transmitter = transmitterTile.getTransmitter();
                 DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
                 if (transmitterNetwork.hasAcceptor(pos) && !iteratedNetworks.contains(transmitterNetwork)) {
                     displayBorder(player, compileList(transmitter.getSupportedTransmissionTypes()), false);

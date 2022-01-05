@@ -83,11 +83,11 @@ public abstract class ChemicalRecipeData<CHEMICAL extends Chemical<CHEMICAL>, ST
         Optional<HANDLER> capability = stack.getCapability(getCapability()).resolve();
         if (capability.isPresent()) {
             handler = capability.get();
-        } else if (stack.getItem() instanceof BlockItem) {
+        } else if (stack.getItem() instanceof BlockItem blockItem) {
             TileEntityMekanism tile = null;
-            Block block = ((BlockItem) stack.getItem()).getBlock();
-            if (block instanceof IHasTileEntity) {
-                BlockEntity tileEntity = ((IHasTileEntity<?>) block).newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
+            Block block = blockItem.getBlock();
+            if (block instanceof IHasTileEntity<?> hasTileEntity) {
+                BlockEntity tileEntity = hasTileEntity.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
                 if (tileEntity instanceof TileEntityMekanism) {
                     tile = (TileEntityMekanism) tileEntity;
                 }

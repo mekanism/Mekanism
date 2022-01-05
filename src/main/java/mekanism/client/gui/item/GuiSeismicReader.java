@@ -113,7 +113,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             Block block = blockList.get(currentLayer).getBlock();
             Component displayName = block.getName();
             drawTextScaledBound(matrix, displayName, 10, 16, screenTextColor(), 57);
-            frequency = frequencies.computeIntIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
+            frequency = frequencies.computeIfAbsent(block, b -> (int) blockList.stream().filter(blockState -> b == blockState.getBlock()).count());
         }
         drawTextScaledBound(matrix, MekanismLang.ABUNDANCY.translate(frequency), 10, 26, screenTextColor(), 57);
         MekanismRenderer.resetColor();

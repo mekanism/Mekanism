@@ -135,16 +135,15 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
     @Override
     protected void onHitEntity(EntityHitResult entityResult) {
         Entity entity = entityResult.getEntity();
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
+        if (entity instanceof Player player) {
             Entity owner = getOwner();
-            if (player.getAbilities().invulnerable || owner instanceof Player && !((Player) owner).canHarmPlayer(player)) {
+            if (player.getAbilities().invulnerable || owner instanceof Player o && !o.canHarmPlayer(player)) {
                 return;
             }
         }
         if (!entity.fireImmune()) {
-            if (entity instanceof ItemEntity && mode == FlamethrowerMode.HEAT) {
-                if (entity.tickCount > 100 && !smeltItem((ItemEntity) entity)) {
+            if (entity instanceof ItemEntity item && mode == FlamethrowerMode.HEAT) {
+                if (entity.tickCount > 100 && !smeltItem(item)) {
                     burn(entity);
                 }
             } else {
@@ -164,8 +163,8 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
         if (!level.isClientSide && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
             if (mode == FlamethrowerMode.HEAT) {
                 Entity owner = getOwner();
-                if (owner instanceof Player) {
-                    smeltBlock((Player) owner, hitState, hitPos, hitSide);
+                if (owner instanceof Player player) {
+                    smeltBlock(player, hitState, hitPos, hitSide);
                 }
             } else if (mode == FlamethrowerMode.INFERNO) {
                 Entity owner = getOwner();
@@ -176,7 +175,7 @@ public class EntityFlame extends Projectile implements IEntityAdditionalSpawnDat
                     tryPlace(owner, sidePos, hitSide, BaseFireBlock.getState(level, sidePos));
                 } else if (hitState.isFlammable(level, hitPos, hitSide)) {
                     //TODO: Is there some event we should/can be firing here?
-                    hitState.onCaughtFire(level, hitPos, hitSide, owner instanceof LivingEntity ? (LivingEntity) owner : null);
+                    hitState.onCaughtFire(level, hitPos, hitSide, owner instanceof LivingEntity livingEntity ? livingEntity : null);
                     if (hitState.getBlock() instanceof TntBlock) {
                         level.removeBlock(hitPos, false);
                     }

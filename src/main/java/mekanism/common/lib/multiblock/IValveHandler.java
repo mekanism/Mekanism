@@ -74,7 +74,7 @@ public interface IValveHandler {
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof ValveData && ((ValveData) obj).side == side && ((ValveData) obj).location.equals(location);
+            return obj instanceof ValveData other && other.side == side && other.location.equals(location);
         }
     }
 }

@@ -123,8 +123,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
     }
 
     private TransitResponse emitItemToTransporter(BlockEntity front, TransitRequest request, EnumColor filterColor, int min) {
-        if (front instanceof TileEntityLogisticalTransporterBase) {
-            LogisticalTransporterBase transporter = ((TileEntityLogisticalTransporterBase) front).getTransmitter();
+        if (front instanceof TileEntityLogisticalTransporterBase transporterBase) {
+            LogisticalTransporterBase transporter = transporterBase.getTransmitter();
             if (roundRobin) {
                 return transporter.insertRR(this, request, filterColor, true, min);
             }
@@ -251,8 +251,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             ListTag tagList = data.getList(NBTConstants.FILTERS, Tag.TAG_COMPOUND);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof SorterFilter) {
-                    filters.add((SorterFilter<?>) filter);
+                if (filter instanceof SorterFilter<?> sorterFilter) {
+                    filters.add(sorterFilter);
                 }
             }
         }
@@ -285,8 +285,8 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
             ListTag tagList = ItemDataUtils.getList(itemStack, NBTConstants.FILTERS);
             for (int i = 0; i < tagList.size(); i++) {
                 IFilter<?> filter = BaseFilter.readFromNBT(tagList.getCompound(i));
-                if (filter instanceof SorterFilter) {
-                    filters.add((SorterFilter<?>) filter);
+                if (filter instanceof SorterFilter<?> sorterFilter) {
+                    filters.add(sorterFilter);
                 }
             }
         }
@@ -328,10 +328,10 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IS
         container.track(SyncableBoolean.create(this::getSingleItem, value -> singleItem = value));
         container.track(SyncableInt.create(() -> TransporterUtils.getColorIndex(color), value -> color = TransporterUtils.readColor(value)));
         container.track(SyncableFilterList.create(this::getFilters, value -> {
-            if (value instanceof HashList) {
-                filters = (HashList<SorterFilter<?>>) value;
+            if (value instanceof HashList<SorterFilter<?>> filters) {
+                this.filters = filters;
             } else {
-                filters = new HashList<>(value);
+                this.filters = new HashList<>(value);
             }
         }));
     }

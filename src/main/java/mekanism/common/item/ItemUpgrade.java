@@ -52,8 +52,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
         if (player != null && player.isShiftKeyDown()) {
             Level world = context.getLevel();
             BlockEntity tile = WorldUtils.getTileEntity(world, context.getClickedPos());
-            if (tile instanceof IUpgradeTile) {
-                IUpgradeTile upgradeTile = (IUpgradeTile) tile;
+            if (tile instanceof IUpgradeTile upgradeTile) {
                 if (upgradeTile.supportsUpgrades()) {
                     TileComponentUpgrade component = upgradeTile.getComponent();
                     ItemStack stack = context.getItemInHand();

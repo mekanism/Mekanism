@@ -40,7 +40,7 @@ public final class TransporterUtils {
     }
 
     public static boolean isValidAcceptorOnSide(BlockEntity tile, Direction side) {
-        if (tile instanceof TileEntityTransmitter && TransmissionType.ITEM.checkTransmissionType((TileEntityTransmitter) tile)) {
+        if (tile instanceof TileEntityTransmitter transmitter && TransmissionType.ITEM.checkTransmissionType(transmitter)) {
             return false;
         }
         return InventoryUtils.isItemHandler(tile, side.getOpposite());
@@ -93,17 +93,14 @@ public final class TransporterUtils {
     }
 
     public static boolean canInsert(BlockEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
-        if (force && tile instanceof TileEntityLogisticalSorter) {
-            return ((TileEntityLogisticalSorter) tile).canSendHome(itemStack);
+        if (force && tile instanceof TileEntityLogisticalSorter sorter) {
+            return sorter.canSendHome(itemStack);
         }
-        if (!force && tile instanceof ISideConfiguration) {
-            ISideConfiguration config = (ISideConfiguration) tile;
-            if (config.getEjector().hasStrictInput()) {
-                Direction tileSide = config.getDirection();
-                EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(tileSide, side.getOpposite()));
-                if (configColor != null && configColor != color) {
-                    return false;
-                }
+        if (!force && tile instanceof ISideConfiguration config && config.getEjector().hasStrictInput()) {
+            Direction tileSide = config.getDirection();
+            EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(tileSide, side.getOpposite()));
+            if (configColor != null && configColor != color) {
+                return false;
             }
         }
         Optional<IItemHandler> capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side.getOpposite()).resolve();

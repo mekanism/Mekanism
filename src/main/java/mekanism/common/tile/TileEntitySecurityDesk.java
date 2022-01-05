@@ -87,11 +87,9 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
             MinecraftServer server = getWorldNN().getServer();
             if (server != null) {
                 for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                    if (player.containerMenu instanceof ISecurityContainer) {
-                        if (!SecurityUtils.canAccess(player, ((ISecurityContainer) player.containerMenu).getSecurityObject())) {
-                            //Boot any players out of the container if they no longer have access to viewing it
-                            player.closeContainer();
-                        }
+                    if (player.containerMenu instanceof ISecurityContainer container && !SecurityUtils.canAccess(player, container.getSecurityObject())) {
+                        //Boot any players out of the container if they no longer have access to viewing it
+                        player.closeContainer();
                     }
                 }
             }

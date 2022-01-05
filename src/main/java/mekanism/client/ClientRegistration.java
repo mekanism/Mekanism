@@ -504,8 +504,8 @@ public class ClientRegistration {
         ClientRegistrationUtil.registerBlockColorHandler(blockColors, (state, world, pos, tintIndex) -> {
                   if (pos != null) {
                       BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-                      if (tile instanceof TileEntityQIOComponent) {
-                          EnumColor color = ((TileEntityQIOComponent) tile).getColor();
+                      if (tile instanceof TileEntityQIOComponent qioComponent) {
+                          EnumColor color = qioComponent.getColor();
                           return color != null ? MekanismRenderer.getColorARGB(color, 1) : -1;
                       }
                   }
@@ -611,8 +611,7 @@ public class ClientRegistration {
     }
 
     private static BakedModel lightBakedModel(BakedModel orig) {
-        if (orig instanceof SeparatePerspectiveModel.BakedModel) {
-            SeparatePerspectiveModel.BakedModel separatePerspectiveModel = (SeparatePerspectiveModel.BakedModel) orig;
+        if (orig instanceof SeparatePerspectiveModel.BakedModel separatePerspectiveModel) {
             //Transform inner components of the separate perspective model and then return the original model
             SEPARATE_PERSPECTIVE_BASE_MODEL.transformValue(separatePerspectiveModel, Objects::nonNull, ClientRegistration::lightBakedModel);
             SEPARATE_PERSPECTIVE_PERSPECTIVES.transformValue(separatePerspectiveModel, v -> !v.isEmpty(), org -> ImmutableMap.copyOf(Maps.transformValues(org,

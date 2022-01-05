@@ -427,9 +427,9 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (nbt.isEmpty()) {
             if (targetClass == Tag.class) {
-                return sanitized instanceof CompoundTag && ((CompoundTag) sanitized).isEmpty();
+                return sanitized instanceof CompoundTag compound && compound.isEmpty();
             }//CollectionTag
-            return sanitized instanceof ListTag && ((ListTag) sanitized).isEmpty();
+            return sanitized instanceof ListTag list && list.isEmpty();
         }
         return nbt.equals(sanitized);
     }
@@ -482,11 +482,11 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (ints.isEmpty()) {
             if (targetClass == Tag.class) {
-                return sanitized instanceof CompoundTag && ((CompoundTag) sanitized).isEmpty();
+                return sanitized instanceof CompoundTag compound && compound.isEmpty();
             }//CollectionTag
-            return sanitized instanceof ListTag && ((ListTag) sanitized).isEmpty();
+            return sanitized instanceof ListTag list && list.isEmpty();
         } else if (ints.stream().allMatch(value -> value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE)) {
-            ByteArrayTag expected = new ByteArrayTag(ints.stream().map(Integer::byteValue).collect(Collectors.toList()));
+            ByteArrayTag expected = new ByteArrayTag(ints.stream().map(Integer::byteValue).toList());
             return expected.equals(sanitized);
         } else if (ints.stream().allMatch(value -> value >= Short.MIN_VALUE && value <= Short.MAX_VALUE)) {
             ListTag expected = ints.stream().map(i -> ShortTag.valueOf(i.shortValue())).collect(Collectors.toCollection(ListTag::new));
@@ -543,17 +543,17 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
         Object sanitized = CCArgumentWrapperTestHelper.wrapAndSanitize(nbt, targetClass, false);
         if (longs.isEmpty()) {
             if (targetClass == Tag.class) {
-                return sanitized instanceof CompoundTag && ((CompoundTag) sanitized).isEmpty();
+                return sanitized instanceof CompoundTag compound && compound.isEmpty();
             }//CollectionTag
-            return sanitized instanceof ListTag && ((ListTag) sanitized).isEmpty();
+            return sanitized instanceof ListTag list && list.isEmpty();
         } else if (longs.stream().allMatch(value -> value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE)) {
-            ByteArrayTag expected = new ByteArrayTag(longs.stream().map(Long::byteValue).collect(Collectors.toList()));
+            ByteArrayTag expected = new ByteArrayTag(longs.stream().map(Long::byteValue).toList());
             return expected.equals(sanitized);
         } else if (longs.stream().allMatch(value -> value >= Short.MIN_VALUE && value <= Short.MAX_VALUE)) {
             ListTag expected = longs.stream().map(i -> ShortTag.valueOf(i.shortValue())).collect(Collectors.toCollection(ListTag::new));
             return expected.equals(sanitized);
         } else if (longs.stream().allMatch(value -> value >= Integer.MIN_VALUE && value <= Integer.MAX_VALUE)) {
-            IntArrayTag expected = new IntArrayTag(longs.stream().map(Long::intValue).collect(Collectors.toList()));
+            IntArrayTag expected = new IntArrayTag(longs.stream().map(Long::intValue).toList());
             return expected.equals(sanitized);
         }
         return getExpected(longs).equals(sanitized);
@@ -562,7 +562,7 @@ class CCArgumentWrapperPropertyTest implements WithQuickTheories {
     private LongArrayTag getExpected(List<Long> longs) {
         //Adjust for floating point accuracy as needed
         if (longs.stream().anyMatch(value -> value != (long) (double) value)) {
-            return new LongArrayTag(longs.stream().map(v -> (long) (double) v).collect(Collectors.toList()));
+            return new LongArrayTag(longs.stream().map(v -> (long) (double) v).toList());
         }
         return new LongArrayTag(longs);
     }

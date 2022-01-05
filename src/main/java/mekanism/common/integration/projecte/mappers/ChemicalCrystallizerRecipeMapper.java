@@ -34,12 +34,11 @@ public class ChemicalCrystallizerRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ChemicalCrystallizerRecipe)) {
+        if (!(iRecipe instanceof ChemicalCrystallizerRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        ChemicalCrystallizerRecipe recipe = (ChemicalCrystallizerRecipe) iRecipe;
         for (ChemicalStack<?> representation : recipe.getInput().getRepresentations()) {
             ItemStack output = recipe.getOutput(BoxedChemicalStack.box(representation));
             if (!output.isEmpty()) {

@@ -14,13 +14,12 @@ public class ChemicalDissolutionRecipeHandler extends MekanismRecipeHandler<Chem
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, ChemicalDissolutionRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, ChemicalDissolutionRecipe recipe, U o) {
         //Only support if the other is a dissolution recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
-        if (other instanceof ChemicalDissolutionRecipe) {
-            ChemicalDissolutionRecipe otherRecipe = (ChemicalDissolutionRecipe) other;
-            return ingredientConflicts(recipe.getItemInput(), otherRecipe.getItemInput()) &&
-                   ingredientConflicts(recipe.getGasInput(), otherRecipe.getGasInput());
+        if (o instanceof ChemicalDissolutionRecipe other) {
+            return ingredientConflicts(recipe.getItemInput(), other.getItemInput()) &&
+                   ingredientConflicts(recipe.getGasInput(), other.getGasInput());
         }
         return false;
     }

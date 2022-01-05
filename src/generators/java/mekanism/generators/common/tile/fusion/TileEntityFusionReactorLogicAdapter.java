@@ -56,18 +56,13 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
         }
         FusionReactorMultiblockData multiblock = getMultiblock();
         if (multiblock.isFormed()) {
-            switch (logicType) {
-                case READY:
-                    return multiblock.getLastPlasmaTemp() >= multiblock.getIgnitionTemperature(activeCooled);
-                case CAPACITY:
-                    return multiblock.getLastPlasmaTemp() >= multiblock.getMaxPlasmaTemperature(activeCooled);
-                case DEPLETED:
-                    return (multiblock.deuteriumTank.getStored() < multiblock.getInjectionRate() / 2) ||
-                           (multiblock.tritiumTank.getStored() < multiblock.getInjectionRate() / 2);
-                case DISABLED:
-                default:
-                    return false;
-            }
+            return switch (logicType) {
+                case READY -> multiblock.getLastPlasmaTemp() >= multiblock.getIgnitionTemperature(activeCooled);
+                case CAPACITY -> multiblock.getLastPlasmaTemp() >= multiblock.getMaxPlasmaTemperature(activeCooled);
+                case DEPLETED -> (multiblock.deuteriumTank.getStored() < multiblock.getInjectionRate() / 2) ||
+                                 (multiblock.tritiumTank.getStored() < multiblock.getInjectionRate() / 2);
+                case DISABLED -> false;
+            };
         }
         return false;
     }

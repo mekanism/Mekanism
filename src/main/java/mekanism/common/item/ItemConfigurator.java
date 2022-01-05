@@ -91,8 +91,7 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
             ConfiguratorMode mode = getMode(stack);
             if (mode.isConfigurating()) { //Configurate
                 TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");
-                if (tile instanceof ISideConfiguration && ((ISideConfiguration) tile).getConfig().supports(transmissionType)) {
-                    ISideConfiguration config = (ISideConfiguration) tile;
+                if (tile instanceof ISideConfiguration config && config.getConfig().supports(transmissionType)) {
                     ConfigInfo info = config.getConfig().getConfig(transmissionType);
                     if (info != null) {
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
@@ -136,40 +135,36 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                     return InteractionResult.SUCCESS;
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
-                if (tile instanceof IMekanismInventory) {
-                    IMekanismInventory inv = (IMekanismInventory) tile;
-                    if (inv.hasInventory()) {
-                        if (SecurityUtils.canAccess(player, tile)) {
-                            boolean creative = player.isCreative();
-                            IEnergyContainer energyContainer = creative ? null : StorageUtils.getEnergyContainer(stack, 0);
-                            if (!creative && energyContainer == null) {
-                                return InteractionResult.FAIL;
-                            }
-                            //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
-                            FloatingLong energyPerItemDump = MekanismConfig.gear.configuratorEnergyPerItem.get();
-                            for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
-                                if (!inventorySlot.isEmpty()) {
-                                    if (!creative) {
-                                        if (energyContainer.extract(energyPerItemDump, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerItemDump)) {
-                                            break;
-                                        }
-                                        energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
-                                    }
-                                    Block.popResource(world, pos, inventorySlot.getStack().copy());
-                                    inventorySlot.setEmpty();
-                                }
-                            }
-                            return InteractionResult.SUCCESS;
-                        } else {
-                            SecurityUtils.displayNoAccess(player);
+                if (tile instanceof IMekanismInventory inv && inv.hasInventory()) {
+                    if (SecurityUtils.canAccess(player, tile)) {
+                        boolean creative = player.isCreative();
+                        IEnergyContainer energyContainer = creative ? null : StorageUtils.getEnergyContainer(stack, 0);
+                        if (!creative && energyContainer == null) {
                             return InteractionResult.FAIL;
                         }
+                        //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
+                        FloatingLong energyPerItemDump = MekanismConfig.gear.configuratorEnergyPerItem.get();
+                        for (IInventorySlot inventorySlot : inv.getInventorySlots(null)) {
+                            if (!inventorySlot.isEmpty()) {
+                                if (!creative) {
+                                    if (energyContainer.extract(energyPerItemDump, Action.SIMULATE, AutomationType.MANUAL).smallerThan(energyPerItemDump)) {
+                                        break;
+                                    }
+                                    energyContainer.extract(energyPerItemDump, Action.EXECUTE, AutomationType.MANUAL);
+                                }
+                                Block.popResource(world, pos, inventorySlot.getStack().copy());
+                                inventorySlot.setEmpty();
+                            }
+                        }
+                        return InteractionResult.SUCCESS;
+                    } else {
+                        SecurityUtils.displayNoAccess(player);
+                        return InteractionResult.FAIL;
                     }
                 }
             } else if (mode == ConfiguratorMode.ROTATE) { //Rotate
-                if (tile instanceof TileEntityMekanism) {
+                if (tile instanceof TileEntityMekanism tileMekanism) {
                     if (SecurityUtils.canAccess(player, tile)) {
-                        TileEntityMekanism tileMekanism = (TileEntityMekanism) tile;
                         if (Attribute.get(tileMekanism.getBlockType(), AttributeStateFacing.class).canRotate()) {
                             if (!player.isShiftKeyDown()) {
                                 tileMekanism.setFacing(side);
@@ -296,26 +291,17 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
 
         @Nullable
         public TransmissionType getTransmission() {
-            switch (this) {
-                case CONFIGURATE_ITEMS:
-                    return TransmissionType.ITEM;
-                case CONFIGURATE_FLUIDS:
-                    return TransmissionType.FLUID;
-                case CONFIGURATE_GASES:
-                    return TransmissionType.GAS;
-                case CONFIGURATE_INFUSE_TYPES:
-                    return TransmissionType.INFUSION;
-                case CONFIGURATE_PIGMENTS:
-                    return TransmissionType.PIGMENT;
-                case CONFIGURATE_SLURRIES:
-                    return TransmissionType.SLURRY;
-                case CONFIGURATE_ENERGY:
-                    return TransmissionType.ENERGY;
-                case CONFIGURATE_HEAT:
-                    return TransmissionType.HEAT;
-                default:
-                    return null;
-            }
+            return switch (this) {
+                case CONFIGURATE_ITEMS -> TransmissionType.ITEM;
+                case CONFIGURATE_FLUIDS -> TransmissionType.FLUID;
+                case CONFIGURATE_GASES -> TransmissionType.GAS;
+                case CONFIGURATE_INFUSE_TYPES -> TransmissionType.INFUSION;
+                case CONFIGURATE_PIGMENTS -> TransmissionType.PIGMENT;
+                case CONFIGURATE_SLURRIES -> TransmissionType.SLURRY;
+                case CONFIGURATE_ENERGY -> TransmissionType.ENERGY;
+                case CONFIGURATE_HEAT -> TransmissionType.HEAT;
+                default -> null;
+            };
         }
 
         @Nonnull

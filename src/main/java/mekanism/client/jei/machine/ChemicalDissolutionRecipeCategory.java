@@ -2,7 +2,6 @@ package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -61,8 +60,7 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
     public void setIngredients(ChemicalDissolutionRecipe recipe, IIngredients ingredients) {
         ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
         List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
-        List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
-              .collect(Collectors.toList());
+        List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED)).toList();
         ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(scaledGases));
         BoxedChemicalStack outputDefinition = recipe.getOutputDefinition();
         ChemicalType chemicalType = outputDefinition.getChemicalType();
@@ -84,7 +82,7 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
         initItem(recipeLayout.getItemStacks(), 0, true, inputSlot, recipe.getItemInput().getRepresentations());
         List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
-              .collect(Collectors.toList());
+              .toList();
         IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
         initChemical(gasStacks, 0, true, inputGauge, scaledGases);
         BoxedChemicalStack outputDefinition = recipe.getOutputDefinition();

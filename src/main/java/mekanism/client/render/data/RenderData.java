@@ -33,10 +33,6 @@ public abstract class RenderData {
 
     @Override
     public boolean equals(Object object) {
-        if (object instanceof RenderData) {
-            RenderData data = (RenderData) object;
-            return data.height == height && data.length == length && data.width == width;
-        }
-        return false;
+        return object instanceof RenderData data && data.height == height && data.length == length && data.width == width;
     }
 }

@@ -302,10 +302,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         List<FoundArmorDetails> armorDetails = new ArrayList<>();
         //Start by looping the armor, allowing modules to absorb damage if they can
         for (ItemStack stack : player.getArmorSlots()) {
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemMekaSuitArmor) {
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemMekaSuitArmor armor) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 if (energyContainer != null) {
-                    FoundArmorDetails details = new FoundArmorDetails(energyContainer, (ItemMekaSuitArmor) stack.getItem());
+                    FoundArmorDetails details = new FoundArmorDetails(energyContainer, armor);
                     armorDetails.add(details);
                     for (Module<?> module : details.armor.getModules(stack)) {
                         if (module.isEnabled()) {
@@ -399,7 +399,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    //TODO - 1.18: Switch this to a record
     private static class FoundArmorDetails {
 
         private final IEnergyContainer energyContainer;

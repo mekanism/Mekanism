@@ -22,32 +22,24 @@ public class UpgradeUtils {
     }
 
     public static ItemStack getStack(Upgrade upgrade, int count) {
-        switch (upgrade) {
-            case SPEED:
-                return MekanismItems.SPEED_UPGRADE.getItemStack(count);
-            case ENERGY:
-                return MekanismItems.ENERGY_UPGRADE.getItemStack(count);
-            case FILTER:
-                return MekanismItems.FILTER_UPGRADE.getItemStack(count);
-            case MUFFLING:
-                return MekanismItems.MUFFLING_UPGRADE.getItemStack(count);
-            case GAS:
-                return MekanismItems.GAS_UPGRADE.getItemStack(count);
-            case ANCHOR:
-                return MekanismItems.ANCHOR_UPGRADE.getItemStack(count);
-            case STONE_GENERATOR:
-                return MekanismItems.STONE_GENERATOR_UPGRADE.getItemStack(count);
-        }
-        return ItemStack.EMPTY;
+        return switch (upgrade) {
+            case SPEED -> MekanismItems.SPEED_UPGRADE.getItemStack(count);
+            case ENERGY -> MekanismItems.ENERGY_UPGRADE.getItemStack(count);
+            case FILTER -> MekanismItems.FILTER_UPGRADE.getItemStack(count);
+            case MUFFLING -> MekanismItems.MUFFLING_UPGRADE.getItemStack(count);
+            case GAS -> MekanismItems.GAS_UPGRADE.getItemStack(count);
+            case ANCHOR -> MekanismItems.ANCHOR_UPGRADE.getItemStack(count);
+            case STONE_GENERATOR -> MekanismItems.STONE_GENERATOR_UPGRADE.getItemStack(count);
+        };
     }
 
     public static List<Component> getInfo(BlockEntity tile, Upgrade upgrade) {
         List<Component> ret = new ArrayList<>();
-        if (tile instanceof IUpgradeTile) {
-            if (tile instanceof IUpgradeInfoHandler) {
-                return ((IUpgradeInfoHandler) tile).getInfo(upgrade);
+        if (tile instanceof IUpgradeTile upgradeTile) {
+            if (tile instanceof IUpgradeInfoHandler upgradeInfoHandler) {
+                return upgradeInfoHandler.getInfo(upgrade);
             } else {
-                ret = getMultScaledInfo((IUpgradeTile) tile, upgrade);
+                ret = getMultScaledInfo(upgradeTile, upgrade);
             }
         }
         return ret;

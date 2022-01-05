@@ -48,18 +48,18 @@ public class PacketGuiSetEnergy implements IMekanismPacket {
 
     public enum GuiEnergyValue {
         MIN_THRESHOLD((tile, value) -> {
-            if (tile instanceof TileEntityLaserAmplifier) {
-                ((TileEntityLaserAmplifier) tile).setMinThresholdFromPacket(value);
+            if (tile instanceof TileEntityLaserAmplifier amplifier) {
+                amplifier.setMinThresholdFromPacket(value);
             }
         }),
         MAX_THRESHOLD((tile, value) -> {
-            if (tile instanceof TileEntityLaserAmplifier) {
-                ((TileEntityLaserAmplifier) tile).setMaxThresholdFromPacket(value);
+            if (tile instanceof TileEntityLaserAmplifier amplifier) {
+                amplifier.setMaxThresholdFromPacket(value);
             }
         }),
         ENERGY_USAGE((tile, value) -> {
-            if (tile instanceof TileEntityResistiveHeater) {
-                ((TileEntityResistiveHeater) tile).setEnergyUsageFromPacket(value);
+            if (tile instanceof TileEntityResistiveHeater heater) {
+                heater.setEnergyUsageFromPacket(value);
             }
         });
 

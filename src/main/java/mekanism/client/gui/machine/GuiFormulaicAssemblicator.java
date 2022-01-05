@@ -121,6 +121,6 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
             return false;
         }
         ItemStack formulaStack = tile.getFormulaSlot().getStack();
-        return formulaStack.getItem() instanceof ItemCraftingFormula && ((ItemCraftingFormula) formulaStack.getItem()).getInventory(formulaStack) == null;
+        return formulaStack.getItem() instanceof ItemCraftingFormula formula && formula.getInventory(formulaStack) == null;
     }
 }

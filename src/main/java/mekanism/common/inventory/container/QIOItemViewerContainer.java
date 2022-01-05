@@ -38,15 +38,13 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.Component;
-
-import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
@@ -238,9 +236,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         if (currentSlot == null) {
             return ItemStack.EMPTY;
         }
-        if (currentSlot instanceof VirtualCraftingOutputSlot) {
+        if (currentSlot instanceof VirtualCraftingOutputSlot virtualSlot) {
             //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
-            return ((VirtualCraftingOutputSlot) currentSlot).shiftClickSlot(player, hotBarSlots, mainInventorySlots);
+            return virtualSlot.shiftClickSlot(player, hotBarSlots, mainInventorySlots);
         } else if (currentSlot instanceof InventoryContainerSlot) {
             //Otherwise, if we are an inventory container slot (crafting input slots in this case)
             // use our normal handling to attempt and transfer the contents to the player's inventory

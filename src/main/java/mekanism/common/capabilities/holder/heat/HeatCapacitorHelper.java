@@ -28,10 +28,10 @@ public class HeatCapacitorHelper {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof HeatCapacitorHolder) {
-            ((HeatCapacitorHolder) slotHolder).addCapacitor(capacitor);
-        } else if (slotHolder instanceof ConfigHeatCapacitorHolder) {
-            ((ConfigHeatCapacitorHolder) slotHolder).addCapacitor(capacitor);
+        if (slotHolder instanceof HeatCapacitorHolder slotHolder) {
+            slotHolder.addCapacitor(capacitor);
+        } else if (slotHolder instanceof ConfigHeatCapacitorHolder slotHolder) {
+            slotHolder.addCapacitor(capacitor);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add capacitors");
         }
@@ -41,8 +41,8 @@ public class HeatCapacitorHelper {
         if (built) {
             throw new IllegalStateException("Builder has already built.");
         }
-        if (slotHolder instanceof HeatCapacitorHolder) {
-            ((HeatCapacitorHolder) slotHolder).addCapacitor(container, sides);
+        if (slotHolder instanceof HeatCapacitorHolder slotHolder) {
+            slotHolder.addCapacitor(container, sides);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add capacitors on specific sides");
         }

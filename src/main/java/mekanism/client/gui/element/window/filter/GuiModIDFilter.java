@@ -65,26 +65,26 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
         return new IGhostIngredientConsumer() {
             @Override
             public boolean supportsIngredient(Object ingredient) {
-                if (ingredient instanceof ItemStack) {
-                    return !((ItemStack) ingredient).isEmpty();
-                } else if (ingredient instanceof FluidStack) {
-                    return !((FluidStack) ingredient).isEmpty();
-                } else if (ingredient instanceof ChemicalStack) {
-                    return !((ChemicalStack<?>) ingredient).isEmpty();
+                if (ingredient instanceof ItemStack stack) {
+                    return !stack.isEmpty();
+                } else if (ingredient instanceof FluidStack stack) {
+                    return !stack.isEmpty();
+                } else if (ingredient instanceof ChemicalStack<?> stack) {
+                    return !stack.isEmpty();
                 }
                 return ingredient instanceof IForgeRegistryEntry;
             }
 
             @Override
             public void accept(Object ingredient) {
-                if (ingredient instanceof ItemStack) {
-                    setFilterName((ItemStack) ingredient);
-                } else if (ingredient instanceof FluidStack) {
-                    setFilterName(((FluidStack) ingredient).getFluid());
-                } else if (ingredient instanceof ChemicalStack) {
-                    setFilterName(((ChemicalStack<?>) ingredient).getType());
-                } else if (ingredient instanceof IForgeRegistryEntry) {
-                    setFilterName((IForgeRegistryEntry<?>) ingredient);
+                if (ingredient instanceof ItemStack stack) {
+                    setFilterName(stack);
+                } else if (ingredient instanceof FluidStack stack) {
+                    setFilterName(stack.getFluid());
+                } else if (ingredient instanceof ChemicalStack<?> stack) {
+                    setFilterName(stack.getType());
+                } else if (ingredient instanceof IForgeRegistryEntry<?> registryEntry) {
+                    setFilterName(registryEntry);
                 }
             }
         };

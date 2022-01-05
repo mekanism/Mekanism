@@ -153,10 +153,9 @@ public class TileEntityMetallurgicInfuserFactory extends TileEntityItemToItemFac
 
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof MetallurgicInfuserUpgradeData) {
+        if (upgradeData instanceof MetallurgicInfuserUpgradeData data) {
             //Generic factory upgrade data handling
             super.parseUpgradeData(upgradeData);
-            MetallurgicInfuserUpgradeData data = (MetallurgicInfuserUpgradeData) upgradeData;
             //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
             infusionTank.deserializeNBT(data.stored.serializeNBT());
             extraSlot.deserializeNBT(data.infusionSlot.serializeNBT());

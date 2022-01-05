@@ -127,7 +127,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     // We can compare inventories at the very least for BasicInventorySlots as they have an instance of IMekanismInventory stored
     /*@Override
     public boolean isSameInventory(Slot other) {
-        return other instanceof SlotItemHandler && ((SlotItemHandler) other).getItemHandler() == this.itemHandler;
+        return other instanceof SlotItemHandler handler && handler.getItemHandler() == this.itemHandler;
     }*/
 
     public ContainerSlotType getSlotType() {

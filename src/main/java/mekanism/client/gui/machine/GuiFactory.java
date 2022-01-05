@@ -49,13 +49,11 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), imageWidth - 12, 16, tile instanceof TileEntitySawingFactory ? 73 : 52));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getLastUsage));
         if (tile.hasSecondaryResourceBar()) {
-            if (tile instanceof TileEntityMetallurgicInfuserFactory) {
-                TileEntityMetallurgicInfuserFactory factory = (TileEntityMetallurgicInfuserFactory) this.tile;
+            if (tile instanceof TileEntityMetallurgicInfuserFactory factory) {
                 addRenderableWidget(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getInfusionTank(), tile.getInfusionTanks(null)), 7, 76,
                       tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
                 addRenderableWidget(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));
-            } else if (tile instanceof TileEntityItemStackGasToItemStackFactory) {
-                TileEntityItemStackGasToItemStackFactory factory = (TileEntityItemStackGasToItemStackFactory) this.tile;
+            } else if (tile instanceof TileEntityItemStackGasToItemStackFactory factory) {
                 addRenderableWidget(new GuiChemicalBar<>(this, GuiChemicalBar.getProvider(factory.getGasTank(), tile.getGasTanks(null)), 7, 76,
                       tile.tier == FactoryTier.ULTIMATE ? 172 : 138, 4, true));
                 addRenderableWidget(new GuiDumpButton<>(this, factory, tile.tier == FactoryTier.ULTIMATE ? 182 : 148, 76));

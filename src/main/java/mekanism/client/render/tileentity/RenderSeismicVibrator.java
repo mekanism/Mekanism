@@ -42,15 +42,15 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
 
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
-        if (tile instanceof TileEntitySeismicVibrator) {
-            float actualRate = performTranslationsAndGetRate((TileEntitySeismicVibrator) tile, partialTick, matrix);
+        if (tile instanceof TileEntitySeismicVibrator vibrator) {
+            float actualRate = performTranslationsAndGetRate(vibrator, partialTick, matrix);
             model.renderWireFrame(matrix, buffer, actualRate, red, green, blue, alpha);
             matrix.popPose();
         }
     }
 
     /**
-     * Make sure to call {@link MatrixStack#popPose()} afterwards
+     * Make sure to call {@link PoseStack#popPose()} afterwards
      */
     private float performTranslationsAndGetRate(TileEntitySeismicVibrator tile, float partialTick, PoseStack matrix) {
         matrix.pushPose();

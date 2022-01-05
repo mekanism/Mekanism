@@ -8,8 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.Quad;
@@ -73,7 +71,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
         renderModel(transmitter, matrix, builder, MekanismRenderer.getRed(rgb), MekanismRenderer.getGreen(rgb), MekanismRenderer.getBlue(rgb), alpha, light,
               overlayLight, icon, Arrays.stream(EnumUtils.DIRECTIONS)
                     .map(side -> side.getSerializedName() + transmitter.getTransmitter().getConnectionType(side).getSerializedName().toUpperCase(Locale.ROOT))
-                    .collect(Collectors.toList()));
+                    .toList());
     }
 
     protected void renderModel(TRANSMITTER transmitter, PoseStack matrix, VertexConsumer builder, float red, float green, float blue, float alpha, int light,
@@ -94,31 +92,6 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
         }
     }
 
-    private static class ContentsModelData {
-
-        private final List<String> visible;
-        private final TextureAtlasSprite icon;
-
-        private ContentsModelData(List<String> visible, TextureAtlasSprite icon) {
-            this.visible = visible;
-            this.icon = icon;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(visible, icon);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o instanceof ContentsModelData) {
-                ContentsModelData other = (ContentsModelData) o;
-                return visible.equals(other.visible) && icon.equals(other.icon);
-            }
-            return false;
-        }
+    private record ContentsModelData(List<String> visible, TextureAtlasSprite icon) {
     }
 }

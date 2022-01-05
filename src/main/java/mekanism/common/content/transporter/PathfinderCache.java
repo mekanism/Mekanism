@@ -34,7 +34,7 @@ public class PathfinderCache {
             Map<PathData, CachedPath> pathMap = cachedPaths.get(uuid);
             for (Direction side : sides) {
                 CachedPath test = pathMap.get(new PathData(start.getTilePos(), end, side));
-                if (ret == null || (test != null && test.getCost() < ret.getCost())) {
+                if (ret == null || (test != null && test.cost() < ret.cost())) {
                     ret = test;
                 }
             }
@@ -46,23 +46,7 @@ public class PathfinderCache {
         cachedPaths.clear();
     }
 
-    public static class CachedPath {
-
-        private final List<BlockPos> path;
-        private final double cost;
-
-        public CachedPath(List<BlockPos> path, double cost) {
-            this.path = path;
-            this.cost = cost;
-        }
-
-        public List<BlockPos> getPath() {
-            return path;
-        }
-
-        public double getCost() {
-            return cost;
-        }
+    public record CachedPath(List<BlockPos> path, double cost) {
     }
 
     public static class PathData {
@@ -85,11 +69,7 @@ public class PathfinderCache {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof PathData) {
-                PathData data = (PathData) obj;
-                return data.startTransporter.equals(startTransporter) && data.end.equals(end) && data.endSide.equals(endSide);
-            }
-            return false;
+            return obj instanceof PathData data && data.startTransporter.equals(startTransporter) && data.end.equals(end) && data.endSide.equals(endSide);
         }
 
         @Override

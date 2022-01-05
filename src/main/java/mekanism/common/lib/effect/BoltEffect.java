@@ -187,32 +187,10 @@ public class BoltEffect {
         return Pair.of(quads, new QuadCache(end, endRight, endBack));
     }
 
-    private static class QuadCache {
-
-        private final Vec3 prevEnd, prevEndRight, prevEndBack;
-
-        private QuadCache(Vec3 prevEnd, Vec3 prevEndRight, Vec3 prevEndBack) {
-            this.prevEnd = prevEnd;
-            this.prevEndRight = prevEndRight;
-            this.prevEndBack = prevEndBack;
-        }
+    private record QuadCache(Vec3 prevEnd, Vec3 prevEndRight, Vec3 prevEndBack) {
     }
 
-    protected static class BoltInstructions {
-
-        private final Vec3 start;
-        private final Vec3 perpendicularDist;
-        private final QuadCache cache;
-        private final float progress;
-        private final boolean isBranch;
-
-        private BoltInstructions(Vec3 start, float progress, Vec3 perpendicularDist, QuadCache cache, boolean isBranch) {
-            this.start = start;
-            this.perpendicularDist = perpendicularDist;
-            this.progress = progress;
-            this.cache = cache;
-            this.isBranch = isBranch;
-        }
+    protected record BoltInstructions(Vec3 start, float progress, Vec3 perpendicularDist, QuadCache cache, boolean isBranch) {
     }
 
     public static class BoltQuads {

@@ -2,7 +2,6 @@ package mekanism.common.inventory.container.entity.robit;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.entity.EntityRobit;
@@ -36,7 +35,7 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
             //TODO: Improve how unlock handling is done to have some sort of per player cache and maybe move the unlocked check away
             // from the skin and into the handler system
             data = SyncableRegistryEntryList.create(() -> MekanismAPI.robitSkinRegistry().getValues().stream().filter(skin ->
-                  skin.isUnlocked(inv.player)).collect(Collectors.toList()), value -> unlockedSkins = value);
+                  skin.isUnlocked(inv.player)).toList(), value -> unlockedSkins = value);
         }
         return Collections.singletonList(data);
     }

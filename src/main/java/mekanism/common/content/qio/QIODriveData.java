@@ -25,7 +25,7 @@ public class QIODriveData {
         // load item map from drive stack
         item.loadItemMap(stack, this);
         // update cached item count value
-        itemCount = itemMap.values().stream().mapToLong(Long::longValue).sum();
+        itemCount = itemMap.values().longStream().sum();
 
         key.updateMetadata(this);
     }
@@ -129,7 +129,7 @@ public class QIODriveData {
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof QIODriveKey && ((QIODriveKey) obj).holder == holder && ((QIODriveKey) obj).driveSlot == driveSlot;
+            return obj instanceof QIODriveKey filter && filter.holder == holder && filter.driveSlot == driveSlot;
         }
     }
 }

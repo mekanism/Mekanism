@@ -196,8 +196,8 @@ public class QIOCraftingWindow implements IContentsListener {
             return false;
         }
         if (lastRecipe != null && !lastRecipe.isSpecial()) {
-            if (player instanceof ServerPlayer && world.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) &&
-                !((ServerPlayer) player).getRecipeBook().contains(lastRecipe)) {
+            if (player instanceof ServerPlayer serverPlayer && world.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) &&
+                !serverPlayer.getRecipeBook().contains(lastRecipe)) {
                 //If the player cannot use the recipe, don't allow crafting
                 return false;
             }
@@ -836,9 +836,9 @@ public class QIOCraftingWindow implements IContentsListener {
                     }
                     return ItemStack.EMPTY;
                 };
-                if (lastRecipe instanceof IShapedRecipe) {
+                if (lastRecipe instanceof IShapedRecipe<?> shapedRecipe) {
                     //It is a shaped recipe, make use of this information to attempt to find the proper match
-                    mapShapedRecipe((IShapedRecipe<?>) lastRecipe, ingredients, itemGetter);
+                    mapShapedRecipe(shapedRecipe, ingredients, itemGetter);
                 } else {
                     mapShapelessRecipe(ingredients, itemGetter);
                 }

@@ -32,8 +32,8 @@ public class AdditionsClient {
                 voiceClient = new VoiceClient("127.0.0.1");
                 AdditionsClient.voiceClient.start();
                 //remote connection
-            } else if (address instanceof InetSocketAddress) {
-                voiceClient = new VoiceClient(((InetSocketAddress) address).getHostString());
+            } else if (address instanceof InetSocketAddress socketAddress) {
+                voiceClient = new VoiceClient(socketAddress.getHostString());
                 AdditionsClient.voiceClient.start();
             } else {
                 Mekanism.logger.error("Unknown connection address detected, voice client will not launch.");

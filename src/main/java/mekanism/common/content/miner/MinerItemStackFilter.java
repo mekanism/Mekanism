@@ -37,7 +37,7 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
 
     @Override
     public boolean hasBlacklistedElement() {
-        return !itemType.isEmpty() && itemType.getItem() instanceof BlockItem && MekanismTags.Blocks.MINER_BLACKLIST.contains(((BlockItem) itemType.getItem()).getBlock());
+        return !itemType.isEmpty() && itemType.getItem() instanceof BlockItem blockItem && MekanismTags.Blocks.MINER_BLACKLIST.contains(blockItem.getBlock());
     }
 
     @Override
@@ -73,8 +73,8 @@ public class MinerItemStackFilter extends MinerFilter<MinerItemStackFilter> impl
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof MinerItemStackFilter && ((MinerItemStackFilter) filter).itemType.sameItem(itemType);
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof MinerItemStackFilter filter && filter.itemType.sameItem(itemType);
     }
 
     @Override

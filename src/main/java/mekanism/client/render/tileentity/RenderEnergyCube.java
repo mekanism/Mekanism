@@ -33,18 +33,16 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
         matrix.pushPose();
         matrix.translate(0.5, 1.5, 0.5);
         switch (tile.getDirection()) {
-            case DOWN:
+            case DOWN -> {
                 matrix.mulPose(Vector3f.XN.rotationDegrees(90));
                 matrix.translate(0, 1, -1);
-                break;
-            case UP:
+            }
+            case UP -> {
                 matrix.mulPose(Vector3f.XP.rotationDegrees(90));
                 matrix.translate(0, 1, 1);
-                break;
-            default:
-                //Otherwise, use the helper method for handling different face options because it is one of them
-                MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
-                break;
+            }
+            //Otherwise, use the helper method for handling different face options because it is one of them
+            default -> MekanismRenderer.rotate(matrix, tile.getDirection(), 0, 180, 90, 270);
         }
         matrix.mulPose(Vector3f.ZP.rotationDegrees(180));
         profiler.push(ProfilerConstants.CORNERS);

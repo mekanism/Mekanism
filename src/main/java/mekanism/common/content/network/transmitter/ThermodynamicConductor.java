@@ -168,7 +168,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         if (tempToTransfer > 0) {
             //Look up the adjacent tile from the acceptor cache and then do the type checking
             BlockEntity sink = getAcceptorCache().getConnectedAcceptorTile(side);
-            if (sink instanceof TileEntityTransmitter && TransmissionType.HEAT.checkTransmissionType((TileEntityTransmitter) sink)) {
+            if (sink instanceof TileEntityTransmitter transmitter && TransmissionType.HEAT.checkTransmissionType(transmitter)) {
                 //Heat transmitter to heat transmitter, don't count as "adjacent transfer"
                 return currentAdjacentTransfer;
             }

@@ -293,46 +293,43 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             boolean sharesSet = false;
             int upgraded = 0;
             for (Transmitter<?, ?, ?> transmitter : list) {
-                if (transmitter instanceof IUpgradeableTransmitter) {
-                    IUpgradeableTransmitter<?> upgradeableTransmitter = (IUpgradeableTransmitter<?>) transmitter;
-                    if (upgradeableTransmitter.canUpgrade(tier)) {
-                        TileEntityTransmitter transmitterTile = transmitter.getTransmitterTile();
-                        BlockState state = transmitterTile.getBlockState();
-                        BlockState upgradeState = transmitterTile.upgradeResult(state, tier.getBaseTier());
-                        if (state == upgradeState) {
-                            //Skip if it would not actually upgrade anything
-                            continue;
+                if (transmitter instanceof IUpgradeableTransmitter<?> upgradeableTransmitter && upgradeableTransmitter.canUpgrade(tier)) {
+                    TileEntityTransmitter transmitterTile = transmitter.getTransmitterTile();
+                    BlockState state = transmitterTile.getBlockState();
+                    BlockState upgradeState = transmitterTile.upgradeResult(state, tier.getBaseTier());
+                    if (state == upgradeState) {
+                        //Skip if it would not actually upgrade anything
+                        continue;
+                    }
+                    if (!sharesSet) {
+                        if (transmitterNetwork instanceof DynamicBufferedNetwork) {
+                            //Ensure we save the shares to the tiles so that they can properly take them, and they don't get voided
+                            ((DynamicBufferedNetwork) transmitterNetwork).validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter);
                         }
-                        if (!sharesSet) {
-                            if (transmitterNetwork instanceof DynamicBufferedNetwork) {
-                                //Ensure we save the shares to the tiles so that they can properly take them, and they don't get voided
-                                ((DynamicBufferedNetwork) transmitterNetwork).validateSaveShares((BufferedTransmitter<?, ?, ?, ?>) transmitter);
-                            }
-                            sharesSet = true;
-                        }
-                        transmitter.startUpgrading();
-                        TransmitterUpgradeData upgradeData = upgradeableTransmitter.getUpgradeData();
-                        BlockPos transmitterPos = transmitter.getTilePos();
-                        Level transmitterWorld = transmitter.getTileWorld();
-                        if (upgradeData == null) {
-                            Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.",
-                                  transmitterPos, transmitterWorld);
+                        sharesSet = true;
+                    }
+                    transmitter.startUpgrading();
+                    TransmitterUpgradeData upgradeData = upgradeableTransmitter.getUpgradeData();
+                    BlockPos transmitterPos = transmitter.getTilePos();
+                    Level transmitterWorld = transmitter.getTileWorld();
+                    if (upgradeData == null) {
+                        Mekanism.logger.warn("Got no upgrade data for transmitter at position: {} in {} but it said it would be able to provide some.",
+                              transmitterPos, transmitterWorld);
+                    } else {
+                        transmitterWorld.setBlockAndUpdate(transmitterPos, upgradeState);
+                        TileEntityTransmitter upgradedTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, transmitterWorld, transmitterPos);
+                        if (upgradedTile == null) {
+                            Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", transmitterPos, transmitterWorld);
                         } else {
-                            transmitterWorld.setBlockAndUpdate(transmitterPos, upgradeState);
-                            TileEntityTransmitter upgradedTile = WorldUtils.getTileEntity(TileEntityTransmitter.class, transmitterWorld, transmitterPos);
-                            if (upgradedTile == null) {
-                                Mekanism.logger.warn("Error upgrading transmitter at position: {} in {}.", transmitterPos, transmitterWorld);
+                            Transmitter<?, ?, ?> upgradedTransmitter = upgradedTile.getTransmitter();
+                            if (upgradedTransmitter instanceof IUpgradeableTransmitter) {
+                                transferUpgradeData((IUpgradeableTransmitter<?>) upgradedTransmitter, upgradeData);
                             } else {
-                                Transmitter<?, ?, ?> upgradedTransmitter = upgradedTile.getTransmitter();
-                                if (upgradedTransmitter instanceof IUpgradeableTransmitter) {
-                                    transferUpgradeData((IUpgradeableTransmitter<?>) upgradedTransmitter, upgradeData);
-                                } else {
-                                    Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
-                                }
-                                upgraded++;
-                                if (upgraded == 8) {
-                                    break;
-                                }
+                                Mekanism.logger.warn("Unhandled upgrade data.", new IllegalStateException());
+                            }
+                            upgraded++;
+                            if (upgraded == 8) {
+                                break;
                             }
                         }
                     }

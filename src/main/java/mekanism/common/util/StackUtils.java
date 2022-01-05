@@ -85,7 +85,7 @@ public final class StackUtils {
      * @param pos    where
      * @param player our fake player, usually
      *
-     * @return the result of {@link Block#getStateForPlacement(BlockItemUseContext)}, or null if it cannot be placed in that location
+     * @return the result of {@link Block#getStateForPlacement(BlockPlaceContext)}, or null if it cannot be placed in that location
      */
     @Nullable
     public static BlockState getStateForPlacement(ItemStack stack, BlockPos pos, Player player) {

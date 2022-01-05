@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.MekanismAPI;
@@ -38,8 +37,8 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIRecipe> {
@@ -67,7 +66,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
 
     private List<FluidStack> getWaterInput(FissionJEIRecipe recipe) {
         int amount = MathUtils.clampToInt(recipe.outputCoolant.getAmount());
-        return FluidTags.WATER.getValues().stream().map(fluid -> new FluidStack(fluid, amount)).collect(Collectors.toList());
+        return FluidTags.WATER.getValues().stream().map(fluid -> new FluidStack(fluid, amount)).toList();
     }
 
     @Nonnull
@@ -130,19 +129,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
         return recipes;
     }
 
-    public static class FissionJEIRecipe {
-
-        @Nullable//If null -> coolant is water
-        private final GasStackIngredient inputCoolant;
-        private final GasStackIngredient fuel;
-        private final GasStack outputCoolant;
-        private final GasStack waste;
-
-        public FissionJEIRecipe(@Nullable GasStackIngredient inputCoolant, GasStackIngredient fuel, GasStack outputCoolant, GasStack waste) {
-            this.inputCoolant = inputCoolant;
-            this.fuel = fuel;
-            this.outputCoolant = outputCoolant;
-            this.waste = waste;
-        }
+    //If null -> coolant is water
+    public record FissionJEIRecipe(@Nullable GasStackIngredient inputCoolant, GasStackIngredient fuel, GasStack outputCoolant, GasStack waste) {
     }
 }

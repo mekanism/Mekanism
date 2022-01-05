@@ -112,10 +112,10 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
             if (owner != null && minecraft.player.getUUID().equals(owner)) {
                 if (currentHand != null) {
                     Mekanism.packetHandler().sendToServer(new PacketSecurityMode(currentHand, getSecurity().getNext()));
-                } else if (dataSource instanceof BlockEntity) {
-                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_SECURITY_MODE, (BlockEntity) dataSource));
-                } else if (dataSource instanceof Entity) {
-                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, (Entity) dataSource));
+                } else if (dataSource instanceof BlockEntity tile) {
+                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.NEXT_SECURITY_MODE, tile));
+                } else if (dataSource instanceof Entity entity) {
+                    Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteractionEntity.NEXT_SECURITY_MODE, entity));
                 }
             }
         }

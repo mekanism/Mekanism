@@ -58,8 +58,8 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof SorterModIDFilter && ((SorterModIDFilter) filter).modID.equals(modID);
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof SorterModIDFilter filter && filter.modID.equals(modID);
     }
 
     @Override

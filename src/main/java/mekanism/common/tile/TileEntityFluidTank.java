@@ -203,8 +203,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof FluidTankUpgradeData) {
-            FluidTankUpgradeData data = (FluidTankUpgradeData) upgradeData;
+        if (upgradeData instanceof FluidTankUpgradeData data) {
             redstone = data.redstone;
             inputSlot.setStack(data.inputSlot.getStack());
             outputSlot.setStack(data.outputSlot.getStack());

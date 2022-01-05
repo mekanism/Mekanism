@@ -63,9 +63,9 @@ public class BlockType {
     }
 
     public static boolean is(Block block, BlockType... types) {
-        if (block instanceof ITypeBlock) {
+        if (block instanceof ITypeBlock typeBlock) {
             for (BlockType type : types) {
-                if (((ITypeBlock) block).getType() == type) {
+                if (typeBlock.getType() == type) {
                     return true;
                 }
             }
@@ -74,7 +74,7 @@ public class BlockType {
     }
 
     public static BlockType get(Block block) {
-        return block instanceof ITypeBlock ? ((ITypeBlock) block).getType() : null;
+        return block instanceof ITypeBlock typeBlock ? typeBlock.getType() : null;
     }
 
     public static class BlockTypeBuilder<BLOCK extends BlockType, T extends BlockTypeBuilder<BLOCK, T>> {

@@ -65,8 +65,8 @@ public class PortableQIODashboardInventory extends ItemStackMekanismInventory im
             IFrequencyItem frequencyItem = (IFrequencyItem) stack.getItem();
             if (frequencyItem.hasFrequency(stack)) {
                 Frequency frequency = frequencyItem.getFrequency(stack);
-                if (frequency instanceof QIOFrequency) {
-                    return (QIOFrequency) frequency;
+                if (frequency instanceof QIOFrequency freq) {
+                    return freq;
                 } else {
                     // if this frequency no longer exists, remove the reference from the stack
                     frequencyItem.setFrequency(stack, null);

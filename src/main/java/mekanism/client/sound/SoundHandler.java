@@ -88,20 +88,13 @@ public class SoundHandler {
 
     public static void startSound(@Nonnull LevelAccessor world, @Nonnull UUID uuid, @Nonnull SoundType soundType) {
         switch (soundType) {
-            case JETPACK:
-                startSound(world, uuid, jetpackSounds, JetpackSound::new);
-                break;
-            case SCUBA_MASK:
-                startSound(world, uuid, scubaMaskSounds, ScubaMaskSound::new);
-                break;
-            case FLAMETHROWER:
-                //TODO: Evaluate at some point if there is a better way to do this
-                // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
-                startSounds(world, uuid, flamethrowerSounds, FlamethrowerSound.Active::new, FlamethrowerSound.Idle::new);
-                break;
-            case GRAVITATIONAL_MODULATOR:
-                startSound(world, uuid, gravitationalModulationSounds, GravitationalModulationSound::new);
-                break;
+            case JETPACK -> startSound(world, uuid, jetpackSounds, JetpackSound::new);
+            case SCUBA_MASK -> startSound(world, uuid, scubaMaskSounds, ScubaMaskSound::new);
+            case FLAMETHROWER ->
+                  //TODO: Evaluate at some point if there is a better way to do this
+                  // Currently it requests both play, except only one can ever play at once due to the shouldPlaySound method
+                  startSounds(world, uuid, flamethrowerSounds, FlamethrowerSound.Active::new, FlamethrowerSound.Idle::new);
+            case GRAVITATIONAL_MODULATOR -> startSound(world, uuid, gravitationalModulationSounds, GravitationalModulationSound::new);
         }
     }
 
@@ -348,16 +341,13 @@ public class SoundHandler {
             BlockEntity tile = WorldUtils.getTileEntity(Minecraft.getInstance().level, new BlockPos(getX(), getY(), getZ()));
             float retVolume = 1.0F;
 
-            if (tile instanceof IUpgradeTile) {
-                IUpgradeTile upgradeTile = (IUpgradeTile) tile;
-                if (upgradeTile.supportsUpgrade(Upgrade.MUFFLING)) {
-                    int mufflerCount = upgradeTile.getComponent().getUpgrades(Upgrade.MUFFLING);
-                    retVolume = 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
-                }
+            if (tile instanceof IUpgradeTile upgradeTile && upgradeTile.supportsUpgrade(Upgrade.MUFFLING)) {
+                int mufflerCount = upgradeTile.getComponent().getUpgrades(Upgrade.MUFFLING);
+                retVolume = 1.0F - (mufflerCount / (float) Upgrade.MUFFLING.getMax());
             }
 
-            if (tile instanceof ITileSound) {
-                retVolume *= ((ITileSound) tile).getVolume();
+            if (tile instanceof ITileSound tileSound) {
+                retVolume *= tileSound.getVolume();
             }
 
             return retVolume;

@@ -71,8 +71,7 @@ public class ItemCanteen extends Item implements IGasItem {
     @Nonnull
     @Override
     public ItemStack finishUsingItem(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull LivingEntity entityLiving) {
-        if (!world.isClientSide && entityLiving instanceof Player) {
-            Player player = (Player) entityLiving;
+        if (!world.isClientSide && entityLiving instanceof Player player) {
             long needed = Math.min(20 - player.getFoodData().getFoodLevel(), getGas(stack).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
                 player.getFoodData().eat((int) needed, MekanismConfig.general.nutritionalPasteSaturation.get());
@@ -103,8 +102,8 @@ public class ItemCanteen extends Item implements IGasItem {
         Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
         if (capability.isPresent()) {
             IGasHandler gasHandlerItem = capability.get();
-            if (gasHandlerItem instanceof IMekanismGasHandler) {
-                IGasTank gasTank = ((IMekanismGasHandler) gasHandlerItem).getChemicalTank(0, null);
+            if (gasHandlerItem instanceof IMekanismGasHandler gasHandler) {
+                IGasTank gasTank = gasHandler.getChemicalTank(0, null);
                 if (gasTank != null) {
                     return gasTank.getStack();
                 }

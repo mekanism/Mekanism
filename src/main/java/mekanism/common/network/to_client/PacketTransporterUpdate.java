@@ -77,9 +77,9 @@ public class PacketTransporterUpdate implements IMekanismPacket {
                     transporter.deleteStack(toDelete);
                 }
             }
-            if (isDiversion && transporter instanceof DiversionTransporter) {
+            if (isDiversion && transporter instanceof DiversionTransporter diversionTransporter) {
                 //Copy the values of modes, without replacing the actual array
-                System.arraycopy(modes, 0, ((DiversionTransporter) transporter).modes, 0, modes.length);
+                System.arraycopy(modes, 0, diversionTransporter.modes, 0, modes.length);
             }
         }
     }

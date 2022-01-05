@@ -183,14 +183,14 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                             Fluid fluid = fluidState.getType();
                             FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                             Block block = blockState.getBlock();
-                            if (block instanceof IFluidBlock) {
-                                fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);
+                            if (block instanceof IFluidBlock fluidBlock) {
+                                fluidStack = fluidBlock.drain(world, pos, FluidAction.SIMULATE);
                                 if (!validFluid(fluidTank, fluidStack)) {
                                     //If the fluid is not valid, pass on doing anything
                                     return new InteractionResultHolder<>(InteractionResult.PASS, stack);
                                 }
                                 //Actually drain it
-                                fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
+                                fluidStack = fluidBlock.drain(world, pos, FluidAction.EXECUTE);
                             } else if (block instanceof BucketPickup bucketPickup && validFluid(fluidTank, fluidStack)) {
                                 //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                                 // otherwise we assume the type from the fluid state is correct
@@ -254,8 +254,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
         Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
         if (capability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = capability.get();
-            if (fluidHandlerItem instanceof IMekanismFluidHandler) {
-                return ((IMekanismFluidHandler) fluidHandlerItem).getFluidTank(0, null);
+            if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
+                return fluidHandler.getFluidTank(0, null);
             }
         }
         return null;
@@ -302,7 +302,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
         @Nonnull
         @Override
         public ItemStack execute(@Nonnull BlockSource source, @Nonnull ItemStack stack) {
-            if (stack.getItem() instanceof ItemBlockFluidTank && ((ItemBlockFluidTank) stack.getItem()).getBucketMode(stack)) {
+            if (stack.getItem() instanceof ItemBlockFluidTank tank && tank.getBucketMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
                 //Note: We don't use DispenseFluidContainer as we have more specific logic for determining if we want it to
                 // act as a bucket that is emptying its contents or one that is picking up contents
@@ -324,14 +324,14 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                     Fluid fluid = fluidState.getType();
                     FluidStack fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
                     Block block = blockState.getBlock();
-                    if (block instanceof IFluidBlock) {
-                        fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.SIMULATE);
+                    if (block instanceof IFluidBlock fluidBlock) {
+                        fluidStack = fluidBlock.drain(world, pos, FluidAction.SIMULATE);
                         if (!validFluid(fluidTank, fluidStack)) {
                             //If the fluid is not valid, then eject the stack similar to how vanilla does for buckets
                             return super.execute(source, stack);
                         }
                         //Actually drain it
-                        fluidStack = ((IFluidBlock) block).drain(world, pos, FluidAction.EXECUTE);
+                        fluidStack = fluidBlock.drain(world, pos, FluidAction.EXECUTE);
                     } else if (block instanceof BucketPickup bucketPickup && validFluid(fluidTank, fluidStack)) {
                         //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
                         // otherwise we assume the type from the fluid state is correct

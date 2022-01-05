@@ -33,11 +33,10 @@ public class RotaryRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof RotaryRecipe)) {
+        if (!(iRecipe instanceof RotaryRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
-        RotaryRecipe recipe = (RotaryRecipe) iRecipe;
         boolean handled = false;
         if (recipe.hasFluidToGas()) {
             for (FluidStack representation : recipe.getFluidInput().getRepresentations()) {

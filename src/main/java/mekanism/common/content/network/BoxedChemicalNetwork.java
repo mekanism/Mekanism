@@ -45,8 +45,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
 
-import mekanism.common.lib.transmitter.DynamicBufferedNetwork.TransferEvent;
-
 /**
  * A DynamicNetwork extension created specifically for the transfer of Chemicals.
  */
@@ -245,9 +243,9 @@ public class BoxedChemicalNetwork extends DynamicBufferedNetwork<BoxedChemicalHa
     }
 
     protected <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> void disperse(@Nonnull BoxedPressurizedTube triggerTransmitter, STACK chemical) {
-        if (chemical instanceof GasStack && chemical.has(GasAttributes.Radiation.class)) {
+        if (chemical instanceof GasStack stack && chemical.has(GasAttributes.Radiation.class)) {
             // Handle radiation leakage
-            MekanismAPI.getRadiationManager().dumpRadiation(triggerTransmitter.getTileCoord(), (GasStack) chemical);
+            MekanismAPI.getRadiationManager().dumpRadiation(triggerTransmitter.getTileCoord(), stack);
         }
     }
 

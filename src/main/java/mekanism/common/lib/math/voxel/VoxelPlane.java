@@ -119,11 +119,7 @@ public class VoxelPlane {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof VoxelPlane)) {
-            return false;
-        }
-        VoxelPlane other = (VoxelPlane) obj;
-        return size == other.size && minCol == other.minCol && maxCol == other.maxCol && minRow == other.minRow && maxRow == other.maxRow;
+        return obj instanceof VoxelPlane other && size == other.size && minCol == other.minCol && maxCol == other.maxCol && minRow == other.minRow && maxRow == other.maxRow;
     }
 
     @Override

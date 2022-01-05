@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.ChemicalStack;
@@ -90,14 +89,14 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
     @Override
     public void setIngredients(ChemicalCrystallizerRecipe recipe, IIngredients ingredients) {
         ChemicalStackIngredient<?, ?> input = recipe.getInput();
-        if (input instanceof GasStackIngredient) {
-            ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(((GasStackIngredient) input).getRepresentations()));
-        } else if (input instanceof InfusionStackIngredient) {
-            ingredients.setInputLists(MekanismJEI.TYPE_INFUSION, Collections.singletonList(((InfusionStackIngredient) input).getRepresentations()));
-        } else if (input instanceof PigmentStackIngredient) {
-            ingredients.setInputLists(MekanismJEI.TYPE_PIGMENT, Collections.singletonList(((PigmentStackIngredient) input).getRepresentations()));
-        } else if (input instanceof SlurryStackIngredient) {
-            ingredients.setInputLists(MekanismJEI.TYPE_SLURRY, Collections.singletonList(((SlurryStackIngredient) input).getRepresentations()));
+        if (input instanceof GasStackIngredient ingredient) {
+            ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(ingredient.getRepresentations()));
+        } else if (input instanceof InfusionStackIngredient ingredient) {
+            ingredients.setInputLists(MekanismJEI.TYPE_INFUSION, Collections.singletonList(ingredient.getRepresentations()));
+        } else if (input instanceof PigmentStackIngredient ingredient) {
+            ingredients.setInputLists(MekanismJEI.TYPE_PIGMENT, Collections.singletonList(ingredient.getRepresentations()));
+        } else if (input instanceof SlurryStackIngredient ingredient) {
+            ingredients.setInputLists(MekanismJEI.TYPE_SLURRY, Collections.singletonList(ingredient.getRepresentations()));
         }
         ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
     }
@@ -107,16 +106,15 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
         IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
         initItem(itemStacks, 0, false, output, recipe.getOutputDefinition());
         ChemicalStackIngredient<?, ?> input = recipe.getInput();
-        if (input instanceof GasStackIngredient) {
-            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_GAS, (GasStackIngredient) input, null);
-        } else if (input instanceof InfusionStackIngredient) {
-            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_INFUSION, (InfusionStackIngredient) input, null);
-        } else if (input instanceof PigmentStackIngredient) {
-            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_PIGMENT, (PigmentStackIngredient) input, null);
-        } else if (input instanceof SlurryStackIngredient) {
-            SlurryStackIngredient slurryInput = (SlurryStackIngredient) input;
+        if (input instanceof GasStackIngredient ingredient) {
+            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_GAS, ingredient, null);
+        } else if (input instanceof InfusionStackIngredient ingredient) {
+            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_INFUSION, ingredient, null);
+        } else if (input instanceof PigmentStackIngredient ingredient) {
+            initChemical(recipeLayout, recipe, MekanismJEI.TYPE_PIGMENT, ingredient, null);
+        } else if (input instanceof SlurryStackIngredient ingredient) {
             Set<Tag<Item>> tags = new HashSet<>();
-            for (SlurryStack slurryStack : slurryInput.getRepresentations()) {
+            for (SlurryStack slurryStack : ingredient.getRepresentations()) {
                 Slurry slurry = slurryStack.getType();
                 if (!slurry.isIn(MekanismTags.Slurries.DIRTY)) {
                     Tag<Item> oreTag = slurry.getOreTag();
@@ -126,12 +124,12 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
                 }
             }
             if (tags.size() == 1) {
-                initChemical(recipeLayout, recipe, MekanismJEI.TYPE_SLURRY, slurryInput, itemStacks);
+                initChemical(recipeLayout, recipe, MekanismJEI.TYPE_SLURRY, ingredient, itemStacks);
                 //TODO: Eventually come up with a better way to do this to allow for if there outputs based on the input and multiple input types
                 tags.stream().findFirst().ifPresent(tag -> initItem(itemStacks, 1, false, slurryOreSlot,
-                      tag.getValues().stream().map(ItemStack::new).collect(Collectors.toList())));
+                      tag.getValues().stream().map(ItemStack::new).toList()));
             } else {
-                initChemical(recipeLayout, recipe, MekanismJEI.TYPE_SLURRY, slurryInput, null);
+                initChemical(recipeLayout, recipe, MekanismJEI.TYPE_SLURRY, ingredient, null);
             }
         }
     }
@@ -143,17 +141,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
         this.ingredients.put(recipe, new IngredientTarget(stacks, itemIngredientGroup));
     }
 
-    //TODO - 1.18: Make this a record
-    private static class IngredientTarget {
-
-        private final IGuiIngredientGroup<? extends ChemicalStack<?>> ingredientGroup;
-        @Nullable
-        private final IGuiItemStackGroup itemIngredientGroup;
-
-        public IngredientTarget(IGuiIngredientGroup<? extends ChemicalStack<?>> ingredientGroup, @Nullable IGuiItemStackGroup itemIngredientGroup) {
-            this.ingredientGroup = ingredientGroup;
-            this.itemIngredientGroup = itemIngredientGroup;
-        }
+    private record IngredientTarget(IGuiIngredientGroup<? extends ChemicalStack<?>> ingredientGroup, @Nullable IGuiItemStackGroup itemIngredientGroup) {
     }
 
     private static class OreInfo implements IOreInfo {

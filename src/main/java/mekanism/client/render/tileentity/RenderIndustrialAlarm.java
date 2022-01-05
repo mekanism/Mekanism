@@ -41,34 +41,32 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
     }
 
     /**
-     * Make sure to call {@link MatrixStack#popPose()} afterwards
+     * Make sure to call {@link PoseStack#popPose()} afterwards
      */
     private void performTranslations(TileEntityIndustrialAlarm tile, PoseStack matrix) {
         matrix.pushPose();
         matrix.translate(0.5, 0, 0.5);
         switch (tile.getDirection()) {
-            case DOWN:
+            case DOWN -> {
                 matrix.translate(0, 1, 0);
                 matrix.mulPose(Vector3f.XP.rotationDegrees(180));
-                break;
-            case NORTH:
+            }
+            case NORTH -> {
                 matrix.translate(0, 0.5, 0.5);
                 matrix.mulPose(Vector3f.XN.rotationDegrees(90));
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 matrix.translate(0, 0.5, -0.5);
                 matrix.mulPose(Vector3f.XP.rotationDegrees(90));
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 matrix.translate(-0.5, 0.5, 0);
                 matrix.mulPose(Vector3f.ZN.rotationDegrees(90));
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 matrix.translate(0.5, 0.5, 0);
                 matrix.mulPose(Vector3f.ZP.rotationDegrees(90));
-                break;
-            default:
-                break;
+            }
         }
     }
 }

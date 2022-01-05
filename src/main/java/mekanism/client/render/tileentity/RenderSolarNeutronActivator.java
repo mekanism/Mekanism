@@ -43,15 +43,15 @@ public class RenderSolarNeutronActivator extends MekanismTileEntityRenderer<Tile
 
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer, float red, float green, float blue, float alpha) {
-        if (tile instanceof TileEntitySolarNeutronActivator) {
-            performTranslations((TileEntitySolarNeutronActivator) tile, matrix);
+        if (tile instanceof TileEntitySolarNeutronActivator sna) {
+            performTranslations(sna, matrix);
             model.renderWireFrame(matrix, buffer, red, green, blue, alpha);
             matrix.popPose();
         }
     }
 
     /**
-     * Make sure to call {@link MatrixStack#popPose()} afterwards
+     * Make sure to call {@link PoseStack#popPose()} afterwards
      */
     private void performTranslations(TileEntitySolarNeutronActivator tile, PoseStack matrix) {
         matrix.pushPose();

@@ -63,33 +63,20 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     }
 
     public static IFilter<?> fromType(FilterType filterType) {
-        switch (filterType) {
-            case MINER_ITEMSTACK_FILTER:
-                return new MinerItemStackFilter();
-            case MINER_MATERIAL_FILTER:
-                return new MinerMaterialFilter();
-            case MINER_MODID_FILTER:
-                return new MinerModIDFilter();
-            case MINER_TAG_FILTER:
-                return new MinerTagFilter();
-            case SORTER_ITEMSTACK_FILTER:
-                return new SorterItemStackFilter();
-            case SORTER_MATERIAL_FILTER:
-                return new SorterMaterialFilter();
-            case SORTER_MODID_FILTER:
-                return new SorterModIDFilter();
-            case SORTER_TAG_FILTER:
-                return new SorterTagFilter();
-            case OREDICTIONIFICATOR_ITEM_FILTER:
-                return new OredictionificatorItemFilter();
-            case QIO_ITEMSTACK_FILTER:
-                return new QIOItemStackFilter();
-            case QIO_MODID_FILTER:
-                return new QIOModIDFilter();
-            case QIO_TAG_FILTER:
-                return new QIOTagFilter();
-            default:
-                return null;
-        }
+        return switch (filterType) {
+            case MINER_ITEMSTACK_FILTER -> new MinerItemStackFilter();
+            case MINER_MATERIAL_FILTER -> new MinerMaterialFilter();
+            case MINER_MODID_FILTER -> new MinerModIDFilter();
+            case MINER_TAG_FILTER -> new MinerTagFilter();
+            case SORTER_ITEMSTACK_FILTER -> new SorterItemStackFilter();
+            case SORTER_MATERIAL_FILTER -> new SorterMaterialFilter();
+            case SORTER_MODID_FILTER -> new SorterModIDFilter();
+            case SORTER_TAG_FILTER -> new SorterTagFilter();
+            case OREDICTIONIFICATOR_ITEM_FILTER -> new OredictionificatorItemFilter();
+            case QIO_ITEMSTACK_FILTER -> new QIOItemStackFilter();
+            case QIO_MODID_FILTER -> new QIOModIDFilter();
+            case QIO_TAG_FILTER -> new QIOTagFilter();
+            default -> null;
+        };
     }
 }

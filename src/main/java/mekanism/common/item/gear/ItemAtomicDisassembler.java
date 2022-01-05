@@ -109,8 +109,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             percent = energy.divideToLevel(energyCost);
         }
         float damage = (float) (minDamage + damageDifference * percent);
-        if (attacker instanceof Player) {
-            target.hurt(DamageSource.playerAttack((Player) attacker), damage);
+        if (attacker instanceof Player player) {
+            target.hurt(DamageSource.playerAttack(player), damage);
         } else {
             target.hurt(DamageSource.mobAttack(attacker), damage);
         }

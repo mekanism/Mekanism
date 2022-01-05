@@ -33,12 +33,11 @@ public class ItemStackToGasRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ItemStackToGasRecipe)) {
+        if (!(iRecipe instanceof ItemStackToGasRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        ItemStackToGasRecipe recipe = (ItemStackToGasRecipe) iRecipe;
         for (ItemStack representation : recipe.getInput().getRepresentations()) {
             GasStack output = recipe.getOutput(representation);
             if (!output.isEmpty()) {

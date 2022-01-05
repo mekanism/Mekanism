@@ -69,8 +69,8 @@ public class MinerMaterialFilter extends MinerFilter<MinerMaterialFilter> implem
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return super.equals(filter) && filter instanceof MinerMaterialFilter && ((MinerMaterialFilter) filter).materialItem.sameItem(materialItem);
+    public boolean equals(Object o) {
+        return super.equals(o) && o instanceof MinerMaterialFilter filter && filter.materialItem.sameItem(materialItem);
     }
 
     @Override

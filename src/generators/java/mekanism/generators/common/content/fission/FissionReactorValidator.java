@@ -153,15 +153,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
         }
     }
 
-    public static class FormedAssembly {
-
-        private final BlockPos pos;
-        private final int height;
-
-        public FormedAssembly(BlockPos pos, int height) {
-            this.pos = pos;
-            this.height = height;
-        }
+    public record FormedAssembly(BlockPos pos, int height) {
 
         public CompoundTag write() {
             CompoundTag ret = new CompoundTag();
@@ -172,41 +164,12 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
             return ret;
         }
 
-        public BlockPos getPos() {
-            return pos;
-        }
-
-        public int getHeight() {
-            return height;
-        }
-
         public static FormedAssembly read(CompoundTag nbt) {
             return new FormedAssembly(new BlockPos(nbt.getInt(NBTConstants.X), nbt.getInt(NBTConstants.Y), nbt.getInt(NBTConstants.Z)),
                   nbt.getInt(NBTConstants.HEIGHT));
         }
     }
 
-    public static class AssemblyPos {
-
-        private final int x, z;
-
-        public AssemblyPos(int x, int z) {
-            this.x = x;
-            this.z = z;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + x;
-            result = prime * result + z;
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof AssemblyPos && ((AssemblyPos) obj).x == x && ((AssemblyPos) obj).z == z;
-        }
+    private record AssemblyPos(int x, int z) {
     }
 }

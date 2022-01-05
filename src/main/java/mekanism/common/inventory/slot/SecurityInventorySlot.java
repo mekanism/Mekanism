@@ -39,29 +39,25 @@ public class SecurityInventorySlot extends BasicInventorySlot {
     }
 
     public void unlock(UUID ownerUUID) {
-        if (!isEmpty() && current.getItem() instanceof IOwnerItem) {
-            IOwnerItem item = (IOwnerItem) current.getItem();
+        if (!isEmpty() && current.getItem() instanceof IOwnerItem item) {
             UUID stackOwner = item.getOwnerUUID(current);
             if (stackOwner != null && stackOwner.equals(ownerUUID)) {
                 item.setOwnerUUID(current, null);
-                if (item instanceof ISecurityItem) {
-                    ((ISecurityItem) item).setSecurity(current, SecurityMode.PUBLIC);
+                if (item instanceof ISecurityItem securityItem) {
+                    securityItem.setSecurity(current, SecurityMode.PUBLIC);
                 }
             }
         }
     }
 
     public void lock(UUID ownerUUID, SecurityFrequency frequency) {
-        if (!isEmpty() && current.getItem() instanceof IOwnerItem) {
-            IOwnerItem item = (IOwnerItem) current.getItem();
+        if (!isEmpty() && current.getItem() instanceof IOwnerItem item) {
             UUID stackOwner = item.getOwnerUUID(current);
             if (stackOwner == null) {
                 item.setOwnerUUID(current, stackOwner = ownerUUID);
             }
-            if (stackOwner.equals(ownerUUID)) {
-                if (item instanceof ISecurityItem) {
-                    ((ISecurityItem) item).setSecurity(current, frequency.getSecurityMode());
-                }
+            if (stackOwner.equals(ownerUUID) && item instanceof ISecurityItem securityItem) {
+                securityItem.setSecurity(current, frequency.getSecurityMode());
             }
         }
     }

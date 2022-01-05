@@ -106,8 +106,8 @@ public class BaseModelCache {
             super.reload(evt);
             bakedModel = BaseModelCache.getBakedModel(evt, rl);
             UnbakedModel unbaked = evt.getModelLoader().getModel(rl);
-            if (unbaked instanceof BlockModel) {
-                model = ((BlockModel) unbaked).customData.getCustomGeometry();
+            if (unbaked instanceof BlockModel blockModel) {
+                model = blockModel.customData.getCustomGeometry();
             }
         }
 

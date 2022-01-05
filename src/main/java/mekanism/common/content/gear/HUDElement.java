@@ -62,17 +62,12 @@ public class HUDElement implements IHUDElement {
         }
 
         public static HUDColor from(IHUDElement.HUDColor apiColor) {
-            switch (apiColor) {
-                default:
-                case REGULAR:
-                    return REGULAR;
-                case FADED:
-                    return FADED;
-                case WARNING:
-                    return WARNING;
-                case DANGER:
-                    return DANGER;
-            }
+            return switch (apiColor) {
+                case REGULAR -> REGULAR;
+                case FADED -> FADED;
+                case WARNING -> WARNING;
+                case DANGER -> DANGER;
+            };
         }
     }
 }

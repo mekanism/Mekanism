@@ -34,8 +34,8 @@ public class ItemBlockColoredName extends BlockItem {
 
     private EnumColor getColor(ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBlockColoredName) {
-            return ((IColoredBlock) ((ItemBlockColoredName) item).getBlock()).getColor();
+        if (item instanceof ItemBlockColoredName itemBlock) {
+            return ((IColoredBlock) itemBlock.getBlock()).getColor();
         }
         return EnumColor.BLACK;
     }

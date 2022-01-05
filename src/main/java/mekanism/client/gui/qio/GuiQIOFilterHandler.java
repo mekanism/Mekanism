@@ -92,15 +92,15 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
             }, this::onClick, filter -> {
                 List<ItemStack> list = new ArrayList<>();
                 if (filter != null) {
-                    if (filter instanceof IItemStackFilter) {
-                        list.add(((IItemStackFilter<?>) filter).getItemStack());
-                    } else if (filter instanceof ITagFilter) {
-                        String name = ((ITagFilter<?>) filter).getTagName();
+                    if (filter instanceof IItemStackFilter<?> itemFilter) {
+                        list.add(itemFilter.getItemStack());
+                    } else if (filter instanceof ITagFilter<?> tagFilter) {
+                        String name = tagFilter.getTagName();
                         if (name != null && !name.isEmpty()) {
-                            list.addAll(TagCache.getItemTagStacks(((ITagFilter<?>) filter).getTagName()));
+                            list.addAll(TagCache.getItemTagStacks(tagFilter.getTagName()));
                         }
-                    } else if (filter instanceof IModIDFilter) {
-                        list.addAll(TagCache.getModIDStacks(((IModIDFilter<?>) filter).getModID(), false));
+                    } else if (filter instanceof IModIDFilter<?> modIDFilter) {
+                        list.addAll(TagCache.getModIDStacks(modIDFilter.getModID(), false));
                     }
                 }
                 return list;

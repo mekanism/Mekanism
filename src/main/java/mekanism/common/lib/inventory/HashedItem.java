@@ -57,11 +57,7 @@ public class HashedItem {
         if (obj == this) {
             return true;
         }
-        if (obj instanceof HashedItem) {
-            HashedItem other = (HashedItem) obj;
-            return ItemHandlerHelper.canItemStacksStack(itemStack, other.itemStack);
-        }
-        return false;
+        return obj instanceof HashedItem other && ItemHandlerHelper.canItemStacksStack(itemStack, other.itemStack);
     }
 
     @Override
@@ -109,7 +105,7 @@ public class HashedItem {
                 return true;
             }
             if (overrideHash && uuid != null) {
-                return obj instanceof UUIDAwareHashedItem && uuid.equals(((UUIDAwareHashedItem) obj).uuid) && super.equals(obj);
+                return obj instanceof UUIDAwareHashedItem uuidAware && uuid.equals(uuidAware.uuid) && super.equals(obj);
             }
             return super.equals(obj);
         }

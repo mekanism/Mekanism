@@ -40,7 +40,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
     }
 
     public static TankInfoProvider<FluidStack> getProvider(IExtendedFluidTank tank, List<IExtendedFluidTank> tanks) {
-        return new TankInfoProvider<FluidStack>() {
+        return new TankInfoProvider<>() {
             @Nonnull
             @Override
             public FluidStack getStack() {

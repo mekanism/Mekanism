@@ -102,8 +102,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof EnergyCubeUpgradeData) {
-            EnergyCubeUpgradeData data = (EnergyCubeUpgradeData) upgradeData;
+        if (upgradeData instanceof EnergyCubeUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());

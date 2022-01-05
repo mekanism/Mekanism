@@ -79,8 +79,8 @@ public class RobitBakedModel extends ExtensionBakedModel<ResourceLocation> {
         @Nullable
         @Override
         public BakedModel resolve(@Nonnull BakedModel model, @Nonnull ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemRobit) {
-                RobitSkin skin = ((ItemRobit) stack.getItem()).getRobitSkin(stack).getSkin();
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemRobit robit) {
+                RobitSkin skin = robit.getRobitSkin(stack).getSkin();
                 if (skin.getCustomModel() != null) {
                     //If the skin has a custom model look it up and if it isn't the model we are currently resolving for
                     // (to avoid stack overflow and recursion), then lookup the overrides of that model

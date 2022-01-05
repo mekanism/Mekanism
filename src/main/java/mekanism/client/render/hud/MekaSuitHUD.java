@@ -34,9 +34,9 @@ public class MekaSuitHUD implements IIngameOverlay {
             Map<EquipmentSlot, List<Component>> renderStrings = new LinkedHashMap<>();
             for (EquipmentSlot slotType : EQUIPMENT_ORDER) {
                 ItemStack stack = minecraft.player.getItemBySlot(slotType);
-                if (stack.getItem() instanceof IItemHUDProvider) {
+                if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
                     List<Component> list = new ArrayList<>();
-                    ((IItemHUDProvider) stack.getItem()).addHUDStrings(list, minecraft.player, stack, slotType);
+                    hudProvider.addHUDStrings(list, minecraft.player, stack, slotType);
                     int size = list.size();
                     if (size > 0) {
                         renderStrings.put(slotType, list);

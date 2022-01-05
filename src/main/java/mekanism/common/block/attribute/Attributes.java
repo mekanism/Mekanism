@@ -75,7 +75,7 @@ public class Attributes {
         public static final AttributeMobSpawn WHEN_NOT_FORMED = new AttributeMobSpawn((state, reader, pos, entityType) -> {
             TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, reader, pos);
             if (tile != null) {
-                if (reader instanceof LevelReader && ((LevelReader) reader).isClientSide()) {
+                if (reader instanceof LevelReader levelReader && levelReader.isClientSide()) {
                     //If we are on the client just check if we are formed as we don't sync structure information
                     // to the client. This way the client is at least relatively accurate with what values
                     // it returns for if mobs can spawn

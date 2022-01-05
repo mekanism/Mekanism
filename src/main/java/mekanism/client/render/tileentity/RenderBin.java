@@ -54,7 +54,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
             BlockPos coverPos = tile.getBlockPos().relative(facing);
             //if the bin has an item stack and the face isn't covered by a solid side
             Optional<BlockState> blockState = WorldUtils.getBlockState(world, coverPos);
-            if (!blockState.isPresent() || !blockState.get().canOcclude() || !blockState.get().isFaceSturdy(world, coverPos, facing.getOpposite())) {
+            if (blockState.isEmpty() || !blockState.get().canOcclude() || !blockState.get().isFaceSturdy(world, coverPos, facing.getOpposite())) {
                 Component amount = tile.getTier() == BinTier.CREATIVE ? MekanismLang.INFINITE.translate() : TextComponentUtil.build(binSlot.getCount());
                 matrix.pushPose();
                 //TODO: Come up with a better way to do this hack? Basically we adjust the normals so that the lighting
@@ -62,23 +62,19 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
                 // ourselves so need to trick it
                 matrix.last().normal().load(FAKE_NORMALS);
                 switch (facing) {
-                    case NORTH:
+                    case NORTH -> {
                         matrix.translate(0.73, 0.83, -0.0001);
                         matrix.mulPose(Vector3f.YP.rotationDegrees(180));
-                        break;
-                    case SOUTH:
-                        matrix.translate(0.27, 0.83, 1.0001);
-                        break;
-                    case WEST:
+                    }
+                    case SOUTH -> matrix.translate(0.27, 0.83, 1.0001);
+                    case WEST -> {
                         matrix.translate(-0.0001, 0.83, 0.27);
                         matrix.mulPose(Vector3f.YP.rotationDegrees(-90));
-                        break;
-                    case EAST:
+                    }
+                    case EAST -> {
                         matrix.translate(1.0001, 0.83, 0.73);
                         matrix.mulPose(Vector3f.YP.rotationDegrees(90));
-                        break;
-                    default:
-                        break;
+                    }
                 }
 
                 float scale = 0.03125F;
@@ -107,25 +103,25 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         matrix.pushPose();
         matrix.translate(0, -0.3725, 0);
         switch (side) {
-            case SOUTH:
+            case SOUTH -> {
                 matrix.translate(0, 1, 0.0001);
                 matrix.mulPose(Vector3f.XP.rotationDegrees(90));
-                break;
-            case NORTH:
+            }
+            case NORTH -> {
                 matrix.translate(1, 1, 0.9999);
                 matrix.mulPose(Vector3f.YP.rotationDegrees(180));
                 matrix.mulPose(Vector3f.XP.rotationDegrees(90));
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 matrix.translate(0.0001, 1, 1);
                 matrix.mulPose(Vector3f.YP.rotationDegrees(90));
                 matrix.mulPose(Vector3f.XP.rotationDegrees(90));
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 matrix.translate(0.9999, 1, 0);
                 matrix.mulPose(Vector3f.YP.rotationDegrees(-90));
                 matrix.mulPose(Vector3f.XP.rotationDegrees(90));
-                break;
+            }
         }
 
         float displayWidth = 1;

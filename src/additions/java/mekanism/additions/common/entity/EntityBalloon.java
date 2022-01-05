@@ -153,8 +153,8 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
             }
         } else {
             if (hasCachedEntity) {
-                if (level instanceof ServerLevel) {
-                    Entity entity = ((ServerLevel) level).getEntity(cachedEntityUUID);
+                if (level instanceof ServerLevel serverLevel) {
+                    Entity entity = serverLevel.getEntity(cachedEntityUUID);
                     if (entity instanceof LivingEntity) {
                         latchedEntity = (LivingEntity) entity;
                     }

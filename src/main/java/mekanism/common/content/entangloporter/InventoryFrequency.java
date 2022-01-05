@@ -225,9 +225,9 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     public void update(BlockEntity tile) {
         super.update(tile);
         Coord4D coord = Coord4D.get(tile);
-        if (tile instanceof TileEntityQuantumEntangloporter) {
+        if (tile instanceof TileEntityQuantumEntangloporter entangloporter) {
             //This should always be the case, but validate it and remove if it isn't
-            activeQEs.put(coord, (TileEntityQuantumEntangloporter) tile);
+            activeQEs.put(coord, entangloporter);
         } else {
             activeQEs.remove(coord);
         }

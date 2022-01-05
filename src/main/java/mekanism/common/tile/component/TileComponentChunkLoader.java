@@ -46,8 +46,6 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     @Nullable
     private BlockPos prevPos;
     private boolean hasRegistered;
-    @Deprecated
-    private boolean isFirstTick = true;
 
     public TileComponentChunkLoader(T tile) {
         this.tile = tile;
@@ -174,15 +172,6 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     public void tickServer() {
         Level world = tile.getLevel();
         if (world != null) {
-            if (isFirstTick) {
-                //TODO - 1.18: Remove this if branch - as it is only needed to validate loading old data
-                isFirstTick = false;
-                if (!canOperate()) {
-                    //If we just loaded but are not actually able to operate
-                    // release any tickets we have assigned to us that we loaded with
-                    releaseChunkTickets((ServerLevel) world, tile.getBlockPos());
-                }
-            }
             //Update tickets if the position changed, or we are no longer able to operate
             refreshChunkTickets((ServerLevel) world, tile.getBlockPos(), false);
         }
@@ -340,10 +329,6 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                                   pos, worldName);
                             releaseAllTickets(chunkLoader, pos, ticketHelper);
                         }
-                        //Mark that we are no longer the first tick as that is just for data validation
-                        // and the data for our chunk loader has already been transitioned over to the
-                        // Forge Chunk Manager, then we just finished doing the validation for it above
-                        chunkLoader.isFirstTick = false;
                     } else {
                         //Not a valid chunk/tile, remove all positions
                         LOGGER.warn("Block at {}, in {}, is not a valid chunk loader. Removing {} chunk tickets.", pos, worldName, ticketCount);

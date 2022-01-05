@@ -155,7 +155,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     /**
      * Reads a mutable {@link FloatingLong} from a buffer
      *
-     * @param buffer The {@link PacketBuffer} to read from
+     * @param buffer The {@link FriendlyByteBuf} to read from
      *
      * @return A mutable {@link FloatingLong}
      */
@@ -788,8 +788,8 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     }
 
     @Override
-    public boolean equals(Object other) {
-        return this == other || other instanceof FloatingLong && equals((FloatingLong) other);
+    public boolean equals(Object o) {
+        return this == o || o instanceof FloatingLong other && equals(other);
     }
 
     @Override
@@ -854,7 +854,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
     /**
      * Writes this {@link FloatingLong} to the given buffer
      *
-     * @param buffer The {@link PacketBuffer} to write to.
+     * @param buffer The {@link FriendlyByteBuf} to write to.
      */
     public void writeToBuffer(FriendlyByteBuf buffer) {
         buffer.writeVarLong(value);
@@ -978,11 +978,7 @@ public class FloatingLong extends Number implements Comparable<FloatingLong> {
      * @param number The number of zeros to put in the string.
      */
     private static String getZeros(int number) {
-        StringBuilder zeros = new StringBuilder();
-        for (int i = 0; i < number; i++) {
-            zeros.append('0');
-        }
-        return zeros.toString();
+        return "0".repeat(Math.max(0, number));
     }
 
     /**

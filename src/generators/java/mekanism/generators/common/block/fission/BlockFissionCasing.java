@@ -20,11 +20,11 @@ public class BlockFissionCasing<TILE extends TileEntityFissionReactorCasing> ext
 
     @Override
     public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
-        if (!world.isClientSide && explosion instanceof MeltdownExplosion) {
+        if (!world.isClientSide && explosion instanceof MeltdownExplosion meltdown) {
             TileEntityFissionReactorCasing tile = WorldUtils.getTileEntity(TileEntityFissionReactorCasing.class, world, pos);
             if (tile != null) {
                 FissionReactorMultiblockData multiblock = tile.getMultiblock();
-                if (Objects.equals(multiblock.inventoryID, ((MeltdownExplosion) explosion).getMultiblockID())) {
+                if (Objects.equals(multiblock.inventoryID, meltdown.getMultiblockID())) {
                     multiblock.meltdownHappened(world);
                 }
             }

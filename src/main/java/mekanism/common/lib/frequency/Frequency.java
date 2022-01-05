@@ -161,11 +161,7 @@ public abstract class Frequency {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Frequency) {
-            Frequency other = (Frequency) obj;
-            return publicFreq == other.publicFreq && ownerUUID != null && name.equals(other.name) && ownerUUID.equals(other.ownerUUID);
-        }
-        return false;
+        return obj instanceof Frequency other && publicFreq == other.publicFreq && ownerUUID != null && name.equals(other.name) && ownerUUID.equals(other.ownerUUID);
     }
 
     public FrequencyIdentity getIdentity() {
@@ -196,40 +192,10 @@ public abstract class Frequency {
         return (FREQ) FrequencyType.load(dataStream).create(dataStream);
     }
 
-    public static class FrequencyIdentity {
-
-        private final Object key;
-        private final boolean publicFreq;
-
-        public FrequencyIdentity(Object key, boolean publicFreq) {
-            this.key = key;
-            this.publicFreq = publicFreq;
-        }
-
-        public Object getKey() {
-            return key;
-        }
-
-        public boolean isPublic() {
-            return publicFreq;
-        }
+    public record FrequencyIdentity(Object key, boolean isPublic) {
 
         public static FrequencyIdentity load(FrequencyType<?> type, CompoundTag tag) {
             return type.getIdentitySerializer().load(tag);
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + (publicFreq ? 1_231 : 1_237);
-            result = prime * result + ((key == null) ? 0 : key.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof FrequencyIdentity && ((FrequencyIdentity) obj).key.equals(key) && ((FrequencyIdentity) obj).publicFreq == publicFreq;
         }
     }
 }

@@ -14,9 +14,9 @@ public class ItemStackToEnergyRecipeHandler extends MekanismRecipeHandler<ItemSt
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, ItemStackToEnergyRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, ItemStackToEnergyRecipe recipe, U o) {
         //Only support if the other is an itemstack to energy recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
-        return other instanceof ItemStackToEnergyRecipe && ingredientConflicts(recipe.getInput(), ((ItemStackToEnergyRecipe) other).getInput());
+        return o instanceof ItemStackToEnergyRecipe other && ingredientConflicts(recipe.getInput(), other.getInput());
     }
 }

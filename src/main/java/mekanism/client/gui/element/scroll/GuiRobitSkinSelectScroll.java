@@ -225,8 +225,8 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
 
         @Override
-        public boolean equals(Object other) {
-            return other instanceof BasicRotationTransformation && quaternion.equals(((BasicRotationTransformation) other).quaternion);
+        public boolean equals(Object o) {
+            return o instanceof BasicRotationTransformation other && quaternion.equals(other.quaternion);
         }
 
         @Override

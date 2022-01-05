@@ -181,40 +181,23 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
     }
 
     private static WoodenBlockType getBedType(DyeColor dyeColor) {
-        switch (dyeColor) {
-            case WHITE:
-                return WoodenBlockType.WHITE_BED;
-            case ORANGE:
-                return WoodenBlockType.ORANGE_BED;
-            case MAGENTA:
-                return WoodenBlockType.MAGENTA_BED;
-            case LIGHT_BLUE:
-                return WoodenBlockType.LIGHT_BLUE_BED;
-            case YELLOW:
-                return WoodenBlockType.YELLOW_BED;
-            case LIME:
-                return WoodenBlockType.LIME_BED;
-            case PINK:
-                return WoodenBlockType.PINK_BED;
-            case GRAY:
-                return WoodenBlockType.GRAY_BED;
-            case LIGHT_GRAY:
-                return WoodenBlockType.LIGHT_GRAY_BED;
-            case CYAN:
-                return WoodenBlockType.CYAN_BED;
-            case PURPLE:
-                return WoodenBlockType.PURPLE_BED;
-            case BLUE:
-                return WoodenBlockType.BLUE_BED;
-            case BROWN:
-                return WoodenBlockType.BROWN_BED;
-            case GREEN:
-                return WoodenBlockType.GREEN_BED;
-            case RED:
-                return WoodenBlockType.RED_BED;
-            case BLACK:
-                return WoodenBlockType.BLACK_BED;
-        }
-        throw new IllegalArgumentException("Unknown dye color.");
+        return switch (dyeColor) {
+            case WHITE -> WoodenBlockType.WHITE_BED;
+            case ORANGE -> WoodenBlockType.ORANGE_BED;
+            case MAGENTA -> WoodenBlockType.MAGENTA_BED;
+            case LIGHT_BLUE -> WoodenBlockType.LIGHT_BLUE_BED;
+            case YELLOW -> WoodenBlockType.YELLOW_BED;
+            case LIME -> WoodenBlockType.LIME_BED;
+            case PINK -> WoodenBlockType.PINK_BED;
+            case GRAY -> WoodenBlockType.GRAY_BED;
+            case LIGHT_GRAY -> WoodenBlockType.LIGHT_GRAY_BED;
+            case CYAN -> WoodenBlockType.CYAN_BED;
+            case PURPLE -> WoodenBlockType.PURPLE_BED;
+            case BLUE -> WoodenBlockType.BLUE_BED;
+            case BROWN -> WoodenBlockType.BROWN_BED;
+            case GREEN -> WoodenBlockType.GREEN_BED;
+            case RED -> WoodenBlockType.RED_BED;
+            case BLACK -> WoodenBlockType.BLACK_BED;
+        };
     }
 }

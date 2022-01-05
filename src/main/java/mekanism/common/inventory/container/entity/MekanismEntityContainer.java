@@ -32,6 +32,6 @@ public abstract class MekanismEntityContainer<ENTITY extends Entity> extends Mek
 
     @Override
     public ISecurityObject getSecurityObject() {
-        return entity instanceof ISecurityObject ? (ISecurityObject) entity : ISecurityObject.NO_SECURITY;
+        return entity instanceof ISecurityObject securityObject ? securityObject : ISecurityObject.NO_SECURITY;
     }
 }

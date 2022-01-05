@@ -74,8 +74,8 @@ public class CommonPlayerTickHandler {
 
     public static boolean isScubaMaskOn(Player player, ItemStack tank) {
         ItemStack mask = player.getItemBySlot(EquipmentSlot.HEAD);
-        return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank && mask.getItem() instanceof ItemScubaMask && ChemicalUtil.hasGas(tank) &&
-               ((ItemScubaTank) tank.getItem()).getFlowing(tank);
+        return !tank.isEmpty() && !mask.isEmpty() && tank.getItem() instanceof ItemScubaTank scubaTank &&
+               mask.getItem() instanceof ItemScubaMask && ChemicalUtil.hasGas(tank) && scubaTank.getFlowing(tank);
     }
 
     private static boolean isFlamethrowerOn(Player player, ItemStack currentItem) {
@@ -85,11 +85,8 @@ public class CommonPlayerTickHandler {
     public static float getStepBoost(Player player) {
         ItemStack stack = player.getItemBySlot(EquipmentSlot.FEET);
         if (!stack.isEmpty() && !player.isShiftKeyDown()) {
-            if (stack.getItem() instanceof ItemFreeRunners) {
-                ItemFreeRunners freeRunners = (ItemFreeRunners) stack.getItem();
-                if (freeRunners.getMode(stack) == ItemFreeRunners.FreeRunnerMode.NORMAL) {
-                    return 0.5F;
-                }
+            if (stack.getItem() instanceof ItemFreeRunners freeRunners && freeRunners.getMode(stack) == FreeRunnerMode.NORMAL) {
+                return 0.5F;
             }
             IModule<ModuleHydraulicPropulsionUnit> module = MekanismAPI.getModuleHelper().load(stack, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (module != null && module.isEnabled()) {
@@ -108,8 +105,8 @@ public class CommonPlayerTickHandler {
 
     private void tickEnd(Player player) {
         Mekanism.playerState.updateStepAssist(player);
-        if (player instanceof ServerPlayer) {
-            RadiationManager.INSTANCE.tickServer((ServerPlayer) player);
+        if (player instanceof ServerPlayer serverPlayer) {
+            RadiationManager.INSTANCE.tickServer(serverPlayer);
         }
 
         ItemStack currentItem = player.getInventory().getSelected();
@@ -131,12 +128,12 @@ public class CommonPlayerTickHandler {
             JetpackMode mode = getJetpackMode(chest);
             if (handleJetpackMotion(player, mode, () -> Mekanism.keyMap.has(player.getUUID(), KeySync.ASCEND))) {
                 player.fallDistance = 0.0F;
-                if (player instanceof ServerPlayer) {
-                    ((ServerPlayer) player).connection.aboveGroundTickCount = 0;
+                if (player instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.connection.aboveGroundTickCount = 0;
                 }
             }
-            if (chest.getItem() instanceof ItemJetpack) {
-                ((ItemJetpack) chest.getItem()).useGas(chest, 1);
+            if (chest.getItem() instanceof ItemJetpack jetpack) {
+                jetpack.useGas(chest, 1);
             } else {
                 ((ItemMekaSuitArmor) chest.getItem()).useGas(chest, MekanismGases.HYDROGEN.get(), 1);
             }
@@ -230,8 +227,8 @@ public class CommonPlayerTickHandler {
 
     /** Will return null if jetpack mode is not active */
     public static JetpackMode getJetpackMode(ItemStack stack) {
-        if (stack.getItem() instanceof ItemJetpack && ChemicalUtil.hasGas(stack)) {
-            return ((ItemJetpack) stack.getItem()).getMode(stack);
+        if (stack.getItem() instanceof ItemJetpack jetpack && ChemicalUtil.hasGas(stack)) {
+            return jetpack.getMode(stack);
         } else if (stack.getItem() instanceof IModuleContainerItem && ChemicalUtil.hasChemical(stack, MekanismGases.HYDROGEN.get())) {
             IModule<ModuleJetpackUnit> module = MekanismAPI.getModuleHelper().load(stack, MekanismModules.JETPACK_UNIT);
             if (module != null && module.isEnabled()) {
@@ -259,8 +256,7 @@ public class CommonPlayerTickHandler {
             ItemStack headStack = entity.getItemBySlot(EquipmentSlot.HEAD);
             if (!headStack.isEmpty() && headStack.getItem() instanceof ItemScubaMask) {
                 ItemStack chestStack = entity.getItemBySlot(EquipmentSlot.CHEST);
-                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank && ((ItemScubaTank) chestStack.getItem()).getFlowing(chestStack) &&
-                    ChemicalUtil.hasGas(chestStack)) {
+                if (!chestStack.isEmpty() && chestStack.getItem() instanceof ItemScubaTank tank && tank.getFlowing(chestStack) && ChemicalUtil.hasGas(chestStack)) {
                     event.setCanceled(true);
                     return;
                 }
@@ -275,8 +271,8 @@ public class CommonPlayerTickHandler {
                 return;
             }
         }
-        if (entity instanceof Player) {
-            if (ItemMekaSuitArmor.tryAbsorbAll((Player) entity, event.getSource(), event.getAmount())) {
+        if (entity instanceof Player player) {
+            if (ItemMekaSuitArmor.tryAbsorbAll(player, event.getSource(), event.getAmount())) {
                 event.setCanceled(true);
             }
         }
@@ -303,8 +299,8 @@ public class CommonPlayerTickHandler {
                 return;
             }
         }
-        if (entity instanceof Player) {
-            float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed((Player) entity, event.getSource(), event.getAmount());
+        if (entity instanceof Player player) {
+            float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(player, event.getSource(), event.getAmount());
             if (ratioAbsorbed > 0) {
                 float damageRemaining = event.getAmount() * Math.max(0, 1 - ratioAbsorbed);
                 if (damageRemaining <= 0) {
@@ -364,8 +360,7 @@ public class CommonPlayerTickHandler {
 
     @SubscribeEvent
     public void onLivingJump(LivingJumpEvent event) {
-        if (event.getEntityLiving() instanceof Player) {
-            Player player = (Player) event.getEntityLiving();
+        if (event.getEntityLiving() instanceof Player player) {
             IModule<ModuleHydraulicPropulsionUnit> module = MekanismAPI.getModuleHelper().load(player.getItemBySlot(EquipmentSlot.FEET), MekanismModules.HYDRAULIC_PROPULSION_UNIT);
             if (module != null && module.isEnabled() && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = module.getCustomInstance().getBoost();
@@ -391,8 +386,7 @@ public class CommonPlayerTickHandler {
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemStack feetStack = base.getItemBySlot(EquipmentSlot.FEET);
         if (!feetStack.isEmpty()) {
-            if (feetStack.getItem() instanceof ItemFreeRunners) {
-                ItemFreeRunners boots = (ItemFreeRunners) feetStack.getItem();
+            if (feetStack.getItem() instanceof ItemFreeRunners boots) {
                 if (boots.getMode(feetStack) == FreeRunnerMode.NORMAL) {
                     return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.freeRunnerFallDamageRatio,
                           MekanismConfig.gear.freeRunnerFallEnergyCost);
@@ -405,17 +399,6 @@ public class CommonPlayerTickHandler {
         return null;
     }
 
-    private static class FallEnergyInfo {
-
-        @Nullable
-        private final IEnergyContainer container;
-        private final FloatSupplier damageRatio;
-        private final FloatingLongSupplier energyCost;
-
-        public FallEnergyInfo(@Nullable IEnergyContainer container, FloatSupplier damageRatio, FloatingLongSupplier energyCost) {
-            this.container = container;
-            this.damageRatio = damageRatio;
-            this.energyCost = energyCost;
-        }
+    private record FallEnergyInfo(@Nullable IEnergyContainer container, FloatSupplier damageRatio, FloatingLongSupplier energyCost) {
     }
 }

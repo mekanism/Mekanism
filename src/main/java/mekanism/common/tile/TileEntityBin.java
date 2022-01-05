@@ -89,8 +89,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 TileTransitRequest request = new TileTransitRequest(this, Direction.DOWN);
                 request.addItem(binSlot.getBottomStack(), 0);
                 TransitResponse response;
-                if (tile instanceof TileEntityLogisticalTransporterBase) {
-                    response = ((TileEntityLogisticalTransporterBase) tile).getTransmitter().insert(this, request, null, true, 0);
+                if (tile instanceof TileEntityLogisticalTransporterBase transporter) {
+                    response = transporter.getTransmitter().insert(this, request, null, true, 0);
                 } else {
                     response = request.addToInventory(tile, Direction.DOWN, 0, false);
                 }
@@ -122,10 +122,9 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof BinUpgradeData) {
-            BinUpgradeData data = (BinUpgradeData) upgradeData;
-            redstone = data.redstone;
-            binSlot.setStack(data.binSlot.getStack());
+        if (upgradeData instanceof BinUpgradeData data) {
+            redstone = data.redstone();
+            binSlot.setStack(data.binSlot().getStack());
         } else {
             super.parseUpgradeData(upgradeData);
         }

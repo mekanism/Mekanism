@@ -52,16 +52,12 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     @Nonnull
     @Override
     public MekanismRecipeType<ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> getRecipeType() {
-        switch (type) {
-            case ENRICHING:
-                return MekanismRecipeType.ENRICHING;
-            case CRUSHING:
-                return MekanismRecipeType.CRUSHING;
-            case SMELTING:
-            default:
-                //TODO: Make it so that it throws an error if it is not one of the three types
-                return MekanismRecipeType.SMELTING;
-        }
+        return switch (type) {
+            case ENRICHING -> MekanismRecipeType.ENRICHING;
+            case CRUSHING -> MekanismRecipeType.CRUSHING;
+            //TODO: Make it so that it throws an error if it is not one of the three types
+            default -> MekanismRecipeType.SMELTING;
+        };
     }
 
     @Nullable

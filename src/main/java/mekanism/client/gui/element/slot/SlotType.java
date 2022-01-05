@@ -34,14 +34,11 @@ public enum SlotType {
     }
 
     public ResourceLocation getWarningTexture() {
-        switch (this) {
-            case OUTPUT_WIDE:
-                return WIDE_WARNING;
-            case OUTPUT_LARGE:
-                return LARGE_WARNING;
-            default:
-                return WARNING;
-        }
+        return switch (this) {
+            case OUTPUT_WIDE -> WIDE_WARNING;
+            case OUTPUT_LARGE -> LARGE_WARNING;
+            default -> WARNING;
+        };
     }
 
     public ResourceLocation getTexture() {
@@ -57,23 +54,14 @@ public enum SlotType {
     }
 
     public static SlotType get(DataType type) {
-        switch (type) {
-            case INPUT:
-            case INPUT_1:
-                return INPUT;
-            case INPUT_2:
-                return INPUT_2;
-            case OUTPUT:
-            case OUTPUT_1:
-                return OUTPUT;
-            case OUTPUT_2:
-                return OUTPUT_2;
-            case ENERGY:
-                return POWER;
-            case EXTRA:
-                return EXTRA;
-            default:
-                return NORMAL;
-        }
+        return switch (type) {
+            case INPUT, INPUT_1 -> INPUT;
+            case INPUT_2 -> INPUT_2;
+            case OUTPUT, OUTPUT_1 -> OUTPUT;
+            case OUTPUT_2 -> OUTPUT_2;
+            case ENERGY -> POWER;
+            case EXTRA -> EXTRA;
+            default -> NORMAL;
+        };
     }
 }

@@ -127,8 +127,8 @@ public class RenderTickHandler {
     @SubscribeEvent
     public void filterTooltips(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-        if (stack.getItem() instanceof IModuleContainerItem) {
-            ((IModuleContainerItem) stack.getItem()).filterTooltips(stack, event.getToolTip());
+        if (stack.getItem() instanceof IModuleContainerItem item) {
+            item.filterTooltips(stack, event.getToolTip());
         }
     }
 
@@ -327,16 +327,13 @@ public class RenderTickHandler {
                         BlockEntity tile = WorldUtils.getTileEntity(world, actualPos);
                         if (tile != null) {
                             BlockEntityRenderer<BlockEntity> tileRenderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(tile);
-                            if (tileRenderer instanceof IWireFrameRenderer) {
-                                IWireFrameRenderer wireFrameRenderer = (IWireFrameRenderer) tileRenderer;
-                                if (wireFrameRenderer.hasSelectionBox(actualState)) {
-                                    renderWireFrame = (buffer, matrixStack, state, red, green, blue, alpha) -> {
-                                        if (wireFrameRenderer.isCombined()) {
-                                            renderQuadsWireFrame(state, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
-                                        }
-                                        wireFrameRenderer.renderWireFrame(tile, event.getPartialTicks(), matrixStack, buffer, red, green, blue, alpha);
-                                    };
-                                }
+                            if (tileRenderer instanceof IWireFrameRenderer wireFrameRenderer && wireFrameRenderer.hasSelectionBox(actualState)) {
+                                renderWireFrame = (buffer, matrixStack, state, red, green, blue, alpha) -> {
+                                    if (wireFrameRenderer.isCombined()) {
+                                        renderQuadsWireFrame(state, buffer, matrixStack.last().pose(), world.random, red, green, blue, alpha);
+                                    }
+                                    wireFrameRenderer.renderWireFrame(tile, event.getPartialTicks(), matrixStack, buffer, red, green, blue, alpha);
+                                };
                             }
                         }
                     } else {
@@ -372,8 +369,7 @@ public class RenderTickHandler {
             if (state.isConfigurating()) {
                 TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
                 BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-                if (tile instanceof ISideConfiguration) {
-                    ISideConfiguration configurable = (ISideConfiguration) tile;
+                if (tile instanceof ISideConfiguration configurable) {
                     TileComponentConfig config = configurable.getConfig();
                     if (config.supports(type)) {
                         Direction face = rayTraceResult.getDirection();

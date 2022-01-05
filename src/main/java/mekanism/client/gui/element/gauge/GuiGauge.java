@@ -19,14 +19,13 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class GuiGauge<T> extends GuiTexturedElement {
 
@@ -122,25 +121,22 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         ItemStack stack = minecraft.player.containerMenu.getCarried();
         EnumColor color = getGaugeColor().getColor();
         if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator && color != null) {
-            if (gui() instanceof GuiMekanismTile) {
-                TileEntityMekanism tile = ((GuiMekanismTile<?, ?>) gui()).getTileEntity();
-                if (tile instanceof ISideConfiguration && getTransmission() != null) {
-                    DataType dataType = null;
-                    ConfigInfo config = ((ISideConfiguration) tile).getConfig().getConfig(getTransmission());
-                    if (config != null) {
-                        Set<DataType> supportedDataTypes = config.getSupportedDataTypes();
-                        for (DataType type : supportedDataTypes) {
-                            if (type.getColor() == color) {
-                                dataType = type;
-                                break;
-                            }
+            if (gui() instanceof GuiMekanismTile<?, ?> gui && gui.getTileEntity() instanceof ISideConfiguration sideConfig && getTransmission() != null) {
+                DataType dataType = null;
+                ConfigInfo config = sideConfig.getConfig().getConfig(getTransmission());
+                if (config != null) {
+                    Set<DataType> supportedDataTypes = config.getSupportedDataTypes();
+                    for (DataType type : supportedDataTypes) {
+                        if (type.getColor() == color) {
+                            dataType = type;
+                            break;
                         }
                     }
-                    if (dataType == null) {
-                        displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()), mouseX, mouseY);
-                    } else {
-                        displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()), mouseX, mouseY);
-                    }
+                }
+                if (dataType == null) {
+                    displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()), mouseX, mouseY);
+                } else {
+                    displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()), mouseX, mouseY);
                 }
             }
         } else {

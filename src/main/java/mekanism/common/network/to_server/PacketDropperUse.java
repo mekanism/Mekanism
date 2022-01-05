@@ -31,7 +31,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
@@ -64,8 +63,8 @@ public class PacketDropperUse implements IMekanismPacket {
         if (!stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, player.level, pos);
             if (tile != null) {
-                if (tile instanceof TileEntityMultiblock) {
-                    MultiblockData structure = ((TileEntityMultiblock<?>) tile).getMultiblock();
+                if (tile instanceof TileEntityMultiblock multiblock) {
+                    MultiblockData structure = multiblock.getMultiblock();
                     if (structure.isFormed()) {
                         handleTankType(structure, player, stack, new Coord4D(structure.getBounds().getCenter(), player.level));
                     }
@@ -117,9 +116,9 @@ public class PacketDropperUse implements IMekanismPacket {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             if (!tank.isEmpty()) {
-                if (tank instanceof IGasTank) {
+                if (tank instanceof IGasTank gasTank) {
                     //If the tank is a gas tank and has radioactive substances in it make sure we properly emit the radiation to the environment
-                    MekanismAPI.getRadiationManager().dumpRadiation(coord, ((IGasTank) tank).getStack());
+                    MekanismAPI.getRadiationManager().dumpRadiation(coord, gasTank.getStack());
                 }
                 tank.setEmpty();
             }
@@ -127,8 +126,8 @@ public class PacketDropperUse implements IMekanismPacket {
             Optional<IChemicalHandler<CHEMICAL, STACK>> cap = stack.getCapability(ChemicalUtil.getCapabilityForChemical(tank)).resolve();
             if (cap.isPresent()) {
                 IChemicalHandler<CHEMICAL, STACK> handler = cap.get();
-                if (handler instanceof IMekanismChemicalHandler) {
-                    IChemicalTank<CHEMICAL, STACK> itemTank = ((IMekanismChemicalHandler<CHEMICAL, STACK, ?>) handler).getChemicalTank(0, null);
+                if (handler instanceof IMekanismChemicalHandler<CHEMICAL, STACK, ?> chemicalHandler) {
+                    IChemicalTank<CHEMICAL, STACK> itemTank = chemicalHandler.getChemicalTank(0, null);
                     //It is a chemical tank
                     if (itemTank != null) {
                         //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
@@ -154,8 +153,8 @@ public class PacketDropperUse implements IMekanismPacket {
         Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
         if (capability.isPresent()) {
             IFluidHandlerItem fluidHandlerItem = capability.get();
-            if (fluidHandlerItem instanceof IMekanismFluidHandler) {
-                IExtendedFluidTank itemFluidTank = ((IMekanismFluidHandler) fluidHandlerItem).getFluidTank(0, null);
+            if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
+                IExtendedFluidTank itemFluidTank = fluidHandler.getFluidTank(0, null);
                 if (itemFluidTank != null) {
                     if (action == DropperAction.FILL_DROPPER) {
                         //Insert fluid into dropper

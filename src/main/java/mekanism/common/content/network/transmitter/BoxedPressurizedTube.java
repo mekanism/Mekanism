@@ -236,8 +236,7 @@ public class BoxedPressurizedTube extends BufferedTransmitter<BoxedChemicalHandl
 
     @Override
     public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
-        if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof BoxedPressurizedTube) {
-            BoxedPressurizedTube other = (BoxedPressurizedTube) transmitter.getTransmitter();
+        if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof BoxedPressurizedTube other) {
             BoxedChemical buffer = getBufferWithFallback().getType();
             if (buffer.isEmpty() && hasTransmitterNetwork() && getTransmitterNetwork().getPrevTransferAmount() > 0) {
                 buffer = getTransmitterNetwork().lastChemical;

@@ -123,11 +123,7 @@ public class AcceptorCache<ACCEPTOR> extends AbstractAcceptorCache<ACCEPTOR, Acc
             if (o == this) {
                 return true;
             }
-            if (o instanceof AcceptorInfo) {
-                AcceptorInfo<?> other = (AcceptorInfo<?>) o;
-                return getTile().equals(other.getTile()) && sourceAcceptor.equals(other.sourceAcceptor) && acceptor.equals(other.acceptor);
-            }
-            return false;
+            return o instanceof AcceptorInfo<?> other && getTile().equals(other.getTile()) && sourceAcceptor.equals(other.sourceAcceptor) && acceptor.equals(other.acceptor);
         }
 
         @Override

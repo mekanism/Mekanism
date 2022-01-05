@@ -242,8 +242,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Override
     public void parseUpgradeData(@Nonnull IUpgradeData upgradeData) {
-        if (upgradeData instanceof ChemicalTankUpgradeData) {
-            ChemicalTankUpgradeData data = (ChemicalTankUpgradeData) upgradeData;
+        if (upgradeData instanceof ChemicalTankUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
             drainSlot.setStack(data.drainSlot.getStack());

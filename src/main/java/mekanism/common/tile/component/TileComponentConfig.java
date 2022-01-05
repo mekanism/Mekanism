@@ -86,30 +86,14 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
-            case ENERGY:
-                tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
-                break;
-            case FLUID:
-                tile.invalidateCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
-                break;
-            case GAS:
-                tile.invalidateCapability(Capabilities.GAS_HANDLER_CAPABILITY, direction);
-                break;
-            case INFUSION:
-                tile.invalidateCapability(Capabilities.INFUSION_HANDLER_CAPABILITY, direction);
-                break;
-            case PIGMENT:
-                tile.invalidateCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY, direction);
-                break;
-            case SLURRY:
-                tile.invalidateCapability(Capabilities.SLURRY_HANDLER_CAPABILITY, direction);
-                break;
-            case ITEM:
-                tile.invalidateCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction);
-                break;
-            case HEAT:
-                tile.invalidateCapability(Capabilities.HEAT_HANDLER_CAPABILITY, direction);
-                break;
+            case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getEnabledEnergyCapabilities(), direction);
+            case FLUID -> tile.invalidateCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
+            case GAS -> tile.invalidateCapability(Capabilities.GAS_HANDLER_CAPABILITY, direction);
+            case INFUSION -> tile.invalidateCapability(Capabilities.INFUSION_HANDLER_CAPABILITY, direction);
+            case PIGMENT -> tile.invalidateCapability(Capabilities.PIGMENT_HANDLER_CAPABILITY, direction);
+            case SLURRY -> tile.invalidateCapability(Capabilities.SLURRY_HANDLER_CAPABILITY, direction);
+            case ITEM -> tile.invalidateCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, direction);
+            case HEAT -> tile.invalidateCapability(Capabilities.HEAT_HANDLER_CAPABILITY, direction);
         }
         tile.markDirty(false);
         //And invalidate any "listeners" we may have that the side changed for a specific transmission type
@@ -385,25 +369,16 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     @SuppressWarnings("unchecked")
     public static BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, List<?> containers) {
-        switch (type) {
-            case ITEM:
-                return new InventorySlotInfo(input, output, (List<IInventorySlot>) containers);
-            case FLUID:
-                return new FluidSlotInfo(input, output, (List<IExtendedFluidTank>) containers);
-            case GAS:
-                return new GasSlotInfo(input, output, (List<IGasTank>) containers);
-            case INFUSION:
-                return new InfusionSlotInfo(input, output, (List<IInfusionTank>) containers);
-            case PIGMENT:
-                return new PigmentSlotInfo(input, output, (List<IPigmentTank>) containers);
-            case SLURRY:
-                return new SlurrySlotInfo(input, output, (List<ISlurryTank>) containers);
-            case ENERGY:
-                return new EnergySlotInfo(input, output, (List<IEnergyContainer>) containers);
-            case HEAT:
-                return new HeatSlotInfo(input, output, (List<IHeatCapacitor>) containers);
-        }
-        return null;
+        return switch (type) {
+            case ITEM -> new InventorySlotInfo(input, output, (List<IInventorySlot>) containers);
+            case FLUID -> new FluidSlotInfo(input, output, (List<IExtendedFluidTank>) containers);
+            case GAS -> new GasSlotInfo(input, output, (List<IGasTank>) containers);
+            case INFUSION -> new InfusionSlotInfo(input, output, (List<IInfusionTank>) containers);
+            case PIGMENT -> new PigmentSlotInfo(input, output, (List<IPigmentTank>) containers);
+            case SLURRY -> new SlurrySlotInfo(input, output, (List<ISlurryTank>) containers);
+            case ENERGY -> new EnergySlotInfo(input, output, (List<IEnergyContainer>) containers);
+            case HEAT -> new HeatSlotInfo(input, output, (List<IHeatCapacitor>) containers);
+        };
     }
 
     //Computer related methods

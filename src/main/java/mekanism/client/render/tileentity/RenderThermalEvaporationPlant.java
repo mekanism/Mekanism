@@ -12,7 +12,6 @@ import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.core.BlockPos;

@@ -11,20 +11,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -32,7 +31,8 @@ public class ExtensionBakedModel<T> implements BakedModel {
 
     protected final BakedModel original;
 
-    private final LoadingCache<QuadsKey<T>, List<BakedQuad>> cache = CacheBuilder.newBuilder().build(new CacheLoader<QuadsKey<T>, List<BakedQuad>>() {
+    private final LoadingCache<QuadsKey<T>, List<BakedQuad>> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
+        @Nonnull
         @Override
         public List<BakedQuad> load(@Nonnull QuadsKey<T> key) {
             return createQuads(key);
@@ -135,7 +135,7 @@ public class ExtensionBakedModel<T> implements BakedModel {
     public List<Pair<BakedModel, RenderType>> getLayerModels(ItemStack stack, boolean fabulous) {
         //Cache the remappings so then the inner wrapped ones can cache their quads
         return cachedLayerRedirects.computeIfAbsent(original.getLayerModels(stack, fabulous), originalLayerModels ->
-              originalLayerModels.stream().map(layerModel -> layerModel.<BakedModel>mapFirst(this::wrapModel)).collect(Collectors.toList()));
+              originalLayerModels.stream().map(layerModel -> layerModel.<BakedModel>mapFirst(this::wrapModel)).toList());
     }
 
     protected ExtensionBakedModel<T> wrapModel(BakedModel model) {
@@ -265,10 +265,9 @@ public class ExtensionBakedModel<T> implements BakedModel {
             if (obj == this) {
                 return true;
             }
-            if (!(obj instanceof QuadsKey)) {
+            if (!(obj instanceof QuadsKey<?> other)) {
                 return false;
             }
-            QuadsKey<?> other = (QuadsKey<?>) obj;
             if (side != other.side || !Objects.equals(state, other.state) || layer != other.layer) {
                 return false;
             }

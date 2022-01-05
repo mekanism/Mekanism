@@ -14,9 +14,9 @@ public class GasToGasRecipeHandler extends MekanismRecipeHandler<GasToGasRecipe>
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, GasToGasRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, GasToGasRecipe recipe, U o) {
         //Only support if the other is a gas to gas recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
-        return other instanceof GasToGasRecipe && ingredientConflicts(recipe.getInput(), ((GasToGasRecipe) other).getInput());
+        return o instanceof GasToGasRecipe other && ingredientConflicts(recipe.getInput(), other.getInput());
     }
 }

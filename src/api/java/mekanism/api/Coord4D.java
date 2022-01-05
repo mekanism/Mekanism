@@ -228,7 +228,7 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Coord4D && ((Coord4D) obj).x == x && ((Coord4D) obj).y == y && ((Coord4D) obj).z == z && ((Coord4D) obj).dimension == dimension;
+        return obj instanceof Coord4D other && other.x == x && other.y == y && other.z == z && other.dimension == dimension;
     }
 
     @Override

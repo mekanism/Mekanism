@@ -10,7 +10,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
@@ -384,7 +383,7 @@ public class Pos3D extends Vec3 {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Vec3 && ((Vec3) obj).x == x && ((Vec3) obj).y == y && ((Vec3) obj).z == z;
+        return obj instanceof Vec3 other && other.x == x && other.y == y && other.z == z;
     }
 
     @Override

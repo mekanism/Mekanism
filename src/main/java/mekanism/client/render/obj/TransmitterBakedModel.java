@@ -10,29 +10,28 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.render.obj.TransmitterModelConfiguration.IconStatus;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -69,7 +68,7 @@ public class TransmitterBakedModel implements BakedModel {
         this.overrides = overrides;
         this.modelLocation = modelLocation;
         //We define our baked variant to be how the item is. As we should always have model data when we have a state
-        List<String> visible = Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE")).collect(Collectors.toList());
+        List<String> visible = Arrays.stream(EnumUtils.DIRECTIONS).map(side -> side.getName() + (side.getAxis() == Axis.Y ? "NORMAL" : "NONE")).toList();
         bakedVariant = internal.bake(new VisibleModelConfiguration(owner, visible), bakery, spriteGetter, modelTransform, overrides, modelLocation);
     }
 
@@ -208,13 +207,7 @@ public class TransmitterBakedModel implements BakedModel {
         return bakedVariant.getTransforms();
     }
 
-    public static class QuickHash {
-
-        private final Object[] objs;
-
-        public QuickHash(Object... objs) {
-            this.objs = objs;
-        }
+    public record QuickHash(Object... objs) {
 
         @Override
         public int hashCode() {
@@ -222,13 +215,9 @@ public class TransmitterBakedModel implements BakedModel {
             return Arrays.hashCode(objs);
         }
 
-        public Object[] get() {
-            return objs;
-        }
-
         @Override
         public boolean equals(Object obj) {
-            return obj == this || obj instanceof QuickHash && Arrays.deepEquals(objs, ((QuickHash) obj).objs);
+            return obj == this || obj instanceof QuickHash other && Arrays.deepEquals(objs, other.objs);
         }
     }
 }

@@ -66,9 +66,8 @@ public class InventoryNetwork extends DynamicNetwork<IItemHandler, InventoryNetw
                         Direction side = acceptorEntry.getKey();
                         //TODO: Figure out how we want to best handle the color check, as without doing it here we don't
                         // actually need to even query the TE
-                        if (acceptor instanceof ISideConfiguration) {
+                        if (acceptor instanceof ISideConfiguration config) {
                             //If the acceptor in question implements the mekanism interface, check that the color matches and bail fast if it doesn't
-                            ISideConfiguration config = (ISideConfiguration) acceptor;
                             if (config.getEjector().hasStrictInput()) {
                                 EnumColor configColor = config.getEjector().getInputColor(RelativeSide.fromDirections(config.getDirection(), side));
                                 if (configColor != null && configColor != stack.color) {

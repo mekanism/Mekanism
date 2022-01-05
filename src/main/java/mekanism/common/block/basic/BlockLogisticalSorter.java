@@ -33,16 +33,13 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
 
     @Override
     public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, @Nonnull TileEntityMekanism tile) {
-        if (tile instanceof TileEntityLogisticalSorter) {
-            TileEntityLogisticalSorter transporter = (TileEntityLogisticalSorter) tile;
-            if (!transporter.hasConnectedInventory()) {
-                BlockPos tilePos = tile.getBlockPos();
-                for (Direction dir : EnumUtils.DIRECTIONS) {
-                    BlockEntity tileEntity = WorldUtils.getTileEntity(world, tilePos.relative(dir));
-                    if (InventoryUtils.isItemHandler(tileEntity, dir)) {
-                        transporter.setFacing(dir.getOpposite());
-                        break;
-                    }
+        if (tile instanceof TileEntityLogisticalSorter sorter && !sorter.hasConnectedInventory()) {
+            BlockPos tilePos = tile.getBlockPos();
+            for (Direction dir : EnumUtils.DIRECTIONS) {
+                BlockEntity tileEntity = WorldUtils.getTileEntity(world, tilePos.relative(dir));
+                if (InventoryUtils.isItemHandler(tileEntity, dir)) {
+                    sorter.setFacing(dir.getOpposite());
+                    break;
                 }
             }
         }

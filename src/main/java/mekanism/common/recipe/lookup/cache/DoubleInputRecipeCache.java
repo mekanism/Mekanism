@@ -82,7 +82,7 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputA is not empty and inputB is empty.
      *
-     * @apiNote If you are trying to insert inputA and already have inputB in the machine call this method, otherwise call {@link #containsInputBA(World, Object,
+     * @apiNote If you are trying to insert inputA and already have inputB in the machine call this method, otherwise call {@link #containsInputBA(Level, Object,
      * Object)}.
      */
     public boolean containsInputAB(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
@@ -99,7 +99,7 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputB is not empty and inputA is empty.
      *
-     * @apiNote If you are trying to insert inputA and already have inputA in the machine call this method, otherwise call {@link #containsInputAB(World, Object,
+     * @apiNote If you are trying to insert inputA and already have inputA in the machine call this method, otherwise call {@link #containsInputAB(Level, Object,
      * Object)}.
      */
     public boolean containsInputBA(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
@@ -116,7 +116,7 @@ public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
      *
      * @implNote Lookups up the recipe first from the A input map (the fact that it is A is arbitrary and just as well could be B).
-     * @apiNote To force using the B input map instead for recipe lookup use {@link #findFirstRecipe(World, Object, Object, boolean)}.
+     * @apiNote To force using the B input map instead for recipe lookup use {@link #findFirstRecipe(Level, Object, Object, boolean)}.
      */
     @Nullable
     public RECIPE findFirstRecipe(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {

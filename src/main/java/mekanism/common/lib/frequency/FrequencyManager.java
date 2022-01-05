@@ -149,9 +149,9 @@ public class FrequencyManager<FREQ extends Frequency> {
     }
 
     public FREQ getOrCreateFrequency(FrequencyIdentity identity, @Nullable UUID ownerUUID) {
-        FREQ freq = getFrequency(identity.getKey());
+        FREQ freq = getFrequency(identity.key());
         if (freq == null) {
-            freq = frequencyType.create(identity.getKey(), ownerUUID);
+            freq = frequencyType.create(identity.key(), ownerUUID);
             freq.setPublic(identity.isPublic());
             addFrequency(freq);
         }

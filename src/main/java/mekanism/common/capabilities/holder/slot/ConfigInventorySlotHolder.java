@@ -30,6 +30,6 @@ public class ConfigInventorySlotHolder extends ConfigHolder<IInventorySlot> impl
     @Nonnull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction direction) {
-        return getSlots(direction, slotInfo -> slotInfo instanceof InventorySlotInfo ? ((InventorySlotInfo) slotInfo).getSlots() : Collections.emptyList());
+        return getSlots(direction, slotInfo -> slotInfo instanceof InventorySlotInfo info ? info.getSlots() : Collections.emptyList());
     }
 }

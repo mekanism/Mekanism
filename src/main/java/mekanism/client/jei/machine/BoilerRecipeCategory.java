@@ -141,21 +141,6 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
         return recipes;
     }
 
-    public static class BoilerJEIRecipe {
-
-        @Nullable
-        private final GasStackIngredient superHeatedCoolant;
-        private final FluidStackIngredient water;
-        private final GasStack steam;
-        private final GasStack cooledCoolant;
-        private final double temperature;
-
-        public BoilerJEIRecipe(@Nullable GasStackIngredient superHeatedCoolant, FluidStackIngredient water, GasStack steam, GasStack cooledCoolant, double temperature) {
-            this.superHeatedCoolant = superHeatedCoolant;
-            this.water = water;
-            this.steam = steam;
-            this.cooledCoolant = cooledCoolant;
-            this.temperature = temperature;
-        }
+    public record BoilerJEIRecipe(@Nullable GasStackIngredient superHeatedCoolant, FluidStackIngredient water, GasStack steam, GasStack cooledCoolant, double temperature) {
     }
 }

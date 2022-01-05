@@ -108,21 +108,19 @@ public abstract class BlockMekanism extends Block {
         if (tile.getFrequencyComponent().hasCustomFrequencies()) {
             tile.getFrequencyComponent().write(ItemDataUtils.getDataMap(itemStack));
         }
-        if (item instanceof ISecurityItem && tile.hasSecurity()) {
-            ISecurityItem securityItem = (ISecurityItem) item;
+        if (item instanceof ISecurityItem securityItem && tile.hasSecurity()) {
             securityItem.setOwnerUUID(itemStack, tile.getOwnerUUID());
             securityItem.setSecurity(itemStack, tile.getSecurityMode());
         }
         if (tile.supportsUpgrades()) {
             tile.getComponent().write(ItemDataUtils.getDataMap(itemStack));
         }
-        if (tile instanceof ISideConfiguration) {
-            ISideConfiguration config = (ISideConfiguration) tile;
+        if (tile instanceof ISideConfiguration config) {
             config.getConfig().write(ItemDataUtils.getDataMap(itemStack));
             config.getEjector().write(ItemDataUtils.getDataMap(itemStack));
         }
-        if (tile instanceof ISustainedData) {
-            ((ISustainedData) tile).writeSustainedData(itemStack);
+        if (tile instanceof ISustainedData sustainedData) {
+            sustainedData.writeSustainedData(itemStack);
         }
         if (tile.supportsRedstone()) {
             ItemDataUtils.setInt(itemStack, NBTConstants.CONTROL_TYPE, tile.getControlType().ordinal());
@@ -132,8 +130,8 @@ public abstract class BlockMekanism extends Block {
                 ItemDataUtils.setList(itemStack, type.getContainerTag(), DataHandlerUtils.writeContainers(type.getContainers(tile)));
             }
         }
-        if (item instanceof ISustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
-            ((ISustainedInventory) item).setInventory(tile.getInventory(), itemStack);
+        if (item instanceof ISustainedInventory sustainedInventory && tile.persistInventory() && tile.getSlots() > 0) {
+            sustainedInventory.setInventory(tile.getInventory(), itemStack);
         }
         return itemStack;
     }
@@ -144,14 +142,13 @@ public abstract class BlockMekanism extends Block {
     public List<ItemStack> getDrops(@Nonnull BlockState state, @Nonnull LootContext.Builder builder) {
         List<ItemStack> drops = super.getDrops(state, builder);
         //Check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
-        if (state.getBlock() instanceof IHasTileEntity) {
+        if (state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
             //TODO - 1.18: Test this?
-            BlockEntity tile = ((IHasTileEntity<?>) state.getBlock()).newBlockEntity(BlockPos.ZERO, state);
-            if (tile instanceof TileEntityMekanism) {
-                TileEntityMekanism mekTile = (TileEntityMekanism) tile;
+            BlockEntity tile = hasTileEntity.newBlockEntity(BlockPos.ZERO, state);
+            if (tile instanceof TileEntityMekanism mekTile) {
                 //Skip tiles that have no tanks and skip chemical creative tanks
-                if (!mekTile.getGasTanks(null).isEmpty() && (!(mekTile instanceof TileEntityChemicalTank) ||
-                                                             ((TileEntityChemicalTank) mekTile).getTier() != ChemicalTankTier.CREATIVE)) {
+                if (!mekTile.getGasTanks(null).isEmpty() && (!(mekTile instanceof TileEntityChemicalTank chemicalTank) ||
+                                                             chemicalTank.getTier() != ChemicalTankTier.CREATIVE)) {
                     for (ItemStack drop : drops) {
                         ListTag gasTankList = ItemDataUtils.getList(drop, NBTConstants.GAS_TANKS);
                         if (!gasTankList.isEmpty()) {
@@ -193,8 +190,8 @@ public abstract class BlockMekanism extends Block {
     @Deprecated
     public boolean triggerEvent(@Nonnull BlockState state, @Nonnull Level level, @Nonnull BlockPos pos, int id, int param) {
         boolean triggered = super.triggerEvent(state, level, pos, id, param);
-        if (this instanceof IHasTileEntity) {
-            return ((IHasTileEntity<?>) this).triggerBlockEntityEvent(state, level, pos, id, param);
+        if (this instanceof IHasTileEntity<?> hasTileEntity) {
+            return hasTileEntity.triggerBlockEntityEvent(state, level, pos, id, param);
         }
         return triggered;
     }
@@ -215,8 +212,8 @@ public abstract class BlockMekanism extends Block {
     @Override
     @Deprecated
     public FluidState getFluidState(BlockState state) {
-        if (state.getBlock() instanceof IStateFluidLoggable) {
-            return ((IStateFluidLoggable) state.getBlock()).getFluid(state);
+        if (state.getBlock() instanceof IStateFluidLoggable fluidLoggable) {
+            return fluidLoggable.getFluid(state);
         }
         return super.getFluidState(state);
     }
@@ -226,8 +223,8 @@ public abstract class BlockMekanism extends Block {
     @Deprecated
     public BlockState updateShape(BlockState state, @Nonnull Direction facing, @Nonnull BlockState facingState, @Nonnull LevelAccessor world, @Nonnull BlockPos currentPos,
           @Nonnull BlockPos facingPos) {
-        if (state.getBlock() instanceof IStateFluidLoggable) {
-            ((IStateFluidLoggable) state.getBlock()).updateFluids(state, world, currentPos);
+        if (state.getBlock() instanceof IStateFluidLoggable fluidLoggable) {
+            fluidLoggable.updateFluids(state, world, currentPos);
         }
         return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
     }
@@ -258,8 +255,7 @@ public abstract class BlockMekanism extends Block {
         if (tile instanceof TileEntitySecurityDesk && placer != null) {
             tile.getSecurity().setOwnerUUID(placer.getUUID());
         }
-        if (item instanceof ISecurityItem && tile.hasSecurity()) {
-            ISecurityItem securityItem = (ISecurityItem) item;
+        if (item instanceof ISecurityItem securityItem && tile.hasSecurity()) {
             tile.setSecurityMode(securityItem.getSecurity(stack));
             UUID ownerUUID = securityItem.getOwnerUUID(stack);
             if (ownerUUID != null) {
@@ -276,8 +272,7 @@ public abstract class BlockMekanism extends Block {
             //The read method validates that data is stored
             tile.getComponent().read(ItemDataUtils.getDataMap(stack));
         }
-        if (tile instanceof ISideConfiguration) {
-            ISideConfiguration config = (ISideConfiguration) tile;
+        if (tile instanceof ISideConfiguration config) {
             //The read methods validate that data is stored
             config.getConfig().read(ItemDataUtils.getDataMap(stack));
             config.getEjector().read(ItemDataUtils.getDataMap(stack));
@@ -287,14 +282,14 @@ public abstract class BlockMekanism extends Block {
                 DataHandlerUtils.readContainers(type.getContainers(tile), ItemDataUtils.getList(stack, type.getContainerTag()));
             }
         }
-        if (tile instanceof ISustainedData && stack.hasTag()) {
-            ((ISustainedData) tile).readSustainedData(stack);
+        if (tile instanceof ISustainedData sustainedData && stack.hasTag()) {
+            sustainedData.readSustainedData(stack);
         }
         if (tile.supportsRedstone() && ItemDataUtils.hasData(stack, NBTConstants.CONTROL_TYPE, Tag.TAG_INT)) {
             tile.setControlType(RedstoneControl.byIndexStatic(ItemDataUtils.getInt(stack, NBTConstants.CONTROL_TYPE)));
         }
-        if (item instanceof ISustainedInventory && tile.persistInventory()) {
-            tile.setInventory(((ISustainedInventory) item).getInventory(stack));
+        if (item instanceof ISustainedInventory sustainedInventory && tile.persistInventory()) {
+            tile.setInventory(sustainedInventory.getInventory(stack));
         }
     }
 
@@ -345,11 +340,8 @@ public abstract class BlockMekanism extends Block {
         if (hasAnalogOutputSignal(blockState)) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             //Double-check the tile actually has comparator support
-            if (tile instanceof IComparatorSupport) {
-                IComparatorSupport comparatorTile = (IComparatorSupport) tile;
-                if (comparatorTile.supportsComparator()) {
-                    return comparatorTile.getCurrentRedstoneLevel();
-                }
+            if (tile instanceof IComparatorSupport comparatorTile && comparatorTile.supportsComparator()) {
+                return comparatorTile.getCurrentRedstoneLevel();
             }
         }
         return 0;
@@ -368,7 +360,7 @@ public abstract class BlockMekanism extends Block {
           @Nullable BlockEntity tile) {
         //Call super variant of player relative hardness to get default
         float speed = super.getDestroyProgress(state, player, world, pos);
-        if (tile instanceof ITileRadioactive && ((ITileRadioactive) tile).getRadiationScale() > 0) {
+        if (tile instanceof ITileRadioactive radioactiveTile && radioactiveTile.getRadiationScale() > 0) {
             //Our tile has some radioactive substance in it; slow down breaking it
             return speed / 5F;
         }
@@ -379,8 +371,8 @@ public abstract class BlockMekanism extends Block {
     public void animateTick(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Random random) {
         super.animateTick(state, world, pos, random);
         BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-        if (tile instanceof ITileRadioactive) {
-            int count = ((ITileRadioactive) tile).getRadiationParticleCount();
+        if (tile instanceof ITileRadioactive radioactiveTile) {
+            int count = radioactiveTile.getRadiationParticleCount();
             if (count > 0) {
                 //Update count to be randomized but store it instead of calculating our max number each time we loop
                 count = random.nextInt(count);

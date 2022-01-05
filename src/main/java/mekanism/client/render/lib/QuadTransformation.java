@@ -44,20 +44,14 @@ public interface QuadTransformation {
         if (side == null) {
             return identity;
         }
-        switch (side) {
-            case UP:
-                return rotate(90, 0, 0);
-            case DOWN:
-                return rotate(-90, 0, 0);
-            case WEST:
-                return rotate(0, 90, 0);
-            case EAST:
-                return rotate(0, -90, 0);
-            case SOUTH:
-                return rotate(0, 180, 0);
-            default:
-                return identity;
-        }
+        return switch (side) {
+            case UP -> rotate(90, 0, 0);
+            case DOWN -> rotate(-90, 0, 0);
+            case WEST -> rotate(0, 90, 0);
+            case EAST -> rotate(0, -90, 0);
+            case SOUTH -> rotate(0, 180, 0);
+            default -> identity;
+        };
     }
 
     static QuadTransformation rotateY(double degrees) {
@@ -100,15 +94,14 @@ public interface QuadTransformation {
 
         @Override
         public void transform(Quad quad) {
-            if (side == null) {
-                return;
+            if (side != null) {
+                quad.setSide(ROTATION_MATRIX[quad.getSide().ordinal()][side.ordinal()]);
             }
-            quad.setSide(ROTATION_MATRIX[quad.getSide().ordinal()][side.ordinal()]);
         }
 
         @Override
-        public boolean equals(Object other) {
-            return other instanceof SideTransformation && side == ((SideTransformation) other).side;
+        public boolean equals(Object o) {
+            return o instanceof SideTransformation other && side == other.side;
         }
 
         @Override
@@ -131,8 +124,8 @@ public interface QuadTransformation {
         }
 
         @Override
-        public boolean equals(Object other) {
-            return other instanceof ColorTransformation && color.equals(((ColorTransformation) other).color);
+        public boolean equals(Object o) {
+            return o instanceof ColorTransformation other && color.equals(other.color);
         }
 
         @Override
@@ -157,8 +150,8 @@ public interface QuadTransformation {
         }
 
         @Override
-        public boolean equals(Object other) {
-            return other instanceof LightTransformation && lightU == ((LightTransformation) other).lightU && lightV == ((LightTransformation) other).lightV;
+        public boolean equals(Object o) {
+            return o instanceof LightTransformation other && lightU == other.lightU && lightV == other.lightV;
         }
 
         @Override
@@ -191,8 +184,8 @@ public interface QuadTransformation {
         }
 
         @Override
-        public boolean equals(Object other) {
-            return other instanceof RotationTransformation && quaternion.equals(((RotationTransformation) other).quaternion);
+        public boolean equals(Object o) {
+            return o instanceof RotationTransformation other && quaternion.equals(other.quaternion);
         }
 
         @Override
@@ -215,8 +208,8 @@ public interface QuadTransformation {
         }
 
         @Override
-        public boolean equals(Object other) {
-            return other instanceof TranslationTransformation && translation.equals(((TranslationTransformation) other).translation);
+        public boolean equals(Object o) {
+            return o instanceof TranslationTransformation other && translation.equals(other.translation);
         }
 
         @Override
@@ -243,8 +236,8 @@ public interface QuadTransformation {
         }
 
         @Override
-        public boolean equals(Object other) {
-            return other instanceof TextureTransformation && texture == ((TextureTransformation) other).texture;
+        public boolean equals(Object o) {
+            return o instanceof TextureTransformation other && texture == other.texture;
         }
 
         @Override
@@ -275,8 +268,8 @@ public interface QuadTransformation {
         }
 
         @Override
-        public boolean equals(Object other) {
-            return other instanceof TextureFilteredTransformation && verifier.equals(((TextureFilteredTransformation) other).verifier);
+        public boolean equals(Object o) {
+            return o instanceof TextureFilteredTransformation other && verifier.equals(other.verifier);
         }
 
         @Override
@@ -305,8 +298,8 @@ public interface QuadTransformation {
         }
 
         @Override
-        public boolean equals(Object other) {
-            return other instanceof TransformationList && list.equals(((TransformationList) other).list);
+        public boolean equals(Object o) {
+            return o instanceof TransformationList other && list.equals(other.list);
         }
 
         @Override

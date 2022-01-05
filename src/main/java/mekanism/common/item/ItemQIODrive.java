@@ -27,9 +27,9 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
     public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
         DriveMetadata meta = DriveMetadata.load(stack);
         tooltip.add(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-              TextUtils.format(meta.getCount()), TextUtils.format(getCountCapacity(stack))));
+              TextUtils.format(meta.count()), TextUtils.format(getCountCapacity(stack))));
         tooltip.add(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-              TextUtils.format(meta.getTypes()), TextUtils.format(getTypeCapacity(stack))));
+              TextUtils.format(meta.types()), TextUtils.format(getTypeCapacity(stack))));
     }
 
     @Nonnull

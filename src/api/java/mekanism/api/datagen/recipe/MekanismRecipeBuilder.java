@@ -51,7 +51,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param criterion Criterion to add.
      */
     public BUILDER addCriterion(RecipeCriterion criterion) {
-        return addCriterion(criterion.name, criterion.criterion);
+        return addCriterion(criterion.name(), criterion.criterion());
     }
 
     /**

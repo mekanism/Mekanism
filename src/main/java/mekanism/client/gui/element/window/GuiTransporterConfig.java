@@ -73,8 +73,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
 
     private IHoverable getOnHover(RelativeSide side) {
         return (onHover, matrix, xAxis, yAxis) -> {
-            if (onHover instanceof SideDataButton) {
-                SideDataButton button = (SideDataButton) onHover;
+            if (onHover instanceof SideDataButton button) {
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
                     EnumColor color = button.getColor();

@@ -64,7 +64,7 @@ public abstract class ConfigChemicalTankHolder<CHEMICAL extends Chemical<CHEMICA
         @Nonnull
         @Override
         protected List<IGasTank> getTanksFromSlot(ISlotInfo slotInfo) {
-            return slotInfo instanceof GasSlotInfo ? ((GasSlotInfo) slotInfo).getTanks() : Collections.emptyList();
+            return slotInfo instanceof GasSlotInfo info ? info.getTanks() : Collections.emptyList();
         }
     }
 
@@ -82,7 +82,7 @@ public abstract class ConfigChemicalTankHolder<CHEMICAL extends Chemical<CHEMICA
         @Nonnull
         @Override
         protected List<IInfusionTank> getTanksFromSlot(ISlotInfo slotInfo) {
-            return slotInfo instanceof InfusionSlotInfo ? ((InfusionSlotInfo) slotInfo).getTanks() : Collections.emptyList();
+            return slotInfo instanceof InfusionSlotInfo info ? info.getTanks() : Collections.emptyList();
         }
     }
 
@@ -100,7 +100,7 @@ public abstract class ConfigChemicalTankHolder<CHEMICAL extends Chemical<CHEMICA
         @Nonnull
         @Override
         protected List<IPigmentTank> getTanksFromSlot(ISlotInfo slotInfo) {
-            return slotInfo instanceof PigmentSlotInfo ? ((PigmentSlotInfo) slotInfo).getTanks() : Collections.emptyList();
+            return slotInfo instanceof PigmentSlotInfo info ? info.getTanks() : Collections.emptyList();
         }
     }
 
@@ -118,7 +118,7 @@ public abstract class ConfigChemicalTankHolder<CHEMICAL extends Chemical<CHEMICA
         @Nonnull
         @Override
         protected List<ISlurryTank> getTanksFromSlot(ISlotInfo slotInfo) {
-            return slotInfo instanceof SlurrySlotInfo ? ((SlurrySlotInfo) slotInfo).getTanks() : Collections.emptyList();
+            return slotInfo instanceof SlurrySlotInfo info ? info.getTanks() : Collections.emptyList();
         }
     }
 }

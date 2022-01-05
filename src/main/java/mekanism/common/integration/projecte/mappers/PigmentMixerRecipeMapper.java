@@ -35,12 +35,11 @@ public class PigmentMixerRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof PigmentMixingRecipe)) {
+        if (!(iRecipe instanceof PigmentMixingRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        PigmentMixingRecipe recipe = (PigmentMixingRecipe) iRecipe;
         List<@NonNull PigmentStack> leftInputRepresentations = recipe.getLeftInput().getRepresentations();
         List<@NonNull PigmentStack> rightInputRepresentations = recipe.getRightInput().getRepresentations();
         for (PigmentStack leftRepresentation : leftInputRepresentations) {

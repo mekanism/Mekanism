@@ -107,6 +107,6 @@ public class CrTBracketValidators {
     }
 
     private static boolean isRegistryUnlocked(IForgeRegistry<?> registry) {
-        return registry instanceof ForgeRegistry && !((ForgeRegistry<?>) registry).isLocked();
+        return registry instanceof ForgeRegistry<?> forgeRegistry && !forgeRegistry.isLocked();
     }
 }

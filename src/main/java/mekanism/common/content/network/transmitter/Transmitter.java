@@ -334,7 +334,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     public boolean isValidAcceptor(BlockEntity tile, Direction side) {
         //TODO: Rename this method better to make it more apparent that it caches and also listens to the acceptor
         //If it isn't a transmitter or the transmission type is different than the one the transmitter has
-        return !(tile instanceof TileEntityTransmitter) || !supportsTransmissionType((TileEntityTransmitter) tile);
+        return !(tile instanceof TileEntityTransmitter transmitter) || !supportsTransmissionType(transmitter);
     }
 
     public boolean canConnectMutual(Direction side, @Nullable BlockEntity cachedTile) {
@@ -345,7 +345,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             //If we don't already have the tile that is on the side calculated, do so
             cachedTile = WorldUtils.getTileEntity(getTileWorld(), getTilePos().relative(side));
         }
-        return !(cachedTile instanceof TileEntityTransmitter) || ((TileEntityTransmitter) cachedTile).getTransmitter().canConnect(side.getOpposite());
+        return !(cachedTile instanceof TileEntityTransmitter transmitter) || transmitter.getTransmitter().canConnect(side.getOpposite());
     }
 
     public boolean canConnectMutual(Direction side, @Nullable TRANSMITTER cachedTransmitter) {

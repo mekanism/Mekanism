@@ -17,8 +17,8 @@ public interface ITileHeatHandler extends IMekanismHeatHandler {
 
     default void updateHeatCapacitors(@Nullable Direction side) {
         for (IHeatCapacitor capacitor : getHeatCapacitors(side)) {
-            if (capacitor instanceof BasicHeatCapacitor) {
-                ((BasicHeatCapacitor) capacitor).update();
+            if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
+                heatCapacitor.update();
             }
         }
     }

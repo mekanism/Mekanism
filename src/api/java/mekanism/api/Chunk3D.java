@@ -66,7 +66,7 @@ public class Chunk3D extends ChunkPos {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Chunk3D && ((Chunk3D) obj).x == x && ((Chunk3D) obj).z == z && ((Chunk3D) obj).dimension == dimension;
+        return obj instanceof Chunk3D other && other.x == x && other.z == z && other.dimension == dimension;
     }
 
     @Override

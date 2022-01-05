@@ -313,32 +313,10 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         }
     }
 
-    private static class MethodDetails {
-
-        private final MethodRestriction restriction;
-        private final MethodHandle method;
-        private final String methodName;
-        private final boolean threadSafe;
-
-        private MethodDetails(String methodName, MethodHandle method, MethodRestriction restriction, boolean threadSafe) {
-            this.method = method;
-            this.methodName = methodName;
-            this.restriction = restriction;
-            this.threadSafe = threadSafe;
-        }
+    private record MethodDetails(String methodName, MethodHandle method, MethodRestriction restriction, boolean threadSafe) {
     }
 
-    private static class MethodHandleInfo {
-
-        private final MethodRestriction restriction;
-        private final MethodHandle methodHandle;
-        private final boolean threadSafe;
-
-        public MethodHandleInfo(MethodHandle methodHandle, MethodRestriction restriction, boolean threadSafe) {
-            this.methodHandle = methodHandle;
-            this.restriction = restriction;
-            this.threadSafe = threadSafe;
-        }
+    private record MethodHandleInfo(MethodHandle methodHandle, MethodRestriction restriction, boolean threadSafe) {
 
         public ThreadAwareMethodHandle bindTo(@Nullable Object handler) {
             return new ThreadAwareMethodHandle(handler == null ? methodHandle : methodHandle.bindTo(handler), threadSafe);
@@ -353,19 +331,19 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         /**
          * Handler is a directional tile that is actually directional.
          */
-        DIRECTIONAL(handler -> handler instanceof ITileDirectional && ((ITileDirectional) handler).isDirectional()),
+        DIRECTIONAL(handler -> handler instanceof ITileDirectional directional && directional.isDirectional()),
         /**
          * Handler is an energy handler that can handle energy.
          */
-        ENERGY(handler -> handler instanceof IMekanismStrictEnergyHandler && ((IMekanismStrictEnergyHandler) handler).canHandleEnergy()),
+        ENERGY(handler -> handler instanceof IMekanismStrictEnergyHandler energyHandler && energyHandler.canHandleEnergy()),
         /**
          * Handler is a multiblock that can expose the multiblock.
          */
-        MULTIBLOCK(handler -> handler instanceof TileEntityMultiblock && ((TileEntityMultiblock<?>) handler).exposesMultiblockToComputer()),
+        MULTIBLOCK(handler -> handler instanceof TileEntityMultiblock multiblock && multiblock.exposesMultiblockToComputer()),
         /**
          * Handler is a tile that can support redstone.
          */
-        REDSTONE_CONTROL(handler -> handler instanceof ITileRedstone && ((ITileRedstone) handler).supportsRedstone());
+        REDSTONE_CONTROL(handler -> handler instanceof ITileRedstone redstone && redstone.supportsRedstone());
 
         private final Predicate<Object> validator;
 

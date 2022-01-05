@@ -94,17 +94,13 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
     @Nonnull
     @Override
     protected BlockState upgradeResult(@Nonnull BlockState current, @Nonnull BaseTier tier) {
-        switch (tier) {
-            case BASIC:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_PRESSURIZED_TUBE);
-            case ADVANCED:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE);
-            case ELITE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_PRESSURIZED_TUBE);
-            case ULTIMATE:
-                return BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE);
-        }
-        return current;
+        return switch (tier) {
+            case BASIC -> BlockStateHelper.copyStateData(current, MekanismBlocks.BASIC_PRESSURIZED_TUBE);
+            case ADVANCED -> BlockStateHelper.copyStateData(current, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE);
+            case ELITE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ELITE_PRESSURIZED_TUBE);
+            case ULTIMATE -> BlockStateHelper.copyStateData(current, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE);
+            default -> current;
+        };
     }
 
     @Nonnull

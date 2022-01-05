@@ -38,12 +38,11 @@ public class ChemicalDissolutionRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ChemicalDissolutionRecipe)) {
+        if (!(iRecipe instanceof ChemicalDissolutionRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        ChemicalDissolutionRecipe recipe = (ChemicalDissolutionRecipe) iRecipe;
         List<@NonNull ItemStack> itemRepresentations = recipe.getItemInput().getRepresentations();
         List<@NonNull GasStack> gasRepresentations = recipe.getGasInput().getRepresentations();
         for (GasStack gasRepresentation : gasRepresentations) {

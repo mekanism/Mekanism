@@ -79,7 +79,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY)) {
             ItemStack stack = Minecraft.getInstance().player.containerMenu.getCarried();
-            if (gui() instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+            if (gui() instanceof GuiMekanismTile<?, ?> gui && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
                 TankType tankType = getType(getHandler().getStack());
                 if (tankType != null) {
                     int index = getHandler().getTankIndex();
@@ -90,7 +90,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
                         } else {
                             action = DropperAction.DRAIN_DROPPER;
                         }
-                        Mekanism.packetHandler().sendToServer(new PacketDropperUse(((GuiMekanismTile<?, ?>) gui()).getTileEntity().getBlockPos(), action, tankType, index));
+                        Mekanism.packetHandler().sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
                     }
                     return true;
                 }

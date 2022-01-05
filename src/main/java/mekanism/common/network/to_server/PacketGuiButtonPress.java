@@ -132,22 +132,18 @@ public class PacketGuiButtonPress implements IMekanismPacket {
 
     public static PacketGuiButtonPress decode(FriendlyByteBuf buffer) {
         Type type = buffer.readEnum(Type.class);
-        switch (type) {
-            case ENTITY:
-                return new PacketGuiButtonPress(buffer.readEnum(ClickedEntityButton.class), buffer.readVarInt());
-            case TILE:
-                return new PacketGuiButtonPress(buffer.readEnum(ClickedTileButton.class), buffer.readBlockPos(), buffer.readVarInt());
-            case ITEM:
-                return new PacketGuiButtonPress(buffer.readEnum(ClickedItemButton.class), buffer.readEnum(InteractionHand.class));
-            default:
-                return null;
-        }
+        return switch (type) {
+            case ENTITY -> new PacketGuiButtonPress(buffer.readEnum(ClickedEntityButton.class), buffer.readVarInt());
+            case TILE -> new PacketGuiButtonPress(buffer.readEnum(ClickedTileButton.class), buffer.readBlockPos(), buffer.readVarInt());
+            case ITEM -> new PacketGuiButtonPress(buffer.readEnum(ClickedItemButton.class), buffer.readEnum(InteractionHand.class));
+            default -> null;
+        };
     }
 
     public enum ClickedItemButton {
         BACK_BUTTON((stack, hand) -> {
-            if (stack.getItem() instanceof IGuiItem) {
-                return ((IGuiItem) stack.getItem()).getContainerType().getProvider(stack.getHoverName(), hand, stack);
+            if (stack.getItem() instanceof IGuiItem guiItem) {
+                return guiItem.getContainerType().getProvider(stack.getHoverName(), hand, stack);
             }
             return null;
         }),

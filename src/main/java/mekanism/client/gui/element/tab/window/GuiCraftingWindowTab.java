@@ -41,8 +41,8 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
     protected Consumer<GuiWindow> getCloseListener() {
         return window -> {
             GuiCraftingWindowTab tab = getElementSupplier().get();
-            if (window instanceof GuiCraftingWindow) {
-                tab.openWindows[((GuiCraftingWindow) window).getIndex()] = false;
+            if (window instanceof GuiCraftingWindow craftingWindow) {
+                tab.openWindows[craftingWindow.getIndex()] = false;
             }
             tab.currentWindows--;
             if (tab.currentWindows < IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS) {
@@ -55,9 +55,9 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
     @Override
     protected Consumer<GuiWindow> getReAttachListener() {
         return super.getReAttachListener().andThen(window -> {
-            if (window instanceof GuiCraftingWindow) {
+            if (window instanceof GuiCraftingWindow craftingWindow) {
                 GuiCraftingWindowTab tab = getElementSupplier().get();
-                tab.openWindows[((GuiCraftingWindow) window).getIndex()] = true;
+                tab.openWindows[craftingWindow.getIndex()] = true;
             }
         });
     }

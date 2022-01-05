@@ -269,7 +269,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
                     //If our return map doesn't already have the stored value in it, calculate it.
                     // The case where it may have the stored value in it is if an item has multiple
                     // tags that all match the wildcard
-                    ret.computeLongIfAbsent(item, this::getStored);
+                    ret.computeIfAbsent(item, this::getStored);
                 }
             }
             return ret;
@@ -419,8 +419,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
     public void onDeactivate(BlockEntity tile) {
         super.onDeactivate(tile);
 
-        if (tile instanceof IQIODriveHolder) {
-            IQIODriveHolder holder = (IQIODriveHolder) tile;
+        if (tile instanceof IQIODriveHolder holder) {
             for (int i = 0; i < holder.getDriveSlots().size(); i++) {
                 QIODriveKey key = new QIODriveKey(holder, i);
                 removeDrive(key, true);
@@ -432,11 +431,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency {
     @Override
     public void update(BlockEntity tile) {
         super.update(tile);
-        if (tile instanceof IQIODriveHolder) {
-            IQIODriveHolder holder = (IQIODriveHolder) tile;
-            if (!driveHolders.contains(holder)) {
-                addHolder(holder);
-            }
+        if (tile instanceof IQIODriveHolder holder && !driveHolders.contains(holder)) {
+            addHolder(holder);
         }
     }
 

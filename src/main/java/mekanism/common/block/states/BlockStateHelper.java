@@ -37,8 +37,8 @@ public class BlockStateHelper {
     public static BlockState getDefaultState(@Nonnull BlockState state) {
         Block block = state.getBlock();
         for (Attribute attr : Attribute.getAll(block)) {
-            if (attr instanceof AttributeState) {
-                state = ((AttributeState) attr).getDefaultState(state);
+            if (attr instanceof AttributeState atr) {
+                state = atr.getDefaultState(state);
             }
         }
         if (block instanceof IStateFluidLoggable fluidLoggable) {
@@ -51,15 +51,15 @@ public class BlockStateHelper {
     public static void fillBlockStateContainer(Block block, StateDefinition.Builder<Block, BlockState> builder) {
         List<Property<?>> properties = new ArrayList<>();
         for (Attribute attr : Attribute.getAll(block)) {
-            if (attr instanceof AttributeState) {
-                ((AttributeState) attr).fillBlockStateContainer(block, properties);
+            if (attr instanceof AttributeState atr) {
+                atr.fillBlockStateContainer(block, properties);
             }
         }
         if (block instanceof IStateStorage) {
             properties.add(storageProperty);
         }
-        if (block instanceof IStateFluidLoggable) {
-            properties.add(((IStateFluidLoggable) block).getFluidLoggedProperty());
+        if (block instanceof IStateFluidLoggable fluidLoggable) {
+            properties.add(fluidLoggable.getFluidLoggedProperty());
         }
         if (!properties.isEmpty()) {
             builder.add(properties.toArray(new Property[0]));
@@ -73,8 +73,8 @@ public class BlockStateHelper {
     public static BlockBehaviour.Properties applyLightLevelAdjustments(BlockBehaviour.Properties properties) {
         return applyLightLevelAdjustments(properties, state -> {
             Block block = state.getBlock();
-            if (block instanceof IStateFluidLoggable) {
-                return ((IStateFluidLoggable) block).getFluid(state).getType().getAttributes().getLuminosity();
+            if (block instanceof IStateFluidLoggable fluidLoggable) {
+                return fluidLoggable.getFluid(state).getType().getAttributes().getLuminosity();
             }
             return 0;
         });
@@ -102,8 +102,8 @@ public class BlockStateHelper {
             return null;
         }
         for (Attribute attr : Attribute.getAll(block)) {
-            if (attr instanceof AttributeState) {
-                state = ((AttributeState) attr).getStateForPlacement(block, state, world, pos, player, face);
+            if (attr instanceof AttributeState atr) {
+                state = atr.getStateForPlacement(block, state, world, pos, player, face);
             }
         }
         if (block instanceof IStateFluidLoggable fluidLoggable) {
@@ -121,8 +121,8 @@ public class BlockStateHelper {
         Block oldBlock = oldState.getBlock();
         Block newBlock = newState.getBlock();
         for (Attribute attr : Attribute.getAll(oldBlock)) {
-            if (attr instanceof AttributeState) {
-                newState = ((AttributeState) attr).copyStateData(oldState, newState);
+            if (attr instanceof AttributeState atr) {
+                newState = atr.copyStateData(oldState, newState);
             }
         }
         if (oldBlock instanceof IStateStorage && newBlock instanceof IStateStorage) {

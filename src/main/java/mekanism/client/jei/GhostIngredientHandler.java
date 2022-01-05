@@ -79,17 +79,15 @@ public class GhostIngredientHandler<GUI extends GuiMekanism<?>> implements IGhos
     private <INGREDIENT> List<TargetInfo<INGREDIENT>> getTargets(List<? extends GuiEventListener> children, INGREDIENT ingredient) {
         List<TargetInfo<INGREDIENT>> ghostTargets = new ArrayList<>();
         for (GuiEventListener child : children) {
-            if (child instanceof AbstractWidget) {
-                AbstractWidget widget = (AbstractWidget) child;
+            if (child instanceof AbstractWidget widget) {
                 if (widget.visible) {
-                    if (widget instanceof GuiElement) {
+                    if (widget instanceof GuiElement element) {
                         //Start by adding any grandchild ghost targets we have as they are the "top" layer, and we want them
                         // to get checked/interacted with first
-                        ghostTargets.addAll(getTargets(((GuiElement) widget).children(), ingredient));
+                        ghostTargets.addAll(getTargets(element.children(), ingredient));
                     }
                     //Then go ahead and check if our element is a ghost target and if it is, and it supports the ingredient add it
-                    if (widget instanceof IJEIGhostTarget) {
-                        IJEIGhostTarget ghostTarget = (IJEIGhostTarget) widget;
+                    if (widget instanceof IJEIGhostTarget ghostTarget) {
                         IGhostIngredientConsumer ghostHandler = ghostTarget.getGhostHandler();
                         if (ghostHandler != null && ghostHandler.supportsIngredient(ingredient)) {
                             ghostTargets.add(new TargetInfo<>(ghostTarget, ghostHandler, widget.x, widget.y, widget.getWidth(), widget.getHeight()));

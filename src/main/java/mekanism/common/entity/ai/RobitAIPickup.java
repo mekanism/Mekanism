@@ -13,7 +13,7 @@ public class RobitAIPickup extends RobitAIBase {
     private static final int SEARCH_RADIUS = 10;
     private static final int SEARCH_RADIUS_SQ = SEARCH_RADIUS * SEARCH_RADIUS;
 
-    private final Predicate<Entity> itemPredicate = entity -> !entity.isSpectator() && entity instanceof ItemEntity && theRobit.isItemValid((ItemEntity) entity);
+    private final Predicate<Entity> itemPredicate = entity -> !entity.isSpectator() && entity instanceof ItemEntity item && theRobit.isItemValid(item);
     private ItemEntity closest;
 
     public RobitAIPickup(EntityRobit entityRobit, float speed) {

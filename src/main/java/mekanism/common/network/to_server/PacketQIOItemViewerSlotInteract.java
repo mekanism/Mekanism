@@ -41,8 +41,7 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         ServerPlayer player = context.getSender();
-        if (player != null && player.containerMenu instanceof QIOItemViewerContainer) {
-            QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
+        if (player != null && player.containerMenu instanceof QIOItemViewerContainer container) {
             QIOFrequency freq = container.getFrequency();
             ItemStack curStack = player.containerMenu.getCarried();
             if (freq != null) {
@@ -84,16 +83,12 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
     public void encode(FriendlyByteBuf buffer) {
         buffer.writeEnum(type);
         switch (type) {
-            case TAKE:
+            case TAKE -> {
                 buffer.writeUUID(typeUUID);
                 buffer.writeVarInt(count);
-                break;
-            case SHIFT_TAKE:
-                buffer.writeUUID(typeUUID);
-                break;
-            case PUT:
-                buffer.writeVarInt(count);
-                break;
+            }
+            case SHIFT_TAKE -> buffer.writeUUID(typeUUID);
+            case PUT -> buffer.writeVarInt(count);
         }
     }
 
@@ -102,16 +97,12 @@ public class PacketQIOItemViewerSlotInteract implements IMekanismPacket {
         UUID typeUUID = null;
         int count = 0;
         switch (type) {
-            case TAKE:
+            case TAKE -> {
                 typeUUID = buffer.readUUID();
                 count = buffer.readVarInt();
-                break;
-            case SHIFT_TAKE:
-                typeUUID = buffer.readUUID();
-                break;
-            case PUT:
-                count = buffer.readVarInt();
-                break;
+            }
+            case SHIFT_TAKE -> typeUUID = buffer.readUUID();
+            case PUT -> count = buffer.readVarInt();
         }
         return new PacketQIOItemViewerSlotInteract(type, typeUUID, count);
     }

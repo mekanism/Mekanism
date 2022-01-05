@@ -143,11 +143,7 @@ public class VoxelCuboid implements IShape {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof VoxelCuboid)) {
-            return false;
-        }
-        VoxelCuboid other = (VoxelCuboid) obj;
-        return minPos.equals(other.minPos) && maxPos.equals(other.maxPos);
+        return obj instanceof VoxelCuboid other && minPos.equals(other.minPos) && maxPos.equals(other.maxPos);
     }
 
     public static VoxelCuboid from(VoxelPlane p1, VoxelPlane p2, int p1Pos, int p2Pos) {

@@ -29,8 +29,8 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(supportedTypes, "Supported types cannot be null");
         return new UpgradeInventorySlot(listener, (stack, automationType) -> {
             Item item = stack.getItem();
-            if (item instanceof IUpgradeItem) {
-                Upgrade upgradeType = ((IUpgradeItem) item).getUpgradeType(stack);
+            if (item instanceof IUpgradeItem upgradeItem) {
+                Upgrade upgradeType = upgradeItem.getUpgradeType(stack);
                 return supportedTypes.contains(upgradeType);
             }
             return false;

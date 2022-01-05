@@ -65,8 +65,8 @@ public class ItemBalloon extends Item {
     @Override
     public Component getName(@Nonnull ItemStack stack) {
         Item item = stack.getItem();
-        if (item instanceof ItemBalloon) {
-            return TextComponentUtil.build(((ItemBalloon) item).getColor(), super.getName(stack));
+        if (item instanceof ItemBalloon balloon) {
+            return TextComponentUtil.build(balloon.getColor(), super.getName(stack));
         }
         return super.getName(stack);
     }
@@ -175,24 +175,11 @@ public class ItemBalloon extends Item {
             if (!latched) {
                 Vec3 pos = Vec3.atLowerCornerOf(sourcePos).add(0, -0.5, 0);
                 switch (side) {
-                    case DOWN:
-                        pos = pos.add(0, -3.5, 0);
-                        break;
-                    case NORTH:
-                        pos = pos.add(0, -1, -0.5);
-                        break;
-                    case SOUTH:
-                        pos = pos.add(0, -1, 0.5);
-                        break;
-                    case WEST:
-                        pos = pos.add(-0.5, -1, 0);
-                        break;
-                    case EAST:
-                        pos = pos.add(0.5, -1, 0);
-                        break;
-                    case UP:
-                    default:
-                        break;
+                    case DOWN -> pos = pos.add(0, -3.5, 0);
+                    case NORTH -> pos = pos.add(0, -1, -0.5);
+                    case SOUTH -> pos = pos.add(0, -1, 0.5);
+                    case WEST -> pos = pos.add(-0.5, -1, 0);
+                    case EAST -> pos = pos.add(0.5, -1, 0);
                 }
                 if (!source.getLevel().isClientSide) {
                     EntityBalloon balloon = EntityBalloon.create(source.getLevel(), pos.x, pos.y, pos.z, color);

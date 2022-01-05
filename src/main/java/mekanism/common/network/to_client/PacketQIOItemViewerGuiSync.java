@@ -39,18 +39,11 @@ public class PacketQIOItemViewerGuiSync implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player != null && player.containerMenu instanceof QIOItemViewerContainer) {
-            QIOItemViewerContainer container = (QIOItemViewerContainer) player.containerMenu;
+        if (player != null && player.containerMenu instanceof QIOItemViewerContainer container) {
             switch (type) {
-                case BATCH:
-                    container.handleBatchUpdate(itemMap, countCapacity, typeCapacity);
-                    break;
-                case UPDATE:
-                    container.handleUpdate(itemMap, countCapacity, typeCapacity);
-                    break;
-                case KILL:
-                    container.handleKill();
-                    break;
+                case BATCH -> container.handleBatchUpdate(itemMap, countCapacity, typeCapacity);
+                case UPDATE -> container.handleUpdate(itemMap, countCapacity, typeCapacity);
+                case KILL -> container.handleKill();
             }
         }
     }

@@ -21,13 +21,12 @@ public class RotaryRecipeHandler extends MekanismRecipeHandler<RotaryRecipe> {
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, RotaryRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, RotaryRecipe recipe, U o) {
         //Only support if the other is a rotary recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
-        if (other instanceof RotaryRecipe) {
-            RotaryRecipe otherRecipe = (RotaryRecipe) other;
-            return recipe.hasFluidToGas() && otherRecipe.hasFluidToGas() && ingredientConflicts(recipe.getFluidInput(), otherRecipe.getFluidInput()) ||
-                   recipe.hasGasToFluid() && otherRecipe.hasGasToFluid() && ingredientConflicts(recipe.getGasInput(), otherRecipe.getGasInput());
+        if (o instanceof RotaryRecipe other) {
+            return recipe.hasFluidToGas() && other.hasFluidToGas() && ingredientConflicts(recipe.getFluidInput(), other.getFluidInput()) ||
+                   recipe.hasGasToFluid() && other.hasGasToFluid() && ingredientConflicts(recipe.getGasInput(), other.getGasInput());
         }
         return false;
     }

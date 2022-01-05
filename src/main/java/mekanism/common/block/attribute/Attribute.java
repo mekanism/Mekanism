@@ -27,7 +27,7 @@ public interface Attribute {
     }
 
     static boolean has(Block block, Class<? extends Attribute> type) {
-        return block instanceof ITypeBlock && ((ITypeBlock) block).getType().has(type);
+        return block instanceof ITypeBlock typeBlock && typeBlock.getType().has(type);
     }
 
     static <T extends Attribute> T get(BlockState state, Class<T> type) {
@@ -39,7 +39,7 @@ public interface Attribute {
     }
 
     static <T extends Attribute> T get(Block block, Class<T> type) {
-        return block instanceof ITypeBlock ? ((ITypeBlock) block).getType().get(type) : null;
+        return block instanceof ITypeBlock typeBlock ? typeBlock.getType().get(type) : null;
     }
 
     static boolean has(Block block1, Block block2, Class<? extends Attribute> type) {
@@ -47,12 +47,12 @@ public interface Attribute {
     }
 
     static Collection<Attribute> getAll(Block block) {
-        return block instanceof ITypeBlock ? ((ITypeBlock) block).getType().getAll() : Lists.newArrayList();
+        return block instanceof ITypeBlock typeBlock ? typeBlock.getType().getAll() : Lists.newArrayList();
     }
 
     static <T extends Attribute> void ifHas(Block block, Class<T> type, Consumer<T> run) {
-        if (block instanceof ITypeBlock) {
-            T attribute = ((ITypeBlock) block).getType().get(type);
+        if (block instanceof ITypeBlock typeBlock) {
+            T attribute = typeBlock.getType().get(type);
             if (attribute != null) {
                 run.accept(attribute);
             }

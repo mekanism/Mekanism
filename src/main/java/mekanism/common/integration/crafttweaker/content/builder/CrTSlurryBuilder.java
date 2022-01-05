@@ -71,7 +71,7 @@ public class CrTSlurryBuilder extends CrTChemicalBuilder<Slurry, SlurryBuilder, 
      * @param oreTag Tag representing the ore.
      *
      * @implNote We add the tag by its internal id instead of getting the internal tag as the internal tag would currently be {@code null} when this gets called, as the
-     * collection is empty, and the goal of this method is to let the slurry have an {@link net.minecraft.tags.ITag.INamedTag}
+     * collection is empty, and the goal of this method is to let the slurry have an {@link net.minecraft.tags.Tag.Named}
      */
     @ZenCodeType.Method
     public CrTSlurryBuilder ore(MCTag<Item> oreTag) {

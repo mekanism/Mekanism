@@ -127,13 +127,12 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         if (player == null) {
             return InteractionResult.PASS;
         }
-        if (state.is(BlockTags.BEEHIVES) && state.getBlock() instanceof BeehiveBlock && state.getValue(BeehiveBlock.HONEY_LEVEL) >= 5) {
+        if (state.is(BlockTags.BEEHIVES) && state.getBlock() instanceof BeehiveBlock beehive && state.getValue(BeehiveBlock.HONEY_LEVEL) >= 5) {
             //Act as shears on beehives
             Level world = context.getLevel();
             BlockPos pos = context.getClickedPos();
             world.playSound(player, player.getX(), player.getY(), player.getZ(), SoundEvents.BEEHIVE_SHEAR, SoundSource.NEUTRAL, 1, 1);
             BeehiveBlock.dropHoneycomb(world, pos);
-            BeehiveBlock beehive = (BeehiveBlock) state.getBlock();
             if (CampfireBlock.isSmokeyPos(world, pos)) {
                 beehive.resetHoneyLevel(world, state, pos);
             } else {
@@ -155,10 +154,10 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     private boolean tryShearBlock(IEnergyContainer energyContainer, ServerLevel world, BlockPos pos, Direction sideClicked) {
         if (energyContainer.getEnergy().greaterOrEqual(MekanismConfig.gear.mekaToolEnergyUsageShearBlock.get())) {
             BlockState state = world.getBlockState(pos);
-            if (state.is(BlockTags.BEEHIVES) && state.getBlock() instanceof BeehiveBlock && state.getValue(BeehiveBlock.HONEY_LEVEL) >= 5) {
+            if (state.is(BlockTags.BEEHIVES) && state.getBlock() instanceof BeehiveBlock beehive && state.getValue(BeehiveBlock.HONEY_LEVEL) >= 5) {
                 world.playSound(null, pos, SoundEvents.BEEHIVE_SHEAR, SoundSource.BLOCKS, 1.0F, 1.0F);
                 BeehiveBlock.dropHoneycomb(world, pos);
-                ((BeehiveBlock) state.getBlock()).releaseBeesAndResetHoneyLevel(world, state, pos, null, BeehiveBlockEntity.BeeReleaseStatus.BEE_RELEASED);
+                beehive.releaseBeesAndResetHoneyLevel(world, state, pos, null, BeehiveBlockEntity.BeeReleaseStatus.BEE_RELEASED);
                 energyContainer.extract(MekanismConfig.gear.mekaToolEnergyUsageShearBlock.get(), Action.EXECUTE, AutomationType.MANUAL);
                 return true;
             } else if (state.is(Blocks.PUMPKIN)) {

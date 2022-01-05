@@ -106,11 +106,12 @@ public class MekaSuitArmor extends CustomArmor {
 
     private static final QuadTransformation BASE_TRANSFORM = QuadTransformation.list(QuadTransformation.rotate(0, 0, 180), QuadTransformation.translate(new Vec3(-1, 0.5, 0)));
 
-    private final LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<QuickHash, ArmorQuads>() {
+    private final LoadingCache<QuickHash, ArmorQuads> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
+        @Nonnull
         @Override
         @SuppressWarnings("unchecked")
         public ArmorQuads load(@Nonnull QuickHash key) {
-            return createQuads((Object2BooleanMap<ModuleModelSpec>) key.get()[0], (Set<EquipmentSlot>) key.get()[1], (boolean) key.get()[2], (boolean) key.get()[3]);
+            return createQuads((Object2BooleanMap<ModuleModelSpec>) key.objs()[0], (Set<EquipmentSlot>) key.objs()[1], (boolean) key.objs()[2], (boolean) key.objs()[3]);
         }
     });
 
@@ -127,21 +128,21 @@ public class MekaSuitArmor extends CustomArmor {
           boolean hasEffect, LivingEntity entity, boolean rightHand) {
         ModelPos armPos = rightHand ? ModelPos.RIGHT_ARM : ModelPos.LEFT_ARM;
         ArmorQuads armorQuads = cache.getUnchecked(key(entity));
-        boolean hasOpaqueArm = armorQuads.getOpaqueMap().containsKey(armPos);
-        boolean hasTransparentArm = armorQuads.getTransparentMap().containsKey(armPos);
+        boolean hasOpaqueArm = armorQuads.opaqueQuads().containsKey(armPos);
+        boolean hasTransparentArm = armorQuads.transparentQuads().containsKey(armPos);
         if (hasOpaqueArm || hasTransparentArm) {
             matrix.pushPose();
             armPos.translate(baseModel, matrix, entity);
             PoseStack.Pose last = matrix.last();
             if (hasOpaqueArm) {
                 VertexConsumer builder = ItemRenderer.getFoilBufferDirect(renderer, MekanismRenderType.MEKASUIT, false, hasEffect);
-                for (BakedQuad quad : armorQuads.getOpaqueMap().get(armPos)) {
+                for (BakedQuad quad : armorQuads.opaqueQuads().get(armPos)) {
                     builder.putBulkData(last, quad, 1, 1, 1, 1, light, overlayLight);
                 }
             }
             if (hasTransparentArm) {
                 VertexConsumer builder = ItemRenderer.getFoilBufferDirect(renderer, RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS), false, hasEffect);
-                for (BakedQuad quad : armorQuads.getTransparentMap().get(armPos)) {
+                for (BakedQuad quad : armorQuads.transparentQuads().get(armPos)) {
                     builder.putBulkData(last, quad, 1, 1, 1, 1, light, overlayLight);
                 }
             }
@@ -167,7 +168,7 @@ public class MekaSuitArmor extends CustomArmor {
     private void renderMekaSuit(HumanoidModel<? extends LivingEntity> baseModel, @Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer,
           int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity) {
         ArmorQuads armorQuads = cache.getUnchecked(key(entity));
-        render(baseModel, renderer, matrix, light, overlayLight, hasEffect, entity, armorQuads.getOpaqueMap(), false);
+        render(baseModel, renderer, matrix, light, overlayLight, hasEffect, entity, armorQuads.opaqueQuads(), false);
 
         if (type == EquipmentSlot.CHEST) {
             BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUUID(), id -> new BoltRenderer());
@@ -186,7 +187,7 @@ public class MekaSuitArmor extends CustomArmor {
             matrix.popPose();
         }
 
-        render(baseModel, renderer, matrix, light, overlayLight, hasEffect, entity, armorQuads.getTransparentMap(), true);
+        render(baseModel, renderer, matrix, light, overlayLight, hasEffect, entity, armorQuads.transparentQuads(), true);
     }
 
     private void render(HumanoidModel<? extends LivingEntity> baseModel, MultiBufferSource renderer, PoseStack matrix, int light, int overlayLight,
@@ -269,28 +270,13 @@ public class MekaSuitArmor extends CustomArmor {
 
         public void translate(HumanoidModel<? extends LivingEntity> baseModel, PoseStack matrix, LivingEntity entity) {
             switch (this) {
-                case HEAD:
-                    baseModel.head.translateAndRotate(matrix);
-                    break;
-                case BODY:
-                    baseModel.body.translateAndRotate(matrix);
-                    break;
-                case LEFT_ARM:
-                    baseModel.leftArm.translateAndRotate(matrix);
-                    break;
-                case RIGHT_ARM:
-                    baseModel.rightArm.translateAndRotate(matrix);
-                    break;
-                case LEFT_LEG:
-                    baseModel.leftLeg.translateAndRotate(matrix);
-                    break;
-                case RIGHT_LEG:
-                    baseModel.rightLeg.translateAndRotate(matrix);
-                    break;
-                case LEFT_WING:
-                case RIGHT_WING:
-                    translateWings(baseModel, matrix, entity);
-                    break;
+                case HEAD -> baseModel.head.translateAndRotate(matrix);
+                case BODY -> baseModel.body.translateAndRotate(matrix);
+                case LEFT_ARM -> baseModel.leftArm.translateAndRotate(matrix);
+                case RIGHT_ARM -> baseModel.rightArm.translateAndRotate(matrix);
+                case LEFT_LEG -> baseModel.leftLeg.translateAndRotate(matrix);
+                case RIGHT_LEG -> baseModel.rightLeg.translateAndRotate(matrix);
+                case LEFT_WING, RIGHT_WING -> translateWings(baseModel, matrix, entity);
             }
         }
 
@@ -323,9 +309,8 @@ public class MekaSuitArmor extends CustomArmor {
                 yRot = EXPANDED_WING_Y_ROT * scale;
                 zRot = EXPANDED_WING_Z_ROT * scale;
             }
-            if (entity instanceof AbstractClientPlayer) {
+            if (entity instanceof AbstractClientPlayer player) {
                 //If the entity is a player, then transition the wings gradually to their target position
-                AbstractClientPlayer player = (AbstractClientPlayer) entity;
                 player.elytraRotX = 0;
                 yRot = player.elytraRotY = player.elytraRotY + (yRot - player.elytraRotY) * 0.01F;
                 //Base off of target values
@@ -498,35 +483,20 @@ public class MekaSuitArmor extends CustomArmor {
     }
 
     private static boolean checkEquipment(EquipmentSlot type, String text) {
-        switch (type) {
-            case HEAD:
-                return text.contains("helmet");
-            case CHEST:
-                return text.contains("chest");
-            case LEGS:
-                return text.contains("leggings");
-            case FEET:
-                return text.contains("boots");
-        }
-        return false;
+        return switch (type) {
+            case HEAD -> text.contains("helmet");
+            case CHEST -> text.contains("chest");
+            case LEGS -> text.contains("leggings");
+            case FEET -> text.contains("boots");
+            default -> false;
+        };
     }
 
-    public static class ArmorQuads {
-
-        private final Map<ModelPos, List<BakedQuad>> opaqueQuads;
-        private final Map<ModelPos, List<BakedQuad>> transparentQuads;
+    public record ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
 
         public ArmorQuads(Map<ModelPos, List<BakedQuad>> opaqueQuads, Map<ModelPos, List<BakedQuad>> transparentQuads) {
             this.opaqueQuads = opaqueQuads.isEmpty() ? Collections.emptyMap() : opaqueQuads;
             this.transparentQuads = transparentQuads.isEmpty() ? Collections.emptyMap() : transparentQuads;
-        }
-
-        public Map<ModelPos, List<BakedQuad>> getOpaqueMap() {
-            return opaqueQuads;
-        }
-
-        public Map<ModelPos, List<BakedQuad>> getTransparentMap() {
-            return transparentQuads;
         }
     }
 

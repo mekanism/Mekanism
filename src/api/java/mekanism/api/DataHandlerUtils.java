@@ -20,21 +20,21 @@ public class DataHandlerUtils {
     }
 
     /**
-     * Helper to read and load a list of containers from a {@link ListNBT}
+     * Helper to read and load a list of containers from a {@link ListTag}
      */
     public static void readContainers(List<? extends INBTSerializable<CompoundTag>> containers, ListTag storedContainers) {
         readContents(containers, storedContainers, getTagByType(containers));
     }
 
     /**
-     * Helper to read and load a list of containers to a {@link ListNBT}
+     * Helper to read and load a list of containers to a {@link ListTag}
      */
     public static ListTag writeContainers(List<? extends INBTSerializable<CompoundTag>> containers) {
         return writeContents(containers, getTagByType(containers));
     }
 
     /**
-     * Helper to read and load a list of handler contents from a {@link ListNBT}
+     * Helper to read and load a list of handler contents from a {@link ListTag}
      */
     public static void readContents(List<? extends INBTSerializable<CompoundTag>> contents, ListTag storedContents, String key) {
         int size = contents.size();
@@ -48,7 +48,7 @@ public class DataHandlerUtils {
     }
 
     /**
-     * Helper to read and load a list of handler contents to a {@link ListNBT}
+     * Helper to read and load a list of handler contents to a {@link ListTag}
      */
     public static ListTag writeContents(List<? extends INBTSerializable<CompoundTag>> contents, String key) {
         ListTag storedContents = new ListTag();

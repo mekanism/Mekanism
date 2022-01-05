@@ -49,17 +49,16 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
         }
         if (updateType.isTile()) {
             BlockEntity tile = WorldUtils.getTileEntity(player.level, tilePosition);
-            if (SecurityUtils.canAccess(player, tile) && tile instanceof IFrequencyHandler) {
+            if (SecurityUtils.canAccess(player, tile) && tile instanceof IFrequencyHandler frequencyHandler) {
                 if (updateType == FrequencyUpdate.SET_TILE) {
-                    ((IFrequencyHandler) tile).setFrequency(type, data, player.getUUID());
+                    frequencyHandler.setFrequency(type, data, player.getUUID());
                 } else if (updateType == FrequencyUpdate.REMOVE_TILE) {
-                    ((IFrequencyHandler) tile).removeFrequency(type, data, player.getUUID());
+                    frequencyHandler.removeFrequency(type, data, player.getUUID());
                 }
             }
         } else {
             ItemStack stack = player.getItemInHand(currentHand);
-            if (SecurityUtils.canAccess(player, stack) && stack.getItem() instanceof IFrequencyItem) {
-                IFrequencyItem item = (IFrequencyItem) stack.getItem();
+            if (SecurityUtils.canAccess(player, stack) && stack.getItem() instanceof IFrequencyItem item) {
                 FrequencyManager<FREQ> manager = type.getManager(data, player.getUUID());
                 if (updateType == FrequencyUpdate.SET_ITEM) {
                     //Note: We don't bother validating if the frequency is public or not here, as if it isn't then
@@ -67,7 +66,7 @@ public class PacketGuiSetFrequency<FREQ extends Frequency> implements IMekanismP
                     // have been able to send due to not knowing what private frequencies exist for other players
                     item.setFrequency(stack, manager.getOrCreateFrequency(data, player.getUUID()));
                 } else if (updateType == FrequencyUpdate.REMOVE_ITEM) {
-                    if (manager.remove(data.getKey(), player.getUUID())) {
+                    if (manager.remove(data.key(), player.getUUID())) {
                         FrequencyIdentity current = item.getFrequencyIdentity(stack);
                         if (current != null && current.equals(data)) {
                             //If the frequency we are removing matches the stored frequency set it to nothing

@@ -21,7 +21,7 @@ public class DataSerializerDeferredRegister extends WrappedDeferredRegister<Data
     }
 
     public <T> DataSerializerRegistryObject<T> register(String name, BiConsumer<FriendlyByteBuf, T> writer, Function<FriendlyByteBuf, T> reader, UnaryOperator<T> copier) {
-        return register(name, () -> new EntityDataSerializer<T>() {
+        return register(name, () -> new EntityDataSerializer<>() {
             @Override
             public void write(@Nonnull FriendlyByteBuf buffer, @Nonnull T value) {
                 writer.accept(buffer, value);

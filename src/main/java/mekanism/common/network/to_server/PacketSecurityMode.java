@@ -24,8 +24,8 @@ public class PacketSecurityMode implements IMekanismPacket {
         Player player = context.getSender();
         if (player != null) {
             ItemStack stack = player.getItemInHand(currentHand);
-            if (stack.getItem() instanceof ISecurityItem) {
-                ((ISecurityItem) stack.getItem()).setSecurity(stack, value);
+            if (stack.getItem() instanceof ISecurityItem securityItem) {
+                securityItem.setSecurity(stack, value);
             }
         }
     }

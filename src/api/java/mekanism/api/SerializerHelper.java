@@ -393,17 +393,11 @@ public class SerializerHelper {
      * @return Deserializer.
      */
     public static ChemicalIngredientDeserializer<?, ?, ?> getDeserializerForType(ChemicalType chemicalType) {
-        switch (chemicalType) {
-            case GAS:
-                return ChemicalIngredientDeserializer.GAS;
-            case INFUSION:
-                return ChemicalIngredientDeserializer.INFUSION;
-            case PIGMENT:
-                return ChemicalIngredientDeserializer.PIGMENT;
-            case SLURRY:
-                return ChemicalIngredientDeserializer.SLURRY;
-            default:
-                throw new IllegalStateException("Unknown Chemical Type");
-        }
+        return switch (chemicalType) {
+            case GAS -> ChemicalIngredientDeserializer.GAS;
+            case INFUSION -> ChemicalIngredientDeserializer.INFUSION;
+            case PIGMENT -> ChemicalIngredientDeserializer.PIGMENT;
+            case SLURRY -> ChemicalIngredientDeserializer.SLURRY;
+        };
     }
 }

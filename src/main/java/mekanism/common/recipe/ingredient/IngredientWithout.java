@@ -4,26 +4,21 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.JsonConstants;
 import mekanism.common.Mekanism;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
-
-//Slightly modified version of Tinker's IngredientWithout
-// https://github.com/SlimeKnights/TinkersConstruct/blob/1.16/src/main/java/slimeknights/tconstruct/common/IngredientWithout.java
-import net.minecraft.world.item.crafting.Ingredient.Value;
 
 @MethodsReturnNonnullByDefault
 public class IngredientWithout extends Ingredient {
@@ -73,21 +68,13 @@ public class IngredientWithout extends Ingredient {
         return Serializer.INSTANCE;
     }
 
-    private static class ItemListWithout implements Value {
-
-        private final Ingredient base;
-        private final Ingredient without;
-
-        public ItemListWithout(Ingredient base, Ingredient without) {
-            this.base = base;
-            this.without = without;
-        }
+    private record ItemListWithout(Ingredient base, Ingredient without) implements Value {
 
         @Override
         public Collection<ItemStack> getItems() {
             return Arrays.stream(base.getItems())
                   .filter(stack -> !without.test(stack))
-                  .collect(Collectors.toList());
+                  .toList();
         }
 
         @Override

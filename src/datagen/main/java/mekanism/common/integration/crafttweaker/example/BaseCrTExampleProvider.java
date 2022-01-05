@@ -155,7 +155,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                             PARAMETER_NAMES.put(line.substring(7), methods);
                         } else {
                             String[] parts = line.split("=");
-                            methods.put(parts[0], Arrays.stream(parts[1].split(",")).collect(Collectors.toList()));
+                            methods.put(parts[0], Arrays.stream(parts[1].split(",")).toList());
                         }
                     }
                 }
@@ -291,22 +291,22 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private void addItemStackIngredientSupport() {
         addSupportedConversion(ItemStackIngredient.class, ItemStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
-                  if (ingredient instanceof ItemStackIngredient.Single) {
+                  if (ingredient instanceof ItemStackIngredient.Single single) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      return MekanismRecipeHandler.basicImplicitIngredient(((ItemStackIngredient.Single) ingredient).getInputRaw(),
-                            GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1), serialized.get(JsonConstants.INGREDIENT));
+                      return MekanismRecipeHandler.basicImplicitIngredient(single.getInputRaw(), GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1),
+                            serialized.get(JsonConstants.INGREDIENT));
                   }
                   return null;
               });
     }
 
     private String getIngredientRepresentation(CrTImportsComponent imports, ItemStackIngredient ingredient) {
-        if (ingredient instanceof ItemStackIngredient.Single) {
+        if (ingredient instanceof ItemStackIngredient.Single single) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //While it is easier to compare types of some stuff using the inner ingredient, some things
             // are easier to get the information of out of the serialized ingredient
             JsonObject serializedIngredient = serialized.getAsJsonObject(JsonConstants.INGREDIENT);
-            Ingredient vanillaIngredient = ((ItemStackIngredient.Single) ingredient).getInputRaw();
+            Ingredient vanillaIngredient = single.getInputRaw();
             int amount = GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1);
             String representation = null;
             if (amount > 1) {
@@ -330,8 +330,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                 return path + ".from(" + representation + ")";
             }
             return path + ".from(" + representation + ", " + amount + ")";
-        } else if (ingredient instanceof ItemStackIngredient.Multi) {
-            ItemStackIngredient.Multi multiIngredient = (ItemStackIngredient.Multi) ingredient;
+        } else if (ingredient instanceof ItemStackIngredient.Multi multiIngredient) {
             StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT) + ".createMulti(");
             if (!multiIngredient.forEachIngredient(i -> {
                 String rep = getIngredientRepresentation(imports, i);
@@ -374,8 +373,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String tagRepresentation = TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
             return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
-        } else if (ingredient instanceof FluidStackIngredient.Multi) {
-            FluidStackIngredient.Multi multiIngredient = (FluidStackIngredient.Multi) ingredient;
+        } else if (ingredient instanceof FluidStackIngredient.Multi multiIngredient) {
             StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".createMulti(");
             if (!multiIngredient.forEachIngredient(i -> {
                 String rep = getIngredientRepresentation(imports, i);
@@ -427,8 +425,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String tagRepresentation = tagManager.getTag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
             return ingredientType + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
-        } else if (ingredient instanceof ChemicalStackIngredient.MultiIngredient) {
-            ChemicalStackIngredient.MultiIngredient<CHEMICAL, STACK, ?> multiIngredient = (ChemicalStackIngredient.MultiIngredient<CHEMICAL, STACK, ?>) ingredient;
+        } else if (ingredient instanceof ChemicalStackIngredient.MultiIngredient<CHEMICAL, STACK, ?> multiIngredient) {
             StringBuilder builder = new StringBuilder(ingredientType + ".createMulti(");
             if (!multiIngredient.forEachIngredient(i -> {
                 String rep = getIngredientRepresentation(i, ingredientType, deserializer, singleDescription, tagManager);
@@ -448,7 +445,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     /**
-     * Basically a copy of {@link IDataProvider#save(Gson, DirectoryCache, JsonElement, Path)} but it takes the contents as a string instead of serializes json using
+     * Basically a copy of {@link DataProvider#save(Gson, HashCache, JsonElement, Path)} but it takes the contents as a string instead of serializes json using
      * GSON.
      */
     @SuppressWarnings("UnstableApiUsage")
@@ -491,14 +488,6 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         }
     }
 
-    private static class ClassConversionInfo<ACTUAL> {
-
-        private final Class<? extends ACTUAL> actualClass;
-        private final List<BiFunction<CrTImportsComponent, ? super ACTUAL, String>> conversions;
-
-        public ClassConversionInfo(Class<? extends ACTUAL> actualClass, List<BiFunction<CrTImportsComponent, ? super ACTUAL, String>> conversions) {
-            this.actualClass = actualClass;
-            this.conversions = conversions;
-        }
+    private record ClassConversionInfo<ACTUAL>(Class<? extends ACTUAL> actualClass, List<BiFunction<CrTImportsComponent, ? super ACTUAL, String>> conversions) {
     }
 }

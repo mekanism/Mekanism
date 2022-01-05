@@ -35,7 +35,7 @@ public abstract class GuiChemicalGauge<CHEMICAL extends Chemical<CHEMICAL>, STAC
 
     public GuiChemicalGauge(Supplier<TANK> tankSupplier, Supplier<List<TANK>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY,
           TankType tankType) {
-        this(new ITankInfoHandler<TANK>() {
+        this(new ITankInfoHandler<>() {
             @Nullable
             @Override
             public TANK getTank() {

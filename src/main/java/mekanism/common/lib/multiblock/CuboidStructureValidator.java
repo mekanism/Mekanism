@@ -70,7 +70,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
      */
     protected FormationResult validateNode(FormationProtocol<T> ctx, Long2ObjectMap<ChunkAccess> chunkMap, BlockPos pos) {
         Optional<BlockState> optionalState = WorldUtils.getBlockState(world, chunkMap, pos);
-        if (!optionalState.isPresent()) {
+        if (optionalState.isEmpty()) {
             //If the position is not in a loaded chunk or out of bounds of the world, fail
             return FormationResult.FAIL;
         }
@@ -101,7 +101,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     protected abstract CasingType getCasingType(BlockState state);
 
     protected boolean isFrameCompatible(BlockEntity tile) {
-        if (tile instanceof IStructuralMultiblock && ((IStructuralMultiblock) tile).canInterface(manager)) {
+        if (tile instanceof IStructuralMultiblock multiblock && multiblock.canInterface(manager)) {
             return true;
         }
         return manager.isCompatible(tile);

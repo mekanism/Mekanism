@@ -14,15 +14,13 @@ import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
 import mekanism.common.network.to_client.PacketRadiationData;
 import mekanism.common.registries.MekanismDamageSource;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -43,7 +41,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
 
     @Override
     public void update(@Nonnull LivingEntity entity) {
-        if (entity instanceof Player && !MekanismUtils.isPlayingMode((Player) entity)) {
+        if (entity instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
             return;
         }
 
@@ -62,9 +60,7 @@ public class DefaultRadiationEntity implements IRadiationEntity {
             }
         }
 
-        if (entity instanceof Player) {
-            ServerPlayer player = (ServerPlayer) entity;
-
+        if (entity instanceof ServerPlayer player) {
             if (clientSeverity != radiation) {
                 clientSeverity = radiation;
                 PacketRadiationData.sync(player);

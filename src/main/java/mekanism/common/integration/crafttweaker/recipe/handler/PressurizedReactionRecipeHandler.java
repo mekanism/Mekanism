@@ -26,14 +26,13 @@ public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<Pres
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, PressurizedReactionRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, PressurizedReactionRecipe recipe, U o) {
         //Only support if the other is a reaction recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
-        if (other instanceof PressurizedReactionRecipe) {
-            PressurizedReactionRecipe otherRecipe = (PressurizedReactionRecipe) other;
-            return ingredientConflicts(recipe.getInputSolid(), otherRecipe.getInputSolid()) &&
-                   ingredientConflicts(recipe.getInputFluid(), otherRecipe.getInputFluid()) &&
-                   ingredientConflicts(recipe.getInputGas(), otherRecipe.getInputGas());
+        if (o instanceof PressurizedReactionRecipe other) {
+            return ingredientConflicts(recipe.getInputSolid(), other.getInputSolid()) &&
+                   ingredientConflicts(recipe.getInputFluid(), other.getInputFluid()) &&
+                   ingredientConflicts(recipe.getInputGas(), other.getInputGas());
         }
         return false;
     }

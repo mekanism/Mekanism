@@ -65,7 +65,7 @@ public class GuiChemicalBar<CHEMICAL extends Chemical<CHEMICAL>, STACK extends C
     }
 
     public static <STACK extends ChemicalStack<?>, TANK extends IChemicalTank<?, STACK>> TankInfoProvider<STACK> getProvider(TANK tank, List<TANK> tanks) {
-        return new TankInfoProvider<STACK>() {
+        return new TankInfoProvider<>() {
             @Nonnull
             @Override
             public STACK getStack() {

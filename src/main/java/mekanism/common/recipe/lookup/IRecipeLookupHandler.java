@@ -18,10 +18,10 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe> extends ICo
      */
     @Nullable
     default Level getHandlerWorld() {
-        if (this instanceof BlockEntity) {
-            return ((BlockEntity) this).getLevel();
-        } else if (this instanceof Entity) {
-            return ((Entity) this).level;
+        if (this instanceof BlockEntity tile) {
+            return tile.getLevel();
+        } else if (this instanceof Entity entity) {
+            return entity.level;
         }
         return null;
     }

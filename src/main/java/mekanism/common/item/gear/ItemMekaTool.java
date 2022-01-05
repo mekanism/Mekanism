@@ -172,7 +172,7 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
         if (energyContainer != null) {
             FloatingLong energyRequired = getDestroyEnergy(stack, state.getDestroySpeed(world, pos), isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
             FloatingLong extractedEnergy = energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
-            if (extractedEnergy.equals(energyRequired) || entityliving instanceof Player && ((Player) entityliving).isCreative()) {
+            if (extractedEnergy.equals(energyRequired) || entityliving instanceof Player player && player.isCreative()) {
                 //Only disarm tripwires if we had all the energy we tried to use (or are creative). Otherwise, treat it as if we may have failed to disarm it
                 if (state.is(Blocks.TRIPWIRE) && !state.getValue(TripWireBlock.DISARMED) && isModuleEnabled(stack, MekanismModules.SHEARING_UNIT)) {
                     world.setBlock(pos, state.setValue(TripWireBlock.DISARMED, true), Block.UPDATE_INVISIBLE);
@@ -203,8 +203,8 @@ public class ItemMekaTool extends ItemEnergized implements IModuleContainerItem,
             percent = energy.divideToLevel(energyCost);
         }
         float damage = (float) (minDamage + damageDifference * percent);
-        if (attacker instanceof Player) {
-            target.hurt(DamageSource.playerAttack((Player) attacker), damage);
+        if (attacker instanceof Player player) {
+            target.hurt(DamageSource.playerAttack(player), damage);
         } else {
             target.hurt(DamageSource.mobAttack(attacker), damage);
         }

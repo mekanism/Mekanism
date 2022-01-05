@@ -32,7 +32,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
     }
 
     public GuiFluidGauge(Supplier<IExtendedFluidTank> tankSupplier, Supplier<List<IExtendedFluidTank>> tanksSupplier, GaugeType type, IGuiWrapper gui, int x, int y, int sizeX, int sizeY) {
-        this(new ITankInfoHandler<IExtendedFluidTank>() {
+        this(new ITankInfoHandler<>() {
             @Nullable
             @Override
             public IExtendedFluidTank getTank() {

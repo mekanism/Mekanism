@@ -16,9 +16,9 @@ public class ElectrolysisRecipeHandler extends MekanismRecipeHandler<Electrolysi
     }
 
     @Override
-    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, ElectrolysisRecipe recipe, U other) {
+    public <U extends Recipe<?>> boolean doesConflict(IRecipeManager manager, ElectrolysisRecipe recipe, U o) {
         //Only support if the other is an electrolysis recipe and don't bother checking the reverse as the recipe type's generics
         // ensures that it is of the same type
-        return other instanceof ElectrolysisRecipe && ingredientConflicts(recipe.getInput(), ((ElectrolysisRecipe) other).getInput());
+        return o instanceof ElectrolysisRecipe other && ingredientConflicts(recipe.getInput(), other.getInput());
     }
 }

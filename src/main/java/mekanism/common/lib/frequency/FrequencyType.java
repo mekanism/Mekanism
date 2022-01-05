@@ -111,7 +111,7 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     public FREQ getFrequency(FrequencyIdentity identity, UUID owner) {
-        return getManager(identity, owner).getFrequency(identity.getKey());
+        return getManager(identity, owner).getFrequency(identity.key());
     }
 
     public IdentitySerializer getIdentitySerializer() {

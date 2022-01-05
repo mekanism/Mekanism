@@ -220,31 +220,10 @@ public final class HolidayManager {
         }
     }
 
-    public static class YearlyDate {
+    public record YearlyDate(Month month, int day) {
 
-        public final Month month;
-        public final int day;
-
-        public YearlyDate(Month m, int d) {
-            month = m;
-            day = d;
-        }
-
-        public YearlyDate(int m, int d) {
-            this(Month.byIndexStatic(m - 1), d);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return obj instanceof YearlyDate && ((YearlyDate) obj).month == month && ((YearlyDate) obj).day == day;
-        }
-
-        @Override
-        public int hashCode() {
-            int code = 1;
-            code = 31 * code + month.ordinal();
-            code = 31 * code + day;
-            return code;
+        public YearlyDate(int month, int day) {
+            this(Month.byIndexStatic(month - 1), day);
         }
     }
 }

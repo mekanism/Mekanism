@@ -10,7 +10,6 @@ import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.entity.RenderRobit.RobitModelWrapper;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.model.EntityModel;

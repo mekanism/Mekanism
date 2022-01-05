@@ -2,9 +2,6 @@ package mekanism.api.providers;
 
 import javax.annotation.Nonnull;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 
 public interface IBlockProvider extends IItemProvider {

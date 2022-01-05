@@ -64,15 +64,13 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
 
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        if (target instanceof ItemStack) {
-            gui().renderItem(matrix, (ItemStack) target, x, y);
-        } else if (target instanceof FluidStack) {
-            FluidStack stack = (FluidStack) this.target;
+        if (target instanceof ItemStack stack) {
+            gui().renderItem(matrix, stack, x, y);
+        } else if (target instanceof FluidStack stack) {
             MekanismRenderer.color(stack);
             drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getFluidTexture(stack, FluidType.STILL), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
-        } else if (target instanceof ChemicalStack) {
-            ChemicalStack<?> stack = (ChemicalStack<?>) this.target;
+        } else if (target instanceof ChemicalStack<?> stack) {
             MekanismRenderer.color(stack);
             drawTiledSprite(matrix, x, y, height, width, height, MekanismRenderer.getChemicalTexture(stack.getType()), TilingDirection.DOWN_RIGHT);
             MekanismRenderer.resetColor();
@@ -82,8 +80,8 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        if (target instanceof ItemStack) {
-            gui().renderItemTooltip(matrix, (ItemStack) target, mouseX, mouseY);
+        if (target instanceof ItemStack stack) {
+            gui().renderItemTooltip(matrix, stack, mouseX, mouseY);
         } else if (target != null) {
             displayTooltip(matrix, TextComponentUtil.build(target), mouseX, mouseY);
         }
@@ -110,8 +108,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
         tags.clear();
         if (newTarget == null) {
             target = null;
-        } else if (newTarget instanceof ItemStack) {
-            ItemStack itemStack = (ItemStack) newTarget;
+        } else if (newTarget instanceof ItemStack itemStack) {
             if (itemStack.isEmpty()) {
                 target = null;
             } else {
@@ -119,16 +116,16 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 target = stack;
                 Item item = stack.getItem();
                 tags.put(DictionaryTagType.ITEM, TagCache.getItemTags(stack));
-                if (item instanceof BlockItem) {
-                    Block block = ((BlockItem) item).getBlock();
+                if (item instanceof BlockItem blockItem) {
+                    Block block = blockItem.getBlock();
                     tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(block.getTags()));
                     if (block instanceof IHasTileEntity || block.defaultBlockState().hasBlockEntity()) {
                         tags.put(DictionaryTagType.TILE_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
                     }
                 }
                 //Entity type tags
-                if (item instanceof SpawnEggItem) {
-                    tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(((SpawnEggItem) item).getType(stack.getTag()).getTags()));
+                if (item instanceof SpawnEggItem spawnEggItem) {
+                    tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(spawnEggItem.getType(stack.getTag()).getTags()));
                 }
                 //Enchantment tags
                 Map<Enchantment, Integer> enchantments = EnchantmentHelper.getEnchantments(stack);
@@ -162,16 +159,14 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 addChemicalTags(DictionaryTagType.SLURRY, stack, Capabilities.SLURRY_HANDLER_CAPABILITY);
                 //TODO: Support other types of things?
             }
-        } else if (newTarget instanceof FluidStack) {
-            FluidStack fluidStack = (FluidStack) newTarget;
+        } else if (newTarget instanceof FluidStack fluidStack) {
             if (fluidStack.isEmpty()) {
                 target = null;
             } else {
                 target = fluidStack.copy();
                 tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(((FluidStack) target).getFluid().getTags()));
             }
-        } else if (newTarget instanceof ChemicalStack) {
-            ChemicalStack<?> chemicalStack = (ChemicalStack<?>) newTarget;
+        } else if (newTarget instanceof ChemicalStack<?> chemicalStack) {
             if (chemicalStack.isEmpty()) {
                 target = null;
             } else {
@@ -230,12 +225,12 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
         return new IGhostIngredientConsumer() {
             @Override
             public boolean supportsIngredient(Object ingredient) {
-                if (ingredient instanceof ItemStack) {
-                    return !((ItemStack) ingredient).isEmpty();
-                } else if (ingredient instanceof FluidStack) {
-                    return !((FluidStack) ingredient).isEmpty();
-                } else if (ingredient instanceof ChemicalStack) {
-                    return !((ChemicalStack<?>) ingredient).isEmpty();
+                if (ingredient instanceof ItemStack stack) {
+                    return !stack.isEmpty();
+                } else if (ingredient instanceof FluidStack stack) {
+                    return !stack.isEmpty();
+                } else if (ingredient instanceof ChemicalStack<?> stack) {
+                    return !stack.isEmpty();
                 }
                 return false;
             }

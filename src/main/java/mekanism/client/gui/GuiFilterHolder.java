@@ -64,14 +64,14 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
             }, this::onClick, filter -> {
                 List<ItemStack> list = new ArrayList<>();
                 if (filter != null) {
-                    if (filter instanceof IItemStackFilter) {
-                        list.add(((IItemStackFilter<?>) filter).getItemStack());
-                    } else if (filter instanceof ITagFilter) {
-                        list.addAll(getTagStacks(((ITagFilter<?>) filter).getTagName()));
-                    } else if (filter instanceof IMaterialFilter) {
-                        list.addAll(TagCache.getMaterialStacks(((IMaterialFilter<?>) filter).getMaterialItem()));
-                    } else if (filter instanceof IModIDFilter) {
-                        list.addAll(TagCache.getModIDStacks(((IModIDFilter<?>) filter).getModID(), false));
+                    if (filter instanceof IItemStackFilter<?> itemFilter) {
+                        list.add(itemFilter.getItemStack());
+                    } else if (filter instanceof ITagFilter<?> tagFilter) {
+                        list.addAll(getTagStacks(tagFilter.getTagName()));
+                    } else if (filter instanceof IMaterialFilter<?> materialFilter) {
+                        list.addAll(TagCache.getMaterialStacks(materialFilter.getMaterialItem()));
+                    } else if (filter instanceof IModIDFilter<?> modIDFilter) {
+                        list.addAll(TagCache.getModIDStacks(modIDFilter.getModID(), false));
                     }
                 }
                 return list;

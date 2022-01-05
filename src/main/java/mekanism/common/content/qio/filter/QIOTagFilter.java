@@ -48,8 +48,8 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
     }
 
     @Override
-    public boolean equals(Object filter) {
-        return filter instanceof QIOTagFilter && ((QIOTagFilter) filter).tagName.equals(tagName);
+    public boolean equals(Object o) {
+        return o instanceof QIOTagFilter filter && filter.tagName.equals(tagName);
     }
 
     @Override

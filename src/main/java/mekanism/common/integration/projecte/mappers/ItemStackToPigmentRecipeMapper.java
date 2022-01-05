@@ -33,12 +33,11 @@ public class ItemStackToPigmentRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof ItemStackToPigmentRecipe)) {
+        if (!(iRecipe instanceof ItemStackToPigmentRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        ItemStackToPigmentRecipe recipe = (ItemStackToPigmentRecipe) iRecipe;
         for (ItemStack representation : recipe.getInput().getRepresentations()) {
             PigmentStack output = recipe.getOutput(representation);
             if (!output.isEmpty()) {

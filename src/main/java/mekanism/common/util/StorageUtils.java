@@ -35,12 +35,11 @@ import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class StorageUtils {
@@ -110,11 +109,6 @@ public class StorageUtils {
      * @implNote Assumes there is only one "tank"
      */
     public static void addStoredSubstance(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean isCreative) {
-        //Note we ensure the capabilities are not null, as the first call to addInformation happens before capability injection
-        if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null || Capabilities.PIGMENT_HANDLER_CAPABILITY == null ||
-            Capabilities.SLURRY_HANDLER_CAPABILITY == null || CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null) {
-            return;
-        }
         FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
         GasStack gasStack = StorageUtils.getStoredGasFromNBT(stack);
         InfusionStack infusionStack = StorageUtils.getStoredInfusionFromNBT(stack);
@@ -236,8 +230,8 @@ public class StorageUtils {
             Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
             if (energyCapability.isPresent()) {
                 IStrictEnergyHandler energyHandlerItem = energyCapability.get();
-                if (energyHandlerItem instanceof IMekanismStrictEnergyHandler) {
-                    return ((IMekanismStrictEnergyHandler) energyHandlerItem).getEnergyContainer(container, null);
+                if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
+                    return energyHandler.getEnergyContainer(container, null);
                 }
             }
         }
@@ -282,11 +276,6 @@ public class StorageUtils {
     }
 
     private static double getDurabilityForDisplay(ItemStack stack) {
-        //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
-        if (Capabilities.GAS_HANDLER_CAPABILITY == null || Capabilities.INFUSION_HANDLER_CAPABILITY == null || Capabilities.PIGMENT_HANDLER_CAPABILITY == null ||
-            Capabilities.SLURRY_HANDLER_CAPABILITY == null || CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY == null) {
-            return 1;
-        }
         double bestRatio = 0;
         bestRatio = calculateRatio(stack, bestRatio, Capabilities.GAS_HANDLER_CAPABILITY);
         bestRatio = calculateRatio(stack, bestRatio, Capabilities.INFUSION_HANDLER_CAPABILITY);
@@ -308,10 +297,6 @@ public class StorageUtils {
     }
 
     private static double getEnergyDurabilityForDisplay(ItemStack stack) {
-        //Note we ensure the capabilities are not null, as the first call to getDurabilityForDisplay happens before capability injection
-        if (Capabilities.STRICT_ENERGY_CAPABILITY == null) {
-            return 1;
-        }
         double bestRatio = 0;
         Optional<IStrictEnergyHandler> energyCapability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
         if (energyCapability.isPresent()) {
@@ -362,8 +347,8 @@ public class StorageUtils {
 
     public static void mergeContainers(IHeatCapacitor capacitor, IHeatCapacitor mergeCapacitor) {
         capacitor.setHeat(capacitor.getHeat() + mergeCapacitor.getHeat());
-        if (capacitor instanceof BasicHeatCapacitor) {
-            ((BasicHeatCapacitor) capacitor).setHeatCapacity(capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), false);
+        if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
+            heatCapacitor.setHeatCapacity(capacitor.getHeatCapacity() + mergeCapacitor.getHeatCapacity(), false);
         }
     }
 }

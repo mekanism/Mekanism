@@ -21,8 +21,8 @@ public class PacketWindowSelect implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         ServerPlayer player = context.getSender();
-        if (player != null && player.containerMenu instanceof MekanismContainer) {
-            ((MekanismContainer) player.containerMenu).setSelectedWindow(player.getUUID(), selectedWindow);
+        if (player != null && player.containerMenu instanceof MekanismContainer container) {
+            container.setSelectedWindow(player.getUUID(), selectedWindow);
         }
     }
 

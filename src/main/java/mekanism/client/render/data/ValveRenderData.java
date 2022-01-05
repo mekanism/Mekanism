@@ -28,7 +28,7 @@ public class ValveRenderData extends FluidRenderData {
 
     @Override
     public boolean equals(Object data) {
-        return data instanceof ValveRenderData && super.equals(data) && ((ValveRenderData) data).side.equals(side);
+        return data instanceof ValveRenderData other && super.equals(data) && other.side.equals(side);
     }
 
     @Override

@@ -184,21 +184,14 @@ public class Color {
         double q = v * (1.0 - (s * diff));
         double t = v * (1.0 - (s * (1.0 - diff)));
 
-        switch (i) {
-            case 0:
-                return rgbd(v, t, p);
-            case 1:
-                return rgbd(q, v, p);
-            case 2:
-                return rgbd(p, v, t);
-            case 3:
-                return rgbd(p, q, v);
-            case 4:
-                return rgbd(t, p, v);
-            case 5:
-            default:
-                return rgbd(v, p, q);
-        }
+        return switch (i) {
+            case 0 -> rgbd(v, t, p);
+            case 1 -> rgbd(q, v, p);
+            case 2 -> rgbd(p, v, t);
+            case 3 -> rgbd(p, q, v);
+            case 4 -> rgbd(t, p, v);
+            default -> rgbd(v, p, q);
+        };
     }
 
     public double[] hsvArray() {
@@ -232,11 +225,7 @@ public class Color {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof Color)) {
-            return false;
-        }
-        Color other = (Color) obj;
-        return r == other.r && g == other.g && b == other.b && a == other.a;
+        return obj instanceof Color other && r == other.r && g == other.g && b == other.b && a == other.a;
     }
 
     @Override

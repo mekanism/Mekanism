@@ -32,18 +32,18 @@ public class PacketNewFilter implements IMekanismPacket {
     public void handle(NetworkEvent.Context context) {
         Player player = context.getSender();
         if (player != null) {
-            BlockEntity tile = WorldUtils.getTileEntity(player.level, pos);
-            if (tile != null) {
-                if (filter instanceof SorterFilter && tile instanceof TileEntityLogisticalSorter) {
-                    ((TileEntityLogisticalSorter) tile).getFilters().add((SorterFilter<?>) filter);
-                } else if (filter instanceof MinerFilter && tile instanceof TileEntityDigitalMiner) {
-                    ((TileEntityDigitalMiner) tile).getFilters().add((MinerFilter<?>) filter);
-                } else if (filter instanceof OredictionificatorItemFilter && tile instanceof TileEntityOredictionificator) {
-                    ((TileEntityOredictionificator) tile).getFilters().add((OredictionificatorItemFilter) filter);
-                } else if (filter instanceof QIOFilter && tile instanceof TileEntityQIOFilterHandler) {
-                    ((TileEntityQIOFilterHandler) tile).getFilters().add((QIOFilter<?>) filter);
+            BlockEntity blockEntity = WorldUtils.getTileEntity(player.level, pos);
+            if (blockEntity != null) {
+                if (filter instanceof SorterFilter<?> filter && blockEntity instanceof TileEntityLogisticalSorter tile) {
+                    tile.getFilters().add(filter);
+                } else if (filter instanceof MinerFilter<?> filter && blockEntity instanceof TileEntityDigitalMiner tile) {
+                    tile.getFilters().add(filter);
+                } else if (filter instanceof OredictionificatorItemFilter filter && blockEntity instanceof TileEntityOredictionificator tile) {
+                    tile.getFilters().add(filter);
+                } else if (filter instanceof QIOFilter<?> filter && blockEntity instanceof TileEntityQIOFilterHandler tile) {
+                    tile.getFilters().add(filter);
                 }
-                tile.setChanged();
+                blockEntity.setChanged();
             }
         }
     }

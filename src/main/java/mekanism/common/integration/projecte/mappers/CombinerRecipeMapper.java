@@ -35,12 +35,11 @@ public class CombinerRecipeMapper implements IRecipeTypeMapper {
 
     @Override
     public boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, Recipe<?> iRecipe, INSSFakeGroupManager groupManager) {
-        if (!(iRecipe instanceof CombinerRecipe)) {
+        if (!(iRecipe instanceof CombinerRecipe recipe)) {
             //Double check that we have a type of recipe we know how to handle
             return false;
         }
         boolean handled = false;
-        CombinerRecipe recipe = (CombinerRecipe) iRecipe;
         List<@NonNull ItemStack> mainRepresentations = recipe.getMainInput().getRepresentations();
         List<@NonNull ItemStack> extraRepresentations = recipe.getExtraInput().getRepresentations();
         for (ItemStack mainRepresentation : mainRepresentations) {

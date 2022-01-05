@@ -3,10 +3,10 @@ package mekanism.additions.common.loot;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.common.loot.table.BaseEntityLootTables;
 import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.TagEntry;
 import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.functions.SetNbtFunction;
+import net.minecraft.world.level.storage.loot.functions.SetPotionFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceWithLootingCondition;
@@ -56,8 +56,6 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
         //Copy of vanilla's skeleton drops
         add(AdditionsEntityTypes.BABY_SKELETON, skeletonDrops());
         //Copy of vanilla's stray drops
-        CompoundTag slownessPotion = new CompoundTag();
-        slownessPotion.putString("Potion", "minecraft:slowness");
         add(AdditionsEntityTypes.BABY_STRAY, skeletonDrops()
               .withPool(LootPool.lootPool()
                     .name("tipped_arrows")
@@ -66,7 +64,7 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
                           .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F)))
                           .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0.0F, 1.0F))
                                 .setLimit(1)
-                          ).apply(SetNbtFunction.setTag(slownessPotion))
+                          ).apply(SetPotionFunction.setPotion(Potions.SLOWNESS))
                     ).when(LootItemKilledByPlayerCondition.killedByPlayer())
               )
         );

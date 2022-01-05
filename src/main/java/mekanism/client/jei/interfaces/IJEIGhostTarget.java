@@ -29,7 +29,7 @@ public interface IJEIGhostTarget {
 
         @Override
         default boolean supportsIngredient(Object ingredient) {
-            return ingredient instanceof ItemStack && !((ItemStack) ingredient).isEmpty();
+            return ingredient instanceof ItemStack stack && !stack.isEmpty();
         }
     }
 

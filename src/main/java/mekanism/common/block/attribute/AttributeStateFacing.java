@@ -118,20 +118,13 @@ public class AttributeStateFacing implements AttributeState {
                 //TODO: Can this just use newDirection = context.getPlacementHorizontalFacing().getOpposite(); or is that not accurate
                 float placementYaw = player == null ? 0 : player.getYRot();
                 int side = Mth.floor((placementYaw * 4.0F / 360.0F) + 0.5D) & 3;
-                switch (side) {
-                    case 0:
-                        newDirection = Direction.NORTH;
-                        break;
-                    case 1:
-                        newDirection = Direction.EAST;
-                        break;
-                    case 2:
-                        newDirection = Direction.SOUTH;
-                        break;
-                    case 3:
-                        newDirection = Direction.WEST;
-                        break;
-                }
+                newDirection = switch (side) {
+                    case 0 -> Direction.NORTH;
+                    case 1 -> Direction.EAST;
+                    case 2 -> Direction.SOUTH;
+                    case 3 -> Direction.WEST;
+                    default -> newDirection;
+                };
             }
 
         } else {

@@ -72,7 +72,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
             setActive(false);
         }
         HeatTransfer loss = simulate();
-        lastEnvironmentLoss = loss.getEnvironmentTransfer();
+        lastEnvironmentLoss = loss.environmentTransfer();
     }
 
     @ComputerMethod(nameOverride = "getEnvironmentalLoss")

@@ -32,8 +32,8 @@ public class BlockSecurityDesk extends BlockTileModel<TileEntitySecurityDesk, Bl
 
     @Override
     public void setTileData(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack, TileEntityMekanism tile) {
-        if (tile instanceof TileEntitySecurityDesk && placer != null) {
-            ((TileEntitySecurityDesk) tile).ownerUUID = placer.getUUID();
+        if (tile instanceof TileEntitySecurityDesk desk && placer != null) {
+            desk.ownerUUID = placer.getUUID();
         }
     }
 

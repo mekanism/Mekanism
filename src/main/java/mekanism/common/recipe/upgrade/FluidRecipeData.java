@@ -66,8 +66,8 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
                 int tank = i;
                 fluidTanks.add(BasicFluidTank.create(fluidHandler.getTankCapacity(tank), fluid -> fluidHandler.isFluidValid(tank, fluid), null));
             }
-        } else if (item instanceof BlockItem) {
-            TileEntityMekanism tile = getTileFromBlock(((BlockItem) item).getBlock());
+        } else if (item instanceof BlockItem blockItem) {
+            TileEntityMekanism tile = getTileFromBlock(blockItem.getBlock());
             if (tile == null || !tile.handles(SubstanceType.FLUID)) {
                 //Something went wrong
                 return false;

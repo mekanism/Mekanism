@@ -127,8 +127,7 @@ public class VoiceConnection extends Thread {
     }
 
     private boolean canListen(int channel, ItemStack itemStack) {
-        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie) {
-            ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie) itemStack.getItem();
+        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie walkieTalkie) {
             return walkieTalkie.getOn(itemStack) && walkieTalkie.getChannel(itemStack) == channel;
         }
         return false;
@@ -136,11 +135,8 @@ public class VoiceConnection extends Thread {
 
     public int getCurrentChannel() {
         ItemStack itemStack = getPlayer().getInventory().getSelected();
-        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie) {
-            ItemWalkieTalkie walkieTalkie = (ItemWalkieTalkie) itemStack.getItem();
-            if (walkieTalkie.getOn(itemStack)) {
-                return walkieTalkie.getChannel(itemStack);
-            }
+        if (!itemStack.isEmpty() && itemStack.getItem() instanceof ItemWalkieTalkie walkieTalkie && walkieTalkie.getOn(itemStack)) {
+            return walkieTalkie.getChannel(itemStack);
         }
         return 0;
     }
