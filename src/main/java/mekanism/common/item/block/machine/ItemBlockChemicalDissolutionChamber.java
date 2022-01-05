@@ -2,7 +2,7 @@ package mekanism.common.item.block.machine;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
@@ -16,6 +16,6 @@ public class ItemBlockChemicalDissolutionChamber extends ItemBlockMachine {
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.dissolution());
+        consumer.accept(RenderPropertiesProvider.dissolution());
     }
 }

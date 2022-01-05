@@ -11,7 +11,7 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-public class ScubaMaskArmor extends CustomArmor implements ResourceManagerReloadListener {
+public class ScubaMaskArmor implements ICustomArmor, ResourceManagerReloadListener {
 
     public static final ScubaMaskArmor SCUBA_MASK = new ScubaMaskArmor();
 

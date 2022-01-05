@@ -186,11 +186,6 @@ public class FrequencyManager<FREQ extends Frequency> {
         public List<FREQ> loadedFrequencies;
         public UUID loadedOwner;
 
-        //TODO - 1.18: I think this is unneeded and handled by adding the save data
-        /*public FrequencyDataHandler(String tagName) {
-            super(tagName);
-        }*/
-
         public void syncManager() {
             if (loadedFrequencies != null) {
                 loadedFrequencies.forEach(freq -> frequencies.put(freq.getKey(), freq));

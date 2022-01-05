@@ -19,9 +19,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.LongTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -190,17 +187,8 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                 chunkSet.clear();
             }
         }
-        if (nbtTags.contains(NBTConstants.CHUNK_SET, Tag.TAG_LIST)) {
-            //TODO - 1.18: Remove this if branch, it is mainly used to load old data
-            // so that we can store it a bit more efficiently as a long array
-            ListTag list = nbtTags.getList(NBTConstants.CHUNK_SET, Tag.TAG_LONG);
-            for (Tag nbt : list) {
-                chunkSet.add(((LongTag) nbt).getAsLong());
-            }
-        } else {
-            for (long chunk : nbtTags.getLongArray(NBTConstants.CHUNK_SET)) {
-                chunkSet.add(chunk);
-            }
+        for (long chunk : nbtTags.getLongArray(NBTConstants.CHUNK_SET)) {
+            chunkSet.add(chunk);
         }
     }
 

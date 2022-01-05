@@ -36,19 +36,8 @@ public interface IFrequencyItem extends IOwnerItem {
         if (hasFrequency(stack)) {
             CompoundTag frequencyCompound = ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY);
             FrequencyIdentity identity = FrequencyIdentity.load(getFrequencyType(), frequencyCompound);
-            if (identity != null) {
-                UUID owner;
-                if (frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
-                    //TODO - 1.18: Require the compound to actually have an owner uuid stored as well
-                    // having a fallback to the tile's owner is mostly for properly loading legacy data
-                    owner = frequencyCompound.getUUID(NBTConstants.OWNER_UUID);
-                } else {
-                    owner = getOwnerUUID(stack);
-                    if (owner == null) {
-                        return null;
-                    }
-                }
-                return getFrequencyType().getManager(identity, owner).getFrequency(identity.key());
+            if (identity != null && frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
+                return getFrequencyType().getManager(identity, frequencyCompound.getUUID(NBTConstants.OWNER_UUID)).getFrequency(identity.key());
             }
         }
         return null;

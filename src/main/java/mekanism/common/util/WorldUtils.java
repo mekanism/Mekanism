@@ -403,12 +403,14 @@ public class WorldUtils {
         world.playSound(player, pos, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
-    public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @Nonnull FluidStack fluidStack) {
-        SoundEvent soundevent = fluidStack.getFluid().getAttributes().getFillSound(world, pos);
-        if (soundevent == null) {
-            soundevent = fluidStack.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL;
+    public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable SoundEvent soundEvent) {
+        if (soundEvent == null) {
+            soundEvent = fluidStack.getFluid().getAttributes().getFillSound(world, pos);
+            if (soundEvent == null) {
+                soundEvent = fluidStack.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL;
+            }
         }
-        world.playSound(player, pos, soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+        world.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     /**

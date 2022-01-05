@@ -94,7 +94,6 @@ public class ModelJetpack extends MekanismJavaModel {
     private static final ModelPartData FUEL_TUBE_LEFT = fuelTubeLeft(-3);
 
     public static LayerDefinition createLayerDefinition() {
-        //TODO - 1.18: Figure out about mirror, I think we are doing it correctly but who knows
         return createLayerDefinition(128, 64, PACK_TOP, PACK_BOTTOM, THRUSTER_LEFT, THRUSTER_RIGHT,
               FUEL_TUBE_RIGHT, FUEL_TUBE_LEFT, PACK_MID, PACK_CORE, WING_SUPPORT_L, WING_SUPPORT_R, PACK_TOP_REAR,
               EXTENDO_SUPPORT_L, EXTENDO_SUPPORT_R, WING_BLADE_L, WING_BLADE_R, PACK_DOODAD_2, PACK_DOODAD_3,
@@ -107,7 +106,7 @@ public class ModelJetpack extends MekanismJavaModel {
     private final List<ModelPart> litParts;
     private final List<ModelPart> wingParts;
 
-    public ModelJetpack(EntityModelSet entityModelSet) {//TODO - 1.18: Figure out about baking from CustomArmor
+    public ModelJetpack(EntityModelSet entityModelSet) {
         this(entityModelSet.bakeLayer(JETPACK_LAYER), JETPACK_TEXTURE);
     }
 

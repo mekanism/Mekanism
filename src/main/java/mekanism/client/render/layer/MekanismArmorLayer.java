@@ -2,7 +2,7 @@ package mekanism.client.render.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.client.render.armor.CustomArmor;
+import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -36,7 +36,7 @@ public class MekanismArmorLayer<T extends LivingEntity, M extends HumanoidModel<
         ItemStack stack = entity.getItemBySlot(slot);
         Item item = stack.getItem();
         if (item instanceof ArmorItem armorItem && armorItem.getSlot() == slot && RenderProperties.get(item) instanceof ISpecialGear specialGear) {
-            CustomArmor model = specialGear.getGearModel(slot);
+            ICustomArmor model = specialGear.getGearModel(slot);
             A coreModel = slot == EquipmentSlot.LEGS ? innerModel : outerModel;
             getParentModel().copyPropertiesTo(coreModel);
             setPartVisibility(coreModel, slot);

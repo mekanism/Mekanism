@@ -6,13 +6,14 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.api.AutomationType;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.basic.BlockFluidTank;
@@ -41,10 +42,12 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -76,7 +79,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.fluidTank());
+        consumer.accept(RenderPropertiesProvider.fluidTank());
     }
 
     @Nonnull
@@ -177,6 +180,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
                         BlockState blockState = world.getBlockState(pos);
                         FluidState fluidState = blockState.getFluidState();
+                        Optional<SoundEvent> sound = Optional.empty();
                         if (!fluidState.isEmpty() && fluidState.isSource()) {
                             //Just in case someone does weird things and has a fluid state that is empty and a source
                             // only allow collecting from non-empty sources
@@ -198,17 +202,20 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                 if (pickedUpStack.isEmpty()) {
                                     //If the fluid can't be picked up, pass on doing anything
                                     return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+                                } else if (pickedUpStack.getItem() instanceof BucketItem bucket) {
+                                    //This isn't the best validation check given it may not return a bucket, but it is good enough for now
+                                    fluid = bucket.getFluid();
+                                    //Update the fluid stack in case something somehow changed about the type
+                                    // making sure that we replace to heavy water if we got heavy water
+                                    fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
+                                    if (!validFluid(fluidTank, fluidStack)) {
+                                        Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
+                                              fluidState.getType().getRegistryName(), pos, world.dimension().location(), fluid.getRegistryName());
+                                        return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
+                                    }
                                 }
-                                //TODO - 1.18: I don't think this extra validation is reliably possible anymore
-                                /*fluid = bucketPickup.takeLiquid(world, pos, blockState);
-                                //Update the fluid stack in case something somehow changed about the type
-                                // making sure that we replace to heavy water if we got heavy water
-                                fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
-                                if (!validFluid(fluidTank, fluidStack)) {
-                                    Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                                          fluidState.getType().getRegistryName(), pos, world.dimension().location(), fluid.getRegistryName());
-                                    return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
-                                }*/
+                                //TODO - 1.18: Pass the state to it once https://github.com/MinecraftForge/MinecraftForge/pull/8357 is merged
+                                sound = bucketPickup.getPickupSound();
                             }
                             if (validFluid(fluidTank, fluidStack)) {
                                 if (fluidTank.isEmpty()) {
@@ -218,7 +225,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                     MekanismUtils.logMismatchedStackSize(fluidTank.growStack(fluidStack.getAmount(), Action.EXECUTE), fluidStack.getAmount());
                                 }
                                 //Play the bucket fill sound
-                                WorldUtils.playFillSound(player, world, pos, fluidStack);
+                                WorldUtils.playFillSound(player, world, pos, fluidStack, sound.orElse(null));
                                 return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
                             }
                             return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
@@ -317,6 +324,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                 //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
                 BlockState blockState = world.getBlockState(pos);
                 FluidState fluidState = blockState.getFluidState();
+                Optional<SoundEvent> sound = Optional.empty();
                 //If the fluid state in the world isn't empty and is a source try to pick it up otherwise try to dispense the stored fluid
                 if (!fluidState.isEmpty() && fluidState.isSource()) {
                     //Just in case someone does weird things and has a fluid state that is empty and a source
@@ -339,18 +347,21 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                         if (pickedUpStack.isEmpty()) {
                             //If the fluid cannot be picked up, then eject the stack similar to how vanilla does for buckets
                             return super.execute(source, stack);
+                        } else if (pickedUpStack.getItem() instanceof BucketItem bucket) {
+                            //This isn't the best validation check given it may not return a bucket, but it is good enough for now
+                            fluid = bucket.getFluid();
+                            //Update the fluid stack in case something somehow changed about the type
+                            // making sure that we replace to heavy water if we got heavy water
+                            fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
+                            if (!validFluid(fluidTank, fluidStack)) {
+                                Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
+                                      fluidState.getType().getRegistryName(), pos, world.dimension().location(), fluid.getRegistryName());
+                                //If we can't insert or extract it, then eject the stack similar to how vanilla does for buckets
+                                return super.execute(source, stack);
+                            }
                         }
-                        //TODO - 1.18: I don't think this extra validation is reliably possible anymore
-                        /*fluid = bucketPickup.takeLiquid(world, pos, blockState);
-                        //Update the fluid stack in case something somehow changed about the type
-                        // making sure that we replace to heavy water if we got heavy water
-                        fluidStack = new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME);
-                        if (!validFluid(fluidTank, fluidStack)) {
-                            Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                                  fluidState.getType().getRegistryName(), pos, world.dimension().location(), fluid.getRegistryName());
-                            //If we can't insert or extract it, then eject the stack similar to how vanilla does for buckets
-                            return super.execute(source, stack);
-                        }*/
+                        //TODO - 1.18: Pass the state to it once https://github.com/MinecraftForge/MinecraftForge/pull/8357 is merged
+                        sound = bucketPickup.getPickupSound();
                     }
                     if (validFluid(fluidTank, fluidStack)) {
                         if (fluidTank.isEmpty()) {
@@ -360,7 +371,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                             MekanismUtils.logMismatchedStackSize(fluidTank.growStack(fluidStack.getAmount(), Action.EXECUTE), fluidStack.getAmount());
                         }
                         //Play the bucket fill sound
-                        WorldUtils.playFillSound(null, world, pos, fluidStack);
+                        WorldUtils.playFillSound(null, world, pos, fluidStack, sound.orElse(null));
                         //Success, don't dispense anything just return our resulting stack
                         return stack;
                     }

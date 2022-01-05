@@ -26,7 +26,7 @@ import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -114,7 +114,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.mekaSuit());
+        consumer.accept(RenderPropertiesProvider.mekaSuit());
     }
 
     @Override

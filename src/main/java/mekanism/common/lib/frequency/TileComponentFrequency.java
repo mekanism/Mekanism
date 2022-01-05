@@ -166,18 +166,14 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public void read(CompoundTag nbtTags) {
-        CompoundTag frequencyNBT;
         if (nbtTags.contains(NBTConstants.COMPONENT_FREQUENCY, Tag.TAG_COMPOUND)) {
-            frequencyNBT = nbtTags.getCompound(NBTConstants.COMPONENT_FREQUENCY);
-        } else {
-            //TODO - 1.18: Remove this old fallback loading system
-            frequencyNBT = nbtTags;
-        }
-        for (FrequencyType<?> type : supportedFrequencies.keySet()) {
-            if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
-                Frequency frequency = type.create(frequencyNBT.getCompound(type.getName()));
-                frequency.setValid(false);
-                heldFrequencies.put(type, frequency);
+            CompoundTag frequencyNBT = nbtTags.getCompound(NBTConstants.COMPONENT_FREQUENCY);
+            for (FrequencyType<?> type : supportedFrequencies.keySet()) {
+                if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
+                    Frequency frequency = type.create(frequencyNBT.getCompound(type.getName()));
+                    frequency.setValid(false);
+                    heldFrequencies.put(type, frequency);
+                }
             }
         }
     }

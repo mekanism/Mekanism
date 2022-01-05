@@ -12,7 +12,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
@@ -78,7 +78,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     public void initializeClient(Consumer<IBlockRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.particles());
+        consumer.accept(RenderPropertiesProvider.particles());
     }
 
     @Nonnull

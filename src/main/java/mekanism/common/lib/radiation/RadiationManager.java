@@ -480,11 +480,6 @@ public class RadiationManager implements IRadiationManager {
         public List<RadiationSource> loadedSources = Collections.emptyList();
         public RadiationManager manager;
 
-        //TODO - 1.18: I think this is unneeded and handled by adding the save data
-        /*public RadiationDataHandler() {
-            super(DATA_HANDLER_NAME);
-        }*/
-
         public void setManagerAndSync(RadiationManager m) {
             manager = m;
             // don't sync the manager if radiation has been disabled

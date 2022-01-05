@@ -15,7 +15,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -53,7 +53,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IModeIte
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.flamethrower());
+        consumer.accept(RenderPropertiesProvider.flamethrower());
     }
 
     @Override

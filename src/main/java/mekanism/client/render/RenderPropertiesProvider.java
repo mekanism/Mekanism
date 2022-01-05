@@ -1,7 +1,7 @@
-package mekanism.client.render.item;
+package mekanism.client.render;
 
 import javax.annotation.Nonnull;
-import mekanism.client.render.armor.CustomArmor;
+import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.JetpackArmor;
@@ -41,10 +41,9 @@ import net.minecraftforge.client.IBlockRenderProperties;
 import net.minecraftforge.client.IItemRenderProperties;
 
 //This class is used to prevent class loading issues on the server without having to use OnlyIn hacks
-//TODO - 1.18: Rename this?? Maybe IItemRenderPropertiesProvider
-public class ISTERProvider {
+public class RenderPropertiesProvider {
 
-    private ISTERProvider() {
+    private RenderPropertiesProvider() {
     }
 
     public static IItemRenderProperties energyCube() {
@@ -110,7 +109,7 @@ public class ISTERProvider {
     private static final IItemRenderProperties MEKA_SUIT = new ISpecialGear() {
         @Nonnull
         @Override
-        public CustomArmor getGearModel(EquipmentSlot slot) {
+        public ICustomArmor getGearModel(EquipmentSlot slot) {
             return switch (slot) {
                 case HEAD -> MekaSuitArmor.HELMET;
                 case CHEST -> MekaSuitArmor.BODYARMOR;
@@ -172,7 +171,7 @@ public class ISTERProvider {
         }
     }
 
-    public record MekCustomArmorRenderProperties(BlockEntityWithoutLevelRenderer renderer, CustomArmor gearModel) implements ISpecialGear {
+    public record MekCustomArmorRenderProperties(BlockEntityWithoutLevelRenderer renderer, ICustomArmor gearModel) implements ISpecialGear {
 
         @Override
         public BlockEntityWithoutLevelRenderer getItemStackRenderer() {
@@ -181,7 +180,7 @@ public class ISTERProvider {
 
         @Nonnull
         @Override
-        public CustomArmor getGearModel(EquipmentSlot slot) {
+        public ICustomArmor getGearModel(EquipmentSlot slot) {
             return gearModel;
         }
     }

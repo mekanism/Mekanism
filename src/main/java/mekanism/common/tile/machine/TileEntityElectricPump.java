@@ -8,12 +8,13 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -53,6 +54,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
@@ -214,17 +216,18 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                             if (pickedUpStack.isEmpty()) {
                                 //Couldn't actually pick it up, exit
                                 return false;
+                            } else if (pickedUpStack.getItem() instanceof BucketItem bucket) {
+                                //This isn't the best validation check given it may not return a bucket, but it is good enough for now
+                                sourceFluid = bucket.getFluid();
+                                //Update the fluid stack in case something somehow changed about the type
+                                // making sure that we replace to heavy water if we got heavy water
+                                fluidStack = getOutput(sourceFluid, hasFilter);
+                                if (!validFluid(fluidStack, false)) {
+                                    Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
+                                          fluidState.getType(), pos, level, sourceFluid);
+                                    return false;
+                                }
                             }
-                            //TODO - 1.18: I don't think this extra validation is reliably possible anymore
-                            /*sourceFluid = bucketPickup.takeLiquid(level, pos, blockState);
-                            //Update the fluid stack in case something somehow changed about the type
-                            // making sure that we replace to heavy water if we got heavy water
-                            fluidStack = getOutput(sourceFluid, hasFilter);
-                            if (!validFluid(fluidStack, false)) {
-                                Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                                      fluidState.getType(), pos, level, sourceFluid);
-                                return false;
-                            }*/
                         }
                         suck(fluidStack, pos, addRecurring);
                         return true;

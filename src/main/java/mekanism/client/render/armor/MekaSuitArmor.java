@@ -75,7 +75,7 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class MekaSuitArmor extends CustomArmor {
+public class MekaSuitArmor implements ICustomArmor {
 
     private static final String LED_TAG = "led";
     private static final String INACTIVE_TAG = "inactive_";

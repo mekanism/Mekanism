@@ -12,7 +12,7 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-public class JetpackArmor extends CustomArmor implements ResourceManagerReloadListener {
+public class JetpackArmor implements ICustomArmor, ResourceManagerReloadListener {
 
     public static final JetpackArmor JETPACK = new JetpackArmor(false);
     public static final JetpackArmor ARMORED_JETPACK = new JetpackArmor(true);

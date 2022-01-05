@@ -3,7 +3,7 @@ package mekanism.common.block;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
@@ -67,7 +67,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     public void initializeClient(Consumer<IBlockRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.boundingParticles());
+        consumer.accept(RenderPropertiesProvider.boundingParticles());
     }
 
     @Override
