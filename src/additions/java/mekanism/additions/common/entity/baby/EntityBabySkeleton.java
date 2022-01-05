@@ -1,16 +1,18 @@
 package mekanism.additions.common.entity.baby;
 
 import javax.annotation.Nonnull;
+import mekanism.additions.common.registries.AdditionsEntityTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraftforge.network.NetworkHooks;
 
 public class EntityBabySkeleton extends Skeleton implements IBabyEntity {
@@ -68,5 +70,13 @@ public class EntityBabySkeleton extends Skeleton implements IBabyEntity {
     @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    @Override
+    protected void doFreezeConversion() {
+        convertTo(AdditionsEntityTypes.BABY_STRAY.getEntityType(), true);
+        if (!this.isSilent()) {
+            level.levelEvent(null, LevelEvent.SOUND_SKELETON_TO_STRAY, this.blockPosition(), 0);
+        }
     }
 }
