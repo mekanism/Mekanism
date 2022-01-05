@@ -80,6 +80,9 @@ public class FluidDeferredRegister {
     }
 
     public FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> register(String name, FluidAttributes.Builder builder) {
+        //TODO - 1.18: Set fill and empty sounds on the attributes .sound(SoundEvents.BUCKET_FILL, SoundEvents.BUCKET_EMPTY)
+        // need to decide where we want to assign it in case we ever decide to add custom sounds for some fluids, we won't want
+        // them overwritten
         String flowingName = "flowing_" + name;
         String bucketName = name + "_bucket";
         //For now all our fluids use the same "overlay" for being against glass as vanilla water.

@@ -12,10 +12,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.WrappedDeferredRegister;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
@@ -70,6 +72,12 @@ public class ItemDeferredRegister extends WrappedDeferredRegister<Item> {
         ItemRegistryObject<ITEM> registeredItem = register(name, sup, ItemRegistryObject::new);
         allItems.add(registeredItem);
         return registeredItem;
+    }
+
+    public <ENTITY extends Mob> ItemRegistryObject<ForgeSpawnEggItem> registerSpawnEgg(EntityTypeRegistryObject<ENTITY> entityTypeProvider,
+          int primaryColor, int secondaryColor) {
+        return register(entityTypeProvider.getInternalRegistryName() + "_spawn_egg", props -> new ForgeSpawnEggItem(entityTypeProvider, primaryColor,
+              secondaryColor, props));
     }
 
     public List<IItemProvider> getAllItems() {

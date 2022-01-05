@@ -216,6 +216,16 @@ public abstract class BaseTagProvider implements DataProvider {
         }
     }
 
+    @SafeVarargs
+    protected final void addToTag(Named<Block> blockTag, Map<?, ? extends IBlockProvider>... blockProviders) {
+        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(blockTag);
+        for (Map<?, ? extends IBlockProvider> blockProvider : blockProviders) {
+            for (IBlockProvider value : blockProvider.values()) {
+                tagBuilder.add(value.getBlock());
+            }
+        }
+    }
+
     protected void addToHarvestTag(Named<Block> tag, IBlockProvider... blockProviders) {
         ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(tag);
         for (IBlockProvider blockProvider : blockProviders) {

@@ -16,7 +16,6 @@ public class BabyCreeperChargeLayer extends EnergySwirlLayer<EntityBabyCreeper, 
 
     public BabyCreeperChargeLayer(RenderLayerParent<EntityBabyCreeper, ModelBabyCreeper> renderer, EntityModelSet entityModelSet) {
         super(renderer);
-        //TODO  - 1.18: Is this the wrong size do we need a custom model layer setup
         creeperModel = new ModelBabyCreeper(entityModelSet.bakeLayer(ModelBabyCreeper.ARMOR_LAYER));
     }
 
