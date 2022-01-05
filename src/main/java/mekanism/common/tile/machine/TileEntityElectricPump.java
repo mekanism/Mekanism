@@ -12,7 +12,7 @@ import mekanism.api.IConfigurable;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -298,14 +298,14 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player) {
         reset();
         player.sendMessage(MekanismUtils.logFormat(MekanismLang.PUMP_RESET), Util.NIL_UUID);
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public InteractionResult onRightClick(Player player) {
         return InteractionResult.PASS;
     }
 

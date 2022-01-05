@@ -6,7 +6,7 @@ import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 

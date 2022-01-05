@@ -8,7 +8,7 @@ import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;

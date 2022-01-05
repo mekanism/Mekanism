@@ -8,7 +8,7 @@ import mekanism.api.Action;
 import mekanism.api.RelativeSide;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatHandler;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;

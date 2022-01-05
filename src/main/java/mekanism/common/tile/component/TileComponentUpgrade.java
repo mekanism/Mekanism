@@ -11,7 +11,7 @@ import mekanism.api.Action;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;

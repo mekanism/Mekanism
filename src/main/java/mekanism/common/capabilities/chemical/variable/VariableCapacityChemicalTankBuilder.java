@@ -31,7 +31,7 @@ import mekanism.api.chemical.slurry.ISlurryHandler;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

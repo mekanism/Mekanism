@@ -9,7 +9,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;

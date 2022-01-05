@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.world.entity.player.Player;

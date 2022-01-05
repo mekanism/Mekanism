@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.lib.HashedFluid;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;

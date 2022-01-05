@@ -5,7 +5,7 @@ import mekanism.api.Action;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -18,11 +18,10 @@ import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.BooleanStateDisplay.InputOutput;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.core.Direction;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntitySPSPort extends TileEntitySPSCasing {
@@ -72,7 +71,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player) {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);

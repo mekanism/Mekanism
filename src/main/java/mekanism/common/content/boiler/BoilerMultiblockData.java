@@ -11,7 +11,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.chemical.multiblock.MultiblockChemicalTankBuilder;
 import mekanism.common.capabilities.fluid.MultiblockFluidTank;

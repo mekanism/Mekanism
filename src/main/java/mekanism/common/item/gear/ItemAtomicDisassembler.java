@@ -17,7 +17,7 @@ import mekanism.api.Action;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;

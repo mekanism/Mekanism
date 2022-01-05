@@ -89,7 +89,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player) {
         if (!isRemote()) {
             setActive(!getActive());
             Level world = getLevel();
@@ -101,7 +101,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public InteractionResult onRightClick(Player player) {
         return InteractionResult.PASS;
     }
 

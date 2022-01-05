@@ -84,7 +84,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player) {
         if (!isRemote()) {
             BoilerValveMode mode = getMode().getNext();
             setMode(mode);

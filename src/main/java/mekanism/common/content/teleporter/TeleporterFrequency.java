@@ -55,13 +55,13 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
     @Override
     public void update(BlockEntity tile) {
         super.update(tile);
-        activeCoords.add(Coord4D.get(tile));
+        activeCoords.add(new Coord4D(tile));
     }
 
     @Override
     public void onDeactivate(BlockEntity tile) {
         super.onDeactivate(tile);
-        activeCoords.remove(Coord4D.get(tile));
+        activeCoords.remove(new Coord4D(tile));
     }
 
     public Coord4D getClosestCoords(Coord4D coord) {

@@ -14,7 +14,7 @@ import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.tier.FluidTankTier;

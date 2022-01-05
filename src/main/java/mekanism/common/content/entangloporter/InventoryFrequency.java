@@ -30,7 +30,7 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
@@ -224,7 +224,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public void update(BlockEntity tile) {
         super.update(tile);
-        Coord4D coord = Coord4D.get(tile);
+        Coord4D coord = new Coord4D(tile);
         if (tile instanceof TileEntityQuantumEntangloporter entangloporter) {
             //This should always be the case, but validate it and remove if it isn't
             activeQEs.put(coord, entangloporter);
@@ -236,7 +236,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
     @Override
     public void onDeactivate(BlockEntity tile) {
         super.onDeactivate(tile);
-        activeQEs.remove(Coord4D.get(tile));
+        activeQEs.remove(new Coord4D(tile));
     }
 
     public void handleEject(long gameTime) {

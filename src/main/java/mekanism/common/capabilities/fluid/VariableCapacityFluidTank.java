@@ -12,7 +12,7 @@ import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import net.minecraftforge.fluids.FluidStack;
 
 @FieldsAreNonnullByDefault

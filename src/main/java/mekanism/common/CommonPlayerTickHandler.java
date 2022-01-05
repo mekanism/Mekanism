@@ -8,7 +8,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.base.KeySync;

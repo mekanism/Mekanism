@@ -6,7 +6,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import net.minecraft.core.Direction;
 import net.minecraftforge.fluids.FluidStack;
 

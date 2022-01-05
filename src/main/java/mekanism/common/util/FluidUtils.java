@@ -6,7 +6,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

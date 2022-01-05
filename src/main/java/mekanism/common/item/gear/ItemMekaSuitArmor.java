@@ -20,7 +20,7 @@ import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;

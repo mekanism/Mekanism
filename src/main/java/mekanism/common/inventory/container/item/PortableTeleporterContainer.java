@@ -3,7 +3,7 @@ package mekanism.common.inventory.container.item;
 import mekanism.api.Action;
 import mekanism.api.Coord4D;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.IEmptyContainer;

@@ -14,7 +14,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.pigment.Pigment;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitPigmentTank;
 
 @ParametersAreNonnullByDefault

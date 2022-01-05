@@ -6,7 +6,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.NBTConstants;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;

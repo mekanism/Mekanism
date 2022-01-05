@@ -12,7 +12,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.FloatingLong;
@@ -126,9 +126,9 @@ public class ItemConfigurator extends ItemEnergized implements IRadialModeItem<C
                     if (capability.isPresent()) {
                         IConfigurable config = capability.get();
                         if (player.isShiftKeyDown()) {
-                            return config.onSneakRightClick(player, side);
+                            return config.onSneakRightClick(player);
                         }
-                        return config.onRightClick(player, side);
+                        return config.onRightClick(player);
                     }
                 } else {
                     SecurityUtils.displayNoAccess(player);

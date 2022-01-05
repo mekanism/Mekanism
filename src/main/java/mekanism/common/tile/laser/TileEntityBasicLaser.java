@@ -6,7 +6,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.FloatingLong;
@@ -258,7 +258,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                       result.getDirection()).resolve();
                 if (capability.isPresent() && !capability.get().canLasersDig()) {
                     //Give the energy to the receptor
-                    capability.get().receiveLaserEnergy(remainingEnergy, result.getDirection());
+                    capability.get().receiveLaserEnergy(remainingEnergy);
                 } else {
                     //Otherwise, make progress on breaking the block
                     BlockState hitState = level.getBlockState(hitPos);

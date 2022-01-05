@@ -23,7 +23,7 @@ import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.IPigmentTank;
 import mekanism.api.chemical.slurry.ISlurryTank;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.chemical.BoxedChemicalHandler;

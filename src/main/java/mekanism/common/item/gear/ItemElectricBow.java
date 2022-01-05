@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;

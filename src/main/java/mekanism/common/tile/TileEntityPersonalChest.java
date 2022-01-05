@@ -3,7 +3,7 @@ package mekanism.common.tile;
 import java.util.function.BiPredicate;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.slot.BasicInventorySlot;

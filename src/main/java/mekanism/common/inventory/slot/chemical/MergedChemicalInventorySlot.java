@@ -9,7 +9,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.merged.MergedChemicalTank;
 import mekanism.api.chemical.merged.MergedChemicalTank.Current;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.inventory.container.slot.ContainerSlotType;

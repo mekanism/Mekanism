@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.common.capabilities.ItemCapabilityWrapper;

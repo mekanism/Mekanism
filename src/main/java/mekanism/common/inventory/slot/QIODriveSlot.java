@@ -4,7 +4,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.Action;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.IQIODriveItem;

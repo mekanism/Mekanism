@@ -10,7 +10,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;

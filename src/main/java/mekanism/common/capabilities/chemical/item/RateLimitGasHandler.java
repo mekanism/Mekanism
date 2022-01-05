@@ -16,7 +16,7 @@ import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.IGasTank;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitGasTank;
 
 @ParametersAreNonnullByDefault

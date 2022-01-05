@@ -27,7 +27,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.providers.IInfuseTypeProvider;

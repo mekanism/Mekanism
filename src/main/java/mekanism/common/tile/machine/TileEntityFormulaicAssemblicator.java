@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import mekanism.api.Action;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.CommonWorldTickHandler;

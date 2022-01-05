@@ -4,7 +4,7 @@ import java.util.EnumSet;
 import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.integration.energy.EnergyCompatUtils;

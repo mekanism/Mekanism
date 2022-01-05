@@ -10,7 +10,7 @@ import mekanism.api.DataHandlerUtils;
 import mekanism.api.NBTConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.item.ISTERProvider;
 import mekanism.common.MekanismLang;

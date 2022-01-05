@@ -14,7 +14,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitSlurryTank;
 
 @ParametersAreNonnullByDefault

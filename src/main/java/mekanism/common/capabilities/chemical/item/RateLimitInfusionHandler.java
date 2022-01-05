@@ -14,7 +14,7 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.infuse.IInfusionTank;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.capabilities.chemical.variable.RateLimitChemicalTank.RateLimitInfusionTank;
 
 @ParametersAreNonnullByDefault

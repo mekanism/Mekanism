@@ -8,7 +8,7 @@ import java.util.UUID;
 import java.util.function.LongConsumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.api.Range3D;
+import mekanism.common.lib.math.Range3D;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
