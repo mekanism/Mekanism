@@ -40,6 +40,7 @@ public class HwylaTooltipRenderer implements IComponentProvider {
                 if (!list.isEmpty()) {
                     CompoundTag mekData = new CompoundTag();
                     mekData.put(NBTConstants.MEK_DATA, list);
+                    //TODO - 1.18: Fix this, it is a mess
                     tooltip.add(new MekElement(mekData));
                 }
             }

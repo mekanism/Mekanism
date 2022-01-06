@@ -100,16 +100,6 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                     int rate = Minecraft.getInstance().options.particles == ParticleStatus.DECREASED ? 12 : 4;
                     if (tile.getLevel().getGameTime() % rate == 0) {
                         pseudoParticles.particles.add(new PseudoParticle(tile.getLevel(), stack));
-                        //TODO - 1.18: Try using this instead of our pseudo particles as maybe it will be able to render properly
-                        // behind translucent glass and our contents in fast
-                        /*Vector3d motion = new Vector3d((world.random.nextFloat() - 0.5D) * 0.075D,
-                              world.random.nextDouble() * 0.1D,
-                              (world.random.nextFloat() - 0.5D) * 0.075D);
-                        Vector3d position = new Vector3d((world.random.nextFloat() - 0.5D) * 0.3D,
-                              (world.random.nextFloat() - 0.5D) * 0.3D,
-                              (world.random.nextFloat() - 0.5D) * 0.3D);
-                        position = position.add(pos.getX() + 0.5, pos.getY() + 0.55, pos.getZ() + 0.5);
-                        world.addParticle(new ItemParticleData(ParticleTypes.ITEM, stack), position.x, position.y, position.z, motion.x, motion.y + 0.05D, motion.z);*/
                     }
                 }
                 //Render particles
@@ -255,27 +245,23 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             float f5 = this.getV0();
             float f6 = this.getV1();
             buffer.vertex(matrix, vectors[0].x(), vectors[0].y(), vectors[0].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f8, f6)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[1].x(), vectors[1].y(), vectors[1].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f8, f5)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[2].x(), vectors[2].y(), vectors[2].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f7, f5)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[3].x(), vectors[3].y(), vectors[3].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f7, f6)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
         }
