@@ -4304,7 +4304,7 @@ e45159bee05367b983378b50b48685710fc2e7e7 data/minecraft/tags/blocks/axolotls_spa
 dfee298df770fbb8916e251a3e1f179cb0331a88 data/minecraft/tags/blocks/impermeable.json
 502e119765bc774fee936833d30af6e66b14cead data/minecraft/tags/blocks/mineable/pickaxe.json
 e45159bee05367b983378b50b48685710fc2e7e7 data/minecraft/tags/blocks/mineable/shovel.json
-733930468ee357bf1cfe55505241b8cc349ea908 data/minecraft/tags/blocks/needs_iron_tool.json
+733930468ee357bf1cfe55505241b8cc349ea908 data/minecraft/tags/blocks/needs_diamond_tool.json
 a0f900057c9674df3bd6741b5a117668a5107d80 data/minecraft/tags/blocks/needs_stone_tool.json
 5f841eb55ace097adaa4504872dce8281831f1d8 data/minecraft/tags/entity_types/impact_projectiles.json
 b3a5f51625e31f4a8b4831fe72ef78aa6c59b3ea data/minecraft/tags/items/beacon_payment_items.json

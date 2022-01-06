@@ -543,7 +543,6 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.STEEL_BLOCK,
               MekanismBlocks.REFINED_GLOWSTONE_BLOCK
         );
-        //TODO - 1.18: This was iron for refined obsidian but should be diamond?
-        addToTag(BlockTags.NEEDS_IRON_TOOL, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
+        addToTag(BlockTags.NEEDS_DIAMOND_TOOL, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
     }
 }
