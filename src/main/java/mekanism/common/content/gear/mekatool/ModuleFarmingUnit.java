@@ -1,6 +1,7 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -273,7 +274,7 @@ public class ModuleFarmingUnit implements ICustomModule<ModuleFarmingUnit> {
                 box = new AABB(pos.getX() - radius, pos.getY() - radius, pos.getZ(), pos.getX() + radius, pos.getY() + radius, pos.getZ());
                 break;
             default:
-                return BlockPos.betweenClosed(BlockPos.ZERO, BlockPos.ZERO);
+                return Collections.emptyList();
         }
         return BlockPos.betweenClosed(new BlockPos(box.minX, box.minY, box.minZ), new BlockPos(box.maxX, box.maxY, box.maxZ));
     }

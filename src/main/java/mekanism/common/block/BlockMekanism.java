@@ -143,8 +143,7 @@ public abstract class BlockMekanism extends Block {
         List<ItemStack> drops = super.getDrops(state, builder);
         //Check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
         if (state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
-            //TODO - 1.18: Test this?
-            BlockEntity tile = hasTileEntity.newBlockEntity(BlockPos.ZERO, state);
+            BlockEntity tile = hasTileEntity.createDummyBlockEntity(state);
             if (tile instanceof TileEntityMekanism mekTile) {
                 //Skip tiles that have no tanks and skip chemical creative tanks
                 if (!mekTile.getGasTanks(null).isEmpty() && (!(mekTile instanceof TileEntityChemicalTank chemicalTank) ||

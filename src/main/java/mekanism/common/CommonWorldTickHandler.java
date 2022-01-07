@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Random;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
@@ -108,12 +107,7 @@ public class CommonWorldTickHandler {
                     if (nextChunk == null) {
                         break;
                     }
-
-                    Random fmlRandom = new Random(world.getSeed());
-                    long xSeed = fmlRandom.nextLong() >> 2 + 1L;
-                    long zSeed = fmlRandom.nextLong() >> 2 + 1L;
-                    fmlRandom.setSeed((xSeed * nextChunk.x + zSeed * nextChunk.z) ^ world.getSeed());
-                    if (GenHandler.generate(world, fmlRandom, nextChunk.x, nextChunk.z)) {
+                    if (GenHandler.generate(world, nextChunk)) {
                         Mekanism.logger.info("Regenerating ores at chunk {}", nextChunk);
                     }
                 }

@@ -323,7 +323,7 @@ public class ClientTickHandler {
             if (module != null) {
                 fog -= module.getInstalledCount() * 0.022F;
             }
-            //TODO - 1.18: Figure out how to handle the fog
+            //TODO - 1.18: Figure out how to handle the fog EntityViewRenderEvent.FogDensity ???
             //RenderSystem.fogDensity(fog);
             //RenderSystem.fogMode(GlStateManager.FogMode.EXP2);
         }

@@ -15,7 +15,7 @@ public class VoxelCuboid implements IShape {
     }
 
     public VoxelCuboid(int length, int height, int width) {
-        this(new BlockPos(0, 0, 0), new BlockPos(length - 1, height - 1, width - 1));
+        this(BlockPos.ZERO, new BlockPos(length - 1, height - 1, width - 1));
     }
 
     public int length() {

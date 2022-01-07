@@ -55,15 +55,20 @@ import net.minecraft.world.item.Items;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 
 public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileEntityDigitalMiner, MekanismTileContainer<TileEntityDigitalMiner>> {
 
     private static final ResourceLocation INVERSE = MekanismUtils.getResource(ResourceType.GUI, "switch/inverse.png");
 
+    private final int maxHeightLength;
     private GuiTextField radiusField, minField, maxField;
 
     public GuiDigitalMinerConfig(MekanismTileContainer<TileEntityDigitalMiner> container, Inventory inv, Component title) {
         super(container, inv, title);
+        //TODO - 1.18: Check this
+        Level level = inv.player.level;
+        maxHeightLength = Math.max(Integer.toString(level.getMinBuildHeight()).length(), Integer.toString(level.getMaxBuildHeight() - 1).length());
     }
 
     @Override
@@ -94,12 +99,12 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         radiusField.setInputValidator(InputValidator.DIGIT);
         radiusField.configureDigitalBorderInput(() -> setText(radiusField, GuiInteraction.SET_RADIUS));
         minField = addRenderableWidget(new GuiTextField(this, 13, 74, 38, 11));
-        minField.setMaxStringLength(3);
-        minField.setInputValidator(InputValidator.DIGIT);
+        minField.setMaxStringLength(maxHeightLength);
+        minField.setInputValidator(InputValidator.DIGIT_OR_NEGATIVE);
         minField.configureDigitalBorderInput(() -> setText(minField, GuiInteraction.SET_MIN_Y));
         maxField = addRenderableWidget(new GuiTextField(this, 13, 99, 38, 11));
-        maxField.setMaxStringLength(3);
-        maxField.setInputValidator(InputValidator.DIGIT);
+        maxField.setMaxStringLength(maxHeightLength);
+        maxField.setInputValidator(InputValidator.DIGIT_OR_NEGATIVE);
         maxField.configureDigitalBorderInput(() -> setText(maxField, GuiInteraction.SET_MAX_Y));
         // Note: We add this after all the buttons have their warnings added so that it is further down the tracker
         // so the tracker can short circuit on this type of warning and not have to check all the filters if one of
@@ -159,7 +164,10 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
 
     private void setText(GuiTextField field, GuiInteraction interaction) {
         if (!field.getText().isEmpty()) {
-            Mekanism.packetHandler().sendToServer(new PacketGuiInteract(interaction, tile, Integer.parseInt(field.getText())));
+            try {
+                Mekanism.packetHandler().sendToServer(new PacketGuiInteract(interaction, tile, Integer.parseInt(field.getText())));
+            } catch (NumberFormatException ignored) {//Might not be valid if multiple negative signs
+            }
             field.setText("");
         }
     }
