@@ -38,6 +38,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     @Override
     public Void apply(ITheOneProbe probe) {
         probe.registerProvider(this);
+        probe.registerEntityProvider(TOPEntityProvider.INSTANCE);
         probe.registerProbeConfigProvider(ProbeConfigProvider.INSTANCE);
         probe.registerElementFactory(new TOPEnergyElement.Factory());
         probe.registerElementFactory(new TOPFluidElement.Factory());
@@ -87,7 +88,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         return mode == ProbeMode.EXTENDED;
     }
 
-    private static class TOPLookingAtHelper implements LookingAtHelper {
+    static class TOPLookingAtHelper implements LookingAtHelper {
 
         private final IProbeInfo info;
 

@@ -40,7 +40,7 @@ public abstract class LookingAtElement {
                 }
             }
         }
-        renderScaledText(Minecraft.getInstance(), matrix, x + 4, y + 3, textColor, getWidth() - 8, getText());
+        renderScaledText(Minecraft.getInstance(), matrix, x + 4, y + 3, textColor, width - 8, getText());
     }
 
     public int getWidth() {
@@ -62,12 +62,12 @@ public abstract class LookingAtElement {
         return false;
     }
 
-    public static void renderScaledText(Minecraft mc, @Nonnull PoseStack matrix, int x, int y, int color, int maxWidth, Component component) {
+    public static void renderScaledText(Minecraft mc, @Nonnull PoseStack matrix, float x, float y, int color, float maxWidth, Component component) {
         int length = mc.font.width(component);
         if (length <= maxWidth) {
             mc.font.draw(matrix, component, x, y, color);
         } else {
-            float scale = (float) maxWidth / length;
+            float scale = maxWidth / length;
             float reverse = 1 / scale;
             float yAdd = 4 - (scale * 8) / 2F;
             matrix.pushPose();
