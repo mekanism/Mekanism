@@ -100,7 +100,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     }
 
     @Override
-    public boolean isActive() {
+    public boolean isJEIAreaActive() {
         return handler.isActive();
     }
 
