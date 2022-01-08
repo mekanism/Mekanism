@@ -9,6 +9,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.common.GeneratorsProfilerConstants;
@@ -41,7 +42,8 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             matrix.pushPose();
             FluidStack fluid = tile.bioFuelTank.getFluid();
             float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
-            MekanismRenderer.renderObject(getModel(tile.getDirection(), (int) (fluidScale * (stages - 1))), matrix,
+            int modelNumber = ModelRenderer.getStage(fluid, stages, fluidScale);
+            MekanismRenderer.renderObject(getModel(tile.getDirection(), modelNumber), matrix,
                   renderer.getBuffer(Sheets.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.FULL_LIGHT, overlayLight,
                   FaceDisplay.FRONT);
             matrix.popPose();

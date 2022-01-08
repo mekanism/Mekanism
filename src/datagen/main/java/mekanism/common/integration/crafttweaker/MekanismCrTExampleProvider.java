@@ -78,8 +78,6 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidAttributes;
 
-import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider.WeightedItemStack;
-
 public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
     private static final String EXPANSION_TARGET_JEITWEAKER = "mods.jei.JEI";
@@ -152,11 +150,11 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
     private void addRecipeExamples() {
         exampleBuilder("mekanism_crystallizer")
               .comment("Adds two Crystallizing Recipes that do the following:",
-                    "1) Adds a recipe that produces one Carrot out of 150 mB of Nutritional Paste.",
+                    "1) Adds a recipe that produces one Osmium Ingot out of 200 mB of Osmium.",
                     "2) Adds a recipe that produces one Gold Nugget out of 9 mB of the Gold Infuse Type."
               ).blankLine()
               .recipe(ChemicalCrystallizerRecipeManager.INSTANCE)
-              .addExample("paste_to_carrots", GasStackIngredient.from(MekanismGases.NUTRITIONAL_PASTE, 150), new ItemStack(Items.CARROT))
+              .addExample("osmium_ingotification", GasStackIngredient.from(MekanismGases.OSMIUM, 200), new ItemStack(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)))
               .addExample("gold_infusion_to_gold", InfusionStackIngredient.from(MekanismTags.InfuseTypes.GOLD, 9), new ItemStack(Items.GOLD_NUGGET))
               .end()
               .comment("Removes two Crystallizing Recipes:",
@@ -277,7 +275,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Compressing Recipe that compresses Emerald Dust into an Emerald.")
               .blankLine()
               .recipe(OsmiumCompressorRecipeManager.INSTANCE)
-              .addExample("compress_emerald", ItemStackIngredient.from(MekanismTags.Items.DUSTS_EMERALD), GasStackIngredient.from(MekanismGases.LIQUID_OSMIUM, 1),
+              .addExample("compress_emerald", ItemStackIngredient.from(MekanismTags.Items.DUSTS_EMERALD), GasStackIngredient.from(MekanismGases.OSMIUM, 1),
                     new ItemStack(Items.EMERALD))
               .end()
               .comment("Removes the Compressing Recipe that creates Refined Obsidian Ingots.")
@@ -344,7 +342,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(GasConversionRecipeManager.INSTANCE)
               .addExample("gas_conversion/osmium_from_nugget", ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, PrimaryResource.OSMIUM)),
-                    MekanismGases.LIQUID_OSMIUM.getStack(22))
+                    MekanismGases.OSMIUM.getStack(22))
               .end()
               .comment("Removes the Gas Conversion Recipe that allows converting Osmium Blocks into Osmium.")
               .blankLine()

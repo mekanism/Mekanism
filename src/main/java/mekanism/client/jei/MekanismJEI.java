@@ -35,6 +35,7 @@ import mekanism.client.jei.machine.FluidToFluidRecipeCategory;
 import mekanism.client.jei.machine.GasToGasRecipeCategory;
 import mekanism.client.jei.machine.ItemStackGasToItemStackRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToEnergyRecipeCategory;
+import mekanism.client.jei.machine.ItemStackToFluidRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToGasRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToInfuseTypeRecipeCategory;
 import mekanism.client.jei.machine.ItemStackToItemStackRecipeCategory;
@@ -237,7 +238,7 @@ public class MekanismJEI implements IModPlugin {
         registry.addRecipeCategories(new RotaryCondensentratorRecipeCategory(guiHelper, false));
 
         registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, MekanismBlocks.CHEMICAL_OXIDIZER));
-        registry.addRecipeCategories(new ItemStackToGasRecipeCategory(guiHelper, MekanismBlocks.NUTRITIONAL_LIQUIFIER));
+        registry.addRecipeCategories(new ItemStackToFluidRecipeCategory(guiHelper, MekanismBlocks.NUTRITIONAL_LIQUIFIER, false));
 
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, MekanismBlocks.SOLAR_NEUTRON_ACTIVATOR));
         registry.addRecipeCategories(new GasToGasRecipeCategory(guiHelper, MekanismBlocks.ISOTOPIC_CENTRIFUGE));

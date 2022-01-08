@@ -9,6 +9,7 @@ import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
@@ -46,12 +47,7 @@ public class RenderFluidTankItem extends MekanismISTER {
         if (!fluid.isEmpty()) {
             float fluidScale = (float) fluid.getAmount() / tier.getStorage();
             if (fluidScale > 0) {
-                int modelNumber;
-                if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
-                    modelNumber = stages - 1;
-                } else {
-                    modelNumber = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
-                }
+                int modelNumber = ModelRenderer.getStage(fluid, stages, fluidScale);
                 MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
                       MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT,
                       transformType != TransformType.GUI);

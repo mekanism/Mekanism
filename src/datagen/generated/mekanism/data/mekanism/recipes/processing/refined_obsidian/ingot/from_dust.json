@@ -7,7 +7,7 @@
   },
   "chemicalInput": {
     "amount": 1,
-    "gas": "mekanism:liquid_osmium"
+    "gas": "mekanism:osmium"
   },
   "output": {
     "item": "mekanism:ingot_refined_obsidian"

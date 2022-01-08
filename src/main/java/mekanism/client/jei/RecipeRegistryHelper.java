@@ -14,7 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismFluids;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IRecipeRegistration;
@@ -64,7 +64,7 @@ public class RecipeRegistryHelper {
                 FoodProperties food = item.getFoodProperties();
                 //Only display consuming foods that provide healing as otherwise no paste will be made
                 if (food != null && food.getNutrition() > 0) {
-                    list.add(new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismGases.NUTRITIONAL_PASTE.getStack(food.getNutrition() * 50L)));
+                    list.add(new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50)));
                 }
             }
         }

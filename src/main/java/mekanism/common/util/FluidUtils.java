@@ -1,18 +1,25 @@
 package mekanism.common.util;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.AutomationType;
+import mekanism.api.DataHandlerUtils;
+import mekanism.api.NBTConstants;
+import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.providers.IFluidProvider;
+import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -23,6 +30,29 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 public final class FluidUtils {
 
     private FluidUtils() {
+    }
+
+    public static ItemStack getFilledVariant(ItemStack toFill, int capacity, IFluidProvider provider) {
+        IExtendedFluidTank dummyTank = BasicFluidTank.create(capacity, null);
+        //Manually handle filling it as capabilities are not necessarily loaded yet (at least not on the first call to this, which is made via fillItemGroup)
+        dummyTank.setStack(provider.getFluidStack(dummyTank.getCapacity()));
+        ItemDataUtils.setList(toFill, NBTConstants.FLUID_TANKS, DataHandlerUtils.writeContainers(Collections.singletonList(dummyTank)));
+        //The item is now filled return it for convenience
+        return toFill;
+    }
+
+    public static OptionalInt getRGBDurabilityForDisplay(ItemStack stack) {
+        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
+        if (!fluidStack.isEmpty()) {
+            //TODO: Technically doesn't support things where the color is part of the texture such as lava
+            // for chemicals it is supported via allowing people to override getColorRepresentation in their
+            // chemicals
+            if (fluidStack.getFluid().isSame(Fluids.LAVA)) {//Special case lava
+                return OptionalInt.of(0xFFDB6B19);
+            }
+            return OptionalInt.of(fluidStack.getFluid().getAttributes().getColor(fluidStack));
+        }
+        return OptionalInt.empty();
     }
 
     public static void emit(IExtendedFluidTank tank, BlockEntity from) {

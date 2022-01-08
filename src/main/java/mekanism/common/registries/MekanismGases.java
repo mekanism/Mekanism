@@ -37,14 +37,13 @@ public class MekanismGases {
     public static final GasRegistryObject<Gas> SUPERHEATED_SODIUM = GASES.register(ChemicalConstants.SUPERHEATED_SODIUM, Coolants.HEATED_SODIUM_COOLANT);
     public static final GasRegistryObject<Gas> BRINE = GASES.register("brine", 0xFEEF9C);
     public static final GasRegistryObject<Gas> LITHIUM = GASES.register(ChemicalConstants.LITHIUM);
-    public static final GasRegistryObject<Gas> LIQUID_OSMIUM = GASES.register("liquid_osmium", 0x52BDCA);
+    public static final GasRegistryObject<Gas> OSMIUM = GASES.register("osmium", 0x52BDCA);
     public static final GasRegistryObject<Gas> FISSILE_FUEL = GASES.register("fissile_fuel", 0x2E332F);
     public static final GasRegistryObject<Gas> NUCLEAR_WASTE = GASES.register("nuclear_waste", 0x4F412A, new Radiation(0.01));
     public static final GasRegistryObject<Gas> SPENT_NUCLEAR_WASTE = GASES.register("spent_nuclear_waste", 0x262015, new Radiation(0.01));
     public static final GasRegistryObject<Gas> PLUTONIUM = GASES.register("plutonium", 0x1F919C, new Radiation(0.02));
     public static final GasRegistryObject<Gas> POLONIUM = GASES.register("polonium", 0x1B9E7B, new Radiation(0.05));
     public static final GasRegistryObject<Gas> ANTIMATTER = GASES.register("antimatter", 0xA464B3);
-    public static final GasRegistryObject<Gas> NUTRITIONAL_PASTE = GASES.register("nutritional_paste", 0XEB6CA3);
 
     @SuppressWarnings("Convert2MethodRef")
     public static class Coolants {

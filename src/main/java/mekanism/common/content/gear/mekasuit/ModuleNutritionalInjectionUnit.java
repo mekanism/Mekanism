@@ -1,22 +1,26 @@
 package mekanism.common.content.gear.mekasuit;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
-import mekanism.common.registries.MekanismGases;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 @ParametersAreNonnullByDefault
 public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutritionalInjectionUnit> {
@@ -30,13 +34,14 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
             //Check if we can use a single iteration of it
             ItemStack container = module.getContainer();
             ItemMekaSuitArmor item = (ItemMekaSuitArmor) container.getItem();
-            long needed = Math.min(20 - player.getFoodData().getFoodLevel(),
-                  item.getContainedGas(container, MekanismGases.NUTRITIONAL_PASTE.get()).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
-            long toFeed = Math.min(module.getContainerEnergy().divideToInt(usage), needed);
+            int needed = Math.min(20 - player.getFoodData().getFoodLevel(),
+                  item.getContainedFluid(container, MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1)).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
+            int toFeed = Math.min(module.getContainerEnergy().divideToInt(usage), needed);
             if (toFeed > 0) {
                 module.useEnergy(player, usage.multiply(toFeed));
-                item.useGas(container, MekanismGases.NUTRITIONAL_PASTE.get(), toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get());
-                player.getFoodData().eat((int) needed, needed * MekanismConfig.general.nutritionalPasteSaturation.get());
+                FluidUtil.getFluidHandler(container).ifPresent(handler ->
+                      handler.drain(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get()), FluidAction.EXECUTE));
+                player.getFoodData().eat(needed, needed * MekanismConfig.general.nutritionalPasteSaturation.get());
             }
         }
     }
@@ -45,8 +50,14 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
     public void addHUDElements(IModule<ModuleNutritionalInjectionUnit> module, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
             ItemStack container = module.getContainer();
-            GasStack stored = ((ItemMekaSuitArmor) container.getItem()).getContainedGas(container, MekanismGases.NUTRITIONAL_PASTE.get());
-            double ratio = StorageUtils.getRatio(stored.getAmount(), MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsLong());
+            Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(container).resolve();
+            if (capability.isPresent()) {
+                IFluidHandlerItem handler = capability.get();
+                int max = MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsInt();
+                handler.drain(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(max), FluidAction.SIMULATE);
+            }
+            FluidStack stored = ((ItemMekaSuitArmor) container.getItem()).getContainedFluid(container, MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1));
+            double ratio = StorageUtils.getRatio(stored.getAmount(), MekanismConfig.gear.mekaSuitNutritionalMaxStorage.get());
             hudElementAdder.accept(MekanismAPI.getModuleHelper().hudElementPercent(icon, ratio));
         }
     }

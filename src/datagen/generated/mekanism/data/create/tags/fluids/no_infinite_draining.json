@@ -33,6 +33,8 @@
     "mekanism:steam",
     "mekanism:flowing_steam",
     "mekanism:heavy_water",
-    "mekanism:flowing_heavy_water"
+    "mekanism:flowing_heavy_water",
+    "mekanism:nutritional_paste",
+    "mekanism:flowing_nutritional_paste"
   ]
 }

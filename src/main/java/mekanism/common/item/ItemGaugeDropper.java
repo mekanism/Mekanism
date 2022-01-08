@@ -14,6 +14,7 @@ import mekanism.api.fluid.IExtendedFluidHandler;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
 import mekanism.common.capabilities.merged.GaugeDropperContentsHandler;
 import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -26,7 +27,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -50,18 +50,7 @@ public class ItemGaugeDropper extends Item {
 
     @Override
     public int getBarColor(@Nonnull ItemStack stack) {
-        FluidStack fluidStack = StorageUtils.getStoredFluidFromNBT(stack);
-        if (!fluidStack.isEmpty()) {
-            //TODO: Technically doesn't support things where the color is part of the texture such as lava
-            // for chemicals it is supported via allowing people to override getColorRepresentation in their
-            // chemicals
-            if (fluidStack.getFluid().isSame(Fluids.LAVA)) {
-                //Special case lava
-                return 0xFFDB6B19;
-            }
-            return fluidStack.getFluid().getAttributes().getColor(fluidStack);
-        }
-        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
+        return FluidUtils.getRGBDurabilityForDisplay(stack).orElseGet(() -> ChemicalUtil.getRGBDurabilityForDisplay(stack));
     }
 
     @Nonnull
