@@ -1,13 +1,11 @@
 package mekanism.client.gui.element.button;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
-import mekanism.client.render.MekanismRenderer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.TextComponent;
-
-import mekanism.client.gui.element.GuiElement.IHoverable;
+import net.minecraft.resources.ResourceLocation;
 
 public class MekanismImageButton extends MekanismButton {
 
@@ -45,7 +43,7 @@ public class MekanismImageButton extends MekanismButton {
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        MekanismRenderer.bindTexture(getResource());
+        RenderSystem.setShaderTexture(0, getResource());
         blit(matrix, x, y, width, height, 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
     }
 

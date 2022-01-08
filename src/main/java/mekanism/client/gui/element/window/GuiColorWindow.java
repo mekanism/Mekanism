@@ -100,10 +100,8 @@ public class GuiColorWindow extends GuiWindow {
     private void drawGradient(PoseStack matrix, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        //TODO - 1.18: Test this
-        //RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
-        //RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         BufferBuilder buffer = Tesselator.getInstance().getBuilder();
         Matrix4f matrix4f = matrix.last().pose();
         buffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -113,9 +111,7 @@ public class GuiColorWindow extends GuiWindow {
         buffer.vertex(matrix4f, x, y, 0).color(tl.rf(), tl.gf(), tl.bf(), tl.af()).endVertex();
         buffer.end();
         BufferUploader.end(buffer);
-        //RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        //RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
     }
 
@@ -249,7 +245,6 @@ public class GuiColorWindow extends GuiWindow {
         public void renderBackgroundOverlay(PoseStack matrix, int mouseX, int mouseY) {
             super.renderBackgroundOverlay(matrix, mouseX, mouseY);
             drawColorBar(matrix, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, HUE_PICKER);
             int posX = Math.round((hue / 360F) * (getButtonWidth() - 3));
             blit(matrix, getButtonX() - 2 + posX, getButtonY() - 2, 0, 0, 7, 12, 12, 12);

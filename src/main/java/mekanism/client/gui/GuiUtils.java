@@ -13,11 +13,11 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.client.gui.element.GuiElement;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -41,7 +41,7 @@ public class GuiUtils {
         int rightEdgeStart = leftEdgeEnd + centerWidth;
         int topEdgeEnd = top + sideHeight;
         int bottomEdgeStart = topEdgeEnd + centerHeight;
-        MekanismRenderer.bindTexture(resource);
+        RenderSystem.setShaderTexture(0, resource);
         //Left Side
         //Top Left Corner
         GuiComponent.blit(matrix, left, top, 0, 0, sideWidth, sideHeight, textureWidth, textureHeight);
@@ -93,7 +93,7 @@ public class GuiUtils {
         int rightEdgeStart = leftEdgeEnd + centerWidth;
         int topEdgeEnd = top + topHeight;
         int bottomEdgeStart = topEdgeEnd + centerHeight;
-        MekanismRenderer.bindTexture(resource);
+        RenderSystem.setShaderTexture(0, resource);
 
         //Top Left Corner
         GuiComponent.blit(matrix, left, top, 0, 0, leftWidth, topHeight, textureWidth, textureHeight);
@@ -153,10 +153,9 @@ public class GuiUtils {
     }
 
     public static void drawSprite(PoseStack matrix, int x, int y, int width, int height, int zLevel, TextureAtlasSprite sprite) {
-        MekanismRenderer.bindTexture(TextureAtlas.LOCATION_BLOCKS);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
         RenderSystem.enableBlend();
-        //TODO - 1.18: Test alpha stuff in this class
-        //RenderSystem.enableAlphaTest();
         BufferBuilder vertexBuffer = Tesselator.getInstance().getBuilder();
         vertexBuffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         Matrix4f matrix4f = matrix.last().pose();
@@ -166,7 +165,6 @@ public class GuiUtils {
         vertexBuffer.vertex(matrix4f, x, y, zLevel).uv(sprite.getU0(), sprite.getV0()).endVertex();
         vertexBuffer.end();
         BufferUploader.end(vertexBuffer);
-        //RenderSystem.disableAlphaTest();
         RenderSystem.disableBlend();
     }
 
@@ -176,11 +174,12 @@ public class GuiUtils {
     }
 
     public static void drawTiledSprite(PoseStack matrix, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
-          int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection, boolean blendAlpha) {
+          int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection, boolean blend) {
         if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
             return;
         }
-        MekanismRenderer.bindTexture(TextureAtlas.LOCATION_BLOCKS);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
         int xTileCount = desiredWidth / textureWidth;
         int xRemainder = desiredWidth - (xTileCount * textureWidth);
         int yTileCount = desiredHeight / textureHeight;
@@ -192,9 +191,8 @@ public class GuiUtils {
         float vMax = sprite.getV1();
         float uDif = uMax - uMin;
         float vDif = vMax - vMin;
-        if (blendAlpha) {
+        if (blend) {
             RenderSystem.enableBlend();
-            //RenderSystem.enableAlphaTest();
         }
         BufferBuilder vertexBuffer = Tesselator.getInstance().getBuilder();
         vertexBuffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
@@ -244,8 +242,7 @@ public class GuiUtils {
         }
         vertexBuffer.end();
         BufferUploader.end(vertexBuffer);
-        if (blendAlpha) {
-            //RenderSystem.disableAlphaTest();
+        if (blend) {
             RenderSystem.disableBlend();
         }
     }
@@ -267,8 +264,6 @@ public class GuiUtils {
             try {
                 matrix.pushPose();
                 RenderSystem.enableDepthTest();
-                //TODO - 1.18: Test this lighting
-                //Lighting.turnBackOn();
                 if (scale != 1) {
                     //Translate before scaling, and then set xAxis and yAxis to zero so that we don't translate a second time
                     matrix.translate(xAxis, yAxis, 0);
@@ -279,7 +274,6 @@ public class GuiUtils {
                 //Apply our matrix stack to the render system and pass an unmodified one to the render methods
                 // Vanilla still renders the items using render system transformations so this is required to
                 // have things render in the correct order
-                //TODO - 1.18: Test this
                 PoseStack modelViewStack = RenderSystem.getModelViewStack();
                 modelViewStack.pushPose();
                 modelViewStack.mulPoseMatrix(matrix.last().pose());
@@ -290,7 +284,6 @@ public class GuiUtils {
                 }
                 modelViewStack.popPose();
                 RenderSystem.applyModelViewMatrix();
-                //Lighting.turnOff();
                 RenderSystem.disableDepthTest();
                 matrix.popPose();
             } catch (Exception e) {

@@ -1,7 +1,8 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.MekanismAPI;
@@ -18,13 +19,11 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import com.mojang.math.Vector3f;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 
 public class HUDRenderer {
 
@@ -137,7 +136,6 @@ public class HUDRenderer {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         MekanismRenderer.color(color);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, element.getIcon());
         if (!iconRight) {
             GuiComponent.blit(matrix, x, y, 0, 0, 16, 16, 16, 16);
@@ -164,7 +162,6 @@ public class HUDRenderer {
         matrix.popPose();
         matrix.mulPose(Vector3f.XP.rotationDegrees(-60));
         matrix.mulPose(Vector3f.ZP.rotationDegrees(angle));
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, COMPASS);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

@@ -7,7 +7,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class GuiDigitalBar extends GuiBar<IBarInfoHandler> {
@@ -26,7 +25,6 @@ public class GuiDigitalBar extends GuiBar<IBarInfoHandler> {
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, DIGITAL_BAR);
         blit(matrix, x, y, width, height, 1, 0, 1, 1, texWidth, texHeight);
         blit(matrix, x + 1, y + 1, width - 2, 6, 1, 1, 1, 1, texWidth, texHeight);

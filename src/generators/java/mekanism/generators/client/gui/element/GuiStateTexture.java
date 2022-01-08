@@ -8,7 +8,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class GuiStateTexture extends GuiTexturedElement {
@@ -28,7 +27,6 @@ public class GuiStateTexture extends GuiTexturedElement {
 
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
         RenderSystem.setShaderTexture(0, onSupplier.getAsBoolean() ? onTexture : offTexture);

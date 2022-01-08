@@ -23,10 +23,9 @@ import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class GuiModuleScrollList extends GuiScrollList {
 
@@ -130,7 +129,6 @@ public class GuiModuleScrollList extends GuiScrollList {
     @Override
     public void renderElements(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Draw elements
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, MODULE_SELECTION);
         forEachModule((module, multipliedElement) -> {
             int shiftedY = y + 1 + multipliedElement;

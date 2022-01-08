@@ -9,7 +9,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class GuiScrollBar extends GuiScrollableElement {
@@ -33,7 +32,6 @@ public class GuiScrollBar extends GuiScrollableElement {
         //Draw background and border
         GuiUtils.renderBackgroundTexture(matrix, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE, GuiElementHolder.HOLDER_SIZE, getButtonX(), getButtonY(),
               barWidth + 2, getButtonHeight(), 256, 256);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getResource());
         blit(matrix, barX, barY + getScroll(), needsScrollBars() ? 0 : barWidth, 0, barWidth, barHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }

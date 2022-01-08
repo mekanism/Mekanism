@@ -211,17 +211,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     protected void renderLabels(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        //TODO - 1.18: Figure out all this RenderSystem#translatef, may not be needed anymore hopefully?
-        // but assuming it is I think this is how it is done
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
-
+        //Note: We intentionally don't push the modelViewStack, see notes further down in this method for more details
         matrix.translate(0, 0, 300);
-        //RenderSystem.translatef(-leftPos, -topPos, 0);
         modelViewStack.translate(-leftPos, -topPos, 0);
         RenderSystem.applyModelViewMatrix();
         children().stream().filter(c -> c instanceof GuiElement).forEach(c -> ((GuiElement) c).onDrawBackground(matrix, mouseX, mouseY, MekanismRenderer.getPartialTick()));
-        //RenderSystem.translatef(leftPos, topPos, 0);
         modelViewStack.translate(leftPos, topPos, 0);
         RenderSystem.applyModelViewMatrix();
         drawForegroundText(matrix, mouseX, mouseY);
@@ -266,7 +261,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // translate forwards using RenderSystem. this should never have to happen as we do all the necessary translations with MatrixStacks,
         // but Minecraft has decided to not fully adopt MatrixStacks for many crucial ContainerScreen render operations. should be re-evaluated
         // when mc updates related logic on their end (IMPORTANT)
-        //RenderSystem.translatef(0, 0, maxZOffset);
         modelViewStack.translate(0, 0, maxZOffset);
         RenderSystem.applyModelViewMatrix();
 
@@ -275,19 +269,15 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
 
         // render item tooltips
-        //RenderSystem.translatef(-leftPos, -topPos, 0);
         modelViewStack.translate(-leftPos, -topPos, 0);
         RenderSystem.applyModelViewMatrix();
         renderTooltip(matrix, mouseX, mouseY);
-        //RenderSystem.translatef(leftPos, topPos, 0);
         modelViewStack.translate(leftPos, topPos, 0);
 
         // IMPORTANT: additional hacky translation so held items render okay. re-evaluate as discussed above
-        //RenderSystem.translatef(0, 0, 200);
+        // Note: It is important that we don't wrap our adjustments to the modelViewStack in so that we can
+        // have the adjustments to the z-value persist into the vanilla methods
         modelViewStack.translate(0, 0, 200);
-        //TODO - 1.18: Figure this out maybe we aren't meant ot be pushing it?? give the above seems weird if we just pop it
-        // or maybe we are meant to apply before popping?
-        modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();
     }
 
@@ -507,13 +497,10 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
 
     @Override
     public void render(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        //TODO - 1.18: Figure out all this RenderSystem#translatef, may not be needed anymore hopefully?
-        // but assuming it is I think this is how it is done
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
 
         // shift back a whole lot so we can stack more windows
-        //RenderSystem.translated(0, 0, -500);
         modelViewStack.translate(0, 0,-500);
         RenderSystem.applyModelViewMatrix();
         matrix.pushPose();
@@ -523,8 +510,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // is required to not have tooltips of GuiElements rendering behind the items
         super.render(matrix, mouseX, mouseY, partialTicks);
         matrix.popPose();
-        //RenderSystem.translated(0, 0, 500);
-        modelViewStack.translate(0, 0,500);
         modelViewStack.popPose();
         RenderSystem.applyModelViewMatrix();
     }

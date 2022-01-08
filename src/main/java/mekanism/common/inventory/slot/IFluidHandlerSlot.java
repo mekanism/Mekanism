@@ -173,7 +173,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      *
      * @return True if we can drain the fluid from the item and the item after being drained can (and was) moved to the output slot, false otherwise
      */
-    default boolean drainItemAndMove(IInventorySlot outputSlot, FluidStack fluidToTransfer) {
+    private boolean drainItemAndMove(IInventorySlot outputSlot, FluidStack fluidToTransfer) {
         FluidStack simulatedRemainder = getFluidTank().insert(fluidToTransfer, Action.SIMULATE, AutomationType.INTERNAL);
         int remainder = simulatedRemainder.getAmount();
         int toTransfer = fluidToTransfer.getAmount();
@@ -226,7 +226,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      *
      * @return True if we are able to move the stack and did so, false otherwise
      */
-    default boolean moveItem(IInventorySlot outputSlot, ItemStack stackToMove) {
+    private boolean moveItem(IInventorySlot outputSlot, ItemStack stackToMove) {
         if (outputSlot.isEmpty()) {
             outputSlot.setStack(stackToMove);
         } else {
@@ -319,7 +319,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      *
      * @return True if we managed to transfer any contents, false otherwise
      */
-    default boolean fillHandlerFromOther(IExtendedFluidTank handlerToFill, IFluidHandler handlerToDrain, FluidStack fluid) {
+    private boolean fillHandlerFromOther(IExtendedFluidTank handlerToFill, IFluidHandler handlerToDrain, FluidStack fluid) {
         //Check how much of this fluid type we are actually able to drain from the handler we are draining
         FluidStack simulatedDrain = handlerToDrain.drain(fluid, FluidAction.SIMULATE);
         if (!simulatedDrain.isEmpty()) {

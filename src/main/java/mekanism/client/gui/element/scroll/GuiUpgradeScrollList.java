@@ -16,7 +16,6 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public class GuiUpgradeScrollList extends GuiScrollList {
@@ -100,7 +99,6 @@ public class GuiUpgradeScrollList extends GuiScrollList {
         if (hasSelection() && component.getUpgrades(getSelection()) == 0) {
             clearSelection();
         }
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, UPGRADE_SELECTION);
         forEachUpgrade((upgrade, multipliedElement) -> {
             int shiftedY = y + 1 + multipliedElement;

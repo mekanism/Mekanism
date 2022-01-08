@@ -23,10 +23,9 @@ import mekanism.common.network.to_server.PacketUpdateModuleSettings;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiModuleScreen extends GuiElement {
 
@@ -188,7 +187,6 @@ public class GuiModuleScreen extends GuiElement {
 
         @Override
         public void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, RADIO);
 
             boolean hover = mouseX >= getX() + 4 && mouseX < getX() + 12 && mouseY >= getY() + 11 && mouseY < getY() + 19;
@@ -241,7 +239,6 @@ public class GuiModuleScreen extends GuiElement {
 
         @Override
         public void renderBackground(PoseStack matrix, int mouseX, int mouseY) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, SLIDER);
             int count = ((ModuleEnumData<?>) data.getData()).getEnums().size();
             int center = (BAR_LENGTH / (count - 1)) * data.get().ordinal();

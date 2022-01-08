@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
@@ -66,7 +65,6 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder {
     }
 
     protected void drawBackgroundOverlay(@Nonnull PoseStack matrix) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getOverlay());
         blit(matrix, getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
     }

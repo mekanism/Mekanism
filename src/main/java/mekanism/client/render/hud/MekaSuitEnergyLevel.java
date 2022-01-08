@@ -12,7 +12,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.ForgeIngameGui;
@@ -41,11 +40,8 @@ public class MekaSuitEnergyLevel implements IIngameOverlay {
                 int y = height - gui.left_height + 2;
                 int length = (int) Math.round(stored.divide(capacity).doubleValue() * 79);
                 GuiUtils.renderExtendedTexture(poseStack, GuiBar.BAR, 2, 2, x, y, 81, 6);
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 RenderSystem.setShaderTexture(0, POWER_BAR);
                 GuiComponent.blit(poseStack, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
-                //TODO - 1.18: Is this even needed
-                RenderSystem.setShaderTexture(0, GuiComponent.GUI_ICONS_LOCATION);
                 gui.left_height += 8;
             }
         }

@@ -20,9 +20,8 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class GuiSlotScroll extends GuiElement {
 
@@ -53,7 +52,6 @@ public class GuiSlotScroll extends GuiElement {
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getSlotList() == null ? SLOTS_DARK : SLOTS);
         blit(matrix, x, y, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
 

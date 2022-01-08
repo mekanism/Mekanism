@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.tab;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.SpecialColors;
@@ -15,8 +14,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 
 public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
@@ -57,8 +54,6 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     @Override
     protected void drawBackgroundOverlay(@Nonnull PoseStack matrix) {
         if (dataSource.getControlType() == RedstoneControl.PULSE) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
             GuiUtils.drawSprite(matrix, getButtonX() + 1, getButtonY() + 1, innerWidth - 2, innerHeight - 2, 0, MekanismRenderer.redstonePulse);
         } else {
             super.drawBackgroundOverlay(matrix);

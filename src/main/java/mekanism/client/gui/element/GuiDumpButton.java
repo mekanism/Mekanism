@@ -10,7 +10,6 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 //TODO: Potentially make this extend MekanismImageButton
@@ -27,7 +26,6 @@ public class GuiDumpButton<TILE extends BlockEntity & IHasDumpButton> extends Gu
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
     }
