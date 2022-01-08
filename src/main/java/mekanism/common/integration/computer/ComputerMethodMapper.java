@@ -348,7 +348,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         /**
          * Handler is a tile that has comparator support.
          */
-        COMPARATOR(handler -> handler instanceof IComparatorSupport comparator && comparator.supportsComparator());
+        COMPARATOR(handler -> handler instanceof IComparatorSupport comparatorSupport && comparatorSupport.supportsComparator());
 
         private final Predicate<Object> validator;
 
