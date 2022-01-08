@@ -876,6 +876,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
+    @ComputerMethod(nameOverride = "getComparatorLevel")
     public int getCurrentRedstoneLevel() {
         return currentRedstoneLevel;
     }
