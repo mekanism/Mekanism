@@ -26,6 +26,7 @@ import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod.WrappingComputerMethodIndex;
 import mekanism.common.lib.MekAnnotationScanner.BaseAnnotationScanner;
+import mekanism.common.tile.interfaces.IComparatorSupport;
 import mekanism.common.tile.interfaces.ITileDirectional;
 import mekanism.common.tile.interfaces.ITileRedstone;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
@@ -343,7 +344,11 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         /**
          * Handler is a tile that can support redstone.
          */
-        REDSTONE_CONTROL(handler -> handler instanceof ITileRedstone redstone && redstone.supportsRedstone());
+        REDSTONE_CONTROL(handler -> handler instanceof ITileRedstone redstone && redstone.supportsRedstone()),
+        /**
+         * Handler is a tile that has comparator support.
+         */
+        COMPARATOR(handler -> handler instanceof IComparatorSupport comparator && comparator.supportsComparator());
 
         private final Predicate<Object> validator;
 
