@@ -96,7 +96,7 @@ public class ContainerTypeDeferredRegister extends WrappedDeferredRegister<Conta
     }
 
     public <TILE extends TileEntityMekanism> ContainerBuilder<TILE> custom(INamedEntry nameProvider, Class<TILE> tileClass) {
-        return new ContainerBuilder<>(nameProvider.getInternalRegistryName(), tileClass);
+        return custom(nameProvider.getInternalRegistryName(), tileClass);
     }
 
     public <TILE extends TileEntityMekanism> ContainerBuilder<TILE> custom(String name, Class<TILE> tileClass) {

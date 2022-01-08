@@ -2,14 +2,16 @@ package mekanism.client.gui.element.slot;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.VirtualSlotContainerScreen;
+import mekanism.client.jei.interfaces.IJEIIngredientHelper;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.item.ItemStack;
 
-public class GuiVirtualSlot extends GuiSlot {
+public class GuiVirtualSlot extends GuiSlot implements IJEIIngredientHelper {
 
     private IVirtualSlot virtualSlot;
 
@@ -64,5 +66,12 @@ public class GuiVirtualSlot extends GuiSlot {
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Nullable
+    @Override
+    public Object getIngredient() {
+        //Note: We can get away with just using the stack to render
+        return virtualSlot == null ? null : virtualSlot.getStackToRender();
     }
 }

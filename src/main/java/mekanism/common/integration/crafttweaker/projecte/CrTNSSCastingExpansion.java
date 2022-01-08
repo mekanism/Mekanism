@@ -7,7 +7,6 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.common.integration.MekanismHooks;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
@@ -186,7 +185,7 @@ public class CrTNSSCastingExpansion {
     }
 
     @ZenRegister(modDeps = MekanismHooks.PROJECTE_MOD_ID)
-    @TypedExpansion(SlurryStack.class)
+    @TypedExpansion(ICrTSlurryStack.class)
     public static class ICrTSlurryStackExpansion {
 
         private ICrTSlurryStackExpansion() {
