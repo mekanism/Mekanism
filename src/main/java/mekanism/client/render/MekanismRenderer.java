@@ -262,7 +262,6 @@ public class MekanismRenderer {
     public static void color(@Nonnull Chemical<?> chemical) {
         if (!chemical.isEmptyType()) {
             int color = chemical.getTint();
-            //TODO - 1.18: Test this
             RenderSystem.setShaderColor(getRed(color), getGreen(color), getBlue(color), 1);
         }
     }

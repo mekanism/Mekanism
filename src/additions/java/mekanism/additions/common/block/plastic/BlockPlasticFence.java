@@ -88,4 +88,11 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, ISta
         //Manually declare which getPickupSound we want to be using
         return IStateExtendedFluidLoggable.super.getPickupSound();
     }
+
+    @Nonnull
+    @Override
+    public Optional<SoundEvent> getPickupSound(BlockState state) {
+        //Manually declare which getPickupSound we want to be using
+        return IStateExtendedFluidLoggable.super.getPickupSound(state);
+    }
 }

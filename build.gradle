@@ -373,7 +373,6 @@ repositories {
     flatDir {
         dirs 'libs'
     }
-    mavenLocal()
 
     whenObjectAdded {//ForgeGradle adds these in an afterEvaluate, so we need to catch them as they're added and exclude mod artifacts/groups
         if (it instanceof MavenArtifactRepository) {
@@ -405,9 +404,7 @@ test {
 }
 
 dependencies {
-    //TODO - 1.18: switch back, this is currently going from maven local so I can test in dev using https://github.com/MinecraftForge/MinecraftForge/pull/8352
-    minecraft "net.minecraftforge:forge:${minecraft_version}-39.0.11-custom_tag_type_fixes"
-    //minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     //TODO - 1.18: Re-enable after CrT updates
     //annotationProcessor project(":annotation-processor")
