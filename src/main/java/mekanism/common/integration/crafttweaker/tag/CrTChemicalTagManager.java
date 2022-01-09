@@ -1,29 +1,28 @@
 package mekanism.common.integration.crafttweaker.tag;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.impl.actions.tags.ActionTagAdd;
-import com.blamejared.crafttweaker.impl.actions.tags.ActionTagCreate;
-import com.blamejared.crafttweaker.impl.actions.tags.ActionTagRemove;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.manager.TagManager;
+import com.blamejared.crafttweaker.api.action.tag.ActionTagAdd;
+import com.blamejared.crafttweaker.api.action.tag.ActionTagCreate;
+import com.blamejared.crafttweaker.api.action.tag.ActionTagRemove;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.manager.ITagManager;
 import com.google.common.collect.Sets;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.providers.IChemicalProvider;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import net.minecraft.tags.SetTag;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
-import net.minecraft.tags.SetTag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
 @ZenCodeType.Name(CrTConstants.CLASS_CHEMICAL_TAG_MANAGER)
-public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>> implements TagManager<CHEMICAL> {
+public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>> implements ITagManager<CHEMICAL> {
 
     private final ChemicalTags<CHEMICAL> chemicalTags;
 
@@ -71,6 +70,6 @@ public abstract class CrTChemicalTagManager<CHEMICAL extends Chemical<CHEMICAL>>
     @Nullable
     @Override
     public Tag<CHEMICAL> getInternal(MCTag<CHEMICAL> theTag) {
-        return getTagCollection().getTag(theTag.getIdInternal());
+        return getTagCollection().getTag(theTag.id());
     }
 }

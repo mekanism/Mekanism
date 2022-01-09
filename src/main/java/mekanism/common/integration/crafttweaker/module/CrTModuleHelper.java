@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker.module;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.MekanismAPI;

@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.bracket;
 
-import com.blamejared.crafttweaker.api.annotations.BracketResolver;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.BracketResolver;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.function.Function;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;

@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker.chemical;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.common.integration.crafttweaker.CrTConstants;

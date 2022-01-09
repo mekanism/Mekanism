@@ -1,10 +1,10 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.JSONConverter;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.base.IData;
+import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
@@ -70,8 +70,8 @@ public class CrTPigmentStackIngredient {
      * @return A {@link PigmentStackIngredient} that matches a given pigment tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static PigmentStackIngredient from(MCTagWithAmount<Pigment> pigmentTag) {
-        return from(pigmentTag.getTag(), pigmentTag.getAmount());
+    public static PigmentStackIngredient from(Many<MCTag<Pigment>> pigmentTag) {
+        return from(pigmentTag.getData(), pigmentTag.getAmount());
     }
 
     /**

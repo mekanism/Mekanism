@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker.content.attribute.gas;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.attribute.CrTChemicalAttribute;

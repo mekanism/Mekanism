@@ -113,16 +113,15 @@ public class CrTConstants {
 
     //Expansions, declared below classes we can reference the partial string parts of our other types
     public static final String EXPANSION_TARGET_NSS_RESOLVER = "mods.projecte.NSSResolver";
-    public static final String EXPANSION_TARGET_INGREDIENT_LIST = "crafttweaker.api.item.IngredientList";
-    public static final String EXPANSION_TARGET_ITEM_TAG = "crafttweaker.api.tag.MCTag<crafttweaker.api.item.MCItemDefinition>";
+    public static final String EXPANSION_TARGET_ITEM_TAG = "crafttweaker.api.tag.MCTag<crafttweaker.api.item.ItemDefinition>";
     public static final String EXPANSION_TARGET_GAS_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_GAS + ">";
     public static final String EXPANSION_TARGET_INFUSE_TYPE_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_INFUSE_TYPE + ">";
     public static final String EXPANSION_TARGET_PIGMENT_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_PIGMENT + ">";
     public static final String EXPANSION_TARGET_SLURRY_TAG = "crafttweaker.api.tag.MCTag<" + CLASS_SLURRY + ">";
-    public static final String EXPANSION_TARGET_ITEM_AMOUNT_TAG = "crafttweaker.api.tag.MCTagWithAmount<crafttweaker.api.item.MCItemDefinition>";
-    public static final String EXPANSION_TARGET_FLUID_AMOUNT_TAG = "crafttweaker.api.tag.MCTagWithAmount<crafttweaker.api.fluid.MCFluid>";
-    public static final String EXPANSION_TARGET_GAS_AMOUNT_TAG = "crafttweaker.api.tag.MCTagWithAmount<" + CLASS_GAS + ">";
-    public static final String EXPANSION_TARGET_INFUSE_TYPE_AMOUNT_TAG = "crafttweaker.api.tag.MCTagWithAmount<" + CLASS_INFUSE_TYPE + ">";
-    public static final String EXPANSION_TARGET_PIGMENT_AMOUNT_TAG = "crafttweaker.api.tag.MCTagWithAmount<" + CLASS_PIGMENT + ">";
-    public static final String EXPANSION_TARGET_SLURRY_AMOUNT_TAG = "crafttweaker.api.tag.MCTagWithAmount<" + CLASS_SLURRY + ">";
+    public static final String EXPANSION_TARGET_ITEM_AMOUNT_TAG = "crafttweaker.api.util.Many<" + EXPANSION_TARGET_ITEM_TAG + ">";
+    public static final String EXPANSION_TARGET_FLUID_AMOUNT_TAG = "crafttweaker.api.util.Many<crafttweaker.api.tag.MCTag<crafttweaker.api.fluid.Fluid>>";
+    public static final String EXPANSION_TARGET_GAS_AMOUNT_TAG = "crafttweaker.api.util.Many<" + EXPANSION_TARGET_GAS_TAG + ">";
+    public static final String EXPANSION_TARGET_INFUSE_TYPE_AMOUNT_TAG = "crafttweaker.api.util.Many<" + EXPANSION_TARGET_INFUSE_TYPE_TAG + ">";
+    public static final String EXPANSION_TARGET_PIGMENT_AMOUNT_TAG = "crafttweaker.api.util.Many<" + EXPANSION_TARGET_PIGMENT_TAG + ">";
+    public static final String EXPANSION_TARGET_SLURRY_AMOUNT_TAG = "crafttweaker.api.util.Many<" + EXPANSION_TARGET_SLURRY_TAG + ">";
 }

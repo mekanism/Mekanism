@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.example.component;
 
 import java.util.Objects;
-import mekanism.common.integration.crafttweaker.recipe.MekanismRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.resources.ResourceLocation;
 

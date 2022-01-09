@@ -1,10 +1,10 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.JSONConverter;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.base.IData;
+import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
@@ -70,8 +70,8 @@ public class CrTGasStackIngredient {
      * @return A {@link GasStackIngredient} that matches a given gas tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static GasStackIngredient from(MCTagWithAmount<Gas> gasTag) {
-        return from(gasTag.getTag(), gasTag.getAmount());
+    public static GasStackIngredient from(Many<MCTag<Gas>> gasTag) {
+        return from(gasTag.getData(), gasTag.getAmount());
     }
 
     /**

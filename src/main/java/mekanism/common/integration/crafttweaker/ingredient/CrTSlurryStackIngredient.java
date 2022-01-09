@@ -1,10 +1,10 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.JSONConverter;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.base.IData;
+import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
@@ -70,8 +70,8 @@ public class CrTSlurryStackIngredient {
      * @return A {@link SlurryStackIngredient} that matches a given slurry tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static SlurryStackIngredient from(MCTagWithAmount<Slurry> slurryTag) {
-        return from(slurryTag.getTag(), slurryTag.getAmount());
+    public static SlurryStackIngredient from(Many<MCTag<Slurry>> slurryTag) {
+        return from(slurryTag.getData(), slurryTag.getAmount());
     }
 
     /**

@@ -1,10 +1,10 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.JSONConverter;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.base.IData;
+import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
@@ -70,8 +70,8 @@ public class CrTInfusionStackIngredient {
      * @return A {@link InfusionStackIngredient} that matches a given infuse type tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static InfusionStackIngredient from(MCTagWithAmount<InfuseType> infuseTypeTag) {
-        return from(infuseTypeTag.getTag(), infuseTypeTag.getAmount());
+    public static InfusionStackIngredient from(Many<MCTag<InfuseType>> infuseTypeTag) {
+        return from(infuseTypeTag.getData(), infuseTypeTag.getAmount());
     }
 
     /**

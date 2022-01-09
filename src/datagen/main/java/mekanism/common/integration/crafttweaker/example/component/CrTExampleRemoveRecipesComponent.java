@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
-import mekanism.common.integration.crafttweaker.recipe.MekanismRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
 import net.minecraft.resources.ResourceLocation;
 
 public class CrTExampleRemoveRecipesComponent extends CrTBaseExampleRecipeComponent {

@@ -7,7 +7,6 @@ import com.blamejared.jeitweaker.api.IngredientTypeRegistration;
 import com.blamejared.jeitweaker.api.JeiTweakerPlugin;
 import com.blamejared.jeitweaker.api.JeiTweakerPluginProvider;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;

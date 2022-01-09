@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker.tag;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.infuse.InfuseType;

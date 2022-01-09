@@ -1,10 +1,9 @@
 package mekanism.common.integration.crafttweaker.bracket;
 
-import com.blamejared.crafttweaker.api.annotations.BracketDumper;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.BracketDumper;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.Collection;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;

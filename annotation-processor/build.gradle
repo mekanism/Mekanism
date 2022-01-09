@@ -17,7 +17,5 @@ repositories {
 }
 
 dependencies {
-    //TODO - 1.18: Update when CraftTweaker updates
-    //implementation "com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}"
-    implementation "com.blamejared.crafttweaker:CraftTweaker-1.16.5:${crafttweaker_version}"
+    implementation "com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}"
 }

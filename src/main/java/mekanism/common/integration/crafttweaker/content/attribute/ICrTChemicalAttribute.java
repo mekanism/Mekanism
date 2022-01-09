@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker.content.attribute;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import mekanism.api.chemical.attribute.ChemicalAttribute;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import org.openzen.zencode.java.ZenCodeType;
