@@ -212,7 +212,6 @@ public class GuiTextField extends GuiElement {
 
     private void renderTextField(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         //Apply matrix via render system so that it applies to the highlight
-        //TODO - 1.18: Test this
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.mulPoseMatrix(matrix.last().pose());
@@ -246,7 +245,7 @@ public class GuiTextField extends GuiElement {
                     enterHandler.run();
                 }
                 return true;
-            } else if (keyCode == GLFW.GLFW_KEY_TAB) {
+            } else if (keyCode == GLFW.GLFW_KEY_TAB && textField.canLoseFocus) {
                 gui().incrementFocus(this);
                 return true;
             } else if (Screen.isPaste(keyCode)) {
@@ -302,7 +301,7 @@ public class GuiTextField extends GuiElement {
         textField.setVisible(visible);
     }
 
-    public void setMaxStringLength(int length) {
+    public void setMaxLength(int length) {
         textField.setMaxLength(length);
     }
 
@@ -310,7 +309,11 @@ public class GuiTextField extends GuiElement {
         textField.setTextColor(color);
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setTextColorUneditable(int color) {
+        textField.setTextColorUneditable(color);
+    }
+
+    public void setEditable(boolean enabled) {
         textField.setEditable(enabled);
     }
 
@@ -325,6 +328,19 @@ public class GuiTextField extends GuiElement {
         textField.setFocus(focused);
         if (focused) {
             gui().focusChange(this);
+        }
+    }
+
+    @Override
+    public boolean changeFocus(boolean focused) {
+        return visible && textField.isEditable() && super.changeFocus(focused);
+    }
+
+    @Override
+    protected void onFocusedChanged(boolean focused) {
+        super.onFocusedChanged(focused);
+        if (focused) {
+            textField.frame = 0;
         }
     }
 

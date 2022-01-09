@@ -36,23 +36,20 @@ public class ItemHohlraum extends Item {
 
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
-        if (Capabilities.GAS_HANDLER_CAPABILITY != null) {
-            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
-            if (capability.isPresent()) {
-                IGasHandler gasHandlerItem = capability.get();
-                if (gasHandlerItem.getTanks() > 0) {
-                    //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-                    GasStack storedGas = gasHandlerItem.getChemicalInTank(0);
-                    if (!storedGas.isEmpty()) {
-                        tooltip.add(MekanismLang.STORED.translate(storedGas, storedGas.getAmount()));
-                        if (storedGas.getAmount() == gasHandlerItem.getTankCapacity(0)) {
-                            tooltip.add(GeneratorsLang.READY_FOR_REACTION.translateColored(EnumColor.DARK_GREEN));
-                        } else {
-                            tooltip.add(GeneratorsLang.INSUFFICIENT_FUEL.translateColored(EnumColor.DARK_RED));
-                        }
-                        return;
+        Optional<IGasHandler> capability = stack.getCapability(Capabilities.GAS_HANDLER_CAPABILITY).resolve();
+        if (capability.isPresent()) {
+            IGasHandler gasHandlerItem = capability.get();
+            if (gasHandlerItem.getTanks() > 0) {
+                //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
+                GasStack storedGas = gasHandlerItem.getChemicalInTank(0);
+                if (!storedGas.isEmpty()) {
+                    tooltip.add(MekanismLang.STORED.translate(storedGas, storedGas.getAmount()));
+                    if (storedGas.getAmount() == gasHandlerItem.getTankCapacity(0)) {
+                        tooltip.add(GeneratorsLang.READY_FOR_REACTION.translateColored(EnumColor.DARK_GREEN));
+                    } else {
+                        tooltip.add(GeneratorsLang.INSUFFICIENT_FUEL.translateColored(EnumColor.DARK_RED));
                     }
+                    return;
                 }
             }
         }

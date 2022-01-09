@@ -94,15 +94,15 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
               () -> Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.INVERSE_REQUIRES_REPLACEMENT_BUTTON, tile)),
               getOnHover(() -> MekanismLang.MINER_REQUIRE_REPLACE_INVERSE.translate(YesNo.of(tile.getInverseRequiresReplacement())))));
         radiusField = addRenderableWidget(new GuiTextField(this, 13, 49, 38, 11));
-        radiusField.setMaxStringLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
+        radiusField.setMaxLength(Integer.toString(MekanismConfig.general.minerMaxRadius.get()).length());
         radiusField.setInputValidator(InputValidator.DIGIT);
         radiusField.configureDigitalBorderInput(() -> setText(radiusField, GuiInteraction.SET_RADIUS));
         minField = addRenderableWidget(new GuiTextField(this, 13, 74, 38, 11));
-        minField.setMaxStringLength(maxHeightLength);
+        minField.setMaxLength(maxHeightLength);
         minField.setInputValidator(InputValidator.DIGIT_OR_NEGATIVE);
         minField.configureDigitalBorderInput(() -> setText(minField, GuiInteraction.SET_MIN_Y));
         maxField = addRenderableWidget(new GuiTextField(this, 13, 99, 38, 11));
-        maxField.setMaxStringLength(maxHeightLength);
+        maxField.setMaxLength(maxHeightLength);
         maxField.setInputValidator(InputValidator.DIGIT_OR_NEGATIVE);
         maxField.configureDigitalBorderInput(() -> setText(maxField, GuiInteraction.SET_MAX_Y));
         // Note: We add this after all the buttons have their warnings added so that it is further down the tracker

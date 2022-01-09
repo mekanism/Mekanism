@@ -83,7 +83,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         searchField.setOffset(0, -1);
         searchField.setInputValidator(this::isValidSearchChar);
         searchField.setResponder(menu::updateSearch);
-        searchField.setMaxStringLength(50);
+        searchField.setMaxLength(50);
         searchField.setBackground(BackgroundType.ELEMENT_HOLDER);
         searchField.setVisible(true);
         searchField.setTextColor(0xFFFFFF);

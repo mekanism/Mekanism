@@ -51,7 +51,7 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
         injectionRateField.changeFocus(true);
         injectionRateField.setInputValidator(InputValidator.DIGIT);
         injectionRateField.setEnterHandler(this::setInjection);
-        injectionRateField.setMaxStringLength(2);
+        injectionRateField.setMaxLength(2);
     }
 
     @Override

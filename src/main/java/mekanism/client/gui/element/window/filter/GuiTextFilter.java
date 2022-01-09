@@ -25,10 +25,10 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     protected void init() {
         super.init();
         text = addChild(new GuiTextField(gui(), relativeX + 31, relativeY + 4 + getScreenHeight(), getScreenWidth() - 4, 12));
-        text.setMaxStringLength(SorterFilter.MAX_LENGTH);
+        text.setMaxLength(SorterFilter.MAX_LENGTH);
         text.setInputValidator(getInputValidator());
         text.setInputTransformer(getInputTransformer());
-        text.setEnabled(true);
+        text.setEditable(true);
         text.setFocused(true);
         text.configureDigitalInput(this::setText);
     }

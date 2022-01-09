@@ -39,12 +39,12 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
               () -> filter.allowDefault = !filter.allowDefault, (onHover, matrix, xAxis, yAxis) -> gui.displayTooltip(matrix, MekanismLang.FILTER_ALLOW_DEFAULT.translate(),
               xAxis, yAxis)));
         GuiTextField minField = new GuiTextField(gui, relativeX + 169, relativeY + 31, 20, 11);
-        minField.setMaxStringLength(2);
+        minField.setMaxLength(2);
         minField.setInputValidator(InputValidator.DIGIT);
         minField.setText("" + filter.min);
         childAdder.apply(minField);
         GuiTextField maxField = new GuiTextField(gui, relativeX + 169, relativeY + 43, 20, 11);
-        maxField.setMaxStringLength(2);
+        maxField.setMaxLength(2);
         maxField.setInputValidator(InputValidator.DIGIT);
         maxField.setText("" + filter.max);
         childAdder.apply(maxField);

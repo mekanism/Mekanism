@@ -37,15 +37,15 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
         addRenderableWidget(new GuiEnergyGauge(tile.getEnergyContainer(), GaugeType.STANDARD, this, 6, 10));
         addRenderableWidget(new GuiAmplifierTab(this, tile));
         timerField = addRenderableWidget(new GuiTextField(this, 96, 28, 36, 11));
-        timerField.setMaxStringLength(4);
+        timerField.setMaxLength(4);
         timerField.setEnterHandler(this::setTime);
         timerField.setInputValidator(InputValidator.DIGIT);
         minField = addRenderableWidget(new GuiTextField(this, 96, 43, 72, 11));
-        minField.setMaxStringLength(10);
+        minField.setMaxLength(10);
         minField.setEnterHandler(this::setMinThreshold);
         minField.setInputValidator(InputValidator.SCI_NOTATION);
         maxField = addRenderableWidget(new GuiTextField(this, 96, 58, 72, 11));
-        maxField.setMaxStringLength(10);
+        maxField.setMaxLength(10);
         maxField.setEnterHandler(this::setMaxThreshold);
         maxField.setInputValidator(InputValidator.SCI_NOTATION);
     }

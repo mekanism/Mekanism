@@ -119,7 +119,7 @@ def setupDataGenSourceSet(SourceSet datagenSourceSet, SourceSet baseSourceSet, S
     if (baseSourceSet == null) {
         //Base source set has resources that we put files that our annotation processor generates for consumption by our datagen
         datagenSourceSet.resources.srcDirs = ['src/datagen/' + name + '/resources']
-        //TODO - 1.18: Remove when CrT updates
+        //TODO - 1.18: Remove when CraftTweaker updates
         datagenSourceSet.java {
             exclude "mekanism/common/integration/crafttweaker/**"
         }
@@ -406,7 +406,7 @@ test {
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    //TODO - 1.18: Re-enable after CrT updates
+    //TODO - 1.18: Re-enable after CraftTweaker updates
     //annotationProcessor project(":annotation-processor")
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
@@ -429,7 +429,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:jade-api-324717:${jade_api_id}")
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
-    //TODO - 1.18: Support CrT again when it ports
+    //TODO - 1.18: Support CraftTweaker again when it ports
     //implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-${minecraft_version}:${crafttweaker_version}")
     //implementation fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
 
