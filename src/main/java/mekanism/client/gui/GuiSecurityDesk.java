@@ -77,7 +77,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
             }
         }));
         trustedField = addRenderableWidget(new GuiTextField(this, 35, 68, 99, 11));
-        trustedField.setMaxStringLength(PacketAddTrusted.MAX_NAME_LENGTH);
+        trustedField.setMaxLength(PacketAddTrusted.MAX_NAME_LENGTH);
         trustedField.setBackground(BackgroundType.INNER_SCREEN);
         trustedField.setEnterHandler(this::setTrusted);
         trustedField.setInputValidator(InputValidator.USERNAME);

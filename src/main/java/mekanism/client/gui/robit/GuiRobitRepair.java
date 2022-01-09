@@ -3,13 +3,12 @@ package mekanism.client.gui.robit;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
+import mekanism.client.gui.element.text.BackgroundType;
+import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ServerboundRenameItemPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,15 +17,13 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.lwjgl.glfw.GLFW;
 
-//TODO - 1.18: re-evaluate modified copy of AnvilScreen
 public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements ContainerListener {
 
     //Use the vanilla anvil's gui texture
     private static final ResourceLocation ANVIL_RESOURCE = new ResourceLocation("textures/gui/container/anvil.png");
     private final Player player;
-    private EditBox itemNameField;
+    private GuiTextField itemNameField;
 
     public GuiRobitRepair(RepairRobitContainer container, Inventory inv, Component title) {
         super(container, inv, title);
@@ -39,28 +36,20 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     protected void addGuiElements() {
         super.addGuiElements();
         getMinecraft().keyboardHandler.setSendRepeatsToGui(true);
-        itemNameField = addRenderableWidget(new EditBox(font, leftPos + 62, topPos + 24, 103, 12, TextComponent.EMPTY));
+        itemNameField = addRenderableWidget(new GuiTextField(this, 60, 21, 103, 12));
         itemNameField.setCanLoseFocus(false);
-        itemNameField.changeFocus(true);
         itemNameField.setTextColor(-1);
         itemNameField.setTextColorUneditable(-1);
-        itemNameField.setBordered(false);
-        itemNameField.setMaxLength(35);
-        itemNameField.setResponder(this::onTextUpdate);
+        itemNameField.setBackground(BackgroundType.NONE);
+        itemNameField.setMaxLength(50);
+        itemNameField.setResponder(this::onNameChanged);
+        setInitialFocus(itemNameField);
+        itemNameField.setEditable(false);
         menu.removeSlotListener(this);
         menu.addSlotListener(this);
     }
 
-    @Override
-    public void init(@Nonnull Minecraft minecraft, int scaledWidth, int scaledHeight) {
-        //Handle initial initialization when it will be null, as well as later initializations
-        // such as going back to the screen from JEI
-        String previousName = itemNameField == null ? "" : itemNameField.getValue();
-        super.init(minecraft, scaledWidth, scaledHeight);
-        itemNameField.setValue(previousName);
-    }
-
-    private void onTextUpdate(String newText) {
+    private void onNameChanged(String newText) {
         if (!newText.isEmpty()) {
             Slot slot = menu.getSlot(0);
             if (slot.hasItem() && !slot.getItem().hasCustomHoverName() && newText.equals(slot.getItem().getHoverName().getString())) {
@@ -74,8 +63,8 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     @Override
     public void removed() {
         super.removed();
-        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
         menu.removeSlotListener(this);
+        getMinecraft().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
@@ -110,28 +99,13 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    public boolean charTyped(char c, int keyCode) {
-        if (itemNameField.canConsumeInput()) {
-            return itemNameField.charTyped(c, keyCode);
-        }
-        return super.charTyped(c, keyCode);
-    }
-
-    @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode != GLFW.GLFW_KEY_ESCAPE && itemNameField.canConsumeInput()) {
-            return itemNameField.keyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
     protected boolean shouldOpenGui(RobitGuiType guiType) {
         return guiType != RobitGuiType.REPAIR;
     }
 
     @Override
     protected void renderBg(@Nonnull PoseStack matrix, float partialTick, int mouseX, int mouseY) {
+        MekanismRenderer.resetColor();
         RenderSystem.setShaderTexture(0, ANVIL_RESOURCE);
         blit(matrix, leftPos, topPos, 0, 0, imageWidth, imageHeight);
         blit(matrix, leftPos + 59, topPos + 20, 0, imageHeight + (menu.getSlot(0).hasItem() ? 0 : 16), 110, 16);
@@ -143,8 +117,9 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     @Override
     public void slotChanged(@Nonnull AbstractContainerMenu container, int slotID, @Nonnull ItemStack stack) {
         if (slotID == 0) {
-            itemNameField.setValue(stack.isEmpty() ? "" : stack.getHoverName().getString());
+            itemNameField.setText(stack.isEmpty() ? "" : stack.getHoverName().getString());
             itemNameField.setEditable(!stack.isEmpty());
+            setFocused(itemNameField);
         }
     }
 

@@ -1,18 +1,18 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.JSONConverter;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.base.IData;
+import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
-import com.blamejared.crafttweaker.impl.tag.manager.TagManagerFluid;
+import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.manager.TagManagerFluid;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.tags.Tag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -76,8 +76,8 @@ public class CrTFluidStackIngredient {
      * @return A {@link FluidStackIngredient} that matches a given fluid tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static FluidStackIngredient from(MCTagWithAmount<Fluid> fluidTag) {
-        return from(fluidTag.getTag(), fluidTag.getAmount());
+    public static FluidStackIngredient from(Many<MCTag<Fluid>> fluidTag) {
+        return from(fluidTag.getData(), fluidTag.getAmount());
     }
 
     /**

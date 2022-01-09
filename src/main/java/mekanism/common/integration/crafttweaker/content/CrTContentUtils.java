@@ -81,12 +81,12 @@ public class CrTContentUtils {
           V element) {
         //Only queue our chemicals for registration on the first run of our loader
         if (queued == null) {
-            CraftTweakerAPI.logError("Cannot register %s '%s' since it was called too late. Registering must be done during '#loader " +
-                                     CrTConstants.CONTENT_LOADER + "'!", type, registryName);
+            CraftTweakerAPI.LOGGER.error("Cannot register {} '{}' since it was called too late. Registering must be done during '#loader {}'!",
+                  type, registryName, CrTConstants.CONTENT_LOADER);
         } else if (queued.put(registryName, element) == null) {
-            CraftTweakerAPI.logInfo("Queueing %s '%s' for registration.", type, registryName);
+            CraftTweakerAPI.LOGGER.info("Queueing {} '{}' for registration.", type, registryName);
         } else {
-            CraftTweakerAPI.logWarning("Registration for %s '%s' is already queued, skipping duplicate.", type, registryName);
+            CraftTweakerAPI.LOGGER.warn("Registration for {} '{}' is already queued, skipping duplicate.", type, registryName);
         }
     }
 
@@ -121,11 +121,11 @@ public class CrTContentUtils {
             // we properly don't allow more registration to happen once we start registering a specific chemical type
             setNull.run();
             int count = queued.size();
-            CraftTweakerAPI.logInfo("Registering %d custom %s.", count, count == 1 ? type.toLowerCase(Locale.ROOT) : plural);
+            CraftTweakerAPI.LOGGER.info("Registering {} custom {}.", count, count == 1 ? type.toLowerCase(Locale.ROOT) : plural);
             for (Map.Entry<ResourceLocation, V> entry : queued.entrySet()) {
                 ResourceLocation registryName = entry.getKey();
                 event.getRegistry().register(entry.getValue().setRegistryName(registryName));
-                CraftTweakerAPI.logInfo("Registered %s: '%s'.", type, registryName);
+                CraftTweakerAPI.LOGGER.info("Registered {}: '{}'.", type, registryName);
             }
         }
     }

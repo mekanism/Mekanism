@@ -1,15 +1,14 @@
 package mekanism.common.integration.crafttweaker.example;
 
-import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
+import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.impl.fluid.MCFluidStack;
-import com.blamejared.crafttweaker.impl.helper.ItemStackHelper;
-import com.blamejared.crafttweaker.impl.item.MCItemStack;
-import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.manager.TagManagerFluid;
+import com.blamejared.crafttweaker.api.item.MCItemStack;
+import com.blamejared.crafttweaker.api.tag.manager.TagManagerFluid;
+import com.blamejared.crafttweaker.api.util.ItemStackUtil;
+import com.blamejared.crafttweaker.api.util.random.Percentaged;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -29,8 +28,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.Chemical;
@@ -66,15 +65,15 @@ import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -85,7 +84,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
 
     public static final Map<String, Map<String, List<String>>> PARAMETER_NAMES = new HashMap<>();
 
-    private final Map<Class<?>, List<ClassConversionInfo<?>>> supportedConversions = new HashMap<>();
+    private final Map<Class<?>, ConversionTracker> supportedConversions = new HashMap<>();
     private final Map<String, CrTExampleBuilder<?>> examples = new LinkedHashMap<>();
     private final Map<Class<?>, String> nameLookupOverrides = new HashMap<>();
     private final ExistingFileHelper existingFileHelper;
@@ -107,13 +106,13 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addPrimitiveInfo(Boolean.TYPE, Boolean.class, "bool");
         addNameLookupOverride(Character.class, "char");
         addSupportedConversion(Character.TYPE, Character.class, (imports, c) -> "'" + c + "'");
-        addSupportedConversion(IItemStack.class, ItemStack.class, (imports, stack) -> ItemStackHelper.getCommandString(stack));
+        addSupportedConversion(IItemStack.class, ItemStack.class, (imports, stack) -> ItemStackUtil.getCommandString(stack));
         addSupportedConversion(IFluidStack.class, FluidStack.class, (imports, stack) -> new MCFluidStack(stack).getCommandString());
-        addSupportedConversion(MCWeightedItemStack.class, WeightedItemStack.class,
-              (imports, stack) -> new MCWeightedItemStack(new MCItemStack(stack.stack), stack.chance).getCommandString(),
+        addSupportedConversion(Percentaged.class, IItemStack.class, WeightedItemStack.class,
+              (imports, stack) -> new MCItemStack(stack.stack).percent(stack.chance).getCommandString(),
               (imports, stack) -> {
                   if (stack.chance == 1) {
-                      return ItemStackHelper.getCommandString(stack.stack);
+                      return ItemStackUtil.getCommandString(stack.stack);
                   }
                   return null;
               }
@@ -180,24 +179,36 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     @SafeVarargs
     protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, Class<? extends ACTUAL> actualClass,
           BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
-        supportedConversions.computeIfAbsent(crtClass, clazz -> new ArrayList<>()).add(new ClassConversionInfo<>(actualClass, Arrays.asList(conversions)));
+        addSupportedConversion(crtClass, null, actualClass, conversions);
     }
 
     @SafeVarargs
-    protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, Class<?> altCrTClass, Class<? extends ACTUAL> actualClass,
+    protected final <ACTUAL> void addSupportedConversionWithAlt(Class<?> crtClass, Class<?> altCrTClass, Class<? extends ACTUAL> actualClass,
           BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
         addSupportedConversion(crtClass, actualClass, conversions);
         addSupportedConversion(altCrTClass, actualClass, conversions);
     }
 
-    public boolean supportsConversion(Class<?> crtClass, Class<?> actualClass) {
-        List<ClassConversionInfo<?>> conversions = supportedConversions.get(crtClass);
+    @SafeVarargs
+    protected final <ACTUAL> void addSupportedConversion(Class<?> crtClass, @Nullable Class<?> generic, Class<? extends ACTUAL> actualClass,
+          BiFunction<CrTImportsComponent, ? super ACTUAL, String>... conversions) {
+        supportedConversions.computeIfAbsent(crtClass, clazz -> new ConversionTracker()).add(generic, new ClassConversionInfo<>(actualClass, Arrays.asList(conversions)));
+    }
+
+    @Nullable
+    private List<ClassConversionInfo<?>> getConversions(Class<?> crtClass, @Nullable Class<?> crtGenerics) {
+        ConversionTracker conversionTracker = supportedConversions.get(crtClass);
+        return conversionTracker != null ? conversionTracker.getConversions(crtGenerics) : null;
+    }
+
+    public boolean supportsConversion(Class<?> crtClass, @Nullable Class<?> crtGenerics, Class<?> actualClass) {
+        List<ClassConversionInfo<?>> conversions = getConversions(crtClass, crtGenerics);
         return conversions != null && conversions.stream().anyMatch(conversionInfo -> conversionInfo.actualClass.isAssignableFrom(actualClass));
     }
 
-    public <ACTUAL> List<String> getConversionRepresentations(Class<?> crtClass, CrTImportsComponent imports, ACTUAL actual) {
+    public <ACTUAL> List<String> getConversionRepresentations(Class<?> crtClass, @Nullable Class<?> crtGenerics, CrTImportsComponent imports, ACTUAL actual) {
         Class<?> actualClass = actual.getClass();
-        List<ClassConversionInfo<?>> conversions = supportedConversions.get(crtClass);
+        List<ClassConversionInfo<?>> conversions = getConversions(crtClass, crtGenerics);
         if (conversions != null) {
             List<String> representations = new ArrayList<>();
             for (ClassConversionInfo<?> conversionInfo : conversions) {
@@ -282,12 +293,6 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         return "CraftTweaker Examples: " + modid;
     }
 
-    private String getTagWithExplicitAmount(MCTag<?> tag, int amount) {
-        //Explicitly include the amount rather than doing tag.withAmount(amount).getCommandString() as we want to make the values
-        // that need an amount specified to be able to be implicit, have them
-        return tag.getCommandString() + " * " + amount;
-    }
-
     private void addItemStackIngredientSupport() {
         addSupportedConversion(ItemStackIngredient.class, ItemStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
@@ -313,12 +318,12 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                 //Special case handling for when we would want to use a different constructor
                 if (vanillaIngredient.isVanilla() && !serializedIngredient.isJsonArray() && serializedIngredient.has(JsonConstants.ITEM)) {
                     Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(serializedIngredient, JsonConstants.ITEM)));
-                    representation = ItemStackHelper.getCommandString(new ItemStack(item, amount));
+                    representation = ItemStackUtil.getCommandString(new ItemStack(item, amount));
                     amount = 1;
                 } else if (vanillaIngredient instanceof NBTIngredient) {
                     ItemStack stack = CraftingHelper.getItemStack(serializedIngredient, true);
                     stack.setCount(amount);
-                    representation = ItemStackHelper.getCommandString(stack);
+                    representation = ItemStackUtil.getCommandString(stack);
                     amount = 1;
                 }
             }
@@ -357,8 +362,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                       return new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
                   } else if (ingredient instanceof FluidStackIngredient.Tagged) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
-                      return getTagWithExplicitAmount(TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString()),
-                            serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt());
+                      return TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString())
+                            .withAmount(serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt()).getCommandString();
                   }
                   return null;
               });
@@ -396,8 +401,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
           Class<? extends ICrTChemicalStack<CHEMICAL, STACK, ?>> stackCrTClass, Class<? extends ChemicalStackIngredient<CHEMICAL, STACK>> ingredientClass,
           String ingredientType, Function<STACK, CommandStringDisplayable> singleDescription, CrTChemicalTagManager<CHEMICAL> tagManager,
           ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer) {
-        addSupportedConversion(ICrTChemicalStack.class, stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
-        addSupportedConversion(ChemicalStackIngredient.class, ingredientClass, ingredientClass,
+        addSupportedConversionWithAlt(ICrTChemicalStack.class, stackCrTClass, stackClass, (imports, stack) -> singleDescription.apply(stack).getCommandString());
+        addSupportedConversionWithAlt(ChemicalStackIngredient.class, ingredientClass, ingredientClass,
               (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), deserializer, singleDescription, tagManager),
               (imports, ingredient) -> {
                   if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
@@ -407,7 +412,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                       JsonObject serialized = (JsonObject) ingredient.serialize();
                       long amount = serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsLong();
                       if (amount > 0 && amount <= Integer.MAX_VALUE) {
-                          return getTagWithExplicitAmount(tagManager.getTag(serialized.get(JsonConstants.TAG).getAsString()), (int) amount);
+                          return tagManager.getTag(serialized.get(JsonConstants.TAG).getAsString()).withAmount((int) amount).getCommandString();
                       }
                   }
                   return null;
@@ -445,10 +450,8 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     /**
-     * Basically a copy of {@link DataProvider#save(Gson, HashCache, JsonElement, Path)} but it takes the contents as a string instead of serializes json using
-     * GSON.
+     * Basically a copy of {@link DataProvider#save(Gson, HashCache, JsonElement, Path)} but it takes the contents as a string instead of serializes json using GSON.
      */
-    @SuppressWarnings("UnstableApiUsage")
     private static void save(HashCache cache, String contents, Path path) throws IOException {
         String sha1 = SHA1.hashUnencodedChars(contents).toString();
         if (!Objects.equals(cache.getHash(path), sha1) || !Files.exists(path)) {
@@ -489,5 +492,30 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     private record ClassConversionInfo<ACTUAL>(Class<? extends ACTUAL> actualClass, List<BiFunction<CrTImportsComponent, ? super ACTUAL, String>> conversions) {
+    }
+
+    private static class ConversionTracker {
+
+        private final Map<Class<?>, List<ClassConversionInfo<?>>> genericConversions = new HashMap<>();
+        private final List<ClassConversionInfo<?>> conversions = new ArrayList<>();
+
+        public void add(@Nullable Class<?> generic, ClassConversionInfo<?> conversionInfo) {
+            if (generic == null) {
+                conversions.add(conversionInfo);
+            } else {
+                genericConversions.computeIfAbsent(generic, g -> new ArrayList<>()).add(conversionInfo);
+            }
+        }
+
+        @Nullable
+        public List<ClassConversionInfo<?>> getConversions(@Nullable Class<?> generic) {
+            if (generic != null) {
+                List<ClassConversionInfo<?>> conversions = genericConversions.get(generic);
+                if (conversions != null) {
+                    return conversions;
+                }
+            }
+            return conversions;
+        }
     }
 }

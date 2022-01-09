@@ -9,7 +9,7 @@ import mekanism.common.integration.crafttweaker.example.component.CrTExampleReci
 import mekanism.common.integration.crafttweaker.example.component.CrTExampleRemoveRecipesComponent;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.example.component.ICrTExampleComponent;
-import mekanism.common.integration.crafttweaker.recipe.MekanismRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
 import net.minecraft.resources.ResourceLocation;
 
 public class CrTExampleBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TYPE>> {

@@ -159,6 +159,17 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         super.setFocused(focused);
     }
 
+    @Override
+    public boolean changeFocus(boolean focused) {
+        if (this.active && this.visible) {
+            setFocused(!isFocused());
+            boolean isFocused = isFocused();
+            this.onFocusedChanged(isFocused);
+            return isFocused;
+        }
+        return false;
+    }
+
     public void move(int changeX, int changeY) {
         x += changeX;
         y += changeY;

@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker;
 
-import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.MCTag;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
@@ -23,8 +23,8 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTPigmentStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTSlurryStack;
-import net.minecraft.tags.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
 
 public class CrTUtils {
 

@@ -55,7 +55,7 @@ public class GuiColorWindow extends GuiWindow {
         huePicker = addChild(new GuiHuePicker(gui, relativeX + 7, relativeY + 104, 146, 8));
 
         textField = addChild(new GuiTextField(gui, relativeX + 30, relativeY + getButtonHeight() - 20, 67, 12));
-        textField.setMaxStringLength(11);
+        textField.setMaxLength(11);
         textField.setInputValidator(InputValidator.DIGIT.or(c -> c == ','));
         textField.setBackground(BackgroundType.ELEMENT_HOLDER);
         addChild(new TranslationButton(gui, relativeX + 100, relativeY + getButtonHeight() - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, () -> {

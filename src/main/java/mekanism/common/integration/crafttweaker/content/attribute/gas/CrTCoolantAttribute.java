@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker.content.attribute.gas;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;

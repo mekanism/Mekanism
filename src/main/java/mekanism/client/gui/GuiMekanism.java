@@ -93,7 +93,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public void init() {
+    protected void init() {
         super.init();
         if (warningTracker != null) {
             //If our warning tracker isn't null (so this isn't the first time we are initializing, such as after resizing)

@@ -1,7 +1,7 @@
 package mekanism.common.integration.crafttweaker.recipe.handler;
 
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.api.recipes.IRecipeHandler;
+import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 

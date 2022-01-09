@@ -48,7 +48,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
         rateLimitField = addRenderableWidget(new GuiTextField(this, 77, 128, 49, 12));
         rateLimitField.setEnterHandler(this::setRateLimit);
         rateLimitField.setInputValidator(InputValidator.DECIMAL);
-        rateLimitField.setMaxStringLength(4);
+        rateLimitField.setMaxLength(4);
         rateLimitField.addCheckmarkButton(this::setRateLimit);
     }
 

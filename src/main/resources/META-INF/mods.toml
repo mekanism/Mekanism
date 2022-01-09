@@ -23,3 +23,9 @@ license="MIT"
     mandatory=true
     versionRange="${forge_version}"
     side="BOTH"
+[[dependencies.mekanism]]
+    modId="crafttweaker"
+    mandatory=false
+    versionRange="${crafttweaker_version}"
+    ordering="AFTER"
+    side="BOTH"

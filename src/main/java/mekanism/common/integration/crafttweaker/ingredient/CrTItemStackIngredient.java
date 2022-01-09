@@ -1,23 +1,23 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.data.IData;
-import com.blamejared.crafttweaker.api.data.JSONConverter;
-import com.blamejared.crafttweaker.api.item.IIngredient;
-import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.data.base.IData;
+import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.ingredient.type.IIngredientList;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.impl.item.MCIngredientList;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
-import com.blamejared.crafttweaker.impl.tag.manager.TagManagerItem;
+import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.manager.TagManagerItem;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -102,8 +102,8 @@ public class CrTItemStackIngredient {
      * @return A {@link ItemStackIngredient} that matches a given item tag with amount.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ItemStackIngredient from(MCTagWithAmount<Item> itemTag) {
-        return from(itemTag.getTag(), itemTag.getAmount());
+    public static ItemStackIngredient from(Many<MCTag<Item>> itemTag) {
+        return from(itemTag.getData(), itemTag.getAmount());
     }
 
     /**
@@ -150,14 +150,14 @@ public class CrTItemStackIngredient {
     }
 
     /**
-     * Creates a {@link ItemStackIngredient} out of all the ingredients in the given {@link MCIngredientList}.
+     * Creates a {@link ItemStackIngredient} out of all the ingredients in the given {@link IIngredientList}.
      *
      * @param ingredientList Ingredients to match
      *
-     * @return A {@link ItemStackIngredient} made up of all the ingredients in the given {@link MCIngredientList}.
+     * @return A {@link ItemStackIngredient} made up of all the ingredients in the given {@link IIngredientList}.
      */
     @ZenCodeType.StaticExpansionMethod
-    public static ItemStackIngredient from(MCIngredientList ingredientList) {
+    public static ItemStackIngredient from(IIngredientList ingredientList) {
         IIngredient[] ingredients = ingredientList.getIngredients();
         if (ingredients.length == 0) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be created from an empty ingredient list!");
@@ -172,7 +172,7 @@ public class CrTItemStackIngredient {
             if (ingredient instanceof IItemStack stack) {
                 //If the ingredient is an IItemStack make sure to process it as such so
                 itemStackIngredients.add(from(stack));
-            } else if (ingredient instanceof MCIngredientList ingredientList) {
+            } else if (ingredient instanceof IIngredientList ingredientList) {
                 //If it is another multi ingredient add the different components
                 addIngredients(itemStackIngredients, ingredientList.getIngredients());
             } else {

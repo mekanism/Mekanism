@@ -52,19 +52,16 @@ public class StorageUtils {
     }
 
     public static void addStoredEnergy(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, ILangEntry langEntry) {
-        if (Capabilities.STRICT_ENERGY_CAPABILITY != null) {
-            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
-            if (capability.isPresent()) {
-                IStrictEnergyHandler energyHandlerItem = capability.get();
-                int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
-                for (int container = 0; container < energyContainerCount; container++) {
-                    tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
-                          EnergyDisplay.of(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container))));
-                }
-            } else if (showMissingCap) {
-                tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
+        Optional<IStrictEnergyHandler> capability = stack.getCapability(Capabilities.STRICT_ENERGY_CAPABILITY).resolve();
+        if (capability.isPresent()) {
+            IStrictEnergyHandler energyHandlerItem = capability.get();
+            int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
+            for (int container = 0; container < energyContainerCount; container++) {
+                tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
+                      EnergyDisplay.of(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container))));
             }
+        } else if (showMissingCap) {
+            tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
         }
     }
 
@@ -86,21 +83,18 @@ public class StorageUtils {
     public static <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, HANDLER extends IChemicalHandler<CHEMICAL, STACK>>
     void addStoredChemical(@Nonnull ItemStack stack, @Nonnull List<Component> tooltip, boolean showMissingCap, boolean showAttributes, ILangEntry emptyLangEntry,
           Function<STACK, Component> storedFunction, Capability<HANDLER> capability) {
-        if (capability != null) {
-            //Ensure the capability is not null, as the first call to addInformation happens before capability injection
-            Optional<HANDLER> cap = stack.getCapability(capability).resolve();
-            if (cap.isPresent()) {
-                HANDLER handler = cap.get();
-                for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
-                    STACK chemicalInTank = handler.getChemicalInTank(tank);
-                    tooltip.add(storedFunction.apply(chemicalInTank));
-                    if (showAttributes) {
-                        ChemicalUtil.addAttributeTooltips(tooltip, chemicalInTank.getType());
-                    }
+        Optional<HANDLER> cap = stack.getCapability(capability).resolve();
+        if (cap.isPresent()) {
+            HANDLER handler = cap.get();
+            for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
+                STACK chemicalInTank = handler.getChemicalInTank(tank);
+                tooltip.add(storedFunction.apply(chemicalInTank));
+                if (showAttributes) {
+                    ChemicalUtil.addAttributeTooltips(tooltip, chemicalInTank.getType());
                 }
-            } else if (showMissingCap) {
-                tooltip.add(emptyLangEntry.translate());
             }
+        } else if (showMissingCap) {
+            tooltip.add(emptyLangEntry.translate());
         }
     }
 

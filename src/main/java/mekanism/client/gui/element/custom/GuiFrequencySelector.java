@@ -102,7 +102,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             }, () -> colorFrequencySelector.sendColorUpdate(true), () -> colorFrequencySelector.sendColorUpdate(false)));
         }
         frequencyField = addChild(new GuiTextField(frequencySelector, 50, yStart + 99, 98, 11));
-        frequencyField.setMaxStringLength(FrequencyManager.MAX_FREQ_LENGTH);
+        frequencyField.setMaxLength(FrequencyManager.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);
         frequencyField.setInputValidator(InputValidator.LETTER_OR_DIGIT.or(InputValidator.FREQUENCY_CHARS));

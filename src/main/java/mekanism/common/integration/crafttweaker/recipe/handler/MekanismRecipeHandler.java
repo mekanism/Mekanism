@@ -1,13 +1,13 @@
 package mekanism.common.integration.crafttweaker.recipe.handler;
 
-import com.blamejared.crafttweaker.api.item.IIngredient;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.api.recipes.IRecipeHandler;
-import com.blamejared.crafttweaker.impl.fluid.MCFluidStack;
-import com.blamejared.crafttweaker.impl.helper.ItemStackHelper;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
-import com.blamejared.crafttweaker.impl.tag.manager.TagManagerFluid;
-import com.blamejared.crafttweaker.impl.tag.manager.TagManagerItem;
+import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
+import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.manager.TagManagerFluid;
+import com.blamejared.crafttweaker.api.tag.manager.TagManagerItem;
+import com.blamejared.crafttweaker.api.util.ItemStackUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.util.List;
@@ -43,12 +43,12 @@ import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.fluids.FluidStack;
@@ -99,7 +99,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
      */
     private String convertParam(Object param) {
         if (param instanceof ItemStack stack) {
-            return ItemStackHelper.getCommandString(stack);
+            return ItemStackUtil.getCommandString(stack);
         } else if (param instanceof FluidStack stack) {
             return new MCFluidStack(stack).getCommandString();
         } else if (param instanceof GasStack stack) {
@@ -147,12 +147,6 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         return "Unimplemented: " + param;
     }
 
-    private String getTagWithExplicitAmount(MCTag<?> tag, int amount) {
-        //Explicitly include the amount rather than doing tag.withAmount(amount).getCommandString() as we want to make the values
-        // that need an amount specified to be able to be implicit, have them
-        return tag.getCommandString() + " * " + amount;
-    }
-
     @Nullable
     public static String basicImplicitIngredient(Ingredient vanillaIngredient, int amount, JsonElement serialized) {
         if (serialized.isJsonObject()) {
@@ -160,14 +154,14 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             if (vanillaIngredient.isVanilla()) {
                 if (serializedIngredient.has(JsonConstants.ITEM)) {
                     Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(serializedIngredient.get(JsonConstants.ITEM).getAsString()));
-                    return ItemStackHelper.getCommandString(new ItemStack(item, amount));
+                    return ItemStackUtil.getCommandString(new ItemStack(item, amount));
                 } else if (serializedIngredient.has(JsonConstants.TAG)) {
                     return TagManagerItem.INSTANCE.getTag(serializedIngredient.get(JsonConstants.TAG).getAsString()).withAmount(amount).getCommandString();
                 }
             } else if (vanillaIngredient instanceof NBTIngredient) {
                 ItemStack stack = CraftingHelper.getItemStack(serializedIngredient, true);
                 stack.setCount(amount);
-                return ItemStackHelper.getCommandString(stack);
+                return ItemStackUtil.getCommandString(stack);
             }
         }
         return null;
@@ -210,8 +204,8 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
         } else if (ingredient instanceof FluidStackIngredient.Tagged) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //Note: Handled via implicit casts
-            return getTagWithExplicitAmount(TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString()),
-                  serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt());
+            return TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString())
+                  .withAmount(serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt()).getCommandString();
         } else if (ingredient instanceof FluidStackIngredient.Multi multiIngredient) {
             StringBuilder builder = new StringBuilder(CrTConstants.CLASS_FLUID_STACK_INGREDIENT + ".createMulti(");
             multiIngredient.forEachIngredient(i -> {
@@ -240,7 +234,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             long amount = serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsLong();
             if (amount > 0 && amount <= Integer.MAX_VALUE) {
                 //Note: Handled via implicit casts
-                return getTagWithExplicitAmount(tag, (int) amount);
+                return tag.withAmount((int) amount).getCommandString();
             }
             //Tag with amount can only handle up to max int, so we have to do it explicitly if we have more
             return crtClass + ".from(" + tag.getCommandString() + ", " + amount + ")";

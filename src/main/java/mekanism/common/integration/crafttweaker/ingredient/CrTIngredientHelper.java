@@ -1,6 +1,6 @@
 package mekanism.common.integration.crafttweaker.ingredient;
 
-import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.api.tag.MCTag;
 import java.util.function.Function;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.inputs.InputIngredient;

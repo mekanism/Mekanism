@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker;
 
-import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
-import com.blamejared.crafttweaker.impl.util.text.MCTextComponent;
+import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import java.util.Locale;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
@@ -30,33 +29,33 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTS
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import mekanism.common.integration.crafttweaker.example.component.ICrTExampleComponent;
-import mekanism.common.integration.crafttweaker.recipe.ChemicalCrystallizerRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ChemicalDissolutionRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ChemicalInfuserRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.CombinerRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ElectrolysisRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.FluidSlurryToSlurryRecipeManager.ChemicalWasherRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.FluidToFluidRecipeManager.EvaporatingRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.GasToGasRecipeManager.IsotopicCentrifugeRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.GasToGasRecipeManager.SolarNeutronActivatorRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackChemicalToItemStackRecipeManager.ChemicalInjectionRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackChemicalToItemStackRecipeManager.MetallurgicInfuserRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackChemicalToItemStackRecipeManager.OsmiumCompressorRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackChemicalToItemStackRecipeManager.PaintingRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackChemicalToItemStackRecipeManager.PurificationRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackToEnergyRecipeManager.EnergyConversionRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackToGasRecipeManager.ChemicalOxidizerRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackToGasRecipeManager.GasConversionRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackToInfuseTypeRecipeManager.InfusionConversionRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackToItemStackRecipeManager.CrusherRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackToItemStackRecipeManager.EnergizedSmelterRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackToItemStackRecipeManager.EnrichmentChamberRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.ItemStackToPigmentRecipeManager.PigmentExtractingRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.NucleosynthesizingRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.PigmentMixingRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.PressurizedReactionRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.RotaryRecipeManager;
-import mekanism.common.integration.crafttweaker.recipe.SawmillRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalCrystallizerRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalDissolutionRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ChemicalInfuserRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.CombinerRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ElectrolysisRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.FluidSlurryToSlurryRecipeManager.ChemicalWasherRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.FluidToFluidRecipeManager.EvaporatingRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.GasToGasRecipeManager.IsotopicCentrifugeRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.GasToGasRecipeManager.SolarNeutronActivatorRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.ChemicalInjectionRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.MetallurgicInfuserRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.OsmiumCompressorRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.PaintingRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackChemicalToItemStackRecipeManager.PurificationRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToEnergyRecipeManager.EnergyConversionRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToGasRecipeManager.ChemicalOxidizerRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToGasRecipeManager.GasConversionRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToInfuseTypeRecipeManager.InfusionConversionRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.CrusherRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.EnergizedSmelterRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToItemStackRecipeManager.EnrichmentChamberRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.ItemStackToPigmentRecipeManager.PigmentExtractingRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.NucleosynthesizingRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.PigmentMixingRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.PressurizedReactionRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.RotaryRecipeManager;
+import mekanism.common.integration.crafttweaker.recipe.manager.SawmillRecipeManager;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
@@ -68,12 +67,13 @@ import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -512,21 +512,12 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
     }
 
     private String descriptionSignature(CrTImportsComponent imports, Class<?> clazz) {
-        return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addDescription(stack as " + getCrTClassName(clazz) + ", " +
-               getCrTClassName(MCTextComponent.class) + "...)";
+        //TODO - 1.18: Re-evaluate component type once jei tweaker updates
+        return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addDescription(stack as " + getCrTClassName(clazz) + ", " + getCrTClassName(Component.class) + "...)";
     }
 
-    private static class JEIHidingComponent<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements ICrTExampleComponent {
-
-        private final Function<STACK, CommandStringDisplayable> describer;
-        private final IChemicalProvider<CHEMICAL> chemicalProvider;
-        private final CrTImportsComponent imports;
-
-        public JEIHidingComponent(CrTImportsComponent imports, IChemicalProvider<CHEMICAL> chemicalProvider, Function<STACK, CommandStringDisplayable> describer) {
-            this.imports = imports;
-            this.describer = describer;
-            this.chemicalProvider = chemicalProvider;
-        }
+    private record JEIHidingComponent<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>>(
+          CrTImportsComponent imports, IChemicalProvider<CHEMICAL> chemicalProvider, Function<STACK, CommandStringDisplayable> describer) implements ICrTExampleComponent {
 
         @Nonnull
         @Override
