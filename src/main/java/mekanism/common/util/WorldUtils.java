@@ -405,10 +405,8 @@ public class WorldUtils {
 
     public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable SoundEvent soundEvent) {
         if (soundEvent == null) {
-            soundEvent = fluidStack.getFluid().getAttributes().getFillSound(world, pos);
-            if (soundEvent == null) {
-                soundEvent = fluidStack.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL;
-            }
+            Fluid fluid = fluidStack.getFluid();
+            soundEvent = fluid.getPickupSound().orElseGet(() ->  fluid.getAttributes().getFillSound(world, pos));
         }
         world.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
     }

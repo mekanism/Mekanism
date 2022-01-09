@@ -90,4 +90,11 @@ public class BlockPlasticStairs extends StairBlock implements IColoredBlock, ISt
         //Manually declare which getPickupSound we want to be using
         return IStateExtendedFluidLoggable.super.getPickupSound();
     }
+
+    @Nonnull
+    @Override
+    public Optional<SoundEvent> getPickupSound(BlockState state) {
+        //Manually declare which getPickupSound we want to be using
+        return IStateExtendedFluidLoggable.super.getPickupSound(state);
+    }
 }

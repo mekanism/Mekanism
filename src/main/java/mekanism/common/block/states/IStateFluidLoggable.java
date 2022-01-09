@@ -111,7 +111,12 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
     @Nonnull
     @Override
     default Optional<SoundEvent> getPickupSound() {
-        //TODO - 1.18: Implement? https://github.com/MinecraftForge/MinecraftForge/pull/8357
         return Optional.empty();
+    }
+
+    @Nonnull
+    @Override
+    default Optional<SoundEvent> getPickupSound(BlockState state) {
+        return getFluid(state).getType().getPickupSound();
     }
 }

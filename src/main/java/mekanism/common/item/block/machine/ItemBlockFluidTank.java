@@ -214,8 +214,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                         return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
                                     }
                                 }
-                                //TODO - 1.18: Pass the state to it once https://github.com/MinecraftForge/MinecraftForge/pull/8357 is merged
-                                sound = bucketPickup.getPickupSound();
+                                sound = bucketPickup.getPickupSound(blockState);
                             }
                             if (validFluid(fluidTank, fluidStack)) {
                                 if (fluidTank.isEmpty()) {
@@ -360,8 +359,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockFluidTank> impleme
                                 return super.execute(source, stack);
                             }
                         }
-                        //TODO - 1.18: Pass the state to it once https://github.com/MinecraftForge/MinecraftForge/pull/8357 is merged
-                        sound = bucketPickup.getPickupSound();
+                        sound = bucketPickup.getPickupSound(blockState);
                     }
                     if (validFluid(fluidTank, fluidStack)) {
                         if (fluidTank.isEmpty()) {

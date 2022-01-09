@@ -157,7 +157,6 @@ public class RenderTickHandler {
         ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
         if (chestStack.getItem() instanceof ItemMekaSuitArmor armorItem) {
             MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) RenderProperties.get(armorItem)).getGearModel(EquipmentSlot.CHEST);
-            //TODO - 1.18: Do we need to be copying more data like PlayerRenderer does when setting up
             PlayerRenderer renderer = (PlayerRenderer) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
             PlayerModel<AbstractClientPlayer> model = renderer.getModel();
             model.setAllVisible(true);
