@@ -61,7 +61,6 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, getResource());
             blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
@@ -100,7 +99,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
     }
 
     @Override
-    public boolean isActive() {
+    public boolean isJEIAreaActive() {
         return handler.isActive();
     }
 
@@ -175,7 +174,7 @@ public class GuiProgress extends GuiTexturedElement implements IJEIRecipeArea<Gu
         //Prep fill gradient
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
 
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder builder = tessellator.getBuilder();

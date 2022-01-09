@@ -74,7 +74,7 @@ public class ModelArmoredJetpack extends ModelJetpack {
 
     private ModelArmoredJetpack(ModelPart root) {
         super(root, JETPACK_TEXTURE);
-        //TODO - 1.18: replace the thrusters and fuel tubes in super (it is by name so probably doesn't matter as they have the same name but still)
+        //Note: Parts are gotten by name and given our parts we override for super have the same name, we don't have to inject them elsewhere
         armoredParts = getRenderableParts(root, CHESTPLATE, LEFT_GUARD_TOP, RIGHT_GUARD_TOP, MIDDLE_PLATE, RIGHT_GUARD_BOT, LEFT_GUARD_BOT);
         armoredLights = getRenderableParts(root, RIGHT_LIGHT, LEFT_LIGHT);
     }

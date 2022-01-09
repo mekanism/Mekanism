@@ -13,7 +13,7 @@ import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeTier;

@@ -6,7 +6,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.attribute.AttributeCache;
@@ -33,7 +33,7 @@ public class ItemArmoredJetpack extends ItemJetpack implements IAttributeRefresh
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.armoredJetpack());
+        consumer.accept(RenderPropertiesProvider.armoredJetpack());
     }
 
     @Override

@@ -417,17 +417,17 @@ public class RenderTickHandler {
             Vec3 normal3 = vertices[2].getNormal();
             Vector4f vertex4 = getVertex(matrix, vertices[3]);
             Vec3 normal4 = vertices[3].getNormal();
-            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).color(red, green, blue, alpha).endVertex();
-            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).normal((float) normal2.x(), (float) normal2.y(), (float) normal2.z()).color(red, green, blue, alpha).endVertex();
+            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
+            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal((float) normal2.x(), (float) normal2.y(), (float) normal2.z()).endVertex();
 
-            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).normal((float) normal3.x(), (float) normal3.y(), (float) normal3.z()).color(red, green, blue, alpha).endVertex();
-            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).normal((float) normal4.x(), (float) normal4.y(), (float) normal4.z()).color(red, green, blue, alpha).endVertex();
+            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal((float) normal3.x(), (float) normal3.y(), (float) normal3.z()).endVertex();
+            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal((float) normal4.x(), (float) normal4.y(), (float) normal4.z()).endVertex();
 
-            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).normal((float) normal2.x(), (float) normal2.y(), (float) normal2.z()).color(red, green, blue, alpha).endVertex();
-            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).normal((float) normal3.x(), (float) normal3.y(), (float) normal3.z()).color(red, green, blue, alpha).endVertex();
+            buffer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal((float) normal2.x(), (float) normal2.y(), (float) normal2.z()).endVertex();
+            buffer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal((float) normal3.x(), (float) normal3.y(), (float) normal3.z()).endVertex();
 
-            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).color(red, green, blue, alpha).endVertex();
-            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).normal((float) normal4.x(), (float) normal4.y(), (float) normal4.z()).color(red, green, blue, alpha).endVertex();
+            buffer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
+            buffer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal((float) normal4.x(), (float) normal4.y(), (float) normal4.z()).endVertex();
         }
     }
 

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
-import net.minecraft.client.renderer.GameRenderer;
 
 public class GuiFlame extends GuiProgress {
 
@@ -15,7 +14,6 @@ public class GuiFlame extends GuiProgress {
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getResource());
         blit(matrix, x, y, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
         if (handler.isActive()) {

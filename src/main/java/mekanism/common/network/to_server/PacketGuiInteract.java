@@ -128,6 +128,7 @@ public class PacketGuiInteract implements IMekanismPacket {
         } else if (interactionType == Type.INT) {
             buffer.writeEnum(interaction);
             buffer.writeBlockPos(tilePosition);
+            //TODO - 1.18?: Eventually we may want to try to make some form of this that can compact negatives better as well
             buffer.writeVarInt(extra);
         } else if (interactionType == Type.ITEM) {
             buffer.writeEnum(itemInteraction);

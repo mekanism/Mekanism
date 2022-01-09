@@ -9,7 +9,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 
@@ -28,7 +27,6 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, GuiDigitalSwitch.SWITCH);
         int buttonSizeX = GuiDigitalSwitch.BUTTON_SIZE_X;
         int buttonSizeY = GuiDigitalSwitch.BUTTON_SIZE_Y;

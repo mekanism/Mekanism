@@ -27,7 +27,6 @@ import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
-import net.minecraft.core.BlockPos;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
@@ -132,7 +131,7 @@ public abstract class BaseBlockLootTables extends BlockLoot {
             @Nullable
             BlockEntity tile = null;
             if (block instanceof IHasTileEntity<?> hasTileEntity) {
-                tile = hasTileEntity.newBlockEntity(BlockPos.ZERO, block.defaultBlockState());
+                tile = hasTileEntity.createDummyBlockEntity();
             }
             if (tile instanceof IFrequencyHandler frequencyHandler && frequencyHandler.getFrequencyComponent().hasCustomFrequencies()) {
                 nbtBuilder.copy(NBTConstants.COMPONENT_FREQUENCY, NBTConstants.MEK_DATA + "." + NBTConstants.COMPONENT_FREQUENCY);

@@ -12,6 +12,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
@@ -20,13 +21,12 @@ import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.FloatingLongSupplier;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -35,6 +35,8 @@ import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler;
 import mekanism.common.capabilities.chemical.item.RateLimitMultiTankGasHandler.GasTankSpec;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.item.RateLimitEnergyHandler;
+import mekanism.common.capabilities.fluid.item.RateLimitMultiTankFluidHandler;
+import mekanism.common.capabilities.fluid.item.RateLimitMultiTankFluidHandler.FluidTankSpec;
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
@@ -44,6 +46,7 @@ import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.content.gear.shared.ModuleEnergyUnit;
 import mekanism.common.item.gear.ItemJetpack.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.StorageUtils;
@@ -64,6 +67,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IModeItem {
 
@@ -79,7 +85,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     private static final MekaSuitMaterial MEKASUIT_MATERIAL = new MekaSuitMaterial();
 
+    //TODO: Expand this system so that modules can maybe define needed tanks?
     private final Set<GasTankSpec> gasTankSpecs = new HashSet<>();
+    private final Set<FluidTankSpec> fluidTankSpecs = new HashSet<>();
     private final float absorption;
     //Full laser dissipation causes 3/4 of the energy to be dissipated and the remaining energy to be refracted
     private final double laserDissipation;
@@ -88,8 +96,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public ItemMekaSuitArmor(EquipmentSlot slot, Properties properties) {
         super(MEKASUIT_MATERIAL, slot, properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1));
         if (slot == EquipmentSlot.HEAD) {
-            gasTankSpecs.add(GasTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
-                  (gas, automationType, stack) -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT), gas -> gas == MekanismGases.NUTRITIONAL_PASTE.get()));
+            fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
+                  (gas, automationType, stack) -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT),
+                  fluid -> fluid.getFluid() == MekanismFluids.NUTRITIONAL_PASTE.getFluid()));
             absorption = 0.15F;
             laserDissipation = 0.15;
             laserRefraction = 0.2;
@@ -114,7 +123,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.mekaSuit());
+        consumer.accept(RenderPropertiesProvider.mekaSuit());
     }
 
     @Override
@@ -131,6 +140,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             StorageUtils.addStoredEnergy(stack, tooltip, true);
             if (!gasTankSpecs.isEmpty()) {
                 StorageUtils.addStoredGas(stack, tooltip, true, false);
+            }
+            if (!fluidTankSpecs.isEmpty()) {
+                StorageUtils.addStoredFluid(stack, tooltip, true);
             }
             tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
@@ -197,6 +209,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (!gasTankSpecs.isEmpty()) {
             wrapper.add(RateLimitMultiTankGasHandler.create(gasTankSpecs));
         }
+        if (!fluidTankSpecs.isEmpty()) {
+            wrapper.add(RateLimitMultiTankFluidHandler.create(fluidTankSpecs));
+        }
         return wrapper;
     }
 
@@ -222,6 +237,20 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             }
         }
         return GasStack.EMPTY;
+    }
+
+    public FluidStack getContainedFluid(ItemStack stack, FluidStack type) {
+        Optional<IFluidHandlerItem> capability = FluidUtil.getFluidHandler(stack).resolve();
+        if (capability.isPresent()) {
+            IFluidHandlerItem fluidHandlerItem = capability.get();
+            for (int i = 0; i < fluidHandlerItem.getTanks(); i++) {
+                FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(i);
+                if (fluidInTank.isFluidEqual(type)) {
+                    return fluidInTank;
+                }
+            }
+        }
+        return FluidStack.EMPTY;
     }
 
     @Override

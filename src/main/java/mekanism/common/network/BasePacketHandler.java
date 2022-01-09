@@ -2,7 +2,7 @@ package mekanism.common.network;
 
 import java.util.Optional;
 import java.util.function.Function;
-import mekanism.api.Range3D;
+import mekanism.common.lib.math.Range3D;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Version;
@@ -171,13 +171,13 @@ public abstract class BasePacketHandler {
                 //Ignore height for partial Cubic chunks support as range comparison gets used ignoring player height normally anyway
                 int radius = playerList.getViewDistance() * 16;
                 for (ServerPlayer player : playerList.getPlayers()) {
-                    if (range.dimension == player.getLevel().dimension()) {
+                    if (range.dimension() == player.getLevel().dimension()) {
                         BlockPos playerPosition = player.blockPosition();
                         int playerX = playerPosition.getX();
                         int playerZ = playerPosition.getZ();
                         //playerX/Z + radius is the max, so to stay in line with how it was before, it has an extra + 1 added to it
-                        if (playerX + radius + 1.99999 > range.xMin && range.xMax + 0.99999 > playerX - radius &&
-                            playerZ + radius + 1.99999 > range.zMin && range.zMax + 0.99999 > playerZ - radius) {
+                        if (playerX + radius + 1.99999 > range.xMin() && range.xMax() + 0.99999 > playerX - radius &&
+                            playerZ + radius + 1.99999 > range.zMin() && range.zMax() + 0.99999 > playerZ - radius) {
                             sendTo(message, player);
                         }
                     }

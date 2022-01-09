@@ -35,8 +35,6 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
      */
     @Nonnull
     default EnumProperty<? extends IFluidLogType> getFluidLoggedProperty() {
-        //TODO - 1.18: When removing CorrectingIntegerProperty, evaluate changing this entire thing to being an EnumProperty
-        // so that F3 can show slightly better debug of what it is fluid logged with
         return BlockStateHelper.FLUID_LOGGED;
     }
 
@@ -98,12 +96,14 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
     @Nonnull
     @Override
     default ItemStack pickupBlock(@Nonnull LevelAccessor world, @Nonnull BlockPos pos, @Nonnull BlockState state) {
-        //TODO - 1.18: Re-evaluate this
         IFluidLogType fluidLogged = state.getValue(getFluidLoggedProperty());
         if (!fluidLogged.isEmpty()) {
-            world.setBlock(pos, setState(state, Fluids.EMPTY), Block.UPDATE_ALL);
             Fluid fluid = fluidLogged.getFluid();
-            return fluid.getAttributes().getBucket(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME));
+            ItemStack bucket = fluid.getAttributes().getBucket(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME));
+            if (!bucket.isEmpty()) {
+                world.setBlock(pos, setState(state, Fluids.EMPTY), Block.UPDATE_ALL);
+                return bucket;
+            }
         }
         return ItemStack.EMPTY;
     }
@@ -111,7 +111,7 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
     @Nonnull
     @Override
     default Optional<SoundEvent> getPickupSound() {
-        //TODO - 1.18: Implement?
+        //TODO - 1.18: Implement? https://github.com/MinecraftForge/MinecraftForge/pull/8357
         return Optional.empty();
     }
 }

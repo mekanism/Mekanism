@@ -22,27 +22,25 @@ public class HwylaDataProvider implements IServerDataProvider<BlockEntity> {
 
     @Override
     public void appendServerData(CompoundTag data, ServerPlayer player, Level world, BlockEntity tile, boolean showDetails) {
-        if (showDetails) {
-            if (tile instanceof TileEntityBoundingBlock boundingBlock) {
-                //If we are a bounding block that has a position set, redirect the check to the main location
-                if (!boundingBlock.receivedCoords || tile.getBlockPos().equals(boundingBlock.getMainPos())) {
-                    //If the coords haven't been received, exit
-                    return;
-                }
-                tile = WorldUtils.getTileEntity(world, boundingBlock.getMainPos());
-                if (tile == null) {
-                    //If there is no tile where the bounding block thinks the main tile is, exit
-                    return;
-                }
+        if (tile instanceof TileEntityBoundingBlock boundingBlock) {
+            //If we are a bounding block that has a position set, redirect the check to the main location
+            if (!boundingBlock.receivedCoords || tile.getBlockPos().equals(boundingBlock.getMainPos())) {
+                //If the coords haven't been received, exit
+                return;
             }
-            HwylaLookingAtHelper helper = new HwylaLookingAtHelper();
-            LookingAtUtils.addInfo(helper, tile, true, true);
-            //Add our data if we have any
-            helper.finalizeData(data);
+            tile = WorldUtils.getTileEntity(world, boundingBlock.getMainPos());
+            if (tile == null) {
+                //If there is no tile where the bounding block thinks the main tile is, exit
+                return;
+            }
         }
+        HwylaLookingAtHelper helper = new HwylaLookingAtHelper();
+        LookingAtUtils.addInfo(helper, tile, true, true);
+        //Add our data if we have any
+        helper.finalizeData(data);
     }
 
-    private static class HwylaLookingAtHelper implements LookingAtHelper {
+    static class HwylaLookingAtHelper implements LookingAtHelper {
 
         private final ListTag data = new ListTag();
 
@@ -77,7 +75,7 @@ public class HwylaDataProvider implements IServerDataProvider<BlockEntity> {
             data.add(chemicalData);
         }
 
-        private void finalizeData(CompoundTag data) {
+        void finalizeData(CompoundTag data) {
             if (!this.data.isEmpty()) {
                 data.put(NBTConstants.MEK_DATA, this.data);
             }

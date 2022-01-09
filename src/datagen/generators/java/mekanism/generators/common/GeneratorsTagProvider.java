@@ -35,6 +35,7 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         addFluids();
         addGases();
         addHarvestRequirements();
+        addToTag(BlockTags.IMPERMEABLE, GeneratorsBlocks.REACTOR_GLASS);
     }
 
     private void addBoxBlacklist() {

@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import java.util.Objects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -73,14 +74,12 @@ public class Coord4D {//TODO - V11: Continue working on replacing uses of this w
     }
 
     /**
-     * Returns a new Coord4D from a defined TileEntity's x, y and z values.
+     * Creates a Coord4D from a block entity's position.
      *
-     * @param tile - TileEntity at the location that will represent this Coord4D
-     *
-     * @return the Coord4D object from the TileEntity
+     * @param tile - BlockEntity at the location that will represent this Coord4D
      */
-    public static Coord4D get(BlockEntity tile) {//TODO - 1.18: Move this to a constructor or move the other helper constructors to a get method
-        return new Coord4D(tile.getBlockPos(), tile.getLevel());
+    public Coord4D(BlockEntity tile) {
+        this(tile.getBlockPos(), Objects.requireNonNull(tile.getLevel(), "Block entity has no level."));
     }
 
     /**

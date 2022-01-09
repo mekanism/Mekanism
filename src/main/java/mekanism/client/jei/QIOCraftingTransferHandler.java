@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.inventory.IInventorySlot;
@@ -255,7 +254,7 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
             if (!missingSlots.isEmpty()) {
                 //If we have any missing slots, report that they are missing to the user and don't allow transferring
                 // Note: We have to shift this back up by one as we shifted the indices earlier to make them easier to work with
-                return handlerHelper.createUserErrorForSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), missingSlots.stream().map(i -> i + 1).collect(Collectors.toList()));
+                return handlerHelper.createUserErrorForSlots(MekanismLang.JEI_MISSING_ITEMS.translate(), missingSlots.intStream().map(i -> i + 1).boxed().toList());
             }
         }
         if (doTransfer || (nonEmptyCraftingSlots > 0 && nonEmptyCraftingSlots >= qioTransferHelper.getEmptyInventorySlots())) {

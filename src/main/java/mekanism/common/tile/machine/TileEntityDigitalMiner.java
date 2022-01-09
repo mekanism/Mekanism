@@ -25,7 +25,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.base.MekFakePlayer;
@@ -363,11 +363,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public void setMinYFromPacket(int newMinY) {
-        setMinY(Math.min(Math.max(0, newMinY), getMaxY()));
-        //Send a packet to update the visual renderer
-        //TODO: Only do this if the renderer is actually active
-        sendUpdatePacket();
-        markDirty(false);
+        if (level != null) {
+            setMinY(Math.min(Math.max(level.getMinBuildHeight(), newMinY), getMaxY()));
+            //Send a packet to update the visual renderer
+            //TODO: Only do this if the renderer is actually active
+            sendUpdatePacket();
+            markDirty(false);
+        }
     }
 
     private void setMinY(int newMinY) {
@@ -1282,11 +1284,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @ComputerMethod(nameOverride = "setMinY")
     private void computerSetMinY(int minY) throws ComputerException {
         validateCanChangeConfiguration();
-        if (minY < 0 || minY > getMaxY()) {
-            //Validate dimensions even though we can clamp
-            throw new ComputerException("Min Y '%d' is out of range must be between 0 and %d. (Inclusive)", minY, getMaxY());
+        if (level != null) {
+            int min = level.getMinBuildHeight();
+            if (minY < min || minY > getMaxY()) {
+                //Validate dimensions even though we can clamp
+                throw new ComputerException("Min Y '%d' is out of range must be between %d and %d. (Inclusive)", minY, min, getMaxY());
+            }
+            setMinYFromPacket(minY);
         }
-        setMinYFromPacket(minY);
     }
 
     @ComputerMethod(nameOverride = "setMaxY")

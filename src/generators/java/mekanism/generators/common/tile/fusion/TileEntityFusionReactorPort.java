@@ -109,7 +109,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock im
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player) {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);

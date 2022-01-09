@@ -22,7 +22,6 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -84,7 +83,6 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
             // we may as well show the background)
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, GuiSlot.WARNING_BACKGROUND_TEXTURE);
             blit(matrix, x + 1, y + 1, 0, 0, width - 2, height - 2, 256, 256);
         }
@@ -97,7 +95,6 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
             if (warning && scale == height - 2) {
                 //TODO - WARNING SYSTEM: Also decide if this should be using some check for when it is just close to max so that it is easily visible
                 //If we have a warning and the gauge is entirely filled draw a warning vertically next to it
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);
                 RenderSystem.setShaderTexture(0, WARNING_TEXTURE);
                 int halfWidth = (width - 2) / 2;
                 //Note: We also start the drawing after half the width so that we are sure it will properly line up with the background
@@ -109,7 +106,6 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
     }
 
     public void drawBarOverlay(PoseStack matrix) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getResource());
         GaugeOverlay gaugeOverlay = getGaugeOverlay();
         blit(matrix, x + 1, y + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());

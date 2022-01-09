@@ -2,7 +2,7 @@ package mekanism.common.item.block;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.BlockIndustrialAlarm;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import net.minecraftforge.client.IItemRenderProperties;
@@ -15,6 +15,6 @@ public class ItemBlockIndustrialAlarm extends ItemBlockTooltip<BlockIndustrialAl
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.industrialAlarm());
+        consumer.accept(RenderPropertiesProvider.industrialAlarm());
     }
 }

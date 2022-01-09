@@ -8,7 +8,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import net.minecraft.nbt.CompoundTag;
 
 /**

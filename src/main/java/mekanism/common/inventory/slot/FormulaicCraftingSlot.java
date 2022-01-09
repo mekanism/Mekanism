@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import mekanism.api.IContentsListener;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 
 public class FormulaicCraftingSlot extends BasicInventorySlot {

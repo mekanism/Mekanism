@@ -15,12 +15,7 @@ import mekanism.client.jei.interfaces.IJEIGhostTarget;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.item.ItemStack;
-
-import mekanism.client.gui.element.GuiElement.IClickable;
-import mekanism.client.gui.element.GuiElement.IHoverable;
-import mekanism.client.jei.interfaces.IJEIGhostTarget.IGhostIngredientConsumer;
 
 public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
 
@@ -127,7 +122,6 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
     }
 
     private void draw(@Nonnull PoseStack matrix) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         if (warningSupplier != null && warningSupplier.getAsBoolean()) {
             RenderSystem.setShaderTexture(0, slotType.getWarningTexture());
         } else {
@@ -138,7 +132,6 @@ public class GuiSlot extends GuiTexturedElement implements IJEIGhostTarget {
             overlay = overlaySupplier.get();
         }
         if (overlay != null) {
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, overlay.getTexture());
             blit(matrix, x, y, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }

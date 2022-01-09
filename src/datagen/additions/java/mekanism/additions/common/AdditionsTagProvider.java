@@ -43,12 +43,14 @@ public class AdditionsTagProvider extends BaseTagProvider {
         addGlowPanels();
         addPlasticBlocks();
         addHarvestRequirements();
+        addToTag(BlockTags.IMPERMEABLE, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS);
     }
 
     private void addEntities() {
         addToTag(EntityTypeTags.SKELETONS, AdditionsEntityTypes.BABY_SKELETON, AdditionsEntityTypes.BABY_STRAY, AdditionsEntityTypes.BABY_WITHER_SKELETON);
         getEntityTypeBuilder(AdditionsTags.Entities.CREEPERS).add(EntityType.CREEPER, AdditionsEntityTypes.BABY_CREEPER.getEntityType());
         getEntityTypeBuilder(AdditionsTags.Entities.ENDERMEN).add(EntityType.ENDERMAN, AdditionsEntityTypes.BABY_ENDERMAN.getEntityType());
+        addToTag(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES, AdditionsEntityTypes.BABY_STRAY);
         addToTag(MekanismTagProvider.PVI_COMPAT, AdditionsEntityTypes.BABY_CREEPER, AdditionsEntityTypes.BABY_ENDERMAN, AdditionsEntityTypes.BABY_SKELETON,
               AdditionsEntityTypes.BABY_STRAY, AdditionsEntityTypes.BABY_WITHER_SKELETON);
     }

@@ -2,12 +2,12 @@ package mekanism.common.registries;
 
 import mekanism.common.ChemicalConstants;
 import mekanism.common.Mekanism;
+import mekanism.common.item.ItemNutritionalPasteBucket;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidRegistryObject;
-import net.minecraft.world.level.block.LiquidBlock;
-import net.minecraft.world.item.BucketItem;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Flowing;
 import net.minecraftforge.fluids.ForgeFlowingFluid.Source;
 
@@ -36,7 +36,9 @@ public class MekanismFluids {
     public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> LITHIUM = FLUIDS.registerLiquidChemical(ChemicalConstants.LITHIUM);
 
     public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> STEAM = FLUIDS.register("steam",
-          FluidAttributes.builder(Mekanism.rl("liquid/steam"), Mekanism.rl("liquid/steam_flow")).gaseous().temperature(373));
+          FluidDeferredRegister.getMekBaseBuilder(Mekanism.rl("liquid/steam"), Mekanism.rl("liquid/steam_flow")).gaseous().temperature(373));
     public static final FluidRegistryObject<Source, Flowing, LiquidBlock, BucketItem> HEAVY_WATER = FLUIDS.register("heavy_water",
-          FluidAttributes.builder(new ResourceLocation("block/water_still"), new ResourceLocation("block/water_flow")).color(0xFF0D1455));
+          FluidDeferredRegister.getMekBaseBuilder(new ResourceLocation("block/water_still"), new ResourceLocation("block/water_flow")).color(0xFF0D1455));
+    public static final FluidRegistryObject<Source, Flowing, LiquidBlock, ItemNutritionalPasteBucket> NUTRITIONAL_PASTE = FLUIDS.register("nutritional_paste",
+          ItemNutritionalPasteBucket::new, fluidAttributes -> fluidAttributes.color(0xFFEB6CA3));
 }

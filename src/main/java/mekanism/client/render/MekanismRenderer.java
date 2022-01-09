@@ -214,12 +214,6 @@ public class MekanismRenderer {
         }
     }
 
-    public static void bindTexture(ResourceLocation texture) {
-        //TODO - 1.18: inline this?
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, texture);
-    }
-
     //Color
     public static void resetColor() {
         RenderSystem.setShaderColor(1, 1, 1, 1);
@@ -349,10 +343,8 @@ public class MekanismRenderer {
         RenderSystem.disableDepthTest();
         RenderSystem.disableTexture();
         RenderSystem.enableBlend();
-        //TODO - 1.18: Test this
-        //RenderSystem.disableAlphaTest();
         RenderSystem.defaultBlendFunc();
-        //RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -362,9 +354,7 @@ public class MekanismRenderer {
         bufferbuilder.vertex(matrix4f, x, height, 0).color(r, g, b, a).endVertex();
         bufferbuilder.vertex(matrix4f, width, height, 0).color(r, g, b, a).endVertex();
         tessellator.end();
-        //RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        //RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
         RenderSystem.enableDepthTest();
     }

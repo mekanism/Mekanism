@@ -46,7 +46,7 @@ public class GaugeDropperContentsHandler extends MergedTankContentsHandler<Merge
 
     private GaugeDropperContentsHandler() {
         mergedTank = MergedTank.create(
-              new RateLimitFluidTank(TRANSFER_RATE, () -> CAPACITY, this),
+              new RateLimitFluidTank(() -> TRANSFER_RATE, () -> CAPACITY, this),
               new RateLimitGasTank(() -> TRANSFER_RATE, () -> CAPACITY, ChemicalTankBuilder.GAS.alwaysTrueBi, ChemicalTankBuilder.GAS.alwaysTrueBi,
                     ChemicalTankBuilder.GAS.alwaysTrue, null, gasHandler = new DynamicGasHandler(side -> gasTanks, InteractPredicate.ALWAYS_TRUE,
                     InteractPredicate.ALWAYS_TRUE, () -> onContentsChanged(NBTConstants.GAS_TANKS, gasTanks))),

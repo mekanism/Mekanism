@@ -36,7 +36,6 @@ public class GuiSlider extends GuiElement {
     public void renderBackgroundOverlay(PoseStack matrix, int mouseX, int mouseY) {
         super.renderBackgroundOverlay(matrix, mouseX, mouseY);
         GuiUtils.fill(matrix, getButtonX() + 2, getButtonY() + 3, getButtonWidth() - 4, 6, 0xFF555555);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, SLIDER);
         int posX = (int) (value * (getButtonWidth() - 6));
         blit(matrix, getButtonX() + posX, getButtonY(), 0, 0, 7, 12, 12, 12);

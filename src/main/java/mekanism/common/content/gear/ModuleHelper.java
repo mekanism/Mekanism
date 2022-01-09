@@ -3,9 +3,7 @@ package mekanism.common.content.gear;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -152,18 +150,15 @@ public class ModuleHelper implements IModuleHelper {
     }
 
     @Override
-    public Collection<ModuleData<?>> loadAllTypes(ItemStack container) {
+    public List<ModuleData<?>> loadAllTypes(ItemStack container) {
         if (container.getItem() instanceof IModuleContainerItem) {
             return loadAllTypes(ItemDataUtils.getCompound(container, NBTConstants.MODULES));
         }
         return Collections.emptyList();
     }
 
-    private Set<ModuleData<?>> loadAllTypes(CompoundTag modulesTag) {
-        //We use a set so in case there is a duplicate entry somehow between legacy and non legacy,
-        // we only include it once in the returned set. This shouldn't happen, but it is a just in case thing
-        //TODO - 1.18: After removing legacy types we might as well change this to a list
-        Set<ModuleData<?>> moduleTypes = new HashSet<>();
+    private List<ModuleData<?>> loadAllTypes(CompoundTag modulesTag) {
+        List<ModuleData<?>> moduleTypes = new ArrayList<>();
         for (String name : modulesTag.getAllKeys()) {
             ModuleData<?> moduleType = getModuleTypeFromName(name);
             if (moduleType != null) {

@@ -173,7 +173,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player) {
         if (!isRemote()) {
             setActive(!getActive());
             Level world = getLevel();
@@ -185,7 +185,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public InteractionResult onRightClick(Player player) {
         return InteractionResult.PASS;
     }
 

@@ -4,7 +4,8 @@ import com.mojang.serialization.Codec;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
+import java.util.Optional;
+import java.util.function.ToIntFunction;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -14,8 +15,10 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.resource.OreType;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.SectionPos;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
@@ -23,10 +26,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.BiomeCategory;
+import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.GenerationStep;
+import net.minecraft.world.level.levelgen.RandomSupport;
+import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
@@ -38,6 +47,7 @@ import net.minecraft.world.level.levelgen.placement.CountPlacement;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -153,17 +163,74 @@ public class GenHandler {
     /**
      * @return True if some retro-generation happened, false otherwise
      */
-    public static boolean generate(ServerLevel world, Random random, int chunkX, int chunkZ) {
-        BlockPos blockPos = new BlockPos(chunkX * 16, 0, chunkZ * 16);
-        Biome biome = world.getBiome(blockPos);
+    public static boolean generate(ServerLevel world, ChunkPos chunkPos) {
         boolean generated = false;
-        if (isValidBiome(biome.getBiomeCategory()) && world.hasChunk(chunkX, chunkZ)) {
+        //Ensure the chunk actually exists before trying to retrogen it
+        if (!SharedConstants.debugVoidTerrain(chunkPos) && world.hasChunk(chunkPos.x, chunkPos.z)) {
+            SectionPos sectionPos = SectionPos.of(chunkPos, world.getMinSection());
+            BlockPos blockPos = sectionPos.origin();
             ChunkGenerator chunkGenerator = world.getChunkSource().getGenerator();
-            for (PlacedFeature feature : ORE_RETROGENS.values()) {
-                generated |= feature.place(world, chunkGenerator, random, blockPos);
+            WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(RandomSupport.seedUniquifier()));
+            long decorationSeed = random.setDecorationSeed(world.getSeed(), blockPos.getX(), blockPos.getZ());
+
+            //TODO - 1.18: Re-evaluate this is runtimeBiomeSource vs biomeSource
+            BiomeSource biomeSource = chunkGenerator.getBiomeSource();//chunkGenerator.biomeSource
+            //TODO - 1.18: Figure this out as I don't think we necessarily go across biomes correctly
+            /*Set<Biome> set = new ObjectArraySet<>();
+            if (chunkGenerator instanceof FlatLevelSource) {
+                set.addAll(biomeSource.possibleBiomes());
+            } else {
+                ChunkPos.rangeClosed(sectionPos.chunk(), 1).forEach(chunk -> {
+                    ChunkAccess chunkaccess = world.getChunk(chunk.x, chunk.z);
+                    for (LevelChunkSection levelchunksection : chunkaccess.getSections()) {
+                        levelchunksection.getBiomes().getAll(set::add);
+                    }
+                });
+                set.retainAll(biomeSource.possibleBiomes());
+            }*/
+
+            int decorationStep = GenerationStep.Decoration.UNDERGROUND_ORES.ordinal() - 1;
+            List<BiomeSource.StepFeatureData> list = biomeSource.featuresPerStep();
+
+            ToIntFunction<PlacedFeature> featureIndex;
+            if (decorationStep < list.size()) {
+                //TODO - 1.18: Figure this out as I don't think we necessarily go across biomes correctly
+                /*IntSet intset = new IntArraySet();
+                for(Biome biome : set) {
+                    List<List<Supplier<PlacedFeature>>> list2 = biome.getGenerationSettings().features();
+                    if (decorationStep < list2.size()) {
+                        List<Supplier<PlacedFeature>> list1 = list2.get(decorationStep);
+                        BiomeSource.StepFeatureData stepFeatureData = list.get(decorationStep);
+                        list1.stream().map(Supplier::get).forEach(feature -> intset.add(stepFeatureData.indexMapping().applyAsInt(feature)));
+                    }
+                }
+                int j1 = intset.size();
+                int[] aint = intset.toIntArray();
+                Arrays.sort(aint);*/
+
+                List<PlacedFeature> features = list.get(decorationStep).features();
+                featureIndex = features::indexOf;
+            } else {
+                featureIndex = feature -> -1;
             }
-            generated |= SALT_RETROGEN_FEATURE.place(world, chunkGenerator, random, blockPos);
+            Registry<PlacedFeature> registry = world.registryAccess().registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
+            for (Map.Entry<OreType, PlacedFeature> entry : ORE_RETROGENS.entrySet()) {
+                generated |= place(registry, world, chunkGenerator, blockPos, random, decorationSeed, decorationStep, featureIndex, entry.getValue(),
+                      ORES.get(entry.getKey()));
+            }
+            generated |= place(registry, world, chunkGenerator, blockPos, random, decorationSeed, decorationStep, featureIndex, SALT_RETROGEN_FEATURE, SALT_FEATURE);
+            world.setCurrentlyGenerating(null);
         }
         return generated;
+    }
+
+    private static boolean place(Registry<PlacedFeature> registry, WorldGenLevel world, ChunkGenerator chunkGenerator, BlockPos blockPos, WorldgenRandom random,
+          long decorationSeed, int decorationStep, ToIntFunction<PlacedFeature> featureIndex, PlacedFeature feature, PlacedFeature sourceFeature) {
+        //Check the index of the source feature instead of the retrogen feature
+        random.setFeatureSeed(decorationSeed, featureIndex.applyAsInt(sourceFeature), decorationStep);
+        world.setCurrentlyGenerating(() -> registry.getResourceKey(feature).map(Object::toString).orElseGet(feature::toString));
+        //Note: We call placeWithContext directly to allow for doing a placeWithBiomeCheck, except by having the context pretend
+        // it is the non retrogen feature which actually is added to the various biomes
+        return feature.placeWithContext(new PlacementContext(world, chunkGenerator, Optional.of(sourceFeature)), random, blockPos);
     }
 }

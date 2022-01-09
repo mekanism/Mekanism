@@ -12,7 +12,6 @@ import mekanism.client.gui.warning.IWarningTracker;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 
 public class GuiWarningTab extends GuiTexturedElement {
@@ -39,7 +38,6 @@ public class GuiWarningTab extends GuiTexturedElement {
     @Override
     public void drawBackground(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getResource());
         blit(matrix, x, y, 0, 0, width, height, width, height);
     }

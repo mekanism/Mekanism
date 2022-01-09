@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.Machine;
@@ -30,7 +30,7 @@ public class ItemBlockSolarNeutronActivator extends ItemBlockMachine implements 
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.activator());
+        consumer.accept(RenderPropertiesProvider.activator());
     }
 
     @Override

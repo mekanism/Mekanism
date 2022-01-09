@@ -20,12 +20,12 @@ import java.util.function.UnaryOperator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.inventory.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
@@ -92,9 +92,11 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.UsernameCache;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.server.ServerLifecycleHooks;
@@ -135,6 +137,13 @@ public final class MekanismUtils {
 
     public static Component logFormat(EnumColor messageColor, Object message) {
         return MekanismLang.LOG_FORMAT.translateColored(EnumColor.DARK_BLUE, MekanismLang.MEKANISM, messageColor, message);
+    }
+
+    @Nullable
+    public static Player tryGetClientPlayer() {
+        //Note: Ideally we would have some way to get which player is in question on the server
+        // as this is mostly used in tooltips, but odds are it won't end up being called
+        return DistExecutor.safeCallWhenOn(Dist.CLIENT, () -> MekanismClient::tryGetClientPlayer);
     }
 
     /**
@@ -433,7 +442,7 @@ public final class MekanismUtils {
                 frequency.setValid(false);
                 tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.getName()));
                 if (frequency.getOwner() != null) {
-                    String owner = OwnerDisplay.getOwnerName(MekanismClient.tryGetClientPlayer(), frequency.getOwner(), frequency.getClientOwner());
+                    String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequency.getOwner(), frequency.getClientOwner());
                     if (owner != null) {
                         tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
                     }
@@ -452,7 +461,7 @@ public final class MekanismUtils {
             tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, frequency.key()));
             CompoundTag frequencyCompound = ItemDataUtils.getCompound(stack, NBTConstants.FREQUENCY);
             if (frequencyCompound.hasUUID(NBTConstants.OWNER_UUID)) {
-                String owner = OwnerDisplay.getOwnerName(MekanismClient.tryGetClientPlayer(), frequencyCompound.getUUID(NBTConstants.OWNER_UUID), null);
+                String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequencyCompound.getUUID(NBTConstants.OWNER_UUID), null);
                 if (owner != null) {
                     tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
                 }

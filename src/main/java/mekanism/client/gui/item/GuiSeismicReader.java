@@ -29,6 +29,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     private final List<BlockState> blockList = new ArrayList<>();
     private final Object2IntMap<Block> frequencies = new Object2IntOpenHashMap<>();
+    private final int minHeight;
     private MekanismButton upButton;
     private MekanismButton downButton;
     private GuiScrollBar scrollBar;
@@ -37,9 +38,10 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         super(container, inv, title);
         imageWidth = 147;
         imageHeight = 182;
+        this.minHeight = inv.player.level.getMinBuildHeight();
         BlockPos pos = inv.player.blockPosition();
         //Calculate all the blocks in the column
-        for (BlockPos p : BlockPos.betweenClosed(new BlockPos(pos.getX(), 0, pos.getZ()), pos)) {
+        for (BlockPos p : BlockPos.betweenClosed(new BlockPos(pos.getX(), minHeight, pos.getZ()), pos)) {
             blockList.add(inv.player.level.getBlockState(p));
         }
     }
@@ -80,7 +82,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         int currentLayer = blockList.size() - scrollBar.getCurrentSelection() - 1;
         //Render the layer text scaled, so that it does not start overlapping past 100
-        drawTextScaledBound(matrix, TextComponentUtil.build(currentLayer), 111, 87, screenTextColor(), 13);
+        drawTextScaledBound(matrix, TextComponentUtil.build(minHeight + currentLayer), 111, 87, screenTextColor(), 13);
 
         //TODO - V11: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
         //Render the item stacks

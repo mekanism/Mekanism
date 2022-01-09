@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import java.util.Arrays;
 import mekanism.api.functions.CharPredicate;
+import net.minecraft.resources.ResourceLocation;
 
 public class InputValidator {
 
@@ -12,11 +13,12 @@ public class InputValidator {
 
     public static final CharPredicate ALL = c -> true;
     public static final CharPredicate DIGIT = c -> c >= '0' && c <= '9';
+    public static final CharPredicate DIGIT_OR_NEGATIVE = DIGIT.or(c -> c == '-');
     public static final CharPredicate LETTER = c -> (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     public static final CharPredicate LETTER_OR_DIGIT = LETTER.or(DIGIT);
     public static final CharPredicate USERNAME = InputValidator.LETTER_OR_DIGIT.or(c -> c == '_');
     public static final CharPredicate RL_NAMESPACE = DIGIT.or(c -> c >= 'a' && c <= 'z').or(from('_', '.', '-'));
-    public static final CharPredicate RL_PATH = RL_NAMESPACE.or(from('/'));
+    public static final CharPredicate RL_PATH =  ResourceLocation::validPathChar;
     public static final CharPredicate RESOURCE_LOCATION = RL_PATH.or(from(':'));
     public static final CharPredicate DECIMAL = DIGIT.or(from('.'));
     public static final CharPredicate SCI_NOTATION = DECIMAL.or(from('E'));

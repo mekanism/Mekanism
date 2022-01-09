@@ -80,17 +80,17 @@ public abstract class MekanismJavaModel extends Model {
                     Vector4f vertex2 = getVertex(matrix4f, quad.vertices[1]);
                     Vector4f vertex3 = getVertex(matrix4f, quad.vertices[2]);
                     Vector4f vertex4 = getVertex(matrix4f, quad.vertices[3]);
-                    vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
-                    vertexConsumer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                    vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal(normalX, normalY, normalZ).endVertex();
+                    vertexConsumer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal(normalX, normalY, normalZ).endVertex();
 
-                    vertexConsumer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
-                    vertexConsumer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                    vertexConsumer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal(normalX, normalY, normalZ).endVertex();
+                    vertexConsumer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal(normalX, normalY, normalZ).endVertex();
                     //Vertices missing from base implementation
-                    vertexConsumer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
-                    vertexConsumer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                    vertexConsumer.vertex(vertex2.x(), vertex2.y(), vertex2.z()).color(red, green, blue, alpha).normal(normalX, normalY, normalZ).endVertex();
+                    vertexConsumer.vertex(vertex3.x(), vertex3.y(), vertex3.z()).color(red, green, blue, alpha).normal(normalX, normalY, normalZ).endVertex();
 
-                    vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
-                    vertexConsumer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).normal(normalX, normalY, normalZ).color(red, green, blue, alpha).endVertex();
+                    vertexConsumer.vertex(vertex.x(), vertex.y(), vertex.z()).color(red, green, blue, alpha).normal(normalX, normalY, normalZ).endVertex();
+                    vertexConsumer.vertex(vertex4.x(), vertex4.y(), vertex4.z()).color(red, green, blue, alpha).normal(normalX, normalY, normalZ).endVertex();
                 }
             });
         }

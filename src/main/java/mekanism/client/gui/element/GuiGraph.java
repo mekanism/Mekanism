@@ -11,7 +11,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 
 public class GuiGraph extends GuiTexturedElement {
@@ -59,7 +58,6 @@ public class GuiGraph extends GuiTexturedElement {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw Black and border
         renderBackgroundTexture(matrix, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getResource());
         //Draw the graph
         int size = graphData.size();

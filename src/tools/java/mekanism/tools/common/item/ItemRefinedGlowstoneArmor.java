@@ -2,7 +2,7 @@ package mekanism.tools.common.item;
 
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
-import mekanism.tools.client.render.item.ToolsISTERProvider;
+import mekanism.tools.client.render.ToolsRenderPropertiesProvider;
 import mekanism.tools.common.material.MaterialCreator;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +17,7 @@ public class ItemRefinedGlowstoneArmor extends ItemMekanismArmor {
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ToolsISTERProvider.glowArmor());
+        consumer.accept(ToolsRenderPropertiesProvider.glowArmor());
     }
 
     @Override

@@ -7,5 +7,5 @@ import net.minecraftforge.client.IItemRenderProperties;
 public interface ISpecialGear extends IItemRenderProperties {
 
     @Nonnull
-    CustomArmor getGearModel(EquipmentSlot slot);
+    ICustomArmor getGearModel(EquipmentSlot slot);
 }

@@ -15,7 +15,6 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.inputs.InputIngredient;
-import mekanism.api.recipes.inputs.TagResolverHelper;
 import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer.IngredientType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.Tag;
@@ -154,7 +153,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
             ChemicalIngredientInfo<CHEMICAL, STACK> ingredientInfo = getIngredientInfo();
             //TODO: Can this be cached some how
             List<@NonNull STACK> representations = new ArrayList<>();
-            for (CHEMICAL chemical : TagResolverHelper.getRepresentations(tag)) {
+            for (CHEMICAL chemical : tag.getValues()) {
                 representations.add(ingredientInfo.createStack(chemical, amount));
             }
             return representations;

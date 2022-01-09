@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import mekanism.tools.client.render.item.ToolsISTERProvider;
+import mekanism.tools.client.render.ToolsRenderPropertiesProvider;
 import mekanism.tools.common.IHasRepairType;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import mekanism.tools.common.util.ToolsUtils;
@@ -28,7 +28,7 @@ public class ItemMekanismShield extends ShieldItem implements IHasRepairType {
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ToolsISTERProvider.shield());
+        consumer.accept(ToolsRenderPropertiesProvider.shield());
     }
 
     @Override

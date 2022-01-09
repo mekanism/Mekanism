@@ -6,22 +6,23 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.chemical.gas.Gas;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.MathUtils;
 import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
+import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.ParticleStatus;
@@ -36,13 +37,14 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.fluids.FluidStack;
 
 @ParametersAreNonnullByDefault
 public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileEntityNutritionalLiquifier> {
 
-    //Expect size of one as it is likely to just be nutritional paste, but support more in case the recipe system changes
-    private static final Map<Gas, Model3D> cachedModels = new HashMap<>(1);
+    private static final Int2ObjectMap<Model3D> cachedModels = new Int2ObjectOpenHashMap<>();
     private static final Map<TileEntityNutritionalLiquifier, PseudoParticleData> particles = new WeakHashMap<>();
+    private static final int stages = 40;
     private static final float BLADE_SPEED = 25F;
     private static final float ROTATE_SPEED = 10F;
 
@@ -57,11 +59,12 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
     @Override
     protected void render(TileEntityNutritionalLiquifier tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
           ProfilerFiller profiler) {
-        if (!tile.gasTank.isEmpty()) {
-            GasStack paste = tile.gasTank.getStack();
-            float gasScale = paste.getAmount() / (float) tile.gasTank.getCapacity();
-            MekanismRenderer.renderObject(getPasteModel(paste), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                  MekanismRenderer.getColorARGB(paste, gasScale, true), light, overlayLight, FaceDisplay.FRONT);
+        if (!tile.fluidTank.isEmpty()) {
+            FluidStack paste = tile.fluidTank.getFluid();
+            float fluidScale = paste.getAmount() / (float) tile.fluidTank.getCapacity();
+            int modelNumber = ModelRenderer.getStage(paste, stages, fluidScale);
+            MekanismRenderer.renderObject(getPasteModel(modelNumber), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
+                  MekanismRenderer.getColorARGB(paste, fluidScale), light, overlayLight, FaceDisplay.FRONT);
         }
         boolean active = tile.getActive();
         matrix.pushPose();
@@ -100,16 +103,6 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
                     int rate = Minecraft.getInstance().options.particles == ParticleStatus.DECREASED ? 12 : 4;
                     if (tile.getLevel().getGameTime() % rate == 0) {
                         pseudoParticles.particles.add(new PseudoParticle(tile.getLevel(), stack));
-                        //TODO - 1.18: Try using this instead of our pseudo particles as maybe it will be able to render properly
-                        // behind translucent glass and our contents in fast
-                        /*Vector3d motion = new Vector3d((world.random.nextFloat() - 0.5D) * 0.075D,
-                              world.random.nextDouble() * 0.1D,
-                              (world.random.nextFloat() - 0.5D) * 0.075D);
-                        Vector3d position = new Vector3d((world.random.nextFloat() - 0.5D) * 0.3D,
-                              (world.random.nextFloat() - 0.5D) * 0.3D,
-                              (world.random.nextFloat() - 0.5D) * 0.3D);
-                        position = position.add(pos.getX() + 0.5, pos.getY() + 0.55, pos.getZ() + 0.5);
-                        world.addParticle(new ItemParticleData(ParticleTypes.ITEM, stack), position.x, position.y, position.z, motion.x, motion.y + 0.05D, motion.z);*/
                     }
                 }
                 //Render particles
@@ -132,19 +125,21 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         return ProfilerConstants.NUTRITIONAL_LIQUIFIER;
     }
 
-    private Model3D getPasteModel(@Nonnull GasStack stack) {
-        return cachedModels.computeIfAbsent(stack.getType(), gas -> {
-            Model3D model = new Model3D();
-            model.setTexture(MekanismRenderer.getChemicalTexture(gas));
-            model.minX = 0.001F;
-            model.minY = 0.313F;
-            model.minZ = 0.001F;
+    private Model3D getPasteModel(int stage) {
+        if (cachedModels.containsKey(stage)) {
+            return cachedModels.get(stage);
+        }
+        Model3D model = new Model3D();
+        model.setTexture(MekanismRenderer.getFluidTexture(MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(1), FluidType.STILL));
+        model.minX = 0.001F;
+        model.minY = 0.313F;
+        model.minZ = 0.001F;
 
-            model.maxX = 0.999F;
-            model.maxY = 0.937F;
-            model.maxZ = 0.999F;
-            return model;
-        });
+        model.maxX = 0.999F;
+        model.maxY = 0.313F + 0.624F * (stage / (float) stages);
+        model.maxZ = 0.999F;
+        cachedModels.putIfAbsent(stage, model);
+        return model;
     }
 
     private static class PseudoParticleData {
@@ -255,27 +250,23 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             float f5 = this.getV0();
             float f6 = this.getV1();
             buffer.vertex(matrix, vectors[0].x(), vectors[0].y(), vectors[0].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f8, f6)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[1].x(), vectors[1].y(), vectors[1].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f8, f5)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[2].x(), vectors[2].y(), vectors[2].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f7, f5)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
             buffer.vertex(matrix, vectors[3].x(), vectors[3].y(), vectors[3].z())
-                  .color(1F, 1F, 1F, 1F)
                   .uv(f7, f6)
-                  //.color(1F, 1F, 1F, 1F)
+                  .color(1F, 1F, 1F, 1F)
                   .uv2(light)
                   .endVertex();
         }

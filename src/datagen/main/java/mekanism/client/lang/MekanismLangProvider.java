@@ -327,6 +327,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addFluid(MekanismFluids.LITHIUM, "Liquid Lithium");
         addFluid(MekanismFluids.STEAM, "Liquid Steam");
         addFluid(MekanismFluids.HEAVY_WATER, "Heavy Water");
+        addFluid(MekanismFluids.NUTRITIONAL_PASTE, "Nutritional Paste");
     }
 
     private void addEntities() {
@@ -353,14 +354,13 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismGases.SUPERHEATED_SODIUM, "Superheated Sodium");
         add(MekanismGases.BRINE, "Gaseous Brine");
         add(MekanismGases.LITHIUM, "Lithium");
-        add(MekanismGases.LIQUID_OSMIUM, "Liquid Osmium");
+        add(MekanismGases.OSMIUM, "Osmium");
         add(MekanismGases.FISSILE_FUEL, "Fissile Fuel");
         add(MekanismGases.NUCLEAR_WASTE, "Nuclear Waste");
         add(MekanismGases.SPENT_NUCLEAR_WASTE, "Spent Nuclear Waste");
         add(MekanismGases.ANTIMATTER, "Antimatter");
         add(MekanismGases.PLUTONIUM, "Plutonium");
         add(MekanismGases.POLONIUM, "Polonium");
-        add(MekanismGases.NUTRITIONAL_PASTE, "Nutritional Paste");
     }
 
     private void addInfusionTypes() {
@@ -652,6 +652,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.INVALID, "(Invalid)");
         add(MekanismLang.HAS_INVENTORY, "Inventory: %s");
         add(MekanismLang.NO_GAS, "No gas stored.");
+        add(MekanismLang.NO_FLUID_TOOLTIP, "No fluid stored.");
         add(MekanismLang.FREE_RUNNERS_MODE, "Runners Mode: %s");
         add(MekanismLang.JETPACK_MODE, "Jetpack Mode: %s");
         add(MekanismLang.SCUBA_TANK_MODE, "Scuba Tank: %s");

@@ -12,7 +12,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
@@ -78,7 +78,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     public void initializeClient(Consumer<IBlockRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.particles());
+        consumer.accept(RenderPropertiesProvider.particles());
     }
 
     @Nonnull
@@ -143,8 +143,7 @@ public abstract class BlockMekanism extends Block {
         List<ItemStack> drops = super.getDrops(state, builder);
         //Check if we need to clear any radioactive materials from the stored tanks as those will be dumped via the tile being removed
         if (state.getBlock() instanceof IHasTileEntity<?> hasTileEntity) {
-            //TODO - 1.18: Test this?
-            BlockEntity tile = hasTileEntity.newBlockEntity(BlockPos.ZERO, state);
+            BlockEntity tile = hasTileEntity.createDummyBlockEntity(state);
             if (tile instanceof TileEntityMekanism mekTile) {
                 //Skip tiles that have no tanks and skip chemical creative tanks
                 if (!mekTile.getGasTanks(null).isEmpty() && (!(mekTile instanceof TileEntityChemicalTank chemicalTank) ||

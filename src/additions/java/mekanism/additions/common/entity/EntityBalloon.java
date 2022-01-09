@@ -187,8 +187,7 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
                     entityData.set(IS_LATCHED, (byte) 0);
                 }
             }
-            //TODO - 1.18: There doesn't seem to be a clear way to see if an entity is ticking
-            if (latchedEntity != null && (latchedEntity.getHealth() <= 0 || !latchedEntity.isAlive())) {// || !level.getChunkSource().isEntityTickingChunk(latchedEntity))) {
+            if (latchedEntity != null && !latchedEntity.isAlive()) {
                 latchedEntity = null;
                 entityData.set(IS_LATCHED, (byte) 0);
             }
@@ -217,8 +216,10 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
             Vec3 motion = latchedEntity.getDeltaMovement();
             if (latchedEntity.getY() - (floor + 1) < -0.1) {
                 latchedEntity.setDeltaMovement(motion.x(), Math.max(0.04, motion.y() * 1.015), motion.z());
+                latchedEntity.hasImpulse = true;
             } else if (latchedEntity.getY() - (floor + 1) > 0.1) {
                 latchedEntity.setDeltaMovement(motion.x(), Math.min(-0.04, motion.y() * 1.015), motion.z());
+                latchedEntity.hasImpulse = true;
             } else {
                 latchedEntity.setDeltaMovement(motion.x(), 0, motion.z());
             }
@@ -243,12 +244,12 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     private void pop() {
         playSound(AdditionsSounds.POP.get(), 1, 1);
         if (!level.isClientSide) {
-            //TODO - 1.18: Cache the vector?
             Vector3f col = new Vector3f(color.getColor(0), color.getColor(1), color.getColor(2));
             DustParticleOptions redstoneParticleData = new DustParticleOptions(col, 1.0F);
+            Vec3 center = getBoundingBox().getCenter();
             for (int i = 0; i < 10; i++) {
-                ((ServerLevel) level).sendParticles(redstoneParticleData, getX() + 0.6 * random.nextFloat() - 0.3, getY() + 0.6 * random.nextFloat() - 0.3,
-                      getZ() + 0.6 * random.nextFloat() - 0.3, 1, 0, 0, 0, 0);
+                ((ServerLevel) level).sendParticles(redstoneParticleData, center.x() + 0.6 * random.nextFloat() - 0.3, center.y() + 0.6 * random.nextFloat() - 0.3,
+                      center.z() + 0.6 * random.nextFloat() - 0.3, 1, 0, 0, 0, 0);
             }
         }
         discard();
@@ -267,7 +268,6 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     @Nonnull
     @Override
     protected MovementEmission getMovementEmission() {
-        //TODO - 1.18: Re-evaluate
         return MovementEmission.NONE;
     }
 
@@ -344,7 +344,6 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     public void remove(@Nonnull RemovalReason reason) {
         super.remove(reason);
         if (latchedEntity != null) {
-            //TODO - 1.18: Re-evaluate this
             latchedEntity.hasImpulse = false;
         }
     }
@@ -401,13 +400,6 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
         return new AABB(new Vec3(x - f, posY, z - f), new Vec3(x + f, posY + size.height, z + f));
     }
 
-    /*@Override
-    public void setPos(double x, double y, double z) {
-        //TODO - 1.18: Try to call super and override makeBoundingBox instead?
-        setPosRaw(x, y, z);
-        setBoundingBox(getBoundingBoxForPose(Pose.STANDING));
-    }*/
-
     @Nonnull
     @Override
     protected AABB makeBoundingBox() {
@@ -418,13 +410,6 @@ public class EntityBalloon extends Entity implements IEntityAdditionalSpawnData 
     public void refreshDimensions() {
         //NO-OP don't allow size to change
     }
-
-    /*@Override//TODO - 1.18: Re-evaluate all the bounding block stuff
-    public void setLocationFromBoundingbox() {
-        AABB axisalignedbb = getBoundingBox();
-        //Offset the y value upwards to match where it actually should be relative to the bounding box
-        setPosRaw((axisalignedbb.minX + axisalignedbb.maxX) / 2D, axisalignedbb.minY + OFFSET, (axisalignedbb.minZ + axisalignedbb.maxZ) / 2D);
-    }*/
 
     @Override
     public ItemStack getPickedResult(HitResult target) {

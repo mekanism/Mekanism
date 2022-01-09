@@ -1936,9 +1936,11 @@ d98f2a5ea82393a8708b24d26040af6eb2b4f6a4 data/mekanismadditions/tags/items/plast
 3fd9efe70aa1d11195710def49cb580d30756d34 data/mekanismadditions/tags/items/plastic_blocks/transparent.json
 33d3308e2fa28d63ce30aa778c3d5855677ff79b data/minecraft/tags/blocks/fence_gates.json
 64d147f3a465150086f7396fc14677e195574598 data/minecraft/tags/blocks/fences.json
+3fd9efe70aa1d11195710def49cb580d30756d34 data/minecraft/tags/blocks/impermeable.json
 088360febb46f0f87f8ef3c78149e5cd943bcdfa data/minecraft/tags/blocks/mineable/pickaxe.json
 9b30843c9f885f3c6e39df349d068f47b6bb25b1 data/minecraft/tags/blocks/slabs.json
 5c573d89b1ae8796cfc1b165c5f578848c6df87b data/minecraft/tags/blocks/stairs.json
+f034fb7facab4ca1b32623f1c053b860e65fe86f data/minecraft/tags/entity_types/freeze_immune_entity_types.json
 9a85afe0e70bc121f0cb6278577b28ce53e26f01 data/minecraft/tags/entity_types/skeletons.json
 64d147f3a465150086f7396fc14677e195574598 data/minecraft/tags/items/fences.json
 9b30843c9f885f3c6e39df349d068f47b6bb25b1 data/minecraft/tags/items/slabs.json

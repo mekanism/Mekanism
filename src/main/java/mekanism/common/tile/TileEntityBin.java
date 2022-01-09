@@ -106,7 +106,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player) {
         setActive(!getActive());
         Level world = getLevel();
         if (world != null) {
@@ -116,7 +116,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public InteractionResult onRightClick(Player player) {
         return InteractionResult.PASS;
     }
 

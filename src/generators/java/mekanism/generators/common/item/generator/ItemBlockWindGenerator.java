@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.machine.ItemBlockMachine;
 import mekanism.common.util.WorldUtils;
-import mekanism.generators.client.render.item.GeneratorsISTERProvider;
+import mekanism.generators.client.render.GeneratorsRenderPropertiesProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -20,7 +20,7 @@ public class ItemBlockWindGenerator extends ItemBlockMachine {
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(GeneratorsISTERProvider.wind());
+        consumer.accept(GeneratorsRenderPropertiesProvider.wind());
     }
 
     @Override

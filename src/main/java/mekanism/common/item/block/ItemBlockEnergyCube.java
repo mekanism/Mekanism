@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockEnergyCube;
 import mekanism.common.block.attribute.Attribute;
@@ -37,7 +37,7 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.energyCube());
+        consumer.accept(RenderPropertiesProvider.energyCube());
     }
 
     @Nonnull

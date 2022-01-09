@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.IAlloyInteraction;
-import mekanism.api.IConfigurable;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.AlloyTier;
 import mekanism.api.tier.BaseTier;
@@ -19,7 +18,10 @@ import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.DynamicHandler.InteractPredicate;
+import mekanism.common.capabilities.proxy.ProxyConfigurable;
+import mekanism.common.capabilities.proxy.ProxyConfigurable.ISidedConfigurable;
 import mekanism.common.capabilities.resolver.BasicCapabilityResolver;
+import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
 import mekanism.common.content.network.transmitter.BufferedTransmitter;
 import mekanism.common.content.network.transmitter.IUpgradeableTransmitter;
 import mekanism.common.content.network.transmitter.Transmitter;
@@ -48,7 +50,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-public abstract class TileEntityTransmitter extends CapabilityTileEntity implements IConfigurable, IAlloyInteraction {
+public abstract class TileEntityTransmitter extends CapabilityTileEntity implements ISidedConfigurable, IAlloyInteraction {
 
     public static final ModelProperty<TransmitterModelData> TRANSMITTER_PROPERTY = new ModelProperty<>();
 
@@ -61,7 +63,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         this.transmitter = createTransmitter(blockProvider);
         cacheCoord();
         addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.ALLOY_INTERACTION_CAPABILITY, this));
-        addCapabilityResolver(BasicCapabilityResolver.constant(Capabilities.CONFIGURABLE_CAPABILITY, this));
+        addCapabilityResolver(new BasicSidedCapabilityResolver<>(this, Capabilities.CONFIGURABLE_CAPABILITY, ProxyConfigurable::new));
     }
 
     protected abstract Transmitter<?, ?, ?> createTransmitter(IBlockProvider blockProvider);
@@ -199,8 +201,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return null;
     }
 
+    @Nonnull
     @Override
-    public InteractionResult onSneakRightClick(Player player, Direction side) {
+    public InteractionResult onSneakRightClick(@Nonnull Player player, @Nonnull Direction side) {
         if (!isRemote()) {
             Direction hitSide = getSideLookingAt(player);
             if (hitSide == null) {
@@ -229,8 +232,9 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return getTransmitter().onConfigure(player, side);
     }
 
+    @Nonnull
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public InteractionResult onRightClick(@Nonnull Player player, @Nonnull Direction side) {
         return getTransmitter().onRightClick(player, side);
     }
 

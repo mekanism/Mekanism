@@ -53,7 +53,6 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
         matrix.pushPose();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        //RenderSystem.defaultAlphaFunc();//TODO - 1.18: Figure this out
         matrix.translate(centerX, centerY, 0);
         RenderSystem.disableTexture();
 
@@ -145,8 +144,7 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
             double angle = Math.toRadians(270 + 360 * ((float) position / activeModes));
             float x = (float) Math.cos(angle) * (INNER + OUTER) / 2F;
             float y = (float) Math.sin(angle) * (INNER + OUTER) / 2F;
-            // draw icon
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);//TODO - 1.18: See if we can pull setting the shader out of the for loop
+            // draw icon, note: shader is set by blit
             RenderSystem.setShaderTexture(0, type.getIcon());
             blit(matrix, Math.round(x - 12), Math.round(y - 20), 24, 24, 0, 0, 18, 18, 18, 18);
             // draw label
@@ -186,9 +184,9 @@ public class GuiRadialSelector<TYPE extends Enum<TYPE> & IRadialSelectorEnum<TYP
     }
 
     private void drawTorus(PoseStack matrix, float startAngle, float sizeAngle) {
+        RenderSystem.setShader(GameRenderer::getPositionShader);
         BufferBuilder vertexBuffer = Tesselator.getInstance().getBuilder();
         Matrix4f matrix4f = matrix.last().pose();
-        //TODO - 1.18: Test this
         vertexBuffer.begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION);
         float draws = DRAWS * (sizeAngle / 360F);
         for (int i = 0; i <= draws; i++) {

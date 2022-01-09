@@ -1,7 +1,7 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -18,15 +18,15 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
+import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer {
 
@@ -414,7 +414,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
         //TODO: Convert this to being two different 16x48 images, one for with border and one for buttons without a black border?
         // And then make it so that they can stretch out to be any size (make this make use of the renderExtendedTexture method
-        MekanismRenderer.bindTexture(buttonBackground.getTexture());
+        RenderSystem.setShaderTexture(0, buttonBackground.getTexture());
         int i = getYImage(isMouseOverCheckWindows(mouseX, mouseY));
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();

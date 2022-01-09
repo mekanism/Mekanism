@@ -47,7 +47,8 @@ public class MekanismAPI {
     private static ITooltipHelper TOOLTIP_HELPER;
 
     //Note: None of the empty variants support registry replacement
-    //TODO - 1.18: Potentially define these with ObjectHolder for purposes of fully defining them outside of the API
+    //TODO: Potentially define these with ObjectHolder for purposes of fully defining them outside of the API
+    // would have some minor issues with how the empty stacks are declared
     /**
      * Empty Gas instance.
      */

@@ -15,7 +15,7 @@ import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault

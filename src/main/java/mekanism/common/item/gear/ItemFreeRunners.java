@@ -11,7 +11,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.ItemCapabilityWrapper;
@@ -48,7 +48,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.freeRunners());
+        consumer.accept(RenderPropertiesProvider.freeRunners());
     }
 
     @Override

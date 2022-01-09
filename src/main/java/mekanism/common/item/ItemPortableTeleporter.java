@@ -9,7 +9,6 @@ import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -29,7 +28,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Override
     public void appendHoverText(@Nonnull ItemStack stack, Level world, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flag) {
-        tooltip.add(OwnerDisplay.of(Minecraft.getInstance().player, getOwnerUUID(stack)).getTextComponent());
+        tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), getOwnerUUID(stack)).getTextComponent());
         MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
         super.appendHoverText(stack, world, tooltip, flag);
     }

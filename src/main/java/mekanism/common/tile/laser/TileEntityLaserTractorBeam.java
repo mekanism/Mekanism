@@ -3,7 +3,7 @@ package mekanism.common.tile.laser;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;

@@ -3,7 +3,7 @@ package mekanism.common.tile.machine;
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
 import mekanism.api.RelativeSide;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;

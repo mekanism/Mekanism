@@ -10,6 +10,7 @@ import mekanism.client.render.FluidRenderMap;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidType;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityFluidTank;
@@ -42,12 +43,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         float fluidScale = tile.prevScale;
         VertexConsumer buffer = null;
         if (!fluid.isEmpty() && fluidScale > 0) {
-            int modelNumber;
-            if (fluid.getFluid().getAttributes().isGaseous(fluid)) {
-                modelNumber = stages - 1;
-            } else {
-                modelNumber = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
-            }
+            int modelNumber = ModelRenderer.getStage(fluid, stages, fluidScale);
             buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
             MekanismRenderer.renderObject(getFluidModel(fluid, modelNumber), matrix, buffer, MekanismRenderer.getColorARGB(fluid, fluidScale),
                   MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT);

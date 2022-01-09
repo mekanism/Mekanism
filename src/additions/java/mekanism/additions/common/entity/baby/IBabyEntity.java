@@ -10,7 +10,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 
 public interface IBabyEntity {
 
-    //COPY of ZombieEntity BABY_SPEED_BOOST_ID and BABY_SPEED_BOOST
+    //COPY of Zombie SPEED_MODIFIER_BABY_UUID and SPEED_MODIFIER_BABY
     UUID babySpeedBoostUUID = UUID.fromString("B9766B59-9566-4402-BC1F-2EE2A276D836");
     AttributeModifier babySpeedBoostModifier = new AttributeModifier(babySpeedBoostUUID, "Baby speed boost", 0.5D, Operation.MULTIPLY_BASE);
 

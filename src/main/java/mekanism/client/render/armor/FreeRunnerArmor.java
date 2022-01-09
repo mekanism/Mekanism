@@ -11,7 +11,7 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-public class FreeRunnerArmor extends CustomArmor implements ResourceManagerReloadListener {
+public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListener {
 
     public static final FreeRunnerArmor FREE_RUNNERS = new FreeRunnerArmor();
 

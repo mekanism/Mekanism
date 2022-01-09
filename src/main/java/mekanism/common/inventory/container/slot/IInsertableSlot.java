@@ -3,7 +3,7 @@ package mekanism.common.inventory.container.slot;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.SelectedWindowData;
 import net.minecraft.world.item.ItemStack;

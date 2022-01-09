@@ -102,8 +102,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               "windGenerationMax", FloatingLong.createConst(480));
         windGenerationMinY = CachedIntValue.wrap(this, builder.comment("The minimum Y value that affects the Wind Generators Power generation.")
               .define("windGenerationMinY", 24));
-        //TODO: Test this, maybe make default supplier be 255 OR 1 higher than minY
-        //TODO: Also see if we can somehow check world.getHeight()
+        //TODO - 1.18: Re-evaluate the default value for this as I want to at least partially rework how wind generators function
+        //Note: We just require that the maxY is greater than the minY, nothing goes badly if it is set above the max y of the world though
+        // as it is just used for range clamping
         windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation.")
               .define("windGenerationMaxY", 255, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
         //Note: We cannot verify the dimension exists as dimensions are dynamic so may not actually exist when we are validating

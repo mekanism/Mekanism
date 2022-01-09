@@ -12,7 +12,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasHandler;
 import mekanism.api.providers.IGasProvider;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -47,7 +47,7 @@ public class ItemScubaTank extends ItemGasArmor implements IItemHUDProvider, IMo
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.scubaTank());
+        consumer.accept(RenderPropertiesProvider.scubaTank());
     }
 
     @Override

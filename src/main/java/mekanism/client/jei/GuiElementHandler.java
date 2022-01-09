@@ -117,7 +117,7 @@ public class GuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
                     return clickableGrandChildAreas;
                 }
                 //If we couldn't find any, then we need to continue on to checking this element itself
-                if (element instanceof IJEIRecipeArea<?> recipeArea && recipeArea.isActive()) {
+                if (element instanceof IJEIRecipeArea<?> recipeArea && recipeArea.isJEIAreaActive()) {
                     ResourceLocation[] categories = recipeArea.getRecipeCategories();
                     //getRecipeCategory is a cheaper call than isMouseOver, so we perform it first
                     if (categories != null && recipeArea.isMouseOverJEIArea(mouseX, mouseY)) {

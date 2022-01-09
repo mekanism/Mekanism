@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.inventory.TileTransitRequest;

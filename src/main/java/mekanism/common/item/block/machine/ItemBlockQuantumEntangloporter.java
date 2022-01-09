@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.api.text.EnumColor;
-import mekanism.client.render.item.ISTERProvider;
+import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.ItemBlockTooltip;
@@ -30,7 +30,7 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTile<?
 
     @Override
     public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(ISTERProvider.entangloporter());
+        consumer.accept(RenderPropertiesProvider.entangloporter());
     }
 
     @Override

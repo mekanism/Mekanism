@@ -1,5 +1,6 @@
 package mekanism.generators.client.gui.element.button;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
@@ -14,8 +15,8 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 
 public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE>> extends MekanismButton {
 
@@ -60,7 +61,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
         if (mode == null) {
             return;
         }
-        MekanismRenderer.bindTexture(TEXTURE);
+        RenderSystem.setShaderTexture(0, TEXTURE);
         MekanismRenderer.color(mode.getColor());
         blit(matrix, x, y, 0, mode == tile.getMode() ? 22 : 0, width, height, 128, 44);
         MekanismRenderer.resetColor();

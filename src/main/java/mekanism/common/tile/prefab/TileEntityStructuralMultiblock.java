@@ -19,7 +19,6 @@ import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
@@ -174,7 +173,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public InteractionResult onRightClick(Player player, Direction side) {
+    public InteractionResult onRightClick(Player player) {
         if (!isRemote()) {
             for (Structure s : structures.values()) {
                 if (s.getController() != null && !getMultiblockData(s).isFormed()) {
@@ -190,7 +189,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public InteractionResult onSneakRightClick(Player player, Direction side) {
+    public InteractionResult onSneakRightClick(Player player) {
         return InteractionResult.PASS;
     }
 

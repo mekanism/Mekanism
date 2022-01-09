@@ -361,7 +361,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //from dust
         ItemStackChemicalToItemStackRecipeBuilder.compressing(
               ItemStackIngredient.from(Tags.Items.DUSTS_GLOWSTONE),
-              GasStackIngredient.from(MekanismGases.LIQUID_OSMIUM, 1),
+              GasStackIngredient.from(MekanismGases.OSMIUM, 1),
               MekanismItems.REFINED_GLOWSTONE_INGOT.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "ingot/from_dust"));
         //from nuggets
@@ -397,7 +397,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //from dust
         ItemStackChemicalToItemStackRecipeBuilder.compressing(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_REFINED_OBSIDIAN),
-              GasStackIngredient.from(MekanismGases.LIQUID_OSMIUM, 1),
+              GasStackIngredient.from(MekanismGases.OSMIUM, 1),
               MekanismItems.REFINED_OBSIDIAN_INGOT.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "ingot/from_dust"));
         //from nuggets

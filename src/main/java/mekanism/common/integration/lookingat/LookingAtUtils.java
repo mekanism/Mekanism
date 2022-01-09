@@ -24,6 +24,7 @@ import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
+import mekanism.common.entity.EntityRobit;
 import mekanism.common.lib.multiblock.IMultiblock;
 import mekanism.common.lib.multiblock.IStructuralMultiblock;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -31,6 +32,7 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.CapabilityUtils;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
@@ -62,6 +64,12 @@ public class LookingAtUtils {
             }
         }
         return null;
+    }
+
+    public static void addInfo(LookingAtHelper info, @Nonnull Entity entity) {
+        if (entity instanceof EntityRobit robit) {
+            displayEnergy(info, robit);
+        }
     }
 
     public static void addInfo(LookingAtHelper info, @Nonnull BlockEntity tile, boolean displayTanks, boolean displayFluidTanks) {

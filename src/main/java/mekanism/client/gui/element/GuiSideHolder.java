@@ -9,7 +9,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class GuiSideHolder extends GuiTexturedElement {
@@ -65,7 +64,6 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     }
 
     private void draw(@Nonnull PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getResource());
         colorTab();
         //Top

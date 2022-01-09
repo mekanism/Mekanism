@@ -6,7 +6,6 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class GuiScrollList extends GuiScrollableElement {
@@ -44,7 +43,6 @@ public abstract class GuiScrollList extends GuiScrollableElement {
         super.drawBackground(matrix, mouseX, mouseY, partialTicks);
         //Draw the background
         renderBackgroundTexture(matrix, background, backgroundSideSize, backgroundSideSize);
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, getResource());
         //Draw Scroll
         //Top border

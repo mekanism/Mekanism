@@ -1,17 +1,16 @@
 package mekanism.api.gear;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import mekanism.api.providers.IModuleDataProvider;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.Component;
 
 /**
  * Helper class for interacting with and creating custom modules. Get an instance from {@link mekanism.api.MekanismAPI#getModuleHelper()}.
@@ -100,7 +99,7 @@ public interface IModuleHelper {
      *
      * @return Module types on an item.
      */
-    Collection<ModuleData<?>> loadAllTypes(ItemStack container);
+    List<ModuleData<?>> loadAllTypes(ItemStack container);
 
     /**
      * Helper method to create a HUD element with a given icon, text, and color.

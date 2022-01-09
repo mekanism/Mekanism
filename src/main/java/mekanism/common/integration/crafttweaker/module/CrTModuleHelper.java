@@ -1,7 +1,6 @@
 package mekanism.common.integration.crafttweaker.module;
 
 import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.MekanismAPI;
@@ -89,7 +88,7 @@ public class CrTModuleHelper {
      * @return Module types on an item.
      */
     @ZenCodeType.Method
-    public static Collection<ModuleData<?>> loadAllTypes(ItemStack container) {
+    public static List<ModuleData<?>> loadAllTypes(ItemStack container) {
         return MekanismAPI.getModuleHelper().loadAllTypes(container);
     }
 }

@@ -102,6 +102,10 @@ public class MekanismTagProvider extends BaseTagProvider {
         addEntities();
         getBlockBuilder(MekanismTags.Blocks.MINER_BLACKLIST);
         addHarvestRequirements();
+        addToTag(BlockTags.IMPERMEABLE, MekanismBlocks.STRUCTURAL_GLASS);
+        //Note: Axolotls live in a brackish water (mix between fresh and salt), so it is reasonable there may be salt nearby
+        addToTag(BlockTags.AXOLOTLS_SPAWNABLE_ON, MekanismBlocks.SALT_BLOCK);
+        addToTag(ItemTags.CLUSTER_MAX_HARVESTABLES, MekanismItems.ATOMIC_DISASSEMBLER, MekanismItems.MEKA_TOOL);
     }
 
     private void addEntities() {
@@ -539,7 +543,6 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismBlocks.STEEL_BLOCK,
               MekanismBlocks.REFINED_GLOWSTONE_BLOCK
         );
-        //TODO - 1.18: This was iron for refined obsidian but should be diamond?
-        addToTag(BlockTags.NEEDS_IRON_TOOL, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
+        addToTag(BlockTags.NEEDS_DIAMOND_TOOL, MekanismBlocks.REFINED_OBSIDIAN_BLOCK);
     }
 }

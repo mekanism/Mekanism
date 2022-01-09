@@ -1,12 +1,13 @@
-package mekanism.tools.client.render.item;
+package mekanism.tools.client.render;
 
-import mekanism.client.render.item.ISTERProvider.MekRenderProperties;
+import mekanism.client.render.RenderPropertiesProvider.MekRenderProperties;
+import mekanism.tools.client.render.item.RenderMekanismShieldItem;
 import net.minecraftforge.client.IItemRenderProperties;
 
 //This class is used to prevent class loading issues on the server without having to use OnlyIn hacks
-public class ToolsISTERProvider {
+public class ToolsRenderPropertiesProvider {
 
-    private ToolsISTERProvider() {
+    private ToolsRenderPropertiesProvider() {
     }
 
     public static IItemRenderProperties shield() {

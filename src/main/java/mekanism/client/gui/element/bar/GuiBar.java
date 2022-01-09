@@ -49,7 +49,6 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
             // we may as well show the background)
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, GuiSlot.WARNING_BACKGROUND_TEXTURE);
             blit(matrix, x + 1, y + 1, 0, 0, width - 2, height - 2, 256, 256);
         }
@@ -65,7 +64,6 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
             renderBarOverlay(matrix, mouseX, mouseY, partialTicks, handlerLevel);
             if (warning && handlerLevel == 1) {
                 //TODO - WARNING SYSTEM: Also decide if this should be using some check for when it is just close to max so that it is easily visible
-                RenderSystem.setShader(GameRenderer::getPositionTexShader);//TODO - 1.18: Do we need to set shader here
                 RenderSystem.setShaderTexture(0, WARNING_TEXTURE);
                 //Note: We also start the drawing after half the dimension so that we are sure it will properly line up with
                 // the one drawn to the background if the contents of things are translucent

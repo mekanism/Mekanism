@@ -16,7 +16,7 @@ public interface IJEIRecipeArea<ELEMENT extends GuiElement> extends GuiEventList
     @Nullable
     ResourceLocation[] getRecipeCategories();
 
-    default boolean isActive() {
+    default boolean isJEIAreaActive() {
         return true;
     }
 

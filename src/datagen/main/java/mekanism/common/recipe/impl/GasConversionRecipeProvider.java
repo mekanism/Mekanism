@@ -25,12 +25,12 @@ class GasConversionRecipeProvider implements ISubRecipeProvider {
         //Osmium block -> osmium
         ItemStackToChemicalRecipeBuilder.gasConversion(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM)),
-              MekanismGases.LIQUID_OSMIUM.getStack(1_800)
+              MekanismGases.OSMIUM.getStack(1_800)
         ).build(consumer, Mekanism.rl(basePath + "osmium_from_block"));
         //Osmium ingot -> osmium
         ItemStackToChemicalRecipeBuilder.gasConversion(
               ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
-              MekanismGases.LIQUID_OSMIUM.getStack(200)
+              MekanismGases.OSMIUM.getStack(200)
         ).build(consumer, Mekanism.rl(basePath + "osmium_from_ingot"));
         //Salt -> hydrogen chloride
         ItemStackToChemicalRecipeBuilder.gasConversion(

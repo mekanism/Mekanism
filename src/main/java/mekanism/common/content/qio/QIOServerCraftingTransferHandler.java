@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import mekanism.api.Action;
-import mekanism.api.inventory.AutomationType;
+import mekanism.api.AutomationType;
 import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.BaseSimulatedInventory;
