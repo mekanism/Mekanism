@@ -682,6 +682,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     }
 
     public void reset() {
+        //TODO: Should the old searcher thread be terminated somehow?
         searcher = new ThreadMinerSearch(this);
         running = false;
         cachedToMine = 0;
@@ -721,7 +722,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
         running = nbt.getBoolean(NBTConstants.RUNNING);
         delay = nbt.getInt(NBTConstants.DELAY);
         numPowering = nbt.getInt(NBTConstants.NUM_POWERING);
-        NBTUtils.setEnumIfPresent(nbt, NBTConstants.STATE, State::byIndexStatic, s -> searcher.state = s);
+        NBTUtils.setEnumIfPresent(nbt, NBTConstants.STATE, State::byIndexStatic, s -> {
+            if (!initCalc && s == State.SEARCHING) {
+                //If we loaded and haven't started yet, but we were searching when we saved
+                // pretend we had finished searching so that we will start again on the first tick
+                s = State.FINISHED;
+            }
+            searcher.state = s;
+        });
         //Update energy per tick in case any of the values changed. It would be slightly cleaner to also validate the fact
         // the values changed, but it would make the code a decent bit messier, as we couldn't use NBTUtils, and it is a
         // rather quick check to update the energy per tick, and in most cases at least one of the settings will not be at
@@ -732,9 +740,6 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements ISusta
     @Override
     public void saveAdditional(@Nonnull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
-        if (searcher.state == State.SEARCHING) {
-            reset();
-        }
         nbtTags.putBoolean(NBTConstants.RUNNING, running);
         nbtTags.putInt(NBTConstants.DELAY, delay);
         nbtTags.putInt(NBTConstants.NUM_POWERING, numPowering);

@@ -14,12 +14,12 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.PathNavigationRegion;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.IFluidBlock;
 
 public class ThreadMinerSearch extends Thread {
@@ -96,7 +96,10 @@ public class ThreadMinerSearch extends Thread {
 
         state = State.FINISHED;
         chunkCache = null;
-        tile.updateFromSearch(oresToMine, found);
+        if (tile.searcher == this) {
+            //Only update search if we are still valid and didn't get replaced due to a reset call
+            tile.updateFromSearch(oresToMine, found);
+        }
     }
 
     public enum State implements IHasTextComponent {

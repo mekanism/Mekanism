@@ -15,6 +15,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -648,9 +649,7 @@ public class WorldUtils {
      * @param pos Pos to convert.
      */
     public static long getChunkPosAsLong(BlockPos pos) {
-        long x = pos.getX() >> 4;
-        long z = pos.getZ() >> 4;
-        return x & 0xFFFFFFFFL | (z & 0xFFFFFFFFL) << 32;
+        return ChunkPos.asLong(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
     }
 
     /**
