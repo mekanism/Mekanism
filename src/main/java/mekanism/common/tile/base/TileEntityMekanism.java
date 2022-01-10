@@ -792,6 +792,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.addToUpdateTag(updateTag);
         }
         updateTag.putFloat(NBTConstants.RADIATION, radiationScale);
+        // Sync the name to clients for chunk reloads
+        if (this.name != null && isNameable()) {
+            updateTag.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.name));
+        }
         return updateTag;
     }
 
@@ -802,6 +806,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.readFromUpdateTag(tag);
         }
         radiationScale = tag.getFloat(NBTConstants.RADIATION);
+        // Sync the name to clients for chunk reloads
+        if (tag.contains(NBTConstants.CUSTOM_NAME, 8) && isNameable()) {
+            this.name = Component.Serializer.fromJson(tag.getString(NBTConstants.CUSTOM_NAME));
+        }
     }
 
     public void onNeighborChange(Block block, BlockPos neighborPos) {
