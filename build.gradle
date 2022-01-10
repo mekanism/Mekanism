@@ -446,13 +446,13 @@ dependencies {
     datagenmainRuntimeOnly fg.deobf("curse.maven:biomes-o-plenty-220318:${biomesoplenty_id}")
     datagenmainRuntimeOnly fg.deobf("curse.maven:terrablender-563928:${terrablender_id}")//Biomes O' Plenty dep
     datagenmainImplementation fg.deobf("curse.maven:biomes-youll-go-247560:${byg_id}")
-    datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
+    // datagenmainImplementation fg.deobf("curse.maven:i-like-wood-324164:${ilikewood_id}")
     //TODO - 1.18: Replace after the module is defined properly in the meta-inf of i-like-wood and ilikewoodxbiomesoplenty
-    datagenmainImplementation fg.deobf("ilikewoodxbiomesoplenty:ilikewoodxbiomesoplenty-1.18.1:7.1.0")
+    // datagenmainImplementation fg.deobf("ilikewoodxbiomesoplenty:ilikewoodxbiomesoplenty-1.18.1:7.1.0")
     //datagenmainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     //TODO - 1.18: Figure these out
     //datagenmainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
-    datagenmainImplementation fg.deobf("ilikewoodxbyg:ilikewoodxbyg-1.18.1:7.0.0.0")
+    // datagenmainImplementation fg.deobf("ilikewoodxbyg:ilikewoodxbyg-1.18.1:7.0.0.0")
     //TODO - 1.18: Currently we are getting projecte from flatdir for purposes of compiling
     //datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
     datagenmainRuntimeOnly fg.deobf("projecte:projecte:1.0.0:universal")

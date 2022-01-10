@@ -1,36 +1,9 @@
 package mekanism.common.recipe.compat;
 
-import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
-import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
-import mekanism.api.text.EnumColor;
-import mekanism.common.Mekanism;
-import mekanism.common.recipe.RecipeProviderUtil;
-import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
-import mekanism.common.registries.MekanismItems;
-import mekanism.common.registries.MekanismPigments;
-import mekanism.common.util.EnumUtils;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import yamahari.ilikewood.ILikeWood;
-import yamahari.ilikewood.plugin.vanilla.VanillaWoodTypes;
-import yamahari.ilikewood.registry.objecttype.WoodenBlockType;
-import yamahari.ilikewood.registry.objecttype.WoodenItemType;
-import yamahari.ilikewood.registry.woodtype.IWoodType;
 
 @ParametersAreNonnullByDefault
-public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
+public class ILikeWoodRecipeProvider { /*extends CompatRecipeProvider {
 
     public ILikeWoodRecipeProvider() {
         super(yamahari.ilikewood.util.Constants.MOD_ID);
@@ -199,5 +172,5 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
             case RED -> WoodenBlockType.RED_BED;
             case BLACK -> WoodenBlockType.BLACK_BED;
         };
-    }
+    }*/
 }

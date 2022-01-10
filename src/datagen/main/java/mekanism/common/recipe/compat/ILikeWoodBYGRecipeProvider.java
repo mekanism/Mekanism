@@ -1,17 +1,9 @@
 package mekanism.common.recipe.compat;
 
-import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.level.ItemLike;
-import potionstudios.byg.common.block.BYGBlocks;
-//TODO - 1.18: use the actual import
-//import yamahari.ilikewood.plugin.byg.OhTheBiomesYoullGoWoodTypes;
-import yamahari.ilikewood.plugin_byg.OhTheBiomesYoullGoWoodTypes;
-import yamahari.ilikewood.registry.woodtype.IWoodType;
 
 @ParametersAreNonnullByDefault
-public class ILikeWoodBYGRecipeProvider extends CompatRecipeProvider {
+public class ILikeWoodBYGRecipeProvider { /*extends CompatRecipeProvider {
 
     public ILikeWoodBYGRecipeProvider() {
         //TODO - 1.18: use the actual import
@@ -53,5 +45,5 @@ public class ILikeWoodBYGRecipeProvider extends CompatRecipeProvider {
 
     private void addWoodType(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, ItemLike log, ItemLike fences, IWoodType woodType) {
         ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks, log, fences, woodType);
-    }
+    }*/
 }

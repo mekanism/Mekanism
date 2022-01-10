@@ -116,10 +116,10 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               //Mod Compat Recipe providers
               new AE2RecipeProvider(),
               new BiomesOPlentyRecipeProvider(),
-              new BYGRecipeProvider(),
-              new ILikeWoodRecipeProvider(),
-              new ILikeWoodBOPRecipeProvider(),
-              new ILikeWoodBYGRecipeProvider()
+              new BYGRecipeProvider()
+              // new ILikeWoodRecipeProvider(),
+              // new ILikeWoodBOPRecipeProvider(),
+              //new ILikeWoodBYGRecipeProvider()
         );
     }
 
