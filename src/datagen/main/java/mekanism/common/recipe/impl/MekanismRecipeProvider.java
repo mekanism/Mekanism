@@ -1,9 +1,5 @@
 package mekanism.common.recipe.impl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
-import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
@@ -17,12 +13,6 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.ExtendedShapelessRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;
-import mekanism.common.recipe.compat.AE2RecipeProvider;
-import mekanism.common.recipe.compat.BYGRecipeProvider;
-import mekanism.common.recipe.compat.BiomesOPlentyRecipeProvider;
-import mekanism.common.recipe.compat.ILikeWoodBOPRecipeProvider;
-import mekanism.common.recipe.compat.ILikeWoodBYGRecipeProvider;
-import mekanism.common.recipe.compat.ILikeWoodRecipeProvider;
 import mekanism.common.recipe.pattern.Pattern;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.DoubleLine;
@@ -34,13 +24,18 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Items;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 
 @ParametersAreNonnullByDefault
 public class MekanismRecipeProvider extends BaseRecipeProvider {
@@ -112,11 +107,11 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new ThermalEvaporationRecipeProvider(),
               new TierInstallerRecipeProvider(),
               new TransmitterRecipeProvider(),
-              new UpgradeRecipeProvider(),
+              new UpgradeRecipeProvider()
               //Mod Compat Recipe providers
-              new AE2RecipeProvider(),
-              new BiomesOPlentyRecipeProvider(),
-              new BYGRecipeProvider()
+              // new AE2RecipeProvider(),
+              // new BiomesOPlentyRecipeProvider(),
+              // new BYGRecipeProvider()
               // new ILikeWoodRecipeProvider(),
               // new ILikeWoodBOPRecipeProvider(),
               //new ILikeWoodBYGRecipeProvider()
