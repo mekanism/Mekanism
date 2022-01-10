@@ -156,7 +156,8 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
                     Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(serializedIngredient.get(JsonConstants.ITEM).getAsString()));
                     return ItemStackUtil.getCommandString(new ItemStack(item, amount));
                 } else if (serializedIngredient.has(JsonConstants.TAG)) {
-                    return TagManagerItem.INSTANCE.getTag(serializedIngredient.get(JsonConstants.TAG).getAsString()).withAmount(amount).getCommandString();
+                    MCTag<Item> tag = TagManagerItem.INSTANCE.getTag(serializedIngredient.get(JsonConstants.TAG).getAsString());
+                    return amount == 1 ? tag.getCommandString() : tag.withAmount(amount).getCommandString();
                 }
             } else if (vanillaIngredient instanceof NBTIngredient) {
                 ItemStack stack = CraftingHelper.getItemStack(serializedIngredient, true);

@@ -6,9 +6,12 @@ import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.tag.MCTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import java.util.List;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
 import net.minecraft.tags.Tag;
@@ -95,6 +98,40 @@ public class CrTGasStackIngredient {
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(GasStackIngredient _this) {
         return JSONConverter.convert(_this.serialize());
+    }
+
+    /**
+     * Checks if a given {@link ICrTGasStack} has a type match for this {@link GasStackIngredient}. Type matches ignore stack size.
+     *
+     * @param type Type to check for a match
+     *
+     * @return {@code true} if the type is supported by this {@link GasStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean testType(GasStackIngredient _this, ICrTGasStack type) {
+        return _this.testType(type.getInternal());
+    }
+
+    /**
+     * Checks if a given {@link ICrTGasStack} matches this {@link GasStackIngredient}. (Checks size for >=)
+     *
+     * @param stack Stack to check for a match
+     *
+     * @return {@code true} if the stack fulfills the requirements for this {@link GasStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean test(GasStackIngredient _this, ICrTGasStack stack) {
+        return _this.test(stack.getInternal());
+    }
+
+    /**
+     * Gets a list of valid instances for this {@link GasStackIngredient}, may not include all or may be empty depending on how complex the ingredient is as the
+     * internal version is mostly used for JEI display purposes.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("representations")
+    public static List<ICrTGasStack> getRepresentations(GasStackIngredient _this) {
+        return CrTUtils.convert(_this.getRepresentations(), CrTGasStack::new);
     }
 
     /**

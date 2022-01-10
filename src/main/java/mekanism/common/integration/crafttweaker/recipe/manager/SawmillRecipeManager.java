@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_SAWING)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_SAWING)
 public class SawmillRecipeManager extends MekanismRecipeManager<SawmillRecipe> {
 
     public static final SawmillRecipeManager INSTANCE = new SawmillRecipeManager();

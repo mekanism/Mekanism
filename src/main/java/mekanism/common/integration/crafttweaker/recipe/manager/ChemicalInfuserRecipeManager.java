@@ -12,7 +12,7 @@ import mekanism.common.recipe.impl.ChemicalInfuserIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_CHEMICAL_INFUSING)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CHEMICAL_INFUSING)
 public class ChemicalInfuserRecipeManager extends MekanismRecipeManager<ChemicalInfuserRecipe> {
 
     public static final ChemicalInfuserRecipeManager INSTANCE = new ChemicalInfuserRecipeManager();

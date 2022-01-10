@@ -12,7 +12,7 @@ import mekanism.common.recipe.impl.ChemicalCrystallizerIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_CRYSTALLIZING)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CRYSTALLIZING)
 public class ChemicalCrystallizerRecipeManager extends MekanismRecipeManager<ChemicalCrystallizerRecipe> {
 
     public static final ChemicalCrystallizerRecipeManager INSTANCE = new ChemicalCrystallizerRecipeManager();

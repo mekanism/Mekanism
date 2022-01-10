@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_GAS)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_GAS)
 public abstract class ItemStackToGasRecipeManager extends MekanismRecipeManager<ItemStackToGasRecipe> {
 
     protected ItemStackToGasRecipeManager(MekanismRecipeType<ItemStackToGasRecipe, ?> recipeType) {
@@ -52,7 +52,7 @@ public abstract class ItemStackToGasRecipeManager extends MekanismRecipeManager<
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_GAS_CONVERSION)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_GAS_CONVERSION)
     public static class GasConversionRecipeManager extends ItemStackToGasRecipeManager {
 
         public static final GasConversionRecipeManager INSTANCE = new GasConversionRecipeManager();
@@ -68,7 +68,7 @@ public abstract class ItemStackToGasRecipeManager extends MekanismRecipeManager<
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_OXIDIZING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_OXIDIZING)
     public static class ChemicalOxidizerRecipeManager extends ItemStackToGasRecipeManager {
 
         public static final ChemicalOxidizerRecipeManager INSTANCE = new ChemicalOxidizerRecipeManager();

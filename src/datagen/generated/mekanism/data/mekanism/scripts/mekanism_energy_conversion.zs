@@ -7,9 +7,9 @@ import mods.mekanism.api.ingredient.ItemStackIngredient;
 
 <recipetype:mekanism:energy_conversion>.addRecipe("redstone_ore_to_power", ItemStackIngredient.from(<tag:items:forge:ores/redstone>), FloatingLong.create(45000));
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:energy_conversion>.addRecipe("redstone_ore_to_power", <tag:items:forge:ores/redstone> * 1, FloatingLong.create(45000));
+// <recipetype:mekanism:energy_conversion>.addRecipe("redstone_ore_to_power", <tag:items:forge:ores/redstone>, FloatingLong.create(45000));
 // <recipetype:mekanism:energy_conversion>.addRecipe("redstone_ore_to_power", ItemStackIngredient.from(<tag:items:forge:ores/redstone>), 45000);
-// <recipetype:mekanism:energy_conversion>.addRecipe("redstone_ore_to_power", <tag:items:forge:ores/redstone> * 1, 45000);
+// <recipetype:mekanism:energy_conversion>.addRecipe("redstone_ore_to_power", <tag:items:forge:ores/redstone>, 45000);
 
 
 //Removes the Energy Conversion Recipe that allows converting Redstone Blocks into Power.

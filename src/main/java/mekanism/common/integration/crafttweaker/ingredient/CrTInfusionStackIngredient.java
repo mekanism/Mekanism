@@ -6,9 +6,12 @@ import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.tag.MCTag;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import java.util.List;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTInfusionStack;
 import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
 import net.minecraft.tags.Tag;
@@ -95,6 +98,40 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(InfusionStackIngredient _this) {
         return JSONConverter.convert(_this.serialize());
+    }
+
+    /**
+     * Checks if a given {@link ICrTInfusionStack} has a type match for this {@link InfusionStackIngredient}. Type matches ignore stack size.
+     *
+     * @param type Type to check for a match
+     *
+     * @return {@code true} if the type is supported by this {@link InfusionStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean testType(InfusionStackIngredient _this, ICrTInfusionStack type) {
+        return _this.testType(type.getInternal());
+    }
+
+    /**
+     * Checks if a given {@link ICrTInfusionStack} matches this {@link InfusionStackIngredient}. (Checks size for >=)
+     *
+     * @param stack Stack to check for a match
+     *
+     * @return {@code true} if the stack fulfills the requirements for this {@link InfusionStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean test(InfusionStackIngredient _this, ICrTInfusionStack stack) {
+        return _this.test(stack.getInternal());
+    }
+
+    /**
+     * Gets a list of valid instances for this {@link InfusionStackIngredient}, may not include all or may be empty depending on how complex the ingredient is as the
+     * internal version is mostly used for JEI display purposes.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("representations")
+    public static List<ICrTInfusionStack> getRepresentations(InfusionStackIngredient _this) {
+        return CrTUtils.convert(_this.getRepresentations(), CrTInfusionStack::new);
     }
 
     /**

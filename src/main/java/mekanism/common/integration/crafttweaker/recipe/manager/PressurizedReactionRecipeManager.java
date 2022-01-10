@@ -22,7 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_REACTION)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_REACTION)
 public class PressurizedReactionRecipeManager extends MekanismRecipeManager<PressurizedReactionRecipe> {
 
     public static final PressurizedReactionRecipeManager INSTANCE = new PressurizedReactionRecipeManager();

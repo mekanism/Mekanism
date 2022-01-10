@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_FLUID_SLURRY_TO_SLURRY)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_SLURRY_TO_SLURRY)
 public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeManager<FluidSlurryToSlurryRecipe> {
 
     protected FluidSlurryToSlurryRecipeManager(MekanismRecipeType<FluidSlurryToSlurryRecipe, ?> recipeType) {
@@ -50,7 +50,7 @@ public abstract class FluidSlurryToSlurryRecipeManager extends MekanismRecipeMan
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_WASHING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_WASHING)
     public static class ChemicalWasherRecipeManager extends FluidSlurryToSlurryRecipeManager {
 
         public static final ChemicalWasherRecipeManager INSTANCE = new ChemicalWasherRecipeManager();

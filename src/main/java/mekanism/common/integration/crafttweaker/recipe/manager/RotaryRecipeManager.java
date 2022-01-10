@@ -15,7 +15,7 @@ import mekanism.common.recipe.impl.RotaryIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ROTARY)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ROTARY)
 public class RotaryRecipeManager extends MekanismRecipeManager<RotaryRecipe> {
 
     public static final RotaryRecipeManager INSTANCE = new RotaryRecipeManager();

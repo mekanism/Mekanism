@@ -7,9 +7,9 @@ import mods.mekanism.api.ingredient.ItemStackIngredient;
 
 <recipetype:mekanism:nucleosynthesizing>.addRecipe("coal_block_to_diamond_block", ItemStackIngredient.from(<tag:items:forge:storage_blocks/coal>), GasStackIngredient.from(<gas:mekanism:antimatter> * 36), <item:minecraft:diamond_block>, 9000);
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:nucleosynthesizing>.addRecipe("coal_block_to_diamond_block", <tag:items:forge:storage_blocks/coal> * 1, GasStackIngredient.from(<gas:mekanism:antimatter> * 36), <item:minecraft:diamond_block>, 9000);
+// <recipetype:mekanism:nucleosynthesizing>.addRecipe("coal_block_to_diamond_block", <tag:items:forge:storage_blocks/coal>, GasStackIngredient.from(<gas:mekanism:antimatter> * 36), <item:minecraft:diamond_block>, 9000);
 // <recipetype:mekanism:nucleosynthesizing>.addRecipe("coal_block_to_diamond_block", ItemStackIngredient.from(<tag:items:forge:storage_blocks/coal>), <gas:mekanism:antimatter> * 36, <item:minecraft:diamond_block>, 9000);
-// <recipetype:mekanism:nucleosynthesizing>.addRecipe("coal_block_to_diamond_block", <tag:items:forge:storage_blocks/coal> * 1, <gas:mekanism:antimatter> * 36, <item:minecraft:diamond_block>, 9000);
+// <recipetype:mekanism:nucleosynthesizing>.addRecipe("coal_block_to_diamond_block", <tag:items:forge:storage_blocks/coal>, <gas:mekanism:antimatter> * 36, <item:minecraft:diamond_block>, 9000);
 
 
 //Removes the Nucleosynthesizing Recipe that converts Tin Ingots into Iron Ingots.

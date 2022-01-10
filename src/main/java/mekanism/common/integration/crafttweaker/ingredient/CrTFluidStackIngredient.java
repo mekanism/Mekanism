@@ -4,12 +4,15 @@ import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.data.base.IData;
 import com.blamejared.crafttweaker.api.data.base.converter.JSONConverter;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
+import com.blamejared.crafttweaker.api.fluid.MCFluidStack;
 import com.blamejared.crafttweaker.api.tag.MCTag;
 import com.blamejared.crafttweaker.api.tag.manager.TagManagerFluid;
 import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import java.util.List;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -101,6 +104,40 @@ public class CrTFluidStackIngredient {
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(FluidStackIngredient _this) {
         return JSONConverter.convert(_this.serialize());
+    }
+
+    /**
+     * Checks if a given {@link IFluidStack} has a type match for this {@link FluidStackIngredient}. Type matches ignore stack size.
+     *
+     * @param type Type to check for a match
+     *
+     * @return {@code true} if the type is supported by this {@link FluidStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean testType(FluidStackIngredient _this, IFluidStack type) {
+        return _this.testType(type.getInternal());
+    }
+
+    /**
+     * Checks if a given {@link IFluidStack} matches this {@link FluidStackIngredient}. (Checks size for >=)
+     *
+     * @param stack Stack to check for a match
+     *
+     * @return {@code true} if the stack fulfills the requirements for this {@link FluidStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean test(FluidStackIngredient _this, IFluidStack stack) {
+        return _this.test(stack.getInternal());
+    }
+
+    /**
+     * Gets a list of valid instances for this {@link FluidStackIngredient}, may not include all or may be empty depending on how complex the ingredient is as the
+     * internal version is mostly used for JEI display purposes.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("representations")
+    public static List<IFluidStack> getRepresentations(FluidStackIngredient _this) {
+        return CrTUtils.convert(_this.getRepresentations(), MCFluidStack::new);
     }
 
     /**

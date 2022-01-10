@@ -14,7 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_FLUID_TO_FLUID)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_FLUID_TO_FLUID)
 public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<FluidToFluidRecipe> {
 
     protected FluidToFluidRecipeManager(MekanismRecipeType<FluidToFluidRecipe, ?> recipeType) {
@@ -48,7 +48,7 @@ public abstract class FluidToFluidRecipeManager extends MekanismRecipeManager<Fl
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_EVAPORATING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_EVAPORATING)
     public static class EvaporatingRecipeManager extends FluidToFluidRecipeManager {
 
         public static final EvaporatingRecipeManager INSTANCE = new EvaporatingRecipeManager();

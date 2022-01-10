@@ -12,7 +12,7 @@ import mekanism.common.recipe.impl.ChemicalDissolutionIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_DISSOLUTION)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_DISSOLUTION)
 public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<ChemicalDissolutionRecipe> {
 
     public static final ChemicalDissolutionRecipeManager INSTANCE = new ChemicalDissolutionRecipeManager();

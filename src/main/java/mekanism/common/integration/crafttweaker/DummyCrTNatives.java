@@ -36,7 +36,7 @@ public class DummyCrTNatives {
     }
 
     @ZenRegister
-    @NativeTypeRegistration(value = ItemStackChemicalToItemStackRecipe.class, zenCodeName = CrTConstants.CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + DUMMY)
+    @NativeTypeRegistration(value = ItemStackChemicalToItemStackRecipe.class, zenCodeName = CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_CHEMICAL_TO_ITEM_STACK + DUMMY)
     public static class CrTNativeItemStackChemicalToItemStackRecipe {
 
         private CrTNativeItemStackChemicalToItemStackRecipe() {

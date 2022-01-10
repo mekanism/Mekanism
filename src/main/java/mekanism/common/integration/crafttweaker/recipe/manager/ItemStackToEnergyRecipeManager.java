@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_ENERGY)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ENERGY)
 public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManager<ItemStackToEnergyRecipe> {
 
     protected ItemStackToEnergyRecipeManager(MekanismRecipeType<ItemStackToEnergyRecipe, ?> recipeType) {
@@ -50,7 +50,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ENERGY_CONVERSION)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ENERGY_CONVERSION)
     public static class EnergyConversionRecipeManager extends ItemStackToEnergyRecipeManager {
 
         public static final EnergyConversionRecipeManager INSTANCE = new EnergyConversionRecipeManager();

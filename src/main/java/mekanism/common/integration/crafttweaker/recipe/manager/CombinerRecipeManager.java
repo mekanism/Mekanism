@@ -12,7 +12,7 @@ import mekanism.common.recipe.impl.CombinerIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_COMBINING)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_COMBINING)
 public class CombinerRecipeManager extends MekanismRecipeManager<CombinerRecipe> {
 
     public static final CombinerRecipeManager INSTANCE = new CombinerRecipeManager();

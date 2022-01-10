@@ -33,7 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_CHEMICAL_TO_ITEM_STACK)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_CHEMICAL_TO_ITEM_STACK)
 public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
       INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>, RECIPE extends ItemStackChemicalToItemStackRecipe<CHEMICAL, STACK, INGREDIENT>>
       extends MekanismRecipeManager<RECIPE> {
@@ -84,7 +84,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_COMPRESSING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_COMPRESSING)
     public static class OsmiumCompressorRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Gas, GasStack, GasStackIngredient, ItemStackGasToItemStackRecipe> {
 
         public static final OsmiumCompressorRecipeManager INSTANCE = new OsmiumCompressorRecipeManager();
@@ -100,7 +100,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_INJECTING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_INJECTING)
     public static class ChemicalInjectionRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Gas, GasStack, GasStackIngredient, ItemStackGasToItemStackRecipe> {
 
         public static final ChemicalInjectionRecipeManager INSTANCE = new ChemicalInjectionRecipeManager();
@@ -116,7 +116,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_PURIFYING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_PURIFYING)
     public static class PurificationRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Gas, GasStack, GasStackIngredient, ItemStackGasToItemStackRecipe> {
 
         public static final PurificationRecipeManager INSTANCE = new PurificationRecipeManager();
@@ -132,7 +132,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_METALLURGIC_INFUSING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_METALLURGIC_INFUSING)
     public static class MetallurgicInfuserRecipeManager extends ItemStackChemicalToItemStackRecipeManager<InfuseType, InfusionStack, InfusionStackIngredient,
           MetallurgicInfuserRecipe> {
 
@@ -149,7 +149,7 @@ public abstract class ItemStackChemicalToItemStackRecipeManager<CHEMICAL extends
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_PAINTING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_PAINTING)
     public static class PaintingRecipeManager extends ItemStackChemicalToItemStackRecipeManager<Pigment, PigmentStack, PigmentStackIngredient, PaintingRecipe> {
 
         public static final PaintingRecipeManager INSTANCE = new PaintingRecipeManager();

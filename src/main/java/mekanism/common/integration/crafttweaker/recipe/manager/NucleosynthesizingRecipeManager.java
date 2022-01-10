@@ -13,7 +13,7 @@ import mekanism.common.recipe.impl.NucleosynthesizingIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_NUCLEOSYNTHESIZING)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_NUCLEOSYNTHESIZING)
 public class NucleosynthesizingRecipeManager extends MekanismRecipeManager<NucleosynthesizingRecipe> {
 
     public static final NucleosynthesizingRecipeManager INSTANCE = new NucleosynthesizingRecipeManager();

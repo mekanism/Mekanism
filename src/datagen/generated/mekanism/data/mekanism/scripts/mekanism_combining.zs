@@ -17,8 +17,8 @@ import mods.mekanism.api.ingredient.ItemStackIngredient;
 <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", ItemStackIngredient.from(<item:minecraft:prismarine_shard> * 8), ItemStackIngredient.from(<tag:items:forge:dyes/black>), <item:minecraft:dark_prismarine>);
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
 // <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", <item:minecraft:prismarine_shard> * 8, ItemStackIngredient.from(<tag:items:forge:dyes/black>), <item:minecraft:dark_prismarine>);
-// <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", ItemStackIngredient.from(<item:minecraft:prismarine_shard> * 8), <tag:items:forge:dyes/black> * 1, <item:minecraft:dark_prismarine>);
-// <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", <item:minecraft:prismarine_shard> * 8, <tag:items:forge:dyes/black> * 1, <item:minecraft:dark_prismarine>);
+// <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", ItemStackIngredient.from(<item:minecraft:prismarine_shard> * 8), <tag:items:forge:dyes/black>, <item:minecraft:dark_prismarine>);
+// <recipetype:mekanism:combining>.addRecipe("combining/dark_prismarine", <item:minecraft:prismarine_shard> * 8, <tag:items:forge:dyes/black>, <item:minecraft:dark_prismarine>);
 
 
 /*

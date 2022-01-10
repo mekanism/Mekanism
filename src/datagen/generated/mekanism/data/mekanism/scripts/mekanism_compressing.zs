@@ -7,9 +7,9 @@ import mods.mekanism.api.ingredient.ItemStackIngredient;
 
 <recipetype:mekanism:compressing>.addRecipe("compress_emerald", ItemStackIngredient.from(<tag:items:forge:dusts/emerald>), GasStackIngredient.from(<gas:mekanism:osmium>), <item:minecraft:emerald>);
 //Alternate implementations of the above recipe are shown commented below. These implementations make use of implicit casting to allow easier calling:
-// <recipetype:mekanism:compressing>.addRecipe("compress_emerald", <tag:items:forge:dusts/emerald> * 1, GasStackIngredient.from(<gas:mekanism:osmium>), <item:minecraft:emerald>);
+// <recipetype:mekanism:compressing>.addRecipe("compress_emerald", <tag:items:forge:dusts/emerald>, GasStackIngredient.from(<gas:mekanism:osmium>), <item:minecraft:emerald>);
 // <recipetype:mekanism:compressing>.addRecipe("compress_emerald", ItemStackIngredient.from(<tag:items:forge:dusts/emerald>), <gas:mekanism:osmium>, <item:minecraft:emerald>);
-// <recipetype:mekanism:compressing>.addRecipe("compress_emerald", <tag:items:forge:dusts/emerald> * 1, <gas:mekanism:osmium>, <item:minecraft:emerald>);
+// <recipetype:mekanism:compressing>.addRecipe("compress_emerald", <tag:items:forge:dusts/emerald>, <gas:mekanism:osmium>, <item:minecraft:emerald>);
 
 
 //Removes the Compressing Recipe that creates Refined Obsidian Ingots.

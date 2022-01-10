@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_GAS_TO_GAS)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_GAS_TO_GAS)
 public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToGasRecipe> {
 
     protected GasToGasRecipeManager(MekanismRecipeType<GasToGasRecipe, ?> recipeType) {
@@ -51,7 +51,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ACTIVATING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ACTIVATING)
     public static class SolarNeutronActivatorRecipeManager extends GasToGasRecipeManager {
 
         public static final SolarNeutronActivatorRecipeManager INSTANCE = new SolarNeutronActivatorRecipeManager();
@@ -67,7 +67,7 @@ public abstract class GasToGasRecipeManager extends MekanismRecipeManager<GasToG
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_CENTRIFUGING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CENTRIFUGING)
     public static class IsotopicCentrifugeRecipeManager extends GasToGasRecipeManager {
 
         public static final IsotopicCentrifugeRecipeManager INSTANCE = new IsotopicCentrifugeRecipeManager();

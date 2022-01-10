@@ -16,7 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_ITEM_STACK)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_ITEM_STACK)
 public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeManager<ItemStackToItemStackRecipe> {
 
     protected ItemStackToItemStackRecipeManager(MekanismRecipeType<ItemStackToItemStackRecipe, ?> recipeType) {
@@ -55,7 +55,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_CRUSHING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_CRUSHING)
     public static class CrusherRecipeManager extends ItemStackToItemStackRecipeManager {
 
         public static final CrusherRecipeManager INSTANCE = new CrusherRecipeManager();
@@ -71,7 +71,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ENRICHING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ENRICHING)
     public static class EnrichmentChamberRecipeManager extends ItemStackToItemStackRecipeManager {
 
         public static final EnrichmentChamberRecipeManager INSTANCE = new EnrichmentChamberRecipeManager();
@@ -87,7 +87,7 @@ public abstract class ItemStackToItemStackRecipeManager extends MekanismRecipeMa
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_SMELTING)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_SMELTING)
     public static class EnergizedSmelterRecipeManager extends ItemStackToItemStackRecipeManager {
 
         public static final EnergizedSmelterRecipeManager INSTANCE = new EnergizedSmelterRecipeManager();

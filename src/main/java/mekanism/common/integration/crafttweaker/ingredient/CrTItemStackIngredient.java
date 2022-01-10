@@ -7,6 +7,7 @@ import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.ingredient.type.IIngredientList;
 import com.blamejared.crafttweaker.api.item.IItemStack;
+import com.blamejared.crafttweaker.api.item.MCItemStack;
 import com.blamejared.crafttweaker.api.tag.MCTag;
 import com.blamejared.crafttweaker.api.tag.manager.TagManagerItem;
 import com.blamejared.crafttweaker.api.util.Many;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -202,6 +204,40 @@ public class CrTItemStackIngredient {
     @ZenCodeType.Caster(implicit = true)
     public static IData asIData(ItemStackIngredient _this) {
         return JSONConverter.convert(_this.serialize());
+    }
+
+    /**
+     * Checks if a given {@link IItemStack} has a type match for this {@link ItemStackIngredient}. Type matches ignore stack size.
+     *
+     * @param type Type to check for a match
+     *
+     * @return {@code true} if the type is supported by this {@link ItemStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean testType(ItemStackIngredient _this, IItemStack type) {
+        return _this.testType(type.getInternal());
+    }
+
+    /**
+     * Checks if a given {@link IItemStack} matches this {@link ItemStackIngredient}. (Checks size for >=)
+     *
+     * @param stack Stack to check for a match
+     *
+     * @return {@code true} if the stack fulfills the requirements for this {@link ItemStackIngredient}.
+     */
+    @ZenCodeType.Method
+    public static boolean test(ItemStackIngredient _this, IItemStack stack) {
+        return _this.test(stack.getInternal());
+    }
+
+    /**
+     * Gets a list of valid instances for this {@link ItemStackIngredient}, may not include all or may be empty depending on how complex the ingredient is as the internal
+     * version is mostly used for JEI display purposes.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("representations")
+    public static List<IItemStack> getRepresentations(ItemStackIngredient _this) {
+        return CrTUtils.convert(_this.getRepresentations(), MCItemStack::new);
     }
 
     /**

@@ -12,7 +12,7 @@ import mekanism.common.recipe.impl.PigmentMixingIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_PIGMENT_MIXING)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_PIGMENT_MIXING)
 public class PigmentMixingRecipeManager extends MekanismRecipeManager<PigmentMixingRecipe> {
 
     public static final PigmentMixingRecipeManager INSTANCE = new PigmentMixingRecipeManager();

@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_ITEM_STACK_TO_INFUSE_TYPE)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_ITEM_STACK_TO_INFUSE_TYPE)
 public abstract class ItemStackToInfuseTypeRecipeManager extends MekanismRecipeManager<ItemStackToInfuseTypeRecipe> {
 
     protected ItemStackToInfuseTypeRecipeManager(MekanismRecipeType<ItemStackToInfuseTypeRecipe, ?> recipeType) {
@@ -49,7 +49,7 @@ public abstract class ItemStackToInfuseTypeRecipeManager extends MekanismRecipeM
     }
 
     @ZenRegister
-    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_INFUSION_CONVERSION)
+    @ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_INFUSION_CONVERSION)
     public static class InfusionConversionRecipeManager extends ItemStackToInfuseTypeRecipeManager {
 
         public static final InfusionConversionRecipeManager INSTANCE = new InfusionConversionRecipeManager();

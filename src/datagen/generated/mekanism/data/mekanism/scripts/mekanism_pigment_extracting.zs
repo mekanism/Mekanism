@@ -6,7 +6,7 @@ import mods.mekanism.api.ingredient.ItemStackIngredient;
 
 <recipetype:mekanism:pigment_extracting>.addRecipe("extract_lapis_block_pigment", ItemStackIngredient.from(<tag:items:forge:storage_blocks/lapis>), <pigment:mekanism:blue> * 6912);
 //An alternate implementation of the above recipe are shown commented below. This implementation makes use of implicit casting to allow easier calling:
-// <recipetype:mekanism:pigment_extracting>.addRecipe("extract_lapis_block_pigment", <tag:items:forge:storage_blocks/lapis> * 1, <pigment:mekanism:blue> * 6912);
+// <recipetype:mekanism:pigment_extracting>.addRecipe("extract_lapis_block_pigment", <tag:items:forge:storage_blocks/lapis>, <pigment:mekanism:blue> * 6912);
 
 
 //Removes the Pigment Extracting Recipe that extracts Brown Pigment from Brown Dye.

@@ -12,7 +12,7 @@ import mekanism.common.recipe.impl.ElectrolysisIRecipe;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
-@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_SEPARATING)
+@ZenCodeType.Name(CrTConstants.CLASS_RECIPE_MANAGER_SEPARATING)
 public class ElectrolysisRecipeManager extends MekanismRecipeManager<ElectrolysisRecipe> {
 
     public static final ElectrolysisRecipeManager INSTANCE = new ElectrolysisRecipeManager();

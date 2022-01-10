@@ -82,7 +82,6 @@ public class CrTUtils {
             case INFUSION -> new CrTInfusionStack((InfusionStack) stack.getChemicalStack());
             case PIGMENT -> new CrTPigmentStack((PigmentStack) stack.getChemicalStack());
             case SLURRY -> new CrTSlurryStack((SlurryStack) stack.getChemicalStack());
-            default -> null;
         };
     }
 
@@ -116,5 +115,12 @@ public class CrTUtils {
             throw new IllegalArgumentException("Tag " + crtTag.getCommandString() + " does not exist.");
         }
         return tag;
+    }
+
+    /**
+     * Helper to convert a list of one type to a list of another.
+     */
+    public static <TYPE, CRT_TYPE> List<CRT_TYPE> convert(List<TYPE> elements, Function<TYPE, CRT_TYPE> converter) {
+        return elements.stream().map(converter).toList();
     }
 }
