@@ -904,25 +904,14 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                 .build(consumer);
         //Superheating element
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SUPERHEATING_ELEMENT)
-<<<<<<< HEAD
-              .pattern(RecipePattern.createPattern(
-                    TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY),
-                    TripleLine.of(Pattern.INGOT, Pattern.STEEL_CASING, Pattern.INGOT),
-                    TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY))
-              ).key(Pattern.INGOT, Tags.Items.INGOTS_COPPER)
-              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
-              .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
-              .build(consumer);
-=======
                 .pattern(RecipePattern.createPattern(
                         TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY),
                         TripleLine.of(Pattern.INGOT, Pattern.STEEL_CASING, Pattern.INGOT),
                         TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY))
-                ).key(Pattern.INGOT, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER))
+                ).key(Pattern.INGOT, Tags.Items.INGOTS_COPPER)
                 .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
                 .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)
                 .build(consumer);
->>>>>>> d22e1d3e9 (Re-add datagen stuff back)
         //Teleportation core
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.TELEPORTATION_CORE)
                 .pattern(RecipePattern.createPattern(
@@ -1144,27 +1133,15 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                 .build(consumer);
         //Supercharged Coil
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SUPERCHARGED_COIL)
-<<<<<<< HEAD
-              .pattern(RecipePattern.createPattern(
-                    TripleLine.of('c', 'c', 'c'),
-                    TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
-                    TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY))
-              ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
-              .key(Pattern.CONSTANT, MekanismBlocks.LASER)
-              .key('c', Tags.Items.INGOTS_COPPER)
-              .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
-              .build(consumer);
-=======
                 .pattern(RecipePattern.createPattern(
                         TripleLine.of('c', 'c', 'c'),
                         TripleLine.of(Pattern.CIRCUIT, Pattern.CONSTANT, Pattern.CIRCUIT),
                         TripleLine.of(Pattern.ALLOY, Pattern.ALLOY, Pattern.ALLOY))
                 ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ULTIMATE)
                 .key(Pattern.CONSTANT, MekanismBlocks.LASER)
-                .key('c', MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER))
+                .key('c', Tags.Items.INGOTS_COPPER)
                 .key(Pattern.ALLOY, MekanismItems.POLONIUM_PELLET)
                 .build(consumer);
->>>>>>> d22e1d3e9 (Re-add datagen stuff back)
         //Nutritional Liquifier
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.NUTRITIONAL_LIQUIFIER)
                 .pattern(RecipePattern.createPattern(
