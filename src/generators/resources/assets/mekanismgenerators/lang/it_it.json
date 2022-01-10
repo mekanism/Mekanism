@@ -80,6 +80,7 @@
   "fission.mekanismgenerators.coolant_tank": "Serbatoio del Refrigerante",
   "fission.mekanismgenerators.damage": "Danneggiato: %s",
   "fission.mekanismgenerators.fission_reactor": "Reattore a Fissione",
+  "fission.mekanismgenerators.force_disabled": "Il reattore deve raggiungere danni e temperature sicuri prima di poter essere riattivato.",
   "fission.mekanismgenerators.fuel_statistics": "Statistiche Carburante",
   "fission.mekanismgenerators.fuel_tank": "Tanica Carburante",
   "fission.mekanismgenerators.heat_capacity": "Capacità Termica: %s J/K",
