@@ -41,6 +41,7 @@ import net.minecraft.world.level.storage.loot.LootTable.Builder;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
 import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.ConditionUserBuilder;
@@ -142,6 +143,7 @@ public abstract class BaseBlockLootTables extends BlockLoot {
             CopyNbtFunction.Builder nbtBuilder = CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY);
             boolean hasData = false;
             boolean hasContents = false;
+            boolean isNameable = false;
             @Nullable
             BlockEntity tile = null;
             if (block instanceof IHasTileEntity<?> hasTileEntity) {
@@ -180,6 +182,9 @@ public abstract class BaseBlockLootTables extends BlockLoot {
                 hasData = true;
             }
             if (tile instanceof TileEntityMekanism tileEntity) {
+                if (tileEntity.isNameable()) {
+                    isNameable = true;
+                }
                 for (SubstanceType type : EnumUtils.SUBSTANCES) {
                     if (tileEntity.handles(type) && !type.getContainers(tileEntity).isEmpty()) {
                         nbtBuilder.copy(type.getContainerTag(), NBTConstants.MEK_DATA + "." + type.getContainerTag());
@@ -208,16 +213,24 @@ public abstract class BaseBlockLootTables extends BlockLoot {
                 nbtBuilder.copy(NBTConstants.DATA, NBTConstants.MEK_DATA + "." + NBTConstants.DATA);
                 hasData = true;
             }
-            if (!hasData) {
+            if (!hasData && !isNameable) {
                 //To keep the json as clean as possible don't bother even registering a blank accept function if we have no
                 // persistent data that we want to copy. Also log a warning so that we don't have to attempt to check against
                 // that block
                 dropSelf(block);
             } else {
+                LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
+                if (isNameable) {
+                    itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
+                }
+                if (hasData) {
+                    itemLootPool.apply(nbtBuilder);
+                }
+
                 add(block, LootTable.lootTable().withPool(applyExplosionCondition(hasContents, LootPool.lootPool()
                       .name("main")
                       .setRolls(ConstantValue.exactly(1))
-                      .add(LootItem.lootTableItem(block).apply(nbtBuilder))
+                      .add(itemLootPool)
                 )));
             }
         }

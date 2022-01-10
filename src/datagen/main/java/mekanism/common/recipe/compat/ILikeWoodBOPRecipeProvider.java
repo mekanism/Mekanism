@@ -1,15 +1,9 @@
 package mekanism.common.recipe.compat;
 
-import biomesoplenty.api.block.BOPBlocks;
-import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.level.ItemLike;
-import yamahari.ilikewood.plugin.biomesoplenty.BiomesOPlentyWoodTypes;
-import yamahari.ilikewood.registry.woodtype.IWoodType;
 
 @ParametersAreNonnullByDefault
-public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
+public class ILikeWoodBOPRecipeProvider { /*extends CompatRecipeProvider {
 
     public ILikeWoodBOPRecipeProvider() {
         super(yamahari.ilikewood.plugin.biomesoplenty.util.Constants.MOD_ID, "biomesoplenty");
@@ -32,5 +26,5 @@ public class ILikeWoodBOPRecipeProvider extends CompatRecipeProvider {
 
     private void addWoodType(Consumer<FinishedRecipe> consumer, String basePath, ItemLike planks, ItemLike log, ItemLike fences, IWoodType woodType) {
         ILikeWoodRecipeProvider.addWoodType(consumer, allModsLoaded, basePath, planks, log, fences, woodType);
-    }
+    }*/
 }
