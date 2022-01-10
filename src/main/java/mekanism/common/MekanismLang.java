@@ -299,6 +299,8 @@ public enum MekanismLang implements ILangEntry {
     DICTIONARY_ENTITY_TYPE_DESC("dictionary", "entity_type.desc"),
     DICTIONARY_POTION("dictionary", "potion"),
     DICTIONARY_POTION_DESC("dictionary", "potion.desc"),
+    DICTIONARY_MOB_EFFECT("dictionary", "mob_effect"),
+    DICTIONARY_MOB_EFFECT_DESC("dictionary", "mob_effect.desc"),
     DICTIONARY_ENCHANTMENT("dictionary", "enchantment"),
     DICTIONARY_ENCHANTMENT_DESC("dictionary", "enchantment.desc"),
     DICTIONARY_TILE_ENTITY_TYPE("dictionary", "tile_entity_type"),

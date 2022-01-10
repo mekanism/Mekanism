@@ -251,7 +251,6 @@ public class ModelEnergyCube extends MekanismJavaModel {
 
     public void render(@Nonnull PoseStack matrix, @Nonnull MultiBufferSource renderer, int light, int overlayLight, EnergyCubeTier tier, boolean renderMain, boolean hasEffect) {
         if (renderMain) {
-            //TODO - 1.18: Re-evaluate this in terms of we are rendering the corners twice?
             renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 1, 1, 1, 1);
         }
         EnumColor color = tier.getBaseTier().getColor();

@@ -577,6 +577,8 @@
   "dictionary.mekanism.item": "Item",
   "dictionary.mekanism.item.desc": "Display Item Tags",
   "dictionary.mekanism.key": " - %s",
+  "dictionary.mekanism.mob_effect": "Mob Effect",
+  "dictionary.mekanism.mob_effect.desc": "Display Mob Effect Tags",
   "dictionary.mekanism.no_key": "No key.",
   "dictionary.mekanism.pigment": "Pigment",
   "dictionary.mekanism.pigment.desc": "Display Pigment Tags",

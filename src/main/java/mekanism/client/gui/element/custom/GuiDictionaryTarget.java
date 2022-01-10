@@ -31,6 +31,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -140,6 +141,11 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                 Potion potion = PotionUtils.getPotion(itemStack);
                 if (potion != Potions.EMPTY) {
                     tags.put(DictionaryTagType.POTION, TagCache.getTagsAsStrings(potion.getTags()));
+                    Set<ResourceLocation> effectTags = new HashSet<>();
+                    for (MobEffectInstance effect : potion.getEffects()) {
+                        effectTags.addAll(effect.getEffect().getTags());
+                    }
+                    tags.put(DictionaryTagType.MOB_EFFECT, TagCache.getTagsAsStrings(effectTags));
                 }
                 //Get tags of any contained fluids
                 FluidUtil.getFluidHandler(stack).ifPresent(fluidHandler -> {

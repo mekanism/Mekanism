@@ -71,7 +71,6 @@ public class BaseModelCache {
         }
 
         public BakedModel bake(IModelConfiguration config) {
-            //TODO - 1.18: Validate this
             return bakedMap.computeIfAbsent(config, c -> model.bake(c, ForgeModelBakery.instance(), ForgeModelBakery.defaultTextureGetter(), BlockModelRotation.X0_Y0, ItemOverrides.EMPTY, rl));
         }
 
