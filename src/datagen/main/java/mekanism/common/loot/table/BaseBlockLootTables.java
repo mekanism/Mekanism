@@ -18,6 +18,7 @@ import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.lib.frequency.IFrequencyHandler;
+import mekanism.common.resource.OreType.OreBlockType;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
@@ -88,6 +89,12 @@ public abstract class BaseBlockLootTables extends BlockLoot {
         return knownBlocks.contains(block) || toSkip.contains(block);
     }
 
+    protected static LootTable.Builder createOreDrop(Block block, ItemLike item) {
+        return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.asItem())
+              .apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))
+        ));
+    }
+
     protected static LootTable.Builder droppingWithFortuneOrRandomly(Block block, ItemLike item, UniformGenerator range) {
         return createSilkTouchDispatchTable(block, applyExplosionDecay(block, LootItem.lootTableItem(item.asItem())
               .apply(SetItemCountFunction.setCount(range))
@@ -114,6 +121,13 @@ public abstract class BaseBlockLootTables extends BlockLoot {
     protected void add(Function<Block, Builder> factory, IBlockProvider... blockProviders) {
         for (IBlockProvider blockProvider : blockProviders) {
             add(blockProvider.getBlock(), factory);
+        }
+    }
+
+    protected void add(Function<Block, Builder> factory, OreBlockType... oreTypes) {
+        for (OreBlockType oreType : oreTypes) {
+            add(oreType.stone().getBlock(), factory);
+            add(oreType.deepslate().getBlock(), factory);
         }
     }
 

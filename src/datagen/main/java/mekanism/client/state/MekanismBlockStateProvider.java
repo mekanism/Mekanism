@@ -7,8 +7,9 @@ import mekanism.common.block.BlockOre;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
+import mekanism.common.resource.IResource;
 import mekanism.common.resource.OreType;
-import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.OreType.OreBlockType;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -26,32 +27,36 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
 
         ResourceLocation basicCube = modLoc("block/basic_cube");
 
-        // blocks
-        for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            ResourceLocation texture = modLoc("block/block_" + entry.getKey().getRegistrySuffix());
+        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+            String registrySuffix = entry.getKey().getRegistrySuffix();
+            ResourceLocation texture = modLoc("block/block_" + registrySuffix);
             ModelFile file;
             if (models().textureExists(texture)) {
                 //If we have an override we can just use a basic cube that has no color tints in it
-                file = models().withExistingParent("block/storage/" + entry.getKey().getRegistrySuffix(), basicCube)
+                file = models().withExistingParent("block/storage/" + registrySuffix, basicCube)
                       .texture("all", texture);
             } else {
                 //If the texture does not exist fallback to the default texture and use a colorable base model
-                file = models().withExistingParent("block/storage/" + entry.getKey().getRegistrySuffix(), modLoc("block/colored_cube"))
+                file = models().withExistingParent("block/storage/" + registrySuffix, modLoc("block/colored_cube"))
                       .texture("all", modLoc("block/resource_block"));
             }
             simpleBlock(entry.getValue().getBlock(), file);
+
+            models().withExistingParent("item/block_" + registrySuffix, modLoc("block/storage/" + registrySuffix));
         }
-        for (Map.Entry<OreType, BlockRegistryObject<BlockOre, ?>> entry : MekanismBlocks.ORES.entrySet()) {
-            ModelFile file = models().withExistingParent("block/ore/" + entry.getKey().getResource().getRegistrySuffix(), basicCube)
-                  .texture("all", modLoc("block/" + entry.getValue().getName()));
-            simpleBlock(entry.getValue().getBlock(), file);
+        for (Map.Entry<OreType, OreBlockType> entry : MekanismBlocks.ORES.entrySet()) {
+            String registrySuffix = entry.getKey().getResource().getRegistrySuffix();
+            OreBlockType oreBlockType = entry.getValue();
+            addOreBlock(basicCube, oreBlockType.stone(), "block/ore/" + registrySuffix);
+            addOreBlock(basicCube, oreBlockType.deepslate(), "block/deepslate_ore/" + registrySuffix);
         }
-        // block items
-        for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            models().withExistingParent("item/block_" + entry.getKey().getRegistrySuffix(), modLoc("block/storage/" + entry.getKey().getRegistrySuffix()));
-        }
-        for (Map.Entry<OreType, BlockRegistryObject<BlockOre, ?>> entry : MekanismBlocks.ORES.entrySet()) {
-            models().withExistingParent("item/" + entry.getKey().getResource().getRegistrySuffix() + "_ore", modLoc("block/ore/" + entry.getKey().getResource().getRegistrySuffix()));
-        }
+    }
+
+    private void addOreBlock(ResourceLocation basicCube, BlockRegistryObject<BlockOre, ?> oreBlock, String path) {
+        String name = oreBlock.getName();
+        ModelFile file = models().withExistingParent(path, basicCube)
+              .texture("all", modLoc("block/" + name));
+        simpleBlock(oreBlock.getBlock(), file);
+        models().withExistingParent("item/" + name, modLoc(path));
     }
 }

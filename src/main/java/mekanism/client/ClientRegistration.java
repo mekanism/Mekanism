@@ -172,6 +172,7 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
@@ -534,10 +535,12 @@ public class ClientRegistration {
             int tint = item.getColumnKey().getTint();
             ClientRegistrationUtil.registerItemColorHandler(itemColors, (stack, index) -> index == 1 ? tint : -1, item.getValue());
         }
-        for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            int tint = entry.getKey().getTint();
-            ClientRegistrationUtil.registerBlockColorHandler(blockColors, itemColors, (state, world, pos, index) -> index == 1 ? tint : -1,
-                  (stack, index) -> index == 1 ? tint : -1, entry.getValue());
+        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+            if (entry.getKey() instanceof PrimaryResource primaryResource) {
+                int tint = primaryResource.getTint();
+                ClientRegistrationUtil.registerBlockColorHandler(blockColors, itemColors, (state, world, pos, index) -> index == 1 ? tint : -1,
+                      (stack, index) -> index == 1 ? tint : -1, entry.getValue());
+            }
         }
         ClientRegistrationUtil.registerItemColorHandler(itemColors, (stack, index) -> {
             if (index == 1) {

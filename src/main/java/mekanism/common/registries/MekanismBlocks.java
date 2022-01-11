@@ -85,7 +85,9 @@ import mekanism.common.item.block.transmitter.ItemBlockUniversalCable;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.resource.BlockResourceInfo;
+import mekanism.common.resource.IResource;
 import mekanism.common.resource.OreType;
+import mekanism.common.resource.OreType.OreBlockType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.tier.CableTier;
 import mekanism.common.tier.ConductorTier;
@@ -169,6 +171,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 
 public class MekanismBlocks {
 
@@ -177,8 +180,8 @@ public class MekanismBlocks {
 
     public static final BlockDeferredRegister BLOCKS = new BlockDeferredRegister(Mekanism.MODID);
 
-    public static final Map<PrimaryResource, BlockRegistryObject<?, ?>> PROCESSED_RESOURCE_BLOCKS = new LinkedHashMap<>();
-    public static final Map<OreType, BlockRegistryObject<BlockOre, ?>> ORES = new LinkedHashMap<>();
+    public static final Map<IResource, BlockRegistryObject<?, ?>> PROCESSED_RESOURCE_BLOCKS = new LinkedHashMap<>();
+    public static final Map<OreType, OreBlockType> ORES = new LinkedHashMap<>();
 
     private static final Table<FactoryTier, FactoryType, BlockRegistryObject<BlockFactory<?>, ItemBlockFactory>> FACTORIES = HashBasedTable.create();
 
@@ -193,6 +196,10 @@ public class MekanismBlocks {
         for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
             if (resource.getResourceBlockInfo() != null) {
                 PROCESSED_RESOURCE_BLOCKS.put(resource, registerResourceBlock(resource.getResourceBlockInfo()));
+            }
+            BlockResourceInfo rawResource = resource.getRawResourceBlockInfo();
+            if (rawResource != null) {
+                PROCESSED_RESOURCE_BLOCKS.put(rawResource, registerResourceBlock(rawResource));
             }
         }
         // ores
@@ -415,8 +422,13 @@ public class MekanismBlocks {
         return BLOCKS.register(tier.getBaseTier().getLowerName() + suffix, blockSupplier, itemCreator);
     }
 
-    private static BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> registerOre(OreType ore) {
-        return BLOCKS.registerDefaultProperties(ore.getResource().getRegistrySuffix() + "_ore", () -> new BlockOre(ore), ItemBlockTooltip::new);
+    private static OreBlockType registerOre(OreType ore) {
+        String name = ore.getResource().getRegistrySuffix() + "_ore";
+        BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> stoneOre = BLOCKS.registerDefaultProperties(name, () -> new BlockOre(ore), ItemBlockTooltip::new);
+        BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> deepslateOre = BLOCKS.registerDefaultProperties("deepslate_" + name,
+              () -> new BlockOre(ore, BlockBehaviour.Properties.copy(stoneOre.getBlock()).color(MaterialColor.DEEPSLATE)
+                    .strength(4.5F, 3).sound(SoundType.DEEPSLATE)), ItemBlockTooltip::new);
+        return new OreBlockType(stoneOre, deepslateOre);
     }
 
     private static <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerBlock(String name,

@@ -2,6 +2,7 @@ package mekanism.common.block;
 
 import javax.annotation.Nonnull;
 import mekanism.api.text.ILangEntry;
+import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.resource.OreType;
@@ -20,14 +21,17 @@ public class BlockOre extends Block implements IHasDescription {
     private String descriptionTranslationKey;
 
     public BlockOre(OreType ore) {
-        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of(Material.STONE).strength(3, 3)
-              .requiresCorrectToolForDrops()));
+        this(ore, BlockBehaviour.Properties.of(Material.STONE).strength(3, 3).requiresCorrectToolForDrops());
+    }
+
+    public BlockOre(OreType ore, BlockBehaviour.Properties properties) {
+        super(BlockStateHelper.applyLightLevelAdjustments(properties));
         this.ore = ore;
     }
 
     public String getDescriptionTranslationKey() {
         if (descriptionTranslationKey == null) {
-            descriptionTranslationKey = Util.makeDescriptionId("description", getRegistryName());
+            descriptionTranslationKey = Util.makeDescriptionId("description", Mekanism.rl(ore.getResource().getRegistrySuffix() + "_ore"));
         }
         return descriptionTranslationKey;
     }

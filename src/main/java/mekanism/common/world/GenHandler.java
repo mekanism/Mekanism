@@ -14,6 +14,7 @@ import mekanism.common.config.WorldConfig.SaltConfig;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFeatures;
 import mekanism.common.resource.OreType;
+import mekanism.common.resource.OreType.OreBlockType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -80,11 +81,13 @@ public class GenHandler {
             registerIntProviderTypes();
             registerHeightProviderTypes();
             for (OreType type : EnumUtils.ORE_TYPES) {
-                List<TargetBlockState> targetStates = ORE_STONE_TARGETS.computeIfAbsent(type, oreType -> List.of(
-                      OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, MekanismBlocks.ORES.get(type).getBlock().defaultBlockState()),
-                      //TODO - 1.18: Deepslate ore variants
-                      OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, MekanismBlocks.ORES.get(type).getBlock().defaultBlockState())
-                ));
+                List<TargetBlockState> targetStates = ORE_STONE_TARGETS.computeIfAbsent(type, oreType -> {
+                    OreBlockType oreBlockType = MekanismBlocks.ORES.get(type);
+                    return List.of(
+                          OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, oreBlockType.stone().getBlock().defaultBlockState()),
+                          OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, oreBlockType.deepslate().getBlock().defaultBlockState())
+                    );
+                });
                 ORES.put(type, getOreFeature(type, targetStates, MekanismFeatures.ORE.get(), false));
                 ORE_RETROGENS.put(type, getOreFeature(type, targetStates, MekanismFeatures.ORE_RETROGEN.get(), true));
             }

@@ -3,12 +3,11 @@ package mekanism.common.block.basic;
 import javax.annotation.Nonnull;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.resource.BlockResourceInfo;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.PushReaction;
 
 public class BlockResource extends BlockMekanism {
 
@@ -17,7 +16,7 @@ public class BlockResource extends BlockMekanism {
 
     //TODO: Isn't as "generic"? So make it be from one BlockType thing?
     public BlockResource(@Nonnull BlockResourceInfo resource) {
-        super(BlockBehaviour.Properties.of(Material.METAL).strength(resource.getHardness(), resource.getResistance())
+        super(BlockBehaviour.Properties.of(resource.getMaterial(), resource.getMaterialColor()).strength(resource.getHardness(), resource.getResistance())
               .lightLevel(state -> resource.getLightValue()).requiresCorrectToolForDrops());
         this.resource = resource;
     }

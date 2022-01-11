@@ -137,13 +137,22 @@
     "mekanism:ultimate_infusing_factory",
     "mekanism:ultimate_sawing_factory",
     "mekanism:block_osmium",
+    "mekanism:block_raw_osmium",
     "mekanism:block_tin",
+    "mekanism:block_raw_tin",
     "mekanism:block_lead",
+    "mekanism:block_raw_lead",
     "mekanism:block_uranium",
+    "mekanism:block_raw_uranium",
     "mekanism:tin_ore",
+    "mekanism:deepslate_tin_ore",
     "mekanism:osmium_ore",
+    "mekanism:deepslate_osmium_ore",
     "mekanism:uranium_ore",
+    "mekanism:deepslate_uranium_ore",
     "mekanism:fluorite_ore",
-    "mekanism:lead_ore"
+    "mekanism:deepslate_fluorite_ore",
+    "mekanism:lead_ore",
+    "mekanism:deepslate_lead_ore"
   ]
 }

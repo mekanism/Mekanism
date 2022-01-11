@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.common.block.BlockOre;
+import mekanism.common.item.block.ItemBlockTooltip;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.util.StringRepresentable;
 
 public enum OreType implements StringRepresentable {
@@ -97,5 +100,9 @@ public enum OreType implements StringRepresentable {
     @Nullable
     private static OreType byName(String name) {
         return NAME_LOOKUP.get(name);
+    }
+
+    public record OreBlockType(BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> stone,
+                               BlockRegistryObject<BlockOre, ItemBlockTooltip<BlockOre>> deepslate) {
     }
 }

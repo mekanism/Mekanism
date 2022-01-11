@@ -452,7 +452,7 @@ dependencies {
     //datagenmainImplementation fg.deobf("curse.maven:i-like-wood-biomes-o-plenty-437203:${ilikewood_bop_id}")
     //TODO - 1.18: Figure these out
     //datagenmainImplementation fg.deobf("curse.maven:i-like-wood-oh-the-biomes-youll-go-475110:${ilikewood_byg_id}")
-    datagenmainImplementation fg.deobf("ilikewoodxbyg:ilikewoodxbyg-1.18.1:7.0.0.0")
+    datagenmainImplementation fg.deobf("ilikewoodxbyg:ilikewoodxbyg-1.18.1:7.0.0")
     //TODO - 1.18: Currently we are getting projecte from flatdir for purposes of compiling
     //datagenmainRuntimeOnly fg.deobf("curse.maven:projecte-226410:${projecte_id}")
     datagenmainRuntimeOnly fg.deobf("projecte:projecte:1.0.0:universal")

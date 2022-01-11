@@ -8,7 +8,6 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockOre;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -22,7 +21,10 @@ import mekanism.common.registries.MekanismInfuseTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismTileEntityTypes;
+import mekanism.common.resource.BlockResourceInfo;
+import mekanism.common.resource.IResource;
 import mekanism.common.resource.OreType;
+import mekanism.common.resource.OreType.OreBlockType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
@@ -115,21 +117,24 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addProcessedResources() {
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            addToTag(item.getRowKey(), item.getColumnKey(), item.getValue());
+            Named<Item> tag = addToTag(item.getRowKey(), item.getColumnKey(), item.getValue());
             switch (item.getRowKey()) {
-                case SHARD -> addToTag(MekanismTags.Items.SHARDS, item.getValue());
-                case CRYSTAL -> addToTag(MekanismTags.Items.CRYSTALS, item.getValue());
-                case DUST -> addToTag(Tags.Items.DUSTS, item.getValue());
-                case DIRTY_DUST -> addToTag(MekanismTags.Items.DIRTY_DUSTS, item.getValue());
-                case CLUMP -> addToTag(MekanismTags.Items.CLUMPS, item.getValue());
-                case INGOT -> addToTag(Tags.Items.INGOTS, item.getValue());
-                case NUGGET -> addToTag(Tags.Items.NUGGETS, item.getValue());
+                case SHARD -> getItemBuilder(MekanismTags.Items.SHARDS).add(tag);
+                case CRYSTAL -> getItemBuilder(MekanismTags.Items.CRYSTALS).add(tag);
+                case DUST -> getItemBuilder(Tags.Items.DUSTS).add(tag);
+                case DIRTY_DUST -> getItemBuilder(MekanismTags.Items.DIRTY_DUSTS).add(tag);
+                case CLUMP -> getItemBuilder(MekanismTags.Items.CLUMPS).add(tag);
+                case INGOT -> getItemBuilder(Tags.Items.INGOTS).add(tag);
+                case RAW -> getItemBuilder(Tags.Items.RAW_MATERIALS).add(tag);
+                case NUGGET -> getItemBuilder(Tags.Items.NUGGETS).add(tag);
             }
         }
     }
 
-    private void addToTag(ResourceType type, PrimaryResource resource, IItemProvider... items) {
-        addToTag(MekanismTags.Items.PROCESSED_RESOURCES.get(type, resource), items);
+    private Named<Item> addToTag(ResourceType type, PrimaryResource resource, IItemProvider... items) {
+        Named<Item> tag = MekanismTags.Items.PROCESSED_RESOURCES.get(type, resource);
+        addToTag(tag, items);
+        return tag;
     }
 
     private void addBeaconTags() {
@@ -283,10 +288,16 @@ public class MekanismTagProvider extends BaseTagProvider {
     }
 
     private void addOres() {
-        for (Map.Entry<OreType, BlockRegistryObject<BlockOre, ?>> entry : MekanismBlocks.ORES.entrySet()) {
-            addToTags(MekanismTags.Items.ORES.get(entry.getKey()), MekanismTags.Blocks.ORES.get(entry.getKey()), entry.getValue());
-            getItemBuilder(Tags.Items.ORES).add(MekanismTags.Items.ORES.get(entry.getKey()));
-            getBlockBuilder(Tags.Blocks.ORES).add(MekanismTags.Blocks.ORES.get(entry.getKey()));
+        for (Map.Entry<OreType, OreBlockType> entry : MekanismBlocks.ORES.entrySet()) {
+            OreBlockType oreBlockType = entry.getValue();
+            Named<Item> itemTag = MekanismTags.Items.ORES.get(entry.getKey());
+            Named<Block> blockTag = MekanismTags.Blocks.ORES.get(entry.getKey());
+            addToTags(itemTag, blockTag, oreBlockType.stone(), oreBlockType.deepslate());
+            getItemBuilder(Tags.Items.ORES).add(itemTag);
+            getBlockBuilder(Tags.Blocks.ORES).add(blockTag);
+            addToTags(Tags.Items.ORE_RATES_SINGULAR, Tags.Blocks.ORE_RATES_SINGULAR, oreBlockType.stone(), oreBlockType.deepslate());
+            addToTags(Tags.Items.ORES_IN_GROUND_DEEPSLATE, Tags.Blocks.ORES_IN_GROUND_DEEPSLATE, oreBlockType.deepslate());
+            addToTags(Tags.Items.ORES_IN_GROUND_STONE, Tags.Blocks.ORES_IN_GROUND_STONE, oreBlockType.stone());
         }
     }
 
@@ -304,10 +315,12 @@ public class MekanismTagProvider extends BaseTagProvider {
               MekanismTags.Blocks.STORAGE_BLOCKS_REFINED_GLOWSTONE, MekanismTags.Blocks.STORAGE_BLOCKS_REFINED_OBSIDIAN, MekanismTags.Blocks.STORAGE_BLOCKS_STEEL,
               MekanismTags.Blocks.STORAGE_BLOCKS_FLUORITE);
         // Dynamic storage blocks
-        for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            addToTags(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(entry.getKey()), MekanismTags.Blocks.RESOURCE_STORAGE_BLOCKS.get(entry.getKey()), entry.getValue());
-            getItemBuilder(Tags.Items.STORAGE_BLOCKS).add(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(entry.getKey()));
-            getBlockBuilder(Tags.Blocks.STORAGE_BLOCKS).add(MekanismTags.Blocks.RESOURCE_STORAGE_BLOCKS.get(entry.getKey()));
+        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+            Named<Item> itemTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(entry.getKey());
+            Named<Block> blockTag = MekanismTags.Blocks.RESOURCE_STORAGE_BLOCKS.get(entry.getKey());
+            addToTags(itemTag, blockTag, entry.getValue());
+            getItemBuilder(Tags.Items.STORAGE_BLOCKS).add(itemTag);
+            getBlockBuilder(Tags.Blocks.STORAGE_BLOCKS).add(blockTag);
         }
     }
 
@@ -522,19 +535,30 @@ public class MekanismTagProvider extends BaseTagProvider {
         );
         addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE, MekanismBlocks.getFactoryBlocks());
         addToHarvestTag(BlockTags.MINEABLE_WITH_PICKAXE,
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS,
-              MekanismBlocks.ORES
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS
         );
         ForgeRegistryTagBuilder<Block> needsStoneToolBuilder = getBlockBuilder(BlockTags.NEEDS_STONE_TOOL);
-        for (BlockRegistryObject<BlockOre, ?> value : MekanismBlocks.ORES.values()) {
-            needsStoneToolBuilder.add(value.getBlock());
+        ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(BlockTags.MINEABLE_WITH_PICKAXE);
+        for (OreBlockType ore : MekanismBlocks.ORES.values()) {
+            Block stone = ore.stone().getBlock();
+            tagBuilder.add(stone);
+            hasHarvestData(stone);
+            needsStoneToolBuilder.add(stone);
+            Block deepslate = ore.deepslate().getBlock();
+            tagBuilder.add(deepslate);
+            hasHarvestData(deepslate);
+            needsStoneToolBuilder.add(deepslate);
         }
         addToHarvestTag(BlockTags.MINEABLE_WITH_SHOVEL, MekanismBlocks.SALT_BLOCK);
         addToTag(BlockTags.NEEDS_STONE_TOOL,
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.RAW_OSMIUM),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.TIN),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.RAW_TIN),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.RAW_LEAD),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.URANIUM),
+              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(BlockResourceInfo.RAW_URANIUM),
               MekanismBlocks.FLUORITE_BLOCK,
               MekanismBlocks.BRONZE_BLOCK,
               MekanismBlocks.STEEL_BLOCK,

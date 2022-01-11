@@ -1,0 +1,17 @@
+{
+  "type": "mekanism:combining",
+  "mainInput": {
+    "amount": 14,
+    "ingredient": {
+      "tag": "forge:dusts/fluorite"
+    }
+  },
+  "extraInput": {
+    "ingredient": {
+      "item": "minecraft:cobbled_deepslate"
+    }
+  },
+  "output": {
+    "item": "mekanism:deepslate_fluorite_ore"
+  }
+}

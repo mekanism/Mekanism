@@ -5,17 +5,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.level.ItemLike;
 import potionstudios.byg.common.block.BYGBlocks;
-//TODO - 1.18: use the actual import
-//import yamahari.ilikewood.plugin.byg.OhTheBiomesYoullGoWoodTypes;
-import yamahari.ilikewood.plugin_byg.OhTheBiomesYoullGoWoodTypes;
+import yamahari.ilikewood.plugin.byg.OhTheBiomesYoullGoWoodTypes;
 import yamahari.ilikewood.registry.woodtype.IWoodType;
 
 @ParametersAreNonnullByDefault
 public class ILikeWoodBYGRecipeProvider extends CompatRecipeProvider {
 
     public ILikeWoodBYGRecipeProvider() {
-        //TODO - 1.18: use the actual import
-        super(yamahari.ilikewood.plugin_byg.util.Constants.MOD_ID, "byg");
+        super(yamahari.ilikewood.plugin.byg.util.Constants.MOD_ID, "byg");
     }
 
     @Override

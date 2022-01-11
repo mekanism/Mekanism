@@ -3,12 +3,15 @@ package mekanism.common.tags;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.Mekanism;
+import mekanism.common.resource.BlockResourceInfo;
+import mekanism.common.resource.IResource;
 import mekanism.common.resource.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
@@ -52,22 +55,26 @@ public class MekanismTags {
         }
 
         public static final Table<ResourceType, PrimaryResource, Named<Item>> PROCESSED_RESOURCES = HashBasedTable.create();
-        public static final Map<PrimaryResource, Named<Item>> PROCESSED_RESOURCE_BLOCKS = new EnumMap<>(PrimaryResource.class);
+        public static final Map<IResource, Named<Item>> PROCESSED_RESOURCE_BLOCKS = new HashMap<>();
         public static final Map<OreType, Named<Item>> ORES = new EnumMap<>(OreType.class);
 
         static {
             for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
                 for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
-                    if (type.usedByPrimary()) {
-                        if (type == ResourceType.INGOT || type == ResourceType.NUGGET || type == ResourceType.DUST) {
-                            PROCESSED_RESOURCES.put(type, resource, forgeTag(type.getPluralPrefix() + "/" + resource.getRegistrySuffix()));
+                    if (type.usedByPrimary(resource)) {
+                        if (type.isVanilla() || type == ResourceType.DUST) {
+                            PROCESSED_RESOURCES.put(type, resource, forgeTag(type.getBaseTagPath() + "/" + resource.getRegistrySuffix()));
                         } else {
-                            PROCESSED_RESOURCES.put(type, resource, tag(type.getPluralPrefix() + "/" + resource.getRegistrySuffix()));
+                            PROCESSED_RESOURCES.put(type, resource, tag(type.getBaseTagPath() + "/" + resource.getRegistrySuffix()));
                         }
                     }
                 }
                 if (!resource.isVanilla()) {
                     PROCESSED_RESOURCE_BLOCKS.put(resource, forgeTag("storage_blocks/" + resource.getRegistrySuffix()));
+                    BlockResourceInfo rawResource = resource.getRawResourceBlockInfo();
+                    if (rawResource != null) {
+                        PROCESSED_RESOURCE_BLOCKS.put(rawResource, forgeTag("storage_blocks/" + rawResource.getRegistrySuffix()));
+                    }
                 }
             }
             for (OreType ore : EnumUtils.ORE_TYPES) {
@@ -188,13 +195,17 @@ public class MekanismTags {
         private Blocks() {
         }
 
-        public static final Map<PrimaryResource, Named<Block>> RESOURCE_STORAGE_BLOCKS = new EnumMap<>(PrimaryResource.class);
+        public static final Map<IResource, Named<Block>> RESOURCE_STORAGE_BLOCKS = new HashMap<>();
         public static final Map<OreType, Named<Block>> ORES = new EnumMap<>(OreType.class);
 
         static {
             for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
                 if (!resource.isVanilla()) {
                     RESOURCE_STORAGE_BLOCKS.put(resource, forgeTag("storage_blocks/" + resource.getRegistrySuffix()));
+                    BlockResourceInfo rawResource = resource.getRawResourceBlockInfo();
+                    if (rawResource != null) {
+                        RESOURCE_STORAGE_BLOCKS.put(rawResource, forgeTag("storage_blocks/" + rawResource.getRegistrySuffix()));
+                    }
                 }
             }
             for (OreType ore : EnumUtils.ORE_TYPES) {

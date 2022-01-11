@@ -1,6 +1,7 @@
 package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalDissolutionRecipeBuilder;
@@ -28,18 +29,20 @@ import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.resource.OreType;
+import mekanism.common.resource.OreType.OreBlockType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
 class OreProcessingRecipeProvider implements ISubRecipeProvider {
@@ -66,13 +69,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         addNetheriteProcessingRecipes(consumer, basePath + "netherite/");
         addBronzeProcessingRecipes(consumer, basePath + "bronze/");
         addCoalOreProcessingRecipes(consumer, basePath + "coal/");
-        addOreProcessingGemRecipes(consumer, basePath + "diamond/", Blocks.DIAMOND_ORE, Tags.Items.ORES_DIAMOND, MekanismItems.DIAMOND_DUST,
-              MekanismTags.Items.DUSTS_DIAMOND, Items.DIAMOND, Tags.Items.GEMS_DIAMOND, 2, 5, Tags.Items.COBBLESTONE);
-        addOreProcessingGemRecipes(consumer, basePath + "emerald/", Blocks.EMERALD_ORE, Tags.Items.ORES_EMERALD, MekanismItems.EMERALD_DUST,
-              MekanismTags.Items.DUSTS_EMERALD, Items.EMERALD, Tags.Items.GEMS_EMERALD, 2, 5, Tags.Items.COBBLESTONE);
-        addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", Blocks.LAPIS_ORE, Tags.Items.ORES_LAPIS, MekanismItems.LAPIS_LAZULI_DUST,
-              MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 27, Tags.Items.COBBLESTONE);
-        addOreProcessingGemRecipes(consumer, basePath + "quartz/", Blocks.NETHER_QUARTZ_ORE, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
+        addOreProcessingGemRecipes(consumer, basePath + "diamond/", Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE, Tags.Items.ORES_DIAMOND,
+              MekanismItems.DIAMOND_DUST, MekanismTags.Items.DUSTS_DIAMOND, Items.DIAMOND, Tags.Items.GEMS_DIAMOND, 2, 5, Tags.Items.COBBLESTONE);
+        addOreProcessingGemRecipes(consumer, basePath + "emerald/", Blocks.EMERALD_ORE, Blocks.DEEPSLATE_EMERALD_ORE, Tags.Items.ORES_EMERALD,
+              MekanismItems.EMERALD_DUST, MekanismTags.Items.DUSTS_EMERALD, Items.EMERALD, Tags.Items.GEMS_EMERALD, 2, 5, Tags.Items.COBBLESTONE);
+        addOreProcessingGemRecipes(consumer, basePath + "lapis_lazuli/", Blocks.LAPIS_ORE, Blocks.DEEPSLATE_LAPIS_ORE, Tags.Items.ORES_LAPIS,
+              MekanismItems.LAPIS_LAZULI_DUST, MekanismTags.Items.DUSTS_LAPIS, Items.LAPIS_LAZULI, Tags.Items.GEMS_LAPIS, 12, 27, Tags.Items.COBBLESTONE);
+        addOreProcessingGemRecipes(consumer, basePath + "quartz/", Blocks.NETHER_QUARTZ_ORE, null, Tags.Items.ORES_QUARTZ, MekanismItems.QUARTZ_DUST,
               MekanismTags.Items.DUSTS_QUARTZ, Items.QUARTZ, Tags.Items.GEMS_QUARTZ, 6, 14, Tags.Items.NETHERRACK);
         addRedstoneProcessingRecipes(consumer, basePath + "redstone/");
         addRefinedGlowstoneProcessingRecipes(consumer, basePath + "refined_glowstone/");
@@ -83,43 +86,50 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addDynamicOreProcessingIngotRecipes(Consumer<FinishedRecipe> consumer, String basePath, PrimaryResource resource) {
-        net.minecraft.world.level.ItemLike ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
+        //TODO - 1.18: Take into account if the ore is a single drop or multi like vanilla copper is?
+        ItemLike ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
         Tag<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
-        net.minecraft.world.level.ItemLike nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
+        ItemLike nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
         Tag<Item> nuggetTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
-        net.minecraft.world.level.ItemLike block = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource);
+        ItemLike block = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource);
         Tag<Item> blockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource);
-        net.minecraft.world.level.ItemLike ore = MekanismBlocks.ORES.get(OreType.get(resource));
+        ItemLike raw = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.RAW, resource);
+        Tag<Item> rawTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.RAW, resource);
+        ItemLike rawBlock = MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo());
+        Tag<Item> rawBlockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource.getRawResourceBlockInfo());
+        OreBlockType oreBlockType = MekanismBlocks.ORES.get(OreType.get(resource));
+        ItemLike ore = oreBlockType == null ? null : oreBlockType.stone();
+        ItemLike deepslateOre = oreBlockType == null ? null : oreBlockType.deepslate();
+        Tag<Item> oreTag = resource.getOreTag();
         float dustExperience = 0.3F;
         if (resource.isVanilla()) {
+            //Note: We only bother setting types we actually use
             switch (resource) {
                 case IRON -> {
                     ingot = Items.IRON_INGOT;
                     ingotTag = Tags.Items.INGOTS_IRON;
-                    nugget = Items.IRON_NUGGET;
-                    nuggetTag = Tags.Items.NUGGETS_IRON;
-                    block = Blocks.IRON_BLOCK;
-                    blockTag = Tags.Items.STORAGE_BLOCKS_IRON;
+                    raw = Items.RAW_IRON;
+                    rawTag = Tags.Items.RAW_MATERIALS_IRON;
                     ore = Blocks.IRON_ORE;
+                    deepslateOre = Blocks.DEEPSLATE_IRON_ORE;
                     dustExperience = 0.35F;
                 }
                 case GOLD -> {
                     ingot = Items.GOLD_INGOT;
                     ingotTag = Tags.Items.INGOTS_GOLD;
-                    nugget = Items.GOLD_NUGGET;
-                    nuggetTag = Tags.Items.NUGGETS_GOLD;
-                    block = Blocks.GOLD_BLOCK;
-                    blockTag = Tags.Items.STORAGE_BLOCKS_GOLD;
+                    raw = Items.RAW_GOLD;
+                    rawTag = Tags.Items.RAW_MATERIALS_GOLD;
                     ore = Blocks.GOLD_ORE;
+                    deepslateOre = Blocks.DEEPSLATE_GOLD_ORE;
                     dustExperience = 0.5F;
                 }
                 case COPPER -> {
                     ingot = Items.COPPER_INGOT;
                     ingotTag = Tags.Items.INGOTS_COPPER;
-                    //Note: Copper has no nuggets in vanilla
-                    block = Blocks.COPPER_BLOCK;
-                    blockTag = Tags.Items.STORAGE_BLOCKS_COPPER;
+                    raw = Items.RAW_COPPER;
+                    rawTag = Tags.Items.RAW_MATERIALS_COPPER;
                     ore = Blocks.COPPER_ORE;
+                    deepslateOre = Blocks.DEEPSLATE_COPPER_ORE;
                     dustExperience = 0.35F;
                 }
                 default -> throw new IllegalStateException("Unknown defaults for primary resource: " + resource.getRegistrySuffix());
@@ -142,7 +152,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         // Clump
         // from ore
         ItemStackChemicalToItemStackRecipeBuilder.purifying(
-              ItemStackIngredient.from(resource.getOreTag()),
+              ItemStackIngredient.from(oreTag),
               GasStackIngredient.from(MekanismGases.OXYGEN, 1),
               clump.getItemStack(3)
         ).build(consumer, Mekanism.rl(basePath + "clump/from_ore"));
@@ -168,7 +178,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ItemStackToItemStackRecipeBuilder.crushing(ItemStackIngredient.from(ingotTag), dust.getItemStack())
               .build(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
         // from ore
-        ItemStackToItemStackRecipeBuilder.enriching(ItemStackIngredient.from(resource.getOreTag()), dust.getItemStack(2))
+        ItemStackToItemStackRecipeBuilder.enriching(ItemStackIngredient.from(oreTag), dust.getItemStack(2))
               .build(consumer, Mekanism.rl(basePath + "dust/from_ore"));
         // Ingot
         // from dust
@@ -192,8 +202,18 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
                   .addIngredient(ingotTag)
                   .build(consumer, Mekanism.rl(basePath + "nugget/from_ingot"));
             // from ore
-            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(resource.getOreTag()), ingot, dustExperience * 2, 200,
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(oreTag), ingot, dustExperience * 2, 200,
                   Mekanism.rl(basePath + "ingot/from_ore_blasting"), Mekanism.rl(basePath + "ingot/from_ore_smelting"));
+            // from raw
+            RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(rawTag), ingot, dustExperience * 2, 200,
+                  Mekanism.rl(basePath + "ingot/from_raw_blasting"), Mekanism.rl(basePath + "ingot/from_raw_smelting"));
+            // raw from raw block
+            ExtendedShapelessRecipeBuilder.shapelessRecipe(raw, 9).addIngredient(rawBlockTag).build(consumer, Mekanism.rl(basePath + "raw/from_raw_block"));
+            // raw to raw block
+            ExtendedShapedRecipeBuilder.shapedRecipe(rawBlock)
+                  .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
+                  .key(Pattern.CONSTANT, rawTag)
+                  .build(consumer, Mekanism.rl(basePath + "raw_storage_blocks/from_raw"));
         }
         // Ore
         // from dust
@@ -202,6 +222,14 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Tags.Items.COBBLESTONE),
               new ItemStack(ore)
         ).build(consumer, Mekanism.rl(basePath + "ore/from_dust"));
+        // Deepslate Ore
+        // from dust
+        CombinerRecipeBuilder.combining(
+              ItemStackIngredient.from(dustTag, 8),
+              //TODO - 1.18: Deepslate tag once https://github.com/MinecraftForge/MinecraftForge/pull/8292 is merged
+              ItemStackIngredient.from(Blocks.COBBLED_DEEPSLATE),
+              new ItemStack(deepslateOre)
+        ).build(consumer, Mekanism.rl(basePath + "deepslate_ore/from_dust"));
         // Shard
         // from crystal
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
@@ -211,7 +239,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "shard/from_crystal"));
         // from ore
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(resource.getOreTag()),
+              ItemStackIngredient.from(oreTag),
               GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
               shard.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
@@ -224,7 +252,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         // dirty
         ChemicalDissolutionRecipeBuilder.dissolution(
-              ItemStackIngredient.from(resource.getOreTag()),
+              ItemStackIngredient.from(oreTag),
               GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
               slurry.getDirtySlurry().getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
@@ -252,10 +280,17 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Tags.Items.COBBLESTONE),
               new ItemStack(Blocks.COAL_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
+        //to deepslate ore
+        CombinerRecipeBuilder.combining(
+              ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL, 8),
+              //TODO - 1.18: Deepslate tag once https://github.com/MinecraftForge/MinecraftForge/pull/8292 is merged
+              ItemStackIngredient.from(Blocks.COBBLED_DEEPSLATE),
+              new ItemStack(Blocks.DEEPSLATE_COAL_ORE)
+        ).build(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
     }
 
-    private void addOreProcessingGemRecipes(Consumer<FinishedRecipe> consumer, String basePath, net.minecraft.world.level.ItemLike ore, Tag<Item> oreTag,
-          IItemProvider dust, Tag<Item> dustTag, net.minecraft.world.level.ItemLike gem, Tag<Item> gemTag, int fromOre, int toOre, Tag<Item> combineType) {
+    private void addOreProcessingGemRecipes(Consumer<FinishedRecipe> consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, Tag<Item> oreTag,
+          IItemProvider dust, Tag<Item> dustTag, ItemLike gem, Tag<Item> gemTag, int fromOre, int toOre, Tag<Item> combineType) {
         //from dust
         ItemStackToItemStackRecipeBuilder.enriching(
               ItemStackIngredient.from(dustTag),
@@ -277,6 +312,15 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(combineType),
               new ItemStack(ore)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
+        if (deepslateOre != null) {
+            //to deepslate ore
+            CombinerRecipeBuilder.combining(
+                  ItemStackIngredient.from(dustTag, toOre),
+                  //TODO - 1.18: Deepslate tag once https://github.com/MinecraftForge/MinecraftForge/pull/8292 is merged
+                  ItemStackIngredient.from(Blocks.COBBLED_DEEPSLATE),
+                  new ItemStack(deepslateOre)
+            ).build(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
+        }
     }
 
     private void addNetheriteProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
@@ -364,6 +408,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Tags.Items.COBBLESTONE),
               new ItemStack(Blocks.REDSTONE_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
+        //to deepslate ore
+        CombinerRecipeBuilder.combining(
+              ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE, 16),
+              //TODO - 1.18: Deepslate tag once https://github.com/MinecraftForge/MinecraftForge/pull/8292 is merged
+              ItemStackIngredient.from(Blocks.COBBLED_DEEPSLATE),
+              new ItemStack(Blocks.DEEPSLATE_REDSTONE_ORE)
+        ).build(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
     }
 
     private void addRefinedGlowstoneProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
@@ -449,7 +500,8 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
     }
 
     private void addFluoriteRecipes(Consumer<FinishedRecipe> consumer, String basePath) {
-        addOreProcessingGemRecipes(consumer, basePath, MekanismBlocks.ORES.get(OreType.FLUORITE), MekanismTags.Items.ORES.get(OreType.FLUORITE),
+        OreBlockType fluorite = MekanismBlocks.ORES.get(OreType.FLUORITE);
+        addOreProcessingGemRecipes(consumer, basePath, fluorite.stone(), fluorite.deepslate(), MekanismTags.Items.ORES.get(OreType.FLUORITE),
               MekanismItems.FLUORITE_DUST, MekanismTags.Items.DUSTS_FLUORITE, MekanismItems.FLUORITE_GEM, MekanismTags.Items.GEMS_FLUORITE, 6, 14,
               Tags.Items.COBBLESTONE);
         //Gem from block

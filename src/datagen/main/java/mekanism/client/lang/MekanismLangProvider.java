@@ -10,7 +10,6 @@ import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.BlockOre;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -28,7 +27,9 @@ import mekanism.common.registries.MekanismPigments;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
+import mekanism.common.resource.IResource;
 import mekanism.common.resource.OreType;
+import mekanism.common.resource.OreType.OreBlockType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.FactoryTier;
@@ -176,6 +177,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
                 case DIRTY_DUST -> add(item.getValue(), "Dirty " + resourceName + " Dust");
                 case CLUMP -> add(item.getValue(), resourceName + " Clump");
                 case INGOT -> add(item.getValue(), resourceName + " Ingot");
+                case RAW -> add(item.getValue(), "Raw " + resourceName);
                 case NUGGET -> add(item.getValue(), resourceName + " Nugget");
             }
         }
@@ -269,7 +271,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         //Ores
         addOre(OreType.OSMIUM, "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
-        //TODO - 1.18: Update tin's description??
+        //TODO - 1.18: Update tin's description given we likely have a different rate than copper in general due to different drop amount
         addOre(OreType.TIN, "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
         addOre(OreType.FLUORITE, "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
         addOre(OreType.URANIUM, "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occurring form, it is not radioactive enough to cause harm.");
@@ -282,7 +284,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.STEEL_BLOCK, "Steel Block");
         add(MekanismBlocks.FLUORITE_BLOCK, "Fluorite Block");
         //Dynamic storage blocks
-        for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
+        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             add(entry.getValue(), formatAndCapitalize(entry.getKey().getRegistrySuffix()) + " Block");
         }
 
@@ -1307,9 +1309,11 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     }
 
     private void addOre(OreType type, String description) {
-        BlockRegistryObject<BlockOre, ?> oreRO = MekanismBlocks.ORES.get(type);
-        add(oreRO, formatAndCapitalize(type.getResource().getRegistrySuffix()) + " Ore");
-        add(oreRO.getBlock().getDescriptionTranslationKey(), description);
+        String name = formatAndCapitalize(type.getResource().getRegistrySuffix());
+        OreBlockType oreBlockType = MekanismBlocks.ORES.get(type);
+        add(oreBlockType.stone(), name + " Ore");
+        add(oreBlockType.stone().getBlock().getDescriptionTranslationKey(), description);
+        add(oreBlockType.deepslate(), "Deepslate " + name + " Ore");
     }
 
     private void addTiered(IItemProvider basic, IItemProvider advanced, IItemProvider elite, IItemProvider ultimate, String name) {

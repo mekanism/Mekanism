@@ -7,30 +7,36 @@ public enum ResourceType {
     DIRTY_DUST("dirty_dust"),
     CLUMP("clump"),
     INGOT("ingot"),
+    RAW("raw", "raw_materials"),
     NUGGET("nugget"),
     ENRICHED("enriched", "enriched");
 
     private final String registryPrefix;
-    private final String pluralPrefix;
+    private final String baseTagPath;
 
     ResourceType(String prefix) {
         this(prefix, prefix + "s");
     }
 
-    ResourceType(String prefix, String pluralPrefix) {
+    ResourceType(String prefix, String baseTagPath) {
         this.registryPrefix = prefix;
-        this.pluralPrefix = pluralPrefix;
+        this.baseTagPath = baseTagPath;
     }
 
     public String getRegistryPrefix() {
         return registryPrefix;
     }
 
-    public String getPluralPrefix() {
-        return pluralPrefix;
+    public String getBaseTagPath() {
+        return baseTagPath;
     }
 
-    public boolean usedByPrimary() {
-        return this != ENRICHED;
+    public boolean usedByPrimary(PrimaryResource resource) {
+        //Copper doesn't have nuggets
+        return this != ENRICHED && (resource != PrimaryResource.COPPER || this != NUGGET);
+    }
+
+    public boolean isVanilla() {
+        return this == INGOT || this == RAW || this == NUGGET;
     }
 }
