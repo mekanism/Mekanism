@@ -87,6 +87,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
     private void addDynamicOreProcessingIngotRecipes(Consumer<FinishedRecipe> consumer, String basePath, PrimaryResource resource) {
         //TODO - 1.18: Take into account if the ore is a single drop or multi like vanilla copper is?
+        //TODO - 1.18: Replace combiner recipes with using raw ores?
         ItemLike ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
         Tag<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
         ItemLike nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
@@ -156,6 +157,12 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               GasStackIngredient.from(MekanismGases.OXYGEN, 1),
               clump.getItemStack(3)
         ).build(consumer, Mekanism.rl(basePath + "clump/from_ore"));
+        // from raw ore
+        ItemStackChemicalToItemStackRecipeBuilder.purifying(
+              ItemStackIngredient.from(rawTag),
+              GasStackIngredient.from(MekanismGases.OXYGEN, 1),
+              clump.getItemStack(2)
+        ).build(consumer, Mekanism.rl(basePath + "clump/from_raw_ore"));
         // from shard
         ItemStackChemicalToItemStackRecipeBuilder.purifying(
               ItemStackIngredient.from(shardTag),
@@ -180,6 +187,9 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         // from ore
         ItemStackToItemStackRecipeBuilder.enriching(ItemStackIngredient.from(oreTag), dust.getItemStack(2))
               .build(consumer, Mekanism.rl(basePath + "dust/from_ore"));
+        // from raw ore
+        ItemStackToItemStackRecipeBuilder.enriching(ItemStackIngredient.from(rawTag, 3), dust.getItemStack(4))
+              .build(consumer, Mekanism.rl(basePath + "dust/from_raw_ore"));
         // Ingot
         // from dust
         RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, Ingredient.of(dustTag), ingot, dustExperience, 200,
@@ -243,6 +253,12 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
               shard.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "shard/from_ore"));
+        // from raw ore
+        ItemStackChemicalToItemStackRecipeBuilder.injecting(
+              ItemStackIngredient.from(rawTag, 3),
+              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
+              shard.getItemStack(8)
+        ).build(consumer, Mekanism.rl(basePath + "shard/from_raw_ore"));
         // Slurry
         // clean
         FluidSlurryToSlurryRecipeBuilder.washing(
@@ -251,11 +267,18 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               slurry.getCleanSlurry().getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "slurry/clean"));
         // dirty
+        // from ore
         ChemicalDissolutionRecipeBuilder.dissolution(
               ItemStackIngredient.from(oreTag),
               GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
               slurry.getDirtySlurry().getStack(1_000)
-        ).build(consumer, Mekanism.rl(basePath + "slurry/dirty"));
+        ).build(consumer, Mekanism.rl(basePath + "slurry/dirty/from_ore"));
+        // from raw ore
+        ChemicalDissolutionRecipeBuilder.dissolution(
+              ItemStackIngredient.from(rawTag, 3),
+              GasStackIngredient.from(MekanismGases.SULFURIC_ACID, 1),
+              slurry.getDirtySlurry().getStack(2_000)
+        ).build(consumer, Mekanism.rl(basePath + "slurry/dirty/from_raw_ore"));
     }
 
     private void addCoalOreProcessingRecipes(Consumer<FinishedRecipe> consumer, String basePath) {

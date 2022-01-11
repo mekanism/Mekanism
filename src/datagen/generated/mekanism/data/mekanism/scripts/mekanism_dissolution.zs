@@ -21,4 +21,4 @@ import mods.mekanism.api.ingredient.ItemStackIngredient;
 // <recipetype:mekanism:dissolution>.removeByName(name as string)
 
 <recipetype:mekanism:dissolution>.removeByName("mekanism:processing/uranium/hydrofluoric_acid");
-<recipetype:mekanism:dissolution>.removeByName("mekanism:processing/lead/slurry/dirty");
+<recipetype:mekanism:dissolution>.removeByName("mekanism:processing/lead/slurry/dirty/from_ore");

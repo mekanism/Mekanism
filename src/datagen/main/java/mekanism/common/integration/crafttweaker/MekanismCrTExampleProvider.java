@@ -179,7 +179,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               ).blankLine()
               .removeRecipes(ChemicalDissolutionRecipeManager.INSTANCE,
                     Mekanism.rl("processing/uranium/hydrofluoric_acid"),
-                    Mekanism.rl("processing/lead/slurry/dirty")
+                    Mekanism.rl("processing/lead/slurry/dirty/from_ore")
               )
         ;
         exampleBuilder("mekanism_chemical_infusing")
