@@ -83,6 +83,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.client.event.RenderArmEvent;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.event.ScreenOpenEvent;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -132,12 +133,11 @@ public class RenderTickHandler {
         }
     }
 
-    //TODO - 1.18: Figure out if there is a replacement to this
-    /*@SubscribeEvent
-    public void renderWorld(RenderWorldLastEvent event) {
+    @SubscribeEvent
+    public void renderWorld(RenderLevelLastEvent event) {
         if (boltRenderer.hasBoltsToRender()) {
             //Only do matrix transforms and mess with buffers if we actually have any bolts to render
-            PoseStack matrix = event.getMatrixStack();
+            PoseStack matrix = event.getPoseStack();
             matrix.pushPose();
             // here we translate based on the inverse position of the client viewing camera to get back to 0, 0, 0
             Vec3 camVec = minecraft.gameRenderer.getMainCamera().getPosition();
@@ -145,11 +145,11 @@ public class RenderTickHandler {
             //TODO: FIXME, this doesn't work on fabulous, I think it needs something like
             // https://github.com/MinecraftForge/MinecraftForge/pull/7225
             MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
-            boltRenderer.render(event.getPartialTicks(), matrix, renderer);
+            boltRenderer.render(event.getPartialTick(), matrix, renderer);
             renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
             matrix.popPose();
         }
-    }*/
+    }
 
     @SubscribeEvent
     public void renderArm(RenderArmEvent event) {

@@ -91,25 +91,39 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         Tag<Item> blockTag = MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(resource);
         net.minecraft.world.level.ItemLike ore = MekanismBlocks.ORES.get(OreType.get(resource));
         float dustExperience = 0.3F;
-
-        if (resource == PrimaryResource.IRON) {
-            ingot = Items.IRON_INGOT;
-            ingotTag = Tags.Items.INGOTS_IRON;
-            nugget = Items.IRON_NUGGET;
-            nuggetTag = Tags.Items.NUGGETS_IRON;
-            block = Blocks.IRON_BLOCK;
-            blockTag = Tags.Items.STORAGE_BLOCKS_IRON;
-            ore = Blocks.IRON_ORE;
-            dustExperience = 0.35F;
-        } else if (resource == PrimaryResource.GOLD) {
-            ingot = Items.GOLD_INGOT;
-            ingotTag = Tags.Items.INGOTS_GOLD;
-            nugget = Items.GOLD_NUGGET;
-            nuggetTag = Tags.Items.NUGGETS_GOLD;
-            block = Blocks.GOLD_BLOCK;
-            blockTag = Tags.Items.STORAGE_BLOCKS_GOLD;
-            ore = Blocks.GOLD_ORE;
-            dustExperience = 0.5F;
+        if (resource.isVanilla()) {
+            switch (resource) {
+                case IRON -> {
+                    ingot = Items.IRON_INGOT;
+                    ingotTag = Tags.Items.INGOTS_IRON;
+                    nugget = Items.IRON_NUGGET;
+                    nuggetTag = Tags.Items.NUGGETS_IRON;
+                    block = Blocks.IRON_BLOCK;
+                    blockTag = Tags.Items.STORAGE_BLOCKS_IRON;
+                    ore = Blocks.IRON_ORE;
+                    dustExperience = 0.35F;
+                }
+                case GOLD -> {
+                    ingot = Items.GOLD_INGOT;
+                    ingotTag = Tags.Items.INGOTS_GOLD;
+                    nugget = Items.GOLD_NUGGET;
+                    nuggetTag = Tags.Items.NUGGETS_GOLD;
+                    block = Blocks.GOLD_BLOCK;
+                    blockTag = Tags.Items.STORAGE_BLOCKS_GOLD;
+                    ore = Blocks.GOLD_ORE;
+                    dustExperience = 0.5F;
+                }
+                case COPPER -> {
+                    ingot = Items.COPPER_INGOT;
+                    ingotTag = Tags.Items.INGOTS_COPPER;
+                    //Note: Copper has no nuggets in vanilla
+                    block = Blocks.COPPER_BLOCK;
+                    blockTag = Tags.Items.STORAGE_BLOCKS_COPPER;
+                    ore = Blocks.COPPER_ORE;
+                    dustExperience = 0.35F;
+                }
+                default -> throw new IllegalStateException("Unknown defaults for primary resource: " + resource.getRegistrySuffix());
+            }
         }
 
         IItemProvider dust = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, resource);
@@ -327,7 +341,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
         //from infusing
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER), 3),
+              ItemStackIngredient.from(Tags.Items.INGOTS_COPPER, 3),
               InfusionStackIngredient.from(MekanismTags.InfuseTypes.TIN, 10),
               MekanismItems.BRONZE_INGOT.getItemStack(4)
         ).build(consumer, Mekanism.rl(basePath + "ingot/from_infusing"));

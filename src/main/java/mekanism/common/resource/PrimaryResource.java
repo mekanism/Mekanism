@@ -10,7 +10,7 @@ public enum PrimaryResource implements IResource {
     IRON("iron", 0xFFAF8E77, Tags.Items.ORES_IRON),
     GOLD("gold", 0xFFF2CD67, Tags.Items.ORES_GOLD),
     OSMIUM("osmium", 0xFF1E79C3, () -> MekanismTags.Items.ORES.get(OreType.OSMIUM), BlockResourceInfo.OSMIUM),
-    COPPER("copper", 0xFFAA4B19, () -> MekanismTags.Items.ORES.get(OreType.COPPER), BlockResourceInfo.COPPER),
+    COPPER("copper", 0xFFAA4B19, Tags.Items.ORES_COPPER),
     TIN("tin", 0xFFCCCCD9, () -> MekanismTags.Items.ORES.get(OreType.TIN), BlockResourceInfo.TIN),
     LEAD("lead", 0xFF3A404A, () -> MekanismTags.Items.ORES.get(OreType.LEAD), BlockResourceInfo.LEAD),
     URANIUM("uranium", 0xFF46664F, () -> MekanismTags.Items.ORES.get(OreType.URANIUM), BlockResourceInfo.URANIUM);
@@ -35,11 +35,6 @@ public enum PrimaryResource implements IResource {
         this.oreTag = oreTag;
         this.isVanilla = isVanilla;
         this.resourceBlockInfo = resourceBlockInfo;
-    }
-
-    //TODO: remove
-    public String getName() {
-        return name;
     }
 
     @Override

@@ -168,7 +168,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addTiered(MekanismItems.BASIC_TIER_INSTALLER, MekanismItems.ADVANCED_TIER_INSTALLER, MekanismItems.ELITE_TIER_INSTALLER, MekanismItems.ULTIMATE_TIER_INSTALLER, "Tier Installer");
 
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            String resourceName = formatAndCapitalize(item.getColumnKey().getName());
+            String resourceName = formatAndCapitalize(item.getColumnKey().getRegistrySuffix());
             switch (item.getRowKey()) {
                 case SHARD -> add(item.getValue(), resourceName + " Shard");
                 case CRYSTAL -> add(item.getValue(), resourceName + " Crystal");
@@ -269,7 +269,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         //Ores
         addOre(OreType.OSMIUM, "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
-        addOre(OreType.COPPER, "A common, conductive material that can be used in the production of wires. Its ability to withstand high heats also makes it essential to advanced machinery.");
+        //TODO - 1.18: Update tin's description??
         addOre(OreType.TIN, "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
         addOre(OreType.FLUORITE, "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
         addOre(OreType.URANIUM, "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occurring form, it is not radioactive enough to cause harm.");
@@ -283,7 +283,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.FLUORITE_BLOCK, "Fluorite Block");
         //Dynamic storage blocks
         for (Map.Entry<PrimaryResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            add(entry.getValue(), formatAndCapitalize(entry.getKey().getName()) + " Block");
+            add(entry.getValue(), formatAndCapitalize(entry.getKey().getRegistrySuffix()) + " Block");
         }
 
         //Tiered things
@@ -385,7 +385,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
     private void addSlurries() {
         add(MekanismAPI.EMPTY_SLURRY, "Empty");
         for (Map.Entry<PrimaryResource, SlurryRegistryObject<Slurry, Slurry>> entry : MekanismSlurries.PROCESSED_RESOURCES.entrySet()) {
-            addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getName()));
+            addSlurry(entry.getValue(), formatAndCapitalize(entry.getKey().getRegistrySuffix()));
         }
     }
 

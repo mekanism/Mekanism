@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import net.minecraft.util.StringRepresentable;
 
 public enum OreType implements StringRepresentable {
-    COPPER(PrimaryResource.COPPER, 16, 8, 0, 0, 60),
     TIN(PrimaryResource.TIN, 14, 8, 0, 0, 60),
     OSMIUM(PrimaryResource.OSMIUM, 12, 8, 0, 0, 60),
     URANIUM(PrimaryResource.URANIUM, 8, 8, 0, 0, 60),

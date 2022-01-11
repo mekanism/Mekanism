@@ -60,14 +60,14 @@ public class MekanismTags {
                 for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
                     if (type.usedByPrimary()) {
                         if (type == ResourceType.INGOT || type == ResourceType.NUGGET || type == ResourceType.DUST) {
-                            PROCESSED_RESOURCES.put(type, resource, forgeTag(type.getPluralPrefix() + "/" + resource.getName()));
+                            PROCESSED_RESOURCES.put(type, resource, forgeTag(type.getPluralPrefix() + "/" + resource.getRegistrySuffix()));
                         } else {
-                            PROCESSED_RESOURCES.put(type, resource, tag(type.getPluralPrefix() + "/" + resource.getName()));
+                            PROCESSED_RESOURCES.put(type, resource, tag(type.getPluralPrefix() + "/" + resource.getRegistrySuffix()));
                         }
                     }
                 }
                 if (!resource.isVanilla()) {
-                    PROCESSED_RESOURCE_BLOCKS.put(resource, forgeTag("storage_blocks/" + resource.getName()));
+                    PROCESSED_RESOURCE_BLOCKS.put(resource, forgeTag("storage_blocks/" + resource.getRegistrySuffix()));
                 }
             }
             for (OreType ore : EnumUtils.ORE_TYPES) {
@@ -194,7 +194,7 @@ public class MekanismTags {
         static {
             for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
                 if (!resource.isVanilla()) {
-                    RESOURCE_STORAGE_BLOCKS.put(resource, forgeTag("storage_blocks/" + resource.getName()));
+                    RESOURCE_STORAGE_BLOCKS.put(resource, forgeTag("storage_blocks/" + resource.getRegistrySuffix()));
                 }
             }
             for (OreType ore : EnumUtils.ORE_TYPES) {

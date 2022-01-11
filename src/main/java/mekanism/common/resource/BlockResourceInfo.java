@@ -5,7 +5,6 @@ import net.minecraft.world.level.material.PushReaction;
 public enum BlockResourceInfo implements IResource {
     OSMIUM("osmium", 7.5F, 12),
     TIN("tin", 5, 6),
-    COPPER("copper", 5, 6),//TODO - 1.18: Remove copper and use vanilla
     LEAD("lead", 5, 9),
     URANIUM("uranium", 5, 9),
     CHARCOAL("charcoal", 5, 6, 16_000),

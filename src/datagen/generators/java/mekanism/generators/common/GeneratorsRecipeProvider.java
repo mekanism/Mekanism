@@ -182,7 +182,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.WOOD, ItemTags.PLANKS)
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
-              .key(COPPER_CHAR, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER))
+              .key(COPPER_CHAR, Tags.Items.INGOTS_COPPER)
               .key(FURNACE_CHAR, Blocks.FURNACE)
               .build(consumer, MekanismGenerators.rl("generator/heat"));
         //Wind

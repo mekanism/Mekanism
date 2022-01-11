@@ -13,7 +13,7 @@ public class SlurryDeferredRegister extends WrappedDeferredRegister<Slurry> {
     }
 
     public SlurryRegistryObject<Slurry, Slurry> register(PrimaryResource resource) {
-        return register(resource.getName(), builder -> builder.color(resource.getTint()).ore(resource.getOreTag()));
+        return register(resource.getRegistrySuffix(), builder -> builder.color(resource.getTint()).ore(resource.getOreTag()));
     }
 
     public SlurryRegistryObject<Slurry, Slurry> register(String baseName, UnaryOperator<SlurryBuilder> builderModifier) {

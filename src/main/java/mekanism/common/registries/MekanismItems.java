@@ -215,7 +215,7 @@ public class MekanismItems {
         for (ResourceType type : EnumUtils.RESOURCE_TYPES) {
             for (PrimaryResource resource : EnumUtils.PRIMARY_RESOURCES) {
                 if (resource.has(type)) {
-                    PROCESSED_RESOURCES.put(type, resource, ITEMS.register(type.getRegistryPrefix() + "_" + resource.getName()));
+                    PROCESSED_RESOURCES.put(type, resource, ITEMS.register(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix()));
                 }
             }
         }

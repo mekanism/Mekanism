@@ -136,7 +136,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         //Beacon bases
         addToTag(BlockTags.BEACON_BASE_BLOCKS,
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM),
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.COPPER),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.TIN),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.URANIUM),
@@ -148,7 +147,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         //Beacon payment items
         addToTag(ItemTags.BEACON_PAYMENT_ITEMS,
               MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM),
-              MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.COPPER),
               MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN),
               MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD),
               MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM),
@@ -535,7 +533,6 @@ public class MekanismTagProvider extends BaseTagProvider {
         addToTag(BlockTags.NEEDS_STONE_TOOL,
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.TIN),
-              MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.COPPER),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.LEAD),
               MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.URANIUM),
               MekanismBlocks.FLUORITE_BLOCK,
