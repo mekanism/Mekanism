@@ -60,10 +60,6 @@ sourceSets {
         resources.srcDirs = []
     }
     main {
-        java {
-            //TODO - 1.18: Remove this when JEITweaker updates
-            exclude "mekanism/common/integration/crafttweaker/jeitweaker/**"
-        }
         resources {
             include '**/**'
             // copy everything else, but blender and bbmodel files.
@@ -424,8 +420,7 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
 
     implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-${minecraft_version}:${crafttweaker_version}")
-    //TODO - 1.18: Support JEITweaker again when it ports
-    //implementation fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
+    implementation fg.deobf("com.blamejared.jeitweaker:JEITweaker-${minecraft_version}:${jeitweaker_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     //TODO - 1.18: Currently we are getting projecte from flatdir for purposes of compiling
@@ -829,7 +824,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "applied-energistics-2"
                     optionalDependency "biomes-o-plenty"
                     optionalDependency "cc-tweaked"
-                    //optionalDependency "crafttweaker"
+                    optionalDependency "crafttweaker"
                     optionalDependency "ctm"
                     optionalDependency "curios"
                     //optionalDependency "flux-networks"
@@ -838,7 +833,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     //optionalDependency "i-like-wood-oh-the-biomes-youll-go-plugin"
                     optionalDependency "jade"
                     optionalDependency "jei"
-                    //optionalDependency "jeitweaker"
+                    optionalDependency "jeitweaker"
                     optionalDependency "oh-the-biomes-youll-go"
                     optionalDependency "perviaminvenire"
                     optionalDependency "projecte"
