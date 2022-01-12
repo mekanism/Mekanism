@@ -41,6 +41,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraftforge.common.util.Lazy;
 
 @ParametersAreNonnullByDefault
 public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntityLogisticalTransporterBase> {
@@ -51,7 +52,8 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
     private static SpriteInfo torchOnIcon;
     private final ModelTransporterBox modelBox;
     private final ItemEntity entityItem = new ItemEntity(EntityType.ITEM, null);
-    private final EntityRenderer<? super ItemEntity> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem);
+    //Needs to be lazy as block entity renders are initialized before entity renderers
+    private final Lazy<EntityRenderer<? super ItemEntity>> renderer = Lazy.of(() -> Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entityItem));
 
     public RenderLogisticalTransporter(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -78,6 +80,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
             entityItem.level = tile.getLevel();
             //Reset entity age to fix issues with mods like ItemPhysic
             entityItem.age = 0;
+            EntityRenderer<? super ItemEntity> itemRenderer = this.renderer.get();
 
             float partial = partialTick * transporter.tier.getSpeed();
             Collection<TransporterStack> reducedTransit = getReducedTransit(inTransit);
@@ -87,7 +90,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
                 matrix.pushPose();
                 matrix.translate(stackPos[0], stackPos[1], stackPos[2]);
                 matrix.scale(0.75F, 0.75F, 0.75F);
-                this.renderer.render(entityItem, 0, 0, matrix, renderer, MekanismRenderer.FULL_LIGHT);
+                itemRenderer.render(entityItem, 0, 0, matrix, renderer, MekanismRenderer.FULL_LIGHT);
                 matrix.popPose();
                 if (stack.color != null) {
                     modelBox.render(matrix, renderer, MekanismRenderer.FULL_LIGHT, overlayLight, stackPos[0], stackPos[1], stackPos[2], stack.color);
