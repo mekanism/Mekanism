@@ -6,7 +6,7 @@ import mekanism.api.chemical.ChemicalType;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.resource.OreType;
+import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.BinTier;

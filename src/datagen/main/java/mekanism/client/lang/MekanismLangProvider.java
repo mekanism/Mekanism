@@ -28,8 +28,8 @@ import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.resource.IResource;
-import mekanism.common.resource.OreType;
-import mekanism.common.resource.OreType.OreBlockType;
+import mekanism.common.resource.ore.OreType;
+import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tier.FactoryTier;
@@ -1312,7 +1312,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         String name = formatAndCapitalize(type.getResource().getRegistrySuffix());
         OreBlockType oreBlockType = MekanismBlocks.ORES.get(type);
         add(oreBlockType.stone(), name + " Ore");
-        add(oreBlockType.stone().getBlock().getDescriptionTranslationKey(), description);
+        add(oreBlockType.stoneBlock().getDescriptionTranslationKey(), description);
         add(oreBlockType.deepslate(), "Deepslate " + name + " Ore");
     }
 

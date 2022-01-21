@@ -1,5 +1,6 @@
 package mekanism.common.config.value;
 
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.IMekanismConfig;
@@ -9,7 +10,7 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
  * @param <TYPE> The type this {@link CachedResolvableConfigValue} resolves to
  * @param <REAL> The real type that the {@link ConfigValue} holds
  */
-public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValue<REAL> {
+public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValue<REAL> implements Supplier<TYPE> {
 
     @Nullable
     private TYPE cachedValue;
@@ -23,6 +24,7 @@ public abstract class CachedResolvableConfigValue<TYPE, REAL> extends CachedValu
     protected abstract REAL encode(TYPE value);
 
     @Nonnull
+    @Override
     public TYPE get() {
         if (cachedValue == null) {
             //If we don't have a cached value, resolve it from the actual ConfigValue

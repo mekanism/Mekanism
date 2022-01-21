@@ -2,6 +2,7 @@ package mekanism.common.resource;
 
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.tags.Tag;

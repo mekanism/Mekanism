@@ -8,28 +8,28 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.resource.OreType;
+import mekanism.common.resource.ore.OreType.OreVeinType;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.IntProviderType;
 
 public class ConfigurableConstantInt extends IntProvider {
 
     public static final Codec<ConfigurableConstantInt> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-          OreType.CODEC.optionalFieldOf("oreType").forGetter(config -> Optional.ofNullable(config.oreType))
+          OreVeinType.CODEC.optionalFieldOf("oreVeinType").forGetter(config -> Optional.ofNullable(config.oreVeinType))
     ).apply(builder, oreType -> {
         if (oreType.isPresent()) {
-            OreType type = oreType.get();
-            return new ConfigurableConstantInt(type, MekanismConfig.world.ores.get(type).perChunk);
+            OreVeinType type = oreType.get();
+            return new ConfigurableConstantInt(type, MekanismConfig.world.getVeinConfig(type).perChunk());
         }
         return new ConfigurableConstantInt(null, MekanismConfig.world.salt.perChunk);
     }));
 
     @Nullable
-    private final OreType oreType;
+    private final OreVeinType oreVeinType;
     private final IntSupplier value;
 
-    public ConfigurableConstantInt(@Nullable OreType oreType, IntSupplier value) {
-        this.oreType = oreType;
+    public ConfigurableConstantInt(@Nullable OreVeinType oreVeinType, IntSupplier value) {
+        this.oreVeinType = oreVeinType;
         this.value = value;
     }
 

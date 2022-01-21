@@ -2,7 +2,7 @@ package mekanism.common.loot.table;
 
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismItems;
-import mekanism.common.resource.OreType;
+import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;

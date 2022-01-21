@@ -5,7 +5,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasDescription;
 import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.resource.OreType;
+import mekanism.common.resource.ore.OreType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;

@@ -18,7 +18,7 @@ import mekanism.common.block.attribute.Attributes.AttributeRedstone;
 import mekanism.common.block.attribute.Attributes.AttributeSecurity;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.lib.frequency.IFrequencyHandler;
-import mekanism.common.resource.OreType.OreBlockType;
+import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tile.base.SubstanceType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
@@ -126,8 +126,8 @@ public abstract class BaseBlockLootTables extends BlockLoot {
 
     protected void add(Function<Block, Builder> factory, OreBlockType... oreTypes) {
         for (OreBlockType oreType : oreTypes) {
-            add(oreType.stone().getBlock(), factory);
-            add(oreType.deepslate().getBlock(), factory);
+            add(oreType.stoneBlock(), factory);
+            add(oreType.deepslateBlock(), factory);
         }
     }
 

@@ -10,6 +10,7 @@ import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.config.value.CachedResourceLocationListValue;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.tile.TileEntityHeatGenerator;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.config.ModConfig.Type;
 
@@ -106,7 +107,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         //Note: We just require that the maxY is greater than the minY, nothing goes badly if it is set above the max y of the world though
         // as it is just used for range clamping
         windGenerationMaxY = CachedIntValue.wrap(this, builder.comment("The maximum Y value that affects the Wind Generators Power generation.")
-              .define("windGenerationMaxY", 255, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
+              .define("windGenerationMaxY", DimensionType.MAX_Y, value -> value instanceof Integer && (Integer) value > windGenerationMinY.get()));
         //Note: We cannot verify the dimension exists as dimensions are dynamic so may not actually exist when we are validating
         windGenerationDimBlacklist = CachedResourceLocationListValue.define(this, builder.comment("The list of dimension ids that the Wind Generator will not generate power in."),
               "windGenerationDimBlacklist", rl -> true);

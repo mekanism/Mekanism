@@ -12,7 +12,7 @@ import mekanism.api.chemical.slurry.Slurry;
 import mekanism.common.Mekanism;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.IResource;
-import mekanism.common.resource.OreType;
+import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.util.EnumUtils;

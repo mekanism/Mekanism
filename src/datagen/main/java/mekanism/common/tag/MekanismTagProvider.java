@@ -23,8 +23,8 @@ import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.IResource;
-import mekanism.common.resource.OreType;
-import mekanism.common.resource.OreType.OreBlockType;
+import mekanism.common.resource.ore.OreType;
+import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
@@ -540,11 +540,11 @@ public class MekanismTagProvider extends BaseTagProvider {
         ForgeRegistryTagBuilder<Block> needsStoneToolBuilder = getBlockBuilder(BlockTags.NEEDS_STONE_TOOL);
         ForgeRegistryTagBuilder<Block> tagBuilder = getBlockBuilder(BlockTags.MINEABLE_WITH_PICKAXE);
         for (OreBlockType ore : MekanismBlocks.ORES.values()) {
-            Block stone = ore.stone().getBlock();
+            Block stone = ore.stoneBlock();
             tagBuilder.add(stone);
             hasHarvestData(stone);
             needsStoneToolBuilder.add(stone);
-            Block deepslate = ore.deepslate().getBlock();
+            Block deepslate = ore.deepslateBlock();
             tagBuilder.add(deepslate);
             hasHarvestData(deepslate);
             needsStoneToolBuilder.add(deepslate);
