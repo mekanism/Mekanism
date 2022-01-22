@@ -79,4 +79,8 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
         }
         super.clicked(slotId, dragType, clickType, player);
     }
+
+    public ItemStack getChestStack() {
+        return stack;
+    }
 }

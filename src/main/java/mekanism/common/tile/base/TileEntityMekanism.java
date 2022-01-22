@@ -128,6 +128,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -141,7 +142,7 @@ import net.minecraftforge.network.NetworkHooks;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
       ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer,
-      IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile, IComputerTile, ITileRadioactive {
+      IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile, IComputerTile, ITileRadioactive, Nameable {
 
     /**
      * The players currently using this block.
@@ -168,6 +169,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean hasSound;
     private boolean hasGui;
     private boolean hasChunkloader;
+
+    private Component name;
 
     //Methods for implementing ITileDirectional
     @Nullable
@@ -431,8 +434,33 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Nonnull
+    @Override
     public Component getName() {
-        return TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
+        return hasCustomName() ? name : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        return Nameable.super.hasCustomName();
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomName() {
+        return name;
+    }
+
+    public void setCustomName(@Nullable Component name) {
+        this.name = name;
+    }
+
+    /**
+     * This should return false if naming it would be pointless, in order to save
+     * on NBT data on both the tile entity and the block item.
+     * @return if the tile entity can be named
+     */
+    public boolean isNameable() {
+        return hasGui() && !Attribute.get(getBlockType(), AttributeGui.class).hasCustomName();
     }
 
     @Override
@@ -623,6 +651,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsComparator()) {
             NBTUtils.setIntIfPresent(nbt, NBTConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
         }
+
+        // Load the custom name, only if it exists and the tile can be named
+        if (nbt.contains(NBTConstants.CUSTOM_NAME, 8) && isNameable()) {
+            this.name = Component.Serializer.fromJson(nbt.getString(NBTConstants.CUSTOM_NAME));
+        }
     }
 
     @Override
@@ -649,6 +682,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (supportsComparator()) {
             nbtTags.putInt(NBTConstants.CURRENT_REDSTONE, currentRedstoneLevel);
+        }
+
+        // Save the custom name, only if it exists and the tile can be named
+        if (this.name != null && isNameable()) {
+            nbtTags.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.name));
         }
     }
 
@@ -738,6 +776,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.addToUpdateTag(updateTag);
         }
         updateTag.putFloat(NBTConstants.RADIATION, radiationScale);
+        // Sync the name with clients
+        if (this.name != null && isNameable()) {
+            updateTag.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.name));
+        }
         return updateTag;
     }
 
@@ -748,6 +790,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.readFromUpdateTag(tag);
         }
         radiationScale = tag.getFloat(NBTConstants.RADIATION);
+
+        if (tag.contains(NBTConstants.CUSTOM_NAME, 8) && isNameable()) {
+            this.name = Component.Serializer.fromJson(tag.getString(NBTConstants.CUSTOM_NAME));
+        }
     }
 
     public void onNeighborChange(Block block, BlockPos neighborPos) {

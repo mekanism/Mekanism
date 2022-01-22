@@ -23,3 +23,4 @@ MDK.zip
 /logs
 /src/datagen/main/resources
 /annotation-processor/bin
+libs/
