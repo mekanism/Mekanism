@@ -41,8 +41,7 @@ public class RenderPersonalChest extends MekanismTileEntityRenderer<TileEntityPe
             matrix.mulPose(Vector3f.YP.rotationDegrees(-tile.getDirection().toYRot()));
             matrix.translate(-0.5D, -0.5D, -0.5D);
         }
-        float lidAngle = tile.prevLidAngle + (tile.lidAngle - tile.prevLidAngle) * partialTick;
-        lidAngle = 1.0F - lidAngle;
+        float lidAngle = 1.0F - tile.getOpenNess(partialTick);
         lidAngle = 1.0F - lidAngle * lidAngle * lidAngle;
         VertexConsumer builder = renderer.getBuffer(RenderType.entityCutout(texture));
         lid.xRot = -(lidAngle * ((float) Math.PI / 2F));
