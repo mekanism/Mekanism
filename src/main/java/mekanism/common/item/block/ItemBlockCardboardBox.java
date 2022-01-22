@@ -97,9 +97,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     BlockData data = new BlockData(state);
                     if (tile != null) {
                         //Note: We check security access above
-                        CompoundTag tag = new CompoundTag();
-                        tile.save(tag);
-                        data.tileTag = tag;
+                        data.tileTag = tile.saveWithFullMetadata();
                     }
                     if (!player.isCreative()) {
                         stack.shrink(1);

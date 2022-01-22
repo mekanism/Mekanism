@@ -304,6 +304,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
      * Based off of Player#hurtCurrentlyUsedShield
      */
     private float damageShield(LivingEntity livingEntity, ItemStack activeStack, float damage, int absorptionRatio) {
+        //TODO - 1.18: Evaluate calling ShieldBlockEvent
         //Absorb part of the damage based on the given absorption ratio
         float damageBlocked = damage;
         float effectiveDamage = damage / absorptionRatio;
