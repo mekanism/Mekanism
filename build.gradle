@@ -205,6 +205,8 @@ minecraft {
     runs {
         client {
             workingDirectory file("run")
+            //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
+            forceExit = false
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -246,6 +248,8 @@ minecraft {
 
         server {
             workingDirectory file("run")
+            //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
+            forceExit = false
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
@@ -268,6 +272,8 @@ minecraft {
         data {
             workingDirectory file("run")
             environment 'target', 'fmluserdevdata'
+            //We aren't a multi-project config so we can disable the forced exit to allow gradle run tasks to stop gracefully
+            forceExit = false
             //This fixes Mixin application problems from other mods because their refMaps are SRG-based, but we're in a MCP env
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
