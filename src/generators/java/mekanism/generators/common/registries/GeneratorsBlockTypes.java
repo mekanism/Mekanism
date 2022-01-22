@@ -99,6 +99,11 @@ public class GeneratorsBlockTypes {
           .with(AttributeCustomSelectionBox.JAVA)
           .withSound(GeneratorsSounds.WIND_GENERATOR)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .withBounding((pos, state, builder) -> {
+              for (int i = 0; i < 4; i++) {
+                  builder.add(pos.above(i + 1));
+              }
+          })
           .withComputerSupport("windGenerator")
           .build();
     // Gas Burning Generator
@@ -120,6 +125,14 @@ public class GeneratorsBlockTypes {
           .withCustomShape(BlockShapes.ADVANCED_SOLAR_GENERATOR)
           .withSound(GeneratorsSounds.SOLAR_GENERATOR)
           .withSupportedUpgrades(EnumSet.of(Upgrade.MUFFLING))
+          .withBounding((pos, state, builder) -> {
+              builder.add(pos.above());
+              for (int x = -1; x <= 1; x++) {
+                  for (int z = -1; z <= 1; z++) {
+                      builder.add(pos.offset(x, 2, z));
+                  }
+              }
+          })
           .withComputerSupport("advancedSolarGenerator")
           .replace(Attributes.ACTIVE)
           .build();

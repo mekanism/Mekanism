@@ -8,13 +8,14 @@ import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.registries.GeneratorsBlocks;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.core.BlockPos;
 
-public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
+public class TileEntityTurbineRotor extends TileEntityInternalMultiblock implements Clearable {
 
     // Blades on this rotor
     public int blades = 0;
@@ -124,6 +125,10 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock {
         return next != null && next.removeBlade();
     }
 
+    @Override
+    public void clearContent() {
+        blades = 0;
+    }
 
     public int getHousedBlades() {
         return blades;

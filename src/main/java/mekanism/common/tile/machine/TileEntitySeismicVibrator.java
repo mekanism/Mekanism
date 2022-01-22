@@ -2,8 +2,8 @@ package mekanism.common.tile.machine;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
-import mekanism.api.RelativeSide;
 import mekanism.api.AutomationType;
+import mekanism.api.RelativeSide;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -20,7 +20,6 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -94,15 +93,6 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     public void setRemoved() {
         super.setRemoved();
         Mekanism.activeVibrators.remove(getTileCoord());
-        if (level != null) {
-            level.removeBlock(getBlockPos().above(), false);
-        }
-    }
-
-    @Override
-    public void onPlace() {
-        super.onPlace();
-        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
     }
 
     @Nonnull

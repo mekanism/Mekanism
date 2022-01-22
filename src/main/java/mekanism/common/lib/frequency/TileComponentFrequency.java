@@ -148,12 +148,6 @@ public class TileComponentFrequency implements ITileComponent {
         needsSave = true;
     }
 
-    private void unload() {
-        if (!tile.isRemote()) {
-            heldFrequencies.forEach((key, value) -> deactivate(key));
-        }
-    }
-
     private <FREQ extends Frequency> void deactivate(FrequencyType<FREQ> type) {
         FREQ freq = getFrequency(type);
         if (freq != null) {
@@ -234,12 +228,9 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public void invalidate() {
-        unload();
-    }
-
-    @Override
-    public void onChunkUnload() {
-        unload();
+        if (!tile.isRemote()) {
+            heldFrequencies.forEach((key, value) -> deactivate(key));
+        }
     }
 
     @Override

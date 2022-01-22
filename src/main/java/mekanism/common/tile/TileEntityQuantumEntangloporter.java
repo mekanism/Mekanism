@@ -207,7 +207,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     @Override
-    protected boolean shouldDumpRadiation() {
+    public boolean shouldDumpRadiation() {
         //Note: The QE doesn't support radioactive substances but override this method anyway
         return false;
     }

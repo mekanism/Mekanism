@@ -14,12 +14,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.ServerTickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonWorldTickHandler {
@@ -28,6 +31,7 @@ public class CommonWorldTickHandler {
 
     private Map<ResourceLocation, Queue<ChunkPos>> chunkRegenMap;
     public static boolean flushTagAndRecipeCaches;
+    public static boolean monitoringCardboardBox;
 
     public void addRegenChunk(ResourceKey<Level> dimension, ChunkPos chunkCoord) {
         if (chunkRegenMap == null) {
@@ -49,6 +53,18 @@ public class CommonWorldTickHandler {
     public void resetRegenChunks() {
         if (chunkRegenMap != null) {
             chunkRegenMap.clear();
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onEntitySpawn(EntityJoinWorldEvent event) {
+        //If we are in the middle of breaking a block using a cardboard box, cancel any items
+        // that are dropped, we do this at highest priority to ensure we cancel it the same tick
+        // before forge replaces items with custom item entities with a tick delay
+        //TODO - 1.18: Requires https://github.com/MinecraftForge/MinecraftForge/pull/8417
+        if (monitoringCardboardBox && event.getEntity() instanceof ItemEntity entity) {
+            entity.discard();
+            event.setCanceled(true);
         }
     }
 

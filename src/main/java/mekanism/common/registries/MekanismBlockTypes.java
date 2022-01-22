@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import mekanism.api.Upgrade;
 import mekanism.api.math.FloatingLong;
 import mekanism.common.MekanismLang;
+import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomSelectionBox;
 import mekanism.common.block.attribute.AttributeParticleFX;
 import mekanism.common.block.attribute.AttributeStateActive;
@@ -117,6 +118,8 @@ import mekanism.common.tile.qio.TileEntityQIOExporter;
 import mekanism.common.tile.qio.TileEntityQIOImporter;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -289,6 +292,17 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.ANCHOR, Upgrade.STONE_GENERATOR))
           .withCustomShape(BlockShapes.DIGITAL_MINER)
           .with(AttributeCustomSelectionBox.JSON)
+          .withBounding((pos, state, builder) -> {
+              for (int x = -1; x <= 1; x++) {
+                  for (int y = 0; y <= 1; y++) {
+                      for (int z = -1; z <= 1; z++) {
+                          if (x != 0 || y != 0 || z != 0) {
+                              builder.add(pos.offset(x, y, z));
+                          }
+                      }
+                  }
+              }
+          })
           .withComputerSupport("digitalMiner")
           .replace(Attributes.ACTIVE)
           .build();
@@ -327,6 +341,7 @@ public class MekanismBlockTypes {
           .without(AttributeParticleFX.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.SOLAR_NEUTRON_ACTIVATOR)
           .with(AttributeCustomSelectionBox.JAVA)
+          .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .withComputerSupport("solarNeutronActivator")
           .replace(Attributes.ACTIVE)
           .build();
@@ -393,6 +408,7 @@ public class MekanismBlockTypes {
           .without(AttributeComparator.class, AttributeParticleFX.class, AttributeUpgradeSupport.class)
           .withCustomShape(BlockShapes.SEISMIC_VIBRATOR)
           .with(AttributeCustomSelectionBox.JAVA)
+          .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .withComputerSupport("seismicVibrator")
           .build();
     // Personal Chest
@@ -447,6 +463,7 @@ public class MekanismBlockTypes {
           .with(Attributes.INVENTORY, new AttributeStateFacing(), new AttributeCustomResistance(-1), Attributes.SECURITY)
           .withCustomShape(BlockShapes.SECURITY_DESK)
           .with(AttributeCustomSelectionBox.JSON)
+          .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .build();
     // Modification Station
     public static final BlockTypeTile<TileEntityModificationStation> MODIFICATION_STATION = BlockTileBuilder
@@ -456,6 +473,12 @@ public class MekanismBlockTypes {
           .with(Attributes.INVENTORY, new AttributeStateFacing(false), Attributes.REDSTONE, Attributes.SECURITY)
           .withCustomShape(BlockShapes.MODIFICATION_STATION)
           .with(AttributeCustomSelectionBox.JSON)
+          .withBounding((pos, state, builder) -> {
+              builder.add(pos.above());
+              BlockPos rightPos = pos.relative(MekanismUtils.getRight(Attribute.getFacing(state)));
+              builder.add(rightPos);
+              builder.add(rightPos.above());
+          })
           .withComputerSupport("modificationStation")
           .build();
     // Isotopic Centrifuge
@@ -465,6 +488,7 @@ public class MekanismBlockTypes {
           .withEnergyConfig(MekanismConfig.usage.isotopicCentrifuge, MekanismConfig.storage.isotopicCentrifuge)
           .withSound(MekanismSounds.ISOTOPIC_CENTRIFUGE)
           .withCustomShape(BlockShapes.ISOTOPIC_CENTRIFUGE)
+          .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .withComputerSupport("isotopicCentrifuge")
           .build();
     // Nutritional Liquifier
@@ -503,6 +527,7 @@ public class MekanismBlockTypes {
           .withSupportedUpgrades(EnumSet.of(Upgrade.SPEED, Upgrade.ENERGY, Upgrade.MUFFLING))
           .withCustomShape(BlockShapes.PIGMENT_MIXER)
           .with(AttributeCustomSelectionBox.JAVA)
+          .withBounding((pos, state, builder) -> builder.add(pos.above()))
           .withComputerSupport("pigmentMixer")
           .build();
     // Painting Machine

@@ -200,7 +200,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @Override
-    protected boolean shouldDumpRadiation() {
+    public boolean shouldDumpRadiation() {
         return tier != ChemicalTankTier.CREATIVE;
     }
 

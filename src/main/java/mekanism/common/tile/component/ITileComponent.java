@@ -9,10 +9,10 @@ public interface ITileComponent {
 
     void write(CompoundTag nbtTags);
 
+    /**
+     * Called when the tile is removed, both permanently and during unloads.
+     */
     default void invalidate() {
-    }
-
-    default void onChunkUnload() {
     }
 
     default void trackForMainContainer(MekanismContainer container) {

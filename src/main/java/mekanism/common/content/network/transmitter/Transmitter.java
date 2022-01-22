@@ -74,7 +74,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     private boolean redstoneSet;
     private NETWORK theNetwork = null;
     private boolean orphaned = true;
-    protected boolean isUpgrading;
+    private boolean isUpgrading;
 
     public Transmitter(TileEntityTransmitter transmitterTile, TransmissionType... transmissionTypes) {
         this.transmitterTile = transmitterTile;
@@ -93,6 +93,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
     public TileEntityTransmitter getTransmitterTile() {
         return transmitterTile;
+    }
+
+    public boolean isUpgrading() {
+        return isUpgrading;
     }
 
     /**
@@ -586,11 +590,6 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public void remove() {
-        //Clear our cached listeners
-        acceptorCache.clear();
-    }
-
-    public void onChunkUnload() {
         //Clear our cached listeners
         acceptorCache.clear();
     }

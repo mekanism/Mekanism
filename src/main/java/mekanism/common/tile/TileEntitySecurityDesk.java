@@ -144,20 +144,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         }
     }
 
-    @Override
-    public void onPlace() {
-        super.onPlace();
-        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        if (level != null) {
-            level.removeBlock(getBlockPos().above(), false);
-        }
-    }
-
     @Nonnull
     @Override
     public CompoundTag getReducedUpdateTag() {

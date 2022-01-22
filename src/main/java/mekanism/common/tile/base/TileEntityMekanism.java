@@ -567,19 +567,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (isRemote() && hasSound()) {
             updateSound();
         }
-        if (!isRemote() && MekanismAPI.getRadiationManager().isRadiationEnabled() && shouldDumpRadiation()) {
-            //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
-            // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
-            MekanismAPI.getRadiationManager().dumpRadiation(getTileCoord(), getGasTanks(null), false);
-        }
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        for (ITileComponent component : components) {
-            component.onChunkUnload();
-        }
     }
 
     /**
@@ -592,9 +579,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      * Update call for machines. Use instead of updateEntity -- it's called every tick on the server side.
      */
     protected void onUpdateServer() {
-    }
-
-    public void onPlace() {
     }
 
     @Override
@@ -959,7 +943,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return gasHandlerManager;
     }
 
-    protected boolean shouldDumpRadiation() {
+    public boolean shouldDumpRadiation() {
         return true;
     }
 

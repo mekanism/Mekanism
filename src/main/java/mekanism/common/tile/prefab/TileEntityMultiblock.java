@@ -219,28 +219,18 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void setRemoved() {
         super.setRemoved();
-        unload();
-    }
-
-    @Override
-    protected boolean shouldDumpRadiation() {
-        //We handle dumping radiation separately for multiblocks
-        return false;
-    }
-
-    @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        unload();
-    }
-
-    private void unload() {
         if (!isRemote()) {
             structure.invalidate(level);
             if (cachedID != null) {
                 getManager().invalidate(this);
             }
         }
+    }
+
+    @Override
+    public boolean shouldDumpRadiation() {
+        //We handle dumping radiation separately for multiblocks
+        return false;
     }
 
     @Override

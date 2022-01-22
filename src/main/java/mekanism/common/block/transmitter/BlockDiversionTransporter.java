@@ -1,11 +1,10 @@
 package mekanism.common.block.transmitter;
 
-import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.transmitter.TileEntityDiversionTransporter;
 
-public class BlockDiversionTransporter extends BlockLargeTransmitter implements IHasTileEntity<TileEntityDiversionTransporter> {
+public class BlockDiversionTransporter extends BlockLogisticalTransporterBase<TileEntityDiversionTransporter> {
 
     @Override
     public TileEntityTypeRegistryObject<TileEntityDiversionTransporter> getTileType() {

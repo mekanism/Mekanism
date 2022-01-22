@@ -9,10 +9,6 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
-import mekanism.common.block.BlockBounding;
-import mekanism.common.block.states.BlockStateHelper;
-import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -563,30 +559,6 @@ public class WorldUtils {
      */
     public static void notifyNeighborOfChange(@Nullable Level world, Direction neighborSide, BlockPos fromPos) {
         notifyNeighborOfChange(world, fromPos.relative(neighborSide), fromPos);
-    }
-
-    /**
-     * Places a fake bounding block at the defined location.
-     *
-     * @param world            world to place block in
-     * @param boundingLocation coordinates of bounding block
-     * @param orig             original block position
-     */
-    public static void makeBoundingBlock(@Nullable LevelAccessor world, BlockPos boundingLocation, BlockPos orig) {
-        if (world == null) {
-            return;
-        }
-        BlockBounding boundingBlock = MekanismBlocks.BOUNDING_BLOCK.getBlock();
-        BlockState newState = BlockStateHelper.getStateForPlacement(boundingBlock, boundingBlock.defaultBlockState(), world, boundingLocation, null, Direction.NORTH);
-        world.setBlock(boundingLocation, newState, Block.UPDATE_ALL);
-        if (!world.isClientSide()) {
-            TileEntityBoundingBlock tile = getTileEntity(TileEntityBoundingBlock.class, world, boundingLocation);
-            if (tile != null) {
-                tile.setMainLocation(orig);
-            } else {
-                Mekanism.logger.warn("Unable to find Bounding Block Tile at: {}", boundingLocation);
-            }
-        }
     }
 
     /**

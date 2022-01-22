@@ -253,16 +253,6 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     @Override
     public void remove() {
         super.remove();
-        if (!isRemote() && !isUpgrading) {
-            for (TransporterStack stack : getTransit()) {
-                TransporterUtils.drop(this, stack);
-            }
-        }
-    }
-
-    @Override
-    public void onChunkUnload() {
-        super.onChunkUnload();
         if (!isRemote()) {
             for (TransporterStack stack : getTransit()) {
                 TransporterManager.remove(getTileWorld(), stack);

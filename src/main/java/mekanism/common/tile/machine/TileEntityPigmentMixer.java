@@ -48,7 +48,6 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -201,20 +200,6 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<PigmentMixin
                   }
                   return Math.min((int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED)), currentMax);
               });
-    }
-
-    @Override
-    public void onPlace() {
-        super.onPlace();
-        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        if (level != null) {
-            level.removeBlock(getBlockPos().above(), false);
-        }
     }
 
     @Nonnull

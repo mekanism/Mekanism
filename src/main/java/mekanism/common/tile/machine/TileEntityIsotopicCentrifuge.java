@@ -177,20 +177,6 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<GasToG
     }
 
     @Override
-    public void onPlace() {
-        super.onPlace();
-        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        if (level != null) {
-            level.removeBlock(getBlockPos().above(), false);
-        }
-    }
-
-    @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableFloatingLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));

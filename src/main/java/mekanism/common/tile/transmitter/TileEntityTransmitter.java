@@ -136,17 +136,10 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public void onChunkUnloaded() {
+    public void setRemoved() {
         if (!isRemote()) {
             getTransmitter().takeShare();
         }
-        onWorldSeparate();
-        getTransmitter().onChunkUnload();
-        super.onChunkUnloaded();
-    }
-
-    @Override
-    public void setRemoved() {
         super.setRemoved();
         onWorldSeparate();
         getTransmitter().remove();

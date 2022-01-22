@@ -18,13 +18,6 @@ import net.minecraftforge.common.util.LazyOptional;
  */
 public interface IBoundingBlock extends ICapabilityProvider, IComparatorSupport, IOffsetCapability, ISecurityTile, IUpgradeTile {
 
-    /**
-     * Called when the main block is placed.
-     */
-    //TODO: Evaluate this, onPlace is a method in TileEntityMekanism now, so it always gets called via that exposure
-    // So having this here may not be needed anymore
-    void onPlace();
-
     default void onBoundingBlockPowerChange(BlockPos boundingPos, int oldLevel, int newLevel) {
     }
 

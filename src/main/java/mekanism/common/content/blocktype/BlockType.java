@@ -3,15 +3,20 @@ package mekanism.common.content.blocktype;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream.Builder;
 import javax.annotation.Nonnull;
+import mekanism.api.functions.TriConsumer;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.tier.ITier;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeCustomShape;
+import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.Attributes.AttributeComputerIntegration;
 import mekanism.common.block.attribute.Attributes.AttributeLight;
 import mekanism.common.block.interfaces.ITypeBlock;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class BlockType {
@@ -104,6 +109,10 @@ public class BlockType {
         public final T with(Attribute... attrs) {
             holder.add(attrs);
             return getThis();
+        }
+
+        public final T withBounding(TriConsumer<BlockPos, BlockState, Builder<BlockPos>> boundingPositions) {
+            return with(new AttributeHasBounding(boundingPositions));
         }
 
         @SafeVarargs

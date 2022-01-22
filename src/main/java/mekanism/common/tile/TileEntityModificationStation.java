@@ -2,12 +2,12 @@ package mekanism.common.tile;
 
 import javax.annotation.Nonnull;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.RelativeSide;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.ModuleData;
-import mekanism.api.AutomationType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
@@ -29,13 +29,11 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.WorldUtils;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
 
@@ -144,25 +142,5 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableInt.create(() -> operatingTicks, value -> operatingTicks = value));
-    }
-
-    @Override
-    public void onPlace() {
-        super.onPlace();
-        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().above(), getBlockPos());
-        Direction side = getRightSide();
-        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().relative(side), getBlockPos());
-        WorldUtils.makeBoundingBlock(getLevel(), getBlockPos().relative(side).above(), getBlockPos());
-    }
-
-    @Override
-    public void setRemoved() {
-        super.setRemoved();
-        if (level != null) {
-            level.removeBlock(getBlockPos().above(), false);
-            BlockPos rightPos = getBlockPos().relative(getRightSide());
-            level.removeBlock(rightPos, false);
-            level.removeBlock(rightPos.above(), false);
-        }
     }
 }

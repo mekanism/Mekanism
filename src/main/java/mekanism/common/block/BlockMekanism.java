@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.DataHandlerUtils;
+import mekanism.api.MekanismAPI;
 import mekanism.api.NBTConstants;
 import mekanism.api.chemical.ChemicalTankBuilder;
 import mekanism.api.chemical.gas.IGasTank;
@@ -16,6 +17,7 @@ import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
+import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.AttributeStateFacing;
 import mekanism.common.block.attribute.Attributes.AttributeComparator;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -66,9 +68,6 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.IBlockRenderProperties;
 
-/**
- * Special handling for block drops that need TileEntity data
- */
 public abstract class BlockMekanism extends Block {
 
     protected BlockMekanism(BlockBehaviour.Properties properties) {
@@ -229,8 +228,34 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
+    @Deprecated
+    public void onRemove(@Nonnull BlockState state, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState newState, boolean isMoving) {
+        if (!state.is(newState.getBlock())) {
+            AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
+            if (hasBounding != null) {
+                hasBounding.removeBoundingBlocks(world, pos, state);
+            }
+        }
+        if (!world.isClientSide && MekanismAPI.getRadiationManager().isRadiationEnabled()) {
+            if (state.hasBlockEntity() && (!state.is(newState.getBlock()) || !newState.hasBlockEntity())) {
+                TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+                if (tile != null && tile.shouldDumpRadiation()) {
+                    //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
+                    // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
+                    MekanismAPI.getRadiationManager().dumpRadiation(tile.getTileCoord(), tile.getGasTanks(null), false);
+                }
+            }
+        }
+        super.onRemove(state, world, pos, newState, isMoving);
+    }
+
+    @Override
     public void setPlacedBy(@Nonnull Level world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nullable LivingEntity placer, @Nonnull ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
+        AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
+        if (hasBounding != null) {
+            hasBounding.placeBoundingBlocks(world, pos, state);
+        }
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             return;
@@ -238,8 +263,6 @@ public abstract class BlockMekanism extends Block {
         if (tile.supportsRedstone()) {
             tile.redstone = world.hasNeighborSignal(pos);
         }
-
-        tile.onPlace();
 
         //Handle item
         Item item = stack.getItem();

@@ -19,6 +19,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -81,6 +82,7 @@ public class BuildCommand {
         while (!openSet.isEmpty()) {
             BlockPos ptr = openSet.poll();
             if (isMekanismBlock(world, chunkMap, ptr)) {
+                Clearable.tryClear(WorldUtils.getTileEntity(world, chunkMap, ptr));
                 world.removeBlock(ptr, false);
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     BlockPos offset = ptr.relative(side);

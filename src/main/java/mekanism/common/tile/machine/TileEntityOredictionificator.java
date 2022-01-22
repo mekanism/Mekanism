@@ -118,12 +118,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     @Override
-    public void onChunkUnloaded() {
-        super.onChunkUnloaded();
-        removeInvalidationListener();
-    }
-
-    @Override
     public void setRemoved() {
         super.setRemoved();
         removeInvalidationListener();

@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.NBTConstants;
 import mekanism.api.text.EnumColor;
+import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockCardboardBox;
 import mekanism.common.block.BlockCardboardBox.BlockData;
@@ -102,14 +103,20 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     if (!player.isCreative()) {
                         stack.shrink(1);
                     }
-                    //Start by removing the tile entity so that there is no backing inventory to have dropped
-                    // when we change the block to a cardboard box.
-                    // Note: If this starts causing issues switch back to a monitorCardboardBox styled system
-                    // for stopping item drops and try to find a way of getting it to work properly with custom
-                    // item entities that are added a tick later (such as trying to get forge to change their
-                    // listener from highest to high)
-                    world.removeBlockEntity(pos);
+                    //Mark that we are monitoring item drops that might have been created due to using the cardboard box
+                    // and then replace the block with the cardboard box, which will cause items to drop and then get
+                    // cancelled by our listener in CommonWorldTickHandler
+                    //TODO - 1.18: If https://github.com/MinecraftForge/MinecraftForge/pull/8417 gets denied, we may want to
+                    // look into using the following way of clearing dropped contents instead:
+                    /*if (tile instanceof RandomizableContainerBlockEntity randomizable) {
+                        //Force chests with not yet generated loot to generate so that they can be cleared,
+                        // as otherwise they will generate the loot when broken even though we tried to clear them
+                        randomizable.unpackLootTable(null);
+                    }
+                    Clearable.tryClear(tile);*/
+                    CommonWorldTickHandler.monitoringCardboardBox = true;
                     world.setBlockAndUpdate(pos, getBlock().defaultBlockState().setValue(BlockStateHelper.storageProperty, true));
+                    CommonWorldTickHandler.monitoringCardboardBox = false;
                     TileEntityCardboardBox box = WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos);
                     if (box != null) {
                         box.storedData = data;
