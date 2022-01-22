@@ -78,7 +78,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         // and if our block supports having a comparator signal, instead of always doing it
         if (level != null) {
             if (recheckBlockState) {
-                //TODO - 1.18: Re-evaluate this as I don't think the super one rechecks blockstate
+                //TODO - 1.18: Re-evaluate this as I don't think the super one rechecks blockstate anymore
                 setBlockState(level.getBlockState(worldPosition));
             }
             WorldUtils.markChunkDirty(level, worldPosition);

@@ -1,11 +1,17 @@
 package mekanism.tools.common.material;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.tools.common.MekanismTools;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 
-//TODO - 1.18: Remove from harvest level stuff from the config and make sure to register the materials with the tier sorting registry
 public abstract class BaseMekanismMaterial extends IItemTierHelper implements IArmorMaterialHelper, IPaxelMaterial {
+
+    @Nullable
+    @Override
+    public abstract Tag<Block> getTag();//Force this to be implemented
 
     public abstract int getShieldDurability();
 
@@ -49,11 +55,6 @@ public abstract class BaseMekanismMaterial extends IItemTierHelper implements IA
     @Override
     public float getPaxelDamage() {
         return getAxeDamage() + 1;
-    }
-
-    @Override
-    public int getPaxelHarvestLevel() {
-        return getLevel();
     }
 
     @Override

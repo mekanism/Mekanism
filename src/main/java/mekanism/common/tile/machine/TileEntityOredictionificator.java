@@ -45,6 +45,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -58,12 +59,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     private InputInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem")
     private OutputInventorySlot outputSlot;
-    private final IConfigValueInvalidationListener validFiltersListener = () -> {
-        for (OredictionificatorItemFilter filter : filters) {
-            //Check each filter for validity
-            filter.checkValidity();
-        }
-    };
+    private final IConfigValueInvalidationListener validFiltersListener = new ODConfigValueInvalidationListener();
 
     public TileEntityOredictionificator(BlockPos pos, BlockState state) {
         super(MekanismBlocks.OREDICTIONIFICATOR, pos, state);
@@ -120,10 +116,6 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        removeInvalidationListener();
-    }
-
-    public void removeInvalidationListener() {
         MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListener(validFiltersListener);
     }
 
@@ -276,4 +268,19 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         return filters.remove(filter);
     }
     //End methods IComputerTile
+
+    public class ODConfigValueInvalidationListener implements IConfigValueInvalidationListener {
+
+        @Override
+        public void run() {
+            for (OredictionificatorItemFilter filter : filters) {
+                //Check each filter for validity
+                filter.checkValidity();
+            }
+        }
+
+        public boolean isIn(Level level) {
+            return getLevel() == level;
+        }
+    }
 }

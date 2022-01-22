@@ -40,6 +40,12 @@ public class ToolsTagProvider extends BaseTagProvider {
               BlockTags.MINEABLE_WITH_PICKAXE,
               BlockTags.MINEABLE_WITH_SHOVEL
         );
+        getBlockBuilder(ToolsTags.Blocks.NEEDS_BRONZE_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.NEEDS_LAPIS_LAZULI_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.NEEDS_OSMIUM_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.NEEDS_REFINED_GLOWSTONE_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.NEEDS_REFINED_OBSIDIAN_TOOL);
+        getBlockBuilder(ToolsTags.Blocks.NEEDS_STEEL_TOOL);
         ForgeRegistryTagBuilder<Item> clusterBuilder = getItemBuilder(ItemTags.CLUSTER_MAX_HARVESTABLES);
         for (IItemProvider itemProvider : ToolsItems.ITEMS.getAllItems()) {
             Item item = itemProvider.asItem();

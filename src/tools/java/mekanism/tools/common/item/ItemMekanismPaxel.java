@@ -44,6 +44,8 @@ import net.minecraftforge.common.ToolActions;
 
 public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAttributeRefresher {
 
+    private static final ToolAction PAXEL_DIG = ToolAction.get("paxel_dig");
+
     private final IPaxelMaterial material;
     private final AttributeCache attributeCache;
 
@@ -73,8 +75,7 @@ public class ItemMekanismPaxel extends DiggerItem implements IHasRepairType, IAt
 
     @Override
     public boolean canPerformAction(ItemStack stack, ToolAction action) {
-        //TODO - 1.18: paxel dig??
-        return ToolActions.DEFAULT_AXE_ACTIONS.contains(action) || ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(action) ||
+        return action == PAXEL_DIG || ToolActions.DEFAULT_AXE_ACTIONS.contains(action) || ToolActions.DEFAULT_PICKAXE_ACTIONS.contains(action) ||
                ToolActions.DEFAULT_SHOVEL_ACTIONS.contains(action);
     }
 

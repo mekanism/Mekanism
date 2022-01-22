@@ -16,7 +16,7 @@ import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 
-//TODO - 1.18: Heavily re-evaluate this class/make sure nothing has gotten broken
+//TODO - 1.19: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn) {

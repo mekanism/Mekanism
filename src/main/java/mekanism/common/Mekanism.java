@@ -102,6 +102,7 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.component.TileComponentChunkLoader.ChunkValidationCallback;
+import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
 import mekanism.common.world.GenHandler;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.ResourceLocation;
@@ -489,15 +490,10 @@ public class Mekanism {
         if (event.getWorld() instanceof ServerLevel) {
             MekFakePlayer.releaseInstance(event.getWorld());
         }
-        //TODO - 1.18: See if this is even needed anymore? Maybe unloading the world properly unloads the tiles
-        /*if (event.getWorld() instanceof Level level && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
-            //If there are any invalidation listeners for the oredictionificator as there was a loaded oredictionificator
-            // then go through the entities and remove the corresponding invalidation listeners from them
-            for (BlockEntity tile : level.blockEntityList) {
-                if (tile instanceof TileEntityOredictionificator oredictionificator) {
-                    oredictionificator.removeInvalidationListener();
-                }
-            }
-        }*/
+        if (event.getWorld() instanceof Level level && MekanismConfig.general.validOredictionificatorFilters.hasInvalidationListeners()) {
+            //Remove any invalidation listeners that loaded oredictionificators might have added if the OD was in the given level
+            MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListenersMatching(listener ->
+                  listener instanceof ODConfigValueInvalidationListener odListener && odListener.isIn(level));
+        }
     }
 }

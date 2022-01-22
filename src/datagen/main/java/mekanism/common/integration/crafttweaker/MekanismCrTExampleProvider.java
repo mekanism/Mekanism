@@ -512,7 +512,6 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
     }
 
     private String descriptionSignature(CrTImportsComponent imports, Class<?> clazz) {
-        //TODO - 1.18: Re-evaluate component type once jei tweaker updates
         return imports.addImport(EXPANSION_TARGET_JEITWEAKER) + ".addDescription(stack as " + getCrTClassName(clazz) + ", " + getCrTClassName(Component.class) + "...)";
     }
 

@@ -1,11 +1,15 @@
 package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 
 public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
@@ -95,6 +99,12 @@ public class LapisLazuliMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public String getRegistryPrefix() {
         return "lapis_lazuli";
+    }
+
+    @Nullable
+    @Override
+    public Tag<Block> getTag() {
+        return ToolsTags.Blocks.NEEDS_LAPIS_LAZULI_TOOL;
     }
 
     @Nonnull

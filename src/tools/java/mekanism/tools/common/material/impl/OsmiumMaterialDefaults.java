@@ -1,14 +1,18 @@
 package mekanism.tools.common.material.impl;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.block.Block;
 
 public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
 
@@ -97,6 +101,12 @@ public class OsmiumMaterialDefaults extends BaseMekanismMaterial {
     @Override
     public String getRegistryPrefix() {
         return "osmium";
+    }
+
+    @Nullable
+    @Override
+    public Tag<Block> getTag() {
+        return ToolsTags.Blocks.NEEDS_OSMIUM_TOOL;
     }
 
     @Nonnull

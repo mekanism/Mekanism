@@ -2,14 +2,17 @@ package mekanism.tools.common.material;
 
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 @FieldsAreNonnullByDefault
@@ -29,7 +32,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
     public final CachedFloatValue pickaxeAtkSpeed;
     public final CachedFloatValue hoeDamage;
     public final CachedFloatValue hoeAtkSpeed;
-    private final CachedIntValue paxelHarvestLevel;
     public final CachedFloatValue paxelDamage;
     public final CachedFloatValue paxelAtkSpeed;
     private final CachedFloatValue paxelEfficiency;
@@ -38,7 +40,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
     private final CachedIntValue toolMaxUses;
     private final CachedFloatValue efficiency;
     public final CachedFloatValue attackDamage;
-    private final CachedIntValue harvestLevel;
     private final CachedIntValue enchantability;
     public final CachedFloatValue toughness;
     public final CachedFloatValue knockbackResistance;
@@ -104,8 +105,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
               .defineInRange(toolKey + "ToolMaxUses", materialDefaults.getUses(), 1, Integer.MAX_VALUE));
         efficiency = CachedFloatValue.wrap(config, builder.comment("Efficiency of " + name + " tools.")
               .define(toolKey + "Efficiency", (double) materialDefaults.getSpeed()));
-        paxelHarvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + name + " paxels.")
-              .defineInRange(toolKey + "PaxelHarvestLevel", materialDefaults.getPaxelHarvestLevel(), 0, Integer.MAX_VALUE));
         paxelDamage = CachedFloatValue.wrap(config, builder.comment("Attack damage modifier of " + name + " paxels.")
               .define(toolKey + "PaxelDamage", (double) materialDefaults.getPaxelDamage(), damageModifierPredicate));
         paxelAtkSpeed = CachedFloatValue.wrap(config, builder.comment("Attack speed of " + name + " paxels.")
@@ -116,8 +115,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
               .defineInRange(toolKey + "PaxelEnchantability", materialDefaults.getPaxelEnchantability(), 0, Integer.MAX_VALUE));
         paxelMaxUses = CachedIntValue.wrap(config, builder.comment("Maximum durability of " + name + " paxels.")
               .defineInRange(toolKey + "PaxelMaxUses", materialDefaults.getPaxelMaxUses(), 1, Integer.MAX_VALUE));
-        harvestLevel = CachedIntValue.wrap(config, builder.comment("Harvest level of " + name + " tools.")
-              .defineInRange(toolKey + "HarvestLevel", materialDefaults.getLevel(), 0, Integer.MAX_VALUE));
         enchantability = CachedIntValue.wrap(config, builder.comment("Natural enchantability factor of " + name + " items.")
               .defineInRange(toolKey + "Enchantability", materialDefaults.getCommonEnchantability(), 0, Integer.MAX_VALUE));
         toughness = CachedFloatValue.wrap(config, builder.comment("Base armor toughness value of " + name + " armor.")
@@ -199,11 +196,6 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
-    public int getPaxelHarvestLevel() {
-        return paxelHarvestLevel.get();
-    }
-
-    @Override
     public int getPaxelMaxUses() {
         return paxelMaxUses.get();
     }
@@ -239,8 +231,15 @@ public class MaterialCreator extends BaseMekanismMaterial {
     }
 
     @Override
+    @Deprecated
     public int getLevel() {
-        return harvestLevel.get();
+        return fallBack.getLevel();
+    }
+
+    @Nullable
+    @Override
+    public Tag<Block> getTag() {
+        return fallBack.getTag();
     }
 
     @Override

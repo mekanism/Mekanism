@@ -1,5 +1,9 @@
 package mekanism.tools.common;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 import mekanism.api.providers.IItemProvider;
 import mekanism.common.Mekanism;
@@ -8,6 +12,7 @@ import mekanism.common.config.MekanismModConfig;
 import mekanism.common.lib.Version;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.config.ToolsConfig.ArmorSpawnChanceConfig;
+import mekanism.tools.common.material.BaseMekanismMaterial;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +22,10 @@ import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -73,7 +81,25 @@ public class MekanismTools implements IModModule {
             //Ensure our tags are all initialized
             ToolsTags.init();
         });
+        registerTiers(MekanismToolsConfig.tools.bronze, MekanismToolsConfig.tools.lapisLazuli, MekanismToolsConfig.tools.osmium, MekanismToolsConfig.tools.steel,
+              MekanismToolsConfig.tools.refinedGlowstone, MekanismToolsConfig.tools.refinedObsidian);
         Mekanism.logger.info("Loaded 'Mekanism: Tools' module.");
+    }
+
+    private void registerTiers(BaseMekanismMaterial... tiers) {
+        Multimap<Integer, Tier> vanillaTiers = HashMultimap.create();
+        for (Tiers vanillaTier : Tiers.values()) {
+            vanillaTiers.put(vanillaTier.getLevel(), vanillaTier);
+        }
+        for (BaseMekanismMaterial tier : tiers) {
+            int level = tier.getLevel();
+            Collection<Tier> equivalent = vanillaTiers.get(level);
+            Collection<Tier> vanillaNext = vanillaTiers.get(level + 1);
+            //If the tier is equivalent to another tier then the equivalent one should be placed in the after list
+            // and if it is equivalent to a vanilla tier (like all ours are when equivalent), the next tier
+            // should also specify the next tier in the before list
+            TierSortingRegistry.registerTier(tier, rl(tier.getRegistryPrefix()), new ArrayList<>(equivalent), new ArrayList<>(vanillaNext));
+        }
     }
 
     private void setStackIfEmpty(LivingEntity entity, EquipmentSlot slot, ItemStack item) {

@@ -15,11 +15,6 @@ public abstract class VanillaPaxelMaterial implements IPaxelMaterial {
     }
 
     @Override
-    public int getPaxelHarvestLevel() {
-        return getVanillaTier().getLevel();
-    }
-
-    @Override
     public int getPaxelMaxUses() {
         return 2 * getVanillaTier().getUses();
     }
