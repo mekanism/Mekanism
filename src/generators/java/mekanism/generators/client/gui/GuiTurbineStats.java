@@ -50,7 +50,7 @@ public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, Em
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, GeneratorsLang.TURBINE_STATS.translate(), titleLabelY);
+        renderTitleText(matrix);
         TurbineMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed()) {
             Component limiting = GeneratorsLang.IS_LIMITING.translateColored(EnumColor.DARK_RED);

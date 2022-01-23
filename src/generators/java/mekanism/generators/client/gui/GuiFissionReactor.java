@@ -126,7 +126,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         updateButtons();
-        drawTitleText(matrix, GeneratorsLang.FISSION_REACTOR.translate(), titleLabelY);
+        renderTitleText(matrix);
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         drawString(matrix, MekanismLang.TEMPERATURE_LONG.translate(""), 6, 93, titleTextColor());
         drawString(matrix, GeneratorsLang.FISSION_HEAT_GRAPH.translate(), 6, 114, titleTextColor());

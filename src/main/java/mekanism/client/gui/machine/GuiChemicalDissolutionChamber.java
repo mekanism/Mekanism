@@ -36,6 +36,7 @@ public class GuiChemicalDissolutionChamber extends GuiConfigurableTile<TileEntit
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+        //TODO - 1.18: Transform this over to using renderTitleText
         drawTitleText(matrix, MekanismLang.CHEMICAL_DISSOLUTION_CHAMBER_SHORT.translate(), titleLabelY);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

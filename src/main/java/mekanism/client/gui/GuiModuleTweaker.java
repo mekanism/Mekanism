@@ -112,7 +112,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.MODULE_TWEAKER.translate(), titleLabelY);
+        renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

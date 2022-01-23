@@ -8,14 +8,13 @@ import mekanism.client.gui.element.custom.GuiFrequencySelector;
 import mekanism.client.gui.element.custom.GuiFrequencySelector.IGuiColorFrequencySelector;
 import mekanism.client.gui.element.custom.GuiFrequencySelector.IItemGuiFrequencySelector;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.item.QIOFrequencySelectItemContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.to_server.PacketGuiButtonPress;
 import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedItemButton;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiQIOItemFrequencySelect extends GuiMekanism<QIOFrequencySelectItemContainer> implements IGuiColorFrequencySelector<QIOFrequency>,
       IItemGuiFrequencySelector<QIOFrequency, QIOFrequencySelectItemContainer> {
@@ -36,7 +35,7 @@ public class GuiQIOItemFrequencySelect extends GuiMekanism<QIOFrequencySelectIte
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.QIO_FREQUENCY_SELECT.translate(), titleLabelY);
+        renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

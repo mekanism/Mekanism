@@ -142,7 +142,8 @@ import net.minecraftforge.network.NetworkHooks;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
       ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer,
-      IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile, IComputerTile, ITileRadioactive, Nameable {
+      IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile, IComputerTile, ITileRadioactive,
+      Nameable {
 
     /**
      * The players currently using this block.
@@ -169,6 +170,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean hasSound;
     private boolean hasGui;
     private boolean hasChunkloader;
+    private boolean nameable;
 
     private Component name;
 
@@ -304,6 +306,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         supportsComparator = Attribute.has(block, AttributeComparator.class);
         supportsComputers = Mekanism.hooks.computerCompatEnabled() && Attribute.has(block, AttributeComputerIntegration.class);
         hasChunkloader = this instanceof IChunkLoader;
+        nameable = hasGui() && !Attribute.get(getBlockType(), AttributeGui.class).hasCustomName();
     }
 
     /**
@@ -435,23 +438,21 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Nonnull
     @Override
+    @SuppressWarnings("ConstantConditions")
     public Component getName() {
-        return hasCustomName() ? name : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return Nameable.super.hasCustomName();
+        return hasCustomName() ? getCustomName() : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
     }
 
     @Nullable
     @Override
     public Component getCustomName() {
-        return name;
+        return isNameable() ? name : null;
     }
 
     public void setCustomName(@Nullable Component name) {
-        this.name = name;
+        if (isNameable()) {
+            this.name = name;
+        }
     }
 
     /**
@@ -460,7 +461,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      * @return if the tile entity can be named
      */
     public boolean isNameable() {
-        return hasGui() && !Attribute.get(getBlockType(), AttributeGui.class).hasCustomName();
+        return nameable;
     }
 
     @Override

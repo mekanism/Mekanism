@@ -10,10 +10,6 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:copy_name",
-              "source": "block_entity"
-            },
-            {
               "function": "minecraft:copy_nbt",
               "source": "block_entity",
               "ops": [

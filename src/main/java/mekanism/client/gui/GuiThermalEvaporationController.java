@@ -61,7 +61,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.EVAPORATION_PLANT.translate(), titleLabelY);
+        renderTitleText(matrix);
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

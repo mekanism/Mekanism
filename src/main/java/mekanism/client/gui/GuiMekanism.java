@@ -129,6 +129,10 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         windows.forEach(GuiWindow::tick);
     }
 
+    protected void renderTitleText(PoseStack poseStack) {
+        drawTitleText(poseStack, title, titleLabelY);
+    }
+
     protected IHoverable getOnHover(ILangEntry translationHelper) {
         return getOnHover((Supplier<Component>) translationHelper::translate);
     }

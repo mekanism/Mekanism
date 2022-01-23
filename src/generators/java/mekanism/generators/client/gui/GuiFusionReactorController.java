@@ -41,7 +41,7 @@ public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusion
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, GeneratorsLang.FUSION_REACTOR.translate(), titleLabelY);
+        renderTitleText(matrix);
         drawString(matrix, MekanismLang.MULTIBLOCK_FORMED.translate(), 8, 16, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

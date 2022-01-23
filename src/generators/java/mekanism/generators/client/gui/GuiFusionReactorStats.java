@@ -39,7 +39,7 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, GeneratorsLang.FUSION_REACTOR.translate(), titleLabelY);
+        renderTitleText(matrix);
         FusionReactorMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed()) {
             drawString(matrix, GeneratorsLang.REACTOR_PASSIVE.translateColored(EnumColor.DARK_GREEN), 6, 26, titleTextColor());

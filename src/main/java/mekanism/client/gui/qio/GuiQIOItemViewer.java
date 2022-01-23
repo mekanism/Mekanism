@@ -100,6 +100,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
+        renderTitleText(matrix);
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.LIST_SEARCH.translate(), 7, 31, titleTextColor(), 41);
         Component text = MekanismLang.LIST_SORT.translate();

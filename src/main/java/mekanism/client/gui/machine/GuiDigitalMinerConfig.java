@@ -124,7 +124,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.drawForegroundText(matrix, mouseX, mouseY);
-        drawTitleText(matrix, MekanismLang.MINER_CONFIG.translate(), titleLabelY);
+        renderTitleText(matrix);
         drawScaledTextScaledBound(matrix, MekanismLang.FILTERS.translate(), 14, 22, screenTextColor(), 36, 0.8F);
         drawScaledTextScaledBound(matrix, MekanismLang.FILTER_COUNT.translate(getFilters().size()), 14, 31, screenTextColor(), 36, 0.8F);
         drawScaledTextScaledBound(matrix, MekanismLang.MINER_RADIUS.translate(tile.getRadius()), 14, 40, screenTextColor(), 36, 0.8F);

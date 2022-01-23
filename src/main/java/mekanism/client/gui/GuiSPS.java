@@ -61,7 +61,7 @@ public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileCon
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.SPS.translate(), titleLabelY);
+        renderTitleText(matrix);
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

@@ -179,11 +179,12 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
 
     @Override
     public boolean hasCustomName() {
-        return getMainTile() instanceof Nameable && getCustomName() != null;
+        return getMainTile() instanceof Nameable mainTile && mainTile.hasCustomName();
     }
 
     @Nonnull
     @Override
+    @SuppressWarnings("ConstantConditions")
     public Component getName() {
         // Safe check for the custom name being null is done in {@link hasCustomName()} already
         return hasCustomName() ? getCustomName() : MekanismBlocks.BOUNDING_BLOCK.getTextComponent();
@@ -192,14 +193,6 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Nullable
     @Override
     public Component getCustomName() {
-        BlockEntity mainTile = getMainTile();
-        if (mainTile != null) {
-            if (mainTile instanceof Nameable nameableTile) {
-                return nameableTile.hasCustomName() ? nameableTile.getCustomName() : nameableTile.getName();
-            } else {
-                return mainTile.getBlockState().getBlock().getName();
-            }
-        }
-        return null;
+        return getMainTile() instanceof Nameable mainTile ? mainTile.getCustomName() : null;
     }
 }

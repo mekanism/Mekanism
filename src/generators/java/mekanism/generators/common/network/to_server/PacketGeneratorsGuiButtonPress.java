@@ -73,15 +73,15 @@ public class PacketGeneratorsGuiButtonPress implements IMekanismPacket {
             }
             return null;
         }),
-        TAB_HEAT((tile, extra) -> GeneratorsContainerTypes.FUSION_REACTOR_HEAT.getProvider(GeneratorsLang.HEAT_TAB, tile)),
-        TAB_FUEL((tile, extra) -> GeneratorsContainerTypes.FUSION_REACTOR_FUEL.getProvider(GeneratorsLang.FUEL_TAB, tile)),
+        TAB_HEAT((tile, extra) -> GeneratorsContainerTypes.FUSION_REACTOR_HEAT.getProvider(GeneratorsLang.FUSION_REACTOR, tile)),
+        TAB_FUEL((tile, extra) -> GeneratorsContainerTypes.FUSION_REACTOR_FUEL.getProvider(GeneratorsLang.FUSION_REACTOR, tile)),
         TAB_STATS((tile, extra) -> {
             if (tile instanceof TileEntityTurbineCasing) {
                 return GeneratorsContainerTypes.TURBINE_STATS.getProvider(GeneratorsLang.TURBINE_STATS, tile);
             } else if (tile instanceof TileEntityFusionReactorController) {
-                return GeneratorsContainerTypes.FUSION_REACTOR_STATS.getProvider(GeneratorsLang.STATS_TAB, tile);
+                return GeneratorsContainerTypes.FUSION_REACTOR_STATS.getProvider(GeneratorsLang.FUSION_REACTOR, tile);
             } else if (tile instanceof TileEntityFissionReactorCasing) {
-                return GeneratorsContainerTypes.FISSION_REACTOR_STATS.getProvider(GeneratorsLang.STATS_TAB, tile);
+                return GeneratorsContainerTypes.FISSION_REACTOR_STATS.getProvider(GeneratorsLang.FISSION_REACTOR_STATS, tile);
             }
             return null;
         });

@@ -85,7 +85,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, MekanismLang.ROBIT.translate(), titleLabelX, titleLabelY, titleTextColor());
+        drawString(matrix, title, titleLabelX, titleLabelY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.ROBIT_GREETING.translate(robit.getName()), 29, 18, screenTextColor(), 119);
         drawTextScaledBound(matrix, MekanismLang.ENERGY.translate(EnergyDisplay.of(robit.getEnergyContainer())), 29, 36 - 4, screenTextColor(), 119);
         drawTextScaledBound(matrix, MekanismLang.ROBIT_FOLLOWING.translate(robit.getFollowing()), 29, 45 - 4, screenTextColor(), 119);

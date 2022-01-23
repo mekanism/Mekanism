@@ -56,7 +56,7 @@ public class GuiFusionReactorFuel extends GuiFusionReactorInfo {
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, GeneratorsLang.FUSION_REACTOR.translate(), titleLabelY);
+        renderTitleText(matrix);
         drawCenteredText(matrix, GeneratorsLang.REACTOR_INJECTION_RATE.translate(tile.getMultiblock().getInjectionRate()), 0, imageWidth, 35, titleTextColor());
         drawString(matrix, GeneratorsLang.REACTOR_EDIT_RATE.translate(), 50, 117, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);

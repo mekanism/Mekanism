@@ -105,7 +105,7 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, GeneratorsLang.FUSION_REACTOR.translate(), titleLabelY);
+        renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 }

@@ -8,15 +8,14 @@ import mekanism.client.gui.element.custom.GuiFrequencySelector;
 import mekanism.client.gui.element.custom.GuiFrequencySelector.IGuiColorFrequencySelector;
 import mekanism.client.gui.element.custom.GuiFrequencySelector.ITileGuiFrequencySelector;
 import mekanism.common.Mekanism;
-import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.network.to_server.PacketGuiButtonPress;
 import mekanism.common.network.to_server.PacketGuiButtonPress.ClickedTileButton;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComponent, EmptyTileContainer<TileEntityQIOComponent>> implements
       IGuiColorFrequencySelector<QIOFrequency>, ITileGuiFrequencySelector<QIOFrequency, TileEntityQIOComponent> {
@@ -42,7 +41,7 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismLang.QIO_FREQUENCY_SELECT.translate(), titleLabelY);
+        renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 
