@@ -172,7 +172,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean hasChunkloader;
     private boolean nameable;
 
-    private Component name;
+    @Nullable
+    private Component customName;
 
     //Methods for implementing ITileDirectional
     @Nullable
@@ -446,12 +447,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Nullable
     @Override
     public Component getCustomName() {
-        return isNameable() ? name : null;
+        return isNameable() ? customName : null;
     }
 
     public void setCustomName(@Nullable Component name) {
         if (isNameable()) {
-            this.name = name;
+            this.customName = name;
         }
     }
 
@@ -652,10 +653,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsComparator()) {
             NBTUtils.setIntIfPresent(nbt, NBTConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
         }
-
-        // Load the custom name, only if it exists and the tile can be named
-        if (nbt.contains(NBTConstants.CUSTOM_NAME, 8) && isNameable()) {
-            this.name = Component.Serializer.fromJson(nbt.getString(NBTConstants.CUSTOM_NAME));
+        if (isNameable()) {
+            NBTUtils.setStringIfPresent(nbt, NBTConstants.CUSTOM_NAME, value -> customName = Component.Serializer.fromJson(value));
         }
     }
 
@@ -686,8 +685,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
 
         // Save the custom name, only if it exists and the tile can be named
-        if (this.name != null && isNameable()) {
-            nbtTags.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.name));
+        if (this.customName != null && isNameable()) {
+            nbtTags.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.customName));
         }
     }
 
@@ -778,8 +777,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         updateTag.putFloat(NBTConstants.RADIATION, radiationScale);
         // Sync the name with clients
-        if (this.name != null && isNameable()) {
-            updateTag.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.name));
+        if (this.customName != null && isNameable()) {
+            updateTag.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.customName));
         }
         return updateTag;
     }
@@ -791,9 +790,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             component.readFromUpdateTag(tag);
         }
         radiationScale = tag.getFloat(NBTConstants.RADIATION);
-
-        if (tag.contains(NBTConstants.CUSTOM_NAME, 8) && isNameable()) {
-            this.name = Component.Serializer.fromJson(tag.getString(NBTConstants.CUSTOM_NAME));
+        if (isNameable()) {
+            NBTUtils.setStringIfPresent(tag, NBTConstants.CUSTOM_NAME, value -> customName = Component.Serializer.fromJson(value));
         }
     }
 

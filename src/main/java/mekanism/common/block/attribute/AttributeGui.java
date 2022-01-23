@@ -3,7 +3,6 @@ package mekanism.common.block.attribute;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import mekanism.api.text.ILangEntry;
-import mekanism.api.text.TextComponentUtil;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -21,7 +20,7 @@ public class AttributeGui implements Attribute {
     }
 
     public <TILE extends TileEntityMekanism> MenuProvider getProvider(TILE tile) {
-        return containerRegistrar.get().getProvider(customName == null ? TextComponentUtil.build(tile.getBlockType()) : customName.translate(), tile);
+        return containerRegistrar.get().getProvider(customName == null ? tile.getDisplayName() : customName.translate(), tile);
     }
 
     /**
