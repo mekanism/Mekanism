@@ -42,7 +42,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, tile.getName(), titleLabelX, titleLabelY, titleTextColor());
+        drawString(matrix, title, titleLabelX, titleLabelY, titleTextColor());
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

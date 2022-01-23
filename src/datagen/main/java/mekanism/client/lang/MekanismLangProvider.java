@@ -204,8 +204,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.CARDBOARD_BOX, "Cardboard Box");
         add(MekanismBlocks.CHARGEPAD, "Chargepad");
         add(MekanismBlocks.CHEMICAL_CRYSTALLIZER, "Chemical Crystallizer");
-        add(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, "Chemical Dissolution Chamber");
-        add(MekanismBlocks.CHEMICAL_INFUSER, "Chemical Infuser");
+        add(MekanismBlocks.CHEMICAL_DISSOLUTION_CHAMBER, "Chemical Dissolution Chamber", "C. Dissolution Chamber");
+        add(MekanismBlocks.CHEMICAL_INFUSER, "Chemical Infuser", "C. Infuser");
         add(MekanismBlocks.CHEMICAL_INJECTION_CHAMBER, "Chemical Injection Chamber");
         add(MekanismBlocks.CHEMICAL_OXIDIZER, "Chemical Oxidizer");
         add(MekanismBlocks.CHEMICAL_WASHER, "Chemical Washer");
@@ -701,8 +701,6 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.ENERGY, "Energy: %s");
         add(MekanismLang.RESISTIVE_HEATER_USAGE, "Usage: %s/t");
         add(MekanismLang.DYNAMIC_TANK, "Dynamic Tank");
-        add(MekanismLang.CHEMICAL_DISSOLUTION_CHAMBER_SHORT, "C. Dissolution Chamber");
-        add(MekanismLang.CHEMICAL_INFUSER_SHORT, "C. Infuser");
         add(MekanismLang.MOVE_UP, "Move Up");
         add(MekanismLang.MOVE_DOWN, "Move Down");
         add(MekanismLang.SET, "Set:");

@@ -69,7 +69,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawString(matrix, MekanismLang.ROBIT_REPAIR.translate(), titleLabelX, titleLabelY, titleTextColor());
+        drawString(matrix, title, titleLabelX, titleLabelY, titleTextColor());
         int maximumCost = menu.getCost();
         if (maximumCost > 0) {
             int k = 0x80FF20;

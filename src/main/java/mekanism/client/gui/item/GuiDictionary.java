@@ -13,11 +13,10 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.container.item.DictionaryContainer;
-import mekanism.common.registries.MekanismItems;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.Component;
 
 //TODO: Eventually it would be nice that when a tag is selected in the GUI that it shows everything else that is in that tag
 public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
@@ -59,7 +58,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismItems.DICTIONARY.getTextComponent(), titleLabelY);
+        renderTitleText(matrix);
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         drawTextScaledBound(matrix, MekanismLang.DICTIONARY_TAG_TYPE.translate(), 77, inventoryLabelY, titleTextColor(), 45);
         super.drawForegroundText(matrix, mouseX, mouseY);

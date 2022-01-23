@@ -43,7 +43,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawCenteredText(matrix, MekanismLang.BOILER_STATS.translate(), 0, imageWidth, titleLabelY, titleTextColor());
+        drawCenteredText(matrix, title, 0, imageWidth, titleLabelY, titleTextColor());
         BoilerMultiblockData multiblock = tile.getMultiblock();
         drawString(matrix, MekanismLang.BOILER_MAX_WATER.translate(TextUtils.format(multiblock.waterTank.getCapacity())), 8, 26, titleTextColor());
         drawString(matrix, MekanismLang.BOILER_MAX_STEAM.translate(TextUtils.format(multiblock.steamTank.getCapacity())), 8, 35, titleTextColor());

@@ -86,10 +86,6 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
         }
     }
 
-    public void renderTitleText(PoseStack matrix) {
-        drawTitleText(matrix, tile.getName(), titleLabelY);
-    }
-
     private DataType getFromSlot(Slot slot) {
         if (slot.index < tile.getSlots() && slot instanceof InventoryContainerSlot containerSlot) {
             ISideConfiguration config = (ISideConfiguration) tile;

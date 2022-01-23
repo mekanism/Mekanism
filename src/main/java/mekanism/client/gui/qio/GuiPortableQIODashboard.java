@@ -1,13 +1,11 @@
 package mekanism.client.gui.qio;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import javax.annotation.Nonnull;
 import mekanism.client.gui.element.tab.GuiQIOFrequencyTab;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.IFrequencyItem;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboardContainer> {
 
@@ -27,17 +25,7 @@ public class GuiPortableQIODashboard extends GuiQIOItemViewer<PortableQIODashboa
     }
 
     @Override
-    protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, getName(), titleLabelY);
-        super.drawForegroundText(matrix, mouseX, mouseY);
-    }
-
-    @Override
     public FrequencyIdentity getFrequency() {
         return ((IFrequencyItem) menu.getStack().getItem()).getFrequencyIdentity(menu.getStack());
-    }
-
-    private Component getName() {
-        return menu.getStack().getHoverName();
     }
 }

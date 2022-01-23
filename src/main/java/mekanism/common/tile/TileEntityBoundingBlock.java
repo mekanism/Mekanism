@@ -6,6 +6,7 @@ import mekanism.api.NBTConstants;
 import mekanism.api.Upgrade;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.security.ISecurityTile;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.component.TileComponentSecurity;
@@ -18,6 +19,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +30,7 @@ import net.minecraftforge.common.util.LazyOptional;
 /**
  * Multi-block used by wind turbines, solar panels, and other machines
  */
-public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUpgradeTile, ISecurityTile {
+public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUpgradeTile, ISecurityTile, Nameable {
 
     private BlockPos mainPos = BlockPos.ZERO;
 
@@ -172,5 +175,30 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         NBTUtils.setBlockPosIfPresent(tag, NBTConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = tag.getInt(NBTConstants.REDSTONE);
         receivedCoords = tag.getBoolean(NBTConstants.RECEIVED_COORDS);
+    }
+
+    @Override
+    public boolean hasCustomName() {
+        return getMainTile() instanceof Nameable mainTile && mainTile.hasCustomName();
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    public Component getName() {
+        // Safe check for the custom name being null is done in {@link hasCustomName()} already
+        return hasCustomName() ? getCustomName() : MekanismBlocks.BOUNDING_BLOCK.getTextComponent();
+    }
+
+    @Nonnull
+    @Override
+    public Component getDisplayName() {
+        return getMainTile() instanceof Nameable mainTile ? mainTile.getDisplayName() : MekanismBlocks.BOUNDING_BLOCK.getTextComponent();
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomName() {
+        return getMainTile() instanceof Nameable mainTile ? mainTile.getCustomName() : null;
     }
 }

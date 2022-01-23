@@ -39,11 +39,21 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
     protected void add(IHasTranslationKey key, String value) {
         if (key instanceof IBlockProvider blockProvider) {
             Block block = blockProvider.getBlock();
-            if (Attribute.has(block, AttributeGui.class)) {
+            if (Attribute.has(block, AttributeGui.class) && !Attribute.get(block, AttributeGui.class).hasCustomName()) {
                 add(Util.makeDescriptionId("container", block.getRegistryName()), value);
             }
         }
         add(key.getTranslationKey(), value);
+    }
+
+    protected void add(IBlockProvider blockProvider, String value, String containerName) {
+        Block block = blockProvider.getBlock();
+        if (Attribute.has(block, AttributeGui.class) && !Attribute.get(block, AttributeGui.class).hasCustomName()) {
+            add(Util.makeDescriptionId("container", block.getRegistryName()), containerName);
+            add(blockProvider.getTranslationKey(), value);
+        } else {
+            throw new IllegalArgumentException("Block " + blockProvider.getRegistryName() + " does not have a container name set.");
+        }
     }
 
     protected void add(IModuleDataProvider<?> moduleDataProvider, String name, String description) {

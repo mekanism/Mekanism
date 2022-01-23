@@ -128,6 +128,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -141,7 +142,8 @@ import net.minecraftforge.network.NetworkHooks;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
       ITileRedstone, ISecurityTile, IMekanismInventory, ISustainedInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer,
-      IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile, IComputerTile, ITileRadioactive {
+      IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IGasTile, IInfusionTile, IPigmentTile, ISlurryTile, IComputerTile, ITileRadioactive,
+      Nameable {
 
     /**
      * The players currently using this block.
@@ -168,6 +170,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean hasSound;
     private boolean hasGui;
     private boolean hasChunkloader;
+    private boolean nameable;
+
+    @Nullable
+    private Component customName;
 
     //Methods for implementing ITileDirectional
     @Nullable
@@ -301,6 +307,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         supportsComparator = Attribute.has(block, AttributeComparator.class);
         supportsComputers = Mekanism.hooks.computerCompatEnabled() && Attribute.has(block, AttributeComputerIntegration.class);
         hasChunkloader = this instanceof IChunkLoader;
+        nameable = hasGui() && !Attribute.get(getBlockType(), AttributeGui.class).hasCustomName();
     }
 
     /**
@@ -431,8 +438,41 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Nonnull
+    @Override
+    @SuppressWarnings("ConstantConditions")
     public Component getName() {
-        return TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
+        return hasCustomName() ? getCustomName() : TextComponentUtil.build(getBlockType());
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    public Component getDisplayName() {
+        if (isNameable()) {
+            return hasCustomName() ? getCustomName() : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
+        }
+        return TextComponentUtil.build(getBlockType());
+    }
+
+    @Nullable
+    @Override
+    public Component getCustomName() {
+        return isNameable() ? customName : null;
+    }
+
+    public void setCustomName(@Nullable Component name) {
+        if (isNameable()) {
+            this.customName = name;
+        }
+    }
+
+    /**
+     * This should return false if naming it would be pointless, in order to save
+     * on NBT data on both the tile entity and the block item.
+     * @return if the tile entity can be named
+     */
+    public boolean isNameable() {
+        return nameable;
     }
 
     @Override
@@ -623,6 +663,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (supportsComparator()) {
             NBTUtils.setIntIfPresent(nbt, NBTConstants.CURRENT_REDSTONE, value -> currentRedstoneLevel = value);
         }
+        if (isNameable()) {
+            NBTUtils.setStringIfPresent(nbt, NBTConstants.CUSTOM_NAME, value -> customName = Component.Serializer.fromJson(value));
+        }
     }
 
     @Override
@@ -649,6 +692,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (supportsComparator()) {
             nbtTags.putInt(NBTConstants.CURRENT_REDSTONE, currentRedstoneLevel);
+        }
+
+        // Save the custom name, only if it exists and the tile can be named
+        if (this.customName != null && isNameable()) {
+            nbtTags.putString(NBTConstants.CUSTOM_NAME, Component.Serializer.toJson(this.customName));
         }
     }
 

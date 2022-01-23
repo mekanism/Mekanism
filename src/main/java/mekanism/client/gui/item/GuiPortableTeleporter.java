@@ -73,7 +73,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, menu.getStack().getHoverName(), titleLabelY);
+        renderTitleText(matrix);
         super.drawForegroundText(matrix, mouseX, mouseY);
     }
 

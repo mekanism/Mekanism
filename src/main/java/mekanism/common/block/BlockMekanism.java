@@ -263,6 +263,10 @@ public abstract class BlockMekanism extends Block {
         if (tile.supportsRedstone()) {
             tile.redstone = world.hasNeighborSignal(pos);
         }
+        // Check if the stack has a custom name, and if the tile supports naming, name it
+        if (tile.isNameable() && stack.hasCustomHoverName()) {
+            tile.setCustomName(stack.getHoverName());
+        }
 
         //Handle item
         Item item = stack.getItem();

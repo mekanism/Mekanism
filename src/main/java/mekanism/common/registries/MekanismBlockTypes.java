@@ -636,7 +636,7 @@ public class MekanismBlockTypes {
     // Thermal Evaporation Controller
     public static final BlockTypeTile<TileEntityThermalEvaporationController> THERMAL_EVAPORATION_CONTROLLER = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.DESCRIPTION_THERMAL_EVAPORATION_CONTROLLER)
-          .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER)
+          .withGui(() -> MekanismContainerTypes.THERMAL_EVAPORATION_CONTROLLER, MekanismLang.EVAPORATION_PLANT)
           .with(Attributes.INVENTORY, Attributes.ACTIVE, new AttributeStateFacing(), new AttributeCustomResistance(9), Attributes.MULTIBLOCK,
                 AttributeMobSpawn.WHEN_NOT_FORMED)
           .withComputerSupport("thermalEvaporationController")
@@ -682,14 +682,14 @@ public class MekanismBlockTypes {
     // SPS Casing
     public static final BlockTypeTile<TileEntitySPSCasing> SPS_CASING = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SPS_CASING, MekanismLang.DESCRIPTION_SPS_CASING)
-          .withGui(() -> MekanismContainerTypes.SPS)
+          .withGui(() -> MekanismContainerTypes.SPS, MekanismLang.SPS)
           .withSound(MekanismSounds.SPS)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // SPS Port
     public static final BlockTypeTile<TileEntitySPSPort> SPS_PORT = BlockTileBuilder
           .createBlock(() -> MekanismTileEntityTypes.SPS_PORT, MekanismLang.DESCRIPTION_SPS_PORT)
-          .withGui(() -> MekanismContainerTypes.SPS)
+          .withGui(() -> MekanismContainerTypes.SPS, MekanismLang.SPS)
           .withSound(MekanismSounds.SPS)
           .withEnergyConfig(() -> FloatingLong.ZERO, MekanismConfig.storage.spsPort)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED, Attributes.ACTIVE)

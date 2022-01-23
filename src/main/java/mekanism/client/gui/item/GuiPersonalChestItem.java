@@ -5,9 +5,8 @@ import javax.annotation.Nonnull;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.tab.GuiSecurityTab;
 import mekanism.common.inventory.container.item.PersonalChestItemContainer;
-import mekanism.common.registries.MekanismBlocks;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer> {
 
@@ -26,7 +25,7 @@ public class GuiPersonalChestItem extends GuiMekanism<PersonalChestItemContainer
 
     @Override
     protected void drawForegroundText(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        drawTitleText(matrix, MekanismBlocks.PERSONAL_CHEST.getTextComponent(), titleLabelY);
+        renderTitleText(matrix);
         drawString(matrix, playerInventoryTitle, inventoryLabelX, inventoryLabelY, titleTextColor());
         super.drawForegroundText(matrix, mouseX, mouseY);
     }

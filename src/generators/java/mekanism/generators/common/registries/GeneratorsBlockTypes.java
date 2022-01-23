@@ -140,20 +140,20 @@ public class GeneratorsBlockTypes {
     // Turbine Casing
     public static final BlockTypeTile<TileEntityTurbineCasing> TURBINE_CASING = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_CASING, GeneratorsLang.DESCRIPTION_TURBINE_CASING)
-          .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
+          .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE, GeneratorsLang.TURBINE)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Turbine Valve
     public static final BlockTypeTile<TileEntityTurbineValve> TURBINE_VALVE = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VALVE, GeneratorsLang.DESCRIPTION_TURBINE_VALVE)
-          .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
+          .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE, GeneratorsLang.TURBINE)
           .with(Attributes.COMPARATOR, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .withComputerSupport("turbineValve")
           .build();
     // Turbine Vent
     public static final BlockTypeTile<TileEntityTurbineVent> TURBINE_VENT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.TURBINE_VENT, GeneratorsLang.DESCRIPTION_TURBINE_VENT)
-          .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE)
+          .withGui(() -> GeneratorsContainerTypes.INDUSTRIAL_TURBINE, GeneratorsLang.TURBINE)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
     // Electromagnetic Coil
@@ -180,7 +180,7 @@ public class GeneratorsBlockTypes {
     // Fission Reactor Casing
     public static final BlockTypeTile<TileEntityFissionReactorCasing> FISSION_REACTOR_CASING = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_CASING, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_CASING)
-          .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
+          .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR, GeneratorsLang.FISSION_REACTOR)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
           .with(Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();
@@ -188,7 +188,7 @@ public class GeneratorsBlockTypes {
     public static final BlockTypeTile<TileEntityFissionReactorPort> FISSION_REACTOR_PORT = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FISSION_REACTOR_PORT, GeneratorsLang.DESCRIPTION_FISSION_REACTOR_PORT)
           .with(new AttributeStateFissionPortMode(), Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
-          .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR)
+          .withGui(() -> GeneratorsContainerTypes.FISSION_REACTOR, GeneratorsLang.FISSION_REACTOR)
           .withSound(GeneratorsSounds.FISSION_REACTOR)
           .withComputerSupport("fissionReactorPort")
           .build();
@@ -217,7 +217,7 @@ public class GeneratorsBlockTypes {
     // Fusion Reactor Controller
     public static final BlockTypeTile<TileEntityFusionReactorController> FUSION_REACTOR_CONTROLLER = BlockTileBuilder
           .createBlock(() -> GeneratorsTileEntityTypes.FUSION_REACTOR_CONTROLLER, GeneratorsLang.DESCRIPTION_FUSION_REACTOR_CONTROLLER)
-          .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_CONTROLLER)
+          .withGui(() -> GeneratorsContainerTypes.FUSION_REACTOR_CONTROLLER, GeneratorsLang.FUSION_REACTOR)
           .withSound(GeneratorsSounds.FUSION_REACTOR)
           .with(Attributes.ACTIVE, Attributes.INVENTORY, Attributes.MULTIBLOCK, AttributeMobSpawn.WHEN_NOT_FORMED)
           .build();

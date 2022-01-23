@@ -216,8 +216,6 @@ public enum MekanismLang implements ILangEntry {
     ENERGY("gui", "energy"),
     RESISTIVE_HEATER_USAGE("gui", "usage"),
     DYNAMIC_TANK("gui", "dynamic_tank"),
-    CHEMICAL_DISSOLUTION_CHAMBER_SHORT("gui", "chemical_dissolution_chamber.short"),
-    CHEMICAL_INFUSER_SHORT("gui", "chemical_infuser.short"),
     MOVE_UP("gui", "move_up"),
     MOVE_DOWN("gui", "move_down"),
     SET("gui", "set"),
