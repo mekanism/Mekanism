@@ -74,8 +74,6 @@ public class WorldConfig extends BaseMekanismConfig {
 
     private static class OreConfig {
 
-        private static final int HALF_HEIGHT = (DimensionType.MAX_Y - DimensionType.MIN_Y) / 2;
-
         private final CachedBooleanValue shouldGenerate;
         private final List<OreVeinConfig> veinConfigs;
 
@@ -92,12 +90,10 @@ public class WorldConfig extends BaseMekanismConfig {
                       .define("shouldGenerate", true));
                 veinBuilder.add(new OreVeinConfig(
                       () -> this.shouldGenerate.getAsBoolean() && shouldVeinTypeGenerate.getAsBoolean(),
-                      //The max for perChunk and vein size are the values of the max number of blocks in a chunk.
-                      //TODO: Improve upon it at some point so that the max vein size then gets determined by per chunk as well
                       CachedIntValue.wrap(config, builder.comment("Chance that " + veinType + "s generates in a chunk.")
-                            .defineInRange("perChunk", baseConfig.perChunk(), 1, HALF_HEIGHT)),
+                            .defineInRange("perChunk", baseConfig.perChunk(), 1, 256)),
                       CachedIntValue.wrap(config, builder.comment("Maximum number of blocks in a " + veinType + ".")
-                            .defineInRange("maxVeinSize", baseConfig.maxVeinSize(), 1, 512)),
+                            .defineInRange("maxVeinSize", baseConfig.maxVeinSize(), 1, 64)),
                       CachedFloatValue.wrap(config, builder.comment("Maximum number of blocks in a " + veinType + ".")
                             .defineInRange("discardChanceOnAirExposure", baseConfig.discardChanceOnAirExposure(), 0, 1)),
                       ConfigurableHeightRange.create(config, builder, veinType, baseConfig)

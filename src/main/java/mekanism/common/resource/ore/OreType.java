@@ -15,22 +15,25 @@ import mekanism.common.world.height.HeightShape;
 import net.minecraft.util.StringRepresentable;
 
 public enum OreType implements StringRepresentable {
-    //TODO - 1.18: Adjust default ore rates and add multiple ore features per type
-    // also potentially do something similar to what large diamond veins do in relation to having a rarity filter?
     TIN(PrimaryResource.TIN,
-          new BaseOreConfig("small", 14, 0, 8, HeightShape.UNIFORM, OreAnchor.aboveBottom(0), OreAnchor.absolute(60))
+          new BaseOreConfig("small", 14, 0, 4, HeightShape.TRAPEZOID, OreAnchor.absolute(-20), OreAnchor.absolute(94)),
+          new BaseOreConfig("large", 12, 0, 9, HeightShape.TRAPEZOID, OreAnchor.absolute(-32), OreAnchor.absolute(72))
     ),
     OSMIUM(PrimaryResource.OSMIUM,
-          new BaseOreConfig("small", 12, 0, 8, HeightShape.UNIFORM, OreAnchor.aboveBottom(0), OreAnchor.absolute(60))
+          new BaseOreConfig("upper", 65, 0, 7, HeightShape.TRAPEZOID, OreAnchor.absolute(72), OreAnchor.belowTop(-24), 8),
+          new BaseOreConfig("middle", 6, 0, 9, HeightShape.TRAPEZOID, OreAnchor.absolute(-32), OreAnchor.absolute(56)),
+          new BaseOreConfig("small", 8, 0, 4, HeightShape.UNIFORM, OreAnchor.aboveBottom(0), OreAnchor.absolute(64))
     ),
     URANIUM(PrimaryResource.URANIUM,
-          new BaseOreConfig("small", 8, 0, 8, HeightShape.UNIFORM, OreAnchor.aboveBottom(0), OreAnchor.absolute(60))
+          new BaseOreConfig("small", 4, 0, 4, HeightShape.TRAPEZOID, OreAnchor.aboveBottom(0), OreAnchor.absolute(8)),
+          new BaseOreConfig("buried", 7, 0.75F, 9, HeightShape.TRAPEZOID, OreAnchor.aboveBottom(-24), OreAnchor.aboveBottom(56), 16)
     ),
     FLUORITE(MiscResource.FLUORITE, 1, 4,
-          new BaseOreConfig("small", 6, 0, 12, HeightShape.UNIFORM, OreAnchor.aboveBottom(0), OreAnchor.absolute(32))
+          new BaseOreConfig("normal", 5, 0, 5, HeightShape.UNIFORM, OreAnchor.aboveBottom(0), OreAnchor.absolute(23)),
+          new BaseOreConfig("buried", 3, 1, 13, HeightShape.TRAPEZOID, OreAnchor.aboveBottom(0), OreAnchor.absolute(4))
     ),
     LEAD(PrimaryResource.LEAD,
-          new BaseOreConfig("small", 8, 0, 8, HeightShape.UNIFORM, OreAnchor.aboveBottom(0), OreAnchor.absolute(48))
+          new BaseOreConfig("normal", 8, 0.25F, 9, HeightShape.TRAPEZOID, OreAnchor.aboveBottom(-24), OreAnchor.absolute(64))
     );
 
     public static Codec<OreType> CODEC = StringRepresentable.fromEnum(OreType::values, OreType::byName);

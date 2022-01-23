@@ -18,7 +18,7 @@ public record ConfigurableHeightRange(Supplier<HeightShape> shape, ConfigurableV
               "Minimum (inclusive) height anchor for " + veinType + "s.", baseConfig.min(), null);
         return new ConfigurableHeightRange(shape, minInclusive,
               ConfigurableVerticalAnchor.create(config, builder, "maxInclusive", "Maximum (inclusive) height anchor for " + veinType + "s.",
-                    baseConfig.max(), minInclusive.value()),
+                    baseConfig.max(), minInclusive),
               CachedIntValue.wrap(config, builder.comment("Half length of short side of trapezoid, only used if shape is TRAPEZOID. A value of zero means the shape is a triangle.")
                     .define("plateau", baseConfig.plateau(), o -> {
                         if (o instanceof Integer value) {

@@ -14,7 +14,7 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 public record ConfigurableVerticalAnchor(Supplier<AnchorType> anchorType, IntSupplier value) {
 
     public static ConfigurableVerticalAnchor create(IMekanismConfig config, ForgeConfigSpec.Builder builder, String path, String comment, OreAnchor defaultAnchor,
-          @Nullable IntSupplier minValue) {
+          @Nullable ConfigurableVerticalAnchor minAnchor) {
         builder.comment(comment).push(path);
         CachedEnumValue<AnchorType> type = CachedEnumValue.wrap(config, builder.comment("Type of anchor.",
               "Absolute -> y = value",
@@ -22,10 +22,15 @@ public record ConfigurableVerticalAnchor(Supplier<AnchorType> anchorType, IntSup
               "Below Top -> y = depth - 1 + minY - value").defineEnum("type", defaultAnchor.type()));
         ForgeConfigSpec.Builder valueBuilder = builder.comment("Value used for calculating y for the anchor based on the type.");
         ConfigValue<Integer> value;
-        if (minValue == null) {
+        if (minAnchor == null) {
             value = valueBuilder.define("value", defaultAnchor.value());
         } else {
-            value = valueBuilder.define("value", defaultAnchor.value(), o -> o instanceof Integer v && v >= minValue.getAsInt());
+            value = valueBuilder.define("value", defaultAnchor.value(), o -> {
+                if (o instanceof Integer v) {
+                    return minAnchor.anchorType.get() != type.get() || v >= minAnchor.value.getAsInt();
+                }
+                return false;
+            });
         }
         builder.pop();
         return new ConfigurableVerticalAnchor(type, CachedIntValue.wrap(config, value));
