@@ -441,22 +441,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     @SuppressWarnings("ConstantConditions")
     public Component getName() {
-        final var defaultName = TextComponentUtil.build(getBlockType());
-        if (isNameable()) {
-            return hasCustomName() ? getCustomName() : defaultName;
-        }
-        return defaultName;
+        return hasCustomName() ? getCustomName() : TextComponentUtil.build(getBlockType());
     }
 
     @Nonnull
     @Override
     @SuppressWarnings("ConstantConditions")
     public Component getDisplayName() {
-        final var defaultName = TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
         if (isNameable()) {
-            return hasCustomName() ? getCustomName() : defaultName;
+            return hasCustomName() ? getCustomName() : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
         }
-        return defaultName;
+        return TextComponentUtil.build(getBlockType());
     }
 
     @Nullable
