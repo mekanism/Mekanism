@@ -441,6 +441,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     @SuppressWarnings("ConstantConditions")
     public Component getName() {
+        return hasCustomName() ? getCustomName() : TextComponentUtil.build(getBlockType());
+    }
+
+    @Nonnull
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    public Component getDisplayName() {
         return hasCustomName() ? getCustomName() : TextComponentUtil.translate(Util.makeDescriptionId("container", getBlockType().getRegistryName()));
     }
 

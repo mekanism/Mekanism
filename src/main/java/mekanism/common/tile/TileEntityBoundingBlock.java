@@ -190,6 +190,12 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return hasCustomName() ? getCustomName() : MekanismBlocks.BOUNDING_BLOCK.getTextComponent();
     }
 
+    @Nonnull
+    @Override
+    public Component getDisplayName() {
+        return getMainTile() instanceof Nameable mainTile ? mainTile.getDisplayName() : MekanismBlocks.BOUNDING_BLOCK.getTextComponent();
+    }
+
     @Nullable
     @Override
     public Component getCustomName() {
