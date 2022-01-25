@@ -8,11 +8,10 @@
   ],
   "input": {
     "ingredient": {
-      "item": "ae2:quartz_ore"
+      "item": "ae2:sky_stone_brick"
     }
   },
   "output": {
-    "item": "ae2:certus_quartz_crystal",
-    "count": 4
+    "item": "ae2:sky_stone_small_brick"
   }
 }

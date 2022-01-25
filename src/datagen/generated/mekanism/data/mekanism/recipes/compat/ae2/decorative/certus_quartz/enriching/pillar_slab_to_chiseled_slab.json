@@ -8,10 +8,10 @@
   ],
   "input": {
     "ingredient": {
-      "item": "ae2:smooth_sky_stone_block"
+      "item": "ae2:quartz_pillar_slab"
     }
   },
   "output": {
-    "item": "ae2:sky_stone_block"
+    "item": "ae2:chiseled_quartz_slab"
   }
 }

@@ -21,7 +21,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
-@ParametersAreNonnullByDefault//TODO - 1.18: support any new 1.18 blocks
+@ParametersAreNonnullByDefault
 public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
     public BiomesOPlentyRecipeProvider() {

@@ -1,5 +1,5 @@
 {
-  "type": "mekanism:enriching",
+  "type": "mekanism:crushing",
   "conditions": [
     {
       "modid": "ae2",
@@ -8,10 +8,10 @@
   ],
   "input": {
     "ingredient": {
-      "item": "ae2:certus_quartz_dust"
+      "item": "ae2:chiseled_quartz_stairs"
     }
   },
   "output": {
-    "item": "ae2:certus_quartz_crystal"
+    "item": "ae2:quartz_pillar_stairs"
   }
 }

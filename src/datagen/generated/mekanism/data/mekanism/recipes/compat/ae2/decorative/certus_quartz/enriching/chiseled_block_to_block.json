@@ -8,10 +8,10 @@
   ],
   "input": {
     "ingredient": {
-      "item": "ae2:fluix_dust"
+      "item": "ae2:chiseled_quartz_block"
     }
   },
   "output": {
-    "item": "ae2:fluix_crystal"
+    "item": "ae2:quartz_block"
   }
 }

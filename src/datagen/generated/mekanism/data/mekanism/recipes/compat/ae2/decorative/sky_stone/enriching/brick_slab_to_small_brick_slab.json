@@ -1,5 +1,5 @@
 {
-  "type": "mekanism:crushing",
+  "type": "mekanism:enriching",
   "conditions": [
     {
       "modid": "ae2",
@@ -8,10 +8,10 @@
   ],
   "input": {
     "ingredient": {
-      "tag": "forge:ender_pearls"
+      "item": "ae2:sky_stone_brick_slab"
     }
   },
   "output": {
-    "item": "ae2:ender_dust"
+    "item": "ae2:sky_stone_small_brick_slab"
   }
 }
