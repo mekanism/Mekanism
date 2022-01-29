@@ -8,7 +8,7 @@
   },
   "extraInput": {
     "ingredient": {
-      "item": "minecraft:cobbled_deepslate"
+      "tag": "forge:cobblestone/deepslate"
     }
   },
   "output": {

@@ -23,6 +23,7 @@ import mekanism.common.registries.MekanismSlurries;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.resource.IResource;
+import mekanism.common.resource.MiscResource;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.PrimaryResource;
@@ -289,13 +290,18 @@ public class MekanismTagProvider extends BaseTagProvider {
 
     private void addOres() {
         for (Map.Entry<OreType, OreBlockType> entry : MekanismBlocks.ORES.entrySet()) {
+            OreType type = entry.getKey();
             OreBlockType oreBlockType = entry.getValue();
-            Named<Item> itemTag = MekanismTags.Items.ORES.get(entry.getKey());
-            Named<Block> blockTag = MekanismTags.Blocks.ORES.get(entry.getKey());
+            Named<Item> itemTag = MekanismTags.Items.ORES.get(type);
+            Named<Block> blockTag = MekanismTags.Blocks.ORES.get(type);
             addToTags(itemTag, blockTag, oreBlockType.stone(), oreBlockType.deepslate());
             getItemBuilder(Tags.Items.ORES).add(itemTag);
             getBlockBuilder(Tags.Blocks.ORES).add(blockTag);
-            addToTags(Tags.Items.ORE_RATES_SINGULAR, Tags.Blocks.ORE_RATES_SINGULAR, oreBlockType.stone(), oreBlockType.deepslate());
+            if (type.getResource() == MiscResource.FLUORITE) {
+                addToTags(Tags.Items.ORE_RATES_DENSE, Tags.Blocks.ORE_RATES_DENSE, oreBlockType.stone(), oreBlockType.deepslate());
+            } else {
+                addToTags(Tags.Items.ORE_RATES_SINGULAR, Tags.Blocks.ORE_RATES_SINGULAR, oreBlockType.stone(), oreBlockType.deepslate());
+            }
             addToTags(Tags.Items.ORES_IN_GROUND_DEEPSLATE, Tags.Blocks.ORES_IN_GROUND_DEEPSLATE, oreBlockType.deepslate());
             addToTags(Tags.Items.ORES_IN_GROUND_STONE, Tags.Blocks.ORES_IN_GROUND_STONE, oreBlockType.stone());
         }

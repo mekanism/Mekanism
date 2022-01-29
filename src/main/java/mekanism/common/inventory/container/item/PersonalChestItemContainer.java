@@ -47,7 +47,7 @@ public class PersonalChestItemContainer extends MekanismItemContainer {
 
     @Override
     protected int getInventoryYOffset() {
-        return 148;
+        return 140;
     }
 
     @Override

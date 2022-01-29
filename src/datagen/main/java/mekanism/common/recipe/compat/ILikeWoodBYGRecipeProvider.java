@@ -39,7 +39,6 @@ public class ILikeWoodBYGRecipeProvider extends CompatRecipeProvider {
         addWoodType(consumer, basePath, BYGBlocks.NIGHTSHADE_PLANKS, BYGBlocks.NIGHTSHADE_LOG, BYGBlocks.NIGHTSHADE_FENCE, OhTheBiomesYoullGoWoodTypes.NIGHTSHADE);
         addWoodType(consumer, basePath, BYGBlocks.PALM_PLANKS, BYGBlocks.PALM_LOG, BYGBlocks.PALM_FENCE, OhTheBiomesYoullGoWoodTypes.PALM);
         addWoodType(consumer, basePath, BYGBlocks.PINE_PLANKS, BYGBlocks.PINE_LOG, BYGBlocks.PINE_FENCE, OhTheBiomesYoullGoWoodTypes.PINE);
-        addWoodType(consumer, basePath, BYGBlocks.RAINBOW_EUCALYPTUS_PLANKS, BYGBlocks.RAINBOW_EUCALYPTUS_LOG, BYGBlocks.RAINBOW_EUCALYPTUS_FENCE, OhTheBiomesYoullGoWoodTypes.RAINBOW_EUCALYPTUS);
         addWoodType(consumer, basePath, BYGBlocks.REDWOOD_PLANKS, BYGBlocks.REDWOOD_LOG, BYGBlocks.REDWOOD_FENCE, OhTheBiomesYoullGoWoodTypes.REDWOOD);
         addWoodType(consumer, basePath, BYGBlocks.SKYRIS_PLANKS, BYGBlocks.SKYRIS_LOG, BYGBlocks.SKYRIS_FENCE, OhTheBiomesYoullGoWoodTypes.SKYRIS);
         addWoodType(consumer, basePath, BYGBlocks.SYTHIAN_PLANKS, BYGBlocks.SYTHIAN_STEM, BYGBlocks.SYTHIAN_FENCE, OhTheBiomesYoullGoWoodTypes.SYTHIAN);

@@ -19,7 +19,7 @@ public class InventoryPersonalChest extends ItemStackMekanismInventory {
             for (int slotX = 0; slotX < 9; slotX++) {
                 //Note: we allow access to the slots from all sides as long as it is public, unlike in 1.12 where we always denied the bottom face
                 // We did that to ensure that things like hoppers that could check IInventory did not bypass any restrictions
-                slots.add(BasicInventorySlot.at(this, 8 + slotX * 18, 26 + slotY * 18));
+                slots.add(BasicInventorySlot.at(this, 8 + slotX * 18, 18 + slotY * 18));
             }
         }
         return slots;

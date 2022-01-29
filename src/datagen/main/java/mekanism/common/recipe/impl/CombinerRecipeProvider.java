@@ -21,13 +21,13 @@ class CombinerRecipeProvider implements ISubRecipeProvider {
         //Gravel
         CombinerRecipeBuilder.combining(
               ItemStackIngredient.from(Items.FLINT),
-              ItemStackIngredient.from(Tags.Items.COBBLESTONE),
+              ItemStackIngredient.from(Tags.Items.COBBLESTONE_NORMAL),
               new ItemStack(Blocks.GRAVEL)
         ).build(consumer, Mekanism.rl(basePath + "gravel"));
         //Obsidian
         CombinerRecipeBuilder.combining(
               ItemStackIngredient.from(MekanismTags.Items.DUSTS_OBSIDIAN, 4),
-              ItemStackIngredient.from(Tags.Items.COBBLESTONE),
+              ItemStackIngredient.from(Tags.Items.COBBLESTONE_DEEPSLATE),
               new ItemStack(Blocks.OBSIDIAN)
         ).build(consumer, Mekanism.rl(basePath + "obsidian"));
     }

@@ -11,7 +11,7 @@ public class GuiPersonalChestTile extends GuiMekanismTile<TileEntityPersonalChes
 
     public GuiPersonalChestTile(MekanismTileContainer<TileEntityPersonalChest> container, Inventory inv, Component title) {
         super(container, inv, title);
-        imageHeight += 64;
+        imageHeight += 56;
         inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }

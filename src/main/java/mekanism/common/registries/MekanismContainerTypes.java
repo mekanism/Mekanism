@@ -165,7 +165,7 @@ public class MekanismContainerTypes {
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityInductionCasing>> INDUCTION_MATRIX = CONTAINER_TYPES.custom("induction_matrix", TileEntityInductionCasing.class).armorSideBar(-20, 41, 0).build();
     public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityBoilerCasing>> THERMOELECTRIC_BOILER = CONTAINER_TYPES.custom("thermoelectric_boiler", TileEntityBoilerCasing.class).offset(20, 0).build();
     public static final ContainerTypeRegistryObject<PersonalChestItemContainer> PERSONAL_CHEST_ITEM = CONTAINER_TYPES.register("personal_chest_item", ItemBlockPersonalChest.class, PersonalChestItemContainer::new);
-    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPersonalChest>> PERSONAL_CHEST_BLOCK = CONTAINER_TYPES.custom("personal_chest_block", TileEntityPersonalChest.class).offset(0, 64).build();
+    public static final ContainerTypeRegistryObject<MekanismTileContainer<TileEntityPersonalChest>> PERSONAL_CHEST_BLOCK = CONTAINER_TYPES.custom("personal_chest_block", TileEntityPersonalChest.class).offset(0, 56).build();
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityQIOComponent>> QIO_FREQUENCY_SELECT_TILE = CONTAINER_TYPES.registerEmpty("qio_frequency_select_tile", TileEntityQIOComponent.class);
 
     public static final ContainerTypeRegistryObject<EmptyTileContainer<TileEntityBoilerCasing>> BOILER_STATS = CONTAINER_TYPES.registerEmpty("boiler_stats", TileEntityBoilerCasing.class);

@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "ingredient": {
-      "tag": "forge:cobblestone"
+      "tag": "forge:cobblestone/normal"
     }
   },
   "output": {

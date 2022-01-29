@@ -42,7 +42,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         ).build(consumer, Mekanism.rl(basePath + "charcoal_dust"));
         //Cobblestone -> Gravel
         ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Tags.Items.COBBLESTONE),
+              ItemStackIngredient.from(Tags.Items.COBBLESTONE_NORMAL),
               new ItemStack(Blocks.GRAVEL)
         ).build(consumer, Mekanism.rl(basePath + "cobblestone_to_gravel"));
         //Flint -> Gunpowder

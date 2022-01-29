@@ -256,7 +256,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY),
                     TripleLine.of(Pattern.COBBLESTONE, Pattern.STEEL_CASING, Pattern.COBBLESTONE),
                     TripleLine.of(Pattern.ALLOY, Pattern.CIRCUIT, Pattern.ALLOY))
-              ).key(Pattern.COBBLESTONE, Tags.Items.COBBLESTONE)
+              ).key(Pattern.COBBLESTONE, Tags.Items.COBBLESTONE_NORMAL)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_REINFORCED)
               .key(Pattern.STEEL_CASING, MekanismBlocks.STEEL_CASING)

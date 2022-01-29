@@ -41,7 +41,7 @@ class BinRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.COBBLESTONE, Pattern.CIRCUIT, Pattern.COBBLESTONE),
                     TripleLine.of(Pattern.ALLOY, Pattern.EMPTY, Pattern.ALLOY),
                     TripleLine.of(Pattern.COBBLESTONE, Pattern.COBBLESTONE, Pattern.COBBLESTONE))
-              ).key(Pattern.COBBLESTONE, Tags.Items.COBBLESTONE)
+              ).key(Pattern.COBBLESTONE, Tags.Items.COBBLESTONE_NORMAL)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
               .build(consumer, Mekanism.rl(basePath + "basic"));
@@ -56,7 +56,7 @@ class BinRecipeProvider implements ISubRecipeProvider {
         MekDataShapedRecipeBuilder.shapedRecipe(bin)
               .pattern(BIN_PATTERN)
               .key(Pattern.PREVIOUS, previousBin)
-              .key(Pattern.COBBLESTONE, Tags.Items.COBBLESTONE)
+              .key(Pattern.COBBLESTONE, Tags.Items.COBBLESTONE_NORMAL)
               .key(Pattern.CIRCUIT, circuitTag)
               .key(Pattern.ALLOY, alloyTag)
               .build(consumer, Mekanism.rl(basePath + tierName));
