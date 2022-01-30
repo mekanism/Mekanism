@@ -47,7 +47,7 @@ public abstract class CCMethodCaller {
         CCArgumentWrapper argumentWrapper = new CCArgumentWrapper(arguments);
         //Our argument type validator should be thread-safe, so can be run on the ComputerCraft Lua thread
         SelectedMethodInfo selectedImplementation = method.findMatchingImplementation(argumentWrapper);
-        if (selectedImplementation.isThreadSafe()) {
+        if (selectedImplementation.getMethod().threadSafe()) {
             //If our selected implementation is thread-safe, run it directly
             return method.run(argumentWrapper, selectedImplementation);
         }

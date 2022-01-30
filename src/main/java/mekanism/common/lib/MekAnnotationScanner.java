@@ -7,6 +7,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
@@ -30,11 +31,16 @@ public class MekAnnotationScanner {
         Map<BaseAnnotationScanner, ScanData> scanners = new Object2ObjectArrayMap<>();
         Map<ElementType, List<ScanData>> elementBasedScanData = new EnumMap<>(ElementType.class);
         addScanningSupport(scanners, elementBasedScanData, SyncMapper.INSTANCE, ComputerMethodMapper.INSTANCE);
-        for (ModFileScanData scanData : ModList.get().getAllScanData()) {
-            for (AnnotationData data : scanData.getAnnotations()) {
-                //If the annotation is on a field, and is the sync type
-                gatherScanData(elementBasedScanData, classNameCache, data);
+        try {
+            for (ModFileScanData scanData : ModList.get().getAllScanData()) {
+                for (AnnotationData data : scanData.getAnnotations()) {
+                    //If the annotation is on a field, and is the sync type
+                    gatherScanData(elementBasedScanData, classNameCache, data);
+                }
             }
+        } catch (Throwable throwable) {
+            //Should never really happen unless something goes drastically wrong
+            Mekanism.logger.error("Failed to gather scan data", throwable);
         }
         for (Map.Entry<BaseAnnotationScanner, ScanData> entry : scanners.entrySet()) {
             Map<Class<?>, List<AnnotationData>> knownClasses = entry.getValue().knownClasses;
@@ -43,7 +49,7 @@ public class MekAnnotationScanner {
                     entry.getKey().collectScanData(classNameCache, knownClasses);
                 } catch (Throwable throwable) {
                     //Should never really happen unless something goes drastically wrong
-                    Mekanism.logger.info("Failed to collect scan data", throwable);
+                    Mekanism.logger.error("Failed to collect scan data", throwable);
                 }
             }
         }
@@ -51,19 +57,17 @@ public class MekAnnotationScanner {
 
     private static void gatherScanData(Map<ElementType, List<ScanData>> elementBasedScanData, Map<String, Class<?>> classNameCache, AnnotationData data) {
         ElementType targetType = data.targetType();
-        List<ScanData> elementScanData = elementBasedScanData.get(targetType);
-        if (elementScanData != null) {
-            for (ScanData scannerData : elementScanData) {
-                for (Type type : scannerData.supportedTypes.get(targetType)) {
-                    if (type.equals(data.annotationType())) {
-                        Class<?> clazz = getClassForName(classNameCache, data.clazz().getClassName());
-                        if (clazz != null) {
-                            //If the class was successfully found, add it to the known classes
-                            scannerData.knownClasses.computeIfAbsent(clazz, c -> new ArrayList<>()).add(data);
-                        }
-                        //Annotations should be unique so if we found one match the other scanners shouldn't match that same annotation data
-                        return;
+        List<ScanData> elementScanData = elementBasedScanData.getOrDefault(targetType, Collections.emptyList());
+        for (ScanData scannerData : elementScanData) {
+            for (Type type : scannerData.supportedTypes.get(targetType)) {
+                if (type.equals(data.annotationType())) {
+                    Class<?> clazz = getClassForName(classNameCache, data.clazz().getClassName());
+                    if (clazz != null) {
+                        //If the class was successfully found, add it to the known classes
+                        scannerData.knownClasses.computeIfAbsent(clazz, c -> new ArrayList<>()).add(data);
                     }
+                    //Annotations should be unique so if we found one match the other scanners shouldn't match that same annotation data
+                    return;
                 }
             }
         }
@@ -94,6 +98,9 @@ public class MekAnnotationScanner {
         } catch (ClassNotFoundException e) {
             Mekanism.logger.error("Failed to find class '{}'", className);
             clazz = null;
+        } catch (NoClassDefFoundError e) {
+            Mekanism.logger.error("Failed to load class '{}'", className);
+            throw e;
         }
         classNameCache.put(className, clazz);
         return clazz;
@@ -280,19 +287,13 @@ public class MekAnnotationScanner {
                 map.put(clazz, info);
             }
             return map.entrySet().stream().map(entry -> new ClassBasedInfo<>(entry.getKey(), entry.getValue()))
-                  .sorted(Comparator.comparing(info -> info.className)).toList();
+                  .sorted(Comparator.comparing(ClassBasedInfo::className)).toList();
         }
 
-        protected static class ClassBasedInfo<INFO> {
+        protected record ClassBasedInfo<INFO>(Class<?> clazz, String className, List<INFO> infoList) {
 
-            public final Class<?> clazz;
-            public final String className;
-            public final List<INFO> infoList;
-
-            private ClassBasedInfo(Class<?> clazz, List<INFO> infoList) {
-                this.clazz = clazz;
-                this.className = clazz.getName();
-                this.infoList = infoList;
+            public ClassBasedInfo(Class<?> clazz, List<INFO> infoList) {
+                this(clazz, clazz.getName(), infoList);
             }
         }
     }

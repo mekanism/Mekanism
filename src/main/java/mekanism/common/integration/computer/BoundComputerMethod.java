@@ -2,6 +2,7 @@ package mekanism.common.integration.computer;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodType;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -19,21 +20,24 @@ public class BoundComputerMethod {
         implementations.add(implementation);
     }
 
+    public List<ThreadAwareMethodHandle> getImplementations() {
+        return Collections.unmodifiableList(implementations);
+    }
+
     /**
      * @return Index of matching method, an exception is thrown if no method matched
      */
     public <EXCEPTION extends Exception> SelectedMethodInfo findMatchingImplementation(ComputerArgumentHandler<EXCEPTION, ?> argumentHandler) throws EXCEPTION {
-        int implementationCount = implementations.size();
-        if (implementationCount == 1) {
+        if (implementations.size() == 1) {
             //If we only have one method implementation then validate it with more accurate error messages
-            return validateArguments(argumentHandler, 0, true);
+            return validateArguments(argumentHandler, implementations.get(0), true);
         }
         //Otherwise, try each method (without throwing errors)
-        for (int overloadIndex = 0; overloadIndex < implementationCount; overloadIndex++) {
-            SelectedMethodInfo implementation = validateArguments(argumentHandler, overloadIndex, false);
-            if (implementation != null) {
+        for (ThreadAwareMethodHandle implementation : implementations) {
+            SelectedMethodInfo selected = validateArguments(argumentHandler, implementation, false);
+            if (selected != null) {
                 //if one matches return it as a match
-                return implementation;
+                return selected;
             }
         }
         //Otherwise, if none match print a generic error message
@@ -41,11 +45,21 @@ public class BoundComputerMethod {
     }
 
     @Nullable
-    private <EXCEPTION extends Exception> SelectedMethodInfo validateArguments(ComputerArgumentHandler<EXCEPTION, ?> argumentHandler, int overloadIndex, boolean error)
-          throws EXCEPTION {
+    public <EXCEPTION extends Exception> SelectedMethodInfo findMatchingImplementation(ComputerArgumentHandler<EXCEPTION, ?> argumentHandler,
+          ThreadAwareMethodHandle overload) throws EXCEPTION {
+        int overloadIndex = implementations.indexOf(overload);
+        if (overloadIndex == -1) {
+            throw argumentHandler.error("Method does not have corresponding overload");
+        }
+        //Validate it with more accurate error messages
+        return validateArguments(argumentHandler, overload, true);
+    }
+
+    @Nullable
+    private <EXCEPTION extends Exception> SelectedMethodInfo validateArguments(ComputerArgumentHandler<EXCEPTION, ?> argumentHandler, ThreadAwareMethodHandle overload,
+          boolean error) throws EXCEPTION {
         int argumentCount = argumentHandler.getCount();
-        ThreadAwareMethodHandle threadAwareMethodHandle = implementations.get(overloadIndex);
-        MethodType methodType = threadAwareMethodHandle.methodHandle.type();
+        MethodType methodType = overload.methodHandle.type();
         int expectedCount = methodType.parameterCount();
         if (argumentCount != expectedCount) {
             if (error) {
@@ -117,7 +131,7 @@ public class BoundComputerMethod {
                 sanitizedArguments[index] = argument;
             }
         }
-        return new SelectedMethodInfo(threadAwareMethodHandle, sanitizedArguments);
+        return new SelectedMethodInfo(overload, sanitizedArguments);
     }
 
     public <EXCEPTION extends Exception, RESULT> RESULT run(ComputerArgumentHandler<EXCEPTION, RESULT> argumentHandler, SelectedMethodInfo methodInfo) throws EXCEPTION {
@@ -228,11 +242,19 @@ public class BoundComputerMethod {
             this.arguments = arguments;
         }
 
-        public boolean isThreadSafe() {
-            return threadAwareMethodHandle.threadSafe;
+        public ThreadAwareMethodHandle getMethod() {
+            return threadAwareMethodHandle;
         }
     }
 
     public record ThreadAwareMethodHandle(MethodHandle methodHandle, boolean threadSafe) {
+
+        public Class<?> returnType() {
+            return methodHandle.type().returnType();
+        }
+
+        public List<Class<?>> parameterTypes() {
+            return methodHandle.type().parameterList();
+        }
     }
 }

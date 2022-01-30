@@ -29,3 +29,9 @@ license="MIT"
     versionRange="${crafttweaker_version}"
     ordering="AFTER"
     side="BOTH"
+[[dependencies.mekanism]]
+    modId="oc2"
+    mandatory=false
+    versionRange="${oc2_version}"
+    ordering="AFTER"
+    side="BOTH"

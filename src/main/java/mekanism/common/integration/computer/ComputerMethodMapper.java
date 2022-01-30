@@ -151,15 +151,15 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         for (ClassBasedInfo<MethodDetails> details : methodDetails) {
             //Linked map to preserve order
             Map<String, List<MethodHandleInfo>> cache = new LinkedHashMap<>();
-            details.infoList.sort(Comparator.comparing(info -> info.methodName));
-            for (MethodDetails handle : details.infoList) {
+            details.infoList().sort(Comparator.comparing(info -> info.methodName));
+            for (MethodDetails handle : details.infoList()) {
                 //Add the method handle to the list of methods with that method name for our computer handler
                 // Note: we construct the list with an initial capacity of one, as that is likely how many we
                 // actually have per methodName, we just support using a list
                 cache.computeIfAbsent(handle.methodName, methodName -> new ArrayList<>(1))
                       .add(new MethodHandleInfo(handle.method, handle.restriction, handle.threadSafe));
             }
-            namedMethodHandleCache.put(details.clazz, cache);
+            namedMethodHandleCache.put(details.clazz(), cache);
         }
     }
 

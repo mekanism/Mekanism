@@ -390,6 +390,8 @@ public class Mekanism {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
+        //Initialization notification
+        logger.info("Version {} initializing...", versionNumber);
         hooks.hookCommonSetup();
         setRecipeCacheManager(new ReloadListener());
 
@@ -418,9 +420,6 @@ public class Mekanism {
 
         MinecraftForge.EVENT_BUS.register(RadiationManager.INSTANCE);
 
-        //Initialization notification
-        logger.info("Version {} initializing...", versionNumber);
-
         //Register with TransmitterNetworkRegistry
         TransmitterNetworkRegistry.initiate();
 
@@ -429,11 +428,6 @@ public class Mekanism {
 
         //Fake player info
         logger.info("Fake player readout: UUID = {}, name = {}", gameProfile.getId(), gameProfile.getName());
-
-        //Completion notification
-        logger.info("Loading complete.");
-
-        //Success message
         logger.info("Mod loaded.");
     }
 

@@ -154,11 +154,11 @@ public class SyncMapper extends BaseAnnotationScanner {
         List<ClassBasedInfo<PropertyFieldInfo>> propertyMap = combineWithParents(rawPropertyMap);
         for (ClassBasedInfo<PropertyFieldInfo> classPropertyInfo : propertyMap) {
             PropertyDataClassCache cache = new PropertyDataClassCache();
-            classPropertyInfo.infoList.sort(Comparator.comparing(info -> info.fieldPath + "|" + info.tag));
-            for (PropertyFieldInfo field : classPropertyInfo.infoList) {
+            classPropertyInfo.infoList().sort(Comparator.comparing(info -> info.fieldPath + "|" + info.tag));
+            for (PropertyFieldInfo field : classPropertyInfo.infoList()) {
                 cache.propertyFieldMap.put(field.tag, field.field);
             }
-            syncablePropertyMap.put(classPropertyInfo.clazz, cache);
+            syncablePropertyMap.put(classPropertyInfo.clazz(), cache);
         }
     }
 

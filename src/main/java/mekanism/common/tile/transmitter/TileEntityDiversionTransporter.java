@@ -3,7 +3,6 @@ package mekanism.common.tile.transmitter;
 import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.client.model.data.TransmitterModelData;
-import mekanism.common.Mekanism;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.network.transmitter.DiversionTransporter;
 import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
@@ -19,9 +18,7 @@ public class TileEntityDiversionTransporter extends TileEntityLogisticalTranspor
 
     public TileEntityDiversionTransporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.DIVERSION_TRANSPORTER, pos, state);
-        if (Mekanism.hooks.computerCompatEnabled()) {
-            ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
-        }
+        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     @Override

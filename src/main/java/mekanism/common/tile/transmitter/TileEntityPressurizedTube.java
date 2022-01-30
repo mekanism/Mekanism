@@ -18,7 +18,6 @@ import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -42,9 +41,9 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileRadioactive;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
 
@@ -65,9 +64,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
               new DynamicPigmentHandler(this::getPigmentTanks, canExtract, canInsert, null)));
         addCapabilityResolver(slurryHandlerManager = new SlurryHandlerManager(getHolder(BoxedPressurizedTube::getSlurryTanks),
               new DynamicSlurryHandler(this::getSlurryTanks, canExtract, canInsert, null)));
-        if (Mekanism.hooks.computerCompatEnabled()) {
-            ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
-        }
+        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     @Override

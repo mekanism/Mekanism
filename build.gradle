@@ -149,7 +149,7 @@ static void extendConfigurations(Configuration base, Configuration... configurat
 
 ext {
     versionProperties = ["version"           : mod_version, "mc_version": minecraft_version_range, "forge_version": forge_version_range,
-                         "loader_version"    : loader_version_range, "crafttweaker_version": crafttweaker_version_range]
+                         "loader_version"    : loader_version_range, "crafttweaker_version": crafttweaker_version_range, "oc2_version": oc2_version_range]
     jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 }
 
@@ -346,13 +346,14 @@ repositories {
             includeGroup 'team.chisel.ctm'
         }
     }
-    maven {
+    //TODO - 1.18: If this maven stops being down reinstate using it, otherwise just switch to curse maven
+    /*maven {
         name 'ComputerCraft'
         url "https://squiddev.cc/maven/"
         content {
             includeGroup 'org.squiddev'
         }
-    }
+    }*/
     maven {
         name 'CurseMaven'
         url 'https://www.cursemaven.com'
@@ -435,9 +436,13 @@ dependencies {
     //TODO - 1.18: Support flux networks again when it ports
     //compileOnly fg.deobf("curse.maven:flux-networks-248020:${flux_networks_id}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${minecraft_version}-${curios_version}:api")
-    compileOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
+    compileOnly fg.deobf("curse.maven:opencomputers2-437654:${oc2_id}")
+    //TODO - 1.18: Switch back if CC fixes their maven
+    //def cc = fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
+    def cc = fg.deobf("curse.maven:cc-tweaked-282001:3606346")
+    compileOnly cc
     //We require cc tweaked so that our CCArgumentWrapper tests can load, so expose it to the test runtime
-    testRuntimeOnly fg.deobf("org.squiddev:cc-tweaked-${minecraft_version}:${computer_craft_version}")
+    testRuntimeOnly cc
 
     //Dependencies for data generators for mod compat reference
     datagenmainImplementation fg.deobf("appeng:appliedenergistics2:${ae2_version}") {
@@ -836,6 +841,7 @@ if (System.getenv("CURSEFORGE_KEY") != null || project.hasProperty('curseforgeKe
                     optionalDependency "jade"
                     optionalDependency "jei"
                     optionalDependency "jeitweaker"
+                    optionalDependency "oc2"
                     optionalDependency "oh-the-biomes-youll-go"
                     optionalDependency "perviaminvenire"
                     optionalDependency "projecte"

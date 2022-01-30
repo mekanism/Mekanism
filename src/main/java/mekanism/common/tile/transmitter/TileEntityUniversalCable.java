@@ -9,7 +9,6 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.energy.DynamicStrictEnergyHandler;
@@ -24,9 +23,9 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TileEntityUniversalCable extends TileEntityTransmitter implements IComputerTile {
 
@@ -42,9 +41,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
             }
             return cable.getEnergyContainers(direction);
         }, new DynamicStrictEnergyHandler(this::getEnergyContainers, getExtractPredicate(), getInsertPredicate(), null)));
-        if (Mekanism.hooks.computerCompatEnabled()) {
-            ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
-        }
+        ComputerCapabilityHelper.addComputerCapabilities(this, this::addCapabilityResolver);
     }
 
     @Override
