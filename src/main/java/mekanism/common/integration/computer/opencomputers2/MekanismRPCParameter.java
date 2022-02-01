@@ -2,14 +2,18 @@ package mekanism.common.integration.computer.opencomputers2;
 
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import li.cil.oc2.api.bus.device.rpc.RPCParameter;
 
 public class MekanismRPCParameter implements RPCParameter {
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private final Optional<String> name;
     private final Class<?> type;
 
-    MekanismRPCParameter(Class<?> type) {
+    MekanismRPCParameter(Class<?> type, @Nullable String name) {
         this.type = type;
+        this.name = Optional.ofNullable(name);
     }
 
     @Nonnull
@@ -21,9 +25,6 @@ public class MekanismRPCParameter implements RPCParameter {
     @Nonnull
     @Override
     public Optional<String> getName() {
-        //TODO - 1.18: Evaluate either using an annotation processor like we do with CrT to collect param names,
-        // or just adding that data to the annotations, and then track it via ComputerMethodMapper to allow the
-        // parameters to have "clean" names instead of names like arg1
-        return Optional.empty();
+        return name;
     }
 }

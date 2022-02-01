@@ -247,7 +247,7 @@ public class BoundComputerMethod {
         }
     }
 
-    public record ThreadAwareMethodHandle(MethodHandle methodHandle, boolean threadSafe) {
+    public record ThreadAwareMethodHandle(MethodHandle methodHandle, List<String> paramNames, boolean threadSafe) {
 
         public Class<?> returnType() {
             return methodHandle.type().returnType();

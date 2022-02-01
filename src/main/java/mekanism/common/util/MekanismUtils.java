@@ -1,5 +1,8 @@
 package mekanism.common.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2DoubleArrayMap;
@@ -705,6 +708,30 @@ public final class MekanismUtils {
      */
     public static boolean isPlayingMode(Player player) {
         return !player.isCreative() && !player.isSpectator();
+    }
+
+    /**
+     * Helper to read the parameter names from the format saved by our annotation processor param name mapper.
+     */
+    public static List<String> getParameterNames(@Nullable JsonObject classMethods, String method, String signature) {
+        if (classMethods != null) {
+            JsonObject signatures = classMethods.getAsJsonObject(method);
+            if (signatures != null) {
+                JsonElement params = signatures.get(signature);
+                if (params != null) {
+                    if (params.isJsonArray()) {
+                        JsonArray paramArray = params.getAsJsonArray();
+                        List<String> paramNames = new ArrayList<>(paramArray.size());
+                        for (JsonElement param : paramArray) {
+                            paramNames.add(param.getAsString());
+                        }
+                        return Collections.unmodifiableList(paramNames);
+                    }
+                    return Collections.singletonList(params.getAsString());
+                }
+            }
+        }
+        return Collections.emptyList();
     }
 
     /**

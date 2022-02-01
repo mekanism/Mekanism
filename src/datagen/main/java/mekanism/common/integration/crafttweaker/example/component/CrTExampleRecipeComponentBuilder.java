@@ -1,8 +1,10 @@
 package mekanism.common.integration.crafttweaker.example.component;
 
+import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
@@ -18,6 +20,7 @@ import javax.annotation.Nullable;
 import mekanism.common.integration.crafttweaker.example.BaseCrTExampleProvider;
 import mekanism.common.integration.crafttweaker.example.CrTExampleBuilder;
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
+import mekanism.common.util.MekanismUtils;
 import org.openzen.zencode.java.ZenCodeType;
 
 public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBuilder<BUILDER_TYPE>> extends CrTBaseExampleRecipeComponent {
@@ -43,7 +46,7 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
                 usedMethodNames.put(methodName, true);
                 int optionalParameterCount = 0;
                 Parameter[] methodParameters = method.getParameters();
-                List<String> parameterNames = lookupParameterNames(recipeManagerClass, methodName, methodParameters);
+                List<String> parameterNames = lookupParameterNames(recipeManagerClass, method);
                 LinkedHashMap<String, ParameterData> parameters = new LinkedHashMap<>();
                 for (int i = 0; i < methodParameters.length; i++) {
                     Parameter parameter = methodParameters[i];
@@ -83,24 +86,25 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
               }));
     }
 
-    private static List<String> lookupParameterNames(Class<?> clazz, String methodName, Parameter[] methodParameters) {
-        StringBuilder stringBuilder = new StringBuilder(methodName);
-        stringBuilder.append('(');
-        for (Parameter methodParameter : methodParameters) {
-            stringBuilder.append(methodParameter.getType().getName()).append(';');
-        }
-        stringBuilder.append(')');
-        String key = stringBuilder.toString().replaceAll("\\$", ".");
-        List<String> parameterNames = getParameterNames(clazz, key);
+    private static List<String> lookupParameterNames(Class<?> clazz, Method method) {
+        String signature = MethodType.methodType(method.getReturnType(), method.getParameterTypes()).descriptorString();
+        //Replace inner classes with the way we are able to generate signatures
+        signature = signature.replaceAll("\\$", "/");
+        String methodName = method.getName();
+        List<String> parameterNames = getParameterNames(clazz, methodName, signature);
         while (parameterNames.isEmpty() && clazz.getSuperclass() != null) {
             clazz = clazz.getSuperclass();
-            parameterNames = getParameterNames(clazz, key);
+            parameterNames = getParameterNames(clazz, methodName, signature);
         }
         return parameterNames;
     }
 
-    private static List<String> getParameterNames(Class<?> clazz, String method) {
-        return BaseCrTExampleProvider.PARAMETER_NAMES.getOrDefault(clazz.getName(), Collections.emptyMap()).getOrDefault(method, Collections.emptyList());
+    private static List<String> getParameterNames(Class<?> clazz, String method, String signature) {
+        if (BaseCrTExampleProvider.PARAMETER_NAMES == null) {
+            return Collections.emptyList();
+        }
+        JsonObject classMethods = BaseCrTExampleProvider.PARAMETER_NAMES.getAsJsonObject(clazz.getName());
+        return MekanismUtils.getParameterNames(classMethods, method, signature);
     }
 
     public CrTExampleRecipeComponentBuilder<BUILDER_TYPE> addExample(Object... params) {

@@ -28,10 +28,12 @@ public class MekanismRPCMethod implements RPCMethod {
         this.name = name;
         this.returnType = methodHandle.returnType();
         List<Class<?>> parameterTypes = methodHandle.parameterTypes();
+        List<String> parameterNames = methodHandle.paramNames();
+        int parameterNameCount = parameterNames.size();
         int params = parameterTypes.size();
         RPCParameter[] parameters = new RPCParameter[params];
         for (int i = 0; i < params; i++) {
-            parameters[i] = new MekanismRPCParameter(parameterTypes.get(i));
+            parameters[i] = new MekanismRPCParameter(parameterTypes.get(i), i < parameterNameCount ? parameterNames.get(i) : null);
         }
         this.parameters = parameters;
     }

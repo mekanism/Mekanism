@@ -12,10 +12,11 @@ import com.blamejared.crafttweaker.api.util.random.Percentaged;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -82,7 +83,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class BaseCrTExampleProvider implements DataProvider {
 
-    public static final Map<String, Map<String, List<String>>> PARAMETER_NAMES = new HashMap<>();
+    @Nullable
+    public static JsonObject PARAMETER_NAMES;
 
     private final Map<Class<?>, ConversionTracker> supportedConversions = new HashMap<>();
     private final Map<String, CrTExampleBuilder<?>> examples = new LinkedHashMap<>();
@@ -141,22 +143,15 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
               CrTPigmentStack::new, CrTPigmentTagManager.INSTANCE, ChemicalIngredientDeserializer.PIGMENT);
         addSupportedChemical(SlurryStack.class, ICrTSlurryStack.class, SlurryStackIngredient.class, CrTConstants.CLASS_SLURRY_STACK_INGREDIENT,
               CrTSlurryStack::new, CrTSlurryTagManager.INSTANCE, ChemicalIngredientDeserializer.SLURRY);
-        if (PARAMETER_NAMES.isEmpty()) {
+        if (PARAMETER_NAMES == null) {
             //Lazy initialize the parameter names, ideally we would find a better time to do this and
             // support multiple instances better but for now this will work
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("crafttweaker_param_names.txt")))) {
-                String line;
-                Map<String, List<String>> methods = null;
-                while ((line = reader.readLine()) != null) {
-                    if (!line.isEmpty()) {
-                        if (line.startsWith("Class: ")) {
-                            methods = new HashMap<>();
-                            PARAMETER_NAMES.put(line.substring(7), methods);
-                        } else {
-                            String[] parts = line.split("=");
-                            methods.put(parts[0], Arrays.stream(parts[1].split(",")).toList());
-                        }
-                    }
+            try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("crafttweaker_parameter_names.json");
+                 InputStreamReader reader = stream == null ? null : new InputStreamReader(stream, StandardCharsets.UTF_8)) {
+                if (reader != null) {
+                    PARAMETER_NAMES = GsonHelper.parse(reader);
+                } else {
+                    throw new RuntimeException("Unable to locate CraftTweaker parameter name file.");
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
