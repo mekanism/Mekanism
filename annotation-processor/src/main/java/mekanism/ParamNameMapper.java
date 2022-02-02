@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,15 +19,18 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
@@ -36,26 +40,41 @@ import org.openzen.zencode.java.ZenCodeType;
 
 public class ParamNameMapper extends AbstractProcessor {
 
+    private static final String MODULE_OPTION = "mekanismModule";
+
     private static String forDatagen(String path) {
         return "resources/" + path;
     }
 
-    private static String generated(String path) {
-        return "annotation_generated/data/mekanism/parameter_names/" + path;
+    private static AnnotationParamScanner computer(String module) {
+        return new AnnotationParamScanner("annotation_generated/data/" + module + "/parameter_names/computer", ComputerMethod.class, WrappingComputerMethod.class);
     }
 
-    private final Set<AnnotationParamScanner> scanners;
+    private Set<AnnotationParamScanner> scanners = Collections.emptySet();
 
-    public ParamNameMapper() {
-        scanners = Set.of(
-              new AnnotationParamScanner(forDatagen("crafttweaker_parameter_names"), ZenCodeType.Method.class),
-              new AnnotationParamScanner(generated("computer"), ComputerMethod.class, WrappingComputerMethod.class)
-        );
+    @Override
+    public Set<String> getSupportedOptions() {
+        return Collections.singleton(MODULE_OPTION);
+    }
+
+    @Override
+    public synchronized void init(ProcessingEnvironment processingEnv) {
+        super.init(processingEnv);
+        String mekModule = processingEnv.getOptions().getOrDefault(MODULE_OPTION, "mekanism");
+        if (mekModule.equals("mekanism")) {
+            scanners = Set.of(
+                  new AnnotationParamScanner(forDatagen("crafttweaker_parameter_names"), ZenCodeType.Method.class),
+                  computer(mekModule)
+            );
+        } else {
+            scanners = Collections.singleton(computer(mekModule));
+        }
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Types typeUtils = processingEnv.getTypeUtils();
+        Elements elementUtils = processingEnv.getElementUtils();
         Set<Class<? extends Annotation>> supportedAnnotations = getSupportedAnnotations();
         Map<AnnotationParamScanner, JsonObject> annotatedData = new HashMap<>();
         for (Element annotatedElement : roundEnv.getElementsAnnotatedWithAny(supportedAnnotations)) {
@@ -67,10 +86,10 @@ public class ParamNameMapper extends AbstractProcessor {
                     StringBuilder signatureBuilder = new StringBuilder("(");
                     JsonArray paramNames = new JsonArray(parameters.size());
                     for (VariableElement parameter : parameters) {
-                        signatureBuilder.append(getParamDescriptor(typeUtils, parameter.asType()));
+                        signatureBuilder.append(getParamDescriptor(typeUtils, elementUtils, parameter.asType()));
                         paramNames.add(parameter.getSimpleName().toString());
                     }
-                    String methodSignature = signatureBuilder + ")" + getParamDescriptor(typeUtils, executableElement.getReturnType());
+                    String methodSignature = signatureBuilder + ")" + getParamDescriptor(typeUtils, elementUtils, executableElement.getReturnType());
                     String className = executableElement.getEnclosingElement().toString();
                     for (AnnotationParamScanner scanner : scanners) {
                         //For each scanner see if it should have data about this method added based on the
@@ -140,11 +159,11 @@ public class ParamNameMapper extends AbstractProcessor {
         return element;
     }
 
-    private String getParamDescriptor(Types typeUtils, TypeMirror type) {
+    private String getParamDescriptor(Types typeUtils, Elements elementUtils, TypeMirror type) {
         //Erase the type as we don't have it during reflection
         type = typeUtils.erasure(type);
         return switch (type.getKind()) {
-            case ARRAY -> "[" + getParamDescriptor(typeUtils, ((ArrayType) type).getComponentType());
+            case ARRAY -> "[" + getParamDescriptor(typeUtils, elementUtils, ((ArrayType) type).getComponentType());
             case BOOLEAN -> "Z";
             case BYTE -> "B";
             case CHAR -> "C";
@@ -154,13 +173,23 @@ public class ParamNameMapper extends AbstractProcessor {
             case LONG -> "J";
             case SHORT -> "S";
             case VOID -> "V";
-            //TODO: Can we make it so that we properly use $ for inner classes?
-            // Note: that just using DeclaredType#getEnclosingType does not work for determining if an inner class
-            // is a static inner class so to simplify logic and just always convert the signature instead of having
-            // to guess we treat those as using a / as well
-            case DECLARED -> "L" + type.toString().replace('.', '/') + ";";
+            case DECLARED -> "L" + getClassDescriptor(typeUtils, elementUtils, type) + ";";
             default -> throw new IllegalStateException("Unexpected value: " + type.getKind());
         };
+    }
+
+    private String getClassDescriptor(Types typeUtils, Elements elementUtils, TypeMirror type) {
+        PackageElement pkg = elementUtils.getPackageOf(typeUtils.asElement(type));
+        String packageName = pkg.getQualifiedName().toString();
+        String className = type.toString();
+        if (packageName.isEmpty()) {
+            return className.replace('.', '$');
+        } else if (className.startsWith(packageName)) {
+            //Should always start with but validate to make sure, also increment by one to get past the dot between the package and the class
+            String path = className.substring(packageName.length() + 1);
+            return packageName.replace('.', '/') + "/" + path.replace('.', '$');
+        }
+        throw new IllegalStateException("Fully qualified name of Class '" + className + "' does not start with expected package: " + packageName);
     }
 
     private Set<Class<? extends Annotation>> getSupportedAnnotations() {

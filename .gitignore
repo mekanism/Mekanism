@@ -21,7 +21,7 @@ MDK.zip
 *.blend2
 /bin
 /logs
-/src/datagen/main/resources
-/src/datagen/main/annotation_generated
+/src/datagen/*/resources
+/src/datagen/*/annotation_generated
 /annotation-processor/bin
 libs/

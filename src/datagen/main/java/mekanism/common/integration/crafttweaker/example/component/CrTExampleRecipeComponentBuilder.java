@@ -88,8 +88,6 @@ public class CrTExampleRecipeComponentBuilder<BUILDER_TYPE extends CrTExampleBui
 
     private static List<String> lookupParameterNames(Class<?> clazz, Method method) {
         String signature = MethodType.methodType(method.getReturnType(), method.getParameterTypes()).descriptorString();
-        //Replace inner classes with the way we are able to generate signatures
-        signature = signature.replaceAll("\\$", "/");
         String methodName = method.getName();
         List<String> parameterNames = getParameterNames(clazz, methodName, signature);
         while (parameterNames.isEmpty() && clazz.getSuperclass() != null) {

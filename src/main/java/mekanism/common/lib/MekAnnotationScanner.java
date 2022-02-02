@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import mekanism.common.Mekanism;
@@ -20,6 +22,7 @@ import mekanism.common.integration.computer.ComputerMethodMapper;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.moddiscovery.ModAnnotation;
+import net.minecraftforge.forgespi.language.IModFileInfo;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
 import org.objectweb.asm.Type;
@@ -35,7 +38,7 @@ public class MekAnnotationScanner {
             for (ModFileScanData scanData : ModList.get().getAllScanData()) {
                 for (AnnotationData data : scanData.getAnnotations()) {
                     //If the annotation is on a field, and is the sync type
-                    gatherScanData(elementBasedScanData, classNameCache, data);
+                    gatherScanData(elementBasedScanData, classNameCache, data, scanData.getIModInfoData());
                 }
             }
         } catch (Throwable throwable) {
@@ -43,10 +46,11 @@ public class MekAnnotationScanner {
             Mekanism.logger.error("Failed to gather scan data", throwable);
         }
         for (Map.Entry<BaseAnnotationScanner, ScanData> entry : scanners.entrySet()) {
-            Map<Class<?>, List<AnnotationData>> knownClasses = entry.getValue().knownClasses;
+            ScanData scannerData = entry.getValue();
+            Map<Class<?>, List<AnnotationData>> knownClasses = scannerData.knownClasses;
             if (!knownClasses.isEmpty()) {
                 try {
-                    entry.getKey().collectScanData(classNameCache, knownClasses);
+                    entry.getKey().collectScanData(classNameCache, knownClasses, scannerData.modFileData);
                 } catch (Throwable throwable) {
                     //Should never really happen unless something goes drastically wrong
                     Mekanism.logger.error("Failed to collect scan data", throwable);
@@ -55,7 +59,8 @@ public class MekAnnotationScanner {
         }
     }
 
-    private static void gatherScanData(Map<ElementType, List<ScanData>> elementBasedScanData, Map<String, Class<?>> classNameCache, AnnotationData data) {
+    private static void gatherScanData(Map<ElementType, List<ScanData>> elementBasedScanData, Map<String, Class<?>> classNameCache, AnnotationData data,
+          List<IModFileInfo> modFileData) {
         ElementType targetType = data.targetType();
         List<ScanData> elementScanData = elementBasedScanData.getOrDefault(targetType, Collections.emptyList());
         for (ScanData scannerData : elementScanData) {
@@ -65,6 +70,7 @@ public class MekAnnotationScanner {
                     if (clazz != null) {
                         //If the class was successfully found, add it to the known classes
                         scannerData.knownClasses.computeIfAbsent(clazz, c -> new ArrayList<>()).add(data);
+                        scannerData.modFileData.addAll(modFileData);
                     }
                     //Annotations should be unique so if we found one match the other scanners shouldn't match that same annotation data
                     return;
@@ -109,6 +115,7 @@ public class MekAnnotationScanner {
     private static class ScanData {
 
         private final Map<Class<?>, List<AnnotationData>> knownClasses = new Object2ObjectOpenHashMap<>();
+        private final Set<IModFileInfo> modFileData = new HashSet<>();
         private final Map<ElementType, Type[]> supportedTypes;
 
         public ScanData(BaseAnnotationScanner scanner) {
@@ -124,7 +131,7 @@ public class MekAnnotationScanner {
 
         protected abstract Map<ElementType, Type[]> getSupportedTypes();
 
-        protected abstract void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses);
+        protected abstract void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses, Set<IModFileInfo> modFileData);
 
         /**
          * Gets the value of an annotation or null if it is not present. Used for getting classes

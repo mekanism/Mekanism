@@ -1,16 +1,17 @@
 package mekanism.common.integration.computer;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.annotation.ElementType;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,7 +40,10 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.util.GsonHelper;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.forgespi.language.IModFileInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.forgespi.language.ModFileScanData.AnnotationData;
+import net.minecraftforge.forgespi.locating.IModFile;
 import org.objectweb.asm.Type;
 
 public class ComputerMethodMapper extends BaseAnnotationScanner {
@@ -65,22 +70,43 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
         return supportedTypes;
     }
 
-    @Override
-    protected void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses) {
-        JsonObject allParamNames;
-        //Note: Only supports parameter names for ones that existed at compile time for Mekanism. We pack the param names
-        // for things like Mekanism Generators in the main jar currently, at some point we may want to try splitting it out
-        // among multiple files and then also have a merge for the all jar, but for now it does not matter that much as we
-        // do not have all that many methods with parameter names, and it is mostly just a quality of life feature being able
-        // to provide them to OC2 rather than a requirement
-        //TODO: One way of potentially solving the above would be in the annotation scanner, look at the mod file scan data
-        // to get the mod file info's and combine using IModFileInfo#getFile and then use a few findResource calls in it
-        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("data/" + Mekanism.MODID + "/parameter_names/computer.json");
-             InputStreamReader reader = stream == null ? null : new InputStreamReader(stream, StandardCharsets.UTF_8)) {
-            allParamNames = reader == null ? new JsonObject() : GsonHelper.parse(reader);
-        } catch (IOException e) {
-            allParamNames = new JsonObject();
+    private static JsonObject collectParamNames(Set<IModFileInfo> modFileData) {
+        //Collects all known parameter names from mods with one of our annotations in them so that we can split it across
+        // multiple classes, and if some addon decides to access our internals to use our computer system, then they are
+        // able to provide parameter names as well
+        List<JsonObject> rootNodes = new ArrayList<>();
+        for (IModFileInfo info : modFileData) {
+            IModFile modFile = info.getFile();
+            for (IModInfo mod : info.getMods()) {
+                Path resource = modFile.findResource("data", mod.getModId(), "parameter_names", "computer.json");
+                if (Files.exists(resource)) {
+                    //Check if there is a parameter name mapping for the mod, as it is not required, especially if the
+                    // mod does not expose any methods that have parameters
+                    try (BufferedReader reader = Files.newBufferedReader(resource)) {
+                        rootNodes.add(GsonHelper.parse(reader));
+                    } catch (IOException e) {
+                        Mekanism.logger.warn("Failed to read computer parameter name file for mod '{} ({})', some methods may be missing clean names.",
+                              mod.getDisplayName(), mod.getModId());
+                    }
+                }
+            }
         }
+        if (rootNodes.isEmpty()) {
+            return new JsonObject();
+        }
+        JsonObject root = rootNodes.get(0);
+        for (int i = 1, nodes = rootNodes.size(); i < nodes; i++) {
+            //We assume each class is only provided by one mod, so we can just merge the elements at a top level
+            for (Map.Entry<String, JsonElement> entry : rootNodes.get(i).entrySet()) {
+                root.add(entry.getKey(), entry.getValue());
+            }
+        }
+        return root;
+    }
+
+    @Override
+    protected void collectScanData(Map<String, Class<?>> classNameCache, Map<Class<?>, List<AnnotationData>> knownClasses, Set<IModFileInfo> modFileData) {
+        JsonObject allParamNames = collectParamNames(modFileData);
         Type wrappingType = Type.getType(WrappingComputerMethod.class);
         Map<Class<?>, List<WrappingMethodHelper>> cachedWrappers = new Object2ObjectOpenHashMap<>();
         Map<Class<?>, List<MethodDetails>> rawMethodDetails = new Object2ObjectOpenHashMap<>();
@@ -162,7 +188,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                                     }
                                     return false;
                                 });
-                                methodDetails.add(new MethodDetails(methodNameOverride, methodHandle, getParameterNames(classParamNames, methodName, methodDescriptor),
+                                methodDetails.add(new MethodDetails(methodNameOverride, methodHandle, MekanismUtils.getParameterNames(classParamNames, methodName, methodDescriptor),
                                       getAnnotationValue(data, "restriction", MethodRestriction.NONE), getAnnotationValue(data, "threadSafe", false)));
                             }
                         }
@@ -263,7 +289,7 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                     boolean threadSafe = getAnnotationValue(data, "threadSafe", false);
                     //Calculate param names based off of the original method, as those are the parameters that actually will be used,
                     // and we are just wrapping the output into multiple methods
-                    List<String> paramNames = getParameterNames(classParamNames, identifier, methodSignature);
+                    List<String> paramNames = MekanismUtils.getParameterNames(classParamNames, identifier, methodSignature);
                     for (int index = 0; index < methodNameCount; index++) {
                         //If there is an error at dev time it should crash with an IllegalArgumentException
                         MethodHandle newHandle = MethodHandles.filterReturnValue(methodHandle, wrapperHandles.get(index).asType(methodHandle.type().returnType()));
@@ -272,12 +298,6 @@ public class ComputerMethodMapper extends BaseAnnotationScanner {
                 }
             }
         }
-    }
-
-    private static List<String> getParameterNames(@Nullable JsonObject classMethods, String method, String signature) {
-        //Replace inner classes with the way we are able to generate signatures
-        signature = signature.replaceAll("\\$", "/");
-        return MekanismUtils.getParameterNames(classMethods, method, signature);
     }
 
     /**
