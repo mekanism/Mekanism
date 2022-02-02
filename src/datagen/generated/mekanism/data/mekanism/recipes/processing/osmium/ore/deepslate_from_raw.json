@@ -3,7 +3,7 @@
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/uranium"
+      "tag": "forge:raw_materials/osmium"
     }
   },
   "extraInput": {
@@ -12,6 +12,6 @@
     }
   },
   "output": {
-    "item": "mekanism:deepslate_uranium_ore"
+    "item": "mekanism:deepslate_osmium_ore"
   }
 }

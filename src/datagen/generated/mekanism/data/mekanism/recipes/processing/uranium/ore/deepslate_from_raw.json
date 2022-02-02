@@ -3,7 +3,7 @@
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/iron"
+      "tag": "forge:raw_materials/uranium"
     }
   },
   "extraInput": {
@@ -12,6 +12,6 @@
     }
   },
   "output": {
-    "item": "minecraft:deepslate_iron_ore"
+    "item": "mekanism:deepslate_uranium_ore"
   }
 }

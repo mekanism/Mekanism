@@ -3,15 +3,15 @@
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/copper"
+      "tag": "forge:raw_materials/uranium"
     }
   },
   "extraInput": {
     "ingredient": {
-      "tag": "forge:cobblestone/deepslate"
+      "tag": "forge:cobblestone/normal"
     }
   },
   "output": {
-    "item": "minecraft:deepslate_copper_ore"
+    "item": "mekanism:uranium_ore"
   }
 }

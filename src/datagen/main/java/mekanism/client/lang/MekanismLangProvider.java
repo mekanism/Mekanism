@@ -271,11 +271,10 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismBlocks.BOUNDING_BLOCK, "Bounding Block");
         //Ores
         addOre(OreType.OSMIUM, "A strong mineral that can be found at nearly any height in the world. It is known to have many uses in the construction of machinery.");
-        //TODO - 1.18: Update tin's description given we likely have a different rate than copper in general due to different drop amount
-        addOre(OreType.TIN, "A lightweight, yet sturdy, conductive material that is found slightly less commonly than Copper.");
+        addOre(OreType.TIN, "A lightweight, yet sturdy, conductive material.");
         addOre(OreType.FLUORITE, "A mineral found relatively deep under the world's surface. The crystals can be processed into Hydrofluoric Acid, an essential chemical for Uranium processing.");
         addOre(OreType.URANIUM, "A common, heavy metal, which can yield massive amounts of energy when properly processed. In its naturally-occurring form, it is not radioactive enough to cause harm.");
-        addOre(OreType.LEAD, "A somewhat rare metal that is excellent at resisting radioactive particles, spawning slightly less frequently than iron.");
+        addOre(OreType.LEAD, "A somewhat rare metal that is excellent at resisting radioactive particles.");
         //Storage blocks
         add(MekanismBlocks.BRONZE_BLOCK, "Bronze Block");
         add(MekanismBlocks.REFINED_OBSIDIAN_BLOCK, "Refined Obsidian");

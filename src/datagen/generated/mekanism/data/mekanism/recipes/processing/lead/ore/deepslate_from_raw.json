@@ -3,15 +3,15 @@
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/tin"
+      "tag": "forge:raw_materials/lead"
     }
   },
   "extraInput": {
     "ingredient": {
-      "tag": "forge:cobblestone/normal"
+      "tag": "forge:cobblestone/deepslate"
     }
   },
   "output": {
-    "item": "mekanism:tin_ore"
+    "item": "mekanism:deepslate_lead_ore"
   }
 }

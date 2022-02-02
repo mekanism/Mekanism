@@ -3,7 +3,7 @@
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/gold"
+      "tag": "forge:raw_materials/gold"
     }
   },
   "extraInput": {

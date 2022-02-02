@@ -3,7 +3,7 @@
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/osmium"
+      "tag": "forge:raw_materials/iron"
     }
   },
   "extraInput": {
@@ -12,6 +12,6 @@
     }
   },
   "output": {
-    "item": "mekanism:deepslate_osmium_ore"
+    "item": "minecraft:deepslate_iron_ore"
   }
 }

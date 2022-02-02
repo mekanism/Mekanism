@@ -34,8 +34,8 @@ f5e3eb6799a15d0b72969547614dfc51dac53419 assets/mekanism/blockstates/tin_ore.jso
 8b4570f0148089999c54bb9695f9c94346455c7a assets/mekanism/blockstates/uranium_hexafluoride.json
 246c1904e7699b01a3a20f2a2b79b35b5d99aec9 assets/mekanism/blockstates/uranium_ore.json
 40c623e2db3159e7355b25f422c719294eca4b64 assets/mekanism/blockstates/uranium_oxide.json
-79e66cb0affd8a2062e713c7e666694f069a7994 assets/mekanism/lang/en_ud.json
-5776c02053c0efde647433e9edcb42a981230cae assets/mekanism/lang/en_us.json
+d08aa0ae9385dca9a4e9359847481ab58536fa82 assets/mekanism/lang/en_ud.json
+9079f73bd898d006a88f67e8411a72cef4ec2375 assets/mekanism/lang/en_us.json
 beea3be5a8af802be66d456a7a648678bede0f02 assets/mekanism/models/block/brine.json
 beea3be5a8af802be66d456a7a648678bede0f02 assets/mekanism/models/block/chlorine.json
 dcf97575f9590e37cd289a662002e3bc903953a2 assets/mekanism/models/block/deepslate_ore/fluorite.json
@@ -3903,7 +3903,6 @@ d7e164f2406c012c3c62ac335ea36decde971fb4 data/mekanism/recipes/processing/coal/t
 5235fc99ae6062c4c422c98ee05be6ac7044ecec data/mekanism/recipes/processing/copper/clump/from_raw_ore.json
 4e0c0d6d40ef0acb5409171bf61e776420fdc522 data/mekanism/recipes/processing/copper/clump/from_shard.json
 526f5673a119e825c2acbe8be836b15853de68e5 data/mekanism/recipes/processing/copper/crystal/from_slurry.json
-b6490fee14b5f3d127643bcba208a9903420d279 data/mekanism/recipes/processing/copper/deepslate_ore/from_dust.json
 f7c86ce94900cbfc7f0bae6f66c2360e48caa4e1 data/mekanism/recipes/processing/copper/dirty_dust/from_clump.json
 02be99b0a5560fa495f88b3b53999121e69909f3 data/mekanism/recipes/processing/copper/dust/from_dirty_dust.json
 65f57a9557f507a7e6470aefde19705629323b8a data/mekanism/recipes/processing/copper/dust/from_ingot.json
@@ -3911,7 +3910,8 @@ d8475ba876c056db0cc87c528ed902bcb60ac261 data/mekanism/recipes/processing/copper
 d8152ebebac44e5d35441aeb8254b32161b3cd97 data/mekanism/recipes/processing/copper/dust/from_raw_ore.json
 6785cdf4a2edd17ba8195c3cd8fa624acd0e42d1 data/mekanism/recipes/processing/copper/ingot/from_dust_blasting.json
 ef65287af883fe127357a841fda02717ded26970 data/mekanism/recipes/processing/copper/ingot/from_dust_smelting.json
-38e35ce4194f70fd745c08d8730089cc3687b9f3 data/mekanism/recipes/processing/copper/ore/from_dust.json
+d89b7b2f0fc26ae24504cacc5ca6d3369aa30d98 data/mekanism/recipes/processing/copper/ore/deepslate_from_raw.json
+04c3bd7aba199fb744ff09e521023d2823f55be2 data/mekanism/recipes/processing/copper/ore/from_raw.json
 485227c8674ea36fe5024c0c6548041e9207c06d data/mekanism/recipes/processing/copper/shard/from_crystal.json
 ba717eaa0ae4992611055f0aa069e4e4e5af2e5f data/mekanism/recipes/processing/copper/shard/from_ore.json
 1a171411570756bbc89857df13b8812403015adb data/mekanism/recipes/processing/copper/shard/from_raw_ore.json
@@ -3938,7 +3938,6 @@ dbacd42efaebcd5ea1f1c56b3f19d6aae2c5250a data/mekanism/recipes/processing/gold/c
 71bc937ea45a874e6af495ac8afe5e8decbdce61 data/mekanism/recipes/processing/gold/clump/from_raw_ore.json
 ad4cc00c1b15c78d3c53cdbb78ed0d536583e977 data/mekanism/recipes/processing/gold/clump/from_shard.json
 29629352f720c34cbc4f4000802d9ebf6e398a7c data/mekanism/recipes/processing/gold/crystal/from_slurry.json
-681fbfe2d8ae17cf36f205bd8fecfe7fc2732bce data/mekanism/recipes/processing/gold/deepslate_ore/from_dust.json
 d5cede40a43c6d3a18add475e369bd861f960495 data/mekanism/recipes/processing/gold/dirty_dust/from_clump.json
 201f06d0f16d39db01049cef407f41b68a646f8a data/mekanism/recipes/processing/gold/dust/from_dirty_dust.json
 f6788e6467b3d94a7bfb3d8e57e7affb467edca8 data/mekanism/recipes/processing/gold/dust/from_ingot.json
@@ -3946,8 +3945,9 @@ f6788e6467b3d94a7bfb3d8e57e7affb467edca8 data/mekanism/recipes/processing/gold/d
 b1a7685156bb1b2033e21ea2e5f065eaf022fced data/mekanism/recipes/processing/gold/dust/from_raw_ore.json
 b2cc41a6e25b6b82a11bfe53a4b44214a26870b1 data/mekanism/recipes/processing/gold/ingot/from_dust_blasting.json
 aed73d6769ad58066bb697b3f4b810f421ffe620 data/mekanism/recipes/processing/gold/ingot/from_dust_smelting.json
-49bb88238192a814650d743fa9ef2953e4089e62 data/mekanism/recipes/processing/gold/ore/from_dust.json
-b1bd070d9a115b818671eeb77a1bca84b341488c data/mekanism/recipes/processing/gold/ore/nether_from_dust.json
+d1c1696326d9fe993f31aa0d89d82c5236248ef7 data/mekanism/recipes/processing/gold/ore/deepslate_from_raw.json
+a140f218d775e5afcdab4bf8855bb2c5ff23f68a data/mekanism/recipes/processing/gold/ore/from_raw.json
+fb309e69507bb9e01c4d57d275d1c7dc7188436e data/mekanism/recipes/processing/gold/ore/nether_from_raw.json
 174b7c47c4cfb6d136e1e20037eaffcb59292037 data/mekanism/recipes/processing/gold/shard/from_crystal.json
 9552f3893637bc6926187a3933330831864f6961 data/mekanism/recipes/processing/gold/shard/from_ore.json
 fc7f033358edddf508b99a390e5d5b6ef221a2c2 data/mekanism/recipes/processing/gold/shard/from_raw_ore.json
@@ -3958,7 +3958,6 @@ a6698538cdb67da794dd0bd810fa4273ec4fb456 data/mekanism/recipes/processing/gold/s
 eb3ae720fc8230588b184747b8a46e8b0c7b155d data/mekanism/recipes/processing/iron/clump/from_raw_ore.json
 fe5bcafcdf985e1b67de7e89b03e2a17ca879a65 data/mekanism/recipes/processing/iron/clump/from_shard.json
 1a5758698a137db7f6145eca009946dfa2379c9b data/mekanism/recipes/processing/iron/crystal/from_slurry.json
-e8c7ccda7caeb6eb10d2b406146acdb7538e428f data/mekanism/recipes/processing/iron/deepslate_ore/from_dust.json
 f249c5f46d25f3baa3666cfab1cb00e85e8c385d data/mekanism/recipes/processing/iron/dirty_dust/from_clump.json
 1c411d654d2295cd7750df6ef5a8d18e4b328e1c data/mekanism/recipes/processing/iron/dust/from_dirty_dust.json
 aafe25eeee803fdc3e32dd1364d0872384b1e54a data/mekanism/recipes/processing/iron/dust/from_ingot.json
@@ -3967,7 +3966,8 @@ aafe25eeee803fdc3e32dd1364d0872384b1e54a data/mekanism/recipes/processing/iron/d
 7a60fb0c380eca43ac621480e7a14a80a017c353 data/mekanism/recipes/processing/iron/enriched.json
 86e977bf59a71a573d36a681078d26f4e230f53a data/mekanism/recipes/processing/iron/ingot/from_dust_blasting.json
 073abfd7eb5ea8335fca5bb13b3ccc973a8a02e9 data/mekanism/recipes/processing/iron/ingot/from_dust_smelting.json
-635ccdc66fe7d2143b5b62bf0a28edd2b6fcf831 data/mekanism/recipes/processing/iron/ore/from_dust.json
+f7426244a9e5b48f8d316e035ebab612ec8428f5 data/mekanism/recipes/processing/iron/ore/deepslate_from_raw.json
+d61fa5e561e34d8cdc6d7e23d783f847a647223f data/mekanism/recipes/processing/iron/ore/from_raw.json
 2077e11f5779aec20b919537ab18d18234883a9e data/mekanism/recipes/processing/iron/shard/from_crystal.json
 c39281fcb1f63b9f2ef43f9f93993536a85bf987 data/mekanism/recipes/processing/iron/shard/from_ore.json
 1b4a31487f0942f8635552354cdd3bbbc74f7759 data/mekanism/recipes/processing/iron/shard/from_raw_ore.json
@@ -3989,7 +3989,6 @@ d3eb1e5e46506494bec373b0a5334828cb9285a5 data/mekanism/recipes/processing/latega
 5c70a804534f4f309d4b765bd21750f9aa82c2c3 data/mekanism/recipes/processing/lead/clump/from_raw_ore.json
 fa749dbd60f68624923f4d6c78c1008cfd6e0e3e data/mekanism/recipes/processing/lead/clump/from_shard.json
 6065aac7df07c5a353b312139518fa896a2b8816 data/mekanism/recipes/processing/lead/crystal/from_slurry.json
-7db0b0256b37bda1b92ca112ace4710083e329fe data/mekanism/recipes/processing/lead/deepslate_ore/from_dust.json
 3b58daaaa4258ac29fdc912962e7c2a6c273e11a data/mekanism/recipes/processing/lead/dirty_dust/from_clump.json
 a141e8eecc1d4d9882ccb3b1801783415f37b0d0 data/mekanism/recipes/processing/lead/dust/from_dirty_dust.json
 adfd0b07641fb3f94fd365f7146ad78ee8590368 data/mekanism/recipes/processing/lead/dust/from_ingot.json
@@ -4004,7 +4003,8 @@ f6ee2da7a13c06338b5e57a8fd23629c40a3c4e9 data/mekanism/recipes/processing/lead/d
 ba928b464af32dd5ffa557871b95458f0a12387b data/mekanism/recipes/processing/lead/ingot/from_raw_blasting.json
 0dc22d9affc2b912446b2b9c3e0f8a6d9161a7f9 data/mekanism/recipes/processing/lead/ingot/from_raw_smelting.json
 ed32a8baa77f4013a69022e9f6a18d02fbfe8c02 data/mekanism/recipes/processing/lead/nugget/from_ingot.json
-604a365b9b27dbb5c6aa84d15306e2a86589756b data/mekanism/recipes/processing/lead/ore/from_dust.json
+6151e4767472f4df0bd0975e1b54ec9361a2621c data/mekanism/recipes/processing/lead/ore/deepslate_from_raw.json
+35004cdfc1f0cf9706436f96521602bdc6ec743a data/mekanism/recipes/processing/lead/ore/from_raw.json
 c5d48656d3d923dc7a446f24c53dd11a5f9754bd data/mekanism/recipes/processing/lead/raw/from_raw_block.json
 34067ff19e103ed2880dfa84bb8bd6a6da907b57 data/mekanism/recipes/processing/lead/raw_storage_blocks/from_raw.json
 77268204528fca83e22e81d9b74ec3fbc70b463c data/mekanism/recipes/processing/lead/shard/from_crystal.json
@@ -4026,7 +4026,6 @@ eefff33ae2eb86c2582c8de3bc8defb40872183e data/mekanism/recipes/processing/osmium
 49c1a7a12ee63a7fcec9fc4e4510c4dd7c25b462 data/mekanism/recipes/processing/osmium/clump/from_raw_ore.json
 f741abb6e7ea749af7df3c48ca0141d8ecf25a00 data/mekanism/recipes/processing/osmium/clump/from_shard.json
 4ddda229fc022fc7314c5ce6cd0d2901b3ffa195 data/mekanism/recipes/processing/osmium/crystal/from_slurry.json
-c12e5aa669b137b103940b1257e39c09ecb16c2d data/mekanism/recipes/processing/osmium/deepslate_ore/from_dust.json
 780cc5551dfaf2af9adba28db6c7fff8727b752a data/mekanism/recipes/processing/osmium/dirty_dust/from_clump.json
 7df3dc6d03641aa186871cbf6d32f17f13bec6f2 data/mekanism/recipes/processing/osmium/dust/from_dirty_dust.json
 f0c6533ae0825afd50257617204567b825ae1294 data/mekanism/recipes/processing/osmium/dust/from_ingot.json
@@ -4041,7 +4040,8 @@ d99c441a9c0f5c5b79ac3e3358bc820c49abb612 data/mekanism/recipes/processing/osmium
 702d21b5c5f43bff002536b9e603001cb8fe04f4 data/mekanism/recipes/processing/osmium/ingot/from_raw_blasting.json
 373af5352276d3377f812a4be88d5161b70e5bb8 data/mekanism/recipes/processing/osmium/ingot/from_raw_smelting.json
 b074f7a427fc90c9c3ad40f9f6412a4daa706d03 data/mekanism/recipes/processing/osmium/nugget/from_ingot.json
-b2d9eda00f01f04b9524466bef1288ccba6361d5 data/mekanism/recipes/processing/osmium/ore/from_dust.json
+6a467b2ce96a37ae6326e0f1dd53b664f0c7b5a0 data/mekanism/recipes/processing/osmium/ore/deepslate_from_raw.json
+cc40c2c6586f7afef6b99240f44a16118ea291d8 data/mekanism/recipes/processing/osmium/ore/from_raw.json
 6ec077c6125f9aca7d70e2a6ffc64f3cc7aab556 data/mekanism/recipes/processing/osmium/raw/from_raw_block.json
 6ab5d2874be19d8d68b7896dc61e35562d0f191c data/mekanism/recipes/processing/osmium/raw_storage_blocks/from_raw.json
 7245adc5391131070f66293f1e4fcef2a601e1c2 data/mekanism/recipes/processing/osmium/shard/from_crystal.json
@@ -4077,7 +4077,6 @@ ff6186263e8fce387a121e77212338db68f1518c data/mekanism/recipes/processing/tin/cl
 198e9a269042fea7a57d690d2ce4d39c267e4561 data/mekanism/recipes/processing/tin/clump/from_raw_ore.json
 ee701cbc004cef72ebcc123c6db468e262b63723 data/mekanism/recipes/processing/tin/clump/from_shard.json
 4907091336764a6ddb0f365a3b8eba3295b99408 data/mekanism/recipes/processing/tin/crystal/from_slurry.json
-1e4fdc3b7aeb41adc00b250fa9a98bb46bf43777 data/mekanism/recipes/processing/tin/deepslate_ore/from_dust.json
 7458f01944447963a484239edae1059aea3e47c9 data/mekanism/recipes/processing/tin/dirty_dust/from_clump.json
 757c1fb86cd30dd20f95999654a9e59c6c971bc0 data/mekanism/recipes/processing/tin/dust/from_dirty_dust.json
 34641366b62df13c2d578ed775cd2037ac5ad9b9 data/mekanism/recipes/processing/tin/dust/from_ingot.json
@@ -4092,7 +4091,8 @@ dd1541f43a11845123387227846dd41ed11dab32 data/mekanism/recipes/processing/tin/in
 1f0ca948c047c3c8cfcd4b22024da3e850d58348 data/mekanism/recipes/processing/tin/ingot/from_raw_blasting.json
 4f8484eb193d27a43fdf0bd6e1236961753c07f0 data/mekanism/recipes/processing/tin/ingot/from_raw_smelting.json
 c5b18aa4806155bba9676c6f749fecbbcd6fa2dd data/mekanism/recipes/processing/tin/nugget/from_ingot.json
-9f349c7fc3f8e402df277027279f2c4034c84fb5 data/mekanism/recipes/processing/tin/ore/from_dust.json
+dfdaf960d2bc2c1acd5bf0729b93cf4effb83d36 data/mekanism/recipes/processing/tin/ore/deepslate_from_raw.json
+2a17c901317e021d6129b1306a4076bd9c65c2c3 data/mekanism/recipes/processing/tin/ore/from_raw.json
 c73e3e10a8302d128e3f696db7e16dfd224d3934 data/mekanism/recipes/processing/tin/raw/from_raw_block.json
 c9264ad99ffa1e1776ace985ecb24d44df8d4b36 data/mekanism/recipes/processing/tin/raw_storage_blocks/from_raw.json
 8ac705277d2598b6df60188153282aecb71c0068 data/mekanism/recipes/processing/tin/shard/from_crystal.json
@@ -4106,7 +4106,6 @@ cb64e0fc3927c755cb72c297eebad812a5e6ae53 data/mekanism/recipes/processing/tin/sl
 7bcd92a516f30e32f764f905003f038db323b9a7 data/mekanism/recipes/processing/uranium/clump/from_raw_ore.json
 b24396e1849ff92e832cdeaab5a9709e91d269c9 data/mekanism/recipes/processing/uranium/clump/from_shard.json
 ca2a726c38c41a4a908b5f4a0205ab019b6ecd3f data/mekanism/recipes/processing/uranium/crystal/from_slurry.json
-ab3370c8bf9dfc77d596227e4d276d20e2b6fe1a data/mekanism/recipes/processing/uranium/deepslate_ore/from_dust.json
 b966ddfc2fb598376e2a75bfb7f24eb9351d6692 data/mekanism/recipes/processing/uranium/dirty_dust/from_clump.json
 b5a99ebe9aacef07332d6d770595c0a259fade57 data/mekanism/recipes/processing/uranium/dust/from_dirty_dust.json
 ea7bf3e06b84d03bec5b9bfcbd5c2e554925ce94 data/mekanism/recipes/processing/uranium/dust/from_ingot.json
@@ -4124,7 +4123,8 @@ ec6e35e8a970e4eba88a549bb54a1b32822ba811 data/mekanism/recipes/processing/uraniu
 808c468775d16384cf8b1bdad723dfe8256d19e4 data/mekanism/recipes/processing/uranium/ingot/from_raw_blasting.json
 b0920b590a424e3ee8b3d751dbca70f6b12b924a data/mekanism/recipes/processing/uranium/ingot/from_raw_smelting.json
 b4870e50748a7ee2a2f6aa40bd07402a21a3d3ef data/mekanism/recipes/processing/uranium/nugget/from_ingot.json
-cd87a49fcf3cafcd816809b5a2d3707d12f4af87 data/mekanism/recipes/processing/uranium/ore/from_dust.json
+aa2ef6a80a77178df16cf942978e2741efb85650 data/mekanism/recipes/processing/uranium/ore/deepslate_from_raw.json
+e0fe6395ce2d3a9abf38a4660f6644494eb9d15b data/mekanism/recipes/processing/uranium/ore/from_raw.json
 cd4fde460b26e6d05f180d588cf6b0013a131cf2 data/mekanism/recipes/processing/uranium/raw/from_raw_block.json
 cf7dd06a6ef572302a6f6157123262e3ad26ba29 data/mekanism/recipes/processing/uranium/raw_storage_blocks/from_raw.json
 2f7d621efcb0bfb0afc2f7a29c2fec8519eaae6d data/mekanism/recipes/processing/uranium/reprocessing/from_plutonium.json

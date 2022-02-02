@@ -3,7 +3,7 @@
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/iron"
+      "tag": "forge:raw_materials/lead"
     }
   },
   "extraInput": {
@@ -12,6 +12,6 @@
     }
   },
   "output": {
-    "item": "minecraft:iron_ore"
+    "item": "mekanism:lead_ore"
   }
 }

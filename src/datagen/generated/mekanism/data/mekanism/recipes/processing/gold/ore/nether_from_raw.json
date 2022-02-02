@@ -3,15 +3,15 @@
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/lead"
+      "tag": "forge:raw_materials/gold"
     }
   },
   "extraInput": {
     "ingredient": {
-      "tag": "forge:cobblestone/deepslate"
+      "tag": "forge:netherrack"
     }
   },
   "output": {
-    "item": "mekanism:deepslate_lead_ore"
+    "item": "minecraft:nether_gold_ore"
   }
 }

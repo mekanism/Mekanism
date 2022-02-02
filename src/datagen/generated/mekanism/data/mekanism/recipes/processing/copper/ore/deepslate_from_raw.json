@@ -1,9 +1,9 @@
 {
   "type": "mekanism:combining",
   "mainInput": {
-    "amount": 8,
+    "amount": 20,
     "ingredient": {
-      "tag": "forge:dusts/tin"
+      "tag": "forge:raw_materials/copper"
     }
   },
   "extraInput": {
@@ -12,6 +12,6 @@
     }
   },
   "output": {
-    "item": "mekanism:deepslate_tin_ore"
+    "item": "minecraft:deepslate_copper_ore"
   }
 }

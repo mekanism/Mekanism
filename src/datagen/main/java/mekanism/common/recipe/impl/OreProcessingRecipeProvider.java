@@ -55,10 +55,10 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         }
         //Gold Dust plus netherrack to nether gold ore
         CombinerRecipeBuilder.combining(
-              ItemStackIngredient.from(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.GOLD), 8),
+              ItemStackIngredient.from(Tags.Items.RAW_MATERIALS_GOLD, 8),
               ItemStackIngredient.from(Tags.Items.NETHERRACK),
               new ItemStack(Blocks.NETHER_GOLD_ORE)
-        ).build(consumer, Mekanism.rl(basePath + "gold/ore/nether_from_dust"));
+        ).build(consumer, Mekanism.rl(basePath + "gold/ore/nether_from_raw"));
 
         //Iron -> enriched iron
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
@@ -87,7 +87,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
     private void addDynamicOreProcessingIngotRecipes(Consumer<FinishedRecipe> consumer, String basePath, PrimaryResource resource) {
         //TODO - 1.18: Take into account if the ore is a single drop or multi like vanilla copper is?
-        //TODO - 1.18: Replace combiner recipes with using raw ores?
+        // We may want to consider this at least for the silk touched ore to ingot?
         ItemLike ingot = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
         Tag<Item> ingotTag = MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, resource);
         ItemLike nugget = MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, resource);
@@ -103,6 +103,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ItemLike deepslateOre = oreBlockType == null ? null : oreBlockType.deepslate();
         Tag<Item> oreTag = resource.getOreTag();
         float dustExperience = 0.3F;
+        int toOre = 8;
         if (resource.isVanilla()) {
             //Note: We only bother setting types we actually use
             switch (resource) {
@@ -132,6 +133,7 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
                     ore = Blocks.COPPER_ORE;
                     deepslateOre = Blocks.DEEPSLATE_COPPER_ORE;
                     dustExperience = 0.35F;
+                    toOre = 20;//8 * 2.5
                 }
                 default -> throw new IllegalStateException("Unknown defaults for primary resource: " + resource.getRegistrySuffix());
             }
@@ -225,20 +227,21 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
                   .key(Pattern.CONSTANT, rawTag)
                   .build(consumer, Mekanism.rl(basePath + "raw_storage_blocks/from_raw"));
         }
+        ItemStackIngredient forOre = ItemStackIngredient.from(rawTag, toOre);
         // Ore
         // from dust
         CombinerRecipeBuilder.combining(
-              ItemStackIngredient.from(dustTag, 8),
+              forOre,
               ItemStackIngredient.from(Tags.Items.COBBLESTONE_NORMAL),
               new ItemStack(ore)
-        ).build(consumer, Mekanism.rl(basePath + "ore/from_dust"));
+        ).build(consumer, Mekanism.rl(basePath + "ore/from_raw"));
         // Deepslate Ore
         // from dust
         CombinerRecipeBuilder.combining(
-              ItemStackIngredient.from(dustTag, 8),
+              forOre,
               ItemStackIngredient.from(Tags.Items.COBBLESTONE_DEEPSLATE),
               new ItemStack(deepslateOre)
-        ).build(consumer, Mekanism.rl(basePath + "deepslate_ore/from_dust"));
+        ).build(consumer, Mekanism.rl(basePath + "ore/deepslate_from_raw"));
         // Shard
         // from crystal
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
@@ -296,15 +299,16 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Items.COAL),
               MekanismItems.COAL_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "to_dust"));
+        ItemStackIngredient forOre = ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL, 8);
         //to ore
         CombinerRecipeBuilder.combining(
-              ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL, 8),
+              forOre,
               ItemStackIngredient.from(Tags.Items.COBBLESTONE_NORMAL),
               new ItemStack(Blocks.COAL_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
         //to deepslate ore
         CombinerRecipeBuilder.combining(
-              ItemStackIngredient.from(MekanismTags.Items.DUSTS_COAL, 8),
+              forOre,
               ItemStackIngredient.from(Tags.Items.COBBLESTONE_DEEPSLATE),
               new ItemStack(Blocks.DEEPSLATE_COAL_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
@@ -327,16 +331,17 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(gemTag),
               dust.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "to_dust"));
+        ItemStackIngredient forOre = ItemStackIngredient.from(dustTag, toOre);
         //to ore
         CombinerRecipeBuilder.combining(
-              ItemStackIngredient.from(dustTag, toOre),
+              forOre,
               ItemStackIngredient.from(combineType),
               new ItemStack(ore)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
         if (deepslateOre != null) {
             //to deepslate ore
             CombinerRecipeBuilder.combining(
-                  ItemStackIngredient.from(dustTag, toOre),
+                  forOre,
                   ItemStackIngredient.from(Tags.Items.COBBLESTONE_DEEPSLATE),
                   new ItemStack(deepslateOre)
             ).build(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
@@ -422,15 +427,16 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               ItemStackIngredient.from(Tags.Items.ORES_REDSTONE),
               new ItemStack(Items.REDSTONE, 12)
         ).build(consumer, Mekanism.rl(basePath + "from_ore"));
+        ItemStackIngredient forOre = ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE, 16);
         //to ore
         CombinerRecipeBuilder.combining(
-              ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE, 16),
+              forOre,
               ItemStackIngredient.from(Tags.Items.COBBLESTONE_NORMAL),
               new ItemStack(Blocks.REDSTONE_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_ore"));
         //to deepslate ore
         CombinerRecipeBuilder.combining(
-              ItemStackIngredient.from(Tags.Items.DUSTS_REDSTONE, 16),
+              forOre,
               ItemStackIngredient.from(Tags.Items.COBBLESTONE_DEEPSLATE),
               new ItemStack(Blocks.DEEPSLATE_REDSTONE_ORE)
         ).build(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));

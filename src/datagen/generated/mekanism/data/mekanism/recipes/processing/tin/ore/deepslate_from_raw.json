@@ -3,15 +3,15 @@
   "mainInput": {
     "amount": 8,
     "ingredient": {
-      "tag": "forge:dusts/copper"
+      "tag": "forge:raw_materials/tin"
     }
   },
   "extraInput": {
     "ingredient": {
-      "tag": "forge:cobblestone/normal"
+      "tag": "forge:cobblestone/deepslate"
     }
   },
   "output": {
-    "item": "minecraft:copper_ore"
+    "item": "mekanism:deepslate_tin_ore"
   }
 }
