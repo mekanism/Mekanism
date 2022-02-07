@@ -1,7 +1,7 @@
 package mekanism.client.jei.machine;
 
-import java.util.Collections;
-import mekanism.api.chemical.gas.GasStack;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -13,10 +13,10 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.tile.component.config.DataType;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class GasToGasRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
 
@@ -38,15 +38,8 @@ public class GasToGasRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
     }
 
     @Override
-    public void setIngredients(GasToGasRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.getOutputDefinition()));
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, GasToGasRecipe recipe, IIngredients ingredients) {
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initChemical(gasStacks, 0, true, input, recipe.getInput().getRepresentations());
-        initChemical(gasStacks, 1, false, output, recipe.getOutputDefinition());
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, GasToGasRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_GAS, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

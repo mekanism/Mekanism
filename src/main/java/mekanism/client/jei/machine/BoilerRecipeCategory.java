@@ -33,13 +33,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextUtils;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.tags.FluidTags;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
 
 public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
 
@@ -82,10 +82,10 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
     }
 
     @Override
-    public void draw(BoilerJEIRecipe recipe, PoseStack matrixStack, double mouseX, double mouseY) {
+    public void draw(BoilerJEIRecipe recipe, IRecipeSlotsView recipeSlotView, PoseStack matrixStack, double mouseX, double mouseY) {
         //Update what the current recipe is so that we have the proper values for temperature and the like
         this.recipe = recipe;
-        super.draw(recipe, matrixStack, mouseX, mouseY);
+        super.draw(recipe, recipeSlotView, matrixStack, mouseX, mouseY);
         if (recipe.superHeatedCoolant == null) {
             superHeatedCoolantTank.drawBarOverlay(matrixStack);
             cooledCoolantTank.drawBarOverlay(matrixStack);
@@ -94,26 +94,14 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
     }
 
     @Override
-    public void setIngredients(BoilerJEIRecipe recipe, @Nonnull IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.water.getRepresentations()));
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, BoilerJEIRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initFluid(builder, 0, RecipeIngredientRole.INPUT, waterTank, recipe.water.getRepresentations());
         if (recipe.superHeatedCoolant == null) {
-            ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.steam);
+            initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam));
         } else {
-            ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.superHeatedCoolant.getRepresentations()));
-            ingredients.setOutputs(MekanismJEI.TYPE_GAS, Arrays.asList(recipe.steam, recipe.cooledCoolant));
-        }
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, BoilerJEIRecipe recipe, @Nonnull IIngredients ingredients) {
-        initFluid(recipeLayout.getFluidStacks(), 0, true, waterTank, recipe.water.getRepresentations());
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        if (recipe.superHeatedCoolant == null) {
-            initChemical(gasStacks, 0, false, steamTank, Collections.singletonList(recipe.steam));
-        } else {
-            initChemical(gasStacks, 0, true, superHeatedCoolantTank, recipe.superHeatedCoolant.getRepresentations());
-            initChemical(gasStacks, 1, false, steamTank, Collections.singletonList(recipe.steam));
-            initChemical(gasStacks, 2, false, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant));
+            initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant.getRepresentations());
+            initChemical(builder, MekanismJEI.TYPE_GAS, 1, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam));
+            initChemical(builder, MekanismJEI.TYPE_GAS, 2, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant));
         }
     }
 

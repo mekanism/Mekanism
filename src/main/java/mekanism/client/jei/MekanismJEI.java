@@ -319,6 +319,8 @@ public class MekanismJEI implements IModPlugin {
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
         //TODO - 1.18: Re-evaluate how some of the recipes return a list and some return a single element as output representations
         // Strictly speaking all the output definitions should be based on which set of inputs there is
+        // which we could do by making output representations be invisible and then do actual output rendering based on current
+        // displayed inputs
         CatalystRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CRUSHER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.COMBINER);

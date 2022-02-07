@@ -2,6 +2,7 @@ package mekanism.client.jei.machine;
 
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
@@ -24,12 +25,11 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<ChemicalDissolutionRecipe> {
 
@@ -57,50 +57,28 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
     }
 
     @Override
-    public void setIngredients(ChemicalDissolutionRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
-        List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
-        List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED)).toList();
-        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(scaledGases));
-        BoxedChemicalStack outputDefinition = recipe.getOutputDefinition();
-        ChemicalType chemicalType = outputDefinition.getChemicalType();
-        if (chemicalType == ChemicalType.GAS) {
-            ingredients.setOutput(MekanismJEI.TYPE_GAS, (GasStack) outputDefinition.getChemicalStack());
-        } else if (chemicalType == ChemicalType.INFUSION) {
-            ingredients.setOutput(MekanismJEI.TYPE_INFUSION, (InfusionStack) outputDefinition.getChemicalStack());
-        } else if (chemicalType == ChemicalType.PIGMENT) {
-            ingredients.setOutput(MekanismJEI.TYPE_PIGMENT, (PigmentStack) outputDefinition.getChemicalStack());
-        } else if (chemicalType == ChemicalType.SLURRY) {
-            ingredients.setOutput(MekanismJEI.TYPE_SLURRY, (SlurryStack) outputDefinition.getChemicalStack());
-        } else {
-            throw new IllegalStateException("Unknown chemical type");
-        }
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, ChemicalDissolutionRecipe recipe, IIngredients ingredients) {
-        initItem(recipeLayout.getItemStacks(), 0, true, inputSlot, recipe.getItemInput().getRepresentations());
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ChemicalDissolutionRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initItem(builder, 0, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
         List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
               .toList();
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initChemical(gasStacks, 0, true, inputGauge, scaledGases);
+        initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, inputGauge, scaledGases);
         BoxedChemicalStack outputDefinition = recipe.getOutputDefinition();
         ChemicalType chemicalType = outputDefinition.getChemicalType();
         if (chemicalType == ChemicalType.GAS) {
-            initChemicalOutput(recipeLayout, MekanismJEI.TYPE_GAS, (GasStack) outputDefinition.getChemicalStack());
+            initChemicalOutput(builder, MekanismJEI.TYPE_GAS, (GasStack) outputDefinition.getChemicalStack());
         } else if (chemicalType == ChemicalType.INFUSION) {
-            initChemicalOutput(recipeLayout, MekanismJEI.TYPE_INFUSION, (InfusionStack) outputDefinition.getChemicalStack());
+            initChemicalOutput(builder, MekanismJEI.TYPE_INFUSION, (InfusionStack) outputDefinition.getChemicalStack());
         } else if (chemicalType == ChemicalType.PIGMENT) {
-            initChemicalOutput(recipeLayout, MekanismJEI.TYPE_PIGMENT, (PigmentStack) outputDefinition.getChemicalStack());
+            initChemicalOutput(builder, MekanismJEI.TYPE_PIGMENT, (PigmentStack) outputDefinition.getChemicalStack());
         } else if (chemicalType == ChemicalType.SLURRY) {
-            initChemicalOutput(recipeLayout, MekanismJEI.TYPE_SLURRY, (SlurryStack) outputDefinition.getChemicalStack());
+            initChemicalOutput(builder, MekanismJEI.TYPE_SLURRY, (SlurryStack) outputDefinition.getChemicalStack());
         } else {
             throw new IllegalStateException("Unknown chemical type");
         }
     }
 
-    private <STACK extends ChemicalStack<?>> void initChemicalOutput(IRecipeLayout recipeLayout, IIngredientType<STACK> type, STACK stack) {
-        initChemical(recipeLayout.getIngredientsGroup(type), 1, false, outputGauge, Collections.singletonList(stack));
+    private <STACK extends ChemicalStack<?>> void initChemicalOutput(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, STACK stack) {
+        initChemical(builder, type, 1, RecipeIngredientRole.OUTPUT, outputGauge, Collections.singletonList(stack));
     }
 }

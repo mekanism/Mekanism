@@ -30,6 +30,12 @@ license="MIT"
     ordering="AFTER"
     side="BOTH"
 [[dependencies.mekanism]]
+    modId="jei"
+    mandatory=false
+    versionRange="${jei_version}"
+    ordering="AFTER"
+    side="BOTH"
+[[dependencies.mekanism]]
     modId="oc2"
     mandatory=false
     versionRange="${oc2_version}"

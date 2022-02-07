@@ -22,10 +22,10 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.util.text.EnergyDisplay;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 
 public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
@@ -57,16 +57,9 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
     }
 
     @Override
-    public void setIngredients(SPSJEIRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(MekanismJEI.TYPE_GAS, Collections.singletonList(recipe.input.getRepresentations()));
-        ingredients.setOutput(MekanismJEI.TYPE_GAS, recipe.output);
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, SPSJEIRecipe recipe, @Nonnull IIngredients ingredients) {
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initChemical(gasStacks, 0, true, input, recipe.input.getRepresentations());
-        initChemical(gasStacks, 1, false, output, Collections.singletonList(recipe.output));
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, SPSJEIRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, input, recipe.input.getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_GAS, 1, RecipeIngredientRole.OUTPUT, output, Collections.singletonList(recipe.output));
     }
 
     public static List<SPSJEIRecipe> getSPSRecipes() {

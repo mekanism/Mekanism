@@ -1,8 +1,8 @@
 package mekanism.client.jei.machine;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
@@ -16,11 +16,10 @@ import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
 
 public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<MetallurgicInfuserRecipe> {
@@ -47,23 +46,15 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
     }
 
     @Override
-    public void setIngredients(MetallurgicInfuserRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getItemInput().getRepresentations()));
-        ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
-        ingredients.setInputLists(MekanismJEI.TYPE_INFUSION, Collections.singletonList(recipe.getChemicalInput().getRepresentations()));
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, MetallurgicInfuserRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        initItem(itemStacks, 0, true, input, recipe.getItemInput().getRepresentations());
-        initItem(itemStacks, 1, false, output, recipe.getOutputDefinition());
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, MetallurgicInfuserRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
+        initItem(builder, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         List<ItemStack> infuseItemProviders = new ArrayList<>();
         List<@NonNull InfusionStack> infusionStacks = recipe.getChemicalInput().getRepresentations();
         for (InfusionStack infusionStack : infusionStacks) {
             infuseItemProviders.addAll(MekanismJEI.INFUSION_STACK_HELPER.getStacksFor(infusionStack.getType(), true));
         }
-        initItem(itemStacks, 2, true, extra, infuseItemProviders);
-        initChemical(recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_INFUSION), 0, true, infusionBar, infusionStacks);
+        initItem(builder, IGNORED_INDEX, RecipeIngredientRole.CATALYST, extra, infuseItemProviders);
+        initChemical(builder, MekanismJEI.TYPE_INFUSION, 0, RecipeIngredientRole.INPUT, infusionBar, infusionStacks);
     }
 }

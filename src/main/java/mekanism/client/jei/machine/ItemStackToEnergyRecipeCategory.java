@@ -4,8 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.text.TextComponentUtil;
@@ -21,26 +20,23 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStackToEnergyRecipe> {
 
     private static final ResourceLocation iconRL = MekanismUtils.getResource(ResourceType.GUI, "energy.png");
-    //Note: We use a weak hashmap so that when the recipe stops existing either due to disconnecting from the server
-    // or because of a reload, then it can be properly garbage collected, but until then we keep track of the pairing
-    // between the recipe and the ingredient group JEI has so that we can ensure the arrows are the proper color
-    private final Map<ItemStackToEnergyRecipe, IGuiItemStackGroup> ingredients = new WeakHashMap<>();
+    private static final String INPUT = "input";
+
     private final GuiEnergyGauge gauge;
     private final GuiSlot input;
 
@@ -57,20 +53,14 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     }
 
     @Override
-    public void setIngredients(ItemStackToEnergyRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInput().getRepresentations()));
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToEnergyRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations())
+              .setSlotName(INPUT);
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, ItemStackToEnergyRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStackGroup = recipeLayout.getItemStacks();
-        initItem(itemStackGroup, 0, true, input, recipe.getInput().getRepresentations());
-        this.ingredients.put(recipe, itemStackGroup);
-    }
-
-    @Override
-    public void draw(ItemStackToEnergyRecipe recipe, PoseStack matrix, double mouseX, double mouseY) {
-        super.draw(recipe, matrix, mouseX, mouseY);
+    public void draw(ItemStackToEnergyRecipe recipe, IRecipeSlotsView recipeSlotView, PoseStack matrix, double mouseX, double mouseY) {
+        super.draw(recipe, recipeSlotView, matrix, mouseX, mouseY);
         if (!recipe.getOutputDefinition().isZero()) {
             //Manually draw the contents of the recipe
             gauge.renderContents(matrix);
@@ -78,9 +68,9 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     }
 
     @Override
-    public List<Component> getTooltipStrings(ItemStackToEnergyRecipe recipe, double mouseX, double mouseY) {
+    public List<Component> getTooltipStrings(ItemStackToEnergyRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY) {
         if (gauge.isMouseOver(mouseX, mouseY)) {
-            FloatingLong energy = getOutputEnergy(recipe);
+            FloatingLong energy = getOutputEnergy(recipe, recipeSlotsView);
             if (!energy.isZero()) {
                 //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
                 Component energyOutput = EnergyDisplay.of(energy).getTextComponent();
@@ -93,18 +83,12 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
         return Collections.emptyList();
     }
 
-    private FloatingLong getOutputEnergy(ItemStackToEnergyRecipe recipe) {
-        IGuiIngredientGroup<ItemStack> group = ingredients.get(recipe);
-        if (group != null) {
-            IGuiIngredient<ItemStack> guiIngredient = group.getGuiIngredients().get(0);
-            if (guiIngredient != null) {
-                ItemStack displayedIngredient = guiIngredient.getDisplayedIngredient();
-                if (displayedIngredient != null && !displayedIngredient.isEmpty()) {
-                    return recipe.getOutput(displayedIngredient);
-                }
-            }
+    private FloatingLong getOutputEnergy(ItemStackToEnergyRecipe recipe, IRecipeSlotsView recipeSlotsView) {
+        ItemStack displayedIngredient = getDisplayedStack(recipeSlotsView, INPUT, VanillaTypes.ITEM, ItemStack.EMPTY);
+        if (displayedIngredient.isEmpty()) {
+            //TODO: Re-evaluate this, but for now just fallback to output definition
+            return recipe.getOutputDefinition();
         }
-        //TODO: Re-evaluate this, but for now just fallback to output definition
-        return recipe.getOutputDefinition();
+        return recipe.getOutput(displayedIngredient);
     }
 }

@@ -1,7 +1,7 @@
 package mekanism.client.jei.machine;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.client.gui.element.GuiUpArrow;
@@ -11,11 +11,10 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
 
@@ -40,16 +39,9 @@ public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
     }
 
     @Override
-    public void setIngredients(CombinerRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Arrays.asList(recipe.getMainInput().getRepresentations(), recipe.getExtraInput().getRepresentations()));
-        ingredients.setOutputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getOutputDefinition()));
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, CombinerRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        initItem(itemStacks, 0, true, input, recipe.getMainInput().getRepresentations());
-        initItem(itemStacks, 1, false, output, recipe.getOutputDefinition());
-        initItem(itemStacks, 2, true, extra, recipe.getExtraInput().getRepresentations());
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, CombinerRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getMainInput().getRepresentations());
+        initItem(builder, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, 2, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput().getRepresentations());
     }
 }

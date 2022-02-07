@@ -1,7 +1,8 @@
 package mekanism.client.jei.machine;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.client.gui.element.GuiDownArrow;
@@ -17,11 +18,10 @@ import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidRecipe> {
 
@@ -52,15 +52,8 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
     }
 
     @Override
-    public void setIngredients(FluidToFluidRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getOutputDefinition()));
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, FluidToFluidRecipe recipe, IIngredients ingredients) {
-        IGuiFluidStackGroup fluidStacks = recipeLayout.getFluidStacks();
-        initFluid(fluidStacks, 0, true, input, recipe.getInput().getRepresentations());
-        initFluid(fluidStacks, 1, false, output, recipe.getOutputDefinition());
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FluidToFluidRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initFluid(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initFluid(builder, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

@@ -74,8 +74,15 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     }
 
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true)
     public String getModId(STACK ingredient) {
-        return ingredient.getTypeRegistryName().getNamespace();
+        return getResourceLocation(ingredient).getNamespace();
+    }
+
+    @Override
+    public ResourceLocation getResourceLocation(STACK ingredient) {
+        return ingredient.getTypeRegistryName();
     }
 
     @Override
@@ -84,13 +91,14 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
             return IIngredientHelper.super.getColors(ingredient);
         }
         CHEMICAL chemical = ingredient.getType();
-        //TODO: Does tint need alpha applied/factored in to getting the color, Either way this is waiting on https://github.com/mezz/JustEnoughItems/issues/1886
         return colorHelper.getColors(MekanismRenderer.getChemicalTexture(chemical), chemical.getTint(), 1);
     }
 
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true)
     public String getResourceId(STACK ingredient) {
-        return ingredient.getTypeRegistryName().getPath();
+        return getResourceLocation(ingredient).getPath();
     }
 
     @Override

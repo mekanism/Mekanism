@@ -1,8 +1,8 @@
 package mekanism.client.jei.machine;
 
-import java.util.Arrays;
 import java.util.Collections;
-import mekanism.api.chemical.gas.GasStack;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -16,11 +16,10 @@ import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisRecipe> {
 
@@ -47,16 +46,9 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
     }
 
     @Override
-    public void setIngredients(ElectrolysisRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutputs(MekanismJEI.TYPE_GAS, Arrays.asList(recipe.getLeftGasOutputRepresentation(), recipe.getRightGasOutputRepresentation()));
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, ElectrolysisRecipe recipe, IIngredients ingredients) {
-        initFluid(recipeLayout.getFluidStacks(), 0, true, input, recipe.getInput().getRepresentations());
-        IGuiIngredientGroup<GasStack> gasStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS);
-        initChemical(gasStacks, 0, false, leftOutput, Collections.singletonList(recipe.getLeftGasOutputRepresentation()));
-        initChemical(gasStacks, 1, false, rightOutput, Collections.singletonList(recipe.getRightGasOutputRepresentation()));
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ElectrolysisRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initFluid(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.OUTPUT, leftOutput, Collections.singletonList(recipe.getLeftGasOutputRepresentation()));
+        initChemical(builder, MekanismJEI.TYPE_GAS, 1, RecipeIngredientRole.OUTPUT, rightOutput, Collections.singletonList(recipe.getRightGasOutputRepresentation()));
     }
 }

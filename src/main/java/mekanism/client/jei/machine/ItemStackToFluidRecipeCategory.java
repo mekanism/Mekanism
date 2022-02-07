@@ -1,6 +1,7 @@
 package mekanism.client.jei.machine;
 
-import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -12,11 +13,11 @@ import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -43,14 +44,8 @@ public class ItemStackToFluidRecipeCategory extends BaseRecipeCategory<ItemStack
     }
 
     @Override
-    public void setIngredients(ItemStackToFluidRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getOutputDefinition()));
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, ItemStackToFluidRecipe recipe, IIngredients ingredients) {
-        initItem(recipeLayout.getItemStacks(), 0, true, input, recipe.getInput().getRepresentations());
-        initFluid(recipeLayout.getFluidStacks(), 0, false, output, recipe.getOutputDefinition());
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToFluidRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initFluid(builder, 0, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

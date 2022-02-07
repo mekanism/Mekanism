@@ -1,19 +1,16 @@
 package mekanism.client.jei;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.Nullable;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IItemProvider;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
-import mekanism.client.gui.element.bar.GuiBar;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.client.gui.element.gauge.GaugeOverlay;
 import mekanism.client.gui.element.gauge.GuiGauge;
@@ -26,23 +23,27 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.ITickTimer;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.ingredients.IIngredientType;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECIPE>, IGuiWrapper {
 
     private static final IProgressInfoHandler CONSTANT_PROGRESS = () -> 1;
     protected static final IBarInfoHandler FULL_BAR = () -> 1;
+    protected static final int IGNORED_INDEX = -1;
 
     protected static IDrawable createIcon(IGuiHelper helper, ResourceLocation iconRL) {
         return helper.drawableBuilder(iconRL, 0, 0, 18, 18).setTextureSize(18, 18).build();
@@ -52,7 +53,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         return helper.createDrawableIngredient(VanillaTypes.ITEM, provider.getItemStack());
     }
 
-    private final Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();
+    private final List<GuiTexturedElement> guiElements = new ArrayList<>();
     private final Component component;
     private final IGuiHelper guiHelper;
     private final IDrawable background;
@@ -131,7 +132,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     @Override
-    public void draw(RECIPE recipe, PoseStack matrix, double mouseX, double mouseY) {
+    public void draw(RECIPE recipe, IRecipeSlotsView recipeSlotsView, PoseStack matrix, double mouseX, double mouseY) {
         int x = (int) mouseX;
         int y = (int) mouseY;
         guiElements.forEach(e -> e.render(matrix, x, y, 0));
@@ -207,48 +208,53 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
               .build();
     }
 
-    protected void initItem(IGuiIngredientGroup<ItemStack> group, int slotIndex, boolean input, GuiSlot slot, List<ItemStack> stacks) {
-        initItem(group, slotIndex, input, slot.getRelativeX(), slot.getRelativeY(), stacks);
+    protected <STACK> STACK getDisplayedStack(IRecipeSlotsView recipeSlotsView, String slotName, IIngredientType<STACK> type, STACK empty) {
+        return recipeSlotsView.findSlotByName(slotName)
+              .flatMap(view -> view.getDisplayedIngredient(type))
+              .orElse(empty);
     }
 
-    protected void initItem(IGuiIngredientGroup<ItemStack> group, int slotIndex, boolean input, int relativeX, int relativeY, List<ItemStack> stacks) {
-        group.init(slotIndex, input, relativeX - xOffset, relativeY - yOffset);
-        group.set(slotIndex, stacks);
+    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, int slotIndex, RecipeIngredientRole role, GuiSlot slot, List<ItemStack> stacks) {
+        return initItem(builder, slotIndex, role, slot.getRelativeX(), slot.getRelativeY(), stacks);
     }
 
-    protected void initFluid(IGuiFluidStackGroup group, int tankIndex, boolean input, GuiGauge<?> gauge, List<FluidStack> stacks) {
-        //Gauges have a 1 pixel border
-        int x = gauge.getRelativeX() + 1 - xOffset;
-        int y = gauge.getRelativeY() + 1 - yOffset;
-        int width = gauge.getWidth() - 2;
-        int height = gauge.getHeight() - 2;
+    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, int slotIndex, RecipeIngredientRole role, int relativeX, int relativeY, List<ItemStack> stacks) {
+        IRecipeSlotBuilder slotBuilder = builder.addSlot(role, relativeX + 1 - xOffset, relativeY + 1 - yOffset)
+              .addIngredients(VanillaTypes.ITEM, stacks);
+        if (slotIndex != IGNORED_INDEX) {
+            slotBuilder.setContainerSlotIndex(slotIndex);
+        }
+        return slotBuilder;
+    }
+
+    protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, int tankIndex, RecipeIngredientRole role, GuiGauge<?> gauge, List<FluidStack> stacks) {
         int max = stacks.stream().mapToInt(FluidStack::getAmount).filter(stackSize -> stackSize >= 0).max().orElse(0);
-        group.init(tankIndex, input, x, y, width, height, max, false, getOverlay(gauge));
-        group.set(tankIndex, stacks);
+        return init(builder, VanillaTypes.FLUID, tankIndex, role, gauge, stacks)
+              .setFluidRenderer(max, false);
     }
 
-    protected <STACK extends ChemicalStack<?>> void initChemical(IGuiIngredientGroup<STACK> group, int tankIndex, boolean input, GuiBar<?> bar, List<STACK> stacks) {
-        initChemical(group, tankIndex, input, bar, stacks, ChemicalStackRenderer::new);
+    protected <STACK extends ChemicalStack<?>> IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, int tankIndex,
+          RecipeIngredientRole role, GuiElement element, List<STACK> stacks) {
+        long max = stacks.stream().mapToLong(ChemicalStack::getAmount).filter(stackSize -> stackSize >= 0).max().orElse(0);
+        return init(builder, type, tankIndex, role, element, stacks)
+              .setCustomRenderer(type, new ChemicalStackRenderer<>(max));
     }
 
-    protected <STACK extends ChemicalStack<?>> void initChemical(IGuiIngredientGroup<STACK> group, int tankIndex, boolean input, GuiGauge<?> gauge, List<STACK> stacks) {
-        initChemical(group, tankIndex, input, gauge, stacks, (max, width, height) -> new ChemicalStackRenderer<>(max, width, height, getOverlay(gauge)));
-    }
-
-    private <STACK extends ChemicalStack<?>> void initChemical(IGuiIngredientGroup<@NonNull STACK> group, int tankIndex, boolean input, GuiElement element,
-          List<STACK> stacks, ChemicalStackRendererCreator<STACK> rendererCreator) {
+    private <STACK> IRecipeSlotBuilder init(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, int tankIndex, RecipeIngredientRole role, GuiElement element,
+          List<STACK> stacks) {
         int x = element.getRelativeX() + 1 - xOffset;
         int y = element.getRelativeY() + 1 - yOffset;
         int width = element.getWidth() - 2;
         int height = element.getHeight() - 2;
-        long max = stacks.stream().mapToLong(ChemicalStack::getAmount).filter(stackSize -> stackSize >= 0).max().orElse(0);
-        group.init(tankIndex, input, rendererCreator.create(max, width, height), x, y, width, height, 0, 0);
-        group.set(tankIndex, stacks);
-    }
-
-    @FunctionalInterface
-    private interface ChemicalStackRendererCreator<STACK extends ChemicalStack<?>> {
-
-        ChemicalStackRenderer<STACK> create(long max, int width, int height);
+        IRecipeSlotBuilder slotBuilder = builder.addSlot(role, x, y)
+              .setSize(width, height)
+              .addIngredients(type, stacks);
+        if (element instanceof GuiGauge<?> gauge) {
+            slotBuilder.setOverlay(getOverlay(gauge));
+        }
+        if (tankIndex != IGNORED_INDEX) {
+            slotBuilder.setContainerSlotIndex(tankIndex);
+        }
+        return slotBuilder;
     }
 }

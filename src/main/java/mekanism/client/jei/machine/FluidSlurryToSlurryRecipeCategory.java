@@ -1,7 +1,7 @@
 package mekanism.client.jei.machine;
 
-import java.util.Collections;
-import mekanism.api.chemical.slurry.SlurryStack;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -14,11 +14,10 @@ import mekanism.client.jei.MekanismJEI;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredientGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class FluidSlurryToSlurryRecipeCategory extends BaseRecipeCategory<FluidSlurryToSlurryRecipe> {
 
@@ -42,17 +41,9 @@ public class FluidSlurryToSlurryRecipeCategory extends BaseRecipeCategory<FluidS
     }
 
     @Override
-    public void setIngredients(FluidSlurryToSlurryRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.FLUID, Collections.singletonList(recipe.getFluidInput().getRepresentations()));
-        ingredients.setInputLists(MekanismJEI.TYPE_SLURRY, Collections.singletonList(recipe.getChemicalInput().getRepresentations()));
-        ingredients.setOutputLists(MekanismJEI.TYPE_SLURRY, Collections.singletonList(recipe.getOutputDefinition()));
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, FluidSlurryToSlurryRecipe recipe, IIngredients ingredients) {
-        initFluid(recipeLayout.getFluidStacks(), 0, true, fluidInput, recipe.getFluidInput().getRepresentations());
-        IGuiIngredientGroup<SlurryStack> slurryStacks = recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_SLURRY);
-        initChemical(slurryStacks, 0, true, slurryInput, recipe.getChemicalInput().getRepresentations());
-        initChemical(slurryStacks, 1, false, output, recipe.getOutputDefinition());
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FluidSlurryToSlurryRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initFluid(builder, 0, RecipeIngredientRole.INPUT, fluidInput, recipe.getFluidInput().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_SLURRY, 0, RecipeIngredientRole.INPUT, slurryInput, recipe.getChemicalInput().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_SLURRY, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

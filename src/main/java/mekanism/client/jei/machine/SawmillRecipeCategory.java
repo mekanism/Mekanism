@@ -1,8 +1,8 @@
 package mekanism.client.jei.machine;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
+import javax.annotation.Nonnull;
 import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.client.SpecialColors;
@@ -14,11 +14,11 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.jei.BaseRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.util.text.TextUtils;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 
 public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
 
@@ -41,22 +41,15 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
     }
 
     @Override
-    public void setIngredients(SawmillRecipe recipe, IIngredients ingredients) {
-        ingredients.setInputLists(VanillaTypes.ITEM, Collections.singletonList(recipe.getInput().getRepresentations()));
-        ingredients.setOutputLists(VanillaTypes.ITEM, Arrays.asList(recipe.getMainOutputDefinition(), recipe.getSecondaryOutputDefinition()));
+    public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, SawmillRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
+        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initItem(builder, 1, RecipeIngredientRole.OUTPUT, output.getRelativeX() + 4, output.getRelativeY() + 4, recipe.getMainOutputDefinition());
+        initItem(builder, 2, RecipeIngredientRole.OUTPUT, output.getRelativeX() + 20, output.getRelativeY() + 4, recipe.getSecondaryOutputDefinition());
     }
 
     @Override
-    public void setRecipe(IRecipeLayout recipeLayout, SawmillRecipe recipe, IIngredients ingredients) {
-        IGuiItemStackGroup itemStacks = recipeLayout.getItemStacks();
-        initItem(itemStacks, 0, true, input, recipe.getInput().getRepresentations());
-        initItem(itemStacks, 1, false, output.getRelativeX() + 4, output.getRelativeY() + 4, recipe.getMainOutputDefinition());
-        initItem(itemStacks, 2, false, output.getRelativeX() + 20, output.getRelativeY() + 4, recipe.getSecondaryOutputDefinition());
-    }
-
-    @Override
-    public void draw(SawmillRecipe recipe, PoseStack matrix, double mouseX, double mouseY) {
-        super.draw(recipe, matrix, mouseX, mouseY);
+    public void draw(SawmillRecipe recipe, IRecipeSlotsView recipeSlotView, PoseStack matrix, double mouseX, double mouseY) {
+        super.draw(recipe, recipeSlotView, matrix, mouseX, mouseY);
         double secondaryChance = recipe.getSecondaryChance();
         if (secondaryChance > 0) {
             getFont().draw(matrix, TextUtils.getPercent(secondaryChance), 104, 41, SpecialColors.TEXT_TITLE.argb());

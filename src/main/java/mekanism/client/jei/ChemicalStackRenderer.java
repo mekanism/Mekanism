@@ -1,7 +1,7 @@
 package mekanism.client.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,12 +18,11 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.text.TextUtils;
-import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.fluids.FluidAttributes;
 
 public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements IIngredientRenderer<STACK> {
@@ -34,51 +33,39 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
 
     private final long capacityMb;
     private final TooltipMode tooltipMode;
-    private final int width;
-    private final int height;
-    @Nullable
-    private final IDrawable overlay;
 
     public ChemicalStackRenderer() {
-        this(FluidAttributes.BUCKET_VOLUME, TooltipMode.ITEM_LIST, TEX_WIDTH, TEX_HEIGHT, null);
+        this(FluidAttributes.BUCKET_VOLUME, TooltipMode.ITEM_LIST);
     }
 
-    public ChemicalStackRenderer(long capacityMb, int width, int height) {
-        this(capacityMb, TooltipMode.SHOW_AMOUNT, width, height, null);
+    public ChemicalStackRenderer(long capacityMb) {
+        this(capacityMb, TooltipMode.SHOW_AMOUNT);
     }
 
-    public ChemicalStackRenderer(long capacityMb, int width, int height, @Nullable IDrawable overlay) {
-        this(capacityMb, TooltipMode.SHOW_AMOUNT, width, height, overlay);
-    }
-
-    private ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height, @Nullable IDrawable overlay) {
+    private ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode) {
         this.capacityMb = capacityMb;
         this.tooltipMode = tooltipMode;
-        this.width = width;
-        this.height = height;
-        this.overlay = overlay;
     }
 
     @Override
+    @SuppressWarnings("removal")
+    @Deprecated(forRemoval = true)
     public void render(@Nonnull PoseStack matrix, int xPosition, int yPosition, @Nullable STACK stack) {
-        if (stack == null || stack.isEmpty()) {
-            return;
+        if (stack != null) {
+            render(matrix, xPosition, yPosition, TEX_WIDTH, TEX_HEIGHT, stack);
         }
-        RenderSystem.enableBlend();
-        //TODO - 1.18: Figure this out
-        ///RenderSystem.enableAlphaTest();
-        drawChemical(matrix, xPosition, yPosition, stack);
-        if (overlay != null) {
-            matrix.pushPose();
-            matrix.translate(0, 0, 200);
-            overlay.draw(matrix, xPosition, yPosition);
-            matrix.popPose();
-        }
-        //RenderSystem.disableAlphaTest();
-        RenderSystem.disableBlend();
     }
 
-    private void drawChemical(PoseStack matrix, int xPosition, int yPosition, @Nonnull STACK stack) {
+    @Override
+    public void render(@Nonnull PoseStack matrix, int xPosition, int yPosition, int width, int height, @Nonnull STACK stack) {
+        if (!stack.isEmpty()) {
+            RenderSystem.enableBlend();
+            drawChemical(matrix, xPosition, yPosition, width, height, stack);
+            RenderSystem.disableBlend();
+        }
+    }
+
+    private void drawChemical(PoseStack matrix, int xPosition, int yPosition, int width, int height, @Nonnull STACK stack) {
         int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
         if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
             desiredHeight = MIN_CHEMICAL_HEIGHT;
