@@ -1,9 +1,11 @@
 package mekanism.client.jei.machine;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
+import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -47,8 +49,14 @@ public class ElectrolysisRecipeCategory extends BaseRecipeCategory<ElectrolysisR
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ElectrolysisRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initFluid(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.OUTPUT, leftOutput, Collections.singletonList(recipe.getLeftGasOutputRepresentation()));
-        initChemical(builder, MekanismJEI.TYPE_GAS, 1, RecipeIngredientRole.OUTPUT, rightOutput, Collections.singletonList(recipe.getRightGasOutputRepresentation()));
+        initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        List<GasStack> leftDefinition = new ArrayList<>();
+        List<GasStack> rightDefinition = new ArrayList<>();
+        for (ElectrolysisRecipeOutput output : recipe.getOutputDefinition()) {
+            leftDefinition.add(output.left());
+            rightDefinition.add(output.right());
+        }
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, leftOutput, leftDefinition);
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, rightOutput, rightDefinition);
     }
 }

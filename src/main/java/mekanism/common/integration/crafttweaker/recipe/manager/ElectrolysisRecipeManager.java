@@ -5,6 +5,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTGasStack;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -46,7 +47,7 @@ public class ElectrolysisRecipeManager extends MekanismRecipeManager<Electrolysi
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return new CrTGasStack(recipe.getLeftGasOutputRepresentation()) + " and " + new CrTGasStack(recipe.getRightGasOutputRepresentation());
+                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), output -> new CrTGasStack(output.left()) + " and " + new CrTGasStack(output.right()));
             }
         };
     }

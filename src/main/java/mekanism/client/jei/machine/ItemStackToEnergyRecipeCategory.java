@@ -54,14 +54,14 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToEnergyRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations())
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations())
               .setSlotName(INPUT);
     }
 
     @Override
     public void draw(ItemStackToEnergyRecipe recipe, IRecipeSlotsView recipeSlotView, PoseStack matrix, double mouseX, double mouseY) {
         super.draw(recipe, recipeSlotView, matrix, mouseX, mouseY);
-        if (!recipe.getOutputDefinition().isZero()) {
+        if (!getOutputEnergy(recipe, recipeSlotView).isZero()) {
             //Manually draw the contents of the recipe
             gauge.renderContents(matrix);
         }
@@ -86,8 +86,8 @@ public class ItemStackToEnergyRecipeCategory extends BaseRecipeCategory<ItemStac
     private FloatingLong getOutputEnergy(ItemStackToEnergyRecipe recipe, IRecipeSlotsView recipeSlotsView) {
         ItemStack displayedIngredient = getDisplayedStack(recipeSlotsView, INPUT, VanillaTypes.ITEM, ItemStack.EMPTY);
         if (displayedIngredient.isEmpty()) {
-            //TODO: Re-evaluate this, but for now just fallback to output definition
-            return recipe.getOutputDefinition();
+            //Shouldn't happen but if it does just return no energy known so nothing will really show
+            return FloatingLong.ZERO;
         }
         return recipe.getOutput(displayedIngredient);
     }

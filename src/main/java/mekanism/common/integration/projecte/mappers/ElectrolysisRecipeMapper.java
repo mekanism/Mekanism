@@ -1,8 +1,8 @@
 package mekanism.common.integration.projecte.mappers;
 
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSGas;
@@ -16,7 +16,6 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 @RecipeTypeMapper
 public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
@@ -45,9 +44,9 @@ public class ElectrolysisRecipeMapper implements IRecipeTypeMapper {
         boolean handled = false;
         FluidStackIngredient input = recipe.getInput();
         for (FluidStack representation : input.getRepresentations()) {
-            Pair<@NonNull GasStack, @NonNull GasStack> output = recipe.getOutput(representation);
-            GasStack leftOutput = output.getLeft();
-            GasStack rightOutput = output.getRight();
+            ElectrolysisRecipeOutput output = recipe.getOutput(representation);
+            GasStack leftOutput = output.left();
+            GasStack rightOutput = output.right();
             if (!leftOutput.isEmpty() && !rightOutput.isEmpty()) {
                 NormalizedSimpleStack nssInput = NSSFluid.createFluid(representation);
                 NormalizedSimpleStack nssLeftOutput = NSSGas.createGas(leftOutput);

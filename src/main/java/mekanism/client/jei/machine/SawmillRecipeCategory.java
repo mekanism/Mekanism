@@ -42,9 +42,9 @@ public class SawmillRecipeCategory extends BaseRecipeCategory<SawmillRecipe> {
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, SawmillRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
-        initItem(builder, 1, RecipeIngredientRole.OUTPUT, output.getRelativeX() + 4, output.getRelativeY() + 4, recipe.getMainOutputDefinition());
-        initItem(builder, 2, RecipeIngredientRole.OUTPUT, output.getRelativeX() + 20, output.getRelativeY() + 4, recipe.getSecondaryOutputDefinition());
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initItem(builder, RecipeIngredientRole.OUTPUT, output.getRelativeX() + 4, output.getRelativeY() + 4, recipe.getMainOutputDefinition());
+        initItem(builder, RecipeIngredientRole.OUTPUT, output.getRelativeX() + 20, output.getRelativeY() + 4, recipe.getSecondaryOutputDefinition());
     }
 
     @Override

@@ -52,12 +52,12 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, RotaryRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
         if (condensentrating) {
             if (recipe.hasGasToFluid()) {
-                initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, gasGauge, recipe.getGasInput().getRepresentations());
-                initFluid(builder, 0, RecipeIngredientRole.OUTPUT, fluidGauge, recipe.getFluidOutputDefinition());
+                initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasGauge, recipe.getGasInput().getRepresentations());
+                initFluid(builder, RecipeIngredientRole.OUTPUT, fluidGauge, recipe.getFluidOutputDefinition());
             }
         } else if (recipe.hasFluidToGas()) {
-            initFluid(builder, 0, RecipeIngredientRole.INPUT, fluidGauge, recipe.getFluidInput().getRepresentations());
-            initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.OUTPUT, gasGauge, recipe.getGasOutputDefinition());
+            initFluid(builder, RecipeIngredientRole.INPUT, fluidGauge, recipe.getFluidInput().getRepresentations());
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, gasGauge, recipe.getGasOutputDefinition());
         }
     }
 }

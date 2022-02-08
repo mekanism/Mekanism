@@ -101,6 +101,7 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_PIGMENT_MIXING = "mods." + Mekanism.MODID + ".recipe.PigmentMixing";
     public static final String CLASS_RECIPE_COMBINING = "mods." + Mekanism.MODID + ".recipe.Combining";
     public static final String CLASS_RECIPE_SEPARATING = "mods." + Mekanism.MODID + ".recipe.Separating";
+    public static final String CLASS_RECIPE_SEPARATING_OUTPUT = CLASS_RECIPE_SEPARATING + ".Output";
     public static final String CLASS_RECIPE_FLUID_CHEMICAL_TO_CHEMICAL = "mods." + Mekanism.MODID + ".recipe.FluidChemicalToChemical";
     public static final String CLASS_RECIPE_FLUID_SLURRY_TO_SLURRY = CLASS_RECIPE_FLUID_CHEMICAL_TO_CHEMICAL + ".Slurry";
     public static final String CLASS_RECIPE_FLUID_TO_FLUID = "mods." + Mekanism.MODID + ".recipe.FluidToFluid";
@@ -119,6 +120,7 @@ public class CrTConstants {
     public static final String CLASS_RECIPE_ITEM_STACK_TO_INFUSE_TYPE = CLASS_RECIPE_ITEM_STACK_TO_CHEMICAL + ".ItemStackToInfuseType";
     public static final String CLASS_RECIPE_ITEM_STACK_TO_PIGMENT = CLASS_RECIPE_ITEM_STACK_TO_CHEMICAL + ".ItemStackToPigment";
     public static final String CLASS_RECIPE_REACTION = "mods." + Mekanism.MODID + ".recipe.Reaction";
+    public static final String CLASS_RECIPE_REACTION_OUTPUT = CLASS_RECIPE_REACTION + ".Output";
     public static final String CLASS_RECIPE_ROTARY = "mods." + Mekanism.MODID + ".recipe.Rotary";
     public static final String CLASS_RECIPE_ROTARY_GAS_TO_FLUID = CLASS_RECIPE_ROTARY + ".GasToFluid";
     public static final String CLASS_RECIPE_ROTARY_FLUID_TO_GAS = CLASS_RECIPE_ROTARY + ".FluidToGas";

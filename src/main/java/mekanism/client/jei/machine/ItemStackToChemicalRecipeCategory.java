@@ -51,8 +51,8 @@ public abstract class ItemStackToChemicalRecipeCategory<CHEMICAL extends Chemica
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, RECIPE recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
-        initChemical(builder, ingredientType, 0, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition())
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initChemical(builder, ingredientType, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition())
               .setSlotName(CHEMICAL_INPUT);
     }
 }

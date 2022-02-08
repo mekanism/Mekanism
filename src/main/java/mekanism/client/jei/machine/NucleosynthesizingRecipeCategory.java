@@ -79,14 +79,14 @@ public class NucleosynthesizingRecipeCategory extends BaseRecipeCategory<Nucleos
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, NucleosynthesizingRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
-        initItem(builder, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
-        List<ItemStack> gasItemProviders = new ArrayList<>();
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<@NonNull GasStack> gasInputs = recipe.getChemicalInput().getRepresentations();
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, gasInputs);
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        List<ItemStack> gasItemProviders = new ArrayList<>();
         for (GasStack gas : gasInputs) {
             gasItemProviders.addAll(MekanismJEI.GAS_STACK_HELPER.getStacksFor(gas.getType(), true));
         }
-        initItem(builder, IGNORED_INDEX, RecipeIngredientRole.CATALYST, extra, gasItemProviders);
-        initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, gasInput, gasInputs);
+        initItem(builder, RecipeIngredientRole.CATALYST, extra, gasItemProviders);
     }
 }

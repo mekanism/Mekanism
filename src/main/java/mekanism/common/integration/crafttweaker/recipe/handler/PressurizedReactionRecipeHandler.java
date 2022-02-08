@@ -3,24 +3,35 @@ package mekanism.common.integration.crafttweaker.recipe.handler;
 import com.blamejared.crafttweaker.api.recipe.handler.IRecipeHandler;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import org.apache.commons.lang3.tuple.Pair;
 
 @IRecipeHandler.For(PressurizedReactionRecipe.class)
 public class PressurizedReactionRecipeHandler extends MekanismRecipeHandler<PressurizedReactionRecipe> {
 
     @Override
     public String dumpToCommandString(IRecipeManager manager, PressurizedReactionRecipe recipe) {
-        Pair<List<@NonNull ItemStack>, @NonNull GasStack> output = recipe.getOutputDefinition();
+        ItemStack itemOutput;
+        GasStack gasOutput;
+        List<PressurizedReactionRecipeOutput> outputs = recipe.getOutputDefinition();
+        if (outputs.isEmpty()) {
+            //Validate it isn't empty, which shouldn't be possible
+            itemOutput = ItemStack.EMPTY;
+            gasOutput = GasStack.EMPTY;
+        } else {
+            //Outputs sometimes are as lists, try wrapping them into a single element
+            // eventually we may want to try listing them all somehow?
+            PressurizedReactionRecipeOutput output = outputs.get(0);
+            itemOutput = output.item();
+            gasOutput = output.gas();
+        }
         //Note: We can handle skipping optional params like this because only one output should be empty at a time
         // if there is only a single output, which means we can safely skip the other
         return buildCommandString(manager, recipe, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputGas(), recipe.getDuration(),
-              output.getLeft().isEmpty() ? SKIP_OPTIONAL_PARAM : output.getLeft(),
-              output.getRight().isEmpty() ? SKIP_OPTIONAL_PARAM : output.getRight(),
+              itemOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : itemOutput, gasOutput.isEmpty() ? SKIP_OPTIONAL_PARAM : gasOutput,
               recipe.getEnergyRequired().isZero() ? SKIP_OPTIONAL_PARAM : recipe.getEnergyRequired()
         );
     }

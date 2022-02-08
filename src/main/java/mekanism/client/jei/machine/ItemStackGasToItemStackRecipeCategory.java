@@ -47,8 +47,7 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackGasToItemStackRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
-        initItem(builder, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<ItemStack> gasItemProviders = new ArrayList<>();
         List<GasStack> scaledGases = new ArrayList<>();
         for (GasStack gas : recipe.getChemicalInput().getRepresentations()) {
@@ -56,7 +55,8 @@ public class ItemStackGasToItemStackRecipeCategory extends BaseRecipeCategory<It
             //While we are already looping the gases ensure we scale it to get the average amount that will get used over all
             scaledGases.add(new GasStack(gas, gas.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED));
         }
-        initItem(builder, IGNORED_INDEX, RecipeIngredientRole.CATALYST, extra, gasItemProviders);
-        initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, gasInput, scaledGases);
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, gasInput, scaledGases);
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, RecipeIngredientRole.CATALYST, extra, gasItemProviders);
     }
 }

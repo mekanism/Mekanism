@@ -2,10 +2,14 @@ package mekanism.common.integration.crafttweaker.recipe;
 
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
+import java.util.List;
+import java.util.Objects;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
+import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -33,5 +37,15 @@ public class CrTChemicalDissolutionRecipe {
         return _this.getGasInput();
     }
 
-    //TODO - 1.18: Outputs after we figure out how we are adjusting them
+    /**
+     * Output representations, this list may or may not be complete and likely only contains one element, but has the possibility of containing multiple.
+     */
+    @ZenCodeType.Method
+    @ZenCodeType.Getter("outputs")
+    public static List<ICrTChemicalStack<?, ?, ?>> getOutputs(ChemicalDissolutionRecipe _this) {
+        return _this.getOutputDefinition().stream()
+              .<ICrTChemicalStack<?, ?, ?>>map(CrTUtils::fromBoxedStack)
+              .filter(Objects::nonNull)
+              .toList();
+    }
 }

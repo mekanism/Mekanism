@@ -16,6 +16,7 @@ import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -102,7 +103,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public GasMode dumpRight = GasMode.IDLE;
     private FloatingLong clientEnergyUsed = FloatingLong.ZERO;
     private FloatingLong recipeEnergyMultiplier = FloatingLong.ONE;
-    private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
+    private final IOutputHandler<@NonNull ElectrolysisRecipeOutput> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
     private ElectrolyticSeparatorEnergyContainer energyContainer;

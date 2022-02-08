@@ -2,6 +2,7 @@ package mekanism.common.tile.machine;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NonNull;
@@ -11,9 +12,9 @@ import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.chemical.gas.attribute.GasAttributes;
-import mekanism.api.AutomationType;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.PressurizedReactionCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -51,7 +52,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityPressurizedReactionChamber extends TileEntityProgressMachine<PressurizedReactionRecipe> implements
       ItemFluidChemicalRecipeLookupHandler<Gas, GasStack, PressurizedReactionRecipe> {
@@ -69,7 +69,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     public IGasTank outputGasTank;
 
     private FloatingLong recipeEnergyRequired = FloatingLong.ZERO;
-    private final IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> outputHandler;
+    private final IOutputHandler<@NonNull PressurizedReactionRecipeOutput> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;

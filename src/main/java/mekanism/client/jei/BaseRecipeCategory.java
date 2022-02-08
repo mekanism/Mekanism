@@ -43,7 +43,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
 
     private static final IProgressInfoHandler CONSTANT_PROGRESS = () -> 1;
     protected static final IBarInfoHandler FULL_BAR = () -> 1;
-    protected static final int IGNORED_INDEX = -1;
 
     protected static IDrawable createIcon(IGuiHelper helper, ResourceLocation iconRL) {
         return helper.drawableBuilder(iconRL, 0, 0, 18, 18).setTextureSize(18, 18).build();
@@ -214,34 +213,29 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
               .orElse(empty);
     }
 
-    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, int slotIndex, RecipeIngredientRole role, GuiSlot slot, List<ItemStack> stacks) {
-        return initItem(builder, slotIndex, role, slot.getRelativeX(), slot.getRelativeY(), stacks);
+    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiSlot slot, List<ItemStack> stacks) {
+        return initItem(builder, role, slot.getRelativeX(), slot.getRelativeY(), stacks);
     }
 
-    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, int slotIndex, RecipeIngredientRole role, int relativeX, int relativeY, List<ItemStack> stacks) {
-        IRecipeSlotBuilder slotBuilder = builder.addSlot(role, relativeX + 1 - xOffset, relativeY + 1 - yOffset)
-              .addIngredients(VanillaTypes.ITEM, stacks);
-        if (slotIndex != IGNORED_INDEX) {
-            slotBuilder.setContainerSlotIndex(slotIndex);
-        }
-        return slotBuilder;
+    protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int relativeX, int relativeY, List<ItemStack> stacks) {
+        return builder.addSlot(role, relativeX + 1 - xOffset, relativeY + 1 - yOffset)
+              .addItemStacks(stacks);
     }
 
-    protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, int tankIndex, RecipeIngredientRole role, GuiGauge<?> gauge, List<FluidStack> stacks) {
+    protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiGauge<?> gauge, List<FluidStack> stacks) {
         int max = stacks.stream().mapToInt(FluidStack::getAmount).filter(stackSize -> stackSize >= 0).max().orElse(0);
-        return init(builder, VanillaTypes.FLUID, tankIndex, role, gauge, stacks)
+        return init(builder, VanillaTypes.FLUID, role, gauge, stacks)
               .setFluidRenderer(max, false);
     }
 
-    protected <STACK extends ChemicalStack<?>> IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, int tankIndex,
-          RecipeIngredientRole role, GuiElement element, List<STACK> stacks) {
+    protected <STACK extends ChemicalStack<?>> IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, RecipeIngredientRole role,
+          GuiElement element, List<STACK> stacks) {
         long max = stacks.stream().mapToLong(ChemicalStack::getAmount).filter(stackSize -> stackSize >= 0).max().orElse(0);
-        return init(builder, type, tankIndex, role, element, stacks)
+        return init(builder, type, role, element, stacks)
               .setCustomRenderer(type, new ChemicalStackRenderer<>(max));
     }
 
-    private <STACK> IRecipeSlotBuilder init(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, int tankIndex, RecipeIngredientRole role, GuiElement element,
-          List<STACK> stacks) {
+    private <STACK> IRecipeSlotBuilder init(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, RecipeIngredientRole role, GuiElement element, List<STACK> stacks) {
         int x = element.getRelativeX() + 1 - xOffset;
         int y = element.getRelativeY() + 1 - yOffset;
         int width = element.getWidth() - 2;
@@ -251,9 +245,6 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
               .addIngredients(type, stacks);
         if (element instanceof GuiGauge<?> gauge) {
             slotBuilder.setOverlay(getOverlay(gauge));
-        }
-        if (tankIndex != IGNORED_INDEX) {
-            slotBuilder.setContainerSlotIndex(tankIndex);
         }
         return slotBuilder;
     }

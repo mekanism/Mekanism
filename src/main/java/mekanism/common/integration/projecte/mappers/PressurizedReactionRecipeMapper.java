@@ -4,6 +4,7 @@ import java.util.List;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 @RecipeTypeMapper
 public class PressurizedReactionRecipeMapper implements IRecipeTypeMapper {
@@ -59,9 +59,9 @@ public class PressurizedReactionRecipeMapper implements IRecipeTypeMapper {
                 NormalizedSimpleStack nssFluid = NSSFluid.createFluid(fluidRepresentation);
                 for (GasStack gasRepresentation : gasRepresentations) {
                     NormalizedSimpleStack nssGas = NSSGas.createGas(gasRepresentation);
-                    Pair<@NonNull ItemStack, @NonNull GasStack> output = recipe.getOutput(itemRepresentation, fluidRepresentation, gasRepresentation);
-                    ItemStack itemOutput = output.getLeft();
-                    GasStack gasOutput = output.getRight();
+                    PressurizedReactionRecipeOutput output = recipe.getOutput(itemRepresentation, fluidRepresentation, gasRepresentation);
+                    ItemStack itemOutput = output.item();
+                    GasStack gasOutput = output.gas();
                     IngredientHelper ingredientHelper = new IngredientHelper(mapper);
                     ingredientHelper.put(nssItem, itemRepresentation.getCount());
                     ingredientHelper.put(nssFluid, fluidRepresentation.getAmount());

@@ -1,11 +1,11 @@
 package mekanism.client.jei.machine;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.client.gui.element.bar.GuiVerticalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiFluidGauge;
@@ -24,7 +24,6 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<PressurizedReactionRecipe> {
 
@@ -55,11 +54,20 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, PressurizedReactionRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations());
-        Pair<List<@NonNull ItemStack>, @NonNull GasStack> outputDefinition = recipe.getOutputDefinition();
-        initItem(builder, 1, RecipeIngredientRole.OUTPUT, outputItem, outputDefinition.getLeft());
-        initFluid(builder, 0, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, inputGas, recipe.getInputGas().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, 1, RecipeIngredientRole.OUTPUT, outputGas, Collections.singletonList(outputDefinition.getRight()));
+        initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations());
+        initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, inputGas, recipe.getInputGas().getRepresentations());
+        List<ItemStack> itemOutputs = new ArrayList<>();
+        List<GasStack> gasOutputs = new ArrayList<>();
+        for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
+            itemOutputs.add(output.item());
+            gasOutputs.add(output.gas());
+        }
+        if (!itemOutputs.stream().allMatch(ItemStack::isEmpty)) {
+            initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs);
+        }
+        if (!gasOutputs.stream().allMatch(GasStack::isEmpty)) {
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, outputGas, gasOutputs);
+        }
     }
 }

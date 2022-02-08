@@ -87,7 +87,7 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ChemicalCrystallizerRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         ChemicalStackIngredient<?, ?> input = recipe.getInput();
         if (input instanceof GasStackIngredient ingredient) {
             initChemical(builder, MekanismJEI.TYPE_GAS, ingredient);
@@ -109,14 +109,14 @@ public class ChemicalCrystallizerRecipeCategory extends BaseRecipeCategory<Chemi
             }
             if (tags.size() == 1) {
                 //TODO: Eventually come up with a better way to do this to allow for if there outputs based on the input and multiple input types
-                tags.stream().findFirst().ifPresent(tag -> initItem(builder, IGNORED_INDEX, RecipeIngredientRole.RENDER_ONLY, slurryOreSlot,
+                tags.stream().findFirst().ifPresent(tag -> initItem(builder, RecipeIngredientRole.RENDER_ONLY, slurryOreSlot,
                       tag.getValues().stream().map(ItemStack::new).toList()).setSlotName(DISPLAYED_ITEM));
             }
         }
     }
 
     private <STACK extends ChemicalStack<?>> void initChemical(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, ChemicalStackIngredient<?, STACK> ingredient) {
-        initChemical(builder, type, 0, RecipeIngredientRole.INPUT, gauge, ingredient.getRepresentations())
+        initChemical(builder, type, RecipeIngredientRole.INPUT, gauge, ingredient.getRepresentations())
               .setSlotName(CHEMICAL_INPUT);
     }
 

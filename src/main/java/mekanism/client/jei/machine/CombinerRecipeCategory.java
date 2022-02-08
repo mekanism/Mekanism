@@ -40,8 +40,8 @@ public class CombinerRecipeCategory extends BaseRecipeCategory<CombinerRecipe> {
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, CombinerRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getMainInput().getRepresentations());
-        initItem(builder, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
-        initItem(builder, 2, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput().getRepresentations());
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getMainInput().getRepresentations());
+        initItem(builder, RecipeIngredientRole.INPUT, extra, recipe.getExtraInput().getRepresentations());
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

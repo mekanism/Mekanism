@@ -136,7 +136,7 @@ public abstract class SawmillRecipe extends MekanismRecipe implements Predicate<
 
         protected final double rand;
 
-        public ChanceOutput(double rand) {
+        protected ChanceOutput(double rand) {
             this.rand = rand;
         }
 

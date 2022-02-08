@@ -39,7 +39,7 @@ public class GasToGasRecipeCategory extends BaseRecipeCategory<GasToGasRecipe> {
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, GasToGasRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

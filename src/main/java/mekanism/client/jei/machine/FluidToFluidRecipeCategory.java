@@ -53,7 +53,7 @@ public class FluidToFluidRecipeCategory extends BaseRecipeCategory<FluidToFluidR
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FluidToFluidRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initFluid(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
-        initFluid(builder, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initFluid(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

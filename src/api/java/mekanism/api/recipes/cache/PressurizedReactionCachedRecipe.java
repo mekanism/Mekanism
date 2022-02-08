@@ -6,11 +6,11 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
+import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Base class to help implement handling of reaction recipes.
@@ -19,7 +19,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @ParametersAreNonnullByDefault
 public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedReactionRecipe> {
 
-    private final IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> outputHandler;
+    private final IOutputHandler<@NonNull PressurizedReactionRecipeOutput> outputHandler;
     private final IInputHandler<@NonNull ItemStack> itemInputHandler;
     private final IInputHandler<@NonNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NonNull GasStack> gasInputHandler;
@@ -37,7 +37,7 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
      */
     public PressurizedReactionCachedRecipe(PressurizedReactionRecipe recipe, IInputHandler<@NonNull ItemStack> itemInputHandler,
           IInputHandler<@NonNull FluidStack> fluidInputHandler, IInputHandler<@NonNull GasStack> gasInputHandler,
-          IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> outputHandler) {
+          IOutputHandler<@NonNull PressurizedReactionRecipeOutput> outputHandler) {
         super(recipe);
         this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
         this.fluidInputHandler = Objects.requireNonNull(fluidInputHandler, "Fluid input handler cannot be null.");

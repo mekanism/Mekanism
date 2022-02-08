@@ -38,7 +38,7 @@ public class ItemStackToItemStackRecipeCategory extends BaseRecipeCategory<ItemS
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToItemStackRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
-        initItem(builder, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

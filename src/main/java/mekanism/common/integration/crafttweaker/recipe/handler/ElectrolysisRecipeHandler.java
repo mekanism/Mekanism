@@ -11,7 +11,7 @@ public class ElectrolysisRecipeHandler extends MekanismRecipeHandler<Electrolysi
 
     @Override
     public String dumpToCommandString(IRecipeManager manager, ElectrolysisRecipe recipe) {
-        return buildCommandString(manager, recipe, recipe.getInput(), recipe.getLeftGasOutputRepresentation(), recipe.getRightGasOutputRepresentation(),
+        return buildCommandString(manager, recipe, recipe.getInput(), recipe.getOutputDefinition(),
               recipe.getEnergyMultiplier().equals(FloatingLong.ONE) ? SKIP_OPTIONAL_PARAM : recipe.getEnergyMultiplier());
     }
 

@@ -47,14 +47,14 @@ public class MetallurgicInfuserRecipeCategory extends BaseRecipeCategory<Metallu
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, MetallurgicInfuserRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
-        initItem(builder, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
-        List<ItemStack> infuseItemProviders = new ArrayList<>();
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
         List<@NonNull InfusionStack> infusionStacks = recipe.getChemicalInput().getRepresentations();
+        initChemical(builder, MekanismJEI.TYPE_INFUSION, RecipeIngredientRole.INPUT, infusionBar, infusionStacks);
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        List<ItemStack> infuseItemProviders = new ArrayList<>();
         for (InfusionStack infusionStack : infusionStacks) {
             infuseItemProviders.addAll(MekanismJEI.INFUSION_STACK_HELPER.getStacksFor(infusionStack.getType(), true));
         }
-        initItem(builder, IGNORED_INDEX, RecipeIngredientRole.CATALYST, extra, infuseItemProviders);
-        initChemical(builder, MekanismJEI.TYPE_INFUSION, 0, RecipeIngredientRole.INPUT, infusionBar, infusionStacks);
+        initItem(builder, RecipeIngredientRole.CATALYST, extra, infuseItemProviders);
     }
 }

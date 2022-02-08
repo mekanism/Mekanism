@@ -3,8 +3,6 @@ package mekanism.common.integration.crafttweaker.recipe.manager;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.util.ItemStackUtil;
-import java.util.List;
-import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
@@ -18,7 +16,6 @@ import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack.ICrTG
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.PressurizedReactionIRecipe;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -99,20 +96,21 @@ public class PressurizedReactionRecipeManager extends MekanismRecipeManager<Pres
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                Pair<List<@NonNull ItemStack>, @NonNull GasStack> output = recipe.getOutputDefinition();
-                StringBuilder builder = new StringBuilder();
-                List<ItemStack> itemOutputs = output.getLeft();
-                if (!itemOutputs.isEmpty()) {
-                    builder.append("item: ").append(CrTUtils.describeOutputs(itemOutputs, ItemStackUtil::getCommandString));
-                }
-                GasStack gasOutput = output.getRight();
-                if (!gasOutput.isEmpty()) {
-                    if (!itemOutputs.isEmpty()) {
-                        builder.append("; ");
+                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), output -> {
+                    StringBuilder builder = new StringBuilder();
+                    ItemStack itemOutput = output.item();
+                    if (!itemOutput.isEmpty()) {
+                        builder.append(ItemStackUtil.getCommandString(itemOutput));
                     }
-                    builder.append("gas: ").append(new CrTGasStack(gasOutput));
-                }
-                return builder.toString();
+                    GasStack gasOutput = output.gas();
+                    if (!gasOutput.isEmpty()) {
+                        if (!itemOutput.isEmpty()) {
+                            builder.append(" and ");
+                        }
+                        builder.append(new CrTGasStack(gasOutput));
+                    }
+                    return builder.toString();
+                });
             }
         };
     }

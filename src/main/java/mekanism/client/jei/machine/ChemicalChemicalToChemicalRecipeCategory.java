@@ -57,11 +57,11 @@ public abstract class ChemicalChemicalToChemicalRecipeCategory<CHEMICAL extends 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, RECIPE recipe, @Nonnull List<? extends IFocus<?>> focuses) {
         builder.setShapeless();
-        initChemical(builder, ingredientType, 0, RecipeIngredientRole.INPUT, leftInputGauge, recipe.getLeftInput().getRepresentations())
+        initChemical(builder, ingredientType, RecipeIngredientRole.INPUT, leftInputGauge, recipe.getLeftInput().getRepresentations())
               .setSlotName(LEFT_INPUT);
-        initChemical(builder, ingredientType, 1, RecipeIngredientRole.INPUT, rightInputGauge, recipe.getRightInput().getRepresentations())
+        initChemical(builder, ingredientType, RecipeIngredientRole.INPUT, rightInputGauge, recipe.getRightInput().getRepresentations())
               .setSlotName(RIGHT_INPUT);
-        initChemical(builder, ingredientType, 2, RecipeIngredientRole.OUTPUT, outputGauge, recipe.getOutputDefinition())
+        initChemical(builder, ingredientType, RecipeIngredientRole.OUTPUT, outputGauge, recipe.getOutputDefinition())
               .setSlotName(OUTPUT);
     }
 }

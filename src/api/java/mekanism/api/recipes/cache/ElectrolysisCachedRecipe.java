@@ -4,12 +4,11 @@ import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
+import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Base class to help implement handling of separating recipes.
@@ -18,7 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 @ParametersAreNonnullByDefault
 public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
 
-    private final IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler;
+    private final IOutputHandler<@NonNull ElectrolysisRecipeOutput> outputHandler;
     private final IInputHandler<@NonNull FluidStack> inputHandler;
 
     private FluidStack recipeFluid = FluidStack.EMPTY;
@@ -29,7 +28,7 @@ public class ElectrolysisCachedRecipe extends CachedRecipe<ElectrolysisRecipe> {
      * @param outputHandler Output handler, handles both the left and right outputs.
      */
     public ElectrolysisCachedRecipe(ElectrolysisRecipe recipe, IInputHandler<@NonNull FluidStack> inputHandler,
-          IOutputHandler<@NonNull Pair<GasStack, GasStack>> outputHandler) {
+          IOutputHandler<@NonNull ElectrolysisRecipeOutput> outputHandler) {
         super(recipe);
         this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
         this.outputHandler = Objects.requireNonNull(outputHandler, "Output handler cannot be null.");

@@ -23,6 +23,7 @@ import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
+import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.InputIngredient;
@@ -142,6 +143,8 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             //Outputs sometimes are as lists, try wrapping them into a single element
             // eventually we may want to try listing them all somehow?
             return convertParam(list.get(0));
+        } else if (param instanceof ElectrolysisRecipeOutput output) {
+            return convertParam(output.left()) + ", " + convertParam(output.right());
         }
         //Shouldn't happen
         return "Unimplemented: " + param;

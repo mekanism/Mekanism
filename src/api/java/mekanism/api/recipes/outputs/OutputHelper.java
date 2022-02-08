@@ -4,19 +4,19 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.IGasTank;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
+import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
+import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 @ParametersAreNonnullByDefault
 public class OutputHelper {
@@ -31,7 +31,7 @@ public class OutputHelper {
      */
     public static <STACK extends ChemicalStack<?>> IOutputHandler<@NonNull STACK> getOutputHandler(IChemicalTank<?, STACK> tank) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
-        return new IOutputHandler<@NonNull STACK>() {
+        return new IOutputHandler<>() {
 
             @Override
             public void handleOutput(@Nonnull STACK toOutput, int operations) {
@@ -52,7 +52,7 @@ public class OutputHelper {
      */
     public static IOutputHandler<@NonNull FluidStack> getOutputHandler(IExtendedFluidTank tank) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
-        return new IOutputHandler<@NonNull FluidStack>() {
+        return new IOutputHandler<>() {
 
             @Override
             public void handleOutput(@Nonnull FluidStack toOutput, int operations) {
@@ -73,7 +73,7 @@ public class OutputHelper {
      */
     public static IOutputHandler<@NonNull ItemStack> getOutputHandler(IInventorySlot slot) {
         Objects.requireNonNull(slot, "Slot cannot be null.");
-        return new IOutputHandler<@NonNull ItemStack>() {
+        return new IOutputHandler<>() {
 
             @Override
             public void handleOutput(@Nonnull ItemStack toOutput, int operations) {
@@ -96,7 +96,7 @@ public class OutputHelper {
     public static IOutputHandler<@NonNull ChanceOutput> getOutputHandler(IInventorySlot mainSlot, IInventorySlot secondarySlot) {
         Objects.requireNonNull(mainSlot, "Main slot cannot be null.");
         Objects.requireNonNull(secondarySlot, "Secondary/Extra slot cannot be null.");
-        return new IOutputHandler<@NonNull ChanceOutput>() {
+        return new IOutputHandler<>() {
 
             @Override
             public void handleOutput(@Nonnull ChanceOutput toOutput, int operations) {
@@ -125,21 +125,21 @@ public class OutputHelper {
      * @param tank Tank to wrap.
      * @param slot Slot to wrap.
      */
-    public static IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>> getOutputHandler(IGasTank tank, IInventorySlot slot) {
+    public static IOutputHandler<@NonNull PressurizedReactionRecipeOutput> getOutputHandler(IGasTank tank, IInventorySlot slot) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(slot, "Slot cannot be null.");
-        return new IOutputHandler<@NonNull Pair<@NonNull ItemStack, @NonNull GasStack>>() {
+        return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(@Nonnull Pair<@NonNull ItemStack, @NonNull GasStack> toOutput, int operations) {
-                OutputHelper.handleOutput(slot, toOutput.getLeft(), operations);
-                OutputHelper.handleOutput(tank, toOutput.getRight(), operations);
+            public void handleOutput(@Nonnull PressurizedReactionRecipeOutput toOutput, int operations) {
+                OutputHelper.handleOutput(slot, toOutput.item(), operations);
+                OutputHelper.handleOutput(tank, toOutput.gas(), operations);
             }
 
             @Override
-            public int operationsRoomFor(@Nonnull Pair<@NonNull ItemStack, @NonNull GasStack> toOutput, int currentMax) {
-                currentMax = OutputHelper.operationsRoomFor(slot, toOutput.getLeft(), currentMax);
-                return OutputHelper.operationsRoomFor(tank, toOutput.getRight(), currentMax);
+            public int operationsRoomFor(@Nonnull PressurizedReactionRecipeOutput toOutput, int currentMax) {
+                currentMax = OutputHelper.operationsRoomFor(slot, toOutput.item(), currentMax);
+                return OutputHelper.operationsRoomFor(tank, toOutput.gas(), currentMax);
             }
         };
     }
@@ -150,21 +150,21 @@ public class OutputHelper {
      * @param leftTank  Left tank to wrap.
      * @param rightTank Right tank to wrap.
      */
-    public static IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>> getOutputHandler(IGasTank leftTank, IGasTank rightTank) {
+    public static IOutputHandler<@NonNull ElectrolysisRecipeOutput> getOutputHandler(IGasTank leftTank, IGasTank rightTank) {
         Objects.requireNonNull(leftTank, "Left tank cannot be null.");
         Objects.requireNonNull(rightTank, "Right tank cannot be null.");
-        return new IOutputHandler<@NonNull Pair<@NonNull GasStack, @NonNull GasStack>>() {
+        return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(@Nonnull Pair<@NonNull GasStack, @NonNull GasStack> toOutput, int operations) {
-                OutputHelper.handleOutput(leftTank, toOutput.getLeft(), operations);
-                OutputHelper.handleOutput(rightTank, toOutput.getRight(), operations);
+            public void handleOutput(@Nonnull ElectrolysisRecipeOutput toOutput, int operations) {
+                OutputHelper.handleOutput(leftTank, toOutput.left(), operations);
+                OutputHelper.handleOutput(rightTank, toOutput.right(), operations);
             }
 
             @Override
-            public int operationsRoomFor(@Nonnull Pair<@NonNull GasStack, @NonNull GasStack> toOutput, int currentMax) {
-                currentMax = OutputHelper.operationsRoomFor(leftTank, toOutput.getLeft(), currentMax);
-                return OutputHelper.operationsRoomFor(rightTank, toOutput.getRight(), currentMax);
+            public int operationsRoomFor(@Nonnull ElectrolysisRecipeOutput toOutput, int currentMax) {
+                currentMax = OutputHelper.operationsRoomFor(leftTank, toOutput.left(), currentMax);
+                return OutputHelper.operationsRoomFor(rightTank, toOutput.right(), currentMax);
             }
         };
     }

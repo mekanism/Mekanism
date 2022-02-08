@@ -95,13 +95,13 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, BoilerJEIRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initFluid(builder, 0, RecipeIngredientRole.INPUT, waterTank, recipe.water.getRepresentations());
+        initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water.getRepresentations());
         if (recipe.superHeatedCoolant == null) {
-            initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam));
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam));
         } else {
-            initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant.getRepresentations());
-            initChemical(builder, MekanismJEI.TYPE_GAS, 1, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam));
-            initChemical(builder, MekanismJEI.TYPE_GAS, 2, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant));
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant.getRepresentations());
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam));
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant));
         }
     }
 

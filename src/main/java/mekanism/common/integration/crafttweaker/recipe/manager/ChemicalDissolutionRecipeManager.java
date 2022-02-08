@@ -39,11 +39,13 @@ public class ChemicalDissolutionRecipeManager extends MekanismRecipeManager<Chem
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                ICrTChemicalStack<?, ?, ?> output = CrTUtils.fromBoxedStack(recipe.getOutputDefinition());
-                if (output == null) {
-                    return "unknown chemical output";
-                }
-                return output.toString();
+                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), stack -> {
+                    ICrTChemicalStack<?, ?, ?> output = CrTUtils.fromBoxedStack(stack);
+                    if (output == null) {
+                        return "unknown chemical output";
+                    }
+                    return output.toString();
+                });
             }
         };
     }

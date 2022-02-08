@@ -6,6 +6,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
+import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.EnergyConversionIRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -44,7 +45,7 @@ public abstract class ItemStackToEnergyRecipeManager extends MekanismRecipeManag
         return new ActionAddMekanismRecipe(recipe) {
             @Override
             protected String describeOutputs() {
-                return recipe.getOutputDefinition().toString();
+                return CrTUtils.describeOutputs(recipe.getOutputDefinition(), fl -> fl);
             }
         };
     }

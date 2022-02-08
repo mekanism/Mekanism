@@ -6,6 +6,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -174,6 +175,15 @@ public class MekanismJEI implements IModPlugin {
         return IIngredientSubtypeInterpreter.NONE;
     }
 
+    public static IIngredientType<? extends ChemicalStack<?>> getIngredientType(ChemicalType chemicalType) {
+        return switch (chemicalType) {
+            case GAS -> TYPE_GAS;
+            case INFUSION -> TYPE_INFUSION;
+            case PIGMENT -> TYPE_PIGMENT;
+            case SLURRY -> TYPE_SLURRY;
+        };
+    }
+
     @Nonnull
     @Override
     public ResourceLocation getPluginUid() {
@@ -317,10 +327,9 @@ public class MekanismJEI implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registry) {
-        //TODO - 1.18: Re-evaluate how some of the recipes return a list and some return a single element as output representations
-        // Strictly speaking all the output definitions should be based on which set of inputs there is
-        // which we could do by making output representations be invisible and then do actual output rendering based on current
-        // displayed inputs
+        //TODO: Eventually we may want to look into trying to make output definitions be invisibly added to categories, and then
+        // have the output get calculated in draw, except it would also need to override getTooltip related stuff which won't be
+        // super straightforward.
         CatalystRegistryHelper.register(registry, MekanismBlocks.ENRICHMENT_CHAMBER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.CRUSHER);
         CatalystRegistryHelper.register(registry, MekanismBlocks.COMBINER);

@@ -86,6 +86,18 @@ public class ChemicalUtil {
     /**
      * Gets the empty stack matching the type of the input stack type
      */
+    public static ChemicalStack<?> getEmptyStack(ChemicalType chemicalType) {
+        return switch (chemicalType) {
+            case GAS -> GasStack.EMPTY;
+            case INFUSION -> InfusionStack.EMPTY;
+            case PIGMENT -> PigmentStack.EMPTY;
+            case SLURRY -> SlurryStack.EMPTY;
+        };
+    }
+
+    /**
+     * Gets the empty stack matching the type of the input stack type
+     */
     public static <STACK extends ChemicalStack<?>> STACK getEmptyStack(STACK stack) {
         if (stack instanceof GasStack) {
             return (STACK) GasStack.EMPTY;

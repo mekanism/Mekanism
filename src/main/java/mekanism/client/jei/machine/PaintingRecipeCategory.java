@@ -59,10 +59,10 @@ public class PaintingRecipeCategory extends BaseRecipeCategory<PaintingRecipe> {
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, PaintingRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
-        initItem(builder, 1, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
-        initChemical(builder, MekanismJEI.TYPE_PIGMENT, 0, RecipeIngredientRole.INPUT, inputPigment, recipe.getChemicalInput().getRepresentations())
+        initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_PIGMENT, RecipeIngredientRole.INPUT, inputPigment, recipe.getChemicalInput().getRepresentations())
               .setSlotName(PIGMENT_INPUT);
+        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 
     private static class PigmentColorDetails extends JEIColorDetails<Pigment, PigmentStack> {

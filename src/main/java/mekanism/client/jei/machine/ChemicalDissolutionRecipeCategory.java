@@ -1,16 +1,16 @@
 package mekanism.client.jei.machine;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
-import mekanism.api.chemical.pigment.PigmentStack;
-import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.client.gui.element.bar.GuiHorizontalPowerBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -25,6 +25,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.machine.TileEntityChemicalDissolutionChamber;
+import mekanism.common.util.ChemicalUtil;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredientType;
@@ -58,27 +59,38 @@ public class ChemicalDissolutionRecipeCategory extends BaseRecipeCategory<Chemic
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ChemicalDissolutionRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
+        initItem(builder, RecipeIngredientRole.INPUT, inputSlot, recipe.getItemInput().getRepresentations());
         List<@NonNull GasStack> gasInputs = recipe.getGasInput().getRepresentations();
         List<GasStack> scaledGases = gasInputs.stream().map(gas -> new GasStack(gas, gas.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
               .toList();
-        initChemical(builder, MekanismJEI.TYPE_GAS, 0, RecipeIngredientRole.INPUT, inputGauge, scaledGases);
-        BoxedChemicalStack outputDefinition = recipe.getOutputDefinition();
-        ChemicalType chemicalType = outputDefinition.getChemicalType();
-        if (chemicalType == ChemicalType.GAS) {
-            initChemicalOutput(builder, MekanismJEI.TYPE_GAS, (GasStack) outputDefinition.getChemicalStack());
-        } else if (chemicalType == ChemicalType.INFUSION) {
-            initChemicalOutput(builder, MekanismJEI.TYPE_INFUSION, (InfusionStack) outputDefinition.getChemicalStack());
-        } else if (chemicalType == ChemicalType.PIGMENT) {
-            initChemicalOutput(builder, MekanismJEI.TYPE_PIGMENT, (PigmentStack) outputDefinition.getChemicalStack());
-        } else if (chemicalType == ChemicalType.SLURRY) {
-            initChemicalOutput(builder, MekanismJEI.TYPE_SLURRY, (SlurryStack) outputDefinition.getChemicalStack());
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, inputGauge, scaledGases);
+        List<BoxedChemicalStack> outputDefinition = recipe.getOutputDefinition();
+        if (outputDefinition.size() == 1) {
+            BoxedChemicalStack output = outputDefinition.get(0);
+            initChemicalOutput(builder, MekanismJEI.getIngredientType(output.getChemicalType()), Collections.singletonList(output.getChemicalStack()));
         } else {
-            throw new IllegalStateException("Unknown chemical type");
+            //This in theory handles them being multiple types as well, but is that even something we want to allow?
+            Map<ChemicalType, List<ChemicalStack<?>>> outputs = new EnumMap<>(ChemicalType.class);
+            for (BoxedChemicalStack output : outputDefinition) {
+                outputs.computeIfAbsent(output.getChemicalType(), type -> new ArrayList<>());
+            }
+            for (BoxedChemicalStack output : outputDefinition) {
+                ChemicalType chemicalType = output.getChemicalType();
+                for (Map.Entry<ChemicalType, List<ChemicalStack<?>>> entry : outputs.entrySet()) {
+                    if (entry.getKey() == chemicalType) {
+                        entry.getValue().add(output.getChemicalStack());
+                    } else {
+                        entry.getValue().add(ChemicalUtil.getEmptyStack(entry.getKey()));
+                    }
+                }
+            }
+            for (Map.Entry<ChemicalType, List<ChemicalStack<?>>> entry : outputs.entrySet()) {
+                initChemicalOutput(builder, MekanismJEI.getIngredientType(entry.getKey()), entry.getValue());
+            }
         }
     }
 
-    private <STACK extends ChemicalStack<?>> void initChemicalOutput(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, STACK stack) {
-        initChemical(builder, type, 1, RecipeIngredientRole.OUTPUT, outputGauge, Collections.singletonList(stack));
+    private <STACK extends ChemicalStack<?>> void initChemicalOutput(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, List<ChemicalStack<?>> stacks) {
+        initChemical(builder, type, RecipeIngredientRole.OUTPUT, outputGauge, (List<STACK>) stacks);
     }
 }

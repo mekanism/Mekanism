@@ -12,13 +12,11 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.OptionalInt;
 import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nonnull;
@@ -111,19 +109,28 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 return null;
             }
         }
-        record TrackedIngredients(IRecipeSlotView view, Set<HashedItem> representations) {
-        }
         //TODO: It may be nice to eventually implement some sort of caching for this, it isn't drastically needed because JEI is smart
         // and only calls it once per recipe to decide if it should display the button rather than say calling it every render tick in
         // case something changed and the render state should be different. We probably could add some sort of listeners to
         // inventory, QIO, and crafting window that if one changes it invalidates the cache of what ingredients are stored, though then
         // we wouldn't be able to directly modify the map as we find inputs, and also we still would have to do a lot of this comparison
         // logic, unless we can also somehow cache the recipe layout and how it interacts with the other information
+        List<IRecipeSlotView> slotViews = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
+        int maxInputCount = slotViews.size();
+        if (maxInputCount > 9) {
+            //I don't believe this ever will happen with a normal crafting recipe but just in case it does, error
+            // if we have more than nine inputs, as there should never be
+            // a case where this actually happens except potentially with some really obscure modded recipe
+            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipe.getId(), maxInputCount);
+            return handlerHelper.createInternalError();
+        }
         int inputCount = 0;
-        Collection<IRecipeSlotView> slotViews = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT, VanillaTypes.ITEM);
+        record TrackedIngredients(IRecipeSlotView view, Set<HashedItem> representations) {
+        }
         //We will have at most the same number of ingredients as we have input slot views
-        Byte2ObjectMap<TrackedIngredients> hashedIngredients = new Byte2ObjectArrayMap<>(slotViews.size());
-        for (IRecipeSlotView slotView : slotViews) {
+        Byte2ObjectMap<TrackedIngredients> hashedIngredients = new Byte2ObjectArrayMap<>(maxInputCount);
+        for (int index = 0; index < maxInputCount; index++) {
+            IRecipeSlotView slotView = slotViews.get(index);
             List<ItemStack> validIngredients = slotView.getIngredients(VanillaTypes.ITEM).toList();
             if (!validIngredients.isEmpty()) {
                 //If there are valid ingredients, increment the count
@@ -148,30 +155,8 @@ public class QIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContainer
                 for (ItemStack validIngredient : validIngredients) {
                     representations.add(HashedItem.raw(validIngredient));
                 }
-                OptionalInt containerSlotIndex = slotView.getContainerSlotIndex();
-                if (containerSlotIndex.isEmpty()) {
-                    //Slot index not set
-                    // Note: This should not happen, but validate it doesn't just to ensure if it does, we gracefully error
-                    Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, no slot index provided.", recipe.getId());
-                    return handlerHelper.createInternalError();
-                }
-                //Note: We decrement the index by one because JEI mimics vanilla and uses the first index for the output
-                int actualIndex = containerSlotIndex.getAsInt() - 1;
-                if (actualIndex > Byte.MAX_VALUE || actualIndex < Byte.MIN_VALUE) {
-                    //Note: This should not happen, but validate it doesn't just to ensure if it does, we gracefully error
-                    Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had unexpected index: {}", recipe.getId(), actualIndex);
-                    return handlerHelper.createInternalError();
-                }
-                hashedIngredients.put((byte) actualIndex, new TrackedIngredients(slotView, representations));
+                hashedIngredients.put((byte) index, new TrackedIngredients(slotView, representations));
             }
-        }
-        if (inputCount > 9) {
-            //I don't believe this ever will happen with a normal crafting recipe but just in case it does, error
-            // if we have more than nine inputs, we check it as an extra validation step, but we don't hold off on
-            // converting input ingredients to HashedItems, until we have validated this, as there should never be
-            // a case where this actually happens except potentially with some really obscure modded recipe
-            Mekanism.logger.warn("Error evaluating recipe transfer handler for recipe: {}, had more than 9 inputs: {}", recipe.getId(), inputCount);
-            return handlerHelper.createInternalError();
         }
         //Get all our available items in the QIO frequency, we flatten the cache to stack together items that
         // as far as the client is concerned are the same instead of keeping them UUID separated, and add all

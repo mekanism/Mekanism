@@ -45,7 +45,7 @@ public class ItemStackToFluidRecipeCategory extends BaseRecipeCategory<ItemStack
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, ItemStackToFluidRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        initItem(builder, 0, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
-        initFluid(builder, 0, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initFluid(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

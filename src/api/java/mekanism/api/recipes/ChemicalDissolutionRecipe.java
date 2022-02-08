@@ -1,9 +1,10 @@
 package mekanism.api.recipes;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
@@ -11,9 +12,10 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
 import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Contract;
 
 /**
@@ -92,9 +94,8 @@ public abstract class ChemicalDissolutionRecipe extends MekanismRecipe implement
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
      */
-    public BoxedChemicalStack getOutputDefinition() {
-        //TODO - 1.18: Re-evaluate this method not being a list
-        return output;
+    public List<BoxedChemicalStack> getOutputDefinition() {
+        return Collections.singletonList(output);
     }
 
     @Override

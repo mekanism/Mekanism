@@ -76,16 +76,15 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
 
     @Override
     public void setRecipe(@Nonnull IRecipeLayoutBuilder builder, FissionJEIRecipe recipe, @Nonnull List<? extends IFocus<?>> focuses) {
-        int chemicalTankIndex = 0;
         //Handle the coolant either special cased water or the proper coolant
         if (recipe.inputCoolant == null) {
-            initFluid(builder, 0, RecipeIngredientRole.INPUT, coolantTank, getWaterInput(recipe));
+            initFluid(builder, RecipeIngredientRole.INPUT, coolantTank, getWaterInput(recipe));
         } else {
-            initChemical(builder, MekanismJEI.TYPE_GAS, chemicalTankIndex++, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant.getRepresentations());
+            initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, coolantTank, recipe.inputCoolant.getRepresentations());
         }
-        initChemical(builder, MekanismJEI.TYPE_GAS, chemicalTankIndex++, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel.getRepresentations());
-        initChemical(builder, MekanismJEI.TYPE_GAS, chemicalTankIndex++, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant));
-        initChemical(builder, MekanismJEI.TYPE_GAS, chemicalTankIndex, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.waste));
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.INPUT, fuelTank, recipe.fuel.getRepresentations());
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, heatedCoolantTank, Collections.singletonList(recipe.outputCoolant));
+        initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, wasteTank, Collections.singletonList(recipe.waste));
     }
 
     public static List<FissionJEIRecipe> getFissionRecipes() {
