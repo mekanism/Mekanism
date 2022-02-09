@@ -27,24 +27,27 @@ import net.minecraftforge.fluids.FluidAttributes;
 
 public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements IIngredientRenderer<STACK> {
 
-    private static final int TEX_WIDTH = 16;
-    private static final int TEX_HEIGHT = 16;
+    private static final int TEXTURE_SIZE = 16;
     private static final int MIN_CHEMICAL_HEIGHT = 1; // ensure tiny amounts of chemical are still visible
 
     private final long capacityMb;
     private final TooltipMode tooltipMode;
+    private final int width;
+    private final int height;
 
     public ChemicalStackRenderer() {
-        this(FluidAttributes.BUCKET_VOLUME, TooltipMode.ITEM_LIST);
+        this(FluidAttributes.BUCKET_VOLUME, TooltipMode.ITEM_LIST, TEXTURE_SIZE, TEXTURE_SIZE);
     }
 
-    public ChemicalStackRenderer(long capacityMb) {
-        this(capacityMb, TooltipMode.SHOW_AMOUNT);
+    public ChemicalStackRenderer(long capacityMb, int width, int height) {
+        this(capacityMb, TooltipMode.SHOW_AMOUNT, width, height);
     }
 
-    private ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode) {
+    private ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height) {
         this.capacityMb = capacityMb;
         this.tooltipMode = tooltipMode;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -52,33 +55,32 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     @Deprecated(forRemoval = true)
     public void render(@Nonnull PoseStack matrix, int xPosition, int yPosition, @Nullable STACK stack) {
         if (stack != null) {
-            render(matrix, xPosition, yPosition, TEX_WIDTH, TEX_HEIGHT, stack);
+            matrix.pushPose();
+            matrix.translate(xPosition, yPosition, 0);
+            render(matrix, stack);
+            matrix.popPose();
         }
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrix, int xPosition, int yPosition, int width, int height, @Nonnull STACK stack) {
+    public void render(@Nonnull PoseStack matrix, @Nonnull STACK stack) {
         if (!stack.isEmpty()) {
             RenderSystem.enableBlend();
-            drawChemical(matrix, xPosition, yPosition, width, height, stack);
+            int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
+            if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
+                desiredHeight = MIN_CHEMICAL_HEIGHT;
+            }
+            if (desiredHeight > height) {
+                desiredHeight = height;
+            }
+            Chemical<?> chemical = stack.getType();
+            MekanismRenderer.color(chemical);
+            //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
+            GuiUtils.drawTiledSprite(matrix, 0, 0, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
+                  TEXTURE_SIZE, TEXTURE_SIZE, 100, TilingDirection.UP_RIGHT, false);
+            MekanismRenderer.resetColor();
             RenderSystem.disableBlend();
         }
-    }
-
-    private void drawChemical(PoseStack matrix, int xPosition, int yPosition, int width, int height, @Nonnull STACK stack) {
-        int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
-        if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
-            desiredHeight = MIN_CHEMICAL_HEIGHT;
-        }
-        if (desiredHeight > height) {
-            desiredHeight = height;
-        }
-        Chemical<?> chemical = stack.getType();
-        MekanismRenderer.color(chemical);
-        //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
-        GuiUtils.drawTiledSprite(matrix, xPosition, yPosition, height, width, desiredHeight, MekanismRenderer.getSprite(chemical.getIcon()),
-              TEX_WIDTH, TEX_HEIGHT, 100, TilingDirection.UP_RIGHT, false);
-        MekanismRenderer.resetColor();
     }
 
     @Override
@@ -101,6 +103,16 @@ public class ChemicalStackRenderer<STACK extends ChemicalStack<?>> implements II
     @Override
     public Font getFontRenderer(Minecraft minecraft, @Nonnull STACK stack) {
         return minecraft.font;
+    }
+
+    @Override
+    public int getWidth() {
+        return width;
+    }
+
+    @Override
+    public int getHeight() {
+        return height;
     }
 
     enum TooltipMode {

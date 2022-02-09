@@ -223,28 +223,29 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
     }
 
     protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiGauge<?> gauge, List<FluidStack> stacks) {
+        int width = gauge.getWidth() - 2;
+        int height = gauge.getHeight() - 2;
         int max = stacks.stream().mapToInt(FluidStack::getAmount).filter(stackSize -> stackSize >= 0).max().orElse(0);
         return init(builder, VanillaTypes.FLUID, role, gauge, stacks)
-              .setFluidRenderer(max, false);
+              .setFluidRenderer(max, false, width, height);
     }
 
     protected <STACK extends ChemicalStack<?>> IRecipeSlotBuilder initChemical(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, RecipeIngredientRole role,
           GuiElement element, List<STACK> stacks) {
+        int width = element.getWidth() - 2;
+        int height = element.getHeight() - 2;
         long max = stacks.stream().mapToLong(ChemicalStack::getAmount).filter(stackSize -> stackSize >= 0).max().orElse(0);
         return init(builder, type, role, element, stacks)
-              .setCustomRenderer(type, new ChemicalStackRenderer<>(max));
+              .setCustomRenderer(type, new ChemicalStackRenderer<>(max, width, height));
     }
 
     private <STACK> IRecipeSlotBuilder init(IRecipeLayoutBuilder builder, IIngredientType<STACK> type, RecipeIngredientRole role, GuiElement element, List<STACK> stacks) {
         int x = element.getRelativeX() + 1 - xOffset;
         int y = element.getRelativeY() + 1 - yOffset;
-        int width = element.getWidth() - 2;
-        int height = element.getHeight() - 2;
         IRecipeSlotBuilder slotBuilder = builder.addSlot(role, x, y)
-              .setSize(width, height)
               .addIngredients(type, stacks);
         if (element instanceof GuiGauge<?> gauge) {
-            slotBuilder.setOverlay(getOverlay(gauge));
+            slotBuilder.setOverlay(getOverlay(gauge), 0, 0);
         }
         return slotBuilder;
     }

@@ -7,10 +7,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalTags;
 import mekanism.api.chemical.IEmptyStackProvider;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
@@ -35,8 +38,9 @@ import mezz.jei.api.ingredients.IIngredientHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
 public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IIngredientHelper<STACK>,
@@ -111,6 +115,30 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         return ingredient.getType().getTags();
     }
 
+    protected abstract ChemicalTags<CHEMICAL> getTagCollection();
+
+    @Override
+    public Optional<ResourceLocation> getTagEquivalent(Collection<STACK> stacks) {
+        if (stacks.size() < 2) {
+            return Optional.empty();
+        }
+        List<CHEMICAL> values = stacks.stream()
+              .map(ChemicalStack::getType)
+              .toList();
+        return getTagCollection()
+              .getCollection()
+              .getAllTags()
+              .entrySet()
+              .stream()
+              .filter(e -> {
+                  Tag<CHEMICAL> valueTags = e.getValue();
+                  List<CHEMICAL> tagValues = valueTags.getValues();
+                  return tagValues.equals(values);
+              })
+              .map(Map.Entry::getKey)
+              .findFirst();
+    }
+
     @Override
     public String getErrorInfo(@Nullable STACK ingredient) {
         if (ingredient == null) {
@@ -163,6 +191,11 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         }
 
         @Override
+        protected ChemicalTags<Gas> getTagCollection() {
+            return ChemicalTags.GAS;
+        }
+
+        @Override
         protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<Gas, GasStack>, ?> getConversionRecipeType() {
             return MekanismRecipeType.GAS_CONVERSION;
         }
@@ -181,6 +214,11 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
         }
 
         @Override
+        protected ChemicalTags<InfuseType> getTagCollection() {
+            return ChemicalTags.INFUSE_TYPE;
+        }
+
+        @Override
         protected MekanismRecipeType<? extends ItemStackToChemicalRecipe<InfuseType, InfusionStack>, ?> getConversionRecipeType() {
             return MekanismRecipeType.INFUSION_CONVERSION;
         }
@@ -194,6 +232,11 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     public static class PigmentStackHelper extends ChemicalStackHelper<Pigment, PigmentStack> implements IEmptyPigmentProvider {
 
         @Override
+        protected ChemicalTags<Pigment> getTagCollection() {
+            return ChemicalTags.PIGMENT;
+        }
+
+        @Override
         protected String getType() {
             return "Pigment";
         }
@@ -205,6 +248,11 @@ public abstract class ChemicalStackHelper<CHEMICAL extends Chemical<CHEMICAL>, S
     }
 
     public static class SlurryStackHelper extends ChemicalStackHelper<Slurry, SlurryStack> implements IEmptySlurryProvider {
+
+        @Override
+        protected ChemicalTags<Slurry> getTagCollection() {
+            return ChemicalTags.SLURRY;
+        }
 
         @Override
         protected String getType() {
