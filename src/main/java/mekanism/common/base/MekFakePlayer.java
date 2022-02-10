@@ -7,9 +7,11 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayer;
 
 /**
@@ -34,7 +36,7 @@ public class MekFakePlayer extends FakePlayer {
      */
     private UUID emulatingUUID = null;
 
-    public MekFakePlayer(ServerLevel world) {
+    private MekFakePlayer(ServerLevel world) {
         super(world, new FakeGameProfile());
         ((FakeGameProfile) this.getGameProfile()).myFakePlayer = this;
     }
@@ -52,6 +54,18 @@ public class MekFakePlayer extends FakePlayer {
     @Override
     public UUID getUUID() {
         return this.emulatingUUID != null ? this.emulatingUUID : super.getUUID();
+    }
+
+    @Override
+    public Vec3 position() {
+        //Provide the actual position that forge's fake player hides in this method
+        return new Vec3(getX(), getY(), getZ());
+    }
+
+    @Override
+    public BlockPos blockPosition() {
+        //Provide the actual block position that forge's fake player hides in this method
+        return new BlockPos(getBlockX(), getBlockY(), getBlockZ());
     }
 
     /**
