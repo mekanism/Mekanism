@@ -30,7 +30,7 @@ public class TierConfig extends BaseMekanismConfig {
     private static final String TRANSMITTER_CATEGORY = "transmitters";
     private static final String ENERGY_CATEGORY = "energy";
     private static final String FLUID_CATEGORY = "fluid";
-    private static final String GAS_CATEGORY = "gas";
+    private static final String CHEMICAL_CATEGORY = "chemical";
     private static final String ITEMS_CATEGORY = "items";
     private static final String HEAT_CATEGORY = "heat";
 
@@ -154,7 +154,7 @@ public class TierConfig extends BaseMekanismConfig {
     }
 
     private void addPressurizedTubesCategory(ForgeConfigSpec.Builder builder) {
-        builder.comment("Pressurized Tubes").push(GAS_CATEGORY);
+        builder.comment("Pressurized Tubes").push(CHEMICAL_CATEGORY);
         for (TubeTier tier : EnumUtils.TUBE_TIERS) {
             String tierName = tier.getBaseTier().getSimpleName();
             CachedLongValue capacityReference = CachedLongValue.wrap(this, builder.comment("Capacity of " + tierName + " pressurized tubes in mB.")
