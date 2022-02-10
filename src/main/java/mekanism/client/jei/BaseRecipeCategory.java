@@ -1,11 +1,10 @@
 package mekanism.client.jei;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.Nullable;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.ChemicalStack;
@@ -51,7 +50,7 @@ public abstract class BaseRecipeCategory<RECIPE> implements IRecipeCategory<RECI
         return helper.createDrawableIngredient(provider.getItemStack());
     }
 
-    private final Set<GuiTexturedElement> guiElements = new ObjectOpenHashSet<>();
+    private final List<GuiTexturedElement> guiElements = new ArrayList<>();
     private final ITextComponent component;
     private final IGuiHelper guiHelper;
     private final IDrawable background;

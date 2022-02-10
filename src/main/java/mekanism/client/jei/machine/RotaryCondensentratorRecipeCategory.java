@@ -67,11 +67,11 @@ public class RotaryCondensentratorRecipeCategory extends BaseRecipeCategory<Rota
                 //Setup gas
                 initChemical(recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS), 0, true, gasGauge, recipe.getGasInput().getRepresentations());
                 //Setup fluid
-                initFluid(recipeLayout.getFluidStacks(), 0, true, fluidGauge, recipe.getFluidOutputDefinition());
+                initFluid(recipeLayout.getFluidStacks(), 0, false, fluidGauge, recipe.getFluidOutputDefinition());
             }
         } else if (recipe.hasFluidToGas()) {
             //Setup fluid
-            initFluid(recipeLayout.getFluidStacks(), 0, false, fluidGauge, recipe.getFluidInput().getRepresentations());
+            initFluid(recipeLayout.getFluidStacks(), 0, true, fluidGauge, recipe.getFluidInput().getRepresentations());
             //Setup gas
             initChemical(recipeLayout.getIngredientsGroup(MekanismJEI.TYPE_GAS), 0, false, gasGauge, recipe.getGasOutputDefinition());
         }
