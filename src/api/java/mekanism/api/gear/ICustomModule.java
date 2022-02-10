@@ -209,9 +209,9 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
          * @param absorptionRatio Ratio of damage this module can absorb up to, returns a value between zero and one.
          * @param energyCost      Energy cost per point of damage reduced.
          */
-        public ModuleDamageAbsorbInfo(FloatSupplier absorptionRatio, FloatingLongSupplier energyCost) {
-            this.absorptionRatio = Objects.requireNonNull(absorptionRatio, "Absorption ratio supplier cannot be null");
-            this.energyCost = Objects.requireNonNull(energyCost, "Energy cost supplier cannot be null");
+        public ModuleDamageAbsorbInfo {
+            Objects.requireNonNull(absorptionRatio, "Absorption ratio supplier cannot be null");
+            Objects.requireNonNull(energyCost, "Energy cost supplier cannot be null");
         }
     }
 

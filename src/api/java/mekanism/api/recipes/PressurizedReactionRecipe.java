@@ -167,6 +167,8 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe implement
     public record PressurizedReactionRecipeOutput(@Nonnull ItemStack item, @Nonnull GasStack gas) {
 
         public PressurizedReactionRecipeOutput {
+            Objects.requireNonNull(item, "Item output cannot be null.");
+            Objects.requireNonNull(gas, "Gas output cannot be null.");
             if (item.isEmpty() && gas.isEmpty()) {
                 throw new IllegalArgumentException("At least one output must be present.");
             }

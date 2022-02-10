@@ -116,6 +116,8 @@ public abstract class ElectrolysisRecipe extends MekanismRecipe implements Predi
     public record ElectrolysisRecipeOutput(@Nonnull GasStack left, @Nonnull GasStack right) {
 
         public ElectrolysisRecipeOutput {
+            Objects.requireNonNull(left, "Left output cannot be null.");
+            Objects.requireNonNull(right, "Right output cannot be null.");
             if (left.isEmpty()) {
                 throw new IllegalArgumentException("Left output cannot be empty.");
             } else if (right.isEmpty()) {
