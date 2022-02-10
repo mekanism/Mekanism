@@ -9,10 +9,9 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
-import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.inputs.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Base class to help implement handling of chemical chemical to chemical recipes.
@@ -48,7 +47,7 @@ public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CH
     }
 
     @Nullable
-    protected Pair<INGREDIENT, INGREDIENT> getIngredients() {
+    protected Ingredients<CHEMICAL, STACK, INGREDIENT> getIngredients() {
         STACK leftInputChemical = leftInputHandler.getInput();
         if (leftInputChemical.isEmpty()) {
             return null;
@@ -63,9 +62,9 @@ public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CH
             //If one of our inputs is invalid for the side it is on, switch them so that we can check
             // if they are just reversed which side they are on and there is a valid recipe for them
             // if they are on the other side
-            return Pair.of(rightInput, leftInput);
+            return new Ingredients<>(rightInput, leftInput);
         }
-        return Pair.of(leftInput, rightInput);
+        return new Ingredients<>(leftInput, rightInput);
     }
 
     @Override
@@ -75,17 +74,17 @@ public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CH
             //If our parent checks show we can't operate then return so
             return currentMax;
         }
-        Pair<INGREDIENT, INGREDIENT> ingredients = getIngredients();
+        Ingredients<CHEMICAL, STACK, INGREDIENT> ingredients = getIngredients();
         if (ingredients == null) {
             //If either inputs are empty then we are unable to operate
             return -1;
         }
-        leftRecipeInput = leftInputHandler.getRecipeInput(ingredients.getLeft());
+        leftRecipeInput = leftInputHandler.getRecipeInput(ingredients.left());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(leftRecipeInput)
         if (leftRecipeInput.isEmpty()) {
             return -1;
         }
-        rightRecipeInput = rightInputHandler.getRecipeInput(ingredients.getRight());
+        rightRecipeInput = rightInputHandler.getRecipeInput(ingredients.right());
         //Test to make sure we can even perform a single operation. This is akin to !recipe.test(rightRecipeInput)
         if (rightRecipeInput.isEmpty()) {
             return -1;
@@ -116,5 +115,9 @@ public class ChemicalChemicalToChemicalCachedRecipe<CHEMICAL extends Chemical<CH
         leftInputHandler.use(leftRecipeInput, operations);
         rightInputHandler.use(rightRecipeInput, operations);
         outputHandler.handleOutput(recipe.getOutput(leftRecipeInput, rightRecipeInput), operations);
+    }
+
+    protected record Ingredients<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>,
+          INGREDIENT extends ChemicalStackIngredient<CHEMICAL, STACK>>(INGREDIENT left, INGREDIENT right) {
     }
 }

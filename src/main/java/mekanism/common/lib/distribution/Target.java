@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 /**
  * Keeps track of a target for emitting from various networks.
@@ -23,7 +22,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
     /**
      * Collection of handler type pairs that want more than we can/are willing to provide. Value is the amount they want.
      */
-    protected final Collection<ImmutablePair<HANDLER, TYPE>> needed;
+    protected final Collection<HandlerType<HANDLER, TYPE>> needed;
 
     private int handlerCount = 0;
 
@@ -62,8 +61,8 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      */
     public void sendRemainingSplit(SplitInfo<TYPE> splitInfo) {
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
-        for (ImmutablePair<HANDLER, TYPE> recipient : needed) {
-            acceptAmount(recipient.getLeft(), splitInfo, splitInfo.getRemainderAmount());
+        for (HandlerType<HANDLER, TYPE> recipient : needed) {
+            acceptAmount(recipient.handler(), splitInfo, splitInfo.getRemainderAmount());
         }
     }
 
@@ -104,7 +103,7 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
                 // in split info
                 acceptAmount(entry, splitInfo, amountNeeded);
             } else {
-                needed.add(ImmutablePair.of(entry, amountNeeded));
+                needed.add(new HandlerType<>(entry, amountNeeded));
             }
         }
     }
@@ -115,15 +114,15 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
      * @param splitInfo The new split to (re)check.
      */
     public void shiftNeeded(SplitInfo<TYPE> splitInfo) {
-        Iterator<ImmutablePair<HANDLER, TYPE>> iterator = needed.iterator();
+        Iterator<HandlerType<HANDLER, TYPE>> iterator = needed.iterator();
         //Use an iterator rather than a copy of the keySet of the needed subMap
         // This allows for us to remove it once we find it without  having to
         // start looping again or make a large number of copies of the set
         while (iterator.hasNext()) {
-            ImmutablePair<HANDLER, TYPE> needInfo = iterator.next();
-            TYPE amountNeeded = needInfo.getRight();
+            HandlerType<HANDLER, TYPE> needInfo = iterator.next();
+            TYPE amountNeeded = needInfo.amount();
             if (amountNeeded.compareTo(splitInfo.getShareAmount()) <= 0) {
-                acceptAmount(needInfo.getLeft(), splitInfo, amountNeeded);
+                acceptAmount(needInfo.handler(), splitInfo, amountNeeded);
                 //Remove it as it has now been sent
                 iterator.remove();
                 //Continue checking things in case we happen to be
@@ -131,5 +130,8 @@ public abstract class Target<HANDLER, TYPE extends Number & Comparable<TYPE>, EX
                 // the same values many times
             }
         }
+    }
+
+    protected record HandlerType<HANDLER, TYPE extends Number & Comparable<TYPE>>(HANDLER handler, TYPE amount) {
     }
 }

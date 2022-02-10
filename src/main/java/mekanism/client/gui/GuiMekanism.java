@@ -47,7 +47,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.RenderProperties;
-import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper, IFancyFontRenderer {
 
@@ -185,11 +184,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // transfer the state from the previous instance to the new instance. If we run the
         // code we normally would run for when things get resized, we then are able to
         // properly reinstate/transfer the states of the various elements
-        List<Pair<Integer, GuiElement>> prevElements = new ArrayList<>();
+        record PreviousElement(int index, GuiElement element) {
+        }
+        List<PreviousElement> prevElements = new ArrayList<>();
         for (int i = 0; i < children().size(); i++) {
             GuiEventListener widget = children().get(i);
             if (widget instanceof GuiElement element && element.hasPersistentData()) {
-                prevElements.add(Pair.of(i, element));
+                prevElements.add(new PreviousElement(i, element));
             }
         }
         // flush the focus listeners list unless it's an overlay
@@ -200,14 +201,14 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         windows.forEach(window -> window.resize(prevLeft, prevTop, leftPos, topPos));
 
         prevElements.forEach(e -> {
-            if (e.getLeft() < children().size()) {
-                GuiEventListener widget = children().get(e.getLeft());
+            if (e.index() < children().size()) {
+                GuiEventListener widget = children().get(e.index());
                 // we're forced to assume that the children list is the same before and after the resize.
                 // for verification, we run a lightweight class equality check
                 // Note: We do not perform an instance check on widget to ensure it is a GuiElement, as that is
                 // ensured by the class comparison, and the restrictions of what can go in prevElements
-                if (widget.getClass() == e.getRight().getClass()) {
-                    ((GuiElement) widget).syncFrom(e.getRight());
+                if (widget.getClass() == e.element().getClass()) {
+                    ((GuiElement) widget).syncFrom(e.element());
                 }
             }
         });
@@ -505,7 +506,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         modelViewStack.pushPose();
 
         // shift back a whole lot so we can stack more windows
-        modelViewStack.translate(0, 0,-500);
+        modelViewStack.translate(0, 0, -500);
         RenderSystem.applyModelViewMatrix();
         matrix.pushPose();
         renderBackground(matrix);

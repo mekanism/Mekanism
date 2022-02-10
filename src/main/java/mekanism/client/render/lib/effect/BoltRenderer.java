@@ -2,6 +2,7 @@ package mekanism.client.render.lib.effect;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Iterator;
@@ -12,10 +13,9 @@ import java.util.Set;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltQuads;
+import mekanism.common.lib.effect.BoltEffect.FadeFunction.RenderBounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import com.mojang.math.Matrix4f;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class BoltRenderer {
 
@@ -109,8 +109,8 @@ public class BoltRenderer {
 
         public void render(Matrix4f matrix, VertexConsumer buffer, Timestamp timestamp) {
             float lifeScale = timestamp.subtract(createdTimestamp).value() / bolt.getLifespan();
-            Pair<Integer, Integer> bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
-            for (int i = bounds.getLeft(); i < bounds.getRight(); i++) {
+            RenderBounds bounds = bolt.getFadeFunction().getRenderBounds(renderQuads.size(), lifeScale);
+            for (int i = bounds.start(); i < bounds.end(); i++) {
                 renderQuads.get(i).getVecs().forEach(v -> buffer.vertex(matrix, (float) v.x, (float) v.y, (float) v.z)
                       .color(bolt.getColor().r(), bolt.getColor().g(), bolt.getColor().b(), bolt.getColor().a())
                       .endVertex());

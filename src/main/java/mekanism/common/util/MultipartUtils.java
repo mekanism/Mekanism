@@ -1,16 +1,15 @@
 package mekanism.common.util;
 
 import java.util.Collection;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ForgeMod;
-import org.apache.commons.lang3.tuple.Pair;
 
 public final class MultipartUtils {
 
@@ -18,7 +17,7 @@ public final class MultipartUtils {
     }
 
     /* taken from MCMP */
-    public static Pair<Vec3, Vec3> getRayTraceVectors(Entity entity) {
+    public static RayTraceVectors getRayTraceVectors(Entity entity) {
         float pitch = entity.getXRot();
         float yaw = entity.getYRot();
         Vec3 start = new Vec3(entity.getX(), entity.getY() + entity.getEyeHeight(), entity.getZ());
@@ -33,12 +32,12 @@ public final class MultipartUtils {
             reach = player.getAttributeValue(ForgeMod.REACH_DISTANCE.get());
         }
         Vec3 end = start.add(lookX * reach, lookY * reach, lookZ * reach);
-        return Pair.of(start, end);
+        return new RayTraceVectors(start, end);
     }
 
     public static AdvancedRayTraceResult collisionRayTrace(Entity entity, BlockPos pos, Collection<VoxelShape> boxes) {
-        Pair<Vec3, Vec3> vecs = getRayTraceVectors(entity);
-        return collisionRayTrace(pos, vecs.getLeft(), vecs.getRight(), boxes);
+        RayTraceVectors vecs = getRayTraceVectors(entity);
+        return collisionRayTrace(pos, vecs.start(), vecs.end(), boxes);
     }
 
     public static AdvancedRayTraceResult collisionRayTrace(BlockPos pos, Vec3 start, Vec3 end, Collection<VoxelShape> boxes) {
@@ -60,6 +59,9 @@ public final class MultipartUtils {
             i++;
         }
         return hit;
+    }
+
+    public record RayTraceVectors(Vec3 start, Vec3 end) {
     }
 
     public static class AdvancedRayTraceResult {

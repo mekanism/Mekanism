@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 import mekanism.common.lib.Color;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class BoltEffect {
 
@@ -140,22 +140,22 @@ public class BoltEffect {
                     segmentEnd = start.add(diff.scale(progress)).add(perpendicularDist);
                 }
                 float boltSize = size * (0.5F + (1 - progress) * 0.5F);
-                Pair<BoltQuads, QuadCache> quadData = createQuads(data.cache, data.start, segmentEnd, boltSize);
-                quads.add(quadData.getLeft());
+                BoltQuadData quadData = createQuads(data.cache, data.start, segmentEnd, boltSize);
+                quads.add(quadData.quads());
 
                 if (progress >= 1) {
                     break; // break if we've reached the defined end point
                 } else if (!data.isBranch) {
                     // continue the bolt if this is the primary (non-branch) segment
-                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.getRight(), false));
+                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.cache(), false));
                 } else if (random.nextFloat() < renderInfo.branchContinuationFactor) {
                     // branch continuation
-                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.getRight(), true));
+                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.cache(), true));
                 }
 
                 while (random.nextFloat() < renderInfo.branchInitiationFactor * (1 - progress)) {
                     // branch initiation (probability decreases as progress increases)
-                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.getRight(), true));
+                    drawQueue.add(new BoltInstructions(segmentEnd, progress, perpendicularDist, quadData.cache(), true));
                 }
             }
         }
@@ -167,7 +167,7 @@ public class BoltEffect {
         return vec.cross(newVec).normalize();
     }
 
-    private Pair<BoltQuads, QuadCache> createQuads(QuadCache cache, Vec3 startPos, Vec3 end, float size) {
+    private BoltQuadData createQuads(QuadCache cache, Vec3 startPos, Vec3 end, float size) {
         Vec3 diff = end.subtract(startPos);
         Vec3 rightAdd = diff.cross(new Vec3(0.5, 0.5, 0.5)).normalize().scale(size);
         Vec3 backAdd = diff.cross(rightAdd).normalize().scale(size), rightAddSplit = rightAdd.scale(0.5F);
@@ -184,10 +184,13 @@ public class BoltEffect {
         quads.addQuad(startRight, endRight, endBack, startBack);
         quads.addQuad(startBack, endBack, endRight, startRight);
 
-        return Pair.of(quads, new QuadCache(end, endRight, endBack));
+        return new BoltQuadData(quads, new QuadCache(end, endRight, endBack));
     }
 
     private record QuadCache(Vec3 prevEnd, Vec3 prevEndRight, Vec3 prevEndBack) {
+    }
+
+    private record BoltQuadData(BoltQuads quads, QuadCache cache) {
     }
 
     protected record BoltInstructions(Vec3 start, float progress, Vec3 perpendicularDist, QuadCache cache, boolean isBranch) {
@@ -281,12 +284,12 @@ public class BoltEffect {
     public interface SpawnFunction {
 
         /** Allow for bolts to be spawned each update call without any delay. */
-        SpawnFunction NO_DELAY = rand -> Pair.of(0F, 0F);
+        SpawnFunction NO_DELAY = rand -> new SpawnDelayBounds(0F, 0F);
         /** Will re-spawn a bolt each time one expires. */
         SpawnFunction CONSECUTIVE = new SpawnFunction() {
             @Override
-            public Pair<Float, Float> getSpawnDelayBounds(Random rand) {
-                return Pair.of(0F, 0F);
+            public SpawnDelayBounds getSpawnDelayBounds(Random rand) {
+                return new SpawnDelayBounds(0F, 0F);
             }
 
             @Override
@@ -297,25 +300,28 @@ public class BoltEffect {
 
         /** Spawn bolts with a specified constant delay. */
         static SpawnFunction delay(float delay) {
-            return rand -> Pair.of(delay, delay);
+            return rand -> new SpawnDelayBounds(delay, delay);
         }
 
         /**
          * Spawns bolts with a specified delay and specified noise value, which will be randomly applied at either end of the delay bounds.
          */
         static SpawnFunction noise(float delay, float noise) {
-            return rand -> Pair.of(delay - noise, delay + noise);
+            return rand -> new SpawnDelayBounds(delay - noise, delay + noise);
         }
 
-        Pair<Float, Float> getSpawnDelayBounds(Random rand);
+        SpawnDelayBounds getSpawnDelayBounds(Random rand);
 
         default float getSpawnDelay(Random rand) {
-            Pair<Float, Float> bounds = getSpawnDelayBounds(rand);
-            return bounds.getLeft() + (bounds.getRight() - bounds.getLeft()) * rand.nextFloat();
+            SpawnDelayBounds bounds = getSpawnDelayBounds(rand);
+            return Mth.lerp(rand.nextFloat(), bounds.start(), bounds.end());
         }
 
         default boolean isConsecutive() {
             return false;
+        }
+
+        record SpawnDelayBounds(float start, float end) {
         }
     }
 
@@ -328,7 +334,7 @@ public class BoltEffect {
     public interface FadeFunction {
 
         /** No fade; render the bolts entirely throughout their lifespan. */
-        FadeFunction NONE = (totalBolts, lifeScale) -> Pair.of(0, totalBolts);
+        FadeFunction NONE = (totalBolts, lifeScale) -> new RenderBounds(0, totalBolts);
 
         /**
          * Render bolts with a segment-by-segment 'fade' in and out, with a specified fade duration (applied to start and finish).
@@ -337,11 +343,14 @@ public class BoltEffect {
             return (totalBolts, lifeScale) -> {
                 int start = lifeScale > (1 - fade) ? (int) (totalBolts * (lifeScale - (1 - fade)) / fade) : 0;
                 int end = lifeScale < fade ? (int) (totalBolts * (lifeScale / fade)) : totalBolts;
-                return Pair.of(start, end);
+                return new RenderBounds(start, end);
             };
         }
 
-        Pair<Integer, Integer> getRenderBounds(int totalBolts, float lifeScale);
+        RenderBounds getRenderBounds(int totalBolts, float lifeScale);
+
+        record RenderBounds(int start, int end) {
+        }
     }
 
     public static class BoltRenderInfo {

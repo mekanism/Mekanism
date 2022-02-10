@@ -9,7 +9,6 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.SpecialColors;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
-import org.apache.commons.lang3.tuple.Pair;
 
 public interface IFancyFontRenderer {
 
@@ -141,7 +140,7 @@ public interface IFancyFontRenderer {
     // efficient tool to draw word-by-word wrapped text based on a horizontal bound. looks intimidating but runs in O(n)
     class WrappedTextRenderer {
 
-        private final List<Pair<Component, Float>> linesToDraw = new ArrayList<>();
+        private final List<LineData> linesToDraw = new ArrayList<>();
         private final IFancyFontRenderer font;
         private final String text;
         @Nullable
@@ -161,8 +160,8 @@ public interface IFancyFontRenderer {
         public void renderCentered(PoseStack matrix, float x, float y, int color, float maxLength) {
             calculateLines(maxLength);
             float startY = y;
-            for (Pair<Component, Float> p : linesToDraw) {
-                font.drawTextExact(matrix, p.getLeft(), x - p.getRight() / 2, startY, color);
+            for (LineData line : linesToDraw) {
+                font.drawTextExact(matrix, line.component(), x - line.length() / 2, startY, color);
                 startY += 9;
             }
         }
@@ -172,8 +171,8 @@ public interface IFancyFontRenderer {
             calculateLines(maxLength / scale);
             font.prepTextScale(matrix, m -> {
                 int startY = 0;
-                for (Pair<Component, Float> p : linesToDraw) {
-                    font.drawString(m, p.getLeft(), 0, startY, color);
+                for (LineData line : linesToDraw) {
+                    font.drawString(m, line.component(), 0, startY, color);
                     startY += 9;
                 }
             }, x, y, scale);
@@ -205,7 +204,7 @@ public interface IFancyFontRenderer {
                     lineBuilder = addWord(lineBuilder, wordBuilder, maxLength, spaceLength, wordLength);
                 }
                 if (lineBuilder.length() > 0) {
-                    linesToDraw.add(Pair.of(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
+                    linesToDraw.add(new LineData(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
                 }
             }
         }
@@ -214,7 +213,7 @@ public interface IFancyFontRenderer {
             // ignore spacing if this is the first word of the line
             float spacingLength = lineBuilder.length() == 0 ? 0 : spaceLength;
             if (lineLength + spacingLength + wordLength > maxLength) {
-                linesToDraw.add(Pair.of(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
+                linesToDraw.add(new LineData(TextComponentUtil.getString(lineBuilder.toString()), lineLength));
                 lineBuilder = new StringBuilder(wordBuilder);
                 lineLength = wordLength;
             } else {
@@ -246,6 +245,9 @@ public interface IFancyFontRenderer {
             }, text);
             wrappedTextRenderer.calculateLines(maxLength);
             return 9 * wrappedTextRenderer.linesToDraw.size();
+        }
+
+        private record LineData(Component component, float length) {
         }
     }
 }

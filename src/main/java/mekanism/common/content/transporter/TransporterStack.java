@@ -9,21 +9,21 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
+import mekanism.common.content.transporter.TransporterPathfinder.IdlePathData;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Contract;
 
 public class TransporterStack {
@@ -187,14 +187,14 @@ public class TransporterStack {
     }
 
     public boolean calculateIdle(LogisticalTransporterBase transporter) {
-        Pair<List<BlockPos>, Path> newPath = TransporterPathfinder.getIdlePath(transporter, this);
+        IdlePathData newPath = TransporterPathfinder.getIdlePath(transporter, this);
         if (newPath == null) {
             return false;
         }
-        if (newPath.getRight() == Path.HOME) {
+        if (newPath.type() == Path.HOME) {
             idleDir = null;
         }
-        setPath(transporter.getTileWorld(), newPath.getLeft(), newPath.getRight());
+        setPath(transporter.getTileWorld(), newPath.path(), newPath.type());
         originalLocation = transporter.getTilePos();
         initiatedPath = true;
         return true;

@@ -29,12 +29,11 @@ import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import org.apache.commons.lang3.tuple.Pair;
 
 public final class TransporterPathfinder {
 
@@ -156,7 +155,11 @@ public final class TransporterPathfinder {
         return destination;
     }
 
-    public static Pair<List<BlockPos>, Path> getIdlePath(LogisticalTransporterBase start, TransporterStack stack) {
+    public record IdlePathData(List<BlockPos> path, Path type) {
+    }
+
+    @Nullable
+    public static IdlePathData getIdlePath(LogisticalTransporterBase start, TransporterStack stack) {
         InventoryNetwork network = start.getTransmitterNetwork();
         if (network == null) {
             return null;
@@ -172,7 +175,7 @@ public final class TransporterPathfinder {
             p.find(chunkMap);
             List<BlockPos> path = p.getPath();
             if (path.size() >= 2) {
-                return Pair.of(path, Path.HOME);
+                return new IdlePathData(path, Path.HOME);
             }
             stack.homeLocation = null;
         }
@@ -182,7 +185,7 @@ public final class TransporterPathfinder {
         if (dest == null) {
             return null;
         }
-        return Pair.of(dest.getPath(), dest.getPathType());
+        return new IdlePathData(dest.getPath(), dest.getPathType());
     }
 
     public static class IdlePath {

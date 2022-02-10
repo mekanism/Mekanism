@@ -73,7 +73,6 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometryPart;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class MekaSuitArmor implements ICustomArmor {
 
@@ -347,11 +346,14 @@ public class MekaSuitArmor implements ICustomArmor {
         }
     }
 
+    private record OverrideData(ModelData modelData, String name) {
+    }
+
     private ArmorQuads createQuads(Object2BooleanMap<ModuleModelSpec> modules, Set<EquipmentSlot> wornParts, boolean hasMekaToolLeft, boolean hasMekaToolRight) {
         Map<ModelData, Map<ModelPos, Set<String>>> specialQuadsToRender = new Object2ObjectOpenHashMap<>();
         Map<ModelData, Map<ModelPos, Set<String>>> specialLEDQuadsToRender = new Object2ObjectOpenHashMap<>();
         // map of normal model part name to overwritten model part name (i.e. helmet_head_center1 -> override_solar_helmet_helmet_head_center1)
-        Map<String, Pair<ModelData, String>> overrides = new Object2ObjectOpenHashMap<>();
+        Map<String, OverrideData> overrides = new Object2ObjectOpenHashMap<>();
         Set<String> ignored = new HashSet<>();
 
         if (!modules.isEmpty()) {
@@ -364,7 +366,7 @@ public class MekaSuitArmor implements ICustomArmor {
                 ModuleModelSpec spec = entry.getKey();
                 for (String name : modelData.getPartsForSpec(spec, entry.getBooleanValue())) {
                     if (name.contains(OVERRIDDEN_TAG)) {
-                        overrides.put(spec.processOverrideName(name), Pair.of(modelData, name));
+                        overrides.put(spec.processOverrideName(name), new OverrideData(modelData, name));
                     }
                     // if this armor unit controls rendering of this module
                     if (type == spec.slotType) {
@@ -434,16 +436,16 @@ public class MekaSuitArmor implements ICustomArmor {
         return new ArmorQuads(opaqueMap, transparentMap);
     }
 
-    private static void addQuadsToRender(ModelPos pos, String name, Map<String, Pair<ModelData, String>> overrides, Map<ModelPos, Set<String>> quadsToRender,
+    private static void addQuadsToRender(ModelPos pos, String name, Map<String, OverrideData> overrides, Map<ModelPos, Set<String>> quadsToRender,
           Map<ModelPos, Set<String>> ledQuadsToRender, Map<ModelData, Map<ModelPos, Set<String>>> specialQuadsToRender,
           Map<ModelData, Map<ModelPos, Set<String>>> specialLEDQuadsToRender) {
-        Pair<ModelData, String> override = overrides.get(name);
+        OverrideData override = overrides.get(name);
         if (override != null) {
             //Update the name and the target quads if there is an override
-            name = override.getRight();
+            name = override.name();
             // Note: In theory the special quads should have our model data corresponding
             // to a map already, but on the off chance they don't compute and add it
-            ModelData overrideData = override.getLeft();
+            ModelData overrideData = override.modelData();
             quadsToRender = specialQuadsToRender.computeIfAbsent(overrideData, d -> new EnumMap<>(ModelPos.class));
             ledQuadsToRender = specialLEDQuadsToRender.computeIfAbsent(overrideData, d -> new EnumMap<>(ModelPos.class));
         }
@@ -570,18 +572,21 @@ public class MekaSuitArmor implements ICustomArmor {
 
     public static class ModuleOBJModelData extends OBJModelData {
 
-        private final Map<ModuleModelSpec, Pair<Set<String>, Set<String>>> specParts = new Object2ObjectOpenHashMap<>();
+        private record SpecData(Set<String> active, Set<String> inactive) {
+        }
+
+        private final Map<ModuleModelSpec, SpecData> specParts = new Object2ObjectOpenHashMap<>();
 
         public ModuleOBJModelData(ResourceLocation rl) {
             super(rl);
         }
 
         public Set<String> getPartsForSpec(ModuleModelSpec spec, boolean active) {
-            Pair<Set<String>, Set<String>> pair = specParts.get(spec);
-            if (pair == null) {
+            SpecData specData = specParts.get(spec);
+            if (specData == null) {
                 return Collections.emptySet();
             }
-            return active ? pair.getLeft() : pair.getRight();
+            return active ? specData.active() : specData.inactive();
         }
 
         @Override
@@ -603,21 +608,21 @@ public class MekaSuitArmor implements ICustomArmor {
                     }
                 }
                 if (matchingSpec != null) {
-                    Pair<Set<String>, Set<String>> pair = specParts.computeIfAbsent(matchingSpec, spec -> Pair.of(new HashSet<>(), new HashSet<>()));
+                    SpecData specData = specParts.computeIfAbsent(matchingSpec, spec -> new SpecData(new HashSet<>(), new HashSet<>()));
                     if (name.contains(INACTIVE_TAG + matchingSpec.name + "_")) {
-                        pair.getRight().add(name);
+                        specData.inactive().add(name);
                     } else {
-                        pair.getLeft().add(name);
+                        specData.active().add(name);
                     }
                 }
             }
             //Update entries to reclaim some memory for empty sets
-            for (Map.Entry<ModuleModelSpec, Pair<Set<String>, Set<String>>> entry : specParts.entrySet()) {
-                Pair<Set<String>, Set<String>> pair = entry.getValue();
-                if (pair.getLeft().isEmpty()) {
-                    entry.setValue(Pair.of(Collections.emptySet(), pair.getRight()));
-                } else if (pair.getRight().isEmpty()) {
-                    entry.setValue(Pair.of(pair.getLeft(), Collections.emptySet()));
+            for (Map.Entry<ModuleModelSpec, SpecData> entry : specParts.entrySet()) {
+                SpecData specData = entry.getValue();
+                if (specData.active().isEmpty()) {
+                    entry.setValue(new SpecData(Collections.emptySet(), specData.inactive()));
+                } else if (specData.inactive().isEmpty()) {
+                    entry.setValue(new SpecData(specData.active(), Collections.emptySet()));
                 }
             }
         }
