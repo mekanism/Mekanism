@@ -22,7 +22,6 @@ public interface IHasTileEntity<TILE extends BlockEntity> extends EntityBlock {
     }
 
     default TILE createDummyBlockEntity(@Nonnull BlockState state) {
-        //TODO - 1.18: Test the dummy block entities
         return newBlockEntity(BlockPos.ZERO, state);
     }
 

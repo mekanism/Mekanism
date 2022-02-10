@@ -24,7 +24,7 @@ public class HwylaDataProvider implements IServerDataProvider<BlockEntity> {
     public void appendServerData(CompoundTag data, ServerPlayer player, Level world, BlockEntity tile, boolean showDetails) {
         if (tile instanceof TileEntityBoundingBlock boundingBlock) {
             //If we are a bounding block that has a position set, redirect the check to the main location
-            if (!boundingBlock.receivedCoords || tile.getBlockPos().equals(boundingBlock.getMainPos())) {
+            if (!boundingBlock.hasReceivedCoords() || tile.getBlockPos().equals(boundingBlock.getMainPos())) {
                 //If the coords haven't been received, exit
                 return;
             }

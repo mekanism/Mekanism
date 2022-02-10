@@ -51,7 +51,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nullable
     public static BlockPos getMainBlockPos(BlockGetter world, BlockPos thisPos) {
         TileEntityBoundingBlock te = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, thisPos);
-        if (te != null && te.receivedCoords && !thisPos.equals(te.getMainPos())) {
+        if (te != null && te.hasReceivedCoords() && !thisPos.equals(te.getMainPos())) {
             return te.getMainPos();
         }
         return null;

@@ -313,7 +313,7 @@ public class RenderTickHandler {
                 BlockState actualState = blockState;
                 if (blockState.getBlock() instanceof BlockBounding) {
                     TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
-                    if (tile != null) {
+                    if (tile != null && tile.hasReceivedCoords()) {
                         actualPos = tile.getMainPos();
                         actualState = world.getBlockState(actualPos);
                     }

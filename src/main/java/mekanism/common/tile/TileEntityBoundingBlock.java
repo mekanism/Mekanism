@@ -34,7 +34,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
 
     private BlockPos mainPos = BlockPos.ZERO;
 
-    public boolean receivedCoords;
+    private boolean receivedCoords;
     private int currentRedstoneLevel;
 
     public TileEntityBoundingBlock(BlockPos pos, BlockState state) {
@@ -47,6 +47,10 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
             mainPos = pos;
             sendUpdatePacket();
         }
+    }
+
+    public boolean hasReceivedCoords() {
+        return receivedCoords;
     }
 
     public BlockPos getMainPos() {
@@ -154,7 +158,9 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Override
     public void saveAdditional(@Nonnull CompoundTag nbtTags) {
         super.saveAdditional(nbtTags);
-        nbtTags.put(NBTConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
+        if (receivedCoords) {
+            nbtTags.put(NBTConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
+        }
         nbtTags.putInt(NBTConstants.REDSTONE, currentRedstoneLevel);
         nbtTags.putBoolean(NBTConstants.RECEIVED_COORDS, receivedCoords);
     }
@@ -163,7 +169,9 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Override
     public CompoundTag getReducedUpdateTag() {
         CompoundTag updateTag = super.getReducedUpdateTag();
-        updateTag.put(NBTConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
+        if (receivedCoords) {
+            updateTag.put(NBTConstants.MAIN, NbtUtils.writeBlockPos(getMainPos()));
+        }
         updateTag.putInt(NBTConstants.REDSTONE, currentRedstoneLevel);
         updateTag.putBoolean(NBTConstants.RECEIVED_COORDS, receivedCoords);
         return updateTag;
