@@ -90,7 +90,11 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                     active = true;
                     //Temporarily set active to true, so we can easily check if the mouse is over the button
                     if (isMouseOverCheckWindows(mouseX, mouseY)) {
-                        displayTooltip(matrix, GeneratorsLang.FISSION_FORCE_DISABLED.translate(), mouseX - getGuiLeft(), mouseY - getGuiTop());
+                        matrix.pushPose();
+                        //Offset to fix rendering position
+                        matrix.translate(-getGuiLeft(), -getGuiTop(), 0);
+                        displayTooltips(matrix, mouseX, mouseY, GeneratorsLang.FISSION_FORCE_DISABLED.translate());
+                        matrix.popPose();
                     }
                     active = false;
                 }

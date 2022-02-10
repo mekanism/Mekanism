@@ -29,7 +29,7 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, dataSource.getControlType().getTextComponent(), mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, dataSource.getControlType().getTextComponent());
     }
 
     @Override

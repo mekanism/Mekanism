@@ -69,9 +69,6 @@ public class GuiGraph extends GuiTexturedElement {
             int relativeHeight = (int) (data * height / (double) currentScale);
             blit(matrix, x + i, y + height - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
-            //TODO - 1.18: Test this
-            //RenderSystem.shadeModel(GL11.GL_SMOOTH);
-            //RenderSystem.disableAlphaTest();
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
@@ -88,16 +85,15 @@ public class GuiGraph extends GuiTexturedElement {
 
             MekanismRenderer.resetColor();
             RenderSystem.disableBlend();
-            //RenderSystem.enableAlphaTest();
         }
     }
 
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        int hoverIndex = mouseX - relativeX;
+        int hoverIndex = mouseX - x;
         if (hoverIndex >= 0 && hoverIndex < graphData.size()) {
-            displayTooltip(matrix, dataHandler.getDataDisplay(graphData.getLong(hoverIndex)), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, dataHandler.getDataDisplay(graphData.getLong(hoverIndex)));
         }
     }
 

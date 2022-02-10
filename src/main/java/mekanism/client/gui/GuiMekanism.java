@@ -137,7 +137,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected IHoverable getOnHover(Supplier<Component> componentSupplier) {
-        return (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, componentSupplier.get(), xAxis, yAxis);
+        return (onHover, matrix, mouseX, mouseY) -> displayTooltips(matrix, mouseX, mouseY, componentSupplier.get());
     }
 
     protected ResourceLocation getButtonLocation(String name) {
@@ -225,8 +225,6 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         modelViewStack.translate(leftPos, topPos, 0);
         RenderSystem.applyModelViewMatrix();
         drawForegroundText(matrix, mouseX, mouseY);
-        int xAxis = mouseX - leftPos;
-        int yAxis = mouseY - topPos;
         // first render general foregrounds
         maxZOffset = 200;
         int zOffset = 200;
@@ -267,15 +265,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // but Minecraft has decided to not fully adopt MatrixStacks for many crucial ContainerScreen render operations. should be re-evaluated
         // when mc updates related logic on their end (IMPORTANT)
         modelViewStack.translate(0, 0, maxZOffset);
-        RenderSystem.applyModelViewMatrix();
 
-        if (tooltipElement != null) {
-            tooltipElement.renderToolTip(matrix, xAxis, yAxis);
-        }
-
-        // render item tooltips
+        // render tooltips
         modelViewStack.translate(-leftPos, -topPos, 0);
         RenderSystem.applyModelViewMatrix();
+        if (tooltipElement != null) {
+            tooltipElement.renderToolTip(matrix, mouseX, mouseY);
+        }
         renderTooltip(matrix, mouseX, mouseY);
         modelViewStack.translate(leftPos, topPos, 0);
 

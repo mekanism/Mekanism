@@ -194,7 +194,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     protected IHoverable getOnHover(Supplier<Component> componentSupplier) {
-        return (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, componentSupplier.get(), xAxis, yAxis);
+        return (onHover, matrix, mouseX, mouseY) -> displayTooltips(matrix, mouseX, mouseY, componentSupplier.get());
     }
 
     public boolean hasPersistentData() {
@@ -253,24 +253,16 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
-        children.stream().filter(child -> child.isMouseOver(mouseX + getGuiLeft(), mouseY + getGuiTop()))
+        children.stream().filter(child -> child.isMouseOver(mouseX, mouseY))
               .forEach(child -> child.renderToolTip(matrix, mouseX, mouseY));
     }
 
-    public void displayTooltip(PoseStack matrix, Component component, int xAxis, int yAxis, int maxWidth) {
-        guiObj.displayTooltip(matrix, component, xAxis, yAxis, maxWidth);
+    public void displayTooltips(PoseStack matrix, int mouseX, int mouseY, Component... components) {
+        guiObj.displayTooltips(matrix, mouseX, mouseY, components);
     }
 
-    public void displayTooltip(PoseStack matrix, Component component, int xAxis, int yAxis) {
-        guiObj.displayTooltip(matrix, component, xAxis, yAxis);
-    }
-
-    public void displayTooltips(PoseStack matrix, List<Component> components, int xAxis, int yAxis) {
-        guiObj.displayTooltips(matrix, components, xAxis, yAxis);
-    }
-
-    public void displayTooltips(PoseStack matrix, List<Component> components, int xAxis, int yAxis, int maxWidth) {
-        guiObj.displayTooltips(matrix, components, xAxis, yAxis, maxWidth);
+    public void displayTooltips(PoseStack matrix, int mouseX, int mouseY, List<Component> components) {
+        guiObj.displayTooltips(matrix, mouseX, mouseY, components);
     }
 
     @Override

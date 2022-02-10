@@ -97,12 +97,12 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     private IHoverable getOnHover(RelativeSide side) {
-        return (onHover, matrix, xAxis, yAxis) -> {
+        return (onHover, matrix, mouseX, mouseY) -> {
             if (onHover instanceof SideDataButton button) {
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
-                    displayTooltip(matrix, MekanismLang.GENERIC_WITH_TWO_PARENTHESIS.translateColored(dataType.getColor(), dataType,
-                          dataType.getColor().getName(), side), xAxis, yAxis);
+                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_WITH_TWO_PARENTHESIS.translateColored(dataType.getColor(), dataType,
+                          dataType.getColor().getName(), side));
                 }
             }
         };

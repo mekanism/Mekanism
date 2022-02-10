@@ -39,7 +39,7 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, MekanismLang.REDSTONE_OUTPUT.translate(dataSource.getOutputMode()), mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, MekanismLang.REDSTONE_OUTPUT.translate(dataSource.getOutputMode()));
     }
 
     @Override

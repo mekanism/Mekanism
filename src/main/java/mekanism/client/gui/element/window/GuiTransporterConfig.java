@@ -72,13 +72,13 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     private IHoverable getOnHover(RelativeSide side) {
-        return (onHover, matrix, xAxis, yAxis) -> {
+        return (onHover, matrix, mouseX, mouseY) -> {
             if (onHover instanceof SideDataButton button) {
                 DataType dataType = button.getDataType();
                 if (dataType != null) {
                     EnumColor color = button.getColor();
                     Component colorComponent = color == null ? MekanismLang.NONE.translate() : color.getColoredName();
-                    displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translate(colorComponent, side), xAxis, yAxis);
+                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translate(colorComponent, side));
                 }
             }
         };

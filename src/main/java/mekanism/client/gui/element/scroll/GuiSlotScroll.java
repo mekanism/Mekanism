@@ -87,7 +87,7 @@ public class GuiSlotScroll extends GuiElement {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        IScrollableSlot slot = getSlot(mouseX, mouseY, relativeX, relativeY);
+        IScrollableSlot slot = getSlot(mouseX, mouseY);
         if (slot != null) {
             renderSlotTooltip(matrix, slot, mouseX, mouseY);
         }
@@ -105,19 +105,19 @@ public class GuiSlotScroll extends GuiElement {
             return super.mouseReleased(mouseX, mouseY, button);
         }
         super.mouseReleased(mouseX, mouseY, button);
-        IScrollableSlot slot = getSlot(mouseX, mouseY, x, y);
+        IScrollableSlot slot = getSlot(mouseX, mouseY);
         clickHandler.onClick(slot, button, Screen.hasShiftDown(), minecraft.player.containerMenu.getCarried());
         return true;
     }
 
-    private IScrollableSlot getSlot(double mouseX, double mouseY, int relativeX, int relativeY) {
+    private IScrollableSlot getSlot(double mouseX, double mouseY) {
         List<IScrollableSlot> list = getSlotList();
         if (list == null) {
             return null;
         }
-        int slotX = (int) ((mouseX - relativeX) / 18), slotY = (int) ((mouseY - relativeY) / 18);
+        int slotX = (int) ((mouseX - x) / 18), slotY = (int) ((mouseY - y) / 18);
         // terminate if we clicked the border of a slot
-        int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
+        int slotStartX = x + slotX * 18 + 1, slotStartY = y + slotY * 18 + 1;
         if (mouseX < slotStartX || mouseX >= slotStartX + 16 || mouseY < slotStartY || mouseY >= slotStartY + 16) {
             return null;
         }

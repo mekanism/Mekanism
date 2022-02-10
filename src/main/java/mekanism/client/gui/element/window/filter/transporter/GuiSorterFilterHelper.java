@@ -36,8 +36,8 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         childAdder.apply(new ColorButton(gui, slotX + 1, colorSlotY + 1, 16, 16, () -> filter.color,
               () -> filter.color = Screen.hasShiftDown() ? null : TransporterUtils.increment(filter.color), () -> filter.color = TransporterUtils.decrement(filter.color)));
         childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 18, 11, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "default.png"),
-              () -> filter.allowDefault = !filter.allowDefault, (onHover, matrix, xAxis, yAxis) -> gui.displayTooltip(matrix, MekanismLang.FILTER_ALLOW_DEFAULT.translate(),
-              xAxis, yAxis)));
+              () -> filter.allowDefault = !filter.allowDefault, (onHover, matrix, mouseX, mouseY) -> gui.displayTooltips(matrix, mouseX, mouseY, MekanismLang.FILTER_ALLOW_DEFAULT.translate()
+        )));
         GuiTextField minField = new GuiTextField(gui, relativeX + 169, relativeY + 31, 20, 11);
         minField.setMaxLength(2);
         minField.setInputValidator(InputValidator.DIGIT);
@@ -50,11 +50,11 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         childAdder.apply(maxField);
         rangeSetter.accept(minField, maxField);
         childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 56, 11, 14, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "silk_touch.png"),
-              () -> filter.sizeMode = !filter.sizeMode, (onHover, matrix, xAxis, yAxis) -> {
+              () -> filter.sizeMode = !filter.sizeMode, (onHover, matrix, mouseX, mouseY) -> {
             if (singleItem.getAsBoolean() && filter.sizeMode) {
-                gui.displayTooltip(matrix, MekanismLang.SORTER_SIZE_MODE_CONFLICT.translate(), xAxis, yAxis);
+                gui.displayTooltips(matrix, mouseX, mouseY, MekanismLang.SORTER_SIZE_MODE_CONFLICT.translate());
             } else {
-                gui.displayTooltip(matrix, MekanismLang.SORTER_SIZE_MODE.translate(), xAxis, yAxis);
+                gui.displayTooltips(matrix, mouseX, mouseY, MekanismLang.SORTER_SIZE_MODE.translate());
             }
         }));
     }

@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nonnull;
@@ -11,6 +10,7 @@ import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.gui.warning.WarningTracker.WarningType;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.SelectedWindowData;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -20,26 +20,22 @@ import net.minecraft.world.item.ItemStack;
 
 public interface IGuiWrapper {
 
-    default void displayTooltip(PoseStack matrix, Component component, int x, int y, int maxWidth) {
-        this.displayTooltips(matrix, Collections.singletonList(component), x, y, maxWidth);
+    default void displayTooltips(PoseStack matrix, int mouseX, int mouseY, Component... components) {
+        this.displayTooltips(matrix, mouseX, mouseY, List.of(components));
     }
 
-    default void displayTooltip(PoseStack matrix, Component component, int x, int y) {
-        this.displayTooltips(matrix, Collections.singletonList(component), x, y);
-    }
-
-    default void displayTooltips(PoseStack matrix, List<Component> components, int xAxis, int yAxis) {
-        displayTooltips(matrix, components, xAxis, yAxis, -1);
-    }
-
-    default void displayTooltips(PoseStack matrix, List<Component> components, int xAxis, int yAxis, int maxWidth) {
-        //TODO - 1.18: Re-evaluate some form of this that wraps further along for use in Gui Windows (such as viewing descriptions of supported upgrades)
-        //TODO - 1.18: Fix this I think it may just be a normal vanilla tooltip call that is used now
-        //net.minecraftforge.client.gui.GuiUtils.drawHoveringText(matrix, components, xAxis, yAxis, getWidth(), getHeight(), maxWidth, getFont());
-        if (this instanceof Screen screen) {
-            screen.renderComponentTooltip(matrix, components, xAxis, yAxis);
+    default void displayTooltips(PoseStack matrix, int mouseX, int mouseY, List<Component> components) {
+        Screen screen;
+        if (this instanceof Screen) {
+            screen = (Screen) this;
+        } else {
+            //Otherwise, try falling back to the current screen
+            screen = Minecraft.getInstance().screen;
+            if (screen == null) {
+                return;
+            }
         }
-        //TODO - 1.18: Else??
+        screen.renderComponentTooltip(matrix, components, mouseX, mouseY);
     }
 
     default int getLeft() {

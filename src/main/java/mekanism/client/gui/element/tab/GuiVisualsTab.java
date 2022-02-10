@@ -26,9 +26,9 @@ public class GuiVisualsTab extends GuiInsetElement<TileEntityDigitalMiner> {
         super.renderToolTip(matrix, mouseX, mouseY);
         Component visualsComponent = MekanismLang.MINER_VISUALS.translate(OnOff.of(dataSource.clientRendering));
         if (dataSource.getRadius() <= 64) {
-            displayTooltip(matrix, visualsComponent, mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, visualsComponent);
         } else {
-            displayTooltips(matrix, Arrays.asList(visualsComponent, MekanismLang.MINER_VISUALS_TOO_BIG.translateColored(EnumColor.RED)), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, visualsComponent, MekanismLang.MINER_VISUALS_TOO_BIG.translateColored(EnumColor.RED));
         }
     }
 

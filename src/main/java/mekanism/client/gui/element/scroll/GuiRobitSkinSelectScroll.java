@@ -2,6 +2,7 @@ package mekanism.client.gui.element.scroll;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
@@ -26,12 +27,11 @@ import mekanism.common.lib.math.Quaternion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import com.mojang.math.Vector3f;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 
@@ -129,9 +129,9 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        RobitSkin skin = getSkin(mouseX, mouseY, relativeX, relativeY);
+        RobitSkin skin = getSkin(mouseX, mouseY);
         if (skin != null) {
-            displayTooltip(matrix, MekanismLang.ROBIT_SKIN.translate(skin), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, MekanismLang.ROBIT_SKIN.translate(skin));
         }
     }
 
@@ -143,16 +143,16 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     @Override
     public void onRelease(double mouseX, double mouseY) {
         super.onRelease(mouseX, mouseY);
-        RobitSkin skin = getSkin(mouseX, mouseY, x, y);
+        RobitSkin skin = getSkin(mouseX, mouseY);
         if (skin != null) {
             selectedSkin = skin;
         }
     }
 
-    private RobitSkin getSkin(double mouseX, double mouseY, int relativeX, int relativeY) {
+    private RobitSkin getSkin(double mouseX, double mouseY) {
         List<RobitSkin> skins = getUnlockedSkins();
         if (skins != null) {
-            int slotX = (int) ((mouseX - relativeX) / SLOT_DIMENSIONS), slotY = (int) ((mouseY - relativeY) / SLOT_DIMENSIONS);
+            int slotX = (int) ((mouseX - x) / SLOT_DIMENSIONS), slotY = (int) ((mouseY - y) / SLOT_DIMENSIONS);
             if (slotX >= 0 && slotY >= 0 && slotX < SLOT_COUNT && slotY < SLOT_COUNT) {
                 int slot = (slotY + scrollBar.getCurrentSelection()) * SLOT_COUNT + slotX;
                 if (slot < skins.size()) {
@@ -195,12 +195,12 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         matrix.popPose();
     }
 
-    //Copy of QuadTransformation.RotationTransformation but sets the normal to 0, 1, 0
+    //Copy of QuadTransformation.RotationTransformation but sets the normal to 1, 0, 0
     private static class BasicRotationTransformation implements QuadTransformation {
 
         // quaternion math isn't exact- we round to nearest ten-thousandth
         private static final double EPSILON = 10_000;
-        private static final Vec3 NORMAL = new Vec3(0, 1, 0);
+        private static final Vec3 NORMAL = new Vec3(1, 0, 0);
 
         private final Quaternion quaternion;
 
@@ -216,7 +216,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         private void consumeVertex(Vertex v) {
             v.pos(round(quaternion.rotate(v.getPos().subtract(0.5, 0.5, 0.5)).add(0.5, 0.5, 0.5)));
             //v.normal(round(quaternion.rotate(v.getNormal()).normalize()));
-            //TODO: Figure out if there is a better way to be doing the normal
+            //TODO: Figure out if there is a better way to be doing the normal as in 1.16 this used 0, 1, 0 and now we need to use 1, 0, 0
             v.normal(NORMAL);
         }
 

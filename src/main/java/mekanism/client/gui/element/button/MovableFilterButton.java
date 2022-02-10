@@ -37,10 +37,9 @@ public class MovableFilterButton extends FilterButton {
         super(gui, x, y, width, height, index, filterIndex, filters, onPress, renderStackSupplier);
         int arrowX = relativeX + width - 12;
         upButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + 1, false, () -> upButtonPress.accept(index + filterIndex.getAsInt()),
-              (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, MekanismLang.MOVE_UP.translate(), xAxis, yAxis)));
+              getOnHover(MekanismLang.MOVE_UP)));
         downButton = addPositionOnlyChild(new FilterSelectButton(gui, arrowX, relativeY + height - 8, true,
-              () -> downButtonPress.accept(index + filterIndex.getAsInt()),
-              (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, MekanismLang.MOVE_DOWN.translate(), xAxis, yAxis)));
+              () -> downButtonPress.accept(index + filterIndex.getAsInt()), getOnHover(MekanismLang.MOVE_DOWN)));
     }
 
     @Override

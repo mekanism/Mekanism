@@ -49,6 +49,6 @@ public class GuiWarningTab extends GuiTexturedElement {
         List<Component> info = new ArrayList<>();
         info.add(MekanismLang.ISSUES.translateColored(EnumColor.YELLOW));
         info.addAll(warningTracker.getWarnings());
-        displayTooltips(matrix, info, mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, info);
     }
 }

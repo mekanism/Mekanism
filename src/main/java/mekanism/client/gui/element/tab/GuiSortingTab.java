@@ -31,7 +31,7 @@ public class GuiSortingTab extends GuiInsetElement<TileEntityFactory<?>> {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, MekanismLang.AUTO_SORT.translate(), mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, MekanismLang.AUTO_SORT.translate());
     }
 
     @Override

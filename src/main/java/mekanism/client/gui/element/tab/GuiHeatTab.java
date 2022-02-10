@@ -39,7 +39,7 @@ public class GuiHeatTab extends GuiBiDirectionalTab {
         super.renderToolTip(matrix, mouseX, mouseY);
         List<Component> info = new ArrayList<>(infoHandler.getInfo());
         info.add(MekanismLang.UNIT.translate(MekanismConfig.general.tempUnit.get()));
-        displayTooltips(matrix, info, mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, info);
     }
 
     @Override

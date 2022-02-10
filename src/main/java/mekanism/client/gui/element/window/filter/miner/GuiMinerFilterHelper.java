@@ -30,7 +30,7 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
               }));
         childAdder.apply(new MekanismImageButton(gui, getRelativeX() + 148, getRelativeY() + 45, 14, 16,
               MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), () -> filter.requiresReplacement = !filter.requiresReplacement,
-              (onHover, matrix, xAxis, yAxis) -> gui.displayTooltip(matrix, MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(filter.requiresReplacement)), xAxis, yAxis)));
+              (onHover, matrix, mouseX, mouseY) -> gui.displayTooltips(matrix, mouseX, mouseY, MekanismLang.MINER_REQUIRE_REPLACE.translate(YesNo.of(filter.requiresReplacement)))));
     }
 
     @Override

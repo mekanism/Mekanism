@@ -84,7 +84,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
         if (target instanceof ItemStack stack) {
             gui().renderItemTooltip(matrix, stack, mouseX, mouseY);
         } else if (target != null) {
-            displayTooltip(matrix, TextComponentUtil.build(target), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, TextComponentUtil.build(target));
         }
     }
 

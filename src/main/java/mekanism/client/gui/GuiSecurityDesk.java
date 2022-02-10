@@ -101,10 +101,10 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
               () -> {
                   Mekanism.packetHandler().sendToServer(new PacketGuiInteract(GuiInteraction.OVERRIDE_BUTTON, tile));
                   updateButtons();
-              }, (onHover, matrix, xAxis, yAxis) -> {
+              }, (onHover, matrix, mouseX, mouseY) -> {
             SecurityFrequency frequency = tile.getFreq();
             if (frequency != null) {
-                displayTooltip(matrix, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(frequency.isOverridden())), xAxis, yAxis);
+                displayTooltips(matrix, mouseX, mouseY, MekanismLang.SECURITY_OVERRIDE.translate(OnOff.of(frequency.isOverridden())));
             }
         }));
         updateButtons();

@@ -46,7 +46,7 @@ public class GuiResizeControls extends GuiSideHolder {
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         if (tooltipTicks > 0 && !expandButton.active) {
-            displayTooltip(matrix, MekanismLang.QIO_COMPENSATE_TOOLTIP.translate(), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, MekanismLang.QIO_COMPENSATE_TOOLTIP.translate());
         }
     }
 

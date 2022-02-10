@@ -98,11 +98,11 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        int index = getHoveredIndex(mouseX + getGuiLeft(), mouseY + getGuiTop());
+        int index = getHoveredIndex(mouseX, mouseY);
         if (index != -1) {
             Component text = options[index].getTooltip();
             if (text != null) {
-                displayTooltip(matrix, options[index].getTooltip(), mouseX, mouseY);
+                displayTooltips(matrix, mouseX, mouseY, options[index].getTooltip());
             }
         }
     }

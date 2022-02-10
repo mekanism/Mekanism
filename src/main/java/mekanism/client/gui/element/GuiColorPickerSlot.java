@@ -29,7 +29,7 @@ public class GuiColorPickerSlot extends GuiElement {
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
         Component hex = MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, supplier.get().rgb()));
-        displayTooltip(matrix, hex, mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, hex);
     }
 
     @Override

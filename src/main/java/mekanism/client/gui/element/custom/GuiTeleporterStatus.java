@@ -60,7 +60,7 @@ public class GuiTeleporterStatus extends GuiTexturedElement {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, getStatusDisplay(), mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, getStatusDisplay());
     }
 
     private Component getStatusDisplay() {

@@ -17,7 +17,7 @@ public class GuiCloseButton extends MekanismImageButton {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, MekanismLang.CLOSE.translate(), mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, MekanismLang.CLOSE.translate());
     }
 
     @Override

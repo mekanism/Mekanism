@@ -84,10 +84,10 @@ public class GuiUpgradeScrollList extends GuiScrollList {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        if (mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1) {
+        if (mouseX >= x + 1 && mouseX < x + barXShift - 1) {
             forEachUpgrade((upgrade, multipliedElement) -> {
-                if (mouseY >= relativeY + 1 + multipliedElement && mouseY < relativeY + 1 + multipliedElement + elementHeight) {
-                    displayTooltip(matrix, upgrade.getDescription(), mouseX, mouseY, getGuiWidth());
+                if (mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
+                    displayTooltips(matrix, mouseX, mouseY, upgrade.getDescription());
                 }
             });
         }

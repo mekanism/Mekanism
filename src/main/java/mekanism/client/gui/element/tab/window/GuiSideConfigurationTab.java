@@ -23,7 +23,7 @@ public class GuiSideConfigurationTab<TILE extends TileEntityMekanism & ISideConf
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, MekanismLang.SIDE_CONFIG.translate(), mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, MekanismLang.SIDE_CONFIG.translate());
     }
 
     @Override

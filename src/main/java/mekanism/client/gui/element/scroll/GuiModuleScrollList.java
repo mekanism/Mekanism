@@ -115,12 +115,12 @@ public class GuiModuleScrollList extends GuiScrollList {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        if (mouseX >= relativeX + 1 && mouseX < relativeX + barXShift - 1) {
+        if (mouseX >= x + 1 && mouseX < x + barXShift - 1) {
             forEachModule((module, multipliedElement) -> {
                 IModule<?> instance = MekanismAPI.getModuleHelper().load(currentItem, module);
-                if (instance != null && mouseY >= relativeY + 1 + multipliedElement && mouseY < relativeY + 1 + multipliedElement + elementHeight) {
+                if (instance != null && mouseY >= y + 1 + multipliedElement && mouseY < y + 1 + multipliedElement + elementHeight) {
                     Component t = MekanismLang.GENERIC_FRACTION.translateColored(EnumColor.GRAY, instance.getInstalledCount(), module.getMaxStackSize());
-                    displayTooltip(matrix, MekanismLang.MODULE_INSTALLED.translate(t), mouseX, mouseY, getGuiWidth());
+                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.MODULE_INSTALLED.translate(t));
                 }
             });
         }

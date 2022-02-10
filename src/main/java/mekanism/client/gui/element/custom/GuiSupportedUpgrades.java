@@ -1,9 +1,7 @@
 package mekanism.client.gui.element.custom;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.Arrays;
-import java.util.List;
+import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import mekanism.api.Upgrade;
@@ -73,17 +71,15 @@ public class GuiSupportedUpgrades extends GuiElement {
         super.renderToolTip(matrix, mouseX, mouseY);
         for (int i = 0; i < EnumUtils.UPGRADES.length; i++) {
             UpgradePos pos = getUpgradePos(i);
-            if (mouseX >= relativeX + 1 + pos.x && mouseX < relativeX + 1 + pos.x + ELEMENT_SIZE &&
-                mouseY >= relativeY + 1 + pos.y && mouseY < relativeY + 1 + pos.y + ELEMENT_SIZE) {
+            if (mouseX >= x + 1 + pos.x && mouseX < x + 1 + pos.x + ELEMENT_SIZE &&
+                mouseY >= y + 1 + pos.y && mouseY < y + 1 + pos.y + ELEMENT_SIZE) {
                 Upgrade upgrade = EnumUtils.UPGRADES[i];
                 Component upgradeName = MekanismLang.UPGRADE_TYPE.translateColored(EnumColor.YELLOW, upgrade);
-                List<Component> tooltip;
                 if (supportedUpgrades.contains(upgrade)) {
-                    tooltip = Arrays.asList(upgradeName, upgrade.getDescription());
+                    displayTooltips(matrix, mouseX, mouseY, upgradeName, upgrade.getDescription());
                 } else {
-                    tooltip = Arrays.asList(MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
+                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.UPGRADE_NOT_SUPPORTED.translateColored(EnumColor.RED, upgradeName), upgrade.getDescription());
                 }
-                displayTooltips(matrix, tooltip, mouseX, mouseY, getGuiWidth());
                 //We can break once we managed to find a tooltip to render
                 break;
             }

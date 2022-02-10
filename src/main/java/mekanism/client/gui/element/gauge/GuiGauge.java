@@ -130,9 +130,9 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                     }
                 }
                 if (dataType == null) {
-                    displayTooltip(matrix, MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()), mouseX, mouseY);
+                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_PARENTHESIS.translateColored(color, color.getName()));
                 } else {
-                    displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()), mouseX, mouseY);
+                    displayTooltips(matrix, mouseX, mouseY, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, dataType, color.getName()));
                 }
             }
         } else {
@@ -141,7 +141,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement {
                 list.add(getLabel());
             }
             list.addAll(getTooltipText());
-            displayTooltips(matrix, list, mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, list);
         }
     }
 

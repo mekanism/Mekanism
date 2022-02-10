@@ -24,7 +24,7 @@ public abstract class GuiTabElementType<TILE extends BlockEntity, TAB extends En
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, tabType.getDescription(), mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, tabType.getDescription());
     }
 
     @Override

@@ -77,7 +77,7 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
                         DataType data = getFromSlot(slot);
                         if (data != null) {
                             EnumColor color = data.getColor();
-                            displayTooltip(matrix, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName()), mouseX - leftPos, mouseY - topPos);
+                            displayTooltips(matrix, mouseX - leftPos, mouseY - topPos, MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(color, data, color.getName()));
                         }
                         break;
                     }

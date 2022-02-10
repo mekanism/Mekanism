@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.tab;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.Arrays;
 import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,12 +25,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.SecurityUtils;
 import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 
 public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
@@ -95,9 +94,9 @@ public class GuiSecurityTab extends GuiInsetElement<ISecurityObject> {
         Component securityComponent = MekanismLang.SECURITY.translateColored(EnumColor.GRAY, SecurityUtils.getSecurity(dataSource, Dist.CLIENT));
         Component ownerComponent = OwnerDisplay.of(minecraft.player, dataSource.getOwnerUUID(), dataSource.getOwnerName()).getTextComponent();
         if (SecurityUtils.isOverridden(dataSource, Dist.CLIENT)) {
-            displayTooltips(matrix, Arrays.asList(securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED)), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, securityComponent, ownerComponent, MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
         } else {
-            displayTooltips(matrix, Arrays.asList(securityComponent, ownerComponent), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, securityComponent, ownerComponent);
         }
     }
 

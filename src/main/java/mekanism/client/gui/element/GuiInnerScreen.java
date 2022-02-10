@@ -95,7 +95,7 @@ public class GuiInnerScreen extends GuiScalableElement implements IJEIRecipeArea
         if (tooltipStrings != null) {
             List<Component> list = tooltipStrings.get();
             if (list != null && !list.isEmpty()) {
-                displayTooltips(matrix, list, mouseX, mouseY);
+                displayTooltips(matrix, mouseX, mouseY, list);
             }
         }
     }

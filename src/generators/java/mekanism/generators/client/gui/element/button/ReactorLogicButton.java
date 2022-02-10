@@ -51,7 +51,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
         super.renderToolTip(matrix, mouseX, mouseY);
         TYPE mode = getMode();
         if (mode != null) {
-            displayTooltip(matrix, mode.getDescription(), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, mode.getDescription());
         }
     }
 

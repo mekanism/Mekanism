@@ -178,7 +178,7 @@ public class GuiColorWindow extends GuiWindow {
         public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
             super.renderToolTip(matrix, mouseX, mouseY);
             Component hex = MekanismLang.GENERIC_HEX.translateColored(EnumColor.GRAY, TextUtils.hex(false, 3, getColor().rgb()));
-            displayTooltip(matrix, hex, mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, hex);
         }
 
         @Override

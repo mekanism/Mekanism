@@ -38,7 +38,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     @Override
     public void renderToolTip(@Nonnull PoseStack matrix, int mouseX, int mouseY) {
         super.renderToolTip(matrix, mouseX, mouseY);
-        displayTooltip(matrix, tooltip, mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, tooltip);
     }
 
     @Override

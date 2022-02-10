@@ -67,7 +67,7 @@ public class GuiEnergyTab extends GuiBiDirectionalTab {
         super.renderToolTip(matrix, mouseX, mouseY);
         List<Component> info = new ArrayList<>(infoHandler.getInfo());
         info.add(MekanismLang.UNIT.translate(MekanismConfig.general.energyUnit.get()));
-        displayTooltips(matrix, info, mouseX, mouseY);
+        displayTooltips(matrix, mouseX, mouseY, info);
     }
 
     @Override

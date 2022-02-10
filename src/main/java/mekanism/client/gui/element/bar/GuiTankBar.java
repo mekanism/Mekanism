@@ -40,7 +40,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
         if (isEmpty(stored)) {
             super.renderToolTip(matrix, mouseX, mouseY);
         } else {
-            displayTooltips(matrix, getTooltip(stored), mouseX, mouseY);
+            displayTooltips(matrix, mouseX, mouseY, getTooltip(stored));
         }
     }
 

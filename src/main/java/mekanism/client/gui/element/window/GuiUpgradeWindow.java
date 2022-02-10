@@ -50,7 +50,7 @@ public class GuiUpgradeWindow extends GuiWindow {
                 Mekanism.packetHandler().sendToServer(new PacketGuiInteract(Screen.hasShiftDown() ? GuiInteraction.REMOVE_ALL_UPGRADE : GuiInteraction.REMOVE_UPGRADE,
                       this.tile, scrollList.getSelection().ordinal()));
             }
-        }, (onHover, matrix, xAxis, yAxis) -> displayTooltip(matrix, MekanismLang.UPGRADE_UNINSTALL_TOOLTIP.translate(), xAxis, yAxis)));
+        }, getOnHover(MekanismLang.UPGRADE_UNINSTALL_TOOLTIP)));
         MekanismTileContainer<?> container = (MekanismTileContainer<?>) ((GuiMekanism<?>) gui()).getMenu();
         addChild(new GuiVirtualSlot(SlotType.NORMAL, gui, relativeX + 133, relativeY + 18, container.getUpgradeSlot()));
         addChild(new GuiVirtualSlot(SlotType.NORMAL, gui, relativeX + 133, relativeY + 73, container.getUpgradeOutputSlot()));

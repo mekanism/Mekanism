@@ -14,12 +14,12 @@ public class ColorButton extends MekanismButton {
     private final Supplier<EnumColor> colorSupplier;
 
     public ColorButton(IGuiWrapper gui, int x, int y, int width, int height, Supplier<EnumColor> colorSupplier, Runnable onPress, Runnable onRightClick) {
-        super(gui, x, y, width, height, TextComponent.EMPTY, onPress, onRightClick, (onHover, matrix, xAxis, yAxis) -> {
+        super(gui, x, y, width, height, TextComponent.EMPTY, onPress, onRightClick, (onHover, matrix, mouseX, mouseY) -> {
             EnumColor color = colorSupplier.get();
             if (color != null) {
-                gui.displayTooltip(matrix, color.getColoredName(), xAxis, yAxis);
+                gui.displayTooltips(matrix, mouseX, mouseY, color.getColoredName());
             } else {
-                gui.displayTooltip(matrix, MekanismLang.NONE.translate(), xAxis, yAxis);
+                gui.displayTooltips(matrix, mouseX, mouseY, MekanismLang.NONE.translate());
             }
         });
         this.colorSupplier = colorSupplier;

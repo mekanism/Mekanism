@@ -344,15 +344,15 @@ public class MekanismRenderer {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuilder();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
         bufferbuilder.begin(Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         Matrix4f matrix4f = matrix.last().pose();
         bufferbuilder.vertex(matrix4f, width, y, 0).color(r, g, b, a).endVertex();
         bufferbuilder.vertex(matrix4f, x, y, 0).color(r, g, b, a).endVertex();
         bufferbuilder.vertex(matrix4f, x, height, 0).color(r, g, b, a).endVertex();
         bufferbuilder.vertex(matrix4f, width, height, 0).color(r, g, b, a).endVertex();
-        tessellator.end();
+        tesselator.end();
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();
         RenderSystem.enableDepthTest();
