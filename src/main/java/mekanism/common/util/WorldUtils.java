@@ -1,10 +1,12 @@
 package mekanism.common.util;
 
+import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,6 +14,9 @@ import mekanism.common.Mekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
+import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.ChunkHolder.ChunkLoadingFailure;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -38,6 +43,48 @@ import org.jetbrains.annotations.Contract;
 public class WorldUtils {
 
     /**
+     * Checks if the chunk at the given position is loaded but does not validate the position is in bounds of the world.
+     *
+     * @param world world
+     * @param pos   position
+     *
+     * @see #isBlockLoaded(BlockGetter, BlockPos)
+     */
+    @Contract("null, _ -> false")
+    public static boolean isChunkLoaded(@Nullable LevelReader world, @Nonnull BlockPos pos) {
+        return isChunkLoaded(world, SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
+    }
+
+    /**
+     * Checks if the chunk at the given position is loaded.
+     *
+     * @param world    world
+     * @param chunkPos Chunk position
+     */
+    @Contract("null, _ -> false")
+    public static boolean isChunkLoaded(@Nullable LevelReader world, ChunkPos chunkPos) {
+        return isChunkLoaded(world, chunkPos.x, chunkPos.z);
+    }
+
+    /**
+     * Checks if the chunk at the given position is loaded.
+     *
+     * @param world  world
+     * @param chunkX Chunk X coordinate
+     * @param chunkZ Chunk Z coordinate
+     */
+    @Contract("null, _, _ -> false")
+    public static boolean isChunkLoaded(@Nullable LevelReader world, int chunkX, int chunkZ) {
+        if (world == null) {
+            return false;
+        } else if (world instanceof LevelAccessor accessor && accessor.getChunkSource() instanceof ServerChunkCache serverChunkCache) {
+            CompletableFuture<Either<ChunkAccess, ChunkLoadingFailure>> future = serverChunkCache.getChunkFuture(chunkX, chunkZ, ChunkStatus.FULL, false);
+            return future.isDone() && future.getNow(ChunkHolder.UNLOADED_CHUNK).left().isPresent();
+        }
+        return world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false) != null;
+    }
+
+    /**
      * Checks if a position is in bounds of the world, and is loaded
      *
      * @param world world
@@ -53,7 +100,9 @@ public class WorldUtils {
             if (reader instanceof Level level && !level.isInWorldBounds(pos)) {
                 return false;
             }
-            return reader.hasChunkAt(pos);
+            //TODO: If any cases come up where things are behaving oddly due to the change from reader.hasChunkAt(pos)
+            // re-evaluate this and if the specific case is being handled properly
+            return isChunkLoaded(reader, pos);
         }
         return true;
     }
@@ -403,7 +452,7 @@ public class WorldUtils {
     public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @Nonnull FluidStack fluidStack, @Nullable SoundEvent soundEvent) {
         if (soundEvent == null) {
             Fluid fluid = fluidStack.getFluid();
-            soundEvent = fluid.getPickupSound().orElseGet(() ->  fluid.getAttributes().getFillSound(world, pos));
+            soundEvent = fluid.getPickupSound().orElseGet(() -> fluid.getAttributes().getFillSound(world, pos));
         }
         world.playSound(player, pos, soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
     }

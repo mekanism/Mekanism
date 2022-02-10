@@ -17,6 +17,7 @@ import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.WorldUtils;
 import mekanism.common.world.height.ConfigurableHeightProvider;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -175,7 +176,8 @@ public class GenHandler {
     public static boolean generate(ServerLevel world, ChunkPos chunkPos) {
         boolean generated = false;
         //Ensure the chunk actually exists before trying to retrogen it
-        if (!SharedConstants.debugVoidTerrain(chunkPos) && world.hasChunk(chunkPos.x, chunkPos.z)) {
+        //TODO - 1.18: Re-evaluate if this should use WorldUtils#isChunkLoaded or World#hasChunk
+        if (!SharedConstants.debugVoidTerrain(chunkPos) && WorldUtils.isChunkLoaded(world, chunkPos)) {
             SectionPos sectionPos = SectionPos.of(chunkPos, world.getMinSection());
             BlockPos blockPos = sectionPos.origin();
             ChunkGenerator chunkGenerator = world.getChunkSource().getGenerator();

@@ -6,9 +6,9 @@ import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.BlockPos;
 import net.minecraftforge.network.NetworkEvent;
 
 public class PacketUpdateTile implements IMekanismPacket {
@@ -28,10 +28,11 @@ public class PacketUpdateTile implements IMekanismPacket {
     @Override
     public void handle(NetworkEvent.Context context) {
         ClientLevel world = Minecraft.getInstance().level;
-        if (world != null) {
+        //Only handle the update packet if the block is currently loaded
+        if (WorldUtils.isBlockLoaded(world, pos)) {
             TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos, true);
             if (tile == null) {
-                Mekanism.logger.info("Update tile packet received for position: {} in world: {}, but no valid tile was found.", pos,
+                Mekanism.logger.warn("Update tile packet received for position: {} in world: {}, but no valid tile was found.", pos,
                       world.dimension().location());
             } else {
                 tile.handleUpdatePacket(updateTag);
