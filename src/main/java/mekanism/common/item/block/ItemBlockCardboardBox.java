@@ -48,7 +48,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
             try {
                 tooltip.add(MekanismLang.BLOCK.translate(data.blockState.getBlock()));
                 if (data.tileTag != null) {
-                    tooltip.add(MekanismLang.TILE.translate(data.tileTag.getString(NBTConstants.ID)));
+                    tooltip.add(MekanismLang.BLOCK_ENTITY.translate(data.tileTag.getString(NBTConstants.ID)));
                 }
             } catch (Exception ignored) {
             }

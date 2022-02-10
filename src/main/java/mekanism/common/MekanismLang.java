@@ -285,7 +285,7 @@ public enum MekanismLang implements ILangEntry {
     DICTIONARY_BLOCK_TAGS_FOUND("dictionary", "tags_found.block"),
     DICTIONARY_FLUID_TAGS_FOUND("dictionary", "tags_found.fluid"),
     DICTIONARY_ENTITY_TYPE_TAGS_FOUND("dictionary", "tags_found.entity_type"),
-    DICTIONARY_TILE_ENTITY_TYPE_TAGS_FOUND("dictionary", "tags_found.tile_entity_type"),
+    DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND("dictionary", "tags_found.block_entity_type"),
     DICTIONARY_TAG_TYPE("dictionary", "tag_type"),
     DICTIONARY_ITEM("dictionary", "item"),
     DICTIONARY_ITEM_DESC("dictionary", "item.desc"),
@@ -301,8 +301,8 @@ public enum MekanismLang implements ILangEntry {
     DICTIONARY_MOB_EFFECT_DESC("dictionary", "mob_effect.desc"),
     DICTIONARY_ENCHANTMENT("dictionary", "enchantment"),
     DICTIONARY_ENCHANTMENT_DESC("dictionary", "enchantment.desc"),
-    DICTIONARY_TILE_ENTITY_TYPE("dictionary", "tile_entity_type"),
-    DICTIONARY_TILE_ENTITY_TYPE_DESC("dictionary", "tile_entity_type.desc"),
+    DICTIONARY_BLOCK_ENTITY_TYPE("dictionary", "block_entity_type"),
+    DICTIONARY_BLOCK_ENTITY_TYPE_DESC("dictionary", "block_entity_type.desc"),
     DICTIONARY_GAS("dictionary", "gas"),
     DICTIONARY_GAS_DESC("dictionary", "gas.desc"),
     DICTIONARY_INFUSE_TYPE("dictionary", "infuse_type"),
@@ -341,7 +341,7 @@ public enum MekanismLang implements ILangEntry {
     //Cardboard box
     BLOCK_DATA("cardboard_box", "block_data"),
     BLOCK("cardboard_box", "block"),
-    TILE("cardboard_box", "tile"),
+    BLOCK_ENTITY("cardboard_box", "block_entity"),
     //Crafting Formula
     INGREDIENTS("crafting_formula", "ingredients"),
     ENCODED("crafting_formula", "encoded"),

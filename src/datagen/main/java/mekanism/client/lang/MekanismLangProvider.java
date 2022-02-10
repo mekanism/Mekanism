@@ -769,7 +769,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, "Block Tag(s) found:");
         add(MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, "Fluid Tag(s) found:");
         add(MekanismLang.DICTIONARY_ENTITY_TYPE_TAGS_FOUND, "Entity Type Tag(s) found:");
-        add(MekanismLang.DICTIONARY_TILE_ENTITY_TYPE_TAGS_FOUND, "Tile Entity Type Tag(s) found:");
+        add(MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND, "Block Entity Type Tag(s) found:");
         add(MekanismLang.DICTIONARY_TAG_TYPE, "Tag Type:");
         add(MekanismLang.DICTIONARY_ITEM, "Item");
         add(MekanismLang.DICTIONARY_ITEM_DESC, "Display Item Tags");
@@ -785,8 +785,8 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.DICTIONARY_MOB_EFFECT_DESC, "Display Mob Effect Tags");
         add(MekanismLang.DICTIONARY_ENCHANTMENT, "Enchantment");
         add(MekanismLang.DICTIONARY_ENCHANTMENT_DESC, "Display Enchantment Tags");
-        add(MekanismLang.DICTIONARY_TILE_ENTITY_TYPE, "Tile Entity Type");
-        add(MekanismLang.DICTIONARY_TILE_ENTITY_TYPE_DESC, "Display Tile Entity Type Tags");
+        add(MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE, "Block Entity Type");
+        add(MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_DESC, "Display Block Entity Type Tags");
         add(MekanismLang.DICTIONARY_GAS, "Gas");
         add(MekanismLang.DICTIONARY_GAS_DESC, "Display Gas Tags");
         add(MekanismLang.DICTIONARY_INFUSE_TYPE, "Infuse Type");
@@ -825,7 +825,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Cardboard box
         add(MekanismLang.BLOCK_DATA, "Block data: %s");
         add(MekanismLang.BLOCK, "Block: %s");
-        add(MekanismLang.TILE, "Tile: %s");
+        add(MekanismLang.BLOCK_ENTITY, "Block Entity: %s");
         //Crafting Formula
         add(MekanismLang.INGREDIENTS, "Ingredients:");
         add(MekanismLang.ENCODED, "(Encoded)");

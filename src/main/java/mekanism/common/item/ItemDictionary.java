@@ -70,7 +70,7 @@ public class ItemDictionary extends Item {
                     } else {
                         //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
                         sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockTags);
-                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_TILE_ENTITY_TYPE_TAGS_FOUND, tileTags);
+                        sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND, tileTags);
                     }
                 }
                 return InteractionResult.SUCCESS;

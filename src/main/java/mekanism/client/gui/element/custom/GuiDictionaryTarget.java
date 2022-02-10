@@ -121,7 +121,7 @@ public class GuiDictionaryTarget extends GuiElement implements IJEIGhostTarget {
                     Block block = blockItem.getBlock();
                     tags.put(DictionaryTagType.BLOCK, TagCache.getTagsAsStrings(block.getTags()));
                     if (block instanceof IHasTileEntity || block.defaultBlockState().hasBlockEntity()) {
-                        tags.put(DictionaryTagType.TILE_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
+                        tags.put(DictionaryTagType.BLOCK_ENTITY_TYPE, TagCache.getTileEntityTypeTags(block));
                     }
                 }
                 //Entity type tags
