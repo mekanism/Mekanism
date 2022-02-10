@@ -8,6 +8,7 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -29,7 +30,7 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().deserialize(input);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
@@ -40,7 +41,7 @@ public class ItemStackToItemStackRecipeSerializer<RECIPE extends ItemStackToItem
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
+            ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
             ItemStack output = buffer.readItem();
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {

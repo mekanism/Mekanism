@@ -2,7 +2,7 @@ package mekanism.common.recipe.impl;
 
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;

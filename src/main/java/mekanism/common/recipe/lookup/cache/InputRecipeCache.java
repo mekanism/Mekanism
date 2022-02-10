@@ -9,7 +9,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.DoubleInputRecipeCache.DoubleSameInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.type.ChemicalInputCache;

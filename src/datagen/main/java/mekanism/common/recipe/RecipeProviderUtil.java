@@ -7,20 +7,20 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.datagen.recipe.RecipeCriterion;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.builder.ExtendedCookingRecipeBuilder;
 import mekanism.common.registries.MekanismItems;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.tags.Tag;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
 /**
@@ -55,44 +55,44 @@ public class RecipeProviderUtil {
         if (boat != null) {
             //Boat
             build(consumer, SawmillRecipeBuilder.sawing(
-                  ItemStackIngredient.from(boat.asItem()),
+                  IngredientCreatorAccess.item().from(boat.asItem()),
                   new ItemStack(planks, 5)
             ), basePath + "boat/" + name, condition);
         }
         //Door
         build(consumer, SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(door.asItem()),
+              IngredientCreatorAccess.item().from(door.asItem()),
               new ItemStack(planks, 2)
         ), basePath + "door/" + name, condition);
         //Fence Gate
         build(consumer, SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(fenceGate.asItem()),
+              IngredientCreatorAccess.item().from(fenceGate.asItem()),
               new ItemStack(planks, 2),
               new ItemStack(Items.STICK, 4),
               1
         ), basePath + "fence_gate/" + name, condition);
         //Log
         build(consumer, SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(log),
+              IngredientCreatorAccess.item().from(log),
               new ItemStack(planks, 6),
               MekanismItems.SAWDUST.getItemStack(),
               0.25
         ), basePath + "log/" + name, condition);
         //Pressure plate
         build(consumer, SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(pressurePlate.asItem()),
+              IngredientCreatorAccess.item().from(pressurePlate.asItem()),
               new ItemStack(planks, 2)
         ), basePath + "pressure_plate/" + name, condition);
         //Trapdoor
         build(consumer, SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(trapdoor.asItem()),
+              IngredientCreatorAccess.item().from(trapdoor.asItem()),
               new ItemStack(planks, 3)
         ), basePath + "trapdoor/" + name, condition);
     }
 
     public static void addSandStoneToSandRecipe(Consumer<FinishedRecipe> consumer, String path, @Nullable ICondition condition, ItemLike sand, ItemLike... sandstones) {
         build(consumer, ItemStackToItemStackRecipeBuilder.crushing(
-              ItemStackIngredient.from(Ingredient.of(sandstones)),
+              IngredientCreatorAccess.item().from(Ingredient.of(sandstones)),
               new ItemStack(sand, 2)
         ), path, condition);
     }
@@ -112,7 +112,7 @@ public class RecipeProviderUtil {
     public static void addPrecisionSawmillBedRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike bed, ItemLike planks, DyeColor color,
           @Nullable ICondition condition) {
         SawmillRecipeBuilder bedRecipeBuilder = SawmillRecipeBuilder.sawing(
-              ItemStackIngredient.from(bed),
+              IngredientCreatorAccess.item().from(bed),
               new ItemStack(planks, 3),
               new ItemStack(getWool(color), 3),
               1

@@ -8,7 +8,7 @@ import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBui
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
@@ -35,8 +35,8 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         addSandRecipes(consumer, basePath + "sandstone_to_sand/");
         //Mud brick -> mud ball
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-                    ItemStackIngredient.from(BOPItems.MUD_BRICK),
-                    GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
+                    IngredientCreatorAccess.item().from(BOPItems.MUD_BRICK),
+                    IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
                     new ItemStack(BOPItems.MUD_BALL)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "mud_brick_to_mud_ball"));
@@ -109,7 +109,7 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     private void dye(Consumer<FinishedRecipe> consumer, String basePath, ItemLike output, EnumColor color, ItemLike... inputs) {
-        ItemStackIngredient inputIngredient = ItemStackIngredient.from(Ingredient.of(inputs));
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(Ingredient.of(inputs));
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
                     new ItemStack(output, 2)

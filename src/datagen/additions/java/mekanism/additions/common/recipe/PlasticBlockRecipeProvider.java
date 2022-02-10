@@ -11,8 +11,7 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -32,10 +31,10 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.tags.Tag;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
 public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
@@ -179,7 +178,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
               .build(consumer, MekanismAdditions.rl(basePath + colorString));
         //Enriching recipes
         ItemStackToItemStackRecipeBuilder.enriching(
-              ItemStackIngredient.from(plastic),
+              IngredientCreatorAccess.item().from(plastic),
               result.getItemStack()
         ).build(consumer, MekanismAdditions.rl(basePath + "enriching/" + colorString));
         //Recolor recipes
@@ -198,8 +197,8 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
                   .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
-              ItemStackIngredient.from(recolorInput),
-              PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
+              IngredientCreatorAccess.item().from(recolorInput),
+              IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
               new ItemStack(result)
         ).build(consumer, Mekanism.rl(basePath + "recolor/painting/" + colorString));
     }
@@ -216,8 +215,8 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
                   .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
-              ItemStackIngredient.from(recolorInput),
-              PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
+              IngredientCreatorAccess.item().from(recolorInput),
+              IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
               new ItemStack(result)
         ).build(consumer, Mekanism.rl(basePath + "recolor/painting/" + colorString));
     }

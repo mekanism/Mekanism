@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.IInputHandler;
+import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemFluidChemical;
 import mekanism.common.recipe.lookup.cache.TripleInputRecipeCache;

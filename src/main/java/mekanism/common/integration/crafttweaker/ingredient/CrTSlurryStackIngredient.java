@@ -8,7 +8,8 @@ import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.chemical.slurry.Slurry;
-import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTSlurryStack;
@@ -35,7 +36,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static SlurryStackIngredient from(Slurry instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "SlurryStackIngredients", "slurry");
-        return SlurryStackIngredient.from(instance, amount);
+        return IngredientCreatorAccess.slurry().from(instance, amount);
     }
 
     /**
@@ -48,7 +49,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static SlurryStackIngredient from(ICrTSlurryStack instance) {
         CrTIngredientHelper.assertValid(instance, "SlurryStackIngredients");
-        return SlurryStackIngredient.from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.slurry().from(instance.getImmutableInternal());
     }
 
     /**
@@ -62,7 +63,7 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static SlurryStackIngredient from(MCTag<Slurry> slurryTag, long amount) {
         Tag<Slurry> tag = CrTIngredientHelper.assertValidAndGet(slurryTag, amount, CrTSlurryTagManager.INSTANCE::getInternal, "SlurryStackIngredients");
-        return SlurryStackIngredient.from(tag, amount);
+        return IngredientCreatorAccess.slurry().from(tag, amount);
     }
 
     /**
@@ -86,7 +87,7 @@ public class CrTSlurryStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static SlurryStackIngredient createMulti(SlurryStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("SlurryStackIngredients", SlurryStackIngredient::createMulti, ingredients);
+        return CrTIngredientHelper.createMulti("SlurryStackIngredients", IngredientCreatorAccess.slurry(), ingredients);
     }
 
     /**
@@ -144,6 +145,6 @@ public class CrTSlurryStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static SlurryStackIngredient or(SlurryStackIngredient _this, SlurryStackIngredient other) {
-        return SlurryStackIngredient.createMulti(_this, other);
+        return IngredientCreatorAccess.slurry().createMulti(_this, other);
     }
 }

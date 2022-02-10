@@ -1,4 +1,4 @@
-package mekanism.api.recipes.inputs;
+package mekanism.api.recipes.inputs.handler;
 
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -11,6 +11,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
+import mekanism.api.recipes.inputs.InputIngredient;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 

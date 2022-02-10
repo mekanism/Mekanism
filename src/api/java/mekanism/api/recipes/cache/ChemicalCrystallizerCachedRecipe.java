@@ -6,7 +6,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
-import mekanism.api.recipes.inputs.BoxedChemicalInputHandler;
+import mekanism.api.recipes.inputs.handler.BoxedChemicalInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
 

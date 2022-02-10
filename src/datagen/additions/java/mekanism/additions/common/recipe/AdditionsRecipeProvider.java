@@ -12,8 +12,7 @@ import mekanism.additions.common.item.ItemBalloon;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -34,11 +33,11 @@ import mekanism.common.registries.MekanismPigments;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -120,8 +119,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                   .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
-              ItemStackIngredient.from(recolorInput),
-              PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
+              IngredientCreatorAccess.item().from(recolorInput),
+              IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               new ItemStack(result)
         ).build(consumer, Mekanism.rl(basePath + "recolor/painting/" + colorString));
     }

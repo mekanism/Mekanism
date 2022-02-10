@@ -6,7 +6,7 @@ import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.InfusionStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

@@ -14,7 +14,8 @@ import mekanism.api.chemical.gas.attribute.GasAttributes.HeatedCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -113,7 +114,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
         //Special case heat only recipe
         double temperature = waterAmount * waterToSteamEfficiency / (BoilerMultiblockData.CASING_HEAT_CAPACITY * MekanismConfig.general.boilerWaterConductivity.get()) +
                              HeatUtils.BASE_BOIL_TEMP;
-        recipes.add(new BoilerJEIRecipe(null, FluidStackIngredient.from(FluidTags.WATER, waterAmount),
+        recipes.add(new BoilerJEIRecipe(null, IngredientCreatorAccess.fluid().from(FluidTags.WATER, waterAmount),
               MekanismGases.STEAM.getStack(waterAmount), GasStack.EMPTY, temperature));
         //Go through all gases and add each coolant
         for (Gas gas : MekanismAPI.gasRegistry()) {
@@ -122,7 +123,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerJEIRecipe> {
                 //If it is a cooled coolant add a recipe for it
                 Gas cooledCoolant = heatedCoolant.getCooledGas();
                 long coolantAmount = Math.round(waterAmount * waterToSteamEfficiency / heatedCoolant.getThermalEnthalpy());
-                recipes.add(new BoilerJEIRecipe(GasStackIngredient.from(gas, coolantAmount), FluidStackIngredient.from(FluidTags.WATER, waterAmount),
+                recipes.add(new BoilerJEIRecipe(IngredientCreatorAccess.gas().from(gas, coolantAmount), IngredientCreatorAccess.fluid().from(FluidTags.WATER, waterAmount),
                       MekanismGases.STEAM.getStack(waterAmount), cooledCoolant.getStack(coolantAmount), HeatUtils.BASE_BOIL_TEMP));
             }
         }

@@ -5,7 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.GasStack;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.bar.GuiDynamicHorizontalRateBar;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -63,7 +64,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSJEIRecipe> {
     }
 
     public static List<SPSJEIRecipe> getSPSRecipes() {
-        return Collections.singletonList(new SPSJEIRecipe(GasStackIngredient.from(MekanismGases.POLONIUM, MekanismConfig.general.spsInputPerAntimatter.get()),
+        return Collections.singletonList(new SPSJEIRecipe(IngredientCreatorAccess.gas().from(MekanismGases.POLONIUM, MekanismConfig.general.spsInputPerAntimatter.get()),
               MekanismGases.ANTIMATTER.getStack(1)));
     }
 

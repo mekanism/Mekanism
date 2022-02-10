@@ -1,4 +1,4 @@
-package mekanism.api.recipes.inputs.chemical;
+package mekanism.common.recipe.ingredient.chemical;
 
 import javax.annotation.Nonnull;
 import mekanism.api.JsonConstants;
@@ -24,7 +24,7 @@ import net.minecraft.resources.ResourceLocation;
  */
 @SuppressWarnings("Convert2Diamond")
 //The types cannot properly be inferred
-class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IEmptyStackProvider<CHEMICAL, STACK> {
+public class ChemicalIngredientInfo<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> implements IEmptyStackProvider<CHEMICAL, STACK> {
 
     public static final ChemicalIngredientInfo<Gas, GasStack> GAS = new ChemicalIngredientInfo<Gas, GasStack>(GasStack.EMPTY, GasStack::new, GasStack::new, JsonConstants.GAS, ChemicalTags.GAS);
     public static final ChemicalIngredientInfo<InfuseType, InfusionStack> INFUSION = new ChemicalIngredientInfo<InfuseType, InfusionStack>(InfusionStack.EMPTY, InfusionStack::new, InfusionStack::new, JsonConstants.INFUSE_TYPE, ChemicalTags.INFUSE_TYPE);

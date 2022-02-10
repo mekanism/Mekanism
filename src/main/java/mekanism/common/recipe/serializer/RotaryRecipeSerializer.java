@@ -9,7 +9,8 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -38,7 +39,7 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
         if (json.has(JsonConstants.FLUID_INPUT) || json.has(JsonConstants.GAS_OUTPUT)) {
             JsonElement fluidInput = GsonHelper.isArrayNode(json, JsonConstants.FLUID_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.FLUID_INPUT) :
                                      GsonHelper.getAsJsonObject(json, JsonConstants.FLUID_INPUT);
-            fluidInputIngredient = FluidStackIngredient.deserialize(fluidInput);
+            fluidInputIngredient = IngredientCreatorAccess.fluid().deserialize(fluidInput);
             gasOutput = SerializerHelper.getGasStack(json, JsonConstants.GAS_OUTPUT);
             hasFluidToGas = true;
             if (gasOutput.isEmpty()) {
@@ -48,7 +49,7 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
         if (json.has(JsonConstants.GAS_INPUT) || json.has(JsonConstants.FLUID_OUTPUT)) {
             JsonElement gasInput = GsonHelper.isArrayNode(json, JsonConstants.GAS_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
                                    GsonHelper.getAsJsonObject(json, JsonConstants.GAS_INPUT);
-            gasInputIngredient = GasStackIngredient.deserialize(gasInput);
+            gasInputIngredient = IngredientCreatorAccess.gas().deserialize(gasInput);
             fluidOutput = SerializerHelper.getFluidStack(json, JsonConstants.FLUID_OUTPUT);
             hasGasToFluid = true;
             if (fluidOutput.isEmpty()) {
@@ -74,12 +75,12 @@ public class RotaryRecipeSerializer<RECIPE extends RotaryRecipe> extends ForgeRe
             FluidStack fluidOutput = null;
             boolean hasFluidToGas = buffer.readBoolean();
             if (hasFluidToGas) {
-                fluidInputIngredient = FluidStackIngredient.read(buffer);
+                fluidInputIngredient = IngredientCreatorAccess.fluid().read(buffer);
                 gasOutput = GasStack.readFromPacket(buffer);
             }
             boolean hasGasToFluid = buffer.readBoolean();
             if (hasGasToFluid) {
-                gasInputIngredient = GasStackIngredient.read(buffer);
+                gasInputIngredient = IngredientCreatorAccess.gas().read(buffer);
                 fluidOutput = FluidStack.readFromPacket(buffer);
             }
             if (hasFluidToGas && hasGasToFluid) {

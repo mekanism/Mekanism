@@ -10,6 +10,7 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,7 +31,7 @@ public class ElectrolysisRecipeSerializer<RECIPE extends ElectrolysisRecipe> ext
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        FluidStackIngredient inputIngredient = FluidStackIngredient.deserialize(input);
+        FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().deserialize(input);
         GasStack leftGasOutput = SerializerHelper.getGasStack(json, JsonConstants.LEFT_GAS_OUTPUT);
         GasStack rightGasOutput = SerializerHelper.getGasStack(json, JsonConstants.RIGHT_GAS_OUTPUT);
         FloatingLong energyMultiplier = FloatingLong.ONE;
@@ -49,7 +50,7 @@ public class ElectrolysisRecipeSerializer<RECIPE extends ElectrolysisRecipe> ext
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            FluidStackIngredient input = FluidStackIngredient.read(buffer);
+            FluidStackIngredient input = IngredientCreatorAccess.fluid().read(buffer);
             FloatingLong energyMultiplier = FloatingLong.readFromBuffer(buffer);
             GasStack leftGasOutput = GasStack.readFromPacket(buffer);
             GasStack rightGasOutput = GasStack.readFromPacket(buffer);

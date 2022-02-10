@@ -38,8 +38,7 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 @FieldsAreNonnullByDefault
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@SuppressWarnings("Convert2Diamond")
-//The types cannot properly be inferred
+@SuppressWarnings("Convert2Diamond")//The types cannot properly be inferred
 public class MultiblockChemicalTankBuilder<CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>, TANK extends IChemicalTank<CHEMICAL, STACK>> {
 
     public static final MultiblockChemicalTankBuilder<Gas, GasStack, IGasTank> GAS = new MultiblockChemicalTankBuilder<Gas, GasStack, IGasTank>(ChemicalTankBuilder.GAS, MultiblockGasTank::new);

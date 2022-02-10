@@ -16,8 +16,8 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.GasToGasRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.chemical.ChemicalToChemicalCachedRecipe;
-import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.inputs.handler.IInputHandler;
+import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -47,7 +47,6 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 

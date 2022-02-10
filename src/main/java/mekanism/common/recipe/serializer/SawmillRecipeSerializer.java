@@ -8,6 +8,7 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -29,7 +30,7 @@ public class SawmillRecipeSerializer<RECIPE extends SawmillRecipe> extends Forge
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().deserialize(input);
         ItemStack mainOutput = ItemStack.EMPTY;
         ItemStack secondaryOutput = ItemStack.EMPTY;
         double secondaryChance = 0;
@@ -67,7 +68,7 @@ public class SawmillRecipeSerializer<RECIPE extends SawmillRecipe> extends Forge
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
+            ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
             ItemStack mainOutput = buffer.readItem();
             ItemStack secondaryOutput = buffer.readItem();
             double secondaryChance = buffer.readDouble();

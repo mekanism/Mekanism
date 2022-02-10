@@ -8,7 +8,8 @@ import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
@@ -35,7 +36,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient from(Gas instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "GasStackIngredients", "gas");
-        return GasStackIngredient.from(instance, amount);
+        return IngredientCreatorAccess.gas().from(instance, amount);
     }
 
     /**
@@ -48,7 +49,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient from(ICrTGasStack instance) {
         CrTIngredientHelper.assertValid(instance, "GasStackIngredients");
-        return GasStackIngredient.from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.gas().from(instance.getImmutableInternal());
     }
 
     /**
@@ -62,7 +63,7 @@ public class CrTGasStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient from(MCTag<Gas> gasTag, long amount) {
         Tag<Gas> tag = CrTIngredientHelper.assertValidAndGet(gasTag, amount, CrTGasTagManager.INSTANCE::getInternal, "GasStackIngredients");
-        return GasStackIngredient.from(tag, amount);
+        return IngredientCreatorAccess.gas().from(tag, amount);
     }
 
     /**
@@ -86,7 +87,7 @@ public class CrTGasStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static GasStackIngredient createMulti(GasStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("GasStackIngredients", GasStackIngredient::createMulti, ingredients);
+        return CrTIngredientHelper.createMulti("GasStackIngredients", IngredientCreatorAccess.gas(), ingredients);
     }
 
     /**
@@ -144,6 +145,6 @@ public class CrTGasStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static GasStackIngredient or(GasStackIngredient _this, GasStackIngredient other) {
-        return GasStackIngredient.createMulti(_this, other);
+        return IngredientCreatorAccess.gas().createMulti(_this, other);
     }
 }

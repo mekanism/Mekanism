@@ -6,7 +6,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
-import mekanism.api.recipes.inputs.IInputHandler;
+import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
 

@@ -8,9 +8,7 @@ import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.GasToGasRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -34,11 +32,11 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Items;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -1466,29 +1464,29 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
         //plutonium
         GasToGasRecipeBuilder.centrifuging(
-              GasStackIngredient.from(MekanismGases.NUCLEAR_WASTE, 10),
+              IngredientCreatorAccess.gas().from(MekanismGases.NUCLEAR_WASTE, 10),
               MekanismGases.PLUTONIUM.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "plutonium"));
         //polonium
         GasToGasRecipeBuilder.activating(
-              GasStackIngredient.from(MekanismGases.NUCLEAR_WASTE, 10),
+              IngredientCreatorAccess.gas().from(MekanismGases.NUCLEAR_WASTE, 10),
               MekanismGases.POLONIUM.getStack(1)
         ).build(consumer, Mekanism.rl(basePath + "polonium"));
 
         //plutonium pellet
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
-              FluidStackIngredient.from(FluidTags.WATER, 1_000),
-              GasStackIngredient.from(MekanismGases.PLUTONIUM, 1_000),
+              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_FLUORITE),
+              IngredientCreatorAccess.fluid().from(FluidTags.WATER, 1_000),
+              IngredientCreatorAccess.gas().from(MekanismGases.PLUTONIUM, 1_000),
               100,
               MekanismItems.PLUTONIUM_PELLET.getItemStack(),
               MekanismGases.SPENT_NUCLEAR_WASTE.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "plutonium_pellet/from_reaction"));
         //polonium pellet
         PressurizedReactionRecipeBuilder.reaction(
-              ItemStackIngredient.from(MekanismTags.Items.DUSTS_FLUORITE),
-              FluidStackIngredient.from(FluidTags.WATER, 1_000),
-              GasStackIngredient.from(MekanismGases.POLONIUM, 1_000),
+              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_FLUORITE),
+              IngredientCreatorAccess.fluid().from(FluidTags.WATER, 1_000),
+              IngredientCreatorAccess.gas().from(MekanismGases.POLONIUM, 1_000),
               100,
               MekanismItems.POLONIUM_PELLET.getItemStack(),
               MekanismGases.SPENT_NUCLEAR_WASTE.getStack(1_000)
@@ -1496,13 +1494,13 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
 
         //antimatter pellet
         ChemicalCrystallizerRecipeBuilder.crystallizing(
-              GasStackIngredient.from(MekanismGases.ANTIMATTER, 1_000),
+              IngredientCreatorAccess.gas().from(MekanismGases.ANTIMATTER, 1_000),
               MekanismItems.ANTIMATTER_PELLET.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "antimatter_pellet/from_gas"));
 
         //back to antimatter
         ItemStackToChemicalRecipeBuilder.oxidizing(
-              ItemStackIngredient.from(MekanismTags.Items.PELLETS_ANTIMATTER),
+              IngredientCreatorAccess.item().from(MekanismTags.Items.PELLETS_ANTIMATTER),
               MekanismGases.ANTIMATTER.getStack(1_000)
         ).build(consumer, Mekanism.rl(basePath + "antimatter/from_pellet"));
     }

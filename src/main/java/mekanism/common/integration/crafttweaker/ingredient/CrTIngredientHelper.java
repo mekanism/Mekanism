@@ -4,6 +4,7 @@ import com.blamejared.crafttweaker.api.tag.MCTag;
 import java.util.function.Function;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.api.recipes.inputs.creator.IIngredientCreator;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import net.minecraft.tags.Tag;
@@ -51,14 +52,13 @@ public class CrTIngredientHelper {
      * Combines multiple ingredients into a single ingredient.
      */
     @SafeVarargs
-    static <INGREDIENT extends InputIngredient<?>> INGREDIENT createMulti(String ingredientType, Function<INGREDIENT[], INGREDIENT> multiCreator,
-          INGREDIENT... ingredients) {
+    static <INGREDIENT extends InputIngredient<?>> INGREDIENT createMulti(String ingredientType, IIngredientCreator<?, ?, INGREDIENT> creator, INGREDIENT... ingredients) {
         if (ingredients.length == 0) {
             throw new IllegalArgumentException("Multi " + ingredientType + " ingredients cannot be made out of no ingredients!");
         } else if (ingredients.length == 1) {
             //While this technically isn't needed because the multi creator methods also do this, it is good to be on the safe side
             return ingredients[0];
         }
-        return multiCreator.apply(ingredients);
+        return creator.createMulti(ingredients);
     }
 }

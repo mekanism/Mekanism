@@ -5,7 +5,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
-import mekanism.api.recipes.inputs.IInputHandler;
+import mekanism.api.recipes.inputs.handler.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
 

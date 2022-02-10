@@ -6,8 +6,8 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.Gas;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalInfuserRecipe;
-import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class ChemicalInfuserRecipeSerializer<RECIPE extends ChemicalInfuserRecipe> extends

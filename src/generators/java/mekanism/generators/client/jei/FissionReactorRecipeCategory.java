@@ -12,7 +12,8 @@ import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.gas.attribute.GasAttributes.CooledCoolant;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -94,7 +95,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
         double energyPerFuel = MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue();
         //Special case water recipe
         long coolantAmount = Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy());
-        recipes.add(new FissionJEIRecipe(null, GasStackIngredient.from(MekanismGases.FISSILE_FUEL, 1),
+        recipes.add(new FissionJEIRecipe(null, IngredientCreatorAccess.gas().from(MekanismGases.FISSILE_FUEL, 1),
               MekanismGases.STEAM.getStack(coolantAmount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
         //Go through all gases and add each coolant
         for (Gas gas : MekanismAPI.gasRegistry()) {
@@ -103,7 +104,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionJEIR
                 //If it is a cooled coolant add a recipe for it
                 Gas heatedCoolant = cooledCoolant.getHeatedGas();
                 coolantAmount = Math.round(energyPerFuel / cooledCoolant.getThermalEnthalpy());
-                recipes.add(new FissionJEIRecipe(GasStackIngredient.from(gas, coolantAmount), GasStackIngredient.from(MekanismGases.FISSILE_FUEL, 1),
+                recipes.add(new FissionJEIRecipe(IngredientCreatorAccess.gas().from(gas, coolantAmount), IngredientCreatorAccess.gas().from(MekanismGases.FISSILE_FUEL, 1),
                       heatedCoolant.getStack(coolantAmount), MekanismGases.NUCLEAR_WASTE.getStack(1)));
             }
         }

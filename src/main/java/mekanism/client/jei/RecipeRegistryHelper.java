@@ -9,7 +9,7 @@ import mekanism.api.providers.IBlockProvider;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
@@ -64,7 +64,7 @@ public class RecipeRegistryHelper {
                 FoodProperties food = item.getFoodProperties();
                 //Only display consuming foods that provide healing as otherwise no paste will be made
                 if (food != null && food.getNutrition() > 0) {
-                    list.add(new NutritionalLiquifierIRecipe(item, ItemStackIngredient.from(item), MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50)));
+                    list.add(new NutritionalLiquifierIRecipe(item, IngredientCreatorAccess.item().from(item), MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50)));
                 }
             }
         }

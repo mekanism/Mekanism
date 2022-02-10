@@ -7,7 +7,7 @@ import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBui
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
@@ -169,7 +169,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
     }
 
     private void dye(Consumer<FinishedRecipe> consumer, String basePath, ItemLike output, boolean large, EnumColor color, String inputTag, ItemLike... extraInputs) {
-        ItemStackIngredient inputIngredient = ItemStackIngredient.from(BaseRecipeProvider.createIngredient(
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
               tag(inputTag),
               extraInputs
         ));
@@ -215,7 +215,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         crushing(consumer, BYGBlocks.DACITE_BRICK_WALL, BYGBlocks.DACITE_WALL, basePath + "brick_walls_to_walls");
         //Dacite Pillar -> Dacite
         ItemStackToItemStackRecipeBuilder.crushing(
-                    ItemStackIngredient.from(BYGBlocks.DACITE_PILLAR),
+                    IngredientCreatorAccess.item().from(BYGBlocks.DACITE_PILLAR),
                     new ItemStack(BYGBlocks.DACITE, 2)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "from_pillar"));
@@ -268,7 +268,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         crushing(consumer, BYGBlocks.SCORIA_STONEBRICK_WALL, BYGBlocks.SCORIA_WALL, basePath + "brick_walls_to_walls");
         //Scoria Pillar -> Scoria
         ItemStackToItemStackRecipeBuilder.crushing(
-                    ItemStackIngredient.from(BYGBlocks.SCORIA_PILLAR),
+                    IngredientCreatorAccess.item().from(BYGBlocks.SCORIA_PILLAR),
                     new ItemStack(BYGBlocks.SCORIA_STONE, 2)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "from_pillar"));
@@ -292,7 +292,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
         crushing(consumer, BYGBlocks.SOAPSTONE_TILE_WALL, BYGBlocks.SOAPSTONE_BRICK_WALL, basePath + "tile_walls_to_brick_walls");
         //Soapstone Pillar -> Soapstone
         ItemStackToItemStackRecipeBuilder.crushing(
-                    ItemStackIngredient.from(BYGBlocks.SOAPSTONE_PILLAR),
+                    IngredientCreatorAccess.item().from(BYGBlocks.SOAPSTONE_PILLAR),
                     new ItemStack(BYGBlocks.SOAPSTONE, 2)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(basePath + "from_pillar"));
@@ -313,7 +313,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
 
     private void crushing(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output, String path) {
         ItemStackToItemStackRecipeBuilder.crushing(
-                    ItemStackIngredient.from(input),
+                    IngredientCreatorAccess.item().from(input),
                     new ItemStack(output)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(path));
@@ -423,7 +423,7 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
 
     private void enriching(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output, String path) {
         ItemStackToItemStackRecipeBuilder.enriching(
-                    ItemStackIngredient.from(input),
+                    IngredientCreatorAccess.item().from(input),
                     new ItemStack(output)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(path));
@@ -450,8 +450,8 @@ public class BYGRecipeProvider extends CompatRecipeProvider {
 
     private void infuseMoss(Consumer<FinishedRecipe> consumer, ItemLike input, ItemLike output, String path) {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-                    ItemStackIngredient.from(input),
-                    InfusionStackIngredient.from(MekanismTags.InfuseTypes.BIO, 10),
+                    IngredientCreatorAccess.item().from(input),
+                    IngredientCreatorAccess.infusion().from(MekanismTags.InfuseTypes.BIO, 10),
                     new ItemStack(output)
               ).addCondition(modLoaded)
               .build(consumer, Mekanism.rl(path));

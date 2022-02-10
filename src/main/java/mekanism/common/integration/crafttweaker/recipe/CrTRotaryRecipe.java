@@ -7,7 +7,7 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import java.util.List;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;

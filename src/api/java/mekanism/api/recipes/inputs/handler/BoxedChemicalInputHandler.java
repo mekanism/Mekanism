@@ -1,4 +1,4 @@
-package mekanism.api.recipes.inputs;
+package mekanism.api.recipes.inputs.handler;
 
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -13,11 +13,11 @@ import mekanism.api.chemical.merged.MergedChemicalTank.Current;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.MathUtils;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
-import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.SlurryStackIngredient;
 
 /**
  * Specialized version of {@link ILongInputHandler} for handling boxed chemicals.

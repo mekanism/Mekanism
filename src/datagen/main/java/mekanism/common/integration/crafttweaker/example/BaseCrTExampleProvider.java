@@ -42,12 +42,15 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
-import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
@@ -65,6 +68,11 @@ import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
+import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
@@ -291,7 +299,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private void addItemStackIngredientSupport() {
         addSupportedConversion(ItemStackIngredient.class, ItemStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
-                  if (ingredient instanceof ItemStackIngredient.Single single) {
+                  if (ingredient instanceof SingleItemStackIngredient single) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return MekanismRecipeHandler.basicImplicitIngredient(single.getInputRaw(), GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1),
                             serialized.get(JsonConstants.INGREDIENT));
@@ -301,7 +309,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     private String getIngredientRepresentation(CrTImportsComponent imports, ItemStackIngredient ingredient) {
-        if (ingredient instanceof ItemStackIngredient.Single single) {
+        if (ingredient instanceof SingleItemStackIngredient single) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //While it is easier to compare types of some stuff using the inner ingredient, some things
             // are easier to get the information of out of the serialized ingredient
@@ -330,7 +338,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                 return path + ".from(" + representation + ")";
             }
             return path + ".from(" + representation + ", " + amount + ")";
-        } else if (ingredient instanceof ItemStackIngredient.Multi multiIngredient) {
+        } else if (ingredient instanceof MultiItemStackIngredient multiIngredient) {
             StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_ITEM_STACK_INGREDIENT) + ".createMulti(");
             if (!multiIngredient.forEachIngredient(i -> {
                 String rep = getIngredientRepresentation(imports, i);
@@ -352,10 +360,10 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private void addFluidStackIngredientSupport() {
         addSupportedConversion(FluidStackIngredient.class, FluidStackIngredient.class, this::getIngredientRepresentation,
               (imports, ingredient) -> {
-                  if (ingredient instanceof FluidStackIngredient.Single) {
+                  if (ingredient instanceof SingleFluidStackIngredient) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
-                  } else if (ingredient instanceof FluidStackIngredient.Tagged) {
+                  } else if (ingredient instanceof TaggedFluidStackIngredient) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString())
                             .withAmount(serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt()).getCommandString();
@@ -365,15 +373,15 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     private String getIngredientRepresentation(CrTImportsComponent imports, FluidStackIngredient ingredient) {
-        if (ingredient instanceof FluidStackIngredient.Single) {
+        if (ingredient instanceof SingleFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String stackRepresentation = new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
             return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + stackRepresentation + ")";
-        } else if (ingredient instanceof FluidStackIngredient.Tagged) {
+        } else if (ingredient instanceof TaggedFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String tagRepresentation = TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
             return imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
-        } else if (ingredient instanceof FluidStackIngredient.Multi multiIngredient) {
+        } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
             StringBuilder builder = new StringBuilder(imports.addImport(CrTConstants.CLASS_FLUID_STACK_INGREDIENT) + ".createMulti(");
             if (!multiIngredient.forEachIngredient(i -> {
                 String rep = getIngredientRepresentation(imports, i);
@@ -400,10 +408,10 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         addSupportedConversionWithAlt(ChemicalStackIngredient.class, ingredientClass, ingredientClass,
               (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(ingredientType), deserializer, singleDescription, tagManager),
               (imports, ingredient) -> {
-                  if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
+                  if (ingredient instanceof SingleChemicalStackIngredient) {
                       JsonObject serialized = ingredient.serialize().getAsJsonObject();
                       return singleDescription.apply(deserializer.deserializeStack(serialized)).getCommandString();
-                  } else if (ingredient instanceof ChemicalStackIngredient.TaggedIngredient) {
+                  } else if (ingredient instanceof TaggedChemicalStackIngredient) {
                       JsonObject serialized = (JsonObject) ingredient.serialize();
                       long amount = serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsLong();
                       if (amount > 0 && amount <= Integer.MAX_VALUE) {
@@ -417,15 +425,15 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String getIngredientRepresentation(
           ChemicalStackIngredient<CHEMICAL, STACK> ingredient, String ingredientType, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
           Function<STACK, CommandStringDisplayable> singleDescription, CrTChemicalTagManager<CHEMICAL> tagManager) {
-        if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
+        if (ingredient instanceof SingleChemicalStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String stackRepresentation = singleDescription.apply(deserializer.deserializeStack(serialized)).getCommandString();
             return ingredientType + ".from(" + stackRepresentation + ")";
-        } else if (ingredient instanceof ChemicalStackIngredient.TaggedIngredient) {
+        } else if (ingredient instanceof TaggedChemicalStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             String tagRepresentation = tagManager.getTag(serialized.get(JsonConstants.TAG).getAsString()).getCommandString();
             return ingredientType + ".from(" + tagRepresentation + ", " + serialized.getAsJsonPrimitive(JsonConstants.AMOUNT) + ")";
-        } else if (ingredient instanceof ChemicalStackIngredient.MultiIngredient<CHEMICAL, STACK, ?> multiIngredient) {
+        } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
             StringBuilder builder = new StringBuilder(ingredientType + ".createMulti(");
             if (!multiIngredient.forEachIngredient(i -> {
                 String rep = getIngredientRepresentation(i, ingredientType, deserializer, singleDescription, tagManager);

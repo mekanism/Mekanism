@@ -11,6 +11,7 @@ import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import net.minecraft.tags.Tag;
@@ -39,7 +40,7 @@ public class CrTFluidStackIngredient {
         if (fluid == Fluids.EMPTY) {
             throw new IllegalArgumentException("FluidStackIngredients cannot be created from an empty fluid.");
         }
-        return FluidStackIngredient.from(fluid, amount);
+        return IngredientCreatorAccess.fluid().from(fluid, amount);
     }
 
     /**
@@ -54,7 +55,7 @@ public class CrTFluidStackIngredient {
         if (instance.isEmpty()) {
             throw new IllegalArgumentException("FluidStackIngredients cannot be created from an empty stack.");
         }
-        return FluidStackIngredient.from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.fluid().from(instance.getImmutableInternal());
     }
 
     /**
@@ -68,7 +69,7 @@ public class CrTFluidStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static FluidStackIngredient from(MCTag<Fluid> fluidTag, int amount) {
         Tag<Fluid> tag = CrTIngredientHelper.assertValidAndGet(fluidTag, amount, TagManagerFluid.INSTANCE::getInternal, "FluidStackIngredients");
-        return FluidStackIngredient.from(tag, amount);
+        return IngredientCreatorAccess.fluid().from(tag, amount);
     }
 
     /**
@@ -92,7 +93,7 @@ public class CrTFluidStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static FluidStackIngredient createMulti(FluidStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("FluidStackIngredients", FluidStackIngredient::createMulti, ingredients);
+        return CrTIngredientHelper.createMulti("FluidStackIngredients", IngredientCreatorAccess.fluid(), ingredients);
     }
 
     /**
@@ -150,6 +151,6 @@ public class CrTFluidStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static FluidStackIngredient or(FluidStackIngredient _this, FluidStackIngredient other) {
-        return FluidStackIngredient.createMulti(_this, other);
+        return IngredientCreatorAccess.fluid().createMulti(_this, other);
     }
 }

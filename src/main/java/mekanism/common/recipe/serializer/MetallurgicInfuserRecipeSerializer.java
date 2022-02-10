@@ -3,8 +3,8 @@ package mekanism.common.recipe.serializer;
 import mekanism.api.chemical.infuse.InfuseType;
 import mekanism.api.chemical.infuse.InfusionStack;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
-import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.InfusionStackIngredient;
 
 public class MetallurgicInfuserRecipeSerializer<RECIPE extends MetallurgicInfuserRecipe> extends
       ItemStackChemicalToItemStackRecipeSerializer<InfuseType, InfusionStack, InfusionStackIngredient, RECIPE> {

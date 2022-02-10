@@ -8,7 +8,8 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -30,10 +31,10 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement itemInput = GsonHelper.isArrayNode(json, JsonConstants.ITEM_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
                                 GsonHelper.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
-        ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
+        ItemStackIngredient itemIngredient = IngredientCreatorAccess.item().deserialize(itemInput);
         JsonElement gasInput = GsonHelper.isArrayNode(json, JsonConstants.GAS_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.GAS_INPUT) :
                                GsonHelper.getAsJsonObject(json, JsonConstants.GAS_INPUT);
-        GasStackIngredient gasIngredient = GasStackIngredient.deserialize(gasInput);
+        GasStackIngredient gasIngredient = IngredientCreatorAccess.gas().deserialize(gasInput);
 
         int duration;
         JsonElement ticks = json.get(JsonConstants.DURATION);
@@ -54,8 +55,8 @@ public class NucleosynthesizingRecipeSerializer<RECIPE extends Nucleosynthesizin
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            ItemStackIngredient inputSolid = ItemStackIngredient.read(buffer);
-            GasStackIngredient inputGas = GasStackIngredient.read(buffer);
+            ItemStackIngredient inputSolid = IngredientCreatorAccess.item().read(buffer);
+            GasStackIngredient inputGas = IngredientCreatorAccess.gas().read(buffer);
             ItemStack outputItem = buffer.readItem();
             int duration = buffer.readVarInt();
             return this.factory.create(recipeId, inputSolid, inputGas, outputItem, duration);

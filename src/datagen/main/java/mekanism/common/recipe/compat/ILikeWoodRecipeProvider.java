@@ -5,7 +5,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.SawmillRecipeBuilder;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.RecipeProviderUtil;
@@ -59,19 +59,19 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         Item stick = ILikeWood.getItem(woodType, WoodenItemType.STICK);
         //Barrel
         SawmillRecipeBuilder.sawing(
-                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.BARREL)),
+                    IngredientCreatorAccess.item().from(ILikeWood.getBlock(woodType, WoodenBlockType.BARREL)),
                     new ItemStack(planks, 7)
               ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "barrel/" + name));
         //Chest
         SawmillRecipeBuilder.sawing(
-                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.CHEST)),
+                    IngredientCreatorAccess.item().from(ILikeWood.getBlock(woodType, WoodenBlockType.CHEST)),
                     new ItemStack(planks, 8)
               ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "chest/" + name));
         //Composter
         SawmillRecipeBuilder.sawing(
-                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.COMPOSTER)),
+                    IngredientCreatorAccess.item().from(ILikeWood.getBlock(woodType, WoodenBlockType.COMPOSTER)),
                     new ItemStack(planks, 3),
                     new ItemStack(fences, 4),
                     1
@@ -79,13 +79,13 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "composter/" + name));
         //Crafting table
         SawmillRecipeBuilder.sawing(
-                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.CRAFTING_TABLE)),
+                    IngredientCreatorAccess.item().from(ILikeWood.getBlock(woodType, WoodenBlockType.CRAFTING_TABLE)),
                     new ItemStack(planks, 4)
               ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "crafting_table/" + name));
         //Item Frame
         SawmillRecipeBuilder.sawing(
-                    ItemStackIngredient.from(ILikeWood.getItem(woodType, WoodenItemType.ITEM_FRAME)),
+                    IngredientCreatorAccess.item().from(ILikeWood.getItem(woodType, WoodenItemType.ITEM_FRAME)),
                     new ItemStack(stick, 8),
                     new ItemStack(Items.LEATHER),
                     1
@@ -93,13 +93,13 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "item_frame/" + name));
         //Ladder
         SawmillRecipeBuilder.sawing(
-                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.LADDER), 3),
+                    IngredientCreatorAccess.item().from(ILikeWood.getBlock(woodType, WoodenBlockType.LADDER), 3),
                     new ItemStack(stick, 7)
               ).addCondition(condition)
               .build(consumer, Mekanism.rl(basePath + "ladder/" + name));
         //Lectern
         SawmillRecipeBuilder.sawing(
-                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.LECTERN)),
+                    IngredientCreatorAccess.item().from(ILikeWood.getBlock(woodType, WoodenBlockType.LECTERN)),
                     new ItemStack(planks, 8),
                     new ItemStack(Items.BOOK, 3),
                     1
@@ -107,7 +107,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "lectern/" + name));
         //Panel
         SawmillRecipeBuilder.sawing(
-                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.PANELS)),
+                    IngredientCreatorAccess.item().from(ILikeWood.getBlock(woodType, WoodenBlockType.PANELS)),
                     new ItemStack(stick, 6),
                     MekanismItems.SAWDUST.getItemStack(),
                     0.25
@@ -116,12 +116,12 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         //Post
         ItemStackIngredient postIngredient;
         if (woodType.getBlockTypes().contains(WoodenBlockType.STRIPPED_POST)) {
-            postIngredient = ItemStackIngredient.from(Ingredient.of(
+            postIngredient = IngredientCreatorAccess.item().from(Ingredient.of(
                   ILikeWood.getBlock(woodType, WoodenBlockType.POST),
                   ILikeWood.getBlock(woodType, WoodenBlockType.STRIPPED_POST)
             ));
         } else {
-            postIngredient = ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.POST));
+            postIngredient = IngredientCreatorAccess.item().from(ILikeWood.getBlock(woodType, WoodenBlockType.POST));
         }
         SawmillRecipeBuilder.sawing(
                     postIngredient,
@@ -133,7 +133,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         //Torch
         Block torch = ILikeWood.getBlock(woodType, WoodenBlockType.TORCH);
         SawmillRecipeBuilder.sawing(
-                    ItemStackIngredient.from(torch, 4),
+                    IngredientCreatorAccess.item().from(torch, 4),
                     new ItemStack(stick),
                     new ItemStack(Items.COAL),
                     1
@@ -141,7 +141,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
               .build(consumer, Mekanism.rl(basePath + "torch/" + name));
         //Soul Torch
         SawmillRecipeBuilder.sawing(
-                    ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.SOUL_TORCH), 4),
+                    IngredientCreatorAccess.item().from(ILikeWood.getBlock(woodType, WoodenBlockType.SOUL_TORCH), 4),
                     new ItemStack(torch, 4),
                     new ItemStack(Blocks.SOUL_SOIL),
                     1
@@ -150,7 +150,7 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
         //Wall
         if (woodType.getBlockTypes().contains(WoodenBlockType.WALL)) {
             SawmillRecipeBuilder.sawing(
-                        ItemStackIngredient.from(ILikeWood.getBlock(woodType, WoodenBlockType.WALL)),
+                        IngredientCreatorAccess.item().from(ILikeWood.getBlock(woodType, WoodenBlockType.WALL)),
                         new ItemStack(log)
                   ).addCondition(condition)
                   .build(consumer, Mekanism.rl(basePath + "wall/" + name));
@@ -172,8 +172,8 @@ public class ILikeWoodRecipeProvider extends CompatRecipeProvider {
             Block bed = ILikeWood.getBlock(woodType, bedType);
             RecipeProviderUtil.addPrecisionSawmillBedRecipe(consumer, basePath, bed, planks, dye, condition);
             ItemStackChemicalToItemStackRecipeBuilder.painting(
-                        ItemStackIngredient.from(Ingredient.of(WoodenBlockType.getBeds().filter(b -> !b.equals(bedType)).map(b -> new ItemStack(ILikeWood.getBlock(woodType, b))))),
-                        PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
+                        IngredientCreatorAccess.item().from(Ingredient.of(WoodenBlockType.getBeds().filter(b -> !b.equals(bedType)).map(b -> new ItemStack(ILikeWood.getBlock(woodType, b))))),
+                        IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
                         new ItemStack(bed)
                   ).addCondition(condition)
                   .build(consumer, Mekanism.rl(basePath + "painting/" + color.getRegistryPrefix()));

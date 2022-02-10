@@ -3,12 +3,12 @@ package mekanism.common.recipe.impl;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackToEnergyRecipeBuilder;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Item;
 import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.common.Tags;
 
 class EnergyConversionRecipeProvider implements ISubRecipeProvider {
@@ -23,7 +23,7 @@ class EnergyConversionRecipeProvider implements ISubRecipeProvider {
 
     private void addEnergyConversionRecipe(Consumer<FinishedRecipe> consumer, String basePath, String name, Tag<Item> inputTag, FloatingLong output) {
         ItemStackToEnergyRecipeBuilder.energyConversion(
-              ItemStackIngredient.from(inputTag),
+              IngredientCreatorAccess.item().from(inputTag),
               output
         ).build(consumer, Mekanism.rl(basePath + name));
     }

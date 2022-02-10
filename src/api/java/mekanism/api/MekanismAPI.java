@@ -1,5 +1,6 @@
 package mekanism.api;
 
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import mekanism.api.chemical.gas.EmptyGas;
 import mekanism.api.chemical.gas.Gas;
@@ -27,7 +28,7 @@ public class MekanismAPI {
     /**
      * The version of the api classes - may not always match the mod's version
      */
-    public static final String API_VERSION = "10.1.1";
+    public static final String API_VERSION = "10.2.0";
     public static final String MEKANISM_MODID = "mekanism";
     /**
      * Mekanism debug mode
@@ -176,14 +177,8 @@ public class MekanismAPI {
      * Gets Mekanism's {@link IModuleHelper} that provides various utility methods for implementing custom modules.
      */
     public static IModuleHelper getModuleHelper() {
-        // Harmless race
-        if (MODULE_HELPER == null) {
-            try {
-                Class<?> clazz = Class.forName("mekanism.common.content.gear.ModuleHelper");
-                MODULE_HELPER = (IModuleHelper) clazz.getField("INSTANCE").get(null);
-            } catch (ReflectiveOperationException ex) {
-                logger.fatal("Error retrieving RadiationManager, Mekanism may be absent, damaged, or outdated.");
-            }
+        if (MODULE_HELPER == null) {//Harmless race
+            lookupInstance(IModuleHelper.class, "mekanism.common.content.gear.ModuleHelper", helper -> MODULE_HELPER = helper);
         }
         return MODULE_HELPER;
     }
@@ -192,14 +187,8 @@ public class MekanismAPI {
      * Gets Mekanism's {@link IRadiationManager}.
      */
     public static IRadiationManager getRadiationManager() {
-        // Harmless race
-        if (RADIATION_MANAGER == null) {
-            try {
-                Class<?> clazz = Class.forName("mekanism.common.lib.radiation.RadiationManager");
-                RADIATION_MANAGER = (IRadiationManager) clazz.getField("INSTANCE").get(null);
-            } catch (ReflectiveOperationException ex) {
-                logger.fatal("Error retrieving RadiationManager, Mekanism may be absent, damaged, or outdated.");
-            }
+        if (RADIATION_MANAGER == null) {//Harmless race
+            lookupInstance(IRadiationManager.class, "mekanism.common.lib.radiation.RadiationManager", helper -> RADIATION_MANAGER = helper);
         }
         return RADIATION_MANAGER;
     }
@@ -208,15 +197,18 @@ public class MekanismAPI {
      * Mostly for internal use, allows us to access a couple internal helper methods for formatting some numbers in tooltips.
      */
     public static ITooltipHelper getTooltipHelper() {
-        // Harmless race
-        if (TOOLTIP_HELPER == null) {
-            try {
-                Class<?> clazz = Class.forName("mekanism.common.util.text.TooltipHelper");
-                TOOLTIP_HELPER = (ITooltipHelper) clazz.getField("INSTANCE").get(null);
-            } catch (ReflectiveOperationException ex) {
-                logger.fatal("Error retrieving TooltipHelper, Mekanism may be absent, damaged, or outdated.");
-            }
+        if (TOOLTIP_HELPER == null) {//Harmless race
+            lookupInstance(ITooltipHelper.class, "mekanism.common.util.text.TooltipHelper", helper -> TOOLTIP_HELPER = helper);
         }
         return TOOLTIP_HELPER;
+    }
+
+    private static <TYPE> void lookupInstance(Class<TYPE> type, String className, Consumer<TYPE> setter) {
+        try {
+            Class<?> clazz = Class.forName(className);
+            setter.accept(type.cast(clazz.getField("INSTANCE").get(null)));
+        } catch (ReflectiveOperationException ex) {
+            logger.fatal("Error retrieving {}, Mekanism may be absent, damaged, or outdated.", className);
+        }
     }
 }

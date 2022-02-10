@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;

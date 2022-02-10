@@ -2,18 +2,17 @@ package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 
 class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
@@ -23,26 +22,26 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
         String basePath = "injecting/";
         //Brick -> clay ball
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(Tags.Items.INGOTS_BRICK),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.item().from(Tags.Items.INGOTS_BRICK),
+              IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Items.CLAY_BALL)
         ).build(consumer, Mekanism.rl(basePath + "brick_to_clay_ball"));
         //Dirt -> clay
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(Blocks.DIRT),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.item().from(Blocks.DIRT),
+              IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Blocks.CLAY)
         ).build(consumer, Mekanism.rl(basePath + "dirt_to_clay"));
         //Gunpowder -> sulfur
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(Tags.Items.GUNPOWDER),
-              GasStackIngredient.from(MekanismGases.HYDROGEN_CHLORIDE, 1),
+              IngredientCreatorAccess.item().from(Tags.Items.GUNPOWDER),
+              IngredientCreatorAccess.gas().from(MekanismGases.HYDROGEN_CHLORIDE, 1),
               MekanismItems.SULFUR_DUST.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "gunpowder_to_sulfur"));
         //Terracotta -> clay
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(Blocks.TERRACOTTA),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.item().from(Blocks.TERRACOTTA),
+              IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(Blocks.CLAY)
         ).build(consumer, Mekanism.rl(basePath + "terracotta_to_clay"));
         addChemicalInjectorConcreteRecipes(consumer, basePath + "concrete/");
@@ -70,8 +69,8 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
 
     private void addChemicalInjectorConcreteRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike powder, ItemLike concrete, String name) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(powder),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, 1),
+              IngredientCreatorAccess.item().from(powder),
+              IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, 1),
               new ItemStack(concrete)
         ).build(consumer, Mekanism.rl(basePath + name));
     }
@@ -96,8 +95,8 @@ class ChemicalInjectorRecipeProvider implements ISubRecipeProvider {
 
     private void addChemicalInjectorCoralRevivalRecipe(Consumer<FinishedRecipe> consumer, String basePath, ItemLike dead, ItemLike living, int water) {
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              ItemStackIngredient.from(dead),
-              GasStackIngredient.from(MekanismTags.Gases.WATER_VAPOR, water),
+              IngredientCreatorAccess.item().from(dead),
+              IngredientCreatorAccess.gas().from(MekanismTags.Gases.WATER_VAPOR, water),
               new ItemStack(living)
         ).build(consumer, Mekanism.rl(basePath + living.asItem().getRegistryName().getPath()));
     }

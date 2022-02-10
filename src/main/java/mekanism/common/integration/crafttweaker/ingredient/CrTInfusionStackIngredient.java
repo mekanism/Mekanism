@@ -8,7 +8,8 @@ import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistration;
 import java.util.List;
 import mekanism.api.chemical.infuse.InfuseType;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
@@ -35,7 +36,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static InfusionStackIngredient from(InfuseType instance, long amount) {
         CrTIngredientHelper.assertValid(instance, amount, "InfusionStackIngredients", "infuse type");
-        return InfusionStackIngredient.from(instance, amount);
+        return IngredientCreatorAccess.infusion().from(instance, amount);
     }
 
     /**
@@ -48,7 +49,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static InfusionStackIngredient from(ICrTInfusionStack instance) {
         CrTIngredientHelper.assertValid(instance, "InfusionStackIngredients");
-        return InfusionStackIngredient.from(instance.getImmutableInternal());
+        return IngredientCreatorAccess.infusion().from(instance.getImmutableInternal());
     }
 
     /**
@@ -62,7 +63,7 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static InfusionStackIngredient from(MCTag<InfuseType> infuseTypeTag, long amount) {
         Tag<InfuseType> tag = CrTIngredientHelper.assertValidAndGet(infuseTypeTag, amount, CrTInfuseTypeTagManager.INSTANCE::getInternal, "InfusionStackIngredients");
-        return InfusionStackIngredient.from(tag, amount);
+        return IngredientCreatorAccess.infusion().from(tag, amount);
     }
 
     /**
@@ -86,7 +87,7 @@ public class CrTInfusionStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static InfusionStackIngredient createMulti(InfusionStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("InfusionStackIngredients", InfusionStackIngredient::createMulti, ingredients);
+        return CrTIngredientHelper.createMulti("InfusionStackIngredients", IngredientCreatorAccess.infusion(), ingredients);
     }
 
     /**
@@ -144,6 +145,6 @@ public class CrTInfusionStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static InfusionStackIngredient or(InfusionStackIngredient _this, InfusionStackIngredient other) {
-        return InfusionStackIngredient.createMulti(_this, other);
+        return IngredientCreatorAccess.infusion().createMulti(_this, other);
     }
 }

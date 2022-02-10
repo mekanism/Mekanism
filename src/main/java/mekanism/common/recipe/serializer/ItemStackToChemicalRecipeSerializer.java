@@ -9,6 +9,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -34,7 +35,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().deserialize(input);
         STACK output = fromJson(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
@@ -45,7 +46,7 @@ public abstract class ItemStackToChemicalRecipeSerializer<CHEMICAL extends Chemi
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
+            ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
             STACK output = fromBuffer(buffer);
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {

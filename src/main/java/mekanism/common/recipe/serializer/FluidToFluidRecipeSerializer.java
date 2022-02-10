@@ -8,6 +8,7 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.FluidToFluidRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -29,7 +30,7 @@ public class FluidToFluidRecipeSerializer<RECIPE extends FluidToFluidRecipe> ext
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        FluidStackIngredient inputIngredient = FluidStackIngredient.deserialize(input);
+        FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().deserialize(input);
         FluidStack output = SerializerHelper.getFluidStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
@@ -40,7 +41,7 @@ public class FluidToFluidRecipeSerializer<RECIPE extends FluidToFluidRecipe> ext
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            FluidStackIngredient inputIngredient = FluidStackIngredient.read(buffer);
+            FluidStackIngredient inputIngredient = IngredientCreatorAccess.fluid().read(buffer);
             FluidStack output = FluidStack.readFromPacket(buffer);
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {

@@ -6,7 +6,7 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;

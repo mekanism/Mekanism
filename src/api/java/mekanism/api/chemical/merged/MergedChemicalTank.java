@@ -9,10 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -30,6 +28,7 @@ import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.ISlurryTank;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**
  * Class to help manage having a chemical tank that supports all the different types of chemicals, but only one type at a time.
@@ -102,16 +101,12 @@ public class MergedChemicalTank {
      * @return Internal tank.
      */
     public IChemicalTank<?, ?> getTankForType(ChemicalType chemicalType) {
-        if (chemicalType == ChemicalType.GAS) {
-            return getGasTank();
-        } else if (chemicalType == ChemicalType.INFUSION) {
-            return getInfusionTank();
-        } else if (chemicalType == ChemicalType.PIGMENT) {
-            return getPigmentTank();
-        } else if (chemicalType == ChemicalType.SLURRY) {
-            return getSlurryTank();
-        }
-        throw new IllegalStateException("Unknown chemical type");
+        return switch (chemicalType) {
+            case GAS -> getGasTank();
+            case INFUSION -> getInfusionTank();
+            case PIGMENT -> getPigmentTank();
+            case SLURRY -> getSlurryTank();
+        };
     }
 
     /**

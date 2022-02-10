@@ -4,15 +4,14 @@ import com.google.gson.JsonElement;
 import java.util.List;
 import java.util.function.Predicate;
 import javax.annotation.Nonnull;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 
 /**
  * Interface describing the base methods common to all inputs of our recipes.
  */
+@MethodsReturnNonnullByDefault
 public interface InputIngredient<TYPE> extends Predicate<TYPE> {
-    //TODO - 1.18: Evaluate moving most of our InputIngredient implementation details (item, fluid, chemicals) out of the API
-    // and then have helpers to create the actual objects, as the API doesn't really have a need to know about the difference
-    // between single, tagged, and multi
 
     /**
      * Evaluates this predicate on the given argument, ignoring any size data.
@@ -48,7 +47,6 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @apiNote Do not modify any of the values returned by the representations
      */
-    @Nonnull
     List<TYPE> getRepresentations();
 
     /**
@@ -63,6 +61,5 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @return JsonElement representation of this ingredient.
      */
-    @Nonnull
     JsonElement serialize();
 }

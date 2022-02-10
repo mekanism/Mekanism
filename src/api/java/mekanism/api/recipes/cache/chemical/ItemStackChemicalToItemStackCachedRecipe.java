@@ -9,8 +9,8 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
-import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.handler.IInputHandler;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
 

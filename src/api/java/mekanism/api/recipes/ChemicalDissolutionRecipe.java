@@ -11,7 +11,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.chemical.merged.BoxedChemicalStack;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

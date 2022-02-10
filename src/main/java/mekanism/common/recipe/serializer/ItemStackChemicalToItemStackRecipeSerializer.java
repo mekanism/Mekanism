@@ -10,8 +10,9 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
+import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient;
 import mekanism.common.Mekanism;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +38,7 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement itemInput = GsonHelper.isArrayNode(json, JsonConstants.ITEM_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.ITEM_INPUT) :
                                 GsonHelper.getAsJsonObject(json, JsonConstants.ITEM_INPUT);
-        ItemStackIngredient itemIngredient = ItemStackIngredient.deserialize(itemInput);
+        ItemStackIngredient itemIngredient = IngredientCreatorAccess.item().deserialize(itemInput);
         JsonElement chemicalInput = GsonHelper.isArrayNode(json, JsonConstants.CHEMICAL_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.CHEMICAL_INPUT) :
                                     GsonHelper.getAsJsonObject(json, JsonConstants.CHEMICAL_INPUT);
         INGREDIENT chemicalIngredient = getDeserializer().deserialize(chemicalInput);
@@ -51,7 +52,7 @@ public abstract class ItemStackChemicalToItemStackRecipeSerializer<CHEMICAL exte
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            ItemStackIngredient itemInput = ItemStackIngredient.read(buffer);
+            ItemStackIngredient itemInput = IngredientCreatorAccess.item().read(buffer);
             INGREDIENT chemicalInput = getDeserializer().read(buffer);
             ItemStack output = buffer.readItem();
             return this.factory.create(recipeId, itemInput, chemicalInput, output);

@@ -1,0 +1,69 @@
+package mekanism.common.recipe.ingredient.creator;
+
+import java.util.Objects;
+import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.chemical.pigment.Pigment;
+import mekanism.api.chemical.pigment.PigmentStack;
+import mekanism.api.providers.IChemicalProvider;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
+import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientInfo;
+import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.tags.Tag;
+
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class PigmentStackIngredientCreator extends ChemicalStackIngredientCreator<Pigment, PigmentStack, PigmentStackIngredient> {
+
+    public static final PigmentStackIngredientCreator INSTANCE = new PigmentStackIngredientCreator();
+
+    private PigmentStackIngredientCreator() {
+    }
+
+    @Override
+    protected ChemicalIngredientDeserializer<Pigment, PigmentStack, PigmentStackIngredient> getDeserializer() {
+        return ChemicalIngredientDeserializer.PIGMENT;
+    }
+
+    @Override
+    public PigmentStackIngredient from(IChemicalProvider<Pigment> provider, long amount) {
+        Objects.requireNonNull(provider, "PigmentStackIngredients cannot be created from a null chemical provider.");
+        Pigment pigment = provider.getChemical();
+        assertNonEmpty(pigment);
+        assertPositiveAmount(amount);
+        return new SinglePigmentStackIngredient(pigment.getStack(amount));
+    }
+
+    @Override
+    public PigmentStackIngredient from(Tag<Pigment> tag, long amount) {
+        Objects.requireNonNull(tag, "PigmentStackIngredients cannot be created from a null tag.");
+        assertPositiveAmount(amount);
+        return new TaggedPigmentStackIngredient(tag, amount);
+    }
+
+    public static class SinglePigmentStackIngredient extends SingleChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
+
+        private SinglePigmentStackIngredient(PigmentStack stack) {
+            super(stack);
+        }
+
+        @Override
+        protected ChemicalIngredientInfo<Pigment, PigmentStack> getIngredientInfo() {
+            return ChemicalIngredientInfo.PIGMENT;
+        }
+    }
+
+    public static class TaggedPigmentStackIngredient extends TaggedChemicalStackIngredient<Pigment, PigmentStack> implements PigmentStackIngredient {
+
+        private TaggedPigmentStackIngredient(Tag<Pigment> tag, long amount) {
+            super(tag, amount);
+        }
+
+        @Override
+        protected ChemicalIngredientInfo<Pigment, PigmentStack> getIngredientInfo() {
+            return ChemicalIngredientInfo.PIGMENT;
+        }
+    }
+}

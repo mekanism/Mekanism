@@ -8,13 +8,14 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystallizerRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>>
@@ -32,7 +33,7 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
         ChemicalType chemicalType = SerializerHelper.getChemicalType(json);
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        ChemicalStackIngredient<?, ?> inputIngredient = SerializerHelper.getDeserializerForType(chemicalType).deserialize(input);
+        ChemicalStackIngredient<?, ?> inputIngredient = IngredientCreatorAccess.getCreatorForType(chemicalType).deserialize(input);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
@@ -44,7 +45,7 @@ public class ChemicalCrystallizerRecipeSerializer<RECIPE extends ChemicalCrystal
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
             ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-            ChemicalStackIngredient<?, ?> inputIngredient = SerializerHelper.getDeserializerForType(chemicalType).read(buffer);
+            ChemicalStackIngredient<?, ?> inputIngredient = IngredientCreatorAccess.getCreatorForType(chemicalType).read(buffer);
             ItemStack output = buffer.readItem();
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {

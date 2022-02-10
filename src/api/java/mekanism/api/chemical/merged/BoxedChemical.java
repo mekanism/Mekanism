@@ -55,17 +55,12 @@ public class BoxedChemical implements IHasTextComponent {
     public static BoxedChemical read(FriendlyByteBuf buffer) {
         //Note: Casts are needed for compiling, so it knows how to read it properly
         ChemicalType chemicalType = buffer.readEnum(ChemicalType.class);
-        if (chemicalType == ChemicalType.GAS) {
-            return new BoxedChemical(chemicalType, (Gas) buffer.readRegistryId());
-        } else if (chemicalType == ChemicalType.INFUSION) {
-            return new BoxedChemical(chemicalType, (InfuseType) buffer.readRegistryId());
-        } else if (chemicalType == ChemicalType.PIGMENT) {
-            return new BoxedChemical(chemicalType, (Pigment) buffer.readRegistryId());
-        } else if (chemicalType == ChemicalType.SLURRY) {
-            return new BoxedChemical(chemicalType, (Slurry) buffer.readRegistryId());
-        } else {
-            throw new IllegalStateException("Unknown chemical type");
-        }
+        return switch (chemicalType) {
+            case GAS -> new BoxedChemical(chemicalType, (Gas) buffer.readRegistryId());
+            case INFUSION -> new BoxedChemical(chemicalType, (InfuseType) buffer.readRegistryId());
+            case PIGMENT -> new BoxedChemical(chemicalType, (Pigment) buffer.readRegistryId());
+            case SLURRY -> new BoxedChemical(chemicalType, (Slurry) buffer.readRegistryId());
+        };
     }
 
     /**
@@ -134,16 +129,11 @@ public class BoxedChemical implements IHasTextComponent {
      */
     public void write(FriendlyByteBuf buffer) {
         buffer.writeEnum(chemicalType);
-        if (chemicalType == ChemicalType.GAS) {
-            buffer.writeRegistryId((Gas) chemical);
-        } else if (chemicalType == ChemicalType.INFUSION) {
-            buffer.writeRegistryId((InfuseType) chemical);
-        } else if (chemicalType == ChemicalType.PIGMENT) {
-            buffer.writeRegistryId((Pigment) chemical);
-        } else if (chemicalType == ChemicalType.SLURRY) {
-            buffer.writeRegistryId((Slurry) chemical);
-        } else {
-            throw new IllegalStateException("Unknown chemical type");
+        switch (chemicalType) {
+            case GAS -> buffer.writeRegistryId((Gas) chemical);
+            case INFUSION -> buffer.writeRegistryId((InfuseType) chemical);
+            case PIGMENT -> buffer.writeRegistryId((Pigment) chemical);
+            case SLURRY -> buffer.writeRegistryId((Slurry) chemical);
         }
     }
 

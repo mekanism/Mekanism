@@ -3,6 +3,9 @@ package mekanism.common.recipe.lookup.cache.type;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.common.lib.HashedFluid;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -10,14 +13,14 @@ public class FluidInputCache<RECIPE extends MekanismRecipe> extends NBTSensitive
 
     @Override
     public boolean mapInputs(RECIPE recipe, FluidStackIngredient inputIngredient) {
-        if (inputIngredient instanceof FluidStackIngredient.Single single) {
+        if (inputIngredient instanceof SingleFluidStackIngredient single) {
             HashedFluid input = HashedFluid.create(single.getInputRaw());
             addNbtInputCache(input, recipe);
-        } else if (inputIngredient instanceof FluidStackIngredient.Tagged tagged) {
+        } else if (inputIngredient instanceof TaggedFluidStackIngredient tagged) {
             for (Fluid input : tagged.getRawInput()) {
                 addInputCache(input, recipe);
             }
-        } else if (inputIngredient instanceof FluidStackIngredient.Multi multi) {
+        } else if (inputIngredient instanceof MultiFluidStackIngredient multi) {
             return multi.forEachIngredient(ingredient -> mapInputs(recipe, ingredient));
         } else {
             //This should never really happen as we don't really allow for custom ingredients especially for networking,

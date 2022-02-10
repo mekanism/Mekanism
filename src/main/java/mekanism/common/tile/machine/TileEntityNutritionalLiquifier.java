@@ -12,9 +12,9 @@ import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ItemStackToFluidCachedRecipe;
-import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.InputHelper;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.handler.IInputHandler;
+import mekanism.api.recipes.inputs.handler.InputHelper;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -181,7 +181,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<It
             return null;
         }
         //TODO: If food eventually becomes stack sensitive make this use stack instead of stack.getItem as the ingredient
-        return new NutritionalLiquifierIRecipe(stack.getItem(), ItemStackIngredient.from(stack.getItem()),
+        return new NutritionalLiquifierIRecipe(stack.getItem(), IngredientCreatorAccess.item().from(stack.getItem()),
               MekanismFluids.NUTRITIONAL_PASTE.getFluidStack(food.getNutrition() * 50));
     }
 

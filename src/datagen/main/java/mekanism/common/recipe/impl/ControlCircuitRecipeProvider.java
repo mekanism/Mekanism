@@ -3,8 +3,7 @@ package mekanism.common.recipe.impl;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ItemStackChemicalToItemStackRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
@@ -16,8 +15,8 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.Item;
 import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
 
 class ControlCircuitRecipeProvider implements ISubRecipeProvider {
 
@@ -27,8 +26,8 @@ class ControlCircuitRecipeProvider implements ISubRecipeProvider {
     public void addRecipes(Consumer<FinishedRecipe> consumer) {
         String basePath = "control_circuit/";
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              ItemStackIngredient.from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
-              InfusionStackIngredient.from(MekanismTags.InfuseTypes.REDSTONE, 20),
+              IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
+              IngredientCreatorAccess.infusion().from(MekanismTags.InfuseTypes.REDSTONE, 20),
               MekanismItems.BASIC_CONTROL_CIRCUIT.getItemStack()
         ).build(consumer, Mekanism.rl(basePath + "basic"));
         addCircuitUpgradeRecipe(consumer, MekanismItems.ADVANCED_CONTROL_CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC, MekanismTags.Items.ALLOYS_INFUSED, basePath, "advanced");

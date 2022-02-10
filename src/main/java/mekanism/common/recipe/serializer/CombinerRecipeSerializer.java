@@ -8,6 +8,7 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -29,10 +30,10 @@ public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> extends For
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement mainInput = GsonHelper.isArrayNode(json, JsonConstants.MAIN_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.MAIN_INPUT) :
                                 GsonHelper.getAsJsonObject(json, JsonConstants.MAIN_INPUT);
-        ItemStackIngredient mainIngredient = ItemStackIngredient.deserialize(mainInput);
+        ItemStackIngredient mainIngredient = IngredientCreatorAccess.item().deserialize(mainInput);
         JsonElement extraInput = GsonHelper.isArrayNode(json, JsonConstants.EXTRA_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.EXTRA_INPUT) :
                                  GsonHelper.getAsJsonObject(json, JsonConstants.EXTRA_INPUT);
-        ItemStackIngredient extraIngredient = ItemStackIngredient.deserialize(extraInput);
+        ItemStackIngredient extraIngredient = IngredientCreatorAccess.item().deserialize(extraInput);
         ItemStack output = SerializerHelper.getItemStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Combiner recipe output must not be empty.");
@@ -43,8 +44,8 @@ public class CombinerRecipeSerializer<RECIPE extends CombinerRecipe> extends For
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            ItemStackIngredient mainInput = ItemStackIngredient.read(buffer);
-            ItemStackIngredient extraInput = ItemStackIngredient.read(buffer);
+            ItemStackIngredient mainInput = IngredientCreatorAccess.item().read(buffer);
+            ItemStackIngredient extraInput = IngredientCreatorAccess.item().read(buffer);
             ItemStack output = buffer.readItem();
             return this.factory.create(recipeId, mainInput, extraInput, output);
         } catch (Exception e) {

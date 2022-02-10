@@ -15,6 +15,7 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import net.minecraft.tags.Tag;
@@ -67,7 +68,7 @@ public class CrTItemStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static ItemStackIngredient from(Item item, int amount) {
         CrTIngredientHelper.assertValidAmount("ItemStackIngredients", amount);
-        return ItemStackIngredient.from(item, amount);
+        return IngredientCreatorAccess.item().from(item, amount);
     }
 
     /**
@@ -81,7 +82,7 @@ public class CrTItemStackIngredient {
     @ZenCodeType.StaticExpansionMethod
     public static ItemStackIngredient from(MCTag<Item> itemTag, int amount) {
         Tag<Item> tag = CrTIngredientHelper.assertValidAndGet(itemTag, amount, TagManagerItem.INSTANCE::getInternal, "ItemStackIngredients");
-        return ItemStackIngredient.from(tag, amount);
+        return IngredientCreatorAccess.item().from(tag, amount);
     }
 
     /**
@@ -148,7 +149,7 @@ public class CrTItemStackIngredient {
         if (vanillaIngredient == Ingredient.EMPTY) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be made using the empty ingredient: " + amount);
         }
-        return ItemStackIngredient.from(vanillaIngredient, amount);
+        return IngredientCreatorAccess.item().from(vanillaIngredient, amount);
     }
 
     /**
@@ -192,7 +193,7 @@ public class CrTItemStackIngredient {
      */
     @ZenCodeType.StaticExpansionMethod
     public static ItemStackIngredient createMulti(ItemStackIngredient... ingredients) {
-        return CrTIngredientHelper.createMulti("ItemStackIngredients", ItemStackIngredient::createMulti, ingredients);
+        return CrTIngredientHelper.createMulti("ItemStackIngredients", IngredientCreatorAccess.item(), ingredients);
     }
 
     /**
@@ -250,6 +251,6 @@ public class CrTItemStackIngredient {
     @ZenCodeType.Method
     @ZenCodeType.Operator(ZenCodeType.OperatorType.OR)
     public static ItemStackIngredient or(ItemStackIngredient _this, ItemStackIngredient other) {
-        return ItemStackIngredient.createMulti(_this, other);
+        return IngredientCreatorAccess.item().createMulti(_this, other);
     }
 }

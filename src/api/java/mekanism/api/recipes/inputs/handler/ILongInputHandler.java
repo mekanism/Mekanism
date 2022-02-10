@@ -1,4 +1,6 @@
-package mekanism.api.recipes.inputs;
+package mekanism.api.recipes.inputs.handler;
+
+import mekanism.api.recipes.inputs.InputIngredient;
 
 /**
  * Interface describing handling of an input that can handle long values.

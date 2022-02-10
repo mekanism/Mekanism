@@ -28,12 +28,15 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
 import mekanism.api.recipes.inputs.InputIngredient;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
-import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.MultiChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.SingleChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.TaggedChemicalStackIngredient;
+import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTGasStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack.CrTInfusionStack;
@@ -44,6 +47,11 @@ import mekanism.common.integration.crafttweaker.tag.CrTGasTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTInfuseTypeTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTPigmentTagManager;
 import mekanism.common.integration.crafttweaker.tag.CrTSlurryTagManager;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.TaggedFluidStackIngredient;
+import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.MultiItemStackIngredient;
+import mekanism.common.recipe.ingredient.creator.ItemStackIngredientCreator.SingleItemStackIngredient;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -172,7 +180,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     }
 
     private String convertIngredient(ItemStackIngredient ingredient) {
-        if (ingredient instanceof ItemStackIngredient.Single single) {
+        if (ingredient instanceof SingleItemStackIngredient single) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             Ingredient vanillaIngredient = single.getInputRaw();
             int amount = GsonHelper.getAsInt(serialized, JsonConstants.AMOUNT, 1);
@@ -185,7 +193,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             }
             //Note: Handled via implicit casts
             return rep;
-        } else if (ingredient instanceof ItemStackIngredient.Multi multiIngredient) {
+        } else if (ingredient instanceof MultiItemStackIngredient multiIngredient) {
             StringBuilder builder = new StringBuilder(CrTConstants.CLASS_ITEM_STACK_INGREDIENT + ".createMulti(");
             multiIngredient.forEachIngredient(i -> {
                 builder.append(convertIngredient(i)).append(", ");
@@ -201,16 +209,16 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     }
 
     private String convertIngredient(FluidStackIngredient ingredient) {
-        if (ingredient instanceof FluidStackIngredient.Single) {
+        if (ingredient instanceof SingleFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //Note: Handled via implicit casts
             return new MCFluidStack(SerializerHelper.deserializeFluid(serialized)).getCommandString();
-        } else if (ingredient instanceof FluidStackIngredient.Tagged) {
+        } else if (ingredient instanceof TaggedFluidStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //Note: Handled via implicit casts
             return TagManagerFluid.INSTANCE.getTag(serialized.get(JsonConstants.TAG).getAsString())
                   .withAmount(serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsInt()).getCommandString();
-        } else if (ingredient instanceof FluidStackIngredient.Multi multiIngredient) {
+        } else if (ingredient instanceof MultiFluidStackIngredient multiIngredient) {
             StringBuilder builder = new StringBuilder(CrTConstants.CLASS_FLUID_STACK_INGREDIENT + ".createMulti(");
             multiIngredient.forEachIngredient(i -> {
                 builder.append(convertIngredient(i)).append(", ");
@@ -227,12 +235,12 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
     private <CHEMICAL extends Chemical<CHEMICAL>, STACK extends ChemicalStack<CHEMICAL>> String convertIngredient(String crtClass,
           CrTChemicalTagManager<CHEMICAL> tagManager, ChemicalIngredientDeserializer<CHEMICAL, STACK, ?> deserializer,
           ChemicalStackIngredient<CHEMICAL, STACK> ingredient) {
-        if (ingredient instanceof ChemicalStackIngredient.SingleIngredient) {
+        if (ingredient instanceof SingleChemicalStackIngredient) {
             //Serialize and deserialize to get easy access to the amount
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             //Note: Handled via implicit casts
             return convertParam(deserializer.deserializeStack(serialized));
-        } else if (ingredient instanceof ChemicalStackIngredient.TaggedIngredient) {
+        } else if (ingredient instanceof TaggedChemicalStackIngredient) {
             JsonObject serialized = ingredient.serialize().getAsJsonObject();
             MCTag<CHEMICAL> tag = tagManager.getTag(serialized.get(JsonConstants.TAG).getAsString());
             long amount = serialized.getAsJsonPrimitive(JsonConstants.AMOUNT).getAsLong();
@@ -242,7 +250,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe> imple
             }
             //Tag with amount can only handle up to max int, so we have to do it explicitly if we have more
             return crtClass + ".from(" + tag.getCommandString() + ", " + amount + ")";
-        } else if (ingredient instanceof ChemicalStackIngredient.MultiIngredient<CHEMICAL, STACK, ?> multiIngredient) {
+        } else if (ingredient instanceof MultiChemicalStackIngredient<CHEMICAL, STACK, ?> multiIngredient) {
             StringBuilder builder = new StringBuilder(crtClass + ".createMulti(");
             multiIngredient.forEachIngredient(i -> {
                 builder.append(convertIngredient(crtClass, tagManager, deserializer, i)).append(", ");

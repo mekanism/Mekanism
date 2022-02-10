@@ -7,8 +7,8 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
-import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.ILongInputHandler;
+import mekanism.api.recipes.inputs.handler.IInputHandler;
+import mekanism.api.recipes.inputs.handler.ILongInputHandler;
 import mekanism.api.recipes.outputs.BoxedChemicalOutputHandler;
 import net.minecraft.world.item.ItemStack;
 

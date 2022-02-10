@@ -46,6 +46,7 @@ import mekanism.api.recipes.chemical.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.chemical.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.chemical.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.impl.SmeltingIRecipe;
@@ -235,13 +236,13 @@ public class MekanismRecipeType<RECIPE_TYPE extends MekanismRecipe, INPUT_CACHE 
                             //Something went wrong
                             continue;
                         } else if (ingredientCount == 1) {
-                            input = ItemStackIngredient.from(ingredients.get(0));
+                            input = IngredientCreatorAccess.item().from(ingredients.get(0));
                         } else {
                             ItemStackIngredient[] itemIngredients = new ItemStackIngredient[ingredientCount];
                             for (int i = 0; i < ingredientCount; i++) {
-                                itemIngredients[i] = ItemStackIngredient.from(ingredients.get(i));
+                                itemIngredients[i] = IngredientCreatorAccess.item().from(ingredients.get(i));
                             }
-                            input = ItemStackIngredient.createMulti(itemIngredients);
+                            input = IngredientCreatorAccess.item().createMulti(itemIngredients);
                         }
                         recipes.add((RECIPE_TYPE) new SmeltingIRecipe(entry.getKey(), input, recipeOutput));
                     }

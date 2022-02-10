@@ -67,6 +67,7 @@ public class PressurizedReactionRecipeCategory extends BaseRecipeCategory<Pressu
             initItem(builder, RecipeIngredientRole.OUTPUT, outputItem, itemOutputs);
         }
         if (!gasOutputs.stream().allMatch(GasStack::isEmpty)) {
+            //TODO - 1.18: Make sure we add the gauge overlay even if there are no gas outputs
             initChemical(builder, MekanismJEI.TYPE_GAS, RecipeIngredientRole.OUTPUT, outputGas, gasOutputs);
         }
     }

@@ -167,14 +167,15 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     private IChemicalTank<?, ?> getCurrentTank(Current current) {
-        if (current == Current.GAS) {
-            return getGasTank();
-        } else if (current == Current.INFUSION) {
-            return getInfusionTank();
-        } else if (current == Current.PIGMENT) {
-            return getPigmentTank();
-        } else if (current == Current.SLURRY) {
-            return getSlurryTank();
+        switch (current) {
+            case GAS:
+                return getGasTank();
+            case INFUSION:
+                return getInfusionTank();
+            case PIGMENT:
+                return getPigmentTank();
+            case SLURRY:
+                return getSlurryTank();
         }
         throw new IllegalStateException("Unknown chemical type");
     }

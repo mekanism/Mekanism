@@ -9,7 +9,8 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -30,10 +31,10 @@ public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlu
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement fluidInput = GsonHelper.isArrayNode(json, JsonConstants.FLUID_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.FLUID_INPUT) :
                                  GsonHelper.getAsJsonObject(json, JsonConstants.FLUID_INPUT);
-        FluidStackIngredient fluidIngredient = FluidStackIngredient.deserialize(fluidInput);
+        FluidStackIngredient fluidIngredient = IngredientCreatorAccess.fluid().deserialize(fluidInput);
         JsonElement slurryInput = GsonHelper.isArrayNode(json, JsonConstants.SLURRY_INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.SLURRY_INPUT) :
                                   GsonHelper.getAsJsonObject(json, JsonConstants.SLURRY_INPUT);
-        SlurryStackIngredient slurryIngredient = SlurryStackIngredient.deserialize(slurryInput);
+        SlurryStackIngredient slurryIngredient = IngredientCreatorAccess.slurry().deserialize(slurryInput);
         SlurryStack output = SerializerHelper.getSlurryStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
@@ -44,8 +45,8 @@ public class FluidSlurryToSlurryRecipeSerializer<RECIPE extends FluidSlurryToSlu
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            FluidStackIngredient fluidInput = FluidStackIngredient.read(buffer);
-            SlurryStackIngredient slurryInput = SlurryStackIngredient.read(buffer);
+            FluidStackIngredient fluidInput = IngredientCreatorAccess.fluid().read(buffer);
+            SlurryStackIngredient slurryInput = IngredientCreatorAccess.slurry().read(buffer);
             SlurryStack output = SlurryStack.readFromPacket(buffer);
             return this.factory.create(recipeId, fluidInput, slurryInput, output);
         } catch (Exception e) {

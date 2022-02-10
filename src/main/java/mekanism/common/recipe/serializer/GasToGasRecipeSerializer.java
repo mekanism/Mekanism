@@ -8,7 +8,8 @@ import mekanism.api.JsonConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.GasToGasRecipe;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -29,7 +30,7 @@ public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe> extends For
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        GasStackIngredient inputIngredient = GasStackIngredient.deserialize(input);
+        GasStackIngredient inputIngredient = IngredientCreatorAccess.gas().deserialize(input);
         GasStack output = SerializerHelper.getGasStack(json, JsonConstants.OUTPUT);
         if (output.isEmpty()) {
             throw new JsonSyntaxException("Recipe output must not be empty.");
@@ -40,7 +41,7 @@ public class GasToGasRecipeSerializer<RECIPE extends GasToGasRecipe> extends For
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            GasStackIngredient inputIngredient = GasStackIngredient.read(buffer);
+            GasStackIngredient inputIngredient = IngredientCreatorAccess.gas().read(buffer);
             GasStack output = GasStack.readFromPacket(buffer);
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {

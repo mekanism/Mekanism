@@ -9,7 +9,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.chemical.ChemicalType;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
-import mekanism.api.recipes.inputs.chemical.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;

@@ -3,7 +3,7 @@ package mekanism.common.recipe.impl;
 import javax.annotation.Nonnull;
 import mekanism.api.recipes.MetallurgicInfuserRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.chemical.InfusionStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.InfusionStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;

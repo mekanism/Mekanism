@@ -5,18 +5,17 @@ import javax.annotation.Nonnull;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.GasStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismGases;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.Tag;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 class RotaryRecipeProvider implements ISubRecipeProvider {
 
@@ -50,8 +49,8 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
 
     private void addRotaryCondensentratorRecipe(Consumer<FinishedRecipe> consumer, String basePath, IGasProvider gas, IFluidProvider fluidOutput, Tag<Fluid> fluidInput) {
         RotaryRecipeBuilder.rotary(
-              FluidStackIngredient.from(fluidInput, 1),
-              GasStackIngredient.from(gas, 1),
+              IngredientCreatorAccess.fluid().from(fluidInput, 1),
+              IngredientCreatorAccess.gas().from(gas, 1),
               gas.getStack(1),
               fluidOutput.getFluidStack(1)
         ).build(consumer, Mekanism.rl(basePath + gas.getName()));

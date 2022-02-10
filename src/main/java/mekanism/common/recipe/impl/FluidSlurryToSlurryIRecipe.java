@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.recipes.FluidSlurryToSlurryRecipe;
 import mekanism.api.recipes.inputs.FluidStackIngredient;
-import mekanism.api.recipes.inputs.chemical.SlurryStackIngredient;
+import mekanism.api.recipes.inputs.ChemicalStackIngredient.SlurryStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializers;

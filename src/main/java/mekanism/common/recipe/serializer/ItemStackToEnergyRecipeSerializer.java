@@ -9,6 +9,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -29,7 +30,7 @@ public class ItemStackToEnergyRecipeSerializer<RECIPE extends ItemStackToEnergyR
     public RECIPE fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json) {
         JsonElement input = GsonHelper.isArrayNode(json, JsonConstants.INPUT) ? GsonHelper.getAsJsonArray(json, JsonConstants.INPUT) :
                             GsonHelper.getAsJsonObject(json, JsonConstants.INPUT);
-        ItemStackIngredient inputIngredient = ItemStackIngredient.deserialize(input);
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().deserialize(input);
         FloatingLong output = SerializerHelper.getFloatingLong(json, JsonConstants.OUTPUT);
         if (output.isZero()) {
             throw new JsonSyntaxException("Expected output to be greater than zero.");
@@ -40,7 +41,7 @@ public class ItemStackToEnergyRecipeSerializer<RECIPE extends ItemStackToEnergyR
     @Override
     public RECIPE fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer) {
         try {
-            ItemStackIngredient inputIngredient = ItemStackIngredient.read(buffer);
+            ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().read(buffer);
             FloatingLong output = FloatingLong.readFromBuffer(buffer);
             return this.factory.create(recipeId, inputIngredient, output);
         } catch (Exception e) {

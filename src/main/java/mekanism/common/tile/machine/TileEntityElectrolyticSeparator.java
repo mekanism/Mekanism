@@ -19,8 +19,8 @@ import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.ElectrolysisCachedRecipe;
-import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.InputHelper;
+import mekanism.api.recipes.inputs.handler.IInputHandler;
+import mekanism.api.recipes.inputs.handler.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.capabilities.energy.ElectrolyticSeparatorEnergyContainer;
@@ -71,7 +71,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<ElectrolysisRecipe> implements IHasGasMode, FluidRecipeLookupHandler<ElectrolysisRecipe>,
       ISustainedData {

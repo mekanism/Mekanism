@@ -2,7 +2,7 @@ package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
-import mekanism.api.recipes.inputs.chemical.PigmentStackIngredient;
+import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
@@ -51,8 +51,8 @@ class PigmentMixingRecipeProvider implements ISubRecipeProvider {
     private static void addMix(Consumer<FinishedRecipe> consumer, EnumColor leftInput, long leftInputAmount, EnumColor rightInput, long rightInputAmount,
           EnumColor output, String basePath) {
         ChemicalChemicalToChemicalRecipeBuilder.pigmentMixing(
-              PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(leftInput), leftInputAmount),
-              PigmentStackIngredient.from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(rightInput), rightInputAmount),
+              IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(leftInput), leftInputAmount),
+              IngredientCreatorAccess.pigment().from(MekanismPigments.PIGMENT_COLOR_LOOKUP.get(rightInput), rightInputAmount),
               MekanismPigments.PIGMENT_COLOR_LOOKUP.get(output).getStack(leftInputAmount + rightInputAmount)
         ).build(consumer, Mekanism.rl(basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix()));
     }
