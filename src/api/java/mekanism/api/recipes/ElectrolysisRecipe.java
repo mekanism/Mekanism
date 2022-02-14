@@ -10,7 +10,7 @@ import mekanism.api.annotations.FieldsAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

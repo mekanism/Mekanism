@@ -3,7 +3,7 @@ package mekanism.common.integration.projecte.mappers;
 import mekanism.api.chemical.gas.GasStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.integration.projecte.IngredientHelper;
 import mekanism.common.integration.projecte.NSSGas;
 import mekanism.common.recipe.MekanismRecipeType;

@@ -1,10 +1,10 @@
-package mekanism.api.recipes.inputs.creator;
+package mekanism.api.recipes.ingredients.creator;
 
 import com.google.gson.JsonElement;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.annotations.NonNull;
-import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.Tag;

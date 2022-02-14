@@ -10,8 +10,8 @@ import mekanism.api.annotations.NonNull;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.chemical.ChemicalChemicalToChemicalRecipe;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient;
-import mekanism.api.recipes.inputs.handler.IInputHandler;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 
 /**

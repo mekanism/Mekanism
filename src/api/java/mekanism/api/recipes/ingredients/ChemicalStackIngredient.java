@@ -1,4 +1,4 @@
-package mekanism.api.recipes.inputs;
+package mekanism.api.recipes.ingredients;
 
 import javax.annotation.Nonnull;
 import mekanism.api.annotations.NonNull;
@@ -30,7 +30,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
     /**
      * Base implementation for how Mekanism handle's GasStack Ingredients.
      *
-     * Create instances of this using {@link mekanism.api.recipes.inputs.creator.IngredientCreatorAccess#gas()}.
+     * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#gas()}.
      */
     interface GasStackIngredient extends ChemicalStackIngredient<Gas, GasStack> {
     }
@@ -38,7 +38,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
     /**
      * Base implementation for how Mekanism handle's InfusionStack Ingredients.
      *
-     * Create instances of this using {@link mekanism.api.recipes.inputs.creator.IngredientCreatorAccess#infusion()}.
+     * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#infusion()}.
      */
     interface InfusionStackIngredient extends ChemicalStackIngredient<InfuseType, InfusionStack> {
     }
@@ -46,7 +46,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
     /**
      * Base implementation for how Mekanism handle's PigmentStack Ingredients.
      *
-     * Create instances of this using {@link mekanism.api.recipes.inputs.creator.IngredientCreatorAccess#pigment()}.
+     * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#pigment()}.
      */
     interface PigmentStackIngredient extends ChemicalStackIngredient<Pigment, PigmentStack> {
     }
@@ -54,7 +54,7 @@ public interface ChemicalStackIngredient<CHEMICAL extends Chemical<CHEMICAL>, ST
     /**
      * Base implementation for how Mekanism handle's SlurryStack Ingredients.
      *
-     * Create instances of this using {@link mekanism.api.recipes.inputs.creator.IngredientCreatorAccess#slurry()}.
+     * Create instances of this using {@link mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess#slurry()}.
      */
     interface SlurryStackIngredient extends ChemicalStackIngredient<Slurry, SlurryStack> {
     }

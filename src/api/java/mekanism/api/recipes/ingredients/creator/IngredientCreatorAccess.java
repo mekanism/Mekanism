@@ -1,4 +1,4 @@
-package mekanism.api.recipes.inputs.creator;
+package mekanism.api.recipes.ingredients.creator;
 
 import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
@@ -11,10 +11,10 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.chemical.slurry.SlurryStack;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.PigmentStackIngredient;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 
 /**
  * Provides access to helpers for creating various types of ingredients.

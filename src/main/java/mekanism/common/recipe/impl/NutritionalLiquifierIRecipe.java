@@ -3,7 +3,7 @@ package mekanism.common.recipe.impl;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.MethodsReturnNonnullByDefault;

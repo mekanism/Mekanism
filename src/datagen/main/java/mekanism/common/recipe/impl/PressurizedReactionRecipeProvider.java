@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.PressurizedReactionRecipeBuilder;
 import mekanism.api.math.FloatingLong;
-import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.ISubRecipeProvider;

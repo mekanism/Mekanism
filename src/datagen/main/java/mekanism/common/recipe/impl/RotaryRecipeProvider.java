@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
-import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismFluids;

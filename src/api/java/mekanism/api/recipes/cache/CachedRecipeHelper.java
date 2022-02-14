@@ -7,8 +7,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
-import mekanism.api.recipes.inputs.InputIngredient;
-import mekanism.api.recipes.inputs.handler.IInputHandler;
+import mekanism.api.recipes.ingredients.InputIngredient;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 
 /**

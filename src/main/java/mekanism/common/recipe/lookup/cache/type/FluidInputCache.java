@@ -1,7 +1,7 @@
 package mekanism.common.recipe.lookup.cache.type;
 
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.FluidStackIngredient;
+import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.common.lib.HashedFluid;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.MultiFluidStackIngredient;
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator.SingleFluidStackIngredient;

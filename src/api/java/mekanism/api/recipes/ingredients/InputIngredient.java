@@ -1,4 +1,4 @@
-package mekanism.api.recipes.inputs;
+package mekanism.api.recipes.ingredients;
 
 import com.google.gson.JsonElement;
 import java.util.List;

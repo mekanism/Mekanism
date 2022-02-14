@@ -1,4 +1,4 @@
-package mekanism.api.recipes.inputs.handler;
+package mekanism.api.recipes.inputs;
 
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -15,11 +15,11 @@ import mekanism.api.chemical.slurry.SlurryStack;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.InfusionStackIngredient;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.PigmentStackIngredient;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.SlurryStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.InfusionStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.SlurryStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**

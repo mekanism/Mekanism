@@ -8,7 +8,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
 import mekanism.api.providers.IItemProvider;
 import mekanism.api.providers.IPigmentProvider;
-import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;

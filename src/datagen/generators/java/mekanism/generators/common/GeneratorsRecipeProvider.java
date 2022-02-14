@@ -11,7 +11,7 @@ import mekanism.api.datagen.recipe.builder.RotaryRecipeBuilder;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IFluidProvider;
 import mekanism.api.providers.IGasProvider;
-import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import mekanism.common.recipe.builder.MekDataShapedRecipeBuilder;

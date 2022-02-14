@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
 import net.minecraft.world.level.Level;

@@ -3,7 +3,7 @@ package mekanism.common.recipe.lookup.cache.type;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import mekanism.api.recipes.MekanismRecipe;
-import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 
 /**
  * Base interface describing how a specific input type is cached to allow for quick lookup of recipes by input both for finding the recipes and checking if any even exist

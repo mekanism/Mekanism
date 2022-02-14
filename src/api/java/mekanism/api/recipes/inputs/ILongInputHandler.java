@@ -1,8 +1,8 @@
-package mekanism.api.recipes.inputs.handler;
+package mekanism.api.recipes.inputs;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
-import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 /**

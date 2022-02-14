@@ -2,7 +2,7 @@ package mekanism.common.recipe.impl;
 
 import java.util.function.Consumer;
 import mekanism.api.datagen.recipe.builder.FluidToFluidRecipeBuilder;
-import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismFluids;

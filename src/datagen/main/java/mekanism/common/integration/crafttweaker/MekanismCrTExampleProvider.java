@@ -9,7 +9,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.slurry.Slurry;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.recipes.inputs.creator.IngredientCreatorAccess;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.MekanismHooks;

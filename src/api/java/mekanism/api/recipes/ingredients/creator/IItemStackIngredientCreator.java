@@ -1,8 +1,8 @@
-package mekanism.api.recipes.inputs.creator;
+package mekanism.api.recipes.ingredients.creator;
 
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.item.Item;

@@ -4,7 +4,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PaintingRecipe;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 
 public class PaintingRecipeSerializer<RECIPE extends PaintingRecipe> extends
       ItemStackChemicalToItemStackRecipeSerializer<Pigment, PigmentStack, PigmentStackIngredient, RECIPE> {

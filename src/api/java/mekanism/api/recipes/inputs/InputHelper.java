@@ -1,4 +1,4 @@
-package mekanism.api.recipes.inputs.handler;
+package mekanism.api.recipes.inputs;
 
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -13,7 +13,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
-import mekanism.api.recipes.inputs.InputIngredient;
+import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;

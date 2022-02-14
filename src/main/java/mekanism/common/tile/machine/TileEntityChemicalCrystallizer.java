@@ -25,7 +25,7 @@ import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.ChemicalCrystallizerCachedRecipe;
-import mekanism.api.recipes.inputs.handler.BoxedChemicalInputHandler;
+import mekanism.api.recipes.inputs.BoxedChemicalInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;

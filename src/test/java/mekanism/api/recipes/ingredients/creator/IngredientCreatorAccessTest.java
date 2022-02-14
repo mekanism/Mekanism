@@ -1,4 +1,4 @@
-package mekanism.api.recipes.inputs.creator;
+package mekanism.api.recipes.ingredients.creator;
 
 import mekanism.common.recipe.ingredient.creator.FluidStackIngredientCreator;
 import mekanism.common.recipe.ingredient.creator.GasStackIngredientCreator;

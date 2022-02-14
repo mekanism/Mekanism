@@ -5,8 +5,8 @@ import com.blamejared.crafttweaker_annotations.annotations.NativeTypeRegistratio
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.GasStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.GasStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;

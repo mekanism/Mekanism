@@ -3,7 +3,7 @@ package mekanism.common.recipe.impl;
 import javax.annotation.Nonnull;
 import mekanism.api.math.FloatingLong;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
-import mekanism.api.recipes.inputs.ItemStackIngredient;
+import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRecipeSerializers;

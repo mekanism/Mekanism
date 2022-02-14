@@ -1,11 +1,11 @@
-package mekanism.api.recipes.inputs.creator;
+package mekanism.api.recipes.ingredients.creator;
 
 import java.util.Objects;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.providers.IChemicalProvider;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.tags.Tag;
 

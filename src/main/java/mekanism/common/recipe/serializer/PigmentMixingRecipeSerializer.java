@@ -7,7 +7,7 @@ import mekanism.api.chemical.pigment.Pigment;
 import mekanism.api.chemical.pigment.PigmentStack;
 import mekanism.api.recipes.PigmentMixingRecipe;
 import mekanism.common.recipe.ingredient.chemical.ChemicalIngredientDeserializer;
-import mekanism.api.recipes.inputs.ChemicalStackIngredient.PigmentStackIngredient;
+import mekanism.api.recipes.ingredients.ChemicalStackIngredient.PigmentStackIngredient;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class PigmentMixingRecipeSerializer<RECIPE extends PigmentMixingRecipe> extends
